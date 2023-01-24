@@ -1,0 +1,127 @@
+              <li class="sidebar-item">
+                <a
+                  class="sidebar-link"
+                  href="<?php echo base_url(); ?>member/dashboard"
+                  aria-expanded="false"
+                  ><i class="mdi mdi-view-dashboard"></i
+                  ><span class="hide-menu">Dashboard</span>
+                </a>
+              </li>
+
+              <li class="sidebar-item">
+                <a
+                  class="sidebar-link"
+                  href="<?php echo base_url(); ?>member/hmo-policy"
+                  aria-expanded="false"
+                  ><i class="mdi mdi-book-open-page-variant"></i
+                  ><span class="hide-menu">Healthcare Policy</span>
+                </a>
+              </li>
+
+              <li class="sidebar-item">
+                <a
+                  class="sidebar-link"
+                  href="<?php echo base_url(); ?>member/healthcare-providers"
+                  aria-expanded="false"
+                  ><i class="mdi mdi-hospital-building"></i
+                  ><span class="hide-menu">Healthcare Providers</span>
+                </a>
+              </li>
+
+              <li class="sidebar-item 
+              <?php echo $this->uri->segment(2) == 'requested-loa' ? 'selected' : ''; ?>
+              ">
+                <a
+                  class="sidebar-link has-arrow"
+                  href="javascript:void(0)"
+                  aria-expanded="false"
+                  ><i class="mdi mdi-file-document"></i
+                  ><span class="hide-menu">LOA</span>
+                </a>
+                <ul aria-expanded="false" class="collapse first-level">
+                  <li class="sidebar-item">
+                    <a href="<?php echo base_url(); ?>member/request-loa" class="sidebar-link"
+                      ><i class="mdi mdi-note-plus"></i
+                      ><span class="hide-menu">Request LOA</span>
+                    </a>
+                  </li>
+                  <li class="sidebar-item">
+                    <a href="<?php echo base_url(); ?>member/requested-loa/pending" class="sidebar-link"><i class="mdi mdi-note-outline"></i
+                      ><span class="hide-menu">Requested LOA</span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+              <li class="sidebar-item 
+              <?php echo $this->uri->segment(2) == 'requested-noa' ? 'selected' : ''; ?>
+              ">
+                <a
+                  class="sidebar-link has-arrow"
+                  href="javascript:void(0)"
+                  aria-expanded="false"
+                  ><i class="mdi mdi-file-chart"></i
+                  ><span class="hide-menu">NOA</span>
+                </a>
+                <ul aria-expanded="false" class="collapse first-level">
+                  <li class="sidebar-item">
+                    <a href="<?php echo base_url(); ?>member/request-noa" class="sidebar-link"
+                      ><i class="mdi mdi-note-plus"></i
+                      ><span class="hide-menu">Request NOA</span>
+                    </a>
+                  </li>
+                  <li class="sidebar-item">
+                    <a href="<?php echo base_url(); ?>member/requested-noa/pending" class="sidebar-link"
+                      ><i class="mdi mdi-note-outline"></i
+                      ><span class="hide-menu">Requested NOA</span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+              <li class="sidebar-item 
+              <?php echo $this->uri->segment(2) == 'personal-charges' ? 'selected' : ''; ?>
+              ">
+                <a
+                  class="sidebar-link"
+                  href="<?php echo base_url(); ?>member/personal-charges"
+                  aria-expanded="false"
+                  ><i class="mdi mdi-receipt"></i
+                  ><span class="hide-menu">Personal Charges</span>
+                </a>
+              </li>
+              
+              <li class="sidebar-item">
+                <a
+                  class="sidebar-link has-arrow"
+                  href="javascript:void(0)"
+                  aria-expanded="false"
+                  ><i class="mdi mdi-account-box"></i
+                  ><span class="hide-menu">My Account</span>
+                </a>
+                <ul aria-expanded="false" class="collapse first-level">
+                  <li class="sidebar-item">
+                    <a href="<?php echo base_url() . 'member/profile' ?>" class="sidebar-link"
+                      ><i class="mdi mdi-account"></i
+                      ><span class="hide-menu">Profile</span>
+                    </a>
+                  </li>
+                  <li class="sidebar-item">
+                    <!-- $account_settings_url is defined in the header.php file -->
+                    <a href="<?php echo $account_settings_url; ?>" class="sidebar-link"
+                      ><i class="mdi mdi-settings"></i
+                      ><span class="hide-menu">Account Settings</span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              
+              <li class="sidebar-item">
+                <a
+                  class="sidebar-link"
+                  href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#logoutModal"
+                  aria-expanded="false"
+                  ><i class="mdi mdi-power"></i
+                  ><span class="hide-menu">Logout</span>
+                </a>
+              </li> 

@@ -1,0 +1,33 @@
+@font-face{
+    font-family:'Poppins';
+    src:url(../fonts/Poppins.otf);
+    font-style:normal;
+    font-weight:120;
+}
+@font-face{
+    font-family:'Roboto';
+    src:url(../fonts/Roboto-Regular.ttf);
+    font-style:normal;
+    font-weight:120;
+}
+
+html {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: 'Poppins', 'Roboto', sans-serif, monospace;
+}
+
+.alert {
+	border-radius: 0;
+	text-align: center;
+}
+
+.form-control,
+.btn,
+.card {
+	border-radius: 0px;
+}

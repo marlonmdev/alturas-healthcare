@@ -1,0 +1,54 @@
+          <div class="modal fade" id="viewNoaModal" tabindex="-1" data-bs-backdrop="static">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">NOA #: <span id="noa-no" class="text-primary"></span> <span id="noa-status"></span></h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div class="container">
+                    <div class="row text-center">
+                      <h4><strong>NOA REQUEST DETAILS</strong></h4>
+                    </div>
+                    <div class="row">
+                      <table class="table table-responsive table-striped border-secondary table-sm">
+                        <tr>
+                          <td>Full Name :</td>
+                          <td id="full-name"></td>
+                        </tr>
+                        <tr>
+                          <td>Date of Birth :</td>
+                          <td id="date-of-birth"></td>
+                        </tr>
+                        <tr>
+                          <td>Age :</td>
+                          <td id="age"></td>
+                        </tr>
+                        <tr>
+                          <td>Hospital :</td>
+                          <td id="hospital-name"></td>
+                        </tr>
+                        <tr>
+                          <td>Admission Date :</td>
+                          <td id="admission-date"></td>
+                        </tr>
+                        <tr>
+                          <td>Chief Complaint :</td>
+                          <td id="chief-complaint"></td>
+                        </tr>
+                        <tr>
+                          <td>Requested On :</td>
+                          <td id="request-date"></td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- End of View LOA -->

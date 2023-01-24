@@ -15,7 +15,6 @@ class Account_controller extends CI_Controller {
 
 	public function account_settings() {
 		$user_id = $this->session->userdata('user_id');
-		$data['page_title'] = 'Alturas Healthcare - Head Office Accounting';
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['row'] = $this->account_model->get_user_account_details($user_id);
 		$this->load->view('templates/header', $data);

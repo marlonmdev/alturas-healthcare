@@ -64,7 +64,6 @@ class Loa_model extends CI_Model {
   }
   // End of server-side processing datatables
 
-
   function db_get_max_loa_id() {
     $this->db->select_max('loa_id');
     return $this->db->get('loa_requests')->row_array();
@@ -81,15 +80,18 @@ class Loa_model extends CI_Model {
   }
 
   function db_get_healthcare_providers() {
-    return $this->db->get('healthcare_providers')->result_array();
+    $query = $this->db->get('healthcare_providers');
+    return $query->result_array();
   }
 
   function db_get_company_doctors() {
-    return $this->db->get('company_doctors')->result_array();
+    $query = $this->db->get('company_doctors');
+    return $query->result_array();
   }
 
   function db_get_cost_types() {
-    return $this->db->get('cost_types')->result_array();
+    $query = $this->db->get('cost_types');
+    return $query->result_array();
   }
 
   function db_get_pending_loa($emp_id) {
@@ -132,15 +134,18 @@ class Loa_model extends CI_Model {
   }
 
   function db_get_requesting_physician($doctor_id) {
-    return $this->db->get_where('company_doctors', array('doctor_id' => $doctor_id))->row_array();
+    $query = $this->db->get_where('company_doctors', array('doctor_id' => $doctor_id));
+    return $query->row_array();
   }
 
   function db_get_doctor_by_id($doctor_id) {
-    return $this->db->get_where('company_doctors', array('doctor_id' => $doctor_id))->row_array();
+    $query = $this->db->get_where('company_doctors', array('doctor_id' => $doctor_id));
+    return $query->row_array();
   }
 
   function db_get_doctor_info($doctor_id) {
-    return $this->db->get_where('company_doctors', array('doctor_id' => $doctor_id))->row_array();
+    $query = $this->db->get_where('company_doctors', array('doctor_id' => $doctor_id));
+    return $query->row_array();
   }
 
   function get_hospital_name($hospital_id) {

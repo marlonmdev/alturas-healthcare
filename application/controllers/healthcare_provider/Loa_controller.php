@@ -5,7 +5,7 @@ class Loa_controller extends CI_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->load->model('healthcare_provider/Loa_model');
+        $this->load->model('healthcare_provider/loa_model');
         $user_role = $this->session->userdata('user_role');
         $logged_in = $this->session->userdata('logged_in');
         if ($logged_in !== true && $user_role !== 'healthcare-provider') {
@@ -18,7 +18,7 @@ class Loa_controller extends CI_Controller {
         $data['user_role'] = $this->session->userdata('user_role');
 
         $userHospital =  $this->session->userdata('dsg_hcare_prov');
-        $members = $this->Loa_model->loa_member_pending($userHospital);
+        $members = $this->loa_model->loa_member_pending($userHospital);
         $payLoadData = array();
 
 
@@ -29,7 +29,7 @@ class Loa_controller extends CI_Controller {
 
             foreach ($expodedMedServices as $extractMedServicesId) :
 
-                $resultMedServices = $this->Loa_model->get_cost_type($extractMedServicesId);
+                $resultMedServices = $this->loa_model->get_cost_type($extractMedServicesId);
                 array_push($payLoadMedService, $resultMedServices);
             endforeach;
             $member->med_services = $payLoadMedService;
@@ -47,7 +47,7 @@ class Loa_controller extends CI_Controller {
         $data['user_role'] = $this->session->userdata('user_role');
 
         $userHospital =  $this->session->userdata('dsg_hcare_prov');    
-        $members = $this->Loa_model->loa_member_approved($userHospital);
+        $members = $this->loa_model->loa_member_approved($userHospital);
 
         $payLoadData = array();
 
@@ -58,7 +58,7 @@ class Loa_controller extends CI_Controller {
 
             foreach ($expodedMedServices as $extractMedServicesId) :
 
-                $resultMedServices = $this->Loa_model->get_cost_type($extractMedServicesId);
+                $resultMedServices = $this->loa_model->get_cost_type($extractMedServicesId);
                 array_push($payLoadMedService, $resultMedServices);
             endforeach;
 
@@ -77,7 +77,7 @@ class Loa_controller extends CI_Controller {
         $data['user_role'] = $this->session->userdata('user_role');
 
         $userHospital =  $this->session->userdata('dsg_hcare_prov');
-        $members = $this->Loa_model->loa_member_closed($userHospital);
+        $members = $this->loa_model->loa_member_closed($userHospital);
         $payLoadData = array();
 
         foreach ($members as $member) :
@@ -86,7 +86,7 @@ class Loa_controller extends CI_Controller {
 
             foreach ($expodedMedServices as $extractMedServicesId) :
 
-                $resultMedServices = $this->Loa_model->get_cost_type($extractMedServicesId);
+                $resultMedServices = $this->loa_model->get_cost_type($extractMedServicesId);
                 array_push($payLoadMedService, $resultMedServices);
             endforeach;
 

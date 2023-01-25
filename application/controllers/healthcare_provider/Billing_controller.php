@@ -96,7 +96,6 @@ class Billing_controller extends CI_Controller {
                 'bbilling_number' => $billing_number
             ));
 
-            $data['page_title'] = 'Alturas Healthcare - Healthcare Provider';
             $data['user_role'] = $this->session->userdata('user_role');
 
             $data['member'] = $member;

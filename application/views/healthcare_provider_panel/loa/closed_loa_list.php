@@ -86,7 +86,7 @@
                                     ?>
                                             <tr>
                                                 <td><?php echo $member->loa_id ?></td>
-                                                <td><?php echo $member->first_name . ' ' . $member->middle_name . ' ' . $member->last_name ?></td>
+                                                <td><?php echo $member->last_name . ', ' . $member->first_name . ' ' . $member->middle_name ?></td>
                                                 <td><?php echo $member->loa_request_type ?></td>
                                                 <td>
                                                     <?php foreach ($member->med_services as $ct) :  ?>

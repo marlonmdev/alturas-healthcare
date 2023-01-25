@@ -10,7 +10,7 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item">Healthcare Provider</li>
             <li class="breadcrumb-item active" aria-current="page">
-            Approved LOA
+            Disapproved LOA
             </li>
         </ol>
         </nav>
@@ -36,7 +36,7 @@
                 </li>
                 <li class="nav-item">
                     <a
-                    class="nav-link active"
+                    class="nav-link"
                     href="<?php echo base_url(); ?>healthcare-provider/loa-request-list/loa-approved"
                     role="tab"
                     ><span class="hidden-sm-up"></span>
@@ -45,7 +45,7 @@
                 </li>
                 <li class="nav-item">
                     <a
-                    class="nav-link"
+                    class="nav-link active"
                     href="<?php echo base_url(); ?>healthcare-provider/loa-request-list/loa-disapproved"
                     role="tab"
                     ><span class="hidden-sm-up"></span>
@@ -67,7 +67,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="tbl-approved-loa" class="table table-striped">
+                        <table id="tbl-disapproved-loa" class="table table-striped">
                             <thead>
                                 <tr>
                                     <th>Req. No.</th>
@@ -82,36 +82,47 @@
                             </thead>
                             <tbody>
 
-                                <?php
+                            <?php
                                 if (!empty($members)) {
                                     foreach ($members as $member) :
                                 ?>
-                                        <tr>
-                                            <td><?php echo $member->loa_id ?></td>
-                                            <td><?php echo $member->first_name . ',' . $member->middle_name . ' ' . $member->last_name ?></td>
-                                            <td><?php echo $member->loa_request_type ?></td>
-                                            <td>
-                                                <?php foreach ($member->med_services as $ct) :  ?>
-                                                    <?php if (isset($ct[0])) { ?>
-                                                        <span class="badge rounded-pill bg-primary">
-                                                            <?php echo $ct[0]->cost_type ?></span>
-                                                    <?php } ?>
-                                                <?php endforeach ?>
-                                            </td>
-                                            <td> <?php if ($member->loa_request_type == 'Diagnostic Test') { ?>
-                                                    <a href="javascript:void(0)" onclick="viewImage('<?= base_url() . 'uploads/loa_attachments/' . $member->rx_file ?>')"><strong>View</strong></a>
+                                <tr>
+                                    <td><?php echo $member->loa_no ?></td>
+                                    <td>
+                                        <?php echo $member->last_name . ', ' . $member->first_name . ' ' . $member->middle_name ?>
+                                    </td>
+                                    <td><?php echo $member->loa_request_type ?></td>
+                                    <td>
 
-                                                <?php } else { ?>
-                                                    None
-                                                <?php } ?>
-                                            </td>
-                                            <td><?php echo $member->request_date ?></td>
-                                            <td><span class="badge rounded-pill bg-success"><?php echo $member->status ?></span></td>
-                                            <td><button class="btn btn-info"> <i class="bi alarm-fille"></i> View</button></td>
-                                        </tr>
+                                        <?php foreach ($member->med_services as $ct) :  ?>
+                                            <?php if (isset($ct[0])) { ?>
+                                                <span class="badge rounded-pill bg-primary">
+                                                    <?php echo $ct[0]->cost_type ?></span>
+                                            <?php } ?>
+                                        <?php endforeach ?>
+
+                                    </td>
+                                    <td>
+                                        <?php if ($member->loa_request_type == 'Diagnostic Test') { ?>
+                                            <a href="javascript:void(0)" onclick="viewImage('<?= base_url() . 'uploads/loa_attachments/' . $member->rx_file ?>')"><strong>View</strong></a>
+                                        <?php } else { ?>
+                                            None
+                                        <?php } ?>
+
+                                    </td>
+                                    <td><?php echo $member->request_date ?></td>
+                                    <td>
+                                        <span class="badge rounded-pill bg-warning"><?php echo $member->status ?></span>
+                                    </td>
+                                    <td>
+                                        <a href="javascript:void(0)">
+                                            <i class="mdi mdi-information fs-2 text-info" data-toggle="tooltip" title="Click to view details"></i>
+                                        </a>
+                                    </td>
+                                </tr>
                                 <?php
                                     endforeach;
-                                }
+                                    }
                                 ?>
 
                             </tbody>
@@ -126,7 +137,7 @@
 </div>
 <script>
     $(document).ready(function() {
-        $('#tbl-approved-loa').DataTable({
+        $('#tbl-disapproved-loa').DataTable({
             responsive: true
         });
 

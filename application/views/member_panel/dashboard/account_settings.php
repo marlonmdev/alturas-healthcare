@@ -116,7 +116,7 @@
                           <em class="text-danger" id="confirm-username-error"></em>
                         </div>
                         <button type="submit" class="btn btn-success me-1"><i class="mdi mdi-content-save-settings"></i> UPDATE</button>
-                        <button type="reset" class="btn btn-danger"><i class="mdi mdi-close-box"></i> RESET</button>
+                        <button type="reset" class="btn btn-danger"><i class="mdi mdi-refresh"></i> RESET</button>
                       </form>
                     </div>
                   </div>

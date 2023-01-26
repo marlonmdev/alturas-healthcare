@@ -28,7 +28,7 @@
                 <li class="nav-item">
                     <a
                     class="nav-link active"
-                    href="<?php echo base_url(); ?>healthcare-provider/noa-request-list/noa-pending"
+                    href="<?php echo base_url(); ?>healthcare-provider/noa-requests/pending"
                     role="tab"
                     ><span class="hidden-sm-up"></span>
                     <span class="hidden-xs-down fs-5 font-bold">Pending</span></a
@@ -37,7 +37,7 @@
                 <li class="nav-item">
                     <a
                     class="nav-link"
-                    href="<?php echo base_url(); ?>healthcare-provider/noa-request-list/noa-approved"
+                    href="<?php echo base_url(); ?>healthcare-provider/noa-requests/approved"
                     role="tab"
                     ><span class="hidden-sm-up"></span>
                     <span class="hidden-xs-down fs-5 font-bold">Approved</span></a
@@ -46,7 +46,7 @@
                 <li class="nav-item">
                     <a
                     class="nav-link"
-                    href="<?php echo base_url(); ?>healthcare-provider/noa-request-list/noa-disapproved"
+                    href="<?php echo base_url(); ?>healthcare-provider/noa-requests/disapproved"
                     role="tab"
                     ><span class="hidden-sm-up"></span>
                     <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
@@ -55,7 +55,7 @@
                     <li class="nav-item">
                     <a
                     class="nav-link"
-                    href="<?php echo base_url(); ?>healthcare-provider/noa-request-list/noa-closed"
+                    href="<?php echo base_url(); ?>healthcare-provider/noa-requests/closed"
                     role="tab"
                     ><span class="hidden-sm-up"></span>
                     <span class="hidden-xs-down fs-5 font-bold">Closed</span></a

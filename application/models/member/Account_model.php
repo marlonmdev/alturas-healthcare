@@ -4,7 +4,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Account_model extends CI_Model {
 
   function get_user_account_details($user_id) {
-    return $this->db->get_where('user_accounts', array('user_id =' => $user_id))->row_array();
+    $query = $this->db->get_where('user_accounts', array('user_id =' => $user_id));
+    return $query->row_array();
   }
 
   function db_update_user_account($user_id, $post_data) {
@@ -18,6 +19,7 @@ class Account_model extends CI_Model {
   }
 
   function db_get_user_details($emp_id) {
-    return $this->db->get_where('members', array('emp_id =' => $emp_id))->row_array();
+    $query = $this->db->get_where('members', array('emp_id =' => $emp_id));
+    return $query->row_array();
   }
 }

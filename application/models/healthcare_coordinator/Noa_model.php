@@ -6,14 +6,14 @@ class Noa_model extends CI_Model {
   // Start of server-side processing datatables
   var $table_1 = 'noa_requests';
   var $table_2 = 'healthcare_providers';
-  var $column_order = array('t1.noa_no', 't1.first_name', 't1.admission_date', 't2.hp_name', 't1.request_date', null, null); //set column field database for datatable orderable
-  var $column_search = array('t1.noa_no', 't1.first_name', 't1.middle_name', 't1.last_name', 't1.suffix', 't1.admission_date', 't2.hp_name', 't1.request_date'); //set column field database for datatable searchable 
-  var $order = array('t1.noa_id' => 'desc'); // default order 
+  var $column_order = array('tbl_1.noa_no', 'tbl_1.first_name', 'tbl_1.admission_date', 'tbl_2.hp_name', 'tbl_1.request_date', null, null); //set column field database for datatable orderable
+  var $column_search = array('tbl_1.noa_no', 'tbl_1.first_name', 'tbl_1.middle_name', 'tbl_1.last_name', 'tbl_1.suffix', 'tbl_1.admission_date', 'tbl_2.hp_name', 'tbl_1.request_date'); //set column field database for datatable searchable 
+  var $order = array('tbl_1.noa_id' => 'desc'); // default order 
 
   private function _get_datatables_query($status) {
-    $this->db->from($this->table_1 . ' as t1');
-    $this->db->join($this->table_2 . ' as t2', 't1.hospital_id = t2.hp_id');
-    $this->db->where('t1.status', $status);
+    $this->db->from($this->table_1 . ' as tbl_1');
+    $this->db->join($this->table_2 . ' as tbl_2', 'tbl_1.hospital_id = tbl_2.hp_id');
+    $this->db->where('tbl_1.status', $status);
     $i = 0;
     // loop column 
     foreach ($this->column_search as $item) {
@@ -65,7 +65,8 @@ class Noa_model extends CI_Model {
 
   function db_get_max_noa_id() {
     $this->db->select_max('noa_id');
-    return $this->db->get('noa_requests')->row_array();
+    $query = $this->db->get('noa_requests');
+    return $query->row_array();
   }
 
   function db_insert_noa_request($post_data) {
@@ -85,38 +86,38 @@ class Noa_model extends CI_Model {
 
   function db_get_all_pending_noa() {
     $this->db->select('*')
-             ->from('noa_requests as t1')
-             ->join('healthcare_providers as t2', 't1.hospital_id = t2.hp_id')
-             ->where('t1.status', 'Pending')
+             ->from('noa_requests as tbl_1')
+             ->join('healthcare_providers as tbl_2', 'tbl_1.hospital_id = tbl_2.hp_id')
+             ->where('tbl_1.status', 'Pending')
              ->order_by('noa_id', 'DESC');
     return $this->db->get()->result_array();
   }
 
   function db_get_all_approved_noa() {
     $this->db->select('*')
-             ->from('noa_requests as t1')
-             ->join('healthcare_providers as t2', 't1.hospital_id = t2.hp_id')
-             ->where('t1.status', 'Approved')
+             ->from('noa_requests as tbl_1')
+             ->join('healthcare_providers as tbl_2', 'tbl_1.hospital_id = tbl_2.hp_id')
+             ->where('tbl_1.status', 'Approved')
              ->order_by('noa_id', 'DESC');
     return $this->db->get()->result_array();
   }
 
   function db_get_all_disapproved_noa() {
     $this->db->select('*')
-             ->from('noa_requests as t1')
-             ->join('healthcare_providers as t2', 't1.hospital_id = t2.hp_id')
-             ->where('t1.status', 'Disapproved')
+             ->from('noa_requests as tbl_1')
+             ->join('healthcare_providers as tbl_2', 'tbl_1.hospital_id = tbl_2.hp_id')
+             ->where('tbl_1.status', 'Disapproved')
              ->order_by('noa_id', 'DESC');
     return $this->db->get()->result_array();
   }
 
   function db_get_noa_info($noa_id) {
     $this->db->select('*')
-             ->from('noa_requests as t1')
-             ->join('healthcare_providers as t2', 't1.hospital_id = t2.hp_id')
-             ->join('max_benefit_limits as t3', 't1.emp_id = t3.emp_id')
-             ->join('members as t4', 't1.emp_id = t4.emp_id')
-             ->where('t1.noa_id', $noa_id);
+             ->from('noa_requests as tbl_1')
+             ->join('healthcare_providers as tbl_2', 'tbl_1.hospital_id = tbl_2.hp_id')
+             ->join('max_benefit_limits as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id')
+             ->join('members as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id')
+             ->where('tbl_1.noa_id', $noa_id);
     return $this->db->get()->row_array();
   }
 

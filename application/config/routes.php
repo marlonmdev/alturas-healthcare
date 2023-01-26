@@ -111,15 +111,23 @@ $route['healthcare-provider/billing/billing-person/finalBilling']['post']  = 'he
 $route['healthcare-provider/billing/billing-person/finish']['post']  = 'healthcare_provider/Billing_controller/billing5Final';
 
 //Loa
+<<<<<<< HEAD
 $route['healthcare-provider/loa-request-list/loa-pending'] = 'healthcare_provider/Loa_controller/loaRequestListPending';
 $route['healthcare-provider/loa-request-list/loa-approved'] = 'healthcare_provider/Loa_controller/loaRequestListApproved';
 $route['healthcare-provider/loa-request-list/loa-closed'] = 'healthcare_provider/Loa_controller/loaRequestListClosed';
 $route['healthcare-provider/loa-request-list/loa-disapproved'] = 'healthcare_provider/Loa_controller/loaRequestListDisapproved';
+=======
+$route['healthcare-provider/loa-requests/pending'] = 'healthcare_provider/loa_controller/pending_loa_requests';
+$route['healthcare-provider/loa-requests/approved'] = 'healthcare_provider/loa_controller/approved_loa_requests';
+$route['healthcare-provider/loa-requests/disapproved'] = 'healthcare_provider/loa_controller/disapproved_loa_requests';
+$route['healthcare-provider/loa-requests/closed'] = 'healthcare_provider/loa_controller/closed_loa_requests';
+>>>>>>> d9aa76d53d1e1dc7631e8a1f21d74e7831a85bc1
 
 //Noa
-$route['healthcare-provider/noa-request-list/noa-pending'] = 'healthcare_provider/Noa_controller/noaRequestListPending';
-$route['healthcare-provider/noa-request-list/noa-approved'] = 'healthcare_provider/Noa_controller/noaRequestListApproved';
-$route['healthcare-provider/noa-request-list/noa-closed'] = 'healthcare_provider/Noa_controller/noaRequestListClosed';
+$route['healthcare-provider/noa-requests/pending'] = 'healthcare_provider/noa_controller/pending_noa_requests';
+$route['healthcare-provider/noa-requests/approved'] = 'healthcare_provider/noa_controller/approved_noa_requests';
+$route['healthcare-provider/noa-requests/disapproved'] = 'healthcare_provider/noa_controller/disapproved_noa_requests';
+$route['healthcare-provider/noa-requests/closed'] = 'healthcare_provider/noa_controller/closed_noa_requests';
 
 //Soa
 $route['healthcare-provider/soa/create-soa'] = 'healthcare_provider/Soa_controller/soaCreate';

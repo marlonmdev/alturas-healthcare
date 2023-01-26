@@ -13,6 +13,7 @@ class Search_model extends CI_Model {
     return $this->db->get_where('members')->result_array();
   }
 
+
   function db_get_member_details($member_id) {
     $query = $this->db->get_where('members', array('member_id' => $member_id));
     return $query->row_array();

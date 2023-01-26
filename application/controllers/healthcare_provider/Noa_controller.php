@@ -5,7 +5,7 @@ class Noa_controller extends CI_Controller {
 
     function __construct() {
 		parent::__construct();
-        $this->load->model('healthcare_provider/Noa_model');
+        $this->load->model('healthcare_provider/noa_model');
 		$user_role = $this->session->userdata('user_role');
 		$logged_in = $this->session->userdata('logged_in');
 		if ($logged_in !== true && $user_role !== 'healthcare-provider') {
@@ -13,12 +13,11 @@ class Noa_controller extends CI_Controller {
 		}
 	}
 
-    function NoaRequestListPending() {
+    function pending_noa_requests() {
         $this->security->get_csrf_hash();
         $data['user_role'] = $this->session->userdata('user_role');
-
-        $userHospital =  $this->session->userdata('dsg_hcare_prov');
-        $members = $this->Noa_model->noa_member_pending($userHospital);
+        $hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
+        $members = $this->noa_model->fetch_pending_noa_requests($hcare_provider_id);
 
         $this->load->view('templates/header', $data);
         $this->load->view('healthcare_provider_panel/noa/pending_noa_list', array('members' => $members));
@@ -26,15 +25,11 @@ class Noa_controller extends CI_Controller {
     }
 
 
-    function NoaRequestListApproved() {
+    function approved_noa_requests() {
         $this->security->get_csrf_hash();
         $data['user_role'] = $this->session->userdata('user_role');
-
-
-
-        $userHospital =  $this->session->userdata('dsg_hcare_prov');
-        $members = $this->Noa_model->noa_member_approved($userHospital);
-
+        $hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
+        $members = $this->noa_model->fetch_approved_noa_requests($hcare_provider_id);
 
         $this->load->view('templates/header', $data);
         $this->load->view('healthcare_provider_panel/noa/approved_noa_list', array('members' => $members));
@@ -42,12 +37,23 @@ class Noa_controller extends CI_Controller {
     }
 
 
-    function noaRequestListClosed() {
+     function disapproved_noa_requests() {
         $this->security->get_csrf_hash();
         $data['user_role'] = $this->session->userdata('user_role');
+        $hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
+        $members = $this->noa_model->fetch_disapproved_noa_requests($hcare_provider_id);
 
-        $userHospital =  $this->session->userdata('dsg_hcare_prov');
-        $members = $this->Noa_model->noa_member_closed($userHospital);
+        $this->load->view('templates/header', $data);
+        $this->load->view('healthcare_provider_panel/noa/disapproved_noa_list', array('members' => $members));
+        $this->load->view('templates/footer');
+    }
+
+
+    function closed_noa_requests() {
+        $this->security->get_csrf_hash();
+        $data['user_role'] = $this->session->userdata('user_role');
+        $hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
+        $members = $this->noa_model->fetch_closed_noa_requests($hcare_provider_id);
 
         $this->load->view('templates/header', $data);
         $this->load->view('healthcare_provider_panel/noa/closed_noa_list', array('members' => $members));

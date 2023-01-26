@@ -10,10 +10,10 @@ class Loa_model extends CI_Model {
   var $order = array('loa_id' => 'desc'); // default order 
 
   private function _get_datatables_query($status, $emp_id) {
-    $this->db->from($this->table . ' as t1');
-    $this->db->join('healthcare_providers as t2', 't1.hcare_provider = t2.hp_id');
-    $this->db->where('t1.status', $status);
-    $this->db->where('t1.emp_id', $emp_id);
+    $this->db->from($this->table . ' as tbl_1');
+    $this->db->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id');
+    $this->db->where('tbl_1.status', $status);
+    $this->db->where('tbl_1.emp_id', $emp_id);
     $i = 0;
     // loop column 
     foreach ($this->column_search as $item) {
@@ -57,16 +57,17 @@ class Loa_model extends CI_Model {
   }
 
   function count_all($status, $emp_id) {
-    $this->db->from($this->table);
-    $this->db->where('status', $status);
-    $this->db->where('emp_id', $emp_id);
+    $this->db->from($this->table)
+             ->where('status', $status)
+             ->where('emp_id', $emp_id);
     return $this->db->count_all_results();
   }
   // End of server-side processing datatables
 
   function db_get_max_loa_id() {
     $this->db->select_max('loa_id');
-    return $this->db->get('loa_requests')->row_array();
+    $query = $this->db->get('loa_requests');
+    return $query->row_array();
   }
 
   function db_insert_loa_request($post_data) {
@@ -95,41 +96,41 @@ class Loa_model extends CI_Model {
   }
 
   function db_get_pending_loa($emp_id) {
-    $this->db->select('t1.loa_id, t1.loa_no, t2.hp_name, t1.loa_request_type, t1.med_services, t1.rx_file, t1.request_date, t1.status')
-             ->from('loa_requests as t1')
-             ->join('healthcare_providers as t2', 't1.hcare_provider = t2.hp_id')
-             ->having('t1.status', 'Pending')
-             ->where('t1.emp_id', $emp_id)
+    $this->db->select('tbl_1.loa_id, tbl_1.loa_no, tbl_2.hp_name, tbl_1.loa_request_type, tbl_1.med_services, tbl_1.rx_file, tbl_1.request_date, tbl_1.status')
+             ->from('loa_requests as tbl_1')
+             ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
+             ->having('tbl_1.status', 'Pending')
+             ->where('tbl_1.emp_id', $emp_id)
              ->order_by('loa_id', 'DESC');
     return $this->db->get()->result_array();
   }
 
   function db_get_approved_loa($emp_id) {
-    $this->db->select('t1.loa_id, t1.loa_no, t2.hp_name, t1.loa_request_type, t1.med_services, t1.rx_file, t1.request_date, t1.status')
-             ->from('loa_requests as t1')
-             ->join('healthcare_providers as t2', 't1.hcare_provider = t2.hp_id')
-             ->where('t1.status', 'Approved')
+    $this->db->select('tbl_1.loa_id, tbl_1.loa_no, tbl_2.hp_name, tbl_1.loa_request_type, tbl_1.med_services, tbl_1.rx_file, tbl_1.request_date, tbl_1.status')
+             ->from('loa_requests as tbl_1')
+             ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
+             ->where('tbl_1.status', 'Approved')
              ->order_by('loa_id', 'DESC')
-             ->where('t1.emp_id', $emp_id);
+             ->where('tbl_1.emp_id', $emp_id);
     return $this->db->get()->result_array();
   }
 
   function db_get_disapproved_loa($emp_id) {
-    $this->db->select('t1.loa_id, t1.loa_no, t2.hp_name, t1.loa_request_type, t1.med_services, t1.rx_file, t1.request_date, t1.status')
-             ->from('loa_requests as t1')
-             ->join('healthcare_providers as t2', 't1.hcare_provider = t2.hp_id')
-             ->where('t1.status', 'Disapproved')
-             ->where('t1.emp_id', $emp_id);
+    $this->db->select('tbl_1.loa_id, tbl_1.loa_no, tbl_2.hp_name, tbl_1.loa_request_type, tbl_1.med_services, tbl_1.rx_file, tbl_1.request_date, tbl_1.status')
+             ->from('loa_requests as tbl_1')
+             ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
+             ->where('tbl_1.status', 'Disapproved')
+             ->where('tbl_1.emp_id', $emp_id);
     $this->db->order_by('loa_id', 'DESC');
     return $this->db->get()->result_array();
   }
 
   function db_get_loa_info($loa_id) {
     $this->db->select('*')
-             ->from('loa_requests as t1')
-             ->join('members as t2', 't1.emp_id = t2.emp_id')
-             ->join('healthcare_providers as t3', 't1.hcare_provider = t3.hp_id')
-             ->where('t1.loa_id', $loa_id);
+             ->from('loa_requests as tbl_1')
+             ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+             ->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id')
+             ->where('tbl_1.loa_id', $loa_id);
     return $this->db->get()->row_array();
   }
 
@@ -150,7 +151,8 @@ class Loa_model extends CI_Model {
 
   function get_hospital_name($hospital_id) {
     $this->db->where('hospital_id', $hospital_id);
-    return $this->db->get('affiliate_hospitals')->row_array();
+    $query = $this->db->get('affiliate_hospitals');
+    return $query->row_array();
   }
 
   function db_check_healthcare_provider_exist($hp_id) {
@@ -160,14 +162,14 @@ class Loa_model extends CI_Model {
   }
 
   function db_get_loa_attach_filename($loa_id) {
-    $this->db->select('loa_id, rx_file');
-    $this->db->where('loa_id', $loa_id);
+    $this->db->select('loa_id, rx_file')
+             ->where('loa_id', $loa_id);
     return $this->db->get('loa_requests')->row_array();
   }
 
   function db_cancel_loa($loa_id) {
-    $this->db->where('loa_id', $loa_id);
-    $this->db->delete('loa_requests');
+    $this->db->where('loa_id', $loa_id)
+             ->delete('loa_requests');
     return $this->db->affected_rows() > 0 ? true : false;
   }
 

@@ -27,7 +27,7 @@
                     <li class="nav-item">
                         <a
                         class="nav-link"
-                        href="<?php echo base_url(); ?>healthcare-provider/loa-request-list/loa-pending"
+                        href="<?php echo base_url(); ?>healthcare-provider/loa-requests/pending"
                         role="tab"
                         ><span class="hidden-sm-up"></span>
                         <span class="hidden-xs-down fs-5 font-bold">Pending</span></a
@@ -36,7 +36,7 @@
                     <li class="nav-item">
                         <a
                         class="nav-link"
-                        href="<?php echo base_url(); ?>healthcare-provider/loa-request-list/loa-approved"
+                        href="<?php echo base_url(); ?>healthcare-provider/loa-requests/approved"
                         role="tab"
                         ><span class="hidden-sm-up"></span>
                         <span class="hidden-xs-down fs-5 font-bold">Approved</span></a
@@ -45,7 +45,7 @@
                     <li class="nav-item">
                         <a
                         class="nav-link"
-                        href="<?php echo base_url(); ?>healthcare-provider/loa-request-list/loa-disapproved"
+                        href="<?php echo base_url(); ?>healthcare-provider/loa-requests/disapproved"
                         role="tab"
                         ><span class="hidden-sm-up"></span>
                         <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
@@ -54,7 +54,7 @@
                         <li class="nav-item">
                         <a
                         class="nav-link active"
-                        href="<?php echo base_url(); ?>healthcare-provider/loa-request-list/loa-closed"
+                        href="<?php echo base_url(); ?>healthcare-provider/loa-requests/closed"
                         role="tab"
                         ><span class="hidden-sm-up"></span>
                         <span class="hidden-xs-down fs-5 font-bold">Closed</span></a

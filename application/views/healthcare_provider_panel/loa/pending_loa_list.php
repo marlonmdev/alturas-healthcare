@@ -28,7 +28,7 @@
                 <li class="nav-item">
                     <a
                     class="nav-link active"
-                    href="<?php echo base_url(); ?>healthcare-provider/loa-request-list/loa-pending"
+                    href="<?php echo base_url(); ?>healthcare-provider/loa-requests/pending"
                     role="tab"
                     ><span class="hidden-sm-up"></span>
                     <span class="hidden-xs-down fs-5 font-bold">Pending</span></a
@@ -37,7 +37,7 @@
                 <li class="nav-item">
                     <a
                     class="nav-link"
-                    href="<?php echo base_url(); ?>healthcare-provider/loa-request-list/loa-approved"
+                    href="<?php echo base_url(); ?>healthcare-provider/loa-requests/approved"
                     role="tab"
                     ><span class="hidden-sm-up"></span>
                     <span class="hidden-xs-down fs-5 font-bold">Approved</span></a
@@ -46,7 +46,7 @@
                 <li class="nav-item">
                     <a
                     class="nav-link"
-                    href="<?php echo base_url(); ?>healthcare-provider/loa-request-list/loa-disapproved"
+                    href="<?php echo base_url(); ?>healthcare-provider/loa-requests/disapproved"
                     role="tab"
                     ><span class="hidden-sm-up"></span>
                     <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
@@ -55,7 +55,7 @@
                     <li class="nav-item">
                     <a
                     class="nav-link"
-                    href="<?php echo base_url(); ?>healthcare-provider/loa-request-list/loa-closed"
+                    href="<?php echo base_url(); ?>healthcare-provider/loa-requests/closed"
                     role="tab"
                     ><span class="hidden-sm-up"></span>
                     <span class="hidden-xs-down fs-5 font-bold">Closed</span></a
@@ -87,11 +87,11 @@
                                     foreach ($members as $member) :
                                 ?>
                                 <tr>
-                                    <td><?php echo $member->loa_no ?></td>
+                                    <td><?= $member->loa_no ?></td>
                                     <td>
-                                        <?php echo $member->last_name . ', ' . $member->first_name . ' ' . $member->middle_name ?>
+                                        <?= $member->last_name . ', ' . $member->first_name . ' ' . $member->middle_name ?>
                                     </td>
-                                    <td><?php echo $member->loa_request_type ?></td>
+                                    <td><?= $member->loa_request_type ?></td>
                                     <td>
 
                                         <?php foreach ($member->med_services as $ct) :  ?>
@@ -110,9 +110,9 @@
                                         <?php } ?>
 
                                     </td>
-                                    <td><?php echo $member->request_date ?></td>
+                                    <td><?= $member->request_date ?></td>
                                     <td>
-                                        <span class="badge rounded-pill bg-warning"><?php echo $member->status ?></span>
+                                        <span class="badge rounded-pill bg-warning"><?= $member->status ?></span>
                                     </td>
                                     <td>
                                         <?php $loa_id = $this->myhash->hasher($member->loa_id, 'encrypt'); ?>

@@ -126,34 +126,4 @@ class Loa_controller extends CI_Controller {
         $this->load->view('templates/footer');
     }
 
-<<<<<<< HEAD
-
-    function loaRequestListDisapproved() {
-        $this->security->get_csrf_hash();
-        $data['user_role'] = $this->session->userdata('user_role');
-
-        $userHospital =  $this->session->userdata('dsg_hcare_prov');
-        $members = $this->loa_model->loa_member_disapproved($userHospital);
-        $payLoadData = array();
-
-        foreach ($members as $member) :
-            $payLoadMedService = array();
-            $expodedMedServices = explode(";", $member->med_services);
-
-            foreach ($expodedMedServices as $extractMedServicesId) :
-
-                $resultMedServices = $this->loa_model->get_cost_type($extractMedServicesId);
-                array_push($payLoadMedService, $resultMedServices);
-            endforeach;
-
-            $member->med_services = $payLoadMedService;
-            array_push($payLoadData, $member);
-        endforeach;
-
-        $this->load->view('templates/header', $data);
-        $this->load->view('healthcare_provider_panel/loa/disapproved_loa_list',  array('members' => $payLoadData));
-        $this->load->view('templates/footer');
-    }
-=======
->>>>>>> d9aa76d53d1e1dc7631e8a1f21d74e7831a85bc1
 }

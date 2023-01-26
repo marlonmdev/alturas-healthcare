@@ -105,7 +105,7 @@ class Loa_controller extends CI_Controller {
         $data['user_role'] = $this->session->userdata('user_role');
 
         $userHospital =  $this->session->userdata('dsg_hcare_prov');
-        $members = $this->Loa_model->loa_member_disapproved($userHospital);
+        $members = $this->loa_model->loa_member_disapproved($userHospital);
         $payLoadData = array();
 
         foreach ($members as $member) :
@@ -114,7 +114,7 @@ class Loa_controller extends CI_Controller {
 
             foreach ($expodedMedServices as $extractMedServicesId) :
 
-                $resultMedServices = $this->Loa_model->get_cost_type($extractMedServicesId);
+                $resultMedServices = $this->loa_model->get_cost_type($extractMedServicesId);
                 array_push($payLoadMedService, $resultMedServices);
             endforeach;
 

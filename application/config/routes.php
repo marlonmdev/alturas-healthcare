@@ -114,11 +114,7 @@ $route['healthcare-provider/billing/billing-person/finish']['post']  = 'healthca
 $route['healthcare-provider/loa-request-list/loa-pending'] = 'healthcare_provider/Loa_controller/loaRequestListPending';
 $route['healthcare-provider/loa-request-list/loa-approved'] = 'healthcare_provider/Loa_controller/loaRequestListApproved';
 $route['healthcare-provider/loa-request-list/loa-closed'] = 'healthcare_provider/Loa_controller/loaRequestListClosed';
-<<<<<<< HEAD
 $route['healthcare-provider/loa-request-list/loa-disapproved'] = 'healthcare_provider/Loa_controller/loaRequestListDisapproved';
-=======
-$route['healthcare-provider/loa/pending/view/(:any)'] = 'healthcare_provider/loa_controller/get_loa_info';
->>>>>>> 3704ddd1c23a4f83a33d0b34e341125ba87608d5
 
 //Noa
 $route['healthcare-provider/noa-request-list/noa-pending'] = 'healthcare_provider/Noa_controller/noaRequestListPending';

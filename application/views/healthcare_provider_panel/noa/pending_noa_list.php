@@ -86,7 +86,7 @@
                                 ?>
                                         <tr>
                                             <td><?php echo $member->noa_id ?></td>
-                                            <td><?php echo $member->first_name . ' ' . $member->middle_name . ' ' . $member->last_name ?></td>
+                                            <td><?php echo $member->last_name . ', ' . $member->first_name . ' ' . $member->middle_name?></td>
                                             <td><?php echo $member->hp_name ?></td>
                                             <td><?php echo $member->admission_date ?></td>
                                             <td><?php echo $member->request_date ?></td>

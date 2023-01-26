@@ -41,7 +41,7 @@
                                 <div class="col-md-7 px-4 py-4">
                                     <div class="text-center" v-if="isSubmit">
                                         <em class="text-danger">
-                                            His MBL has been exceeded, the <h4>{{ Number(exceedingBalance).toLocaleString('en-US', {
+                                            His MBL has been exceeded! The <h4>{{ Number(exceedingBalance).toLocaleString('en-US', {
                                             style: 'currency',
                                             currency: 'PHP',
                                             })}}</h4> exceeding balance will be added to his personal charges.

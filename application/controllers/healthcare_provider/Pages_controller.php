@@ -5,6 +5,8 @@ class Pages_controller extends CI_Controller {
 
 	function __construct() {
 		parent::__construct();
+		$this->load->model('healthcare_provider/count_model');
+		$this->load->model('healthcare_provider/hospital_model');
 		$user_role = $this->session->userdata('user_role');
 		$logged_in = $this->session->userdata('logged_in');
 		if ($logged_in !== true && $user_role !== 'healthcare-provider') {
@@ -13,9 +15,10 @@ class Pages_controller extends CI_Controller {
 	}
 
 	function index() {
-		$this->load->model('healthcare_provider/count_model');
 		$hp_id = $this->session->userdata('dsg_hcare_prov');
 		$data['user_role'] = $this->session->userdata('user_role');
+		$row = $this->hospital_model->get_hcare_provider($hp_id);
+		$data['hp_name'] = $row['hp_name'];
 		$data['loa_count'] = $this->count_model->hp_approved_loa_count($hp_id);
 		$data['noa_count'] = $this->count_model->hp_approved_noa_count($hp_id);
 		$data['bllled_count'] = $this->count_model->hp_done_billing_count($hp_id);

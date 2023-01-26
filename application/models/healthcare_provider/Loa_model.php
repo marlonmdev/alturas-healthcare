@@ -3,38 +3,38 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Loa_model extends CI_Model{
 
-    function loa_member_pending($id){
+    function fetch_pending_loa_requests($hp_id){
         $this->db->select('*')
                  ->from('loa_requests as tbl_1')
                  ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
-                 ->where('tbl_1.hcare_provider', $id)
+                 ->where('tbl_1.hcare_provider', $hp_id)
                  ->where('tbl_1.status', 'Pending');
         $query = $this->db->get();
         return $query->result();
     }
 
-    function loa_member_approved($id){
+    function fetch_approved_loa_requests($hp_id){
         $this->db->select('*')
                  ->from('loa_requests')
-                 ->where('hcare_provider', $id)
+                 ->where('hcare_provider', $hp_id)
                  ->where('status', 'Approved');
         $query = $this->db->get();
         return $query->result();
     }
 
-    function loa_member_disapproved($id){
+    function fetch_disapproved_loa_requests($hp_id){
         $this->db->select('*')
                  ->from('loa_requests')
-                 ->where('hcare_provider', $id)
+                 ->where('hcare_provider', $hp_id)
                  ->where('status', 'Disapproved');
         $query = $this->db->get();
         return $query->result();
     }
 
-    function loa_member_closed($id){
+    function fetch_closed_loa_requests($hp_id){
         $this->db->select('*')
                  ->from('loa_requests')
-                 ->where('hcare_provider', $id)
+                 ->where('hcare_provider', $hp_id)
                  ->where('status', 'Closed');
         $query = $this->db->get();
         return $query->result();

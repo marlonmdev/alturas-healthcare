@@ -28,7 +28,7 @@
                 <li class="nav-item">
                     <a
                     class="nav-link"
-                    href="<?php echo base_url(); ?>healthcare-provider/noa-request-list/noa-pending"
+                    href="<?php echo base_url(); ?>healthcare-provider/noa-requests/pending"
                     role="tab"
                     ><span class="hidden-sm-up"></span>
                     <span class="hidden-xs-down fs-5 font-bold">Pending</span></a
@@ -37,7 +37,7 @@
                 <li class="nav-item">
                     <a
                     class="nav-link"
-                    href="<?php echo base_url(); ?>healthcare-provider/noa-request-list/noa-approved"
+                    href="<?php echo base_url(); ?>healthcare-provider/noa-requests/approved"
                     role="tab"
                     ><span class="hidden-sm-up"></span>
                     <span class="hidden-xs-down fs-5 font-bold">Approved</span></a
@@ -46,7 +46,7 @@
                 <li class="nav-item">
                     <a
                     class="nav-link"
-                    href="<?php echo base_url(); ?>healthcare-provider/noa-request-list/noa-disapproved"
+                    href="<?php echo base_url(); ?>healthcare-provider/noa-requests/disapproved"
                     role="tab"
                     ><span class="hidden-sm-up"></span>
                     <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
@@ -55,7 +55,7 @@
                     <li class="nav-item">
                     <a
                     class="nav-link active"
-                    href="<?php echo base_url(); ?>healthcare-provider/noa-request-list/noa-closed"
+                    href="<?php echo base_url(); ?>healthcare-provider/noa-requests/closed"
                     role="tab"
                     ><span class="hidden-sm-up"></span>
                     <span class="hidden-xs-down fs-5 font-bold">Closed</span></a
@@ -85,12 +85,18 @@
                                     foreach ($members as $member) :
                                 ?>
                                         <tr>
-                                            <td><?php echo $member->noa_id ?></td>
-                                            <td><?php echo $member->first_name . ' ' . $member->middle_name . ' ' . $member->last_name ?></td>
-                                            <td><?php echo $member->hp_name ?></td>
-                                            <td><?php echo $member->admission_date ?></td>
-                                            <td><?php echo $member->request_date ?></td>
-                                            <td><span class="badge rounded-pill bg-primary"><?php echo $member->status ?></span></td>
+                                            <td><?= $member->noa_id ?></td>
+                                            <td>
+                                                <?= $member->first_name . ' ' . $member->middle_name . ' ' . $member->last_name ?>
+                                            </td>
+                                            <td><?= $member->hp_name ?></td>
+                                            <td><?= $member->admission_date ?></td>
+                                            <td><?= $member->request_date ?></td>
+                                            <td>
+                                                <span class="badge rounded-pill bg-primary">
+                                                    <?= $member->status ?>
+                                                </span>
+                                            </td>
                                             <td>
                                                 <a href="javascript:void(0)">
                                                     <i class="mdi mdi-information fs-2 text-info" data-toggle="tooltip" title="Click to view details"></i>
@@ -114,6 +120,5 @@
         $('#tbl-closed-noa').DataTable({
             responsive: true
         });
-
     });
 </script>

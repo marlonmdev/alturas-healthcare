@@ -20,20 +20,24 @@
                 </a>
               </li>
 
-               <li class="sidebar-item">
+               <li class="sidebar-item
+                <?php echo $this->uri->segment(2) == "loa-requests" ? "selected" : ""; ?>
+               ">
                 <a
                   class="sidebar-link"
-                  href="<?php echo base_url(); ?>healthcare-provider/loa-request-list/loa-pending"
+                  href="<?php echo base_url(); ?>healthcare-provider/loa-requests/pending"
                   aria-expanded="false"
                   ><i class="mdi mdi-file-document"></i
                   ><span class="hide-menu">LOA</span>
                 </a>
               </li>
 
-               <li class="sidebar-item">
+               <li class="sidebar-item
+                <?php echo $this->uri->segment(2) == "noa-requests" ? "selected" : ""; ?>
+               ">
                 <a
                   class="sidebar-link"
-                  href="<?php echo base_url(); ?>healthcare-provider/noa-request-list/noa-pending"
+                  href="<?php echo base_url(); ?>healthcare-provider/noa-requests/pending"
                   aria-expanded="false"
                   ><i class="mdi mdi-file-chart"></i
                   ><span class="hide-menu">NOA</span>

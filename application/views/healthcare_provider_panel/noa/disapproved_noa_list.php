@@ -10,7 +10,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">Healthcare Provider</li>
                     <li class="breadcrumb-item active" aria-current="page">
-                    Pending NOA
+                    Disapproved NOA
                     </li>
                 </ol>
                 </nav>
@@ -27,7 +27,7 @@
                 <ul class="nav nav-tabs mb-4" role="tablist">
                 <li class="nav-item">
                     <a
-                    class="nav-link active"
+                    class="nav-link"
                     href="<?php echo base_url(); ?>healthcare-provider/noa-requests/pending"
                     role="tab"
                     ><span class="hidden-sm-up"></span>
@@ -45,7 +45,7 @@
                 </li>
                 <li class="nav-item">
                     <a
-                    class="nav-link"
+                    class="nav-link active"
                     href="<?php echo base_url(); ?>healthcare-provider/noa-requests/disapproved"
                     role="tab"
                     ><span class="hidden-sm-up"></span>
@@ -67,10 +67,10 @@
              <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">  
-                        <table id="tbl-pending-noa" class="table table-striped" style="width:100%">
+                        <table id="tbl-approved-noa" class="table table-striped" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>Req. No.</th>
+                                    <th>#</th>
                                     <th>Name</th>
                                     <th>Hosptial Name</th>
                                     <th>Admission Date</th>
@@ -80,17 +80,24 @@
                                 </tr>
                             </thead>
                             <tbody>
+
                                 <?php
                                 if (!empty($members)) {
                                     foreach ($members as $member) :
                                 ?>
                                         <tr>
-                                            <td><?php echo $member->noa_id ?></td>
-                                            <td><?php echo $member->first_name . ' ' . $member->middle_name . ' ' . $member->last_name ?></td>
-                                            <td><?php echo $member->hp_name ?></td>
-                                            <td><?php echo $member->admission_date ?></td>
-                                            <td><?php echo $member->request_date ?></td>
-                                            <td><span class="badge rounded-pill bg-warning"><?php echo $member->status ?></span></td>
+                                            <td><?= $member->noa_id ?></td>
+                                            <td>
+                                                <?= $member->first_name . ' ' . $member->middle_name . ' ' . $member->last_name ?>
+                                            </td>
+                                            <td><?= $member->hp_name ?></td>
+                                            <td><?= $member->admission_date ?></td>
+                                            <td><?= $member->request_date ?></td>
+                                            <td>
+                                                <span class="badge rounded-pill bg-success">
+                                                    <?= $member->status ?>
+                                                </span>
+                                            </td>
                                             <td>
                                                 <a href="javascript:void(0)">
                                                     <i class="mdi mdi-information fs-2 text-info" data-toggle="tooltip" title="Click to view details"></i>
@@ -103,17 +110,18 @@
                                 ?>
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
-            </div>               
+            
+            </div>
         </div>
     </div>
 </div>
 <script>
     $(document).ready(function() {
-        $('#tbl-pending-noa').DataTable({
+        $('#tbl-approved-noa').DataTable({
             responsive: true
         });
-
     });
 </script>

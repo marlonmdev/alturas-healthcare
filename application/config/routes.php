@@ -111,17 +111,10 @@ $route['healthcare-provider/billing/billing-person/finalBilling']['post']  = 'he
 $route['healthcare-provider/billing/billing-person/finish']['post']  = 'healthcare_provider/Billing_controller/billing5Final';
 
 //Loa
-<<<<<<< HEAD
-$route['healthcare-provider/loa-request-list/loa-pending'] = 'healthcare_provider/Loa_controller/loaRequestListPending';
-$route['healthcare-provider/loa-request-list/loa-approved'] = 'healthcare_provider/Loa_controller/loaRequestListApproved';
-$route['healthcare-provider/loa-request-list/loa-closed'] = 'healthcare_provider/Loa_controller/loaRequestListClosed';
-$route['healthcare-provider/loa-request-list/loa-disapproved'] = 'healthcare_provider/Loa_controller/loaRequestListDisapproved';
-=======
-$route['healthcare-provider/loa-requests/pending'] = 'healthcare_provider/loa_controller/pending_loa_requests';
-$route['healthcare-provider/loa-requests/approved'] = 'healthcare_provider/loa_controller/approved_loa_requests';
-$route['healthcare-provider/loa-requests/disapproved'] = 'healthcare_provider/loa_controller/disapproved_loa_requests';
-$route['healthcare-provider/loa-requests/closed'] = 'healthcare_provider/loa_controller/closed_loa_requests';
->>>>>>> d9aa76d53d1e1dc7631e8a1f21d74e7831a85bc1
+$route['healthcare-provider/loa-requests/pending'] = 'healthcare_provider/Loa_controller/pending_loa_requests';
+$route['healthcare-provider/loa-requests/approved'] = 'healthcare_provider/Loa_controller/approved_loa_requests';
+$route['healthcare-provider/loa-requests/disapproved'] = 'healthcare_provider/Loa_controller/disapproved_loa_requests';
+$route['healthcare-provider/loa-requests/closed'] = 'healthcare_provider/Loa_controller/closed_loa_requests';
 
 //Noa
 $route['healthcare-provider/noa-requests/pending'] = 'healthcare_provider/noa_controller/pending_noa_requests';

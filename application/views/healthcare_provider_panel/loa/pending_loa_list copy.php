@@ -81,6 +81,50 @@
                                 </tr>
                             </thead>
                             <tbody>
+
+                                <?php
+                                if (!empty($members)) {
+                                    foreach ($members as $member) :
+                                ?>
+                                <tr>
+                                    <td><?= $member->loa_no ?></td>
+                                    <td>
+                                        <?= $member->last_name . ', ' . $member->first_name . ' ' . $member->middle_name ?>
+                                    </td>
+                                    <td><?= $member->loa_request_type ?></td>
+                                    <td>
+
+                                        <?php foreach ($member->med_services as $ct) :  ?>
+                                            <?php if (isset($ct[0])) { ?>
+                                                <span class="badge rounded-pill bg-primary">
+                                                    <?php echo $ct[0]->cost_type ?></span>
+                                            <?php } ?>
+                                        <?php endforeach ?>
+
+                                    </td>
+                                    <td>
+                                        <?php if ($member->loa_request_type == 'Diagnostic Test') { ?>
+                                            <a href="javascript:void(0)" onclick="viewImage('<?= base_url() . 'uploads/loa_attachments/' . $member->rx_file ?>')"><strong>View</strong></a>
+                                        <?php } else { ?>
+                                            None
+                                        <?php } ?>
+
+                                    </td>
+                                    <td><?= $member->request_date ?></td>
+                                    <td>
+                                        <span class="badge rounded-pill bg-warning"><?= $member->status ?></span>
+                                    </td>
+                                    <td>
+                                        <?php $loa_id = $this->myhash->hasher($member->loa_id, 'encrypt'); ?>
+                                        <a href="javascript:void(0)" onclick="viewLoaInfo(`<?= $loa_id ?>`)">
+                                            <i class="mdi mdi-information fs-2 text-info" data-toggle="tooltip" title="Click to view details"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <?php
+                                    endforeach;
+                                    }
+                                ?>
                             </tbody>
                         </table>
                     </div>
@@ -91,6 +135,12 @@
 </div>
 <script>
     const baseUrl = `<?php echo base_url(); ?>`;
+    // $(document).ready(function() {
+    //     $('#tbl-pending-loa').DataTable({
+    //         responsive: true
+    //     });
+    // });
+
     $(document).ready(function() {
 
         $('#pendingLoaTable').DataTable({
@@ -121,7 +171,7 @@
 
     function viewLoaInfo(loa_id) {
         $.ajax({
-        url: `${baseUrl}healthcare-provider/loa-requests/pending/view/${loa_id}`,
+        url: `${baseUrl}healthcare-provider/loa/pending/view/${loa_id}`,
         type: "GET",
         success: function(response) {
             const res = JSON.parse(response);

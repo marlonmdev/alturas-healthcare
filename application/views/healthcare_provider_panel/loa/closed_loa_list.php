@@ -65,7 +65,8 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="example" class="table table-striped" style="width:100%">
+                            <?php include 'view_closed_loa_details.php'; ?>
+                            <table id="closedLoaTable" class="table table-striped">
                                 <thead>
                                     <tr>
                                         <th>#</th>
@@ -73,50 +74,13 @@
                                         <th>LOA Type</th>
                                         <th>Service Type</th>
                                         <th>RX File</th>
-                                        <th>Req. Date</th>
+                                        <th>Request Date</th>
                                         <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-
-                                    <?php
-                                    if (!empty($members)) {
-                                        foreach ($members as $member) :
-                                    ?>
-                                            <tr>
-                                                <td><?php echo $member->loa_id ?></td>
-                                                <td><?php echo $member->last_name . ', ' . $member->first_name . ' ' . $member->middle_name ?></td>
-                                                <td><?php echo $member->loa_request_type ?></td>
-                                                <td>
-                                                    <?php foreach ($member->med_services as $ct) :  ?>
-                                                        <?php if (isset($ct[0])) { ?>
-                                                            <span class="badge rounded-pill bg-primary">
-                                                                <?php echo $ct[0]->cost_type ?></span>
-                                                        <?php } ?>
-                                                    <?php endforeach ?>
-                                                </td>
-                                                <td> <?php if ($member->loa_request_type == 'Diagnostic Test') { ?>
-                                                        <a href="javascript:void(0)" onclick="viewImage('<?= base_url() . 'uploads/loa_attachments/' . $member->rx_file ?>')"><strong>View</strong></a>
-                                                    <?php } else { ?>
-                                                        None
-                                                    <?php } ?>
-                                                </td>
-                                                <td><?php echo $member->request_date ?></td>
-                                                <td><span class="badge rounded-pill bg-primary"><?php echo $member->status ?></span></td>
-                                                <td>
-                                                    <a href="javascript:void(0)" data-bs-toggle="tooltip" title="Clickt to view details">
-                                                        <i class="mdi mdi-information text-info fs-2"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                    <?php
-                                        endforeach;
-                                    }
-                                    ?>
-
                                 </tbody>
-
                             </table>
                         </div>
                     </div>
@@ -126,12 +90,127 @@
     </div>
 </div>
 <script>
+    const baseUrl = `<?php echo base_url(); ?>`;
     $(document).ready(function() {
-        $('#example').DataTable({
-            responsive: true
+
+        $('#closedLoaTable').DataTable({
+            processing: true, //Feature control the processing indicator.
+            serverSide: true, //Feature control DataTables' server-side processing mode.
+            order: [], //Initial no order.
+
+            // Load data for the table's content from an Ajax source
+            ajax: {
+                url: `${baseUrl}healthcare-provider/loa-requests/closed/fetch`,
+                type: "POST",
+                // passing the token as data so that requests will be allowed
+                data: {
+                'token': '<?php echo $this->security->get_csrf_hash(); ?>'
+                }
+            },
+
+            //Set column definition initialisation properties.
+            columnDefs: [{
+                "targets": [3, 4, 6, 7], // numbering column
+                "orderable": false, //set not orderable
+            }, ],
+            responsive: true,
+            fixedHeader: true,
         });
 
     });
+
+     function viewLoaInfo(req_id) {
+    $.ajax({
+      url: `${baseUrl}healthcare-provider/loa-requests/closed/view/${req_id}`,
+      type: "GET",
+      success: function(response) {
+        const res = JSON.parse(response);
+        const base_url = window.location.origin;
+        const {
+          status,
+          token,
+          loa_no,
+          member_mbl,
+          remaining_mbl,
+          first_name,
+          middle_name,
+          last_name,
+          suffix,
+          date_of_birth,
+          age,
+          gender,
+          philhealth_no,
+          blood_type,
+          contact_no,
+          home_address,
+          city_address,
+          email,
+          contact_person,
+          contact_person_addr,
+          contact_person_no,
+          healthcare_provider,
+          loa_request_type,
+          med_services,
+          health_card_no,
+          requesting_company,
+          request_date,
+          chief_complaint,
+          requesting_physician,
+          attending_physician,
+          rx_file,
+          req_status,
+          approved_by,
+          approved_on
+        } = res;
+
+        $("#viewLoaModal").modal("show");
+
+        switch (req_status) {
+          case 'Pending':
+            $('#loa-status').html(`<strong class="text-warning">[${req_status}]</strong>`);
+            break;
+          case 'Approved':
+            $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
+            break;
+          case 'Disapproved':
+            $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
+            break;
+          case 'Closed':
+            $('#loa-status').html(`<strong class="text-info">[${req_status}]</strong>`);
+            break;
+        }
+        const med_serv = med_services !== '' ? med_services : 'None';
+        const at_physician = attending_physician !== '' ? attending_physician : 'None';
+        $('#loa-no').html(loa_no);
+        $('#approved-by').html(approved_by);
+        $('#approved-on').html(approved_on);
+        $('#member-mbl').html(member_mbl);
+        $('#remaining-mbl').html(remaining_mbl);
+        $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
+        $('#date-of-birth').html(date_of_birth);
+        $('#age').html(age);
+        $('#gender').html(gender);
+        $('#philhealth-no').html(philhealth_no);
+        $('#blood-type').html(blood_type);
+        $('#contact-no').html(contact_no);
+        $('#home-address').html(home_address);
+        $('#city-address').html(city_address);
+        $('#email').html(email);
+        $('#contact-person').html(contact_person);
+        $('#contact-person-addr').html(contact_person_addr);
+        $('#contact-person-no').html(contact_person_no);
+        $('#healthcare-provider').html(healthcare_provider);
+        $('#loa-request-type').html(loa_request_type);
+        $('#loa-med-services').html(med_serv);
+        $('#health-card-no').html(health_card_no);
+        $('#requesting-company').html(requesting_company);
+        $('#request-date').html(request_date);
+        $('#chief-complaint').html(chief_complaint);
+        $('#requesting-physician').html(requesting_physician);
+        $('#attending-physician').html(at_physician);
+      }
+    });
+  }
 
     function viewImage(path) {
         let item = [{

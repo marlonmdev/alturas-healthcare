@@ -27,20 +27,34 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
-	private function _hash_string($str) {
-		$hashed_string = password_hash($str, PASSWORD_BCRYPT, array('cost' => 12));
-		return $hashed_string;
+	function pending_loa_requests() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_provider_panel/loa/pending_loa_list');
+		$this->load->view('templates/footer');
 	}
 
-	function image_resize($path, $file) {
-		$config_resize = array();
-		$config_resize['image_library'] = 'gd2';
-		$config_resize['source_image'] = $path;
-		$config_resize['maintain_ratio'] = TRUE;
-		$config_resize['width'] = '225';
-		$config_resize['height'] = '215';
-		$config_resize['new_image'] = './users/thumbs/' . $file;
-		$this->load->library('image_lib', $config_resize);
-		$this->image_lib->resize();
+	function approved_loa_requests() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_provider_panel/loa/approved_loa_list');
+		$this->load->view('templates/footer');
 	}
+
+	function disapproved_loa_requests() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_provider_panel/loa/disapproved_loa_list');
+		$this->load->view('templates/footer');
+	}
+
+	function closed_loa_requests() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_provider_panel/loa/closed_loa_list');
+		$this->load->view('templates/footer');
+	}
+
+
+
 }

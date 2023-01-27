@@ -82,7 +82,7 @@
                             <tbody>
 
                                 <?php
-                                if (!empty($members)) {
+                                if (!empty($members)) :
                                     foreach ($members as $member) :
                                 ?>
                                         <tr>
@@ -106,7 +106,7 @@
                                         </tr>
                                 <?php
                                     endforeach;
-                                }
+                                endif;
                                 ?>
                             </tbody>
                         </table>

@@ -23,43 +23,42 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
-
                 <ul class="nav nav-tabs mb-4" role="tablist">
                 <li class="nav-item">
                     <a
                     class="nav-link"
                     href="<?php echo base_url(); ?>healthcare-provider/noa-requests/pending"
-                    role="tab"
-                    ><span class="hidden-sm-up"></span>
-                    <span class="hidden-xs-down fs-5 font-bold">Pending</span></a
-                    >
+                    role="tab">
+                        <span class="hidden-sm-up"></span>
+                        <span class="hidden-xs-down fs-5 font-bold">Pending</span>
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a
                     class="nav-link active"
                     href="<?php echo base_url(); ?>healthcare-provider/noa-requests/approved"
-                    role="tab"
-                    ><span class="hidden-sm-up"></span>
-                    <span class="hidden-xs-down fs-5 font-bold">Approved</span></a
-                    >
+                    role="tab">
+                        <span class="hidden-sm-up"></span>
+                        <span class="hidden-xs-down fs-5 font-bold">Approved</span>
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a
                     class="nav-link"
                     href="<?php echo base_url(); ?>healthcare-provider/noa-requests/disapproved"
-                    role="tab"
-                    ><span class="hidden-sm-up"></span>
-                    <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
-                    >
+                    role="tab">
+                        <span class="hidden-sm-up"></span>
+                        <span class="hidden-xs-down fs-5 font-bold">Disapproved</span>
+                    </a>
                 </li>
                     <li class="nav-item">
                     <a
                     class="nav-link"
                     href="<?php echo base_url(); ?>healthcare-provider/noa-requests/closed"
-                    role="tab"
-                    ><span class="hidden-sm-up"></span>
-                    <span class="hidden-xs-down fs-5 font-bold">Closed</span></a
-                    >
+                    role="tab">
+                        <span class="hidden-sm-up"></span>
+                        <span class="hidden-xs-down fs-5 font-bold">Closed</span>
+                    </a>
                 </li>
             </ul>
 
@@ -82,18 +81,10 @@
                             <tbody>
 
                                 <?php
-                                if (!empty($members)) {
+                                if (!empty($members)) :
                                     foreach ($members as $member) :
                                 ?>
                                         <tr>
-<<<<<<< HEAD
-                                            <td><?php echo $member->noa_id ?></td>
-                                            <td><?php echo $member->last_name . ', ' . $member->first_name . ' ' . $member->middle_name ?></td>
-                                            <td><?php echo $member->hp_name ?></td>
-                                            <td><?php echo $member->admission_date ?></td>
-                                            <td><?php echo $member->request_date ?></td>
-                                            <td><span class="badge rounded-pill bg-success"><?php echo $member->status ?></span></td>
-=======
                                             <td><?= $member->noa_id ?></td>
                                             <td>
                                                 <?= $member->first_name . ' ' . $member->middle_name . ' ' . $member->last_name ?>
@@ -106,7 +97,6 @@
                                                     <?= $member->status ?>
                                                 </span>
                                             </td>
->>>>>>> d9aa76d53d1e1dc7631e8a1f21d74e7831a85bc1
                                             <td>
                                                 <a href="javascript:void(0)">
                                                     <i class="mdi mdi-information fs-2 text-info" data-toggle="tooltip" title="Click to view details"></i>
@@ -115,7 +105,7 @@
                                         </tr>
                                 <?php
                                     endforeach;
-                                }
+                                endif;
                                 ?>
                             </tbody>
                         </table>

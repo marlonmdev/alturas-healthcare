@@ -70,7 +70,7 @@
                         <table id="disapprovedLoaTable" class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>Req. No.</th>
+                                    <th>#</th>
                                     <th>Name</th>
                                     <th>LOA Type</th>
                                     <th>Service Type</th>

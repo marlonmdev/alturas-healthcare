@@ -55,6 +55,35 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
+	function pending_noa_requests() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_provider_panel/noa/pending_noa_list');
+		$this->load->view('templates/footer');
+	}
 
+
+	function approved_noa_requests() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_provider_panel/noa/approved_noa_list');
+		$this->load->view('templates/footer');
+	}
+
+
+	function disapproved_noa_requests() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_provider_panel/noa/disapproved_noa_list');
+		$this->load->view('templates/footer');
+	}
+
+
+	function closed_noa_requests() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_provider_panel/noa/closed_noa_list');
+		$this->load->view('templates/footer');
+	}
 
 }

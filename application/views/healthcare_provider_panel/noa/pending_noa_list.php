@@ -29,37 +29,37 @@
                     <a
                     class="nav-link active"
                     href="<?php echo base_url(); ?>healthcare-provider/noa-requests/pending"
-                    role="tab"
-                    ><span class="hidden-sm-up"></span>
-                    <span class="hidden-xs-down fs-5 font-bold">Pending</span></a
-                    >
+                    role="tab">
+                        <span class="hidden-sm-up"></span>
+                        <span class="hidden-xs-down fs-5 font-bold">Pending</span>
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a
                     class="nav-link"
                     href="<?php echo base_url(); ?>healthcare-provider/noa-requests/approved"
-                    role="tab"
-                    ><span class="hidden-sm-up"></span>
-                    <span class="hidden-xs-down fs-5 font-bold">Approved</span></a
-                    >
+                    role="tab">
+                        <span class="hidden-sm-up"></span>
+                        <span class="hidden-xs-down fs-5 font-bold">Approved</span>
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a
                     class="nav-link"
                     href="<?php echo base_url(); ?>healthcare-provider/noa-requests/disapproved"
-                    role="tab"
-                    ><span class="hidden-sm-up"></span>
-                    <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
-                    >
+                    role="tab">
+                        <span class="hidden-sm-up"></span>
+                        <span class="hidden-xs-down fs-5 font-bold">Disapproved</span>
+                    </a>
                 </li>
                     <li class="nav-item">
                     <a
                     class="nav-link"
                     href="<?php echo base_url(); ?>healthcare-provider/noa-requests/closed"
-                    role="tab"
-                    ><span class="hidden-sm-up"></span>
-                    <span class="hidden-xs-down fs-5 font-bold">Closed</span></a
-                    >
+                    role="tab">
+                        <span class="hidden-sm-up"></span>
+                        <span class="hidden-xs-down fs-5 font-bold">Closed</span>
+                    </a>
                 </li>
             </ul>
 
@@ -67,10 +67,11 @@
              <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">  
-                        <table id="tbl-pending-noa" class="table table-striped" style="width:100%">
+                        <?php include 'view_noa_details.php'; ?>
+                        <table id="pendingNoaTable" class="table table-striped" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>Req. No.</th>
+                                    <th>#</th>
                                     <th>Name</th>
                                     <th>Hosptial Name</th>
                                     <th>Admission Date</th>
@@ -80,27 +81,27 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php
+                                <!-- 
                                 if (!empty($members)) {
                                     foreach ($members as $member) :
                                 ?>
                                         <tr>
-                                            <td><?php echo $member->noa_id ?></td>
-                                            <td><?php echo $member->last_name . ', ' . $member->first_name . ' ' . $member->middle_name?></td>
-                                            <td><?php echo $member->hp_name ?></td>
-                                            <td><?php echo $member->admission_date ?></td>
-                                            <td><?php echo $member->request_date ?></td>
-                                            <td><span class="badge rounded-pill bg-warning"><?php echo $member->status ?></span></td>
+                                            <td> echo $member->noa_id ?></td>
+                                            <td> echo $member->last_name . ', ' . $member->first_name . ' ' . $member->middle_name?></td>
+                                            <td> echo $member->hp_name ?></td>
+                                            <td> echo $member->admission_date ?></td>
+                                            <td> echo $member->request_date ?></td>
+                                            <td><span class="badge rounded-pill bg-warning"> echo $member->status ?></span></td>
                                             <td>
                                                 <a href="javascript:void(0)">
                                                     <i class="mdi mdi-information fs-2 text-info" data-toggle="tooltip" title="Click to view details"></i>
                                                 </a>
                                             </td>
                                         </tr>
-                                <?php
+                                <
                                     endforeach;
                                 }
-                                ?>
+                                ?> -->
                             </tbody>
                         </table>
                     </div>
@@ -110,10 +111,87 @@
     </div>
 </div>
 <script>
+    const baseUrl = "<?php echo base_url(); ?>";
     $(document).ready(function() {
-        $('#tbl-pending-noa').DataTable({
-            responsive: true
+
+        $('#pendingNoaTable').DataTable({
+        processing: true, //Feature control the processing indicator.
+        serverSide: true, //Feature control DataTables' server-side processing mode.
+        order: [], //Initial no order.
+
+        // Load data for the table's content from an Ajax source
+        ajax: {
+            url: `${baseUrl}healthcare-provider/noa-requests/pending/fetch`,
+            type: "POST",
+            // passing the token as data so that requests will be allowed
+            data: {
+            'token': '<?php echo $this->security->get_csrf_hash(); ?>'
+            }
+        },
+
+        //Set column definition initialisation properties.
+        columnDefs: [{
+            "targets": [5, 6], // numbering column
+            "orderable": false, //set not orderable
+        }, ],
+        responsive: true,
+        fixedHeader: true,
         });
 
     });
+
+  function viewNoaInfo(noa_id) {
+    $.ajax({
+      url: `${baseUrl}healthcare-provider/noa-requests/view/${noa_id}`,
+      type: "GET",
+      success: function(response) {
+        const res = JSON.parse(response);
+        const baseUrl = window.location.origin;
+        const {
+          status,
+          token,
+          noa_no,
+          member_mbl,
+          remaining_mbl,
+          first_name,
+          middle_name,
+          last_name,
+          suffix,
+          date_of_birth,
+          age,
+          hospital_name,
+          health_card_no,
+          requesting_company,
+          admission_date,
+          chief_complaint,
+          request_date,
+          req_status
+        } = res;
+
+        $("#viewNoaModal").modal("show");
+
+        switch (req_status) {
+          case 'Pending':
+            $('#noa-status').html('<strong class="text-warning">[' + req_status + ']</strong>');
+            break;
+          case 'Approved':
+            $('#noa-status').html('<strong class="text-success">[' + req_status + ']</strong>');
+            break;
+          case 'Disapproved':
+            $('#noa-status').html('<strong class="text-danger">[' + req_status + ']</strong>');
+            break;
+        }
+        $('#noa-no').html(noa_no);
+        $('#member-mbl').html(member_mbl);
+        $('#remaining-mbl').html(remaining_mbl);
+        $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
+        $('#date-of-birth').html(date_of_birth);
+        $('#age').html(age);
+        $('#hospital-name').html(hospital_name);
+        $('#admission-date').html(admission_date);
+        $('#chief-complaint').html(chief_complaint);
+        $('#request-date').html(request_date);
+      }
+    });
+  }
 </script>

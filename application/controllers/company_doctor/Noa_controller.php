@@ -181,7 +181,7 @@ class Noa_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 
-	public function get_noa_info() {
+	function get_noa_info() {
 		$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$row = $this->noa_model->db_get_noa_info($noa_id);
 		$doctor_name = "";

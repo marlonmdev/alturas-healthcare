@@ -40,14 +40,14 @@
                             <div class="row d-flex justify-content-center align-items-center">
                                 <div class="col-md-7 px-4 py-4">
                                     <div class="text-center" v-if="isSubmit">
-                                        <em class="text-danger">
-                                            His MBL has been exceeded! The <h4>{{ Number(exceedingBalance).toLocaleString('en-US', {
+                                        <em class="text-danger fw-bold">
+                                            His MBL has been exceeded! The <h3 class="mt-2">{{ Number(exceedingBalance).toLocaleString('en-US', {
                                             style: 'currency',
                                             currency: 'PHP',
-                                            })}}</h4> exceeding balance will be added to his personal charges.
+                                            })}}</h3> exceeding balance will be added to his personal charges.
                                         </em>
                                     </div>
-                                    <div>
+                                    <div class="table-responsive mt-2">
                                         <table class="table table-bordered">
                                             <tr>
                                                 <td>
@@ -160,7 +160,7 @@
                                 <div class="col-sm">
                                     <div class="mb-3">
                                         <label for="inputFirstName" class="form-label"><b>Member Name</b></label>
-                                        <input type="text" class="form-control" name="full_name" readonly value="<?php echo $user_info['member']->first_name . ' ' . $user_info['member']->last_name  ?>" aria-describedby="emailHelp">
+                                        <input type="text" class="form-control" name="full_name" readonly value="<?php echo $user_info['member']->first_name . ' ' . $user_info['member']->last_name  ?>">
                                     </div>
                                 </div>
                                 <div class="col-sm">

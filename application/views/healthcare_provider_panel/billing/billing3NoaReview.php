@@ -6,28 +6,29 @@
         </div>
 
     </div>
-    <?php if ($this->session->flashdata('error')) { ?>
+    <?php if ($this->session->flashdata('error')): ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <strong>No Member Found!!</strong>
         </div>
-    <?php } ?>
+    <?php endif; ?>
     <?php
-
-    $totalBill = 0;
-    foreach ($this->cart->contents() as $row) {
-        $totalBill += $row['price'];
-    } ?>
+        $totalBill = 0;
+        foreach ($this->cart->contents() as $row) {
+            $totalBill += $row['price'];
+        } 
+    ?>
     <div class="card">
         <div class="cantainer">
-            <form action="<?php echo base_url('healthcare-provider/billing/billing-person/finish'); ?>" onsubmit="finalSubmit()" class="needs-validation" method="post" novalidate>
-                <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash(); ?>">
-                <input type="hidden" name="hp_id" value="<?php echo $payload['hp_id'] ?>">
-                <input type="hidden" name="member_id" value="<?php echo $payload['member_id'] ?>">
-                <input type="hidden" name="noa_id" value="<?php echo $payload['noa_id'] ?>">
-                <input type="hidden" name="mbr_remaining_bal" value="<?php echo max($totalBill - $payload["remaining_balance"], 0); ?>">
-                <input type="hidden" name="total_bill" value="<?php echo $totalBill  ?>">
-                <input type="hidden" name="personal_charges" value="<?php echo max($totalBill - $payload["remaining_balance"], 0) ?>">
-                <input type="hidden" name="equipment_array_string" value='<?php echo strval($payload['equipment_array_string']) ?> '>
+            <form method="post" action="<?php echo base_url(); ?>healthcare-provider/billing/billing-person/finish" onsubmit="finalSubmit()" class="needs-validation" novalidate>
+                <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
+                <input type="hidden" name="hp_id" value="<?= $payload['hp_id'] ?>">
+                <input type="hidden" name="member_id" value="<?= $payload['member_id'] ?>">
+                <input type="hidden" name="noa_id" value="<?= $payload['noa_id'] ?>">
+                <!-- <input type="hidden" name="mbr_remaining_bal" value=" max($totalBill - $payload["remaining_balance"], 0); ?>"> -->
+                <?php print_r($payload["remaining_balance"]); ?>
+                <input type="hidden" name="total_bill" value="<?= $totalBill  ?>">
+                <!-- <input type="hidden" name="personal_charges" value=" max($totalBill - $payload["remaining_balance"], 0) ?>"> -->
+                <input type="hidden" name="equipment_array_string" value='<?= strval($payload['equipment_array_string']) ?> '>
 
                 <div class="row" style="margin-left: 7%; margin-right: 7%; margin-top:3%">
                     <div class="col-sm">

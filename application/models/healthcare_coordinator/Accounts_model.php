@@ -5,9 +5,9 @@ class Accounts_model extends CI_Model {
 
 	// Start of server-side processing datatables
 	var $table = 'user_accounts';
-	var $column_order = array('user_id', 'full_name', 'user_role', null, 'status', null); //set column field database for datatable orderable
-	var $column_search = array('user_id', 'full_name', 'user_role', 'status'); //set column field database for datatable searchable 
-	var $order = array('user_id' => 'desc'); // default order 
+	var $column_order = ['user_id', 'full_name', 'user_role', 'username', 'status']; //set column field database for datatable orderable
+	var $column_search = ['user_id', 'full_name', 'user_role', 'username', 'status']; //set column field database for datatable searchable 
+	var $order = ['user_id' => 'desc']; // default order 
 
 	private function _get_datatables_query() {
 		if($this->input->post('filter')){
@@ -68,27 +68,28 @@ class Accounts_model extends CI_Model {
 	}
 
 	function db_check_username($username) {
-		$query = $this->db->get_where('user_accounts', array('username' => $username));
+		$query = $this->db->get_where('user_accounts', ['username' => $username]);
 		return $query->num_rows() > 0 ? true : false;
 	}
 
 	function check_member_account_exist($emp_id) {
-		$query = $this->db->get_where('user_accounts', array('emp_id' => $emp_id));
+		$query = $this->db->get_where('user_accounts', ['emp_id' => $emp_id]);
 		return $query->num_rows() === 1 ? true : false;
 	}
 
 	function db_get_all_accounts() {
 		$this->db->order_by('user_id', 'DESC');
-		return $this->db->get('user_accounts')->result_array();
+		$query = $this->db->get('user_accounts');
+		return $query->result_array();
 	}
 
 	function db_get_designated_healthcare_provider($hp_id) {
-		$query = $this->db->get_where('healthcare_providers', array('hp_id' => $hp_id));
+		$query = $this->db->get_where('healthcare_providers', ['hp_id' => $hp_id]);
 		return $query->row_array();
 	}
 
 	function db_get_user_by_id($user_id) {
-		$query = $this->db->get_where('user_accounts', array('user_id' => $user_id));
+		$query = $this->db->get_where('user_accounts', ['user_id' => $user_id]);
 		return $query->row_array();
 	}
 
@@ -101,7 +102,8 @@ class Accounts_model extends CI_Model {
 
 	function db_get_current_user_status($user_id) {
 		$this->db->where('user_id', $user_id);
-		return $this->db->get('user_accounts')->row_array();
+		$query = $this->db->get('user_accounts');
+		return $query->row_array();
 	}
 
 	function db_update_user_password($user_id, $updated_password, $updated_on, $updated_by) {

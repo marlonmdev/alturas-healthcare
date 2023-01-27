@@ -6,9 +6,9 @@ class Loa_model extends CI_Model {
   // Start of server-side processing datatables
   var $table_1 = 'loa_requests';
   var $table_2 = 'healthcare_providers';
-  var $column_order = array('loa_no', 'first_name', 'loa_request_type', null, null, 'request_date', null, null); //set column field database for datatable orderable
-  var $column_search = array('loa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'loa_request_type', 'med_services', 'hp_name'); //set column field database for datatable searchable 
-  var $order = array('loa_id' => 'desc'); // default order 
+  var $column_order = ['loa_no', 'first_name', 'loa_request_type', 'request_date']; //set column field database for datatable orderable
+  var $column_search = ['loa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'loa_request_type', 'med_services', 'hp_name']; //set column field database for datatable searchable 
+  var $order = ['loa_id' => 'desc']; // default order 
 
   private function _get_datatables_query($status) {
     $this->db->from($this->table_1 . ' as tbl_1');
@@ -107,13 +107,13 @@ class Loa_model extends CI_Model {
 
   function db_get_approved_loa($user_id) {
     $this->db->select('loa_id, loa_no, name_of_hospital, loa_request_type, availment_request_date, status, checked_by');
-    $query = $this->db->get_where('loa_requests', array('status' => 'Approved', 'user_id' => $user_id));
+    $query = $this->db->get_where('loa_requests', ['status' => 'Approved', 'user_id' => $user_id]);
     return $query->result_array();
   }
 
   function db_get_disapproved_loa($user_id) {
     $this->db->select('loa_id, loa_no, name_of_hospital, loa_request_type, availment_request_date, status, checked_by');
-    $query = $this->db->get_where('loa_requests', array('status' => 'Disapproved', 'user_id' => $user_id));
+    $query = $this->db->get_where('loa_requests', ['status' => 'Disapproved', 'user_id' => $user_id]);
     return $query->result_array();
   }
 
@@ -129,12 +129,12 @@ class Loa_model extends CI_Model {
   }
 
   function db_get_requesting_physician($doctor_id) {
-    $query = $this->db->get_where('company_doctors', array('doctor_id' => $doctor_id));
+    $query = $this->db->get_where('company_doctors', ['doctor_id' => $doctor_id]);
     return $query->row_array();
   }
 
   function db_get_doctor_name_by_id($doctor_id) {
-    $query = $this->db->get_where('company_doctors', array('doctor_id' => $doctor_id));
+    $query = $this->db->get_where('company_doctors', ['doctor_id' => $doctor_id]);
     return $query->row_array();
   }
 

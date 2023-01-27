@@ -5,9 +5,9 @@ class Loa_model extends CI_Model {
 
   // Start of server-side processing datatables
   var $table = 'loa_requests';
-  var $column_order = array('loa_no', 'request_date', 'hcare_provider', 'loa_request_type', null, null, null); //set column field database for datatable orderable
-  var $column_search = array('loa_no', 'request_date', 'hp_name', 'loa_request_type', 'med_services'); //set column field database for datatable searchable 
-  var $order = array('loa_id' => 'desc'); // default order 
+  var $column_order = ['loa_no', 'request_date', 'hcare_provider', 'loa_request_type']; //set column field database for datatable orderable
+  var $column_search = ['loa_no', 'request_date', 'hp_name', 'loa_request_type', 'med_services']; //set column field database for datatable searchable 
+  var $order = ['loa_id' => 'desc']; // default order 
 
   private function _get_datatables_query($status, $emp_id) {
     $this->db->from($this->table . ' as tbl_1');
@@ -135,17 +135,17 @@ class Loa_model extends CI_Model {
   }
 
   function db_get_requesting_physician($doctor_id) {
-    $query = $this->db->get_where('company_doctors', array('doctor_id' => $doctor_id));
+    $query = $this->db->get_where('company_doctors', ['doctor_id' => $doctor_id]);
     return $query->row_array();
   }
 
   function db_get_doctor_by_id($doctor_id) {
-    $query = $this->db->get_where('company_doctors', array('doctor_id' => $doctor_id));
+    $query = $this->db->get_where('company_doctors', ['doctor_id' => $doctor_id]);
     return $query->row_array();
   }
 
   function db_get_doctor_info($doctor_id) {
-    $query = $this->db->get_where('company_doctors', array('doctor_id' => $doctor_id));
+    $query = $this->db->get_where('company_doctors', ['doctor_id' => $doctor_id]);
     return $query->row_array();
   }
 

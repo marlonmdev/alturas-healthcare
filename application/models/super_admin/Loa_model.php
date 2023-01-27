@@ -6,7 +6,7 @@ class Loa_model extends CI_Model {
   // Start of server-side processing datatables
   var $table_1 = 'loa_requests';
   var $table_2 = 'healthcare_providers';
-  var $column_order = array('loa_no', 'first_name', 'loa_request_type', null, null, 'request_date', null, null); //set column field database for datatable orderable
+  var $column_order = array('loa_no', 'first_name', 'loa_request_type', 'request_date'); //set column field database for datatable orderable
   var $column_search = array('loa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'loa_request_type', 'med_services', 'hp_name'); //set column field database for datatable searchable 
   var $order = array('loa_id' => 'desc'); // default order 
 
@@ -65,7 +65,8 @@ class Loa_model extends CI_Model {
 
   function db_get_max_loa_id() {
     $this->db->select_max('loa_id');
-    return $this->db->get('loa_requests')->row_array();
+    $query = $this->db->get('loa_requests');
+    return $query->row_array();
   }
 
   function db_insert_loa_request($post_data) {
@@ -84,21 +85,25 @@ class Loa_model extends CI_Model {
   }
 
   function db_get_cost_types() {
-    return $this->db->get('cost_types')->result_array();
+    $query = $this->db->get('cost_types');
+    return $query->result_array();
   }
 
   function db_get_healthcare_providers() {
-    return $this->db->get('healthcare_providers')->result_array();
+    $query = $this->db->get('healthcare_providers');
+    return $query->result_array();
   }
 
   function db_get_company_doctors() {
-    return $this->db->get('company_doctors')->result_array();
+    $query = $this->db->get('company_doctors');
+    return $query->result_array();
   }
 
   function db_get_loa_attach_filename($loa_id) {
     $this->db->select('loa_id, rx_file')
              ->where('loa_id', $loa_id);
-    return $this->db->get('loa_requests')->row_array();
+    $query = $this->db->get('loa_requests');
+    return $query->row_array();
   }
 
   function db_get_all_pending_loa() {
@@ -130,20 +135,21 @@ class Loa_model extends CI_Model {
 
   function db_get_approved_loa($user_id) {
     $this->db->select('loa_id, loa_no, name_of_hospital, loa_request_type, availment_request_date, status, checked_by');
-    $query = $this->db->get_where('loa_requests', array('status' => 'Approved', 'user_id' => $user_id));
+    $query = $this->db->get_where('loa_requests', ['status' => 'Approved', 'user_id' => $user_id]);
     return $query->result_array();
   }
 
   function db_get_disapproved_loa($user_id) {
     $this->db->select('loa_id, loa_no, name_of_hospital, loa_request_type, availment_request_date, status, checked_by');
-    $query = $this->db->get_where('loa_requests', array('status' => 'Disapproved', 'user_id' => $user_id));
+    $query = $this->db->get_where('loa_requests', ['status' => 'Disapproved', 'user_id' => $user_id]);
     return $query->result_array();
   }
 
   function db_get_loa_info($loa_id) {
     $this->db->select('*')
              ->from('loa_requests as tbl_1')
-             ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
+             ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+             ->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id')
              ->where('tbl_1.loa_id', $loa_id);
     return $this->db->get()->row_array();
   }
@@ -151,9 +157,10 @@ class Loa_model extends CI_Model {
   function db_get_loa_details($loa_id) {
     $this->db->select('*')
              ->from('loa_requests as tbl_1')
-             ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
-             ->join('company_doctors as tbl_3', 'tbl_1.requesting_physician = tbl_3.doctor_id')
-             ->join('max_benefit_limits as tbl_4', 'tbl_1.emp_id= tbl_4.emp_id')
+             ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+             ->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id')
+             ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id')
+             ->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id= tbl_5.emp_id')
              ->where('tbl_1.loa_id', $loa_id);
     return $this->db->get()->row_array();
   }
@@ -179,7 +186,7 @@ class Loa_model extends CI_Model {
   }
 
   function db_get_doctor_by_id($doctor_id) {
-    $query = $this->db->get_where('company_doctors', array('doctor_id' => $doctor_id));
+    $query = $this->db->get_where('company_doctors', ['doctor_id' => $doctor_id]);
     return $query->row_array();
   }
 }

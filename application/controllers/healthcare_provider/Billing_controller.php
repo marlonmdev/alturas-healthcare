@@ -191,11 +191,8 @@ class Billing_controller extends CI_Controller {
 
     function billing3NoaReview() {
         $this->security->get_csrf_hash();
-
         $data['payload'] = $this->session->userdata('intialBillingInfo');
         $data['cost_type'] = $this->Billing_model->find_cost_type();
-
-        $data['page_title'] = 'Alturas Healthcare - Healthcare Provider';
         $data['user_role'] = $this->session->userdata('user_role');
         $data['equipments'] = $this->session->userdata('equipments');
 

@@ -6,9 +6,9 @@ class Noa_model extends CI_Model {
   // Start of server-side processing datatables
   var $table_1 = 'noa_requests';
   var $table_2 = 'healthcare_providers';
-  var $column_order = array('tbl_1.noa_no', 'tbl_1.first_name', 'tbl_1.admission_date', 'tbl_2.hp_name', 'tbl_1.request_date', null, null); //set column field database for datatable orderable
-  var $column_search = array('tbl_1.noa_no', 'tbl_1.first_name', 'tbl_1.middle_name', 'tbl_1.last_name', 'tbl_1.suffix', 'tbl_1.admission_date', 'tbl_2.hp_name', 'tbl_1.request_date'); //set column field database for datatable searchable 
-  var $order = array('tbl_1.noa_id' => 'desc'); // default order 
+  var $column_order = ['tbl_1.noa_no', 'tbl_1.first_name', 'tbl_1.admission_date', 'tbl_2.hp_name', 'tbl_1.request_date', null, null]; //set column field database for datatable orderable
+  var $column_search = ['tbl_1.noa_no', 'tbl_1.first_name', 'tbl_1.middle_name', 'tbl_1.last_name', 'tbl_1.suffix', 'tbl_1.admission_date', 'tbl_2.hp_name', 'tbl_1.request_date']; //set column field database for datatable searchable 
+  var $order = ['tbl_1.noa_id' => 'desc']; // default order 
 
   private function _get_datatables_query($status) {
     $this->db->from($this->table_1 . ' as tbl_1');
@@ -122,7 +122,7 @@ class Noa_model extends CI_Model {
   }
 
   function db_get_member_details($member_id) {
-    $query = $this->db->get_where('members', array('member_id' => $member_id));
+    $query = $this->db->get_where('members', ['member_id' => $member_id]);
     return $query->row_array();
   }
 
@@ -133,7 +133,7 @@ class Noa_model extends CI_Model {
   }
 
   function db_get_doctor_by_id($doctor_id) {
-    $query = $this->db->get_where('company_doctors', array('doctor_id' => $doctor_id));
+    $query = $this->db->get_where('company_doctors', ['doctor_id' => $doctor_id]);
     return $query->row_array();
   }
 }

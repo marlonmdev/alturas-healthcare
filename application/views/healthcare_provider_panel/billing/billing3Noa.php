@@ -71,7 +71,7 @@
                                 </thead>
                                 <tbody>
                                     <?php
-                                        if (!empty($cost_type)):
+                                    if (!empty($cost_type)):
                                         foreach ($cost_type as $ct) :
                                     ?>
                                             <tr>
@@ -79,7 +79,7 @@
                                                     <?= $ct->cost_type; ?>
                                                 </td>
                                                 <td>
-                                                    <button class="btn btn-success" id="btn<?= $ct->ctype_id ?>" onclick="addService('<?= $ct->ctype_id; ?>',' <?= $ct->cost_type ?>')">
+                                                    <button class="btn btn-success" id="btn<?= $ct->ctype_id ?>" onclick="addService('<?= $ct->ctype_id ?>',' <?= $ct->cost_type ?>')">
                                                         <i class="mdi mdi-plus-circle"></i> Add
                                                     </button>
                                                 </td>
@@ -100,8 +100,6 @@
 
 <style>
     #myInput {
-        background-image: url('/css/searchicon.png');
-        background-repeat: no-repeat;
         width: 50%;
         font-size: 16px;
         padding: 10px;
@@ -122,14 +120,11 @@
     function submitEquipment() {
 
         $(".inputCT").each(function() {
-
             var input = $(this); // This is the jquery object of the input, do what you will
 
             if (!input.val()) {
                 input.addClass("is-invalid")
-
             } else {
-
                 input.removeClass("is-invalid");
                 var idCostType = input.attr('id').substring(2);
                 var finalIdCostType = "ct" + idCostType;

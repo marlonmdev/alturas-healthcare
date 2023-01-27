@@ -18,7 +18,7 @@ class Accounts_controller extends CI_Controller {
 		$list = $this->accounts_model->get_datatables();
 		$data = array();
 		foreach ($list as $account) {
-			$row = array();
+			$row = [];
 			// calling Myhash custom library inside application/libraries folder
 			$user_id = $this->myhash->hasher($account['user_id'], 'encrypt');
 

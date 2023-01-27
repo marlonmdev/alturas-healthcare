@@ -107,7 +107,7 @@ $route['healthcare-provider/billing/billing-person/find'] = 'healthcare_provider
 $route['healthcare-provider/billing/billing-person/find-by-id']  = 'healthcare_provider/Billing_controller/billing2ResultMemberById';
 $route['healthcare-provider/billing/billing-person/bill-loa/(:any)/(:any)/(:any)'] = 'healthcare_provider/Billing_controller/billing3BillLoa';
 $route['healthcare-provider/billing/billing-person/equipment']  = 'healthcare_provider/Billing_controller/billing3BillNoa';
-$route['healthcare-provider/billing/billing-person/finalBilling']['post']  = 'healthcare_provider/Billing_controller/billing3NoaReview';
+$route['healthcare-provider/billing/billing-person/finalBilling']  = 'healthcare_provider/Billing_controller/billing3NoaReview';
 $route['healthcare-provider/billing/billing-person/finish']['post']  = 'healthcare_provider/Billing_controller/billing5Final';
 
 // Loa Pages

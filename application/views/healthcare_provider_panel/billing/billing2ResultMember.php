@@ -50,7 +50,7 @@
                                         </thead>
                                         <tbody>
                                             <?php
-                                            if (!empty($userLoaList)) {
+                                            if (!empty($userLoaList)) :
                                                 foreach ($userLoaList as $loalist) :
                                             ?>
                                                     <tr>
@@ -71,10 +71,10 @@
                                                     </tr>
                                             <?php
                                                 endforeach;
-                                            }
+                                            endif;
                                             ?>
                                             <?php
-                                            if (!empty($userNoaList)) {
+                                            if (!empty($userNoaList)) :
                                                 foreach ($userNoaList as $noalist) :
                                             ?>
 
@@ -100,7 +100,7 @@
                                                     </tr>
                                             <?php
                                                 endforeach;
-                                            }
+                                            endif;
                                             ?>
 
                                         </tbody>

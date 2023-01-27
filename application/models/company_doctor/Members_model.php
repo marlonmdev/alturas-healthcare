@@ -5,9 +5,9 @@ class Members_model extends CI_Model {
 
   // Start of server-side processing datatables
   var $table = 'members';
-  var $column_order = array('member_id', 'first_name', 'emp_type', 'current_status', 'business_unit', 'dept_name', null, null); //set column field database for datatable orderable
-  var $column_search = array('member_id', 'first_name', 'middle_name', 'last_name', 'suffix', 'emp_type', 'current_status', 'business_unit', 'dept_name'); //set column field database for datatable searchable 
-  var $order = array('member_id' => 'desc'); // default order 
+  var $column_order = ['member_id', 'first_name', 'emp_type', 'current_status', 'business_unit', 'dept_name']; //set column field database for datatable orderable
+  var $column_search = ['member_id', 'first_name', 'middle_name', 'last_name', 'suffix', 'emp_type', 'current_status', 'business_unit', 'dept_name']; //set column field database for datatable searchable 
+  var $order = ['member_id' => 'desc']; // default order 
 
   private function _get_datatables_query($approval_status) {
     $this->db->from($this->table);
@@ -64,13 +64,13 @@ class Members_model extends CI_Model {
 
   function db_get_member_details($member_id) {
     $this->db->select('*');
-    $query = $this->db->get_where('members', array('member_id' => $member_id));
+    $query = $this->db->get_where('members', ['member_id' => $member_id]);
     return $query->row_array();
   }
 
   function db_get_member_mbl($emp_id) {
     $this->db->select('*');
-    $query = $this->db->get_where('max_benefit_limits', array('emp_id' => $emp_id));
+    $query = $this->db->get_where('max_benefit_limits', ['emp_id' => $emp_id]);
     return $query->row_array();
   }
 }

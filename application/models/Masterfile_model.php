@@ -13,6 +13,7 @@ class Masterfile_model extends CI_Model {
 	}
 
 	function members_list() {
-		return $this->db->get('members')->result();
+		$query = $this->db->get('members');
+		return $query->result();
 	}
 }

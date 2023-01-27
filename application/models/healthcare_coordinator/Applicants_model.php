@@ -5,9 +5,9 @@ class Applicants_model extends CI_Model {
 
   // Start of server-side processing datatables
   var $table = 'applicants';
-  var $column_order = array('app_id', 'first_name', 'emp_type', 'current_status', 'business_unit', 'dept_name', null, null); //set column field database for datatable orderable
-  var $column_search = array('app_id', 'first_name', 'middle_name', 'last_name', 'suffix', 'emp_type', 'current_status', 'business_unit', 'dept_name'); //set column field database for datatable searchable 
-  var $order = array('app_id' => 'desc'); // default order 
+  var $column_order = ['app_id', 'first_name', 'emp_type', 'current_status', 'business_unit', 'dept_name']; //set column field database for datatable orderable
+  var $column_search = ['app_id', 'first_name', 'middle_name', 'last_name', 'suffix', 'emp_type', 'current_status', 'business_unit', 'dept_name']; //set column field database for datatable searchable 
+  var $order = ['app_id' => 'desc']; // default order 
 
   private function _get_datatables_query() {
     $this->db->from($this->table);
@@ -60,12 +60,12 @@ class Applicants_model extends CI_Model {
   // End of server-side processing datatables
 
   function db_get_applicant_details($app_id) {
-    $query = $this->db->get_where('applicants', array('app_id' => $app_id));
+    $query = $this->db->get_where('applicants', ['app_id' => $app_id]);
     return $query->row_array();
   }
 
   function db_get_applicant($emp_id) {
-    $query = $this->db->get_where('applicants', array('emp_id' => $emp_id));
+    $query = $this->db->get_where('applicants', ['emp_id' => $emp_id]);
     return $query->row_array();
   }
 
@@ -75,7 +75,7 @@ class Applicants_model extends CI_Model {
 
   function db_get_member_mbl($emp_id) {
     $this->db->select('*');
-    $query = $this->db->get_where('max_benefit_limits', array('emp_id' => $emp_id));
+    $query = $this->db->get_where('max_benefit_limits', ['emp_id' => $emp_id]);
     return $query->row_array();
   }
 

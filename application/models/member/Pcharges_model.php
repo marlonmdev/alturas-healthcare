@@ -6,15 +6,15 @@ class Pcharges_model extends CI_Model {
 	// Start of server-side processing datatables
 	var $table_1 = 'personal_charges';
 	var $table_2 = 'billing';
-	var $column_order = array('t1.pcharge_id', 't1.billing_no', 't1.pcharge_amount', 't2.billing_date', null, null); //set column field database for datatable orderable
-	var $column_search = array('t1.pcharge_id', 't1.billing_no', 't1.pcharge_amount', 't2.billing_date'); //set column field database for datatable searchable 
-	var $order = array('t1.pcharge_id' => 'desc'); // default order 
+	var $column_order = ['tbl_1.pcharge_id', 'tbl_1.billing_no', 'tbl_1.pcharge_amount', 'tbl_2.billing_date']; //set column field database for datatable orderable
+	var $column_search = ['tbl_1.pcharge_id', 'tbl_1.billing_no', 'tbl_1.pcharge_amount', 'tbl_2.billing_date']; //set column field database for datatable searchable 
+	var $order = ['tbl_1.pcharge_id' => 'desc']; // default order 
 
 	private function _get_datatables_query($status, $emp_id) {
-		$this->db->from($this->table_1 . ' as t1');
-		$this->db->join($this->table_2 . ' as t2', 't1.billing_no = t2.billing_no');
-		$this->db->where('t1.status', $status);
-		$this->db->where('t1.emp_id', $emp_id);
+		$this->db->from($this->table_1 . ' as tbl_1');
+		$this->db->join($this->table_2 . ' as tbl_2', 'tbl_1.billing_no = tbl_2.billing_no');
+		$this->db->where('tbl_1.status', $status);
+		$this->db->where('tbl_1.emp_id', $emp_id);
 		$i = 0;
 		// loop column 
 		foreach ($this->column_search as $item) {
@@ -68,8 +68,8 @@ class Pcharges_model extends CI_Model {
 
 	public function db_get_personal_charges_info($emp_id) {
 		$this->db->select('*');
-		$this->db->from('personal_charges as t1');
-		$this->db->join('bliing as t2', 't1.blling_no = t2.billing_no');
+		$this->db->from('personal_charges as tbl_1');
+		$this->db->join('bliing as tbl_2', 'tbl_1.blling_no = tbl_2.billing_no');
 		$this->db->where('emp_id', $emp_id);
 		return $this->db->get()->result_array();
 	}

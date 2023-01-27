@@ -45,8 +45,8 @@
           </div>
           <div class="modal-body text-center fs-4">Are you sure you want to logout?</div>
           <div class="modal-footer">
-            <a class="btn btn-danger" href="<?php echo base_url(); ?>logout"><i class="mdi mdi-logout-variant"></i> Logout</a>
-            <button type="button" class="btn btn-dark" data-bs-dismiss="modal"><i class="mdi mdi-close-box"></i> Cancel</button>
+            <a class="btn btn-danger" href="<?php echo base_url(); ?>logout">Logout</a>
+            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
           </div>
         </div>
       </div>

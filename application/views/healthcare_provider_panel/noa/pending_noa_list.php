@@ -67,7 +67,7 @@
              <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">  
-                        <?php include 'view_noa_details.php'; ?>
+                        <?php include 'view_pending_noa_details.php'; ?>
                         <table id="pendingNoaTable" class="table table-striped" style="width:100%">
                             <thead>
                                 <tr>
@@ -81,27 +81,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- 
-                                if (!empty($members)) {
-                                    foreach ($members as $member) :
-                                ?>
-                                        <tr>
-                                            <td> echo $member->noa_id ?></td>
-                                            <td> echo $member->last_name . ', ' . $member->first_name . ' ' . $member->middle_name?></td>
-                                            <td> echo $member->hp_name ?></td>
-                                            <td> echo $member->admission_date ?></td>
-                                            <td> echo $member->request_date ?></td>
-                                            <td><span class="badge rounded-pill bg-warning"> echo $member->status ?></span></td>
-                                            <td>
-                                                <a href="javascript:void(0)">
-                                                    <i class="mdi mdi-information fs-2 text-info" data-toggle="tooltip" title="Click to view details"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                <
-                                    endforeach;
-                                }
-                                ?> -->
                             </tbody>
                         </table>
                     </div>
@@ -140,58 +119,58 @@
 
     });
 
-  function viewNoaInfo(noa_id) {
-    $.ajax({
-      url: `${baseUrl}healthcare-provider/noa-requests/view/${noa_id}`,
-      type: "GET",
-      success: function(response) {
-        const res = JSON.parse(response);
-        const baseUrl = window.location.origin;
-        const {
-          status,
-          token,
-          noa_no,
-          member_mbl,
-          remaining_mbl,
-          first_name,
-          middle_name,
-          last_name,
-          suffix,
-          date_of_birth,
-          age,
-          hospital_name,
-          health_card_no,
-          requesting_company,
-          admission_date,
-          chief_complaint,
-          request_date,
-          req_status
-        } = res;
+    function viewNoaInfo(noa_id) {
+        $.ajax({
+        url: `${baseUrl}healthcare-provider/noa-requests/view/${noa_id}`,
+        type: "GET",
+        success: function(response) {
+            const res = JSON.parse(response);
+            const baseUrl = window.location.origin;
+            const {
+            status,
+            token,
+            noa_no,
+            member_mbl,
+            remaining_mbl,
+            first_name,
+            middle_name,
+            last_name,
+            suffix,
+            date_of_birth,
+            age,
+            hospital_name,
+            health_card_no,
+            requesting_company,
+            admission_date,
+            chief_complaint,
+            request_date,
+            req_status
+            } = res;
 
-        $("#viewNoaModal").modal("show");
+            $("#viewNoaModal").modal("show");
 
-        switch (req_status) {
-          case 'Pending':
-            $('#noa-status').html('<strong class="text-warning">[' + req_status + ']</strong>');
-            break;
-          case 'Approved':
-            $('#noa-status').html('<strong class="text-success">[' + req_status + ']</strong>');
-            break;
-          case 'Disapproved':
-            $('#noa-status').html('<strong class="text-danger">[' + req_status + ']</strong>');
-            break;
-        }
-        $('#noa-no').html(noa_no);
-        $('#member-mbl').html(member_mbl);
-        $('#remaining-mbl').html(remaining_mbl);
-        $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
-        $('#date-of-birth').html(date_of_birth);
-        $('#age').html(age);
-        $('#hospital-name').html(hospital_name);
-        $('#admission-date').html(admission_date);
-        $('#chief-complaint').html(chief_complaint);
-        $('#request-date').html(request_date);
-      }
-    });
-  }
+            switch (req_status) {
+                case 'Pending':
+                    $('#noa-status').html('<strong class="text-warning">[' + req_status + ']</strong>');
+                    break;
+                case 'Approved':
+                    $('#noa-status').html('<strong class="text-success">[' + req_status + ']</strong>');
+                    break;
+                case 'Disapproved':
+                    $('#noa-status').html('<strong class="text-danger">[' + req_status + ']</strong>');
+                    break;
+                }
+                $('#noa-no').html(noa_no);
+                $('#member-mbl').html(member_mbl);
+                $('#remaining-mbl').html(remaining_mbl);
+                $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
+                $('#date-of-birth').html(date_of_birth);
+                $('#age').html(age);
+                $('#hospital-name').html(hospital_name);
+                $('#admission-date').html(admission_date);
+                $('#chief-complaint').html(chief_complaint);
+                $('#request-date').html(request_date);
+            }
+        });
+    }
 </script>

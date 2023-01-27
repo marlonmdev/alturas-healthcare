@@ -66,7 +66,8 @@
              <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">  
-                        <table id="tbl-approved-noa" class="table table-striped" style="width:100%">
+                        <?php include 'view_approved_noa_details.php'; ?>
+                        <table id="approvedNoaTable" class="table table-striped" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -79,34 +80,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-
-                                <?php
-                                if (!empty($members)) :
-                                    foreach ($members as $member) :
-                                ?>
-                                        <tr>
-                                            <td><?= $member->noa_id ?></td>
-                                            <td>
-                                                <?= $member->first_name . ' ' . $member->middle_name . ' ' . $member->last_name ?>
-                                            </td>
-                                            <td><?= $member->hp_name ?></td>
-                                            <td><?= $member->admission_date ?></td>
-                                            <td><?= $member->request_date ?></td>
-                                            <td>
-                                                <span class="badge rounded-pill bg-success">
-                                                    <?= $member->status ?>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <a href="javascript:void(0)">
-                                                    <i class="mdi mdi-information fs-2 text-info" data-toggle="tooltip" title="Click to view details"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                <?php
-                                    endforeach;
-                                endif;
-                                ?>
                             </tbody>
                         </table>
                         </div>
@@ -118,10 +91,93 @@
     </div>
 </div>
 <script>
+    const baseUrl = "<?php echo base_url(); ?>";
     $(document).ready(function() {
-        $('#tbl-approved-noa').DataTable({
-            responsive: true
+
+        $('#approvedNoaTable').DataTable({
+        processing: true, //Feature control the processing indicator.
+        serverSide: true, //Feature control DataTables' server-side processing mode.
+        order: [], //Initial no order.
+
+        // Load data for the table's content from an Ajax source
+        ajax: {
+            url: `${baseUrl}healthcare-provider/noa-requests/approved/fetch`,
+            type: "POST",
+            // passing the token as data so that requests will be allowed
+            data: {
+            'token': '<?php echo $this->security->get_csrf_hash(); ?>'
+            }
+        },
+
+        //Set column definition initialisation properties.
+        columnDefs: [{
+            "targets": [5, 6], // numbering column
+            "orderable": false, //set not orderable
+        }, ],
+        responsive: true,
+        fixedHeader: true,
         });
 
     });
+
+    function viewNoaInfo(req_id) {
+    $.ajax({
+      url: `${baseUrl}healthcare-provider/noa-requests/view/${req_id}`,
+      type: "GET",
+      success: function(response) {
+        const res = JSON.parse(response);
+        const base_url = window.location.origin;
+        const {
+          status,
+          token,
+          noa_no,
+          member_mbl,
+          remaining_mbl,
+          first_name,
+          middle_name,
+          last_name,
+          suffix,
+          date_of_birth,
+          age,
+          hospital_name,
+          health_card_no,
+          requesting_company,
+          admission_date,
+          chief_complaint,
+          request_date,
+          work_related,
+          req_status,
+          approved_by,
+          approved_on
+        } = res;
+
+        $("#viewNoaModal").modal("show");
+
+        switch (req_status) {
+          case 'Pending':
+            $('#noa-status').html(`<strong class="text-warning">[${req_status}]</strong>`);
+            break;
+          case 'Approved':
+            $('#noa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
+            break;
+          case 'Disapproved':
+            $('#noa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
+            break;
+        }
+        $('#noa-no').html(noa_no);
+        $('#approved-by').html(approved_by);
+        $('#approved-on').html(approved_on);
+        $('#member-mbl').html(member_mbl);
+        $('#remaining-mbl').html(remaining_mbl);
+        $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
+        $('#date-of-birth').html(date_of_birth);
+        $('#age').html(age);
+        $('#hospital-name').html(hospital_name);
+        $('#admission-date').html(admission_date);
+        $('#chief-complaint').html(chief_complaint);
+        $('#work-related').html(work_related);
+        $('#request-date').html(request_date);
+      }
+    });
+  }
 </script>

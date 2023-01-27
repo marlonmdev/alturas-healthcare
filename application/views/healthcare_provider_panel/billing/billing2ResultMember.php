@@ -43,9 +43,9 @@
                                     <table class="table table striped table-hover">
                                         <thead>
                                             <tr>
-                                                <th scope="col">Request Type</th>
-                                                <th scope="col">Request Date</th>
-                                                <th scope="col">Action</th>
+                                                <th class="fw-bold">Request Type</th>
+                                                <th class="fw-bold">Request Date</th>
+                                                <th class="fw-bold">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -54,16 +54,18 @@
                                                 foreach ($userLoaList as $loalist) :
                                             ?>
                                                     <tr>
-                                                        <td>LOA</td>
-                                                        <td><?= date("m/d/Y", strtotime($loalist->request_date)) ?>    </td>
+                                                        <td class="fw-bold">LOA</td>
+                                                        <td class="fw-bold">
+                                                            <?= date("m/d/Y", strtotime($loalist->request_date)) ?>
+                                                        </td>
                                                         <?php if ($loalist->status == 'Approved') { ?>
-                                                            <td>
+                                                            <td class="fw-bold">
                                                                 <div class="col">
-                                                                    <a href="<?= base_url(); ?>healthcare-provider/billing/billing-person/bill-loa/<?= $loalist->emp_id ?>/<?= $loalist->loa_id ?>/<?= $billing_number ?>" data-bs-toggle="tooltip" title="Click to Proceed">&nbsp;&nbsp;Proceed to Billing</a>
+                                                                    <a href="<?= base_url() ?>healthcare-provider/billing/billing-person/bill-loa/<?= $loalist->emp_id ?>/<?= $loalist->loa_id ?>/<?= $billing_number ?>" data-bs-toggle="tooltip" title="Click to Proceed">&nbsp;&nbsp;Proceed to Billing</a>
                                                                 </div>
                                                             </td>
                                                         <?php } else { ?>
-                                                            <td><span class="badge rounded-pill bg-success">Done</span></td>
+                                                            <td><span class="badge bg-success">Done</span></td>
                                                         <?php } ?>
 
                                                     </tr>
@@ -77,16 +79,22 @@
                                             ?>
 
                                                     <tr>
-                                                        <td>NOA</td>
-                                                        <td><?= date("m/d/Y", strtotime($noalist->request_date)) ?></td>
+                                                        <td class="fw-bold">NOA</td>
+                                                        <td class="fw-bold">
+                                                            <?= date("m/d/Y", strtotime($noalist->request_date)) ?>
+                                                        </td>
                                                         <?php if ($noalist->status == 'Approved') { ?>
-                                                            <td>
+                                                            <td class="fw-bold">
                                                                 <div class="col">
-                                                                    <button type="submit" onclick="document.getElementById('noa_select_id').value = '<?= $noalist->noa_id ?>'" data-bs-toggle="tooltip" title="Click to Proceed" style="background-color: transparent;border:0;color:#4054F1;">Proceed to Billing</button>
+                                                                    <button type="submit" onclick="document.getElementById('noa_select_id').value = '<?= $noalist->noa_id ?>'" data-bs-toggle="tooltip" title="Click to Proceed" style="background-color: transparent;border:0;color:#4054F1;">
+                                                                        <span class="fw-bold">
+                                                                            Proceed to Billing
+                                                                        </span>
+                                                                    </button>
                                                                 </div>
                                                             </td>
                                                         <?php } else { ?>
-                                                            <td><span class="badge rounded-pill bg-success">Done</span></td>
+                                                            <td><span class="badge bg-success py-2">Done</span></td>
                                                         <?php } ?>
 
                                                     </tr>
@@ -119,11 +127,11 @@
                                             <img src="<?= base_url() . 'uploads/profile_pics/' . $member->photo ?>" alt="Member" class="rounded-circle img-responsive" width="200" height="auto">
                                             <?php } ?>
                                             <div class="mt-3">
-                                                <p class="mb-1"><strong><?= $member->business_unit ?></strong></p>
-                                                <p class="mb-1"><strong><?= $member->dept_name ?></strong></p>
-                                                <p class="text-success mb-1"><strong><?= $member->position ?></strong></p>
-                                                <p class="mb-1"><strong><?= $member->emp_type ?></strong></em>
-                                                <p class="text-muted font-size-sm"><span class="badge rounded-pill bg-success"><strong><?= $member->current_status ?></strong></span></p>
+                                                <p class="fw-bold mb-1"><?= $member->business_unit ?></p>
+                                                <p class="fw-bold mb-1"><?= $member->dept_name ?></p>
+                                                <p class="text-success fw-bold mb-1"><?= $member->position ?></p>
+                                                <p class="fw-bold mb-1"><?= $member->emp_type ?></em>
+                                                <p class="text-muted font-size-sm"><span class="badge rounded-pill bg-success fw-bold"><?= $member->current_status ?></span></p>
                                             </div>
                                         </div>                                
                                     </div>
@@ -131,16 +139,16 @@
                                         <div class="row mx-3 my-2">
                                             <div class="col-sm">
                                                 <div class="mb-2">
-                                                    <label for="inputFirstName" class="form-label"><b>Member Name</b></label>
+                                                    <label class="fw-bold">Member Name</label>
                                                     <input type="text" name="first_name" hidden value="<?= $member->first_name ?>">
                                                     <input type="text" name="last_name" hidden value="<?= $member->last_name ?>">
-                                                    <input type="text" readonly class="form-control" name="full_name" value="<?= $member->first_name . ' ' . $member->middle_name . ' ' . $member->last_name ?>" aria-describedby="emailHelp">
+                                                    <input type="text" readonly class="form-control fw-bold name="full_name" value="<?= $member->first_name . ' ' . $member->middle_name . ' ' . $member->last_name ?>">
                                                 </div>
                                             </div>
                                             <div class="col-sm">
                                                 <div class="mb-2">
-                                                    <label class="form-label"><b>Healthcard Number</b></label>
-                                                    <input type="text" class="form-control" name="health_card_no" readonly value="<?= $member->health_card_no ?>">
+                                                    <label class="fw-bold">Healthcard Number</label>
+                                                    <input type="text" class="form-control fw-bold" name="health_card_no" readonly value="<?= $member->health_card_no ?>">
                                                 </div>
                                             </div>
                                         </div>
@@ -148,8 +156,8 @@
                                             <div class="col-sm">
 
                                                 <div class="mb-2">
-                                                    <label class="form-label"><strong>Employer Name</strong></label>
-                                                    <input type="text" name="company" class="form-control" readonly value="<?= $member->company ?>" aria-describedby="emailHelp">
+                                                    <label class="fw-bold">Employer Name</label>
+                                                    <input type="text" name="company" class="form-control fw-bold" readonly value="<?= $member->company ?>">
                                                 </div>
                                             </div>
                                             <!-- <div class="col-sm">
@@ -163,28 +171,28 @@
                                         <div class="row mx-3 my-2">
                                             <div class="col-sm">
                                                 <div class="mb-2">
-                                                    <label class="form-label"><strong>Remaining MBL</strong></label>
-                                                    <input type="text" class="form-control" style="color:red" name="remaining_balance" value="<?= '&#8369;'. number_format($memberMBL->remaining_balance, 2) ?>" readonly>
+                                                    <label class="fw-bold">Remaining MBL</label>
+                                                    <input type="text" class="form-control text-info fw-bold" name="remaining_balance" value="<?= '&#8369;'. number_format($memberMBL->remaining_balance, 2) ?>" readonly>
                                                 </div>
                                             </div>
                                             <div class="col-sm">
                                                 <div class="mb-2">
-                                                    <label class="form-label"><strong> Billing Number</strong></label>
-                                                    <input type="text" name="billing_number" class="form-control" style="color:red" value="<?= $billing_number ?>" readonly>
+                                                    <label class="fw-bold">Billing Number</label>
+                                                    <input type="text" name="billing_number" class="form-control text-info fw-bold" value="<?= $billing_number ?>" readonly>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row mx-3 my-2">
                                             <div class="col-sm">
                                                 <div class="mb-2">
-                                                    <label class="form-label"><strong>Healthcare Provider</strong></label>
-                                                    <input type="text" class="form-control" name="hospital_name"  value="<?= $hospital->hp_name ?>" readonly>
+                                                    <label class="fw-bold">Healthcare Provider</label>
+                                                    <input type="text" class="form-control fw-bold" name="hospital_name"  value="<?= $hospital->hp_name ?>" readonly>
                                                 </div>
                                             </div>
                                             <div class="col-sm">
                                                 <div class="mb-2">
-                                                <label for="inputLastName" class="form-label"><strong>Date of Service</strong></label>
-                                                    <input type="date" class="form-control" name="date_service" value="<?php echo date("Y-m-d"); ?>" readonly>
+                                                <label class="fw-bold">Date of Service</label>
+                                                    <input type="date" class="form-control fw-bold" name="date_service" value="<?php echo date("Y-m-d"); ?>" readonly>
                                                 </div>
                                             </div>
                                         </div>

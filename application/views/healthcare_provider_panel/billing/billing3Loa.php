@@ -41,58 +41,67 @@
                                 <div class="col-md-7 px-4 py-4">
                                     <div class="text-center" v-if="isSubmit">
                                         <em class="text-danger fw-bold">
-                                            His MBL has been exceeded! The <h3 class="mt-2">{{ Number(exceedingBalance).toLocaleString('en-US', {
-                                            style: 'currency',
-                                            currency: 'PHP',
-                                            })}}</h3> exceeding balance will be added to his personal charges.
+                                            His MBL has been exceeded! The
+                                            <h3 class="mt-2">
+                                                {{ 
+                                                    Number(exceedingBalance).toLocaleString('en-US', {
+                                                        style: 'currency',
+                                                        currency: 'PHP',
+                                                    })
+                                                }}
+                                            </h3> exceeding balance will be added to his personal charges.
                                         </em>
                                     </div>
                                     <div class="table-responsive mt-2">
                                         <table class="table table-bordered">
                                             <tr>
-                                                <td>
-                                                    <strong>Patient Name: </strong>
+                                                <td class="fw-bold">
+                                                    Patient Name:
                                                 </td>
-                                                <td>
-                                                    <strong>
-                                                        <?php
-                                                            echo $user_info['member']->first_name . ' ' . $user_info['member']->middle_name. ' ' . $user_info['member']->last_name 
-                                                        ?>
-                                                    </strong>
+                                                <td class="fw-bold">
+                                                    <?php
+                                                        $info = $user_info['member'];
+
+                                                        echo $info->first_name.' '.$info->middle_name.' '.$info->last_name.' '.$info->suffix;  
+                                                    ?>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td><strong>MBL Balance: </strong></td>
-                                                <td>
-                                                    <strong>
-                                                        {{Number(remaining_balance).toLocaleString('en-US', {
+                                                <td class="fw-bold">MBL Balance:</td>
+                                                <td class="fw-bold">
+                                                    {{
+                                                        Number(remaining_balance).toLocaleString('en-US', {
                                                         style: 'currency',
                                                         currency: 'PHP',
-                                                        })}}
-                                                    </strong>
+                                                        })
+                                                    }}
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td><strong>Billing Amount:</strong></td>
-                                                <td class="t">
-                                                    <strong>
-                                                        {{Number(totalCostLoa).toLocaleString('en-US', {
+                                                <td class="fw-bold">Billing Amount:</td>
+                                                <td class="fw-bold">
+                                                    {{
+                                                        Number(totalCostLoa).toLocaleString('en-US', {
                                                             style: 'currency',
                                                             currency: 'PHP',
-                                                        })}}
-                                                    </strong>
+                                                        })
+                                                    }}
                                                 </td>
                                             </tr>
                                         </table> 
                                     </div>
                                 </div>
                                 <div class="col-md-5 px-4 py-4 text-center">
-                                    <strong><h4>Total</h4></strong>
+                                    <h3 class="fw-bold ls-1">Total</h3>
                                     <span>
-                                        <h3>{{Number(totalCostLoa).toLocaleString('en-US', {
-                                                style: 'currency',
-                                                currency: 'PHP',
-                                            })}}</h3>
+                                        <h3>
+                                            {{
+                                                Number(totalCostLoa).toLocaleString('en-US', {
+                                                    style: 'currency',
+                                                    currency: 'PHP',
+                                                })
+                                            }}
+                                        </h3>
                                         <div v-if="!isReview">
                                             <button class="btn btn-dark" :disabled='isSubmitBilling' @click="activeReview()">Review</button>
                                         </div>
@@ -126,7 +135,7 @@
                                 </div> -->
                                 <div class="col-sm">
                                     <div class="mb-3">
-                                        <label for="inputLastName" class="form-label"><b>Remaining MBL</b></label>
+                                        <label class="fw-bold">Remaining MBL</label>
                                         <input type="text" class="form-control" name="remaining_balance" :value="Number(remaining_balance).toLocaleString('en-US', {
                                                 style: 'currency',
                                                 currency: 'PHP',
@@ -135,7 +144,7 @@
                                 </div>
                                 <div class="col-sm">
                                     <div class="mb-3">
-                                        <label for="inputLastName" class="form-label"><b>Billing #</b></label>
+                                        <label class="fw-bold">Billing #</label>
                                         <input type="text" name="billing_number" class="form-control" readonly value="<?php echo $user_info['billing_number']  ?>">
                                     </div>
                                 </div>
@@ -143,14 +152,14 @@
                             <div class="row" style="margin-left: 7%; margin-right: 7%;">
                                 <div class="col-sm">
                                     <div class="mb-3">
-                                        <label for="inputFirstName" class="form-label"><b>Employer Name</b></label>
+                                        <label class="fw-bold">Employer Name</label>
                                         <input type="text" name="requesting_company" class="form-control" readonly value="Alturas Supermarket Corp." aria-describedby="emailHelp">
                                     </div>
                                 </div>
 
                                 <div class="col-sm">
                                     <div class="mb-3">
-                                        <label for="inputLastName" class="form-label"><b>Date of Service</b></label>
+                                        <label class="fw-bold">Date of Service</label>
                                         <input type="date" class="form-control" name="date_service" readonly value="<?php echo date("Y-m-d"); ?>">
                                     </div>
                                 </div>
@@ -159,13 +168,13 @@
                             <div class="row" style="margin-left: 7%; margin-right: 7%;">
                                 <div class="col-sm">
                                     <div class="mb-3">
-                                        <label for="inputFirstName" class="form-label"><b>Member Name</b></label>
+                                        <label class="fw-bold">Member Name</label>
                                         <input type="text" class="form-control" name="full_name" readonly value="<?php echo $user_info['member']->first_name . ' ' . $user_info['member']->last_name  ?>">
                                     </div>
                                 </div>
                                 <div class="col-sm">
                                     <div class="mb-3">
-                                        <label for="inputLastName" class="form-label"><b>Health Card #</b></label>
+                                        <labe class="fw-bold">Healthcard No.</labe>
                                         <input type="text" class="form-control" name="health_card_no" readonly value="<?php echo $user_info['health_card_no']  ?>">
                                     </div>
                                 </div>
@@ -192,11 +201,15 @@
                                         </th>
                                     </tr> -->
                                     <tr v-for="(ls, index) in loaService">
-                                        <th>{{ls.cost_type}}</th>
-                                        <th>{{Number(loaService[index].cost).toLocaleString('en-US', {
-                                                style: 'currency',
-                                                currency: 'PHP',
-                                            })}}</th>
+                                        <th>{{ ls.cost_type }}</th>
+                                        <th>
+                                            {{
+                                                Number(loaService[index].cost).toLocaleString('en-US', {
+                                                    style: 'currency',
+                                                    currency: 'PHP',
+                                                })
+                                            }}
+                                        </th>
                                         <th>
                                             <button class="btn btn-success" type="button" @click="inActiveReview()">
                                                <i class="mdi mdi-pencil me-1"></i>Edit
@@ -242,7 +255,7 @@
                     <div class="px-3 my-3 d-flex  align-items-center">
                         <a class="cart-item-product" href="#">
                             <div class="cart-item-product-info">
-                                <h3 class="cart-item-product-title">{{ls.cost_type}}</h3>
+                                <h3 class="cart-item-product-title">{{ ls.cost_type }}</h3>
                             </div>
                         </a>
                     </div>
@@ -264,7 +277,6 @@
             </div>
         </div>
     </div>
-
 </div>
 
 
@@ -276,9 +288,9 @@
     createApp({
         data() {
             return {
-                message: '<?= $csrf['hash']; ?>',
-                token_name: '<?= $csrf['name']; ?>',
-                token_hash: '<?= $csrf['hash']; ?>',
+                message: '<?= $csrf['hash'] ?>',
+                token_name: '<?= $csrf['name'] ?>',
+                token_hash: '<?= $csrf['hash'] ?>',
                 loaService: [],
                 $remaining_balance: 0,
                 loaRequestType: null,
@@ -332,7 +344,6 @@
             billingLoaPost() {
                 var bodyFormData = new FormData();
 
-
                 bodyFormData.append(this.token_name, this.token_hash);
                 bodyFormData.append('id', '<?php echo $this->uri->segment(6) ?>');
                 axios.post("<?php echo base_url() ?>healthcare-provider/reports/report-list/ajax/postBillingLoa", bodyFormData)
@@ -340,10 +351,7 @@
                         // this.loaService = response.data.loaService;
                         var recivedResponse = response.data.loaService;
 
-
-
                         recivedResponse.forEach(rr => {
-
                             this.loaService.push(insertData);
                             console.log(insertData);
                         }, );
@@ -351,10 +359,7 @@
                     }, );
             },
 
-
             addToDb() {
-
-
 
                 // **********'billing_no' => "TEST",
                 // **********'emp_id' => "TEST",
@@ -382,10 +387,6 @@
                 //********** notes	
                 //********** date_created	
                 //********** status	
-
-
-
-
 
                 var bodyFormData = new FormData();
 
@@ -420,19 +421,16 @@
                             /* Read more about isConfirmed, isDenied below */
                             if (result.isConfirmed) {
 
-
                                 var personalChargeFormData = new FormData();
                                 personalChargeFormData.append(this.token_name, this.token_hash);
                                 personalChargeFormData.append('emp_id', '<?php echo $this->uri->segment(5) ?>');
                                 personalChargeFormData.append('loa_id', '<?php echo $this->uri->segment(6) ?>');
                                 personalChargeFormData.append('pcharge_amount', this.exceedingBalance);
 
-
                                 axios.post("<?php echo base_url() ?>healthcare-provider/reports/report-list/ajax/billPersonalCharges", personalChargeFormData)
                                     .then(response => {
                                         console.log(response);
                                     }, );
-
 
                                 let pushConsultation = {
                                     ctype_id: '1',
@@ -450,7 +448,6 @@
                                     cost: this.consultation,
                                     bsv_ct_fee: this.consultation
                                 };
-
 
 
                                 this.loaService.push(insertData);

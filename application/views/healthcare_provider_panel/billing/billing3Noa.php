@@ -29,96 +29,85 @@
     <div class="container-fluid">        
         <div class="row">
             <div class="col-12">
-                <form method="post" id="form-id" class="needs-validation" action="<?php echo base_url('healthcare-provider/billing/billing-person/finalBilling'); ?>" onsubmit="submitEquipment()">
-                    <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash(); ?>">
+                <form method="post" id="form-med-services" class="needs-validation" action="<?php echo base_url(); ?>healthcare-provider/billing/billing-person/finalBilling" onsubmit="submitEquipment()">
+                    <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
 
-                    <table id="mt" class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col">Description</th>
-                                <th scope="col">Charges</th>
-                            </tr>
-                        </thead>
-                        <tbody id="survey_options">
-                        </tbody>
-                    </table>
-                    <button type="submit" disabled id="submit-id" class="btn btn-info">
-                        <i class="mdi mdi-content-save me-1"></i>Apply
-                    </button>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="tbl-charges" class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th class="fw-bold">Description</th>
+                                            <th class="fw-bold">Charges</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                                <div class="d-flex justify-content-center">
+                                    <button type="submit" disabled id="submit-id" class="btn btn-info">
+                                        <i class="mdi mdi-content-save me-1"></i>Apply
+                                    </button>
+                                </div> 
+                            </div>
+                        </div>
+                    </div>                    
                 </form>
 
-                <input type="text" id="myInput" onkeyup="searchFunction()" placeholder="Search for names.." title="Type in a name">
-                <table id="myTable" class="table table-hover">
-                    <tr class="header">
-                        <th scope="col">Name</th>
-                        <th scope="col">Type</th>
-                    </tr>
-                    <?php
-                    if (!empty($cost_type)) {
-                        foreach ($cost_type as $ct) :
-                    ?>
-                            <tr>
-                                <td>
-                                    <?php echo $ct->cost_type; ?>
-                                </td>
-                                <td>
-                                    <button class="btn btn-success" id="btn<?php echo $ct->ctype_id ?>" onclick="addEquipment('<?php echo $ct->ctype_id; ?>',' <?php echo $ct->cost_type ?>')">
-                                        <i class="mdi mdi-plus-circle"></i> Add
-                                    </button>
-                                </td>
-                            </tr>
-                    <?php
-                        endforeach;
-                    }
-                    ?>
-                </table>
-            </div>
+                <div class="d-flex justify-content-center mx-5">
+                    <input type="text" id="myInput" onkeyup="searchFunction()" placeholder="Search here for services to avail...">
+                </div>
 
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="myTable" class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="fw-bold">Name</th>
+                                        <th class="fw-bold">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                        if (!empty($cost_type)):
+                                        foreach ($cost_type as $ct) :
+                                    ?>
+                                            <tr>
+                                                <td class="fw-bold">
+                                                    <?= $ct->cost_type; ?>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-success" id="btn<?= $ct->ctype_id ?>" onclick="addService('<?= $ct->ctype_id; ?>',' <?= $ct->cost_type ?>')">
+                                                        <i class="mdi mdi-plus-circle"></i> Add
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                    <?php
+                                        endforeach;
+                                    endif;
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
 </div>
 
 <style>
-    * {
-        box-sizing: border-box;
-    }
-
-    #form-id {
-        margin-bottom: 3%;
-    }
-
     #myInput {
         background-image: url('/css/searchicon.png');
-        background-position: 10px 10px;
         background-repeat: no-repeat;
-        width: 100%;
+        width: 50%;
         font-size: 16px;
-        padding: 12px 20px 12px 40px;
-        border: 1px solid #ddd;
-        margin-bottom: 12px;
-    }
-
-    #myTable {
-        border-collapse: collapse;
-        width: 100%;
-        border: 1px solid #ddd;
-        font-size: 18px;
-    }
-
-    #myTable th,
-    #myTable td {
-        text-align: left;
-        padding: 12px;
-    }
-
-    #myTable tr {
-        border-bottom: 1px solid #ddd;
-    }
-
-    #myTable tr.header,
-    #myTable tr:hover {
-        background-color: #f1f1f1;
+        padding: 10px;
+        border: 1px solid #f1f1f1;
+        margin-bottom: 20px;
+        border-radius: 5px;
     }
 </style>
 
@@ -161,7 +150,6 @@
                     dataType: "json",
                     success: function(res) {
                         console.log(res)
-
                     }
                 })
                 console.log({
@@ -180,28 +168,22 @@
                     emp_id: memberId,
                     amount: input.val()
                 });
-
             }
-
         });
         $("#equipment_cost").val(JSON.stringify(chargesEquip));
-
     }
 
 
-
     function enableInput(x) {
-
         if (document.getElementById('cb' + x).checked) {
             $("." + x).prop("disabled", false);
         } else {
             $("." + x).prop("disabled", true);
             $("." + x).val(0);
         }
-
     }
 
-    function addEquipment(id, name) {
+    function addService(id, name) {
         numberOfRow++;
 
         var trId = "tr" + id;
@@ -219,16 +201,16 @@
             url: baseUrl.replace(/\s/g, ''),
             dataType: "json",
             success: function(response) {
-                $("#mt > tbody").append(
+                $("#tbl-charges > tbody").append(
                     '<tr id="' + finalTrId + '" class="otherInput' + numberOfRow + '">\
-                        <td>\
+                        <td class="fw-bold">\
                             <span id="' + finalctName + '">' + name + '</span>\
                         </td>\
-                        <td>\
-                            <input id="' + finalInId + '" class="inputCT form-control" required type="number" >\
+                        <td class="fw-bold">\
+                            <input type="number" id="' + finalInId + '" class="inputCT form-control" required>\
                         </td>\
                         <td>\
-                            <button onclick="removeEquipment(' + id + ')" class="btn btn-danger" data-bs-toggle="tooltip" title="Click to Remove"><i class="mdi mdi-close "></i></button>\
+                            <button onclick="removeService(' + id + ')" class="btn btn-danger" data-bs-toggle="tooltip" title="Click to Remove"><i class="mdi mdi-close "></i></button>\
                         </td>\
                     </tr>');
                 var stringId = "#btn" + id;
@@ -241,11 +223,9 @@
                 console.log(data);
             }
         });
-
-
     }
 
-    function removeEquipment(id) {
+    function removeService(id) {
         var idRemove = "#tr" + id
         numberOfRow--;
         //var finalidRemove = idRemove.replace(/\s/g, '')
@@ -263,7 +243,7 @@
         $("#addRow").click(function(x) {
             var row = $('<tr class="otherInput' + number + '">' +
                 '<td>Other</td><td><input type="text"  required></td><td></td></tr>');
-            $("#mt > tbody").append(row);
+            $("#tbl-charges > tbody").append(row);
             number++;
 
             $(".inputCT").each(function() {
@@ -277,7 +257,6 @@
                 }
             });
             console.log(chargesEquip)
-
         });
     });
 

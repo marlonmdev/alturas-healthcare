@@ -179,7 +179,7 @@
                                         <th scope="col">Cost</th>
                                         <th scope="col">Action</th>
                                     </tr>
-                                    <tr>
+                                    <!-- <tr>
                                         <th>Consultation</th>
                                         <th>{{ Number(consultation).toLocaleString('en-US', {
                                                 style: 'currency',
@@ -190,7 +190,7 @@
                                                 <i class="mdi mdi-pencil me-1"></i>Edit
                                             </button>
                                         </th>
-                                    </tr>
+                                    </tr> -->
                                     <tr v-for="(ls, index) in loaService">
                                         <th>{{ls.cost_type}}</th>
                                         <th>{{Number(loaService[index].cost).toLocaleString('en-US', {
@@ -223,8 +223,7 @@
 
             <div v-else>
 
-
-                <div class="cart-item d-md-flex justify-content-between">
+                <!-- <div class="cart-item d-md-flex justify-content-between">
                     <div class="px-3 my-3 d-flex  align-items-center">
 
                         <a class="cart-item-product" href="#">
@@ -237,7 +236,7 @@
                     <div class="px-3 my-3 text-center">
                         <div class="cart-item-label">Subtotal</div><span class="text-xl font-weight-medium"> <input class="form-control form-control-sm my-2 mr-3" type="number" placeholder="Amount" required="" v-model="consultation"></span>
                     </div>
-                </div>
+                </div> -->
 
                 <div class="cart-item d-md-flex justify-content-between" v-for="(ls, index) in loaService">
                     <div class="px-3 my-3 d-flex  align-items-center">

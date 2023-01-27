@@ -126,41 +126,13 @@
       success: function(response) {
         const res = JSON.parse(response);
         const base_url = window.location.origin;
-        const {
-          status,
-          token,
-          loa_no,
-          member_mbl,
-          remaining_mbl,
-          first_name,
-          middle_name,
-          last_name,
-          suffix,
-          date_of_birth,
-          age,
-          gender,
-          philhealth_no,
-          blood_type,
-          contact_no,
-          home_address,
-          city_address,
-          email,
-          contact_person,
-          contact_person_addr,
-          contact_person_no,
-          healthcare_provider,
-          loa_request_type,
-          med_services,
-          health_card_no,
-          requesting_company,
-          request_date,
-          chief_complaint,
-          requesting_physician,
-          attending_physician,
-          rx_file,
-          req_status,
-          approved_by,
-          approved_on
+        /* A destructuring assignment. It is a JavaScript expression that makes it possible to unpack values
+        from arrays, or properties from objects, into distinct variables. */
+        const { status, token, loa_no, member_mbl, remaining_mbl, first_name, middle_name, last_name,
+          suffix, date_of_birth, age, gender, philhealth_no, blood_type, contact_no, home_address,
+          city_address, email, contact_person, contact_person_addr, contact_person_no, healthcare_provider,
+          loa_request_type, med_services, health_card_no, requesting_company, request_date, chief_complaint,
+          requesting_physician, attending_physician, rx_file, req_status, approved_by, approved_on
         } = res;
 
         $("#viewLoaModal").modal("show");

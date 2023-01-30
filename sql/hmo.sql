@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 24, 2023 at 08:35 AM
+-- Generation Time: Jan 30, 2023 at 02:32 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -71,7 +71,7 @@ INSERT INTO `applicants` (`app_id`, `emp_id`, `first_name`, `middle_name`, `last
 (5, '23849-2022', 'Renciomar', 'Blaya', 'Dano', '', 'Male', 'Single', '', '1998-07-18', 'Bilar, Bohol', 'Tagbilaran City', '09237423232', 'rencio@dano.com', 'System Programmer II', 5, 'Regular', 'Active', 'HEAD OFFICE', 'Information Technology', 'B+', '168cm', '58kg', 'Seafoods', '8321-47271-121', 'Mama Dano', 'Bilar, Bohol', '09123711341', '2022-01-18', 'Alturas Supermarket Corporation', 'd41763fdb0b96d32c8db5df9c2332143.jpg', '2022-11-14 11:38:59', '2022-11-14 11:38:59'),
 (7, '33754-2022', 'Jason', 'Danie', 'Baldesco', '', 'Male', 'Single', '', '1999-12-08', 'Catigbian, Bohol', 'Tagbilaran City, Bohol', '09078813452', 'jasonb@gmail.com', 'System Analyst I', 5, 'Regular', 'Active', 'HEAD OFFICE', 'Information Technology', 'O', '174cm', '58kg', 'Seafoods, Noodles', '235823-4852-45288', 'Mama Naho', 'Catigbi-an, Bohol', '09108743163', '2022-07-15', 'Alturas Supermarket Corporation', 'ba94fdf83fec6c852115faa73370daad.png', '2022-11-28 07:52:34', '2022-11-28 07:52:34'),
 (8, '37453-2022', 'Marc Jayson', 'Budlat', 'Igcalinos', '', 'Male', 'Single', '', '1997-11-19', 'Dimiao, Bohol', 'Tagbilaran City, Bohol', '09672184627', 'jimboy@gmail.com', 'System Programmer II', 6, 'Regular', 'Active', 'HEAD OFFICE', 'Information Technology', 'B', '152cm', '58kg', 'Chicken Nuggets', '8943-3498-34589', 'Mama Naho', 'Dimiao, Bohol', '09320742638', '2022-08-18', 'Alturas Supermarket Corporation', '22392c7352e8481ed9173181f397b8be.jpg', '2022-11-28 09:08:19', '2022-11-28 09:08:19'),
-(10, '23485-2022', 'Jan', 'Berting', 'Amodia', '', 'Male', 'Married', 'Eula Shin', '1996-09-12', 'Carmen, Bohol', 'Tagbilaran City, Bohol', '09846376563', 'janberting@gmail.com', 'System Programmer I', 6, 'Regular', 'Active', 'HEAD OFFICE', 'Information Technology', 'B', '172cm', '60kg', 'Chicken Nuggets', '84375-347845-34535', 'Mama Berting', 'Carmen, Bohol', '09347534634', '2022-09-14', 'Alturas Supermarket Corporation', '0d13ae4130466cff1e36219bd2f30e6a.jpg', '2022-11-29 06:42:28', '2022-11-29 06:42:28');
+(10, '23485-2022', 'Jan', 'Berting', 'Amodia', '', 'Male', 'Married', 'Eula Shin', '1996-09-12', 'Carmen, Bohol', 'Tagbilaran City, Bohol', '09846376563', 'janberting@gmail.com', 'System Programmer I', 6, 'Regular', 'Active', 'HEAD OFFICE', 'Information Technology', 'B', '172cm', '60kg', 'Chicken Nuggets', '84375-347845-34535', 'Mama Berting', 'Carmen, Bohol', '09347534634', '2022-09-14', 'Alturas Supermarket Corporation', '55bceedad64138e944dbd1377b0e52ae.jpg', '2022-11-29 06:42:28', '2022-11-29 06:42:28');
 
 -- --------------------------------------------------------
 
@@ -507,7 +507,9 @@ INSERT INTO `noa_requests` (`noa_id`, `noa_no`, `emp_id`, `health_card_no`, `req
 (16, 'NOA-00000016', '56313-2022', 'ACN-2022-23412', 'Alturas Supermarket Corporation', 'Marlon', 'Hinampas', 'Muring', '', '1997-10-22', '2022-11-24', '6', 'asfa faifafaiafsasaasfas', '2022-11-25', '', 'Disapproved', '56313-2022', '', '', '', '2022-11-25', '1', 'ilad ra', '2022-11-29'),
 (17, 'NOA-00000017', '23278-2022', 'ACN-2022-23278', 'Alturas Supermarket Corporation', 'George', 'Ayuban', 'Curay', 'Jr.', '1998-04-17', '2022-11-28', '5', 'hello sdjfsdj sdj kgsdjsdk sdgjksdgsd', '2022-11-28', 'No', 'Approved', '56313-2022', '', '', '1', '2022-11-28', '', '', '0000-00-00'),
 (18, 'NOA-00000018', '23278-2022', 'ACN-2022-23278', 'Alturas Supermarket Corporation', 'George', 'Ayuban', 'Curay', 'Jr.', '1998-04-17', '2022-11-11', '4', 'asdasfasfasas', '2022-11-29', 'No', 'Approved', '56313-2022', '', '', '1', '2022-11-29', '', '', '0000-00-00'),
-(19, 'NOA-00000019', '56313-2022', 'ACN-2022-23412', 'Alturas Supermarket Corporation', 'Marlon', 'Hinampas', 'Muring', '', '1997-10-22', '2023-01-05', '5', 'hdioasio dashoif aohfoahiassafaafs asfdsads', '2023-01-05', 'Yes', 'Approved', '56313-2022', '', '', '2', '2023-01-05', '', '', '0000-00-00');
+(19, 'NOA-00000019', '56313-2022', 'ACN-2022-23412', 'Alturas Supermarket Corporation', 'Marlon', 'Hinampas', 'Muring', '', '1997-10-22', '2023-01-05', '5', 'hdioasio dashoif aohfoahiassafaafs asfdsads', '2023-01-05', 'Yes', 'Approved', '56313-2022', '', '', '2', '2023-01-05', '', '', '0000-00-00'),
+(20, 'NOA-00000020', '23764-2022', 'ACN-2022-23764', 'Alturas Supermarket Corporation', 'Ruel', 'Budoy', 'Tumale', 'Jr.', '1997-08-23', '2023-01-29', '5', 'sakit ag ulo ug tiyan', '2023-01-30', '', 'Pending', '23764-2022', '', '', '', '0000-00-00', '', '', '0000-00-00'),
+(21, 'NOA-00000021', '23764-2022', 'ACN-2022-23764', 'Alturas Supermarket Corporation', 'Ruel', 'Budoy', 'Tumale', 'Jr.', '1997-08-23', '2023-01-30', '5', 'Sakit gihapon', '2023-01-30', '', 'Disapproved', '23764-2022', '', '', '', '0000-00-00', '2', 'diagnosis is unclear', '2023-01-30');
 
 -- --------------------------------------------------------
 
@@ -596,7 +598,7 @@ INSERT INTO `user_accounts` (`user_id`, `emp_id`, `full_name`, `user_role`, `dsg
 (22, '32544-2022', 'Lorlie Gwapo Ochavillo ', 'healthcare-provider', '4', '', 'lorlie', '$2y$10$oo3b1O3nMEitemFxbaO1ZeemIXHvIoazBiQJIF.zEKaHa45Tow6N2', 'Active', 0, '', '2022-10-27', '2023-01-13', 'IT SysDev'),
 (23, '00281-2021', 'Ramon Ocsin Ortega ', 'member', '', '', '00281-2021', '$2y$10$M6tdItwvtki8x1qu1gnaSuKcYohObptxUVinCwf1I40R150pVX9bC', 'Active', 0, '', '2022-11-03', '2022-12-07', 'Marlon H. Muring'),
 (24, '23764-2022', 'Ruel Budoy Tumale Jr.', 'member', '', '', '23764-2022', '$2y$10$.4f83fL/D9m.4pi31unpk.oWBahh.Q6oCxqRrxIZz6nWx2RApk3ne', 'Active', 0, '', '2022-11-28', '2022-12-07', 'IT SysDev'),
-(31, '', 'Dr. Michael D. Uy', 'company-doctor', '', '1', 'docmike', '$2y$10$ESojuDH6f8Eiz99eZtAeVeoHuZY8QI3nb7Wbc1.L5/WVRUEJkAn3K', 'Active', 0, '', '2022-12-02', '2023-01-12', 'Dr. Michael D. Uy'),
+(31, '', 'Dr. Michael D. Uy', 'company-doctor', '', '1', 'doctor', '$2y$10$ESojuDH6f8Eiz99eZtAeVeoHuZY8QI3nb7Wbc1.L5/WVRUEJkAn3K', 'Active', 0, '', '2022-12-02', '2023-01-27', 'Dr. Michael D. Uy'),
 (32, '', 'Dr. Nonaluz Pizarras', 'company-doctor', '', '2', 'drnona', '$2y$10$pLzJ7lOD.bshnFnke3ff/exRajtOknhpR9mqddW4iH2XCx2p0q.Ji', 'Active', 0, '', '2022-12-02', '2022-12-02', ''),
 (36, '38343-2022', 'Gedym Mae Sab ', 'member', '', '', '38343-2022', '$2y$10$ujcJZQEJcJQjbk0duru1l.DpzmIn4zFAedY6PpI1XCvPmAb.y7DEm', 'Active', 0, '', '2023-01-05', '2023-01-13', 'IT SysDev');
 
@@ -1055,7 +1057,7 @@ ALTER TABLE `members`
 -- AUTO_INCREMENT for table `noa_requests`
 --
 ALTER TABLE `noa_requests`
-  MODIFY `noa_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `noa_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `personal_charges`

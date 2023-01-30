@@ -5,8 +5,8 @@ class Billing_controller extends CI_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->load->model('healthcare_provider/Billing_model');
-        $this->load->model('healthcare_provider/Loa_model');
+        $this->load->model('healthcare_provider/billing_model');
+        $this->load->model('healthcare_provider/loa_model');
         $user_role = $this->session->userdata('user_role');
         $logged_in = $this->session->userdata('logged_in');
         if ($logged_in !== true && $user_role !== 'healthcare-provider') {
@@ -23,135 +23,111 @@ class Billing_controller extends CI_Controller {
         exit();
     }
 
-    function billing1FindMember() {
+    function billing_search_member() {
         $data['user_role'] = $this->session->userdata('user_role');
         $this->load->view('templates/header', $data);
-        $this->load->view('healthcare_provider_panel/billing/billing1FindMember');
+        $this->load->view('healthcare_provider_panel/billing/search_member');
         $this->load->view('templates/footer');
     }
 
-    function billing2ResultMember() {
+    function search_member_by_name() {
         $this->security->get_csrf_hash();
-        $firstNameMember = $this->input->post('firstNameMember');
-        $lastNameMember = $this->input->post('lastNameMember');
-        $dateMember =  $this->input->post('dateMember');
-        $idHospital =  $this->session->userdata('dsg_hcare_prov');
-        $member = $this->Billing_model->find_billing_member($firstNameMember, $lastNameMember, $dateMember);
+        $first_name = $this->security->xss_clean($this->input->post('first_name'));
+        $last_name = $this->security->xss_clean($this->input->post('last_name'));
+        $date_of_birth = $this->security->xss_clean($this->input->post('date_of_birth'));
+        $hcare_provider_id = $this->session->userdata('dsg_hcare_prov');
+        $member = $this->billing_model->get_member_by_name($first_name, $last_name, $date_of_birth);
 
-        if ($member) {
-            $memberMBL = $this->Billing_model->find_mbl($member->emp_id);
-            $hospitalName = $this->Billing_model->find_hospital($idHospital);
-            $userLoaList = $this->Billing_model->findUserLoa($member->emp_id, $idHospital);
-            $userNoaList = $this->Billing_model->findUserNoa($member->emp_id, $idHospital);
-            $billing_number = "BLN-" . strtotime(date('Y-m-d h:i:s'));
-            // $billing_number = "RHI-" . strtotime(date('Y-m-d h:i:sa')) . $member->member_id;
-
-            $this->session->set_userdata(array(
-                'bmember' => $member,
-                'bmemberMBL' => $memberMBL,
-                'bhospital' => $hospitalName,
-                'bhealth_card_no' => $member->health_card_no,
-                'bbilling_number' => $billing_number
-            ));
-
-            $data['user_role'] = $this->session->userdata('user_role');
-
-            $data['member'] = $member;
-            $data['memberMBL'] = $memberMBL;
-            $data['hospital'] = $hospitalName;
-            $data['billing_number'] = $billing_number;
-            $data['userLoaList'] = $userLoaList;
-            $data['userNoaList'] = $userNoaList;
-
-
-            $this->load->view('templates/header', $data);
-            $this->load->view('healthcare_provider_panel/billing/billing2ResultMember', array('data' => $data));
-            $this->load->view('templates/footer');
-        } else {
-            $arr = array('error' => 'No Members Found!');
+        if (!$member) {
+            $arr = ['error' => 'No Members Found!'];
             $this->session->set_flashdata($arr);
             $this->redirectBack();
+        } else {
+            $data['member'] = $member;
+            $data['user_role'] = $this->session->userdata('user_role');
+            $data['member_mbl'] = $member_mbl = $this->billing_model->get_member_mbl($member->emp_id);
+            $data['hp_name'] = $hp_name = $this->billing_model->get_healthcare_provider($hcare_provider_id);
+            $data['loa_requests'] = $this->billing_model->get_member_loa($member->emp_id, $hcare_provider_id);
+            $data['noa_requests'] = $this->billing_model->get_member_noa($member->emp_id, $hcare_provider_id);
+            $data['billing_no'] = $billing_no = "BLN-" . strtotime(date('Y-m-d h:i:s'));
+
+            $this->session->set_userdata([
+                'b_member' => $member,
+                'b_member_MBL' => $member_mbl,
+                'b_hcare_provider' => $hp_name,
+                'b_healthcard_no' => $member->health_card_no,
+                'b_billing_no' => $billing_no
+            ]);
+
+            $this->load->view('templates/header', $data);
+            $this->load->view('healthcare_provider_panel/billing/search_member_result');
+            $this->load->view('templates/footer');
         }
     }
 
-    function billing2ResultMemberById() {
+    function search_member_by_healthcard() {
         $this->security->get_csrf_hash();
+        $healthcard_no = $this->security->xss_clean($this->input->post('healthcard_no'));
+        $hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
+        $member = $this->billing_model->get_member_by_healthcard($healthcard_no);
 
-        $healthCardNo = $this->input->post('healthCardNo');
-
-        $idHospital =  $this->session->userdata('dsg_hcare_prov');
-        $member = $this->Billing_model->find_billing_member_by_healthcard($healthCardNo);
-
-        if ($member) {
-            $memberMBL = $this->Billing_model->find_mbl($member->emp_id);
-            $hospitalName = $this->Billing_model->find_hospital($idHospital);
-            $userLoaList = $this->Billing_model->findUserLoa($member->emp_id, $idHospital);
-            $userNoaList = $this->Billing_model->findUserNoa($member->emp_id, $idHospital);
-             $billing_number = "BLN-" . strtotime(date('Y-m-d h:i:s'));
-            // $billing_number = "RHI-" . strtotime(date('Y-m-d h:i:sa')) . $member->member_id;
-
-            $this->session->set_userdata(array(
-                'bmember' => $member,
-                'bmemberMBL' => $memberMBL,
-                'bhospital' => $hospitalName,
-                'bhealth_card_no' => $member->health_card_no,
-                'bbilling_number' => $billing_number
-            ));
-
-            $data['user_role'] = $this->session->userdata('user_role');
-
-            $data['member'] = $member;
-            $data['memberMBL'] = $memberMBL;
-            $data['hospital'] = $hospitalName;
-            $data['billing_number'] =  $billing_number;
-            $data['userLoaList'] = $userLoaList;
-            $data['userNoaList'] = $userNoaList;
-
-            $this->load->view('templates/header', $data);
-            $this->load->view('healthcare_provider_panel/billing/billing2ResultMember.php', array('data' => $data));
-            $this->load->view('templates/footer');
-        } else {
-            $arr = array('error' => 'No Members Found!');
+        if (!$member) {
+            $arr = ['error' => 'No Members Found!'];
             $this->session->set_flashdata($arr);
             $this->redirectBack();
+        } else {
+            $data['member'] = $member;
+            $data['user_role'] = $this->session->userdata('user_role');
+            $data['member_mbl'] = $member_mbl = $this->billing_model->get_member_mbl($member->emp_id);
+            $data['hp_name'] = $hp_name = $this->billing_model->get_healthcare_provider($hcare_provider_id);
+            $data['loa_requests'] = $this->billing_model->get_member_loa($member->emp_id, $hcare_provider_id);
+            $data['noa_requests'] = $this->billing_model->get_member_noa($member->emp_id, $hcare_provider_id);
+            $data['billing_no'] = $billing_no = "BLN-" . strtotime(date('Y-m-d h:i:s'));
+
+            $this->session->set_userdata([
+                'b_member' => $member,
+                'b_member_mbl' => $member_mbl,
+                'b_hcare_provider' => $hp_name,
+                'b_healthcard_no' => $member->health_card_no,
+                'b_billing_no' => $billing_no
+            ]);
+
+            $this->load->view('templates/header', $data);
+            $this->load->view('healthcare_provider_panel/billing/search_member_result');
+            $this->load->view('templates/footer');
         }
     }
 
-    function billing3BillLoa() {
+    function bill_member_loa() {
         $this->security->get_csrf_hash();
+        // $this->cart->destroy();
+        // $this->session->unset_userdata(array('equipments'));
+        $loa_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+        // $loa_id = $this->uri->segment(5);
+        // $billing_no = $this->uri->segment(6);
+        $billing_no = $this->input->post('billing_no');
+        $loa = $this->billing_model->get_loa_to_bill($loa_id);
+        $loa_med_services = $loa["med_services"];
+        $payload_med_services = [];
+        $exploded_med_services = explode(";", $loa_med_services);
 
-        $this->cart->destroy();
-        $this->session->unset_userdata(array('equipments'));
-
-        $loa_id = $this->uri->segment(6);
-        $billing_number = $this->uri->segment(7);
-        $billingLoaResultDb = $this->Billing_model->billingLoa($loa_id);
-        $billingLoaResult = $billingLoaResultDb["med_services"];
-        $payLoadMedService = array();
-        $expodedMedServices = explode(";", $billingLoaResult);
-
-        foreach ($expodedMedServices as $extractMedServicesId) :
-            $resultMedServices = $this->Billing_model->getCostType($extractMedServicesId);
-            array_push($payLoadMedService, $resultMedServices);
+        foreach ($exploded_med_services as $ctype_id) :
+            $cost_types = $this->billing_model->get_cost_type_by_id($ctype_id);
+            array_push($payload_med_services, $cost_types);
         endforeach;
 
-        $cost_type = $this->Billing_model->find_cost_type();
-
-        $data['cost_type'] = $cost_type;
-        $data['loaService'] = $payLoadMedService;
-        $data['loaRequestType'] = $billingLoaResultDb["loa_request_type"];
-        $data['memberMBL'] = $this->session->userdata('bmemberMBL');
         $data['user_role'] = $this->session->userdata('user_role');
-        $data['user_info'] =
-            array(
-                'member' => $this->session->userdata('bmember'),
-                'remaining_balance' => $this->session->userdata('bmemberMBL'),
-                'health_card_no' => $this->session->userdata('bhealth_card_no'),
-                'billing_number' => $billing_number,
-            );
+        $data['cost_types'] = $this->billing_model->get_all_cost_types();
+        $data['loa_services'] = $payload_med_services;
+        $data['loa_request_type'] = $loa["loa_request_type"];
+        $data['member_mbl'] = $this->session->userdata('b_member_mbl');
+        $data['member'] = $this->session->userdata('b_member');
+        $data['remaining_balance'] = $this->session->userdata('b_member_mbl');
+        $data['healthcard_no'] = $this->session->userdata('b_healthcard_no');
+        $data['billing_no'] = $this->session->userdata('b_billing_no');
 
         $this->load->view('templates/header', $data);
-        $this->load->view('healthcare_provider_panel/billing/billing3Loa.php', array('data' => $data));
+        $this->load->view('healthcare_provider_panel/billing/bill_member_loa');
         $this->load->view('templates/footer');
     }
 
@@ -179,7 +155,7 @@ class Billing_controller extends CI_Controller {
             'intialBillingInfo' => $member
         ));
 
-        $cost_type = $this->Billing_model->find_cost_type();
+        $cost_type = $this->billing_model->get_all_cost_types();
         $data['member'] = $member;
         $data['cost_type'] = $cost_type;
         $data['page_title'] = 'HMO - HealthCare Provider';
@@ -194,7 +170,7 @@ class Billing_controller extends CI_Controller {
     function billing3NoaReview() {
         $this->security->get_csrf_hash();
         $data['payload'] = $this->session->userdata('intialBillingInfo');
-        $data['cost_type'] = $this->Billing_model->find_cost_type();
+        $data['cost_type'] = $this->billing_model->find_cost_type();
         $data['user_role'] = $this->session->userdata('user_role');
         $data['equipments'] = $this->session->userdata('equipments');
 
@@ -238,7 +214,7 @@ class Billing_controller extends CI_Controller {
                 'status' => 'Pending'
             );
 
-            $this->Billing_model->loa_personal_charges($perosonalCharges);
+            $this->billing_model->loa_personal_charges($perosonalCharges);
         }
 
         $billingData = array(
@@ -263,11 +239,11 @@ class Billing_controller extends CI_Controller {
                 'bsv_cost_types' => $extract['id'],
                 'bsv_ct_fee' => $extract['price'],
             );
-            $this->Billing_model->loa_cost_type_by($dataSave);
+            $this->billing_model->loa_cost_type_by($dataSave);
         }
 
-        $this->Billing_model->close_billing_noa_requests($this->input->post('noa_id'));
-        $this->Billing_model->pay_billing_member($billingData);
+        $this->billing_model->close_billing_noa_requests($this->input->post('noa_id'));
+        $this->billing_model->pay_billing_member($billingData);
         redirect('healthcare-provider/billing/billing-person', 'refresh');
     }
 
@@ -276,7 +252,7 @@ class Billing_controller extends CI_Controller {
         $token = $this->security->get_csrf_hash();
 
         $id = $this->uri->segment(6);
-        $data = $this->Billing_model->addEquipment($id);
+        $data = $this->billing_model->addEquipment($id);
         $res = array('token' => $token, 'name' => $data['cost_type']);
         $this->cart->insert($res);
         echo json_encode($res);
@@ -322,18 +298,18 @@ class Billing_controller extends CI_Controller {
 
         //$loa_id = $this->uri->segment(6);
         $loa_id = $this->input->post('id');
-        $billingLoaResultDb = $this->Billing_model->billingLoa($loa_id);
+        $billingLoaResultDb = $this->billing_model->get_loa_to_bill($loa_id);
         $billingLoaResult = $billingLoaResultDb["med_services"];
 
         $payLoadMedService = array();
         $expodedMedServices = explode(";", $billingLoaResult);
 
         foreach ($expodedMedServices as $extractMedServicesId) :
-            $resultMedServices = $this->Billing_model->getCostType($extractMedServicesId);
+            $resultMedServices = $this->billing_model->get_cost_type($extractMedServicesId);
             array_push($payLoadMedService, $resultMedServices);
         endforeach;
 
-        $cost_type = $this->Billing_model->find_cost_type();
+        $cost_type = $this->billing_model->find_cost_type();
 
         $data['page_title'] = 'HMO - HealthCare Provider';
         $data['loaService'] = $payLoadMedService;
@@ -361,7 +337,7 @@ class Billing_controller extends CI_Controller {
             'emp_id' => $this->session->userdata('bmember')->emp_id,
             'billing_date' => date("Y-m-d"),
         );
-        $this->Billing_model->loa_cost_type_by($loaCostBy);
+        $this->billing_model->loa_cost_type_by($loaCostBy);
         echo json_encode($loaCostBy);
     }
 
@@ -379,7 +355,7 @@ class Billing_controller extends CI_Controller {
             'status' => 'Pending'
         );
 
-        $this->Billing_model->loa_personal_charges($perosonalCharges);
+        $this->billing_model->loa_personal_charges($perosonalCharges);
         echo json_encode($perosonalCharges);
     }
 
@@ -392,7 +368,7 @@ class Billing_controller extends CI_Controller {
         $total_bill = $this->input->post('total_bill');
         $idHospital =  $this->session->userdata('dsg_hcare_prov');
 
-        $this->Billing_model->close_billing_loa_requests($loa_id);
+        $this->billing_model->close_get_loa_to_bill_requests($loa_id);
 
         $billingSchema = array(
             'billing_no' => $this->session->userdata('bbilling_number'),
@@ -407,7 +383,7 @@ class Billing_controller extends CI_Controller {
             'billed_by' => $this->session->userdata('fullname'),
             'billing_date' =>  date("Y-m-d")
         );
-        echo json_encode($this->Billing_model->pay_billing_member($billingSchema));
+        echo json_encode($this->billing_model->pay_billing_member($billingSchema));
     }
 
 

@@ -1,109 +1,101 @@
 <?php
+defined('BASEPATH') or exit('No direct script access allowed');
 
+class Billing_model extends CI_Model {
 
-class Billing_model extends CI_Model
-{
-
-    public function find_billing_member($firstNameMember, $lastNameMember, $dateMember)
-    {
-        $authA = $this->db->get_where('members', array('first_name' => $firstNameMember, 'last_name' => $lastNameMember, 'date_of_birth' => $dateMember))->row();
-        return $authA;
+    function get_member_by_name($first_name, $last_name, $date_of_birth) {
+        $query = $this->db->get_where('members', ['first_name' => $first_name, 'last_name' => $last_name, 'date_of_birth' => $date_of_birth]);
+        return $query->row();
     }
 
-    public function find_billing_member_by_healthcard($healthCardNo)
-    {
-        $authA = $this->db->get_where('members', array('health_card_no' => $healthCardNo))->row();
-        return $authA;
+    function get_member_by_healthcard($healthcard_no) {
+        $query = $this->db->get_where('members', ['health_card_no' => $healthcard_no]);
+        return $query->row();
     }
 
 
-    public function find_hospital($id)
-    {
-        $hospitalName = $this->db->get_where('healthcare_providers', array('hp_id' => $id))->row();
-        return $hospitalName;
+    function get_healthcare_provider($hcare_provider_id) {
+        $query = $this->db->get_where('healthcare_providers', ['hp_id' => $hcare_provider_id]);
+        return $query->row();
     }
 
-    public function find_mbl($id)
-    {
-        $hospitalName = $this->db->get_where('max_benefit_limits', array('emp_id' => $id))->row();
-        return $hospitalName;
+    function get_member_mbl($emp_id) {
+        $query = $this->db->get_where('max_benefit_limits', ['emp_id' => $emp_id]);
+        return $query->row();
     }
 
-    public function findUserLoa($id, $idHospital)
-    {
-        return $this->db->get_where('loa_requests', array('emp_id' => $id, 'hcare_provider' => $idHospital))->result();
-    }
-    public function billingLoa($id)
-    {
-        return $this->db->get_where('loa_requests', array('loa_id' => $id))->row_array();
-    }
+    function get_member_loa($emp_id, $hcare_provider_id) {
+        $this->db->select('loa_id, loa_no, emp_id, request_date, hcare_provider, status')
+                 ->from('loa_requests')
+                 ->where('emp_id', $emp_id)
+                 ->where('hcare_provider', $hcare_provider_id)
+                 ->order_by('loa_id', 'DESC');
+        return $this->db->get()->result_array();
 
-    public function getCostType($id)
-    {
-        return $this->db->get_where('cost_types', array('ctype_id' => $id))->row_array();
     }
-
-    public function findUserNoa($id, $idHospital)
-    {
-        return $this->db->get_where('noa_requests', array('emp_id' => $id, 'hospital_id' => $idHospital))->result();
+    function get_loa_to_bill($loa_id) {
+        $query = $this->db->get_where('loa_requests', ['loa_id' => $loa_id]);
+        return $query->row_array();
     }
 
-    public function find_cost_type()
-    {
-        $costTypes = $this->db->get('cost_types')->result();
-        return $costTypes;
+    function get_cost_type_by_id($ctype_id) {
+        $query = $this->db->get_where('cost_types', ['ctype_id' => $ctype_id]);
+        return $query->row_array();
+    }
+
+    function get_member_noa($emp_id, $hcare_provider_id) {
+         $this->db->select('noa_id, noa_no, emp_id, request_date, status, hospital_id')
+                 ->from('noa_requests')
+                 ->where('emp_id', $emp_id)
+                 ->where('hospital_id', $hcare_provider_id)
+                 ->order_by('noa_id', 'DESC');
+        return $this->db->get()->result_array();
+    }
+
+    function get_all_cost_types() {
+        $query = $this->db->get('cost_types');
+        return $query->result();
     }
 
 
-    public function pay_billing_member($data)
-    {
+    function pay_billing_member($data) {
         return $this->db->insert('billing', $data);
     }
 
-    public function addEquipment($id)
-    {
-        return $this->db->get_where('cost_types', array('ctype_id' => $id))->row_array();
+    function addEquipment($id) {
+        $query = $this->db->get_where('cost_types', array('ctype_id' => $id));
+        return $query->row_array();
     }
 
-    public function create_billing($post_data)
-    {
+    function create_billing($post_data) {
         return $this->db->insert('billing', $post_data);
     }
 
-    public function loa_cost_type_by($cost_type)
-    {
+    function loa_cost_type_by($cost_type) {
         return $this->db->insert('billing_services', $cost_type);
     }
 
-    public function loa_personal_charges($personal_charges)
-    {
+    function loa_personal_charges($personal_charges) {
 
         return $this->db->insert('personal_charges', $personal_charges);
     }
 
-
-    public function close_billing_loa_requests($id)
-    {
-        $this->db->set('status', 'Closed');
-        $this->db->where('loa_id', $id);
-        return $this->db->update('loa_requests'); // gives UPDATE `mytable` SET `field` = 'field+1' WHERE `id` = 2 
-
+    function close_billing_loa_requests($id) {
+        $this->db->set('status', 'Closed')
+                 ->where('loa_id', $id);
+        return $this->db->update('loa_requests');
     }
 
-    public function close_billing_noa_requests($id)
-    {
-        $this->db->set('status', 'Closed');
-        $this->db->where('noa_id', $id);
-        return $this->db->update('noa_requests'); // gives UPDATE `mytable` SET `field` = 'field+1' WHERE `id` = 2 
-
+    function close_billing_noa_requests($id) {
+        $this->db->set('status', 'Closed')
+                 ->where('noa_id', $id);
+        return $this->db->update('noa_requests');
     }
 
-    public function billing_count($id)
-    {
-        $this->db->select('*');
-        $this->db->from('billing');
-        $this->db->where('hp_id', $id);
-
+    function billing_count($id) {
+        $this->db->select('*')
+                 ->from('billing')
+                 ->where('hp_id', $id);
         $query = $this->db->get();
         return $query->result();
     }

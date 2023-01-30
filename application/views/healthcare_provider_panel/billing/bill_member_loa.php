@@ -59,10 +59,8 @@
                                                     Patient Name:
                                                 </td>
                                                 <td class="fw-bold">
-                                                    <?php
-                                                        $info = $user_info['member'];
-
-                                                        echo $info->first_name.' '.$info->middle_name.' '.$info->last_name.' '.$info->suffix;  
+                                                    <?=
+                                                        $member->first_name.' '.$member->middle_name.' '.$member->last_name.' '.$member->suffix;  
                                                     ?>
                                                 </td>
                                             </tr>
@@ -145,18 +143,11 @@
                                 <div class="col-sm">
                                     <div class="mb-3">
                                         <label class="fw-bold">Billing #</label>
-                                        <input type="text" name="billing_number" class="form-control" readonly value="<?php echo $user_info['billing_number']  ?>">
+                                        <input type="text" name="billing_number" class="form-control" readonly>
                                     </div>
                                 </div>
                             </div>
                             <div class="row" style="margin-left: 7%; margin-right: 7%;">
-                                <div class="col-sm">
-                                    <div class="mb-3">
-                                        <label class="fw-bold">Employer Name</label>
-                                        <input type="text" name="requesting_company" class="form-control" readonly value="Alturas Supermarket Corp." aria-describedby="emailHelp">
-                                    </div>
-                                </div>
-
                                 <div class="col-sm">
                                     <div class="mb-3">
                                         <label class="fw-bold">Date of Service</label>
@@ -169,13 +160,13 @@
                                 <div class="col-sm">
                                     <div class="mb-3">
                                         <label class="fw-bold">Member Name</label>
-                                        <input type="text" class="form-control" name="full_name" readonly value="<?php echo $user_info['member']->first_name . ' ' . $user_info['member']->last_name  ?>">
+                                        <input type="text" class="form-control" name="full_name" readonly>
                                     </div>
                                 </div>
                                 <div class="col-sm">
                                     <div class="mb-3">
                                         <labe class="fw-bold">Healthcard No.</labe>
-                                        <input type="text" class="form-control" name="health_card_no" readonly value="<?php echo $user_info['health_card_no']  ?>">
+                                        <input type="text" class="form-control" name="health_card_no" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -200,20 +191,20 @@
                                             </button>
                                         </th>
                                     </tr> -->
-                                    <tr v-for="(ls, index) in loaService">
+                                    <tr v-for="(ls, index) in loa_services">
                                         <th>{{ ls.cost_type }}</th>
                                         <th>
                                             {{
-                                                Number(loaService[index].cost).toLocaleString('en-US', {
+                                                Number(loa_services[index].cost).toLocaleString('en-US', {
                                                     style: 'currency',
                                                     currency: 'PHP',
                                                 })
                                             }}
                                         </th>
                                         <th>
-                                            <button class="btn btn-success" type="button" @click="inActiveReview()">
+                                            <!-- <button class="btn btn-success" type="button" @click="inActiveReview()">
                                                <i class="mdi mdi-pencil me-1"></i>Edit
-                                            </button>
+                                            </button> -->
                                         </th>
                                     </tr>
 
@@ -251,7 +242,7 @@
                     </div>
                 </div> -->
 
-                <div class="cart-item d-md-flex justify-content-between" v-for="(ls, index) in loaService">
+                <div class="cart-item d-md-flex justify-content-between" v-for="(ls, index) in loa_services">
                     <div class="px-3 my-3 d-flex  align-items-center">
                         <a class="cart-item-product" href="#">
                             <div class="cart-item-product-info">
@@ -291,9 +282,9 @@
                 message: '<?= $csrf['hash'] ?>',
                 token_name: '<?= $csrf['name'] ?>',
                 token_hash: '<?= $csrf['hash'] ?>',
-                loaService: [],
+                loa_services: [],
                 $remaining_balance: 0,
-                loaRequestType: null,
+                loa_request_type: null,
                 total: 0,
                 consultation: 0,
                 isSubmit: true,
@@ -319,12 +310,12 @@
                     .then(response => {
 
                         // this.loaService = response.data.loaService;
-                        var recivedResponse = response.data.loaService;
+                        var recievedResponse = response.data.loa_services;
 
                         console.log(response.data)
-                        this.remaining_balance = response.data.memberMBL.remaining_balance;
+                        this.remaining_balance = response.data.member_mbl.remaining_balance;
                         console.log(this.remaining_balance);
-                        recivedResponse.forEach(rr => {
+                        recievedResponse.forEach(rr => {
                             var insertData = {
                                 ctype_id: rr.ctype_id,
                                 cost_type: rr.cost_type,

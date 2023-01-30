@@ -13,7 +13,7 @@
               ">
                 <a
                   class="sidebar-link"
-                  href="<?php echo base_url(); ?>healthcare-provider/billing/billing-person"
+                  href="<?php echo base_url(); ?>healthcare-provider/billing"
                   aria-expanded="false"
                   ><i class="mdi mdi-receipt"></i
                   ><span class="hide-menu">Billing</span>

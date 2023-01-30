@@ -96,19 +96,20 @@ $route['healthcare-provider/search-member/name'] = 'healthcare_provider/search_c
 
 //Member Profile
 // $route['healthcare-provider/dashboard'] = 'healthcare_provider/Member_profile_controller/memberProfile';
-$route['healthcare-provider/profile/view']['post'] = 'healthcare_provider/Member_profile_controller/memberProfileInfo';
-$route['healthcare-provider/profile/viewId']['post'] = 'healthcare_provider/Member_profile_controller/memberProfileInfoById';
-$route['healthcare-provider/profile/view/mbl']['post']  = 'healthcare_provider/Member_profile_controller/memberProfileInfoMbl';
+// $route['healthcare-provider/profile/view']['post'] = 'healthcare_provider/Member_profile_controller/memberProfileInfo';
+// $route['healthcare-provider/profile/viewId']['post'] = 'healthcare_provider/Member_profile_controller/memberProfileInfoById';
+// $route['healthcare-provider/profile/view/mbl']['post']  = 'healthcare_provider/Member_profile_controller/memberProfileInfoMbl';
 
 //Billing Profile
 
-$route['healthcare-provider/billing/billing-person'] = 'healthcare_provider/Billing_controller/billing1FindMember';
-$route['healthcare-provider/billing/billing-person/find'] = 'healthcare_provider/Billing_controller/billing2ResultMember';
-$route['healthcare-provider/billing/billing-person/find-by-id']  = 'healthcare_provider/Billing_controller/billing2ResultMemberById';
-$route['healthcare-provider/billing/billing-person/bill-loa/(:any)/(:any)/(:any)'] = 'healthcare_provider/Billing_controller/billing3BillLoa';
-$route['healthcare-provider/billing/billing-person/equipment']  = 'healthcare_provider/Billing_controller/billing3BillNoa';
-$route['healthcare-provider/billing/billing-person/finalBilling']  = 'healthcare_provider/Billing_controller/billing3NoaReview';
-$route['healthcare-provider/billing/billing-person/finish']['post']  = 'healthcare_provider/Billing_controller/billing5Final';
+$route['healthcare-provider/billing'] = 'healthcare_provider/billing_controller/billing_search_member';
+$route['healthcare-provider/billing/search-by-healthcard']  = 'healthcare_provider/billing_controller/search_member_by_healthcard';
+$route['healthcare-provider/billing/search-by-name'] = 'healthcare_provider/billing_controller/search_member_by_name';
+// $route['healthcare-provider/billing/bill-loa/(:any)/(:any)/(:any)'] = 'healthcare_provider/billing_controller/bill_member_loa';
+$route['healthcare-provider/billing/bill-loa/(:any)'] = 'healthcare_provider/billing_controller/bill_member_loa';
+$route['healthcare-provider/billing/billing-person/equipment']  = 'healthcare_provider/billing_controller/billing3BillNoa';
+$route['healthcare-provider/billing/billing-person/finalBilling']  = 'healthcare_provider/billing_controller/billing3NoaReview';
+$route['healthcare-provider/billing/billing-person/finish']['post']  = 'healthcare_provider/billing_controller/billing5Final';
 
 // LOA Pages
 $route['healthcare-provider/loa-requests/pending'] = 'healthcare_provider/pages_controller/pending_loa_requests';

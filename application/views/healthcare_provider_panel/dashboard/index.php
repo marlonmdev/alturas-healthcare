@@ -47,7 +47,7 @@
                 <div class="icon">
                   <i class="mdi mdi-file-document" aria-hidden="true"></i>
                 </div>
-                <a href="<?= base_url() ?>healthcare-provider/loa-requests/pending" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="<?php echo base_url() ?>healthcare-provider/loa-requests/approved" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
               </div>
             </div>
             
@@ -60,7 +60,7 @@
                 <div class="icon">
                   <i class="mdi mdi-file-chart" aria-hidden="true"></i>
                 </div>
-                <a href="<?= base_url() ?>healthcare-provider/noa-requests/pending" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="<?php echo base_url() ?>healthcare-provider/noa-requests/approved" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
               </div>
             </div>
 

@@ -65,7 +65,7 @@
                                                                 </div>
                                                             </td>
                                                         <?php } else { ?>
-                                                            <td><span class="badge bg-success">Done</span></td>
+                                                            <td><span class="badge bg-success px-2">Done</span></td>
                                                         <?php } ?>
 
                                                     </tr>
@@ -94,7 +94,7 @@
                                                                 </div>
                                                             </td>
                                                         <?php } else { ?>
-                                                            <td><span class="badge bg-success py-2">Done</span></td>
+                                                            <td><span class="badge bg-success px-2">Done</span></td>
                                                         <?php } ?>
 
                                                     </tr>

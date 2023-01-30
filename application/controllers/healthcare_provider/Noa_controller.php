@@ -3,9 +3,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Noa_controller extends CI_Controller {
 
-    function __construct() {
+	function __construct() {
 		parent::__construct();
-        $this->load->model('healthcare_provider/noa_model');
+				$this->load->model('healthcare_provider/noa_model');
 		$user_role = $this->session->userdata('user_role');
 		$logged_in = $this->session->userdata('logged_in');
 		if ($logged_in !== true && $user_role !== 'healthcare-provider') {
@@ -13,10 +13,10 @@ class Noa_controller extends CI_Controller {
 		}
 	}
 
-    function fetch_pending_noa_requests() {
+  function fetch_pending_noa_requests() {
 		$this->security->get_csrf_hash();
 		$status = 'Pending';
-        $hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
+    $hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
 		$list = $this->noa_model->get_datatables($status, $hcare_provider_id);
 		$data = [];
 		foreach ($list as $noa) {

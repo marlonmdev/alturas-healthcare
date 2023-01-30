@@ -43,8 +43,7 @@ class Billing_controller extends CI_Controller {
             $hospitalName = $this->Billing_model->find_hospital($idHospital);
             $userLoaList = $this->Billing_model->findUserLoa($member->emp_id, $idHospital);
             $userNoaList = $this->Billing_model->findUserNoa($member->emp_id, $idHospital);
-            $billing_number = "BLN-" . strtotime(date('Y-m-d h:i:s'));
-            // $billing_number = "RHI-" . strtotime(date('Y-m-d h:i:sa')) . $member->member_id;
+            $billing_number = "RHI-" . strtotime(date('Y-m-d h:i:sa')) . $member->member_id;
 
             $this->session->set_userdata(array(
                 'bmember' => $member,
@@ -87,8 +86,7 @@ class Billing_controller extends CI_Controller {
             $hospitalName = $this->Billing_model->find_hospital($idHospital);
             $userLoaList = $this->Billing_model->findUserLoa($member->emp_id, $idHospital);
             $userNoaList = $this->Billing_model->findUserNoa($member->emp_id, $idHospital);
-             $billing_number = "BLN-" . strtotime(date('Y-m-d h:i:s'));
-            // $billing_number = "RHI-" . strtotime(date('Y-m-d h:i:sa')) . $member->member_id;
+            $billing_number = "RHI-" . strtotime(date('Y-m-d h:i:sa')) . $member->member_id;
 
             $this->session->set_userdata(array(
                 'bmember' => $member,

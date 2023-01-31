@@ -109,18 +109,9 @@ class Billing_controller extends CI_Controller {
         $hcare_provider = $this->billing_model->get_healthcare_provider_by_id($this->session->userdata('dsg_hcare_prov'));
 
         $loa = $this->billing_model->get_loa_to_bill($loa_id);
-        $loa_med_services = $loa["med_services"];
-        $payload_med_services = [];
-        $exploded_med_services = explode(";", $loa_med_services);
-
-        foreach ($exploded_med_services as $ctype_id) :
-            $cost_type = $this->billing_model->get_cost_type_by_id($ctype_id);
-            array_push($payload_med_services, $cost_type);
-        endforeach;
-
         $data['user_role'] = $this->session->userdata('user_role');
         $data['cost_types'] = $this->billing_model->get_all_cost_types();
-        $data['loa_services'] = $payload_med_services;
+        $data['loa'] = $loa;
         $data['request_type'] = $loa["loa_request_type"];
         $data['member'] = $this->session->userdata('b_member_info');
         $data['member_mbl'] = $this->session->userdata('b_member_mbl');

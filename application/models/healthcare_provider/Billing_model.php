@@ -54,7 +54,7 @@ class Billing_model extends CI_Model {
 
     function get_all_cost_types() {
         $query = $this->db->get('cost_types');
-        return $query->result();
+        return $query->result_array();
     }
 
     function get_healthcare_provider_by_id($hp_id){

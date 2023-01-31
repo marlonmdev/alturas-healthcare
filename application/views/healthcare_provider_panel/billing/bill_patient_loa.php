@@ -22,7 +22,7 @@
     <div class="container-fluid">
         <div class="card py-4 px-4">
 
-            <div class="row g-5">
+            <div class="row">
                 <div class="col-md-4 col-lg-4">
                     <h4 class="d-flex justify-content-between align-items-center mb-2">
                         <span class="text-danger ls-2">Patient Details</span>
@@ -69,80 +69,194 @@
                         </div>
                     </form> -->
                 </div>
-            <div class="col-md-8 col-lg-8">
-                <h4 class="mb-3 ls-1">LOA Request Type: <span class="text-danger"><?= $request_type ?></span></h4>
-                <form class="needs-validation" novalidate>
-                    <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
-                    <div class="row">
-                        <div class="col-md-7">
-                            <label class="form-label ls-1">Cost Type</label>
-                            <input type="text" class="form-control" id="cost-type" name="cost-type" readonly>
-                        </div>
+                <?php if($request_type == 'Diagnostic Test') : ?>
+                    <div class="col-md-8 col-lg-8">
+                        <h4 class="mb-3 ls-1">LOA Request Type: <span class="text-danger"><?= $request_type ?></span></h4>
+                        <form class="needs-validation" novalidate>
+                            <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
+                            <input type="hidden" name="loa_id" value="<?= $loa_id ?>">
 
-                        <div class="col-md-2">
-                            <label class="form-label ls-1">Quantity</label>
-                            <input type="number" class="form-control fw-bold" id="ct-quantity" name="ct-quantity" value="1" required>
-                            <div class="invalid-feedback">
-                                Quantity is required
-                            </div>
-                        </div>
+                            <?php
+                                $selectedOptions = explode(';', $loa['med_services']);
+                                foreach ($cost_types as $cost_type) :
+                                ?>
+                                    <?php if(in_array($cost_type['ctype_id'], $selectedOptions)): ?>
+                                        <div class="row mt-2">
+                                            <div class="col-md-7">
+                                                <label class="form-label ls-1">Cost Type</label>
+                                                <input type="text" class="form-control text-info fw-bold ls-1" id="cost-type" name="cost-type" value="<?= $cost_type['cost_type']; ?>" readonly>
+                                            </div>
 
-                        <div class="col-md-3">
-                        <label class="form-label ls-1">Cost</label>
-                        <input type="number" class="form-control fw-bold" id="ct-cost" name="ct-cost" value="0" required>
-                        <div class="invalid-feedback">
-                            Service Cost is required.
-                        </div>
-                        </div>
-                    </div>
+                                            <div class="col-md-2">
+                                                <label class="form-label ls-1">Quantity</label>
+                                                <input type="number" class="form-control fw-bold" id="ct-quantity" name="ct-quantity" value="1" required>
+                                                <div class="invalid-feedback">
+                                                    Quantity is required
+                                                </div>
+                                            </div>
 
-                    <div class="row my-4">
-                        <div class="col-8 offset-2">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text bg-danger text-white ls-1">
-                                        Total Bill <i class="mdi mdi-arrow-right-bold ms-1"></i> 
-                                    </span>
+                                            <div class="col-md-3">
+                                                <label class="form-label ls-1">Cost</label>
+                                                <input type="number" class="form-control fw-bold" id="ct-cost" name="ct-cost" value="0" required>
+                                                <div class="invalid-feedback">
+                                                    Service Cost is required.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
+                            <?php
+                                endforeach;
+                            ?>
+
+                            <!-- <div class="row">
+                                <div class="col-md-7">
+                                    <label class="form-label ls-1">Cost Type</label>
+                                    <input type="text" class="form-control" id="cost-type" name="cost-type" readonly>
                                 </div>
-                                <input type="text" class="form-control" id="total-payment" name="total-payment" disabled>
+
+                                <div class="col-md-2">
+                                    <label class="form-label ls-1">Quantity</label>
+                                    <input type="number" class="form-control fw-bold" id="ct-quantity" name="ct-quantity" value="1" required>
+                                    <div class="invalid-feedback">
+                                        Quantity is required
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                <label class="form-label ls-1">Cost</label>
+                                <input type="number" class="form-control fw-bold" id="ct-cost" name="ct-cost" value="0" required>
+                                <div class="invalid-feedback">
+                                    Service Cost is required.
+                                </div>
+                                </div>
+                            </div> -->
+
+                            <div class="row my-4">
+                                <div class="col-8 offset-2">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-danger text-white ls-1">
+                                                Total Bill <i class="mdi mdi-arrow-right-bold ms-1"></i> 
+                                            </span>
+                                        </div>
+                                        <input type="text" class="form-control" id="total-payment" name="total-payment" disabled>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+
+                            <hr class="my-4">
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label ls-1">LOA Number</label>
+                                    <input type="text" class="form-control text-danger fw-bold ls-1" id="loa-no" name="loa-no" value="<?= $loa_no ?>" readonly>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label ls-1">Billing Number</label>
+                                    <input type="text" class="form-control text-danger fw-bold ls-1" id="billing-no" name="billing-no" value="<?= $billing_no ?>" readonly>
+                                </div>
+                            </div>
+
+                            <div class="row mt-2">
+                                <div class="col-md-6">
+                                    <label class="form-label ls-1">Healthcare Provider</label>
+                                    <input type="text" class="form-control text-info fw-bold ls-1" id="hcare-provider" name="hcare-provider" value="<?= $hcare_provider ?>" readonly>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label ls-1">Billed By</label>
+                                    <input type="text" class="form-control text-info fw-bold ls-1" id="billed-by" name="billed-by" value="<?= $billed_by ?>" readonly>
+                                </div>
+                            
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="d-flex justify-content-end">
+                                <button class="btn btn-dark btn-lg ls-2" type="submit" disabled><i class="mdi mdi-file-check me-1"></i>Bill Now</button>
+                            </div>
+                        </form>
                     </div>
+                <?php endif; ?>
+                
+                <?php if($request_type == 'Consultation') : ?>
+                    <div class="col-md-8 col-lg-8">
+                        <h4 class="mb-3 ls-1">LOA Request Type: <span class="text-danger"><?= $request_type ?></span></h4>
+                        <form class="needs-validation" novalidate>
+                            <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
+                            <div class="row">
+                                <div class="col-md-7">
+                                    <label class="form-label ls-1">Consultation</label>
+                                    <input type="text" class="form-control" id="consultation" name="consultation" value="Consultation" readonly>
+                                </div>
 
-                    <hr class="my-4">
+                                <div class="col-md-2">
+                                    <label class="form-label ls-1">Quantity</label>
+                                    <input type="number" class="form-control fw-bold" id="ct-quantity" name="ct-quantity" value="1" required>
+                                    <div class="invalid-feedback">
+                                        Quantity is required
+                                    </div>
+                                </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label class="form-label ls-1">LOA Number</label>
-                            <input type="text" class="form-control text-danger fw-bold ls-1" id="loa-no" name="loa-no" value="<?= $loa_no ?>" readonly>
-                        </div>
+                                <div class="col-md-3">
+                                <label class="form-label ls-1">Cost</label>
+                                <input type="number" class="form-control fw-bold" id="ct-cost" name="ct-cost" value="0" required>
+                                <div class="invalid-feedback">
+                                    Service Cost is required.
+                                </div>
+                                </div>
+                            </div>
 
-                        <div class="col-md-6">
-                            <label class="form-label ls-1">Billing Number</label>
-                            <input type="text" class="form-control text-danger fw-bold ls-1" id="billing-no" name="billing-no" value="<?= $billing_no ?>" readonly>
-                        </div>
+                            <div class="row my-4">
+                                <div class="col-8 offset-2">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-danger text-white ls-1">
+                                                Total Bill <i class="mdi mdi-arrow-right-bold ms-1"></i> 
+                                            </span>
+                                        </div>
+                                        <input type="text" class="form-control" id="total-payment" name="total-payment" disabled>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label ls-1">LOA Number</label>
+                                    <input type="text" class="form-control text-danger fw-bold ls-1" id="loa-no" name="loa-no" value="<?= $loa_no ?>" readonly>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label ls-1">Billing Number</label>
+                                    <input type="text" class="form-control text-danger fw-bold ls-1" id="billing-no" name="billing-no" value="<?= $billing_no ?>" readonly>
+                                </div>
+                            </div>
+
+                            <div class="row mt-2">
+                                <div class="col-md-6">
+                                    <label class="form-label ls-1">Healthcare Provider</label>
+                                    <input type="text" class="form-control text-info fw-bold ls-1" id="hcare-provider" name="hcare-provider" value="<?= $hcare_provider ?>" readonly>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label ls-1">Billed By</label>
+                                    <input type="text" class="form-control text-info fw-bold ls-1" id="billed-by" name="billed-by" value="<?= $billed_by ?>" readonly>
+                                </div>
+                            
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="d-flex justify-content-end">
+                                <button class="btn btn-dark btn-lg ls-2" type="submit" disabled>Review Billing</button>
+                            </div>
+                        </form>
                     </div>
+                <?php endif; ?>
 
-                    <div class="row mt-2">
-                        <div class="col-md-6">
-                            <label class="form-label ls-1">Healthcare Provider</label>
-                            <input type="text" class="form-control text-info fw-bold ls-1" id="hcare-provider" name="hcare-provider" value="<?= $hcare_provider ?>" readonly>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label ls-1">Billed By</label>
-                            <input type="text" class="form-control text-info fw-bold ls-1" id="billed-by" name="billed-by" value="<?= $billed_by ?>" readonly>
-                        </div>
-                    
-                    </div>
-
-                    <hr class="my-4">
-
-                    <div class="d-flex justify-content-end">
-                        <button class="btn btn-dark btn-lg ls-2" type="submit" disabled>Review Billing</button>
-                    </div>
-                </form>
-            </div>
             </div>
         </div>        
     </div>

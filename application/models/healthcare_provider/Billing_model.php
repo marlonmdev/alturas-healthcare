@@ -5,12 +5,12 @@ class Billing_model extends CI_Model {
 
     function get_member_by_name($first_name, $last_name, $date_of_birth) {
         $query = $this->db->get_where('members', ['first_name' => $first_name, 'last_name' => $last_name, 'date_of_birth' => $date_of_birth]);
-        return $query->row();
+        return $query->row_array();
     }
 
     function get_member_by_healthcard($healthcard_no) {
         $query = $this->db->get_where('members', ['health_card_no' => $healthcard_no]);
-        return $query->row();
+        return $query->row_array();
     }
 
 
@@ -21,7 +21,7 @@ class Billing_model extends CI_Model {
 
     function get_member_mbl($emp_id) {
         $query = $this->db->get_where('max_benefit_limits', ['emp_id' => $emp_id]);
-        return $query->row();
+        return $query->row_array();
     }
 
     function get_member_loa($emp_id, $hcare_provider_id) {
@@ -57,13 +57,17 @@ class Billing_model extends CI_Model {
         return $query->result();
     }
 
+    function get_healthcare_provider_by_id($hp_id){
+        $query = $this->db->get_where('healthcare_providers', ['hp_id' => $hp_id]);
+        return $query->row_array();
+    }
 
     function pay_billing_member($data) {
         return $this->db->insert('billing', $data);
     }
 
     function addEquipment($id) {
-        $query = $this->db->get_where('cost_types', array('ctype_id' => $id));
+        $query = $this->db->get_where('cost_types', ['ctype_id' => $id]);
         return $query->row_array();
     }
 

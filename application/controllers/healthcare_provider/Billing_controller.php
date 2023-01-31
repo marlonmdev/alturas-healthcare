@@ -45,17 +45,18 @@ class Billing_controller extends CI_Controller {
         } else {
             $data['member'] = $member;
             $data['user_role'] = $this->session->userdata('user_role');
-            $data['member_mbl'] = $member_mbl = $this->billing_model->get_member_mbl($member->emp_id);
+            $data['member_mbl'] = $member_mbl = $this->billing_model->get_member_mbl($member['emp_id']);
             $data['hp_name'] = $hp_name = $this->billing_model->get_healthcare_provider($hcare_provider_id);
-            $data['loa_requests'] = $this->billing_model->get_member_loa($member->emp_id, $hcare_provider_id);
-            $data['noa_requests'] = $this->billing_model->get_member_noa($member->emp_id, $hcare_provider_id);
+            $data['loa_requests'] = $this->billing_model->get_member_loa($member['emp_id'], $hcare_provider_id);
+            $data['noa_requests'] = $this->billing_model->get_member_noa($member['emp_id'], $hcare_provider_id);
             $data['billing_no'] = $billing_no = "BLN-" . strtotime(date('Y-m-d h:i:s'));
 
             $this->session->set_userdata([
-                'b_member' => $member,
-                'b_member_MBL' => $member_mbl,
+                'b_member_info' => $member,
+                'b_member_mbl' => $member_mbl['max_benefit_limit'],
+                'b_member_bal' => $member_mbl['remaining_balance'],
                 'b_hcare_provider' => $hp_name,
-                'b_healthcard_no' => $member->health_card_no,
+                'b_healthcard_no' => $member['health_card_no'],
                 'b_billing_no' => $billing_no
             ]);
 
@@ -78,17 +79,18 @@ class Billing_controller extends CI_Controller {
         } else {
             $data['member'] = $member;
             $data['user_role'] = $this->session->userdata('user_role');
-            $data['member_mbl'] = $member_mbl = $this->billing_model->get_member_mbl($member->emp_id);
+            $data['member_mbl'] = $member_mbl = $this->billing_model->get_member_mbl($member['emp_id']);
             $data['hp_name'] = $hp_name = $this->billing_model->get_healthcare_provider($hcare_provider_id);
-            $data['loa_requests'] = $this->billing_model->get_member_loa($member->emp_id, $hcare_provider_id);
-            $data['noa_requests'] = $this->billing_model->get_member_noa($member->emp_id, $hcare_provider_id);
+            $data['loa_requests'] = $this->billing_model->get_member_loa($member['emp_id'], $hcare_provider_id);
+            $data['noa_requests'] = $this->billing_model->get_member_noa($member['emp_id'], $hcare_provider_id);
             $data['billing_no'] = $billing_no = "BLN-" . strtotime(date('Y-m-d h:i:s'));
 
             $this->session->set_userdata([
-                'b_member' => $member,
-                'b_member_mbl' => $member_mbl,
+                'b_member_info' => $member,
+                'b_member_mbl' => $member_mbl['max_benefit_limit'],
+                'b_member_bal' => $member_mbl['remaining_balance'],
                 'b_hcare_provider' => $hp_name,
-                'b_healthcard_no' => $member->health_card_no,
+                'b_healthcard_no' => $member['health_card_no'],
                 'b_billing_no' => $billing_no
             ]);
 
@@ -98,38 +100,69 @@ class Billing_controller extends CI_Controller {
         }
     }
 
-    function bill_member_loa() {
+    function bill_patient_loa() {
         $this->security->get_csrf_hash();
-        // $this->cart->destroy();
-        // $this->session->unset_userdata(array('equipments'));
-        $loa_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
-        // $loa_id = $this->uri->segment(5);
-        // $billing_no = $this->uri->segment(6);
-        $billing_no = $this->input->post('billing_no');
+        $url_id = $this->uri->segment(4);
+        $loa_id = $this->myhash->hasher($url_id, 'decrypt');
+        $billing_no = $this->security->xss_clean($this->input->post('billing_no'));
+        $emp_id = $this->security->xss_clean($this->input->post('emp_id'));
+        $hcare_provider = $this->billing_model->get_healthcare_provider_by_id($this->session->userdata('dsg_hcare_prov'));
+
         $loa = $this->billing_model->get_loa_to_bill($loa_id);
         $loa_med_services = $loa["med_services"];
         $payload_med_services = [];
         $exploded_med_services = explode(";", $loa_med_services);
 
         foreach ($exploded_med_services as $ctype_id) :
-            $cost_types = $this->billing_model->get_cost_type_by_id($ctype_id);
-            array_push($payload_med_services, $cost_types);
+            $cost_type = $this->billing_model->get_cost_type_by_id($ctype_id);
+            array_push($payload_med_services, $cost_type);
         endforeach;
 
         $data['user_role'] = $this->session->userdata('user_role');
         $data['cost_types'] = $this->billing_model->get_all_cost_types();
         $data['loa_services'] = $payload_med_services;
-        $data['loa_request_type'] = $loa["loa_request_type"];
+        $data['request_type'] = $loa["loa_request_type"];
+        $data['member'] = $this->session->userdata('b_member_info');
         $data['member_mbl'] = $this->session->userdata('b_member_mbl');
-        $data['member'] = $this->session->userdata('b_member');
-        $data['remaining_balance'] = $this->session->userdata('b_member_mbl');
+        $data['remaining_balance'] = $this->session->userdata('b_member_bal');
         $data['healthcard_no'] = $this->session->userdata('b_healthcard_no');
         $data['billing_no'] = $this->session->userdata('b_billing_no');
+        $data['loa_id'] = $url_id;
+        $data['loa_no'] = $loa['loa_no'];
+        $data['billed_by'] = $this->session->userdata('fullname');
+        $data['hcare_provider'] = $hcare_provider['hp_name'];
 
         $this->load->view('templates/header', $data);
-        $this->load->view('healthcare_provider_panel/billing/bill_member_loa');
+        $this->load->view('healthcare_provider_panel/billing/bill_patient_loa');
         $this->load->view('templates/footer');
     }
+
+    function fetch_loa_to_bill() {
+        $this->security->get_csrf_hash();
+        $loa_id = $this->myhash->hasher($this->input->post('loa_id'), 'decrypt');
+        $loa = $this->billing_model->get_loa_to_bill($loa_id);
+
+       /* Exploding the string and then pushing it to an array. */
+        $med_services = [];
+        $exploded_med_services = explode(";", $loa['med_services']);
+
+        foreach ($exploded_med_services as $ctype_id) :
+            $cost_type = $this->billing_model->get_cost_type_by_id($ctype_id);
+            array_push($med_services, $cost_type['cost_type']);
+        endforeach;
+
+        $data = [
+            'token' =>  $this->security->get_csrf_hash(),
+            'user_role' => $this->session->userdata('user_role'),
+            'member_mbl' => $this->session->userdata('b_member_mbl'),
+            'remaining_balance' => $this->session->userdata('b_member_bal'),
+            'loa_services' => $med_services,
+            'request_type' => $loa["loa_request_type"],
+        ];
+
+        echo json_encode($data);
+    }
+
 
     function billing3BillNoa() {
         $token = $this->security->get_csrf_hash();
@@ -181,8 +214,6 @@ class Billing_controller extends CI_Controller {
 
     function billing5Final() {
         $this->security->get_csrf_hash();
-
-        $data['page_title'] = 'Alturas Healthcare - Healthcare Provider';
         $data['user_role'] = $this->session->userdata('user_role');
 
         $data['payload'] = array(
@@ -288,36 +319,6 @@ class Billing_controller extends CI_Controller {
         echo json_encode($res);
     }
 
-
-
-    function getBillingLoa() {
-        $this->security->get_csrf_hash();
-
-        $this->cart->destroy();
-        $this->session->unset_userdata(array('equipments'));
-
-        //$loa_id = $this->uri->segment(6);
-        $loa_id = $this->input->post('id');
-        $billingLoaResultDb = $this->billing_model->get_loa_to_bill($loa_id);
-        $billingLoaResult = $billingLoaResultDb["med_services"];
-
-        $payLoadMedService = array();
-        $expodedMedServices = explode(";", $billingLoaResult);
-
-        foreach ($expodedMedServices as $extractMedServicesId) :
-            $resultMedServices = $this->billing_model->get_cost_type($extractMedServicesId);
-            array_push($payLoadMedService, $resultMedServices);
-        endforeach;
-
-        $cost_type = $this->billing_model->find_cost_type();
-
-        $data['page_title'] = 'HMO - HealthCare Provider';
-        $data['loaService'] = $payLoadMedService;
-        $data['memberMBL'] = $this->session->userdata('bmemberMBL');
-        $data['loaRequestType'] = $billingLoaResultDb["loa_request_type"];
-        $data['user_role'] = $this->session->userdata('user_role');
-        echo json_encode($data);
-    }
 
     function postBillingLoa($data) {
         $this->security->get_csrf_hash();

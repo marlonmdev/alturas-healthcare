@@ -106,7 +106,9 @@ $route['healthcare-provider/billing'] = 'healthcare_provider/billing_controller/
 $route['healthcare-provider/billing/search-by-healthcard']  = 'healthcare_provider/billing_controller/search_member_by_healthcard';
 $route['healthcare-provider/billing/search-by-name'] = 'healthcare_provider/billing_controller/search_member_by_name';
 // $route['healthcare-provider/billing/bill-loa/(:any)/(:any)/(:any)'] = 'healthcare_provider/billing_controller/bill_member_loa';
-$route['healthcare-provider/billing/bill-loa/(:any)'] = 'healthcare_provider/billing_controller/bill_member_loa';
+$route['healthcare-provider/billing/bill-loa/(:any)'] = 'healthcare_provider/billing_controller/bill_patient_loa';
+$route['healthcare-provider/billing/fetch/loa'] = 'healthcare_provider/billing_controller/fetch_loa_to_bill';
+
 $route['healthcare-provider/billing/billing-person/equipment']  = 'healthcare_provider/billing_controller/billing3BillNoa';
 $route['healthcare-provider/billing/billing-person/finalBilling']  = 'healthcare_provider/billing_controller/billing3NoaReview';
 $route['healthcare-provider/billing/billing-person/finish']['post']  = 'healthcare_provider/billing_controller/billing5Final';
@@ -161,7 +163,9 @@ $route['healthcare-provider/reports/report-list/ajax/showAllEquipment'] = 'healt
 
 $route['healthcare-provider/reports/report-list/ajax/saveloacosttype'] = 'healthcare_provider/Billing_controller/saveloacosttype';
 $route['healthcare-provider/reports/report-list/ajax/billPersonalCharges'] = 'healthcare_provider/Billing_controller/billPersonalCharges';
-$route['healthcare-provider/reports/report-list/ajax/getBillingLoa'] = 'healthcare_provider/Billing_controller/getBillingLoa';
+
+// $route['healthcare-provider/reports/report-list/ajax/getBillingLoa'] = 'healthcare_provider/Billing_controller/getBillingLoa';
+
 $route['healthcare-provider/reports/report-list/ajax/postBillingLoa'] = 'healthcare_provider/Billing_controller/postBillingLoa';
 $route['healthcare-provider/reports/report-list/ajax/addEquipments']['post'] = 'healthcare_provider/Billing_controller/addEquipments';
 $route['healthcare-provider/reports/report-list/ajax/billLoaMember'] = 'healthcare_provider/Billing_controller/billLoaMember';

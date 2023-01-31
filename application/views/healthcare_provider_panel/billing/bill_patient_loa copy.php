@@ -1,10 +1,10 @@
+<!-- internal scripts -->
+<script src="<?php echo base_url(); ?>assets/js/lone/axios.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/lone/vue3.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/lone/sweetalert2v11.js"></script>
+<!-- <script src="< echo base_url(); ?>assets/js/lone/jqueryv3.js"></script> -->
 <!-- Page wrapper  -->
  <div class="page-wrapper">
-    <!-- internal scripts -->
-    <script src="<?php echo base_url(); ?>assets/js/lone/axios.js"></script>
-    <script src="<?php echo base_url(); ?>assets/js/lone/vue3.js"></script>
-    <script src="<?php echo base_url(); ?>assets/js/lone/sweetalert2v11.js"></script>
-    <script src="<?php echo base_url(); ?>assets/js/lone/jqueryv3.js"></script>
     <!-- Bread crumb and right sidebar toggle -->
     <div class="page-breadcrumb">
       <div class="row">
@@ -15,7 +15,7 @@
               <ol class="breadcrumb">
                 <li class="breadcrumb-item">Healthcare Provider</li>
                 <li class="breadcrumb-item active" aria-current="page">
-                  Billing
+                  LOA Billing
                 </li>
               </ol>
             </nav>
@@ -25,10 +25,10 @@
     </div>
     <!-- End Bread crumb and right sidebar toggle -->
     <?php
-        $csrf = array(
+        $csrf = [
             'name' => $this->security->get_csrf_token_name(),
             'hash' => $this->security->get_csrf_hash()
-        );
+        ];
     ?>
     <!-- Container fluid  -->
     <div class="container-fluid">        
@@ -44,7 +44,7 @@
                                             His MBL has been exceeded! The
                                             <h3 class="mt-2">
                                                 {{ 
-                                                    Number(exceedingBalance).toLocaleString('en-US', {
+                                                    Number(exceedingAmount).toLocaleString('en-US', {
                                                         style: 'currency',
                                                         currency: 'PHP',
                                                     })
@@ -60,26 +60,22 @@
                                                 </td>
                                                 <td class="fw-bold">
                                                     <?=
-                                                        $member->first_name.' '.$member->middle_name.' '.$member->last_name.' '.$member->suffix;  
+                                                        $member['first_name'].' '.$member['middle_name'].' '.$member['last_name'].' '.$member['suffix'];  
                                                     ?>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td class="fw-bold">MBL Balance:</td>
+                                                <td class="fw-bold">MBL Remaining Balance:</td>
                                                 <td class="fw-bold">
-                                                    {{
-                                                        Number(remaining_balance).toLocaleString('en-US', {
-                                                        style: 'currency',
-                                                        currency: 'PHP',
-                                                        })
-                                                    }}
+
+                                                    &#8369;<?= number_format($remaining_balance, 2); ?>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td class="fw-bold">Billing Amount:</td>
                                                 <td class="fw-bold">
                                                     {{
-                                                        Number(totalCostLoa).toLocaleString('en-US', {
+                                                        Number(totalCost).toLocaleString('en-US', {
                                                             style: 'currency',
                                                             currency: 'PHP',
                                                         })
@@ -94,7 +90,7 @@
                                     <span>
                                         <h3>
                                             {{
-                                                Number(totalCostLoa).toLocaleString('en-US', {
+                                                Number(totalCost).toLocaleString('en-US', {
                                                     style: 'currency',
                                                     currency: 'PHP',
                                                 })
@@ -195,16 +191,16 @@
                                         <th>{{ ls.cost_type }}</th>
                                         <th>
                                             {{
-                                                Number(loa_services[index].cost).toLocaleString('en-US', {
+                                                Number(loaServices[index].cost).toLocaleString('en-US', {
                                                     style: 'currency',
                                                     currency: 'PHP',
                                                 })
                                             }}
                                         </th>
                                         <th>
-                                            <!-- <button class="btn btn-success" type="button" @click="inActiveReview()">
+                                            <button class="btn btn-success" type="button" @click="inActiveReview()">
                                                <i class="mdi mdi-pencil me-1"></i>Edit
-                                            </button> -->
+                                            </button>
                                         </th>
                                     </tr>
 
@@ -242,7 +238,7 @@
                     </div>
                 </div> -->
 
-                <div class="cart-item d-md-flex justify-content-between" v-for="(ls, index) in loa_services">
+                <div class="cart-item d-md-flex justify-content-between" v-for="(ls, index) in loaServices">
                     <div class="px-3 my-3 d-flex  align-items-center">
                         <a class="cart-item-product" href="#">
                             <div class="cart-item-product-info">
@@ -253,7 +249,7 @@
                     <div class="px-3 my-3 text-center">
                         <div class="cart-item-label">Quantity</div>
                         <div class="count-input">
-                            <input class="form-control form-control-sm my-2 mr-3" type="number" v-model="loaService[index].quantity">
+                            <input class="form-control form-control-sm my-2 mr-3" type="number" v-model="loaServices[index].quantity">
                         </div>
                     </div>
                     <div class="px-3 my-3 text-center">
@@ -262,38 +258,31 @@
                             <input class="form-control form-control-sm my-2 mr-3" type="number" placeholder="Amount" v-model="loaService[index].cost">
                         </span>
                     </div>
-
                 </div>
-
             </div>
         </div>
     </div>
 </div>
 
-
 <script>
-    const {
-        createApp
-    } = Vue
+    const { createApp } = Vue
 
     createApp({
         data() {
             return {
                 message: '<?= $csrf['hash'] ?>',
-                token_name: '<?= $csrf['name'] ?>',
-                token_hash: '<?= $csrf['hash'] ?>',
-                loa_services: [],
-                $remaining_balance: 0,
-                loa_request_type: null,
+                tokenName: '<?= $csrf['name'] ?>',
+                tokenHash: '<?= $csrf['hash'] ?>',
+                loaServices: [],
+                remainingBalance: 0,
+                requestType: null,
                 total: 0,
-                consultation: 0,
                 isSubmit: true,
                 isSubmitBilling: false,
                 isReview: false
             }
         },
         methods: {
-
             activeReview() {
                 this.isReview = true;
             },
@@ -302,47 +291,43 @@
             },
 
             async getData() {
+                let formData = new FormData();
+                let loa_id = `<?php echo $loa_id; ?>`;
+                const postUrl = `<?php echo base_url(); ?>healthcare-provider/billing/bill-loa/fetch/loa`;
+                formData.append('token', `<?= $this->security->get_csrf_hash() ?>`);
+                formData.append('loa_id', loa_id);
 
-                var bodyFormData = new FormData();
-                bodyFormData.append(this.token_name, this.token_hash);
-                bodyFormData.append('id', '<?php echo $this->uri->segment(6) ?>');
-                await axios.post("<?php echo base_url() ?>healthcare-provider/reports/report-list/ajax/getBillingLoa", bodyFormData)
-                    .then(response => {
+                await axios.post(postUrl, formData).then(response => console.log(response.data))
 
-                        // this.loaService = response.data.loaService;
-                        var recievedResponse = response.data.loa_services;
-
-                        console.log(response.data)
-                        this.remaining_balance = response.data.member_mbl.remaining_balance;
-                        console.log(this.remaining_balance);
-                        recievedResponse.forEach(rr => {
-                            var insertData = {
-                                ctype_id: rr.ctype_id,
-                                cost_type: rr.cost_type,
-                                date_added: rr.date_added,
-                                quantity: 1,
-                                cost: 0,
-                                consultation: 0
-                            };
-                            this.loaService.push(insertData);
-                            console.log(insertData);
-                        }, );
-
-                    }, );
-
+                // await axios.post(postUrl, formData)
+                //     .then(response => {
+                //         let results = response.data.loa_services;
+                //         this.remainingBalance = response.data.remaining_balance;
+                //         console.log('services', results);
+                //         console.log('balance', response.data.remaining_balance);
+                //         results.forEach(result => {
+                //             let costType = {
+                //                 ctype_id: result.ctype_id,
+                //                 cost_type: result.cost_type,
+                //                 quantity: 1,
+                //                 cost: 0,
+                //             };
+                //             this.loaServices.push(costType);
+                //         }, );
+                //     }, );
             },
 
             billingLoaPost() {
-                var bodyFormData = new FormData();
-
-                bodyFormData.append(this.token_name, this.token_hash);
-                bodyFormData.append('id', '<?php echo $this->uri->segment(6) ?>');
-                axios.post("<?php echo base_url() ?>healthcare-provider/reports/report-list/ajax/postBillingLoa", bodyFormData)
+                let formData = new FormData();
+                const postUrl = `<?php echo base_url() ?>healthcare-provider/reports/report-list/ajax/postBillingLoa`;
+                formData.append(this.tokenName, this.tokenHash);
+                formData.append('id', '<?php echo $this->uri->segment(4) ?>');
+                axios.post(postUrl, formData)
                     .then(response => {
                         // this.loaService = response.data.loaService;
-                        var recivedResponse = response.data.loaService;
+                        const results = response.data.loa_services;
 
-                        recivedResponse.forEach(rr => {
+                        results.forEach(result => {
                             this.loaService.push(insertData);
                             console.log(insertData);
                         }, );
@@ -351,46 +336,18 @@
             },
 
             addToDb() {
+                let formData = new FormData();
 
-                // **********'billing_no' => "TEST",
-                // **********'emp_id' => "TEST",
-                // **********'noa_no' => 'TESST',
-                // **********'hp_id' => 'TEST',
-                // **********'billing_img' => 'TEST',
-                // **********'billed_by' => 'TEST',
-                // ***********'billing_date' => 'TEST'
-                // **********'total_bill' => 'TEST',
-                // **********'loa_id' => 'TEST',
-                // **********'mbr_remaining_bal' => 'TEST',
-                // **********'personal_charges' => 'TEST',
+                formData.append(this.tokenName, this.tokenHash);
+                formData.append('mbr_remaining_bal', (this.totalCost > this.remainingBalance) ? 0 : this.remainingBalance - this.totalCost);
+                formData.append('loa_id', '<?= $this->uri->segment(4) ?>');
+                formData.append('total_bill', this.totalCost);
+                formData.append('personal_charges', Math.max(this.exceedingAmount, 0));
 
 
-                // ********** bsv_id	
-                // ********** billing_no	
-                // ********** bsv_cost_types	
-                // ********** bsv_ct_fee	
-                // ********** emp_id	
-                // ********** billing_date	
-
-                //********** emp_id	
-                //********** billing_no	
-                //********** pcharge_amount	
-                //********** notes	
-                //********** date_created	
-                //********** status	
-
-                var bodyFormData = new FormData();
-
-                bodyFormData.append(this.token_name, this.token_hash);
-                bodyFormData.append('mbr_remaining_bal', (this.totalCostLoa > this.remaining_balance) ? 0 : this.remaining_balance - this.totalCostLoa);
-                bodyFormData.append('loa_id', '<?php echo $this->uri->segment(6) ?>');
-                bodyFormData.append('total_bill', this.totalCostLoa);
-                bodyFormData.append('personal_charges', Math.max(this.exceedingBalance, 0));
-
-
-                if (this.exceedingBalance > 0) {
+                if (this.exceedingAmount > 0) {
                     Swal.fire({
-                            title: 'This Person has exceed ' + Number(this.exceedingBalance).toLocaleString('en-US', {
+                            title: 'This Person has exceed ' + Number(this.exceedingAmount).toLocaleString('en-US', {
                                 style: 'currency',
                                 currency: 'PHP',
                             }),
@@ -412,42 +369,29 @@
                             /* Read more about isConfirmed, isDenied below */
                             if (result.isConfirmed) {
 
-                                var personalChargeFormData = new FormData();
-                                personalChargeFormData.append(this.token_name, this.token_hash);
-                                personalChargeFormData.append('emp_id', '<?php echo $this->uri->segment(5) ?>');
-                                personalChargeFormData.append('loa_id', '<?php echo $this->uri->segment(6) ?>');
-                                personalChargeFormData.append('pcharge_amount', this.exceedingBalance);
+                                let pchargeFormData = new FormData();
+                                const postUrl = `<?php echo base_url(); ?>healthcare-provider/reports/report-list/ajax/billPersonalCharges`;
 
-                                axios.post("<?php echo base_url() ?>healthcare-provider/reports/report-list/ajax/billPersonalCharges", personalChargeFormData)
+                                pcharge_form_data.append(this.token_name, this.token_hash);
+                                pcharge_form_data.append('emp_id', '<?= $member['emp_id'] ?>');
+                                pcharge_form_data.append('loa_id', '<?= $this->uri->segment(4) ?>');
+                                pcharge_form_data.append('billing_no', '<?= $billing_no ?>');
+                                pcharge_form_data.append('pcharge_amount', this.exceedingAmount);
+                                pcharge_form_data.append('date_created', <?= date('Y-m-d') ?>);
+                                pcharge_form_data.append('status', 'Unpaid');
+
+                                axios.post(postUrl, pchargeFormData)
                                     .then(response => {
                                         console.log(response);
                                     }, );
 
-                                let pushConsultation = {
-                                    ctype_id: '1',
-                                    cost_type: 'Urinalysis',
-                                    date_added: '2022-09-21',
-                                    quantity: 1,
-                                    cost: 234,
-                                }
+                                this.loaServices.push(insertData);
+                                this.loaServices.forEach(element => {
 
-                                let insertData = {
-                                    ctype_id: 0,
-                                    cost_type: 'Consultation',
-                                    date_added: '<?php echo date("Y-m-d") ?>',
-                                    quantity: 1,
-                                    cost: this.consultation,
-                                    bsv_ct_fee: this.consultation
-                                };
-
-
-                                this.loaService.push(insertData);
-                                this.loaService.forEach(element => {
-
-                                    var loaCtBodyFormData = new FormData();
-                                    loaCtBodyFormData.append(this.token_name, this.token_hash);
-                                    loaCtBodyFormData.append('bsv_cost_types', element.ctype_id);
-                                    loaCtBodyFormData.append('bsv_ct_fee', element.cost);
+                                    let loaCtFormData = new FormData();
+                                    loaCtFormData.append(this.tokenName, this.tokenHash);
+                                    loaCtFormData.append('bsv_cost_types', element.ctype_id);
+                                    loaCtFormData.append('bsv_ct_fee', element.cost);
 
                                     axios.post("<?php echo base_url() ?>healthcare-provider/reports/report-list/ajax/saveloacosttype", loaCtBodyFormData)
                                         .then(response => {});
@@ -525,15 +469,15 @@
 
         },
         computed: {
-
-            exceedingBalance() {
-                return this.totalCostLoa - this.remaining_balance;
+            exceedingAmount() {
+                return this.totalCost - this.remainingBalance;
             },
-            totalCostLoa() {
-                var total = this.loaService.reduce((acc, curr) => {
+
+            totalCost() {
+                let total = this.loaServices.reduce((acc, curr) => {
                     return acc + Number(curr.cost) * Number(curr.quantity);
 
-                }, 0) + Number(this.consultation);
+                }, 0);
                 if (total > 0) {
                     this.isSubmitBilling = false;
                 } else {
@@ -548,10 +492,6 @@
                 }
                 return total;
             },
-
-            publishedBooksMessage() {
-                return 7 + 7
-            }
         },
         async mounted() {
             this.getData();

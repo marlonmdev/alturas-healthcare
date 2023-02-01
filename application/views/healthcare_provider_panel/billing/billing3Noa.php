@@ -76,10 +76,10 @@
                                     ?>
                                             <tr>
                                                 <td class="fw-bold">
-                                                    <?= $ct->cost_type; ?>
+                                                    <?= $ct['cost_type']; ?>
                                                 </td>
                                                 <td>
-                                                    <button class="btn btn-success" id="btn<?= $ct->ctype_id ?>" onclick="addService('<?= $ct->ctype_id ?>',' <?= $ct->cost_type ?>')">
+                                                    <button class="btn btn-success" id="btn<?= $ct['ctype_id'] ?>" onclick="addService('<?= $ct['ctype_id'] ?>',' <?= $ct['cost_type'] ?>')">
                                                         <i class="mdi mdi-plus-circle"></i> Add
                                                     </button>
                                                 </td>

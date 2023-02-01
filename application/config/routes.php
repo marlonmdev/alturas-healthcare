@@ -10,7 +10,7 @@ $route['logout'] = 'auth_controller/logout';
 $route['import/members'] = 'masterfile_controller';
 
 // Import Members Data Routes
-$route['import/members'] = 'import_controller/index';
+$route['import/members'] = 'import_controller';
 $route['members/import'] = 'import_controller/import_csv_to_database';
 $route['members/format-download'] = 'import_controller/csv_format_download';
 

@@ -71,8 +71,6 @@ class Applicants_controller extends CI_Controller {
 			$post_data = [
 				'emp_id' => $emp_id,
 				'full_name' => $first_name . ' ' . $middle_name . ' ' . $last_name . ' ' . $suffix,
-				'mobile_number' => $contact_no,
-				'email' => $email,
 				'user_role' =>  'member',
 				'username' => $username,
 				'password' =>  $this->_hash_password($password),

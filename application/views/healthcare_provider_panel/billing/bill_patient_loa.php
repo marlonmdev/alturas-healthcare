@@ -61,13 +61,6 @@
                             </div>
                         </li>
                     </ul>
-
-                    <!-- <form class="card p-2">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Promo code">
-                            <button type="submit" class="btn btn-secondary">Redeem</button>
-                        </div>
-                    </form> -->
                 </div>
                 <?php if($request_type == 'Diagnostic Test') : ?>
                     <div class="col-md-8 col-lg-8">
@@ -109,9 +102,9 @@
                                 endif;
                                 endforeach;
                             ?>
-                            <div class="row my-3">
-                                <div class="alert alert-warning alert-dismissible fade show" role="alert" id="excess-alert">
-                                    <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+                            <div class="row my-3 d-none" id="excess-alert-div">
+                                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                    <strong>Oops!</strong> The Total Bill exceeds the patient remaining MBL Balance <span></span>excess will be added to Personal Charges.
                                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 </div>
                             </div>

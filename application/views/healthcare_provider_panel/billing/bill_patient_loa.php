@@ -76,70 +76,59 @@
                             <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
                             <input type="hidden" name="loa_id" value="<?= $loa_id ?>">
 
-                            <?php
+                            <?php 
                                 $selectedOptions = explode(';', $loa['med_services']);
+                                $i = 1;
                                 foreach ($cost_types as $cost_type) :
-                                ?>
-                                    <?php if(in_array($cost_type['ctype_id'], $selectedOptions)): ?>
-                                        <div class="row mt-2">
-                                            <div class="col-md-7">
-                                                <label class="form-label ls-1">Cost Type</label>
-                                                <input type="text" class="form-control text-info fw-bold ls-1" id="cost-type" name="cost-type" value="<?= $cost_type['cost_type']; ?>" readonly>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <label class="form-label ls-1">Quantity</label>
-                                                <input type="number" class="form-control fw-bold" id="ct-quantity" name="ct-quantity" value="1" required>
-                                                <div class="invalid-feedback">
-                                                    Quantity is required
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-3">
-                                                <label class="form-label ls-1">Cost</label>
-                                                <input type="number" class="form-control fw-bold" id="ct-cost" name="ct-cost" value="0" required>
-                                                <div class="invalid-feedback">
-                                                    Service Cost is required.
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <?php endif; ?>
-                            <?php
-                                endforeach;
+                                if (in_array($cost_type['ctype_id'], $selectedOptions)) :
                             ?>
-
-                            <!-- <div class="row">
-                                <div class="col-md-7">
+                                <div class="row mt-2">
+                                    <div class="col-md-7">
                                     <label class="form-label ls-1">Cost Type</label>
-                                    <input type="text" class="form-control" id="cost-type" name="cost-type" readonly>
-                                </div>
+                                    <input type="text" class="form-control text-info fw-bold ls-1" id="ct-name-<?php echo $i; ?>" name="cost-type" value="<?php echo $cost_type['cost_type']; ?>" readonly>
+                                    </div>
 
-                                <div class="col-md-2">
+                                    <div class="col-md-2">
                                     <label class="form-label ls-1">Quantity</label>
-                                    <input type="number" class="form-control fw-bold" id="ct-quantity" name="ct-quantity" value="1" required>
+                                    <input type="number" class="form-control fw-bold" id="ct-qty-<?php echo $i; ?>" name="ct-qty" value="1" oninput="calculateTotal(`<?= $remaining_balance ?>`)" required>
                                     <div class="invalid-feedback">
                                         Quantity is required
                                     </div>
-                                </div>
+                                    </div>
 
-                                <div class="col-md-3">
-                                <label class="form-label ls-1">Cost</label>
-                                <input type="number" class="form-control fw-bold" id="ct-cost" name="ct-cost" value="0" required>
-                                <div class="invalid-feedback">
-                                    Service Cost is required.
+                                    <div class="col-md-3">
+                                    <label class="form-label ls-1">Cost</label>
+                                    <input type="number" class="ct-inputs form-control fw-bold" id="ct-cost-<?php echo $i; ?>" name="ct-cost" placeholder="Enter Amount" value="0" oninput="calculateTotal(`<?= $remaining_balance ?>`)" required>
+                                    <div class="invalid-feedback">
+                                        Service Cost is required.
+                                    </div>
+                                    </div>
                                 </div>
-                                </div>
-                            </div> -->
+                            <?php 
+                                    $i += 1;
+                                endif;
+                                endforeach;
+                            ?>
 
                             <div class="row my-4">
-                                <div class="col-8 offset-2">
+                                <div class="col-lg-6 col-sm-12">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text bg-danger text-white ls-1">
                                                 Total Bill <i class="mdi mdi-arrow-right-bold ms-1"></i> 
                                             </span>
                                         </div>
-                                        <input type="text" class="form-control" id="total-payment" name="total-payment" disabled>
+                                        <input type="text" class="form-control fw-bold ls-1" id="total-bill" name="total-payment" disabled>
+                                    </div>
+                                </div>
+                                 <div class="col-lg-6 col-sm-12">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-danger text-white ls-1">
+                                                Personal Charge <i class="mdi mdi-arrow-right-bold ms-1"></i> 
+                                            </span>
+                                        </div>
+                                        <input type="text" class="form-control fw-bold ls-1" id="personal-charge" name="personal-charge" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -209,7 +198,7 @@
                             </div>
 
                             <div class="row my-4">
-                                <div class="col-8 offset-2">
+                                <div class="col-6 offset-3">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text bg-danger text-white ls-1">
@@ -262,5 +251,23 @@
     </div>
 </div>
 <script>
+    function calculateTotal(remaining_balance) {
+        const costInputs = document.querySelectorAll(".ct-inputs");
+        const quantityInputs = document.querySelectorAll("input[name='ct-qty']");
+        const totalBill = document.querySelector("#total-bill");
+        const personalCharge = document.querySelector('#personal-charge');
+        let total = 0;
+        let charge = 0;
+        
+        for (let i = 0; i < costInputs.length; i++) {
+            total += costInputs[i].value * quantityInputs[i].value;
+            charge = total - remaining_balance;
+        }
 
+        totalBill.value = total;
+        if(charge > 0){
+            personalCharge.value = charge;
+        }
+        // alert(totalBill > remaining_balance ? 'Excess Amount will be added to personal charges' : '');
+    }
 </script>

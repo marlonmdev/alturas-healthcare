@@ -230,7 +230,8 @@ class Accounts_controller extends CI_Controller {
 					];
 					echo json_encode($response);
 				} else {
-					$this->db_update_user_account($user_id, $input_post);
+					$dsg_hcare_prov = $this->input->post('dsg-hcare-prov');
+					$this->db_update_user_account($user_id, $input_post, $dsg_hcare_prov);
 				}
 				break;
 			case ($user_role !== 'healthcare-provider'):
@@ -244,18 +245,19 @@ class Accounts_controller extends CI_Controller {
 					];
 					echo json_encode($response);
 				} else {
-					$this->db_update_user_account($user_id, $input_post);
+					$dsg_hcare_prov = '';
+					$this->db_update_user_account($user_id, $input_post, $dsg_hcare_prov);
 				}
 				break;
 		}
 	}
 
-	public function db_update_user_account($user_id, $input_post) {
+	public function db_update_user_account($user_id, $input_post, $dsg_hcare_prov) {
 		/* Updating the user details in the database. */
 		$post_data = [
 			'full_name' => ucwords($input_post['full-name']),
 			'user_role' =>  $input_post['user-role'],
-			'dsg_hcare_prov' => $input_post['dsg-hcare-prov'],
+			'dsg_hcare_prov' => $dsg_hcare_prov,
 			'updated_on' => date("Y-m-d"),
 			'updated_by' => $this->session->userdata('fullname')
 		];

@@ -29,7 +29,7 @@
           <li class="nav-item">
             <a
               class="nav-link active"
-              href="<?php echo base_url(); ?>ccompany-doctor/noa/requests-list"
+              href="<?php echo base_url(); ?>company-doctor/noa/requests-list"
               role="tab"
               ><span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">Pending</span></a

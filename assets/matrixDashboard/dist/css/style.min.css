@@ -9983,7 +9983,7 @@ select.form-select.form-control-line {
 	opacity: 1;
 }
 .sidebar-nav ul .sidebar-item .first-level {
-	padding: 0 0 10px 0;
+	padding: 0 0 10px 15px;
 }
 .sidebar-nav ul .sidebar-item .first-level .sidebar-item.active .sidebar-link {
 	opacity: 1;

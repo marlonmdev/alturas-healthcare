@@ -109,6 +109,12 @@
                                 endif;
                                 endforeach;
                             ?>
+                            <div class="row my-3">
+                                <div class="alert alert-warning alert-dismissible fade show" role="alert" id="excess-alert">
+                                    <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            </div>
 
                             <div class="row my-4">
                                 <div class="col-lg-6 col-sm-12">
@@ -268,6 +274,5 @@
         if(charge > 0){
             personalCharge.value = charge;
         }
-        // alert(totalBill > remaining_balance ? 'Excess Amount will be added to personal charges' : '');
     }
 </script>

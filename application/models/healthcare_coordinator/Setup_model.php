@@ -70,7 +70,7 @@ class Setup_model extends CI_Model {
 	}
 
 	function db_get_doctor_info($doctor_id) {
-		return $this->db->get_where('company_doctors', ['doctor_id' => $doctor_id]);
+		$query = $this->db->get_where('company_doctors', ['doctor_id' => $doctor_id]);
 		return $query->row_array();
 	}
 

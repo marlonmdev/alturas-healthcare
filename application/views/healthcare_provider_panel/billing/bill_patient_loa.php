@@ -77,24 +77,24 @@
                             ?>
                                 <div class="row mt-2">
                                     <div class="col-md-7">
-                                    <label class="form-label ls-1">Cost Type</label>
-                                    <input type="text" class="form-control text-info fw-bold ls-1" id="ct-name-<?php echo $i; ?>" name="cost-type" value="<?php echo $cost_type['cost_type']; ?>" readonly>
+                                        <label class="form-label ls-1">Cost Type</label>
+                                        <input type="text" class="form-control text-info fw-bold ls-1" id="ct-name-<?php echo $i; ?>" name="cost-type" value="<?php echo $cost_type['cost_type']; ?>" readonly>
                                     </div>
 
                                     <div class="col-md-2">
-                                    <label class="form-label ls-1">Quantity</label>
-                                    <input type="number" class="form-control fw-bold" id="ct-qty-<?php echo $i; ?>" name="ct-qty" value="1" oninput="calculateTotalBilling(`<?= $remaining_balance ?>`)" required>
-                                    <div class="invalid-feedback">
-                                        Quantity is required
-                                    </div>
+                                        <label class="form-label ls-1">Quantity</label>
+                                        <input type="number" class="form-control fw-bold" id="ct-qty-<?php echo $i; ?>" name="ct-qty" oninput="calculateTotalBilling(`<?= $remaining_balance ?>`)" value="1" min="1" required>
+                                        <div class="invalid-feedback">
+                                            Quantity is required
+                                        </div>
                                     </div>
 
                                     <div class="col-md-3">
-                                    <label class="form-label ls-1">Cost</label>
-                                    <input type="number" class="ct-inputs form-control fw-bold" id="ct-cost-<?php echo $i; ?>" name="ct-cost" placeholder="Enter Amount" oninput="calculateTotalBilling(`<?= $remaining_balance ?>`)" required>
-                                    <div class="invalid-feedback">
-                                        Service Cost is required.
-                                    </div>
+                                        <label class="form-label ls-1">Cost</label>
+                                        <input type="number" class="ct-inputs form-control fw-bold" id="ct-cost-<?php echo $i; ?>" name="ct-cost" placeholder="Enter Amount" oninput="calculateTotalBilling(`<?= $remaining_balance ?>`)" min="0" required>
+                                        <div class="invalid-feedback">
+                                            Service Cost is required.
+                                        </div>
                                     </div>
                                 </div>
                             <?php 
@@ -255,20 +255,39 @@
     function calculateTotalBilling(remaining_balance) {
         let total_bill = 0;
         let charge_amount = 0;
+        let block_chars = ['-', '+'];
         const cost_inputs = document.querySelectorAll(".ct-inputs");
         const quantity_inputs = document.querySelectorAll("input[name='ct-qty']");
         const total_input = document.querySelector("#total-bill");
         
         for (let i = 0; i < cost_inputs.length; i++) {
+
+            /* Preventing the user from entering any characters that are on the block_chars array. */
+            cost_inputs[i].onkeypress = function(event) {
+                let char = String.fromCharCode(event.which);
+                if (block_chars.indexOf(char) >= 0) {
+                    return false;
+                }
+                    return true;
+            };
+
+            /* Preventing the user from entering any characters that are on the block_chars array. */
+            quantity_inputs[i].onkeypress = function(event) {
+                let char = String.fromCharCode(event.which);
+                if (block_chars.indexOf(char) >= 0) {
+                    return false;
+                }
+                    return true;
+            };
+
             total_bill += cost_inputs[i].value * quantity_inputs[i].value;
             charge_amount = total_bill - remaining_balance;
         }
 
         total_input.value = total_bill.toFixed(2);
-
+        // Calling other functions
         enableBillButton(total_bill);
         computePersonalCharge(charge_amount);
-        
     }
 
     function enableBillButton(total_bill){

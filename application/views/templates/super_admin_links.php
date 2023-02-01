@@ -4,7 +4,7 @@
                   href="<?php echo base_url(); ?>super-admin/dashboard"
                   aria-expanded="false"
                   ><i class="mdi mdi-view-dashboard"></i
-                  ><span class="hide-menu">Dashboard</span>
+                  ><span class="hide-menu ls-1">Dashboard</span>
                 </a>
               </li>       
 
@@ -14,7 +14,7 @@
                   href="<?php echo base_url(); ?>super-admin/healthcare-providers"
                   aria-expanded="false"
                   ><i class="mdi mdi-hospital-building"></i
-                  ><span class="hide-menu">Healthcare Providers</span>
+                  ><span class="hide-menu ls-1">Healthcare Providers</span>
                 </a>
               </li>
 
@@ -26,7 +26,7 @@
                   href="<?php echo base_url(); ?>super-admin/members"
                   aria-expanded="false"
                   ><i class="mdi mdi-account-multiple"></i
-                  ><span class="hide-menu">Members</span>
+                  ><span class="hide-menu ls-1">Members</span>
                 </a>
               </li>
 
@@ -38,7 +38,7 @@
                   href="<?php echo base_url(); ?>super-admin/loa/requests-list"
                   aria-expanded="false"
                   ><i class="mdi mdi-file-document"></i
-                  ><span class="hide-menu">LOA</span>
+                  ><span class="hide-menu ls-1">LOA</span>
                 </a>
               </li>
 
@@ -50,19 +50,19 @@
                   href="javascript:void(0)"
                   aria-expanded="false"
                   ><i class="mdi mdi-file-chart"></i
-                  ><span class="hide-menu">NOA</span>
+                  ><span class="hide-menu ls-1">NOA</span>
                 </a>
                 <ul aria-expanded="false" class="collapse first-level">
                   <li class="sidebar-item">
                     <a href="<?php echo base_url(); ?>super-admin/noa/request-noa" class="sidebar-link"
                       ><i class="mdi mdi-note-plus"></i
-                      ><span class="hide-menu">NOA Requisition</span>
+                      ><span class="hide-menu ls-1">NOA Requisition</span>
                     </a>
                   </li>
                   <li class="sidebar-item">
                     <a href="<?php echo base_url(); ?>super-admin/noa/requests-list" class="sidebar-link"
                       ><i class="mdi mdi-note-outline"></i
-                      ><span class="hide-menu">NOA Request List</span>
+                      ><span class="hide-menu ls-1">NOA Request List</span>
                     </a>
                   </li>
                 </ul>
@@ -76,25 +76,25 @@
                   href="javascript:void(0)"
                   aria-expanded="false"
                   ><i class="mdi mdi-wrench"></i
-                  ><span class="hide-menu">Setup</span>
+                  ><span class="hide-menu ls-1">Setup</span>
                 </a>
                 <ul aria-expanded="false" class="collapse first-level">
                   <li class="sidebar-item">
                     <a href="<?php echo base_url(); ?>super-admin/setup/healthcare-providers" class="sidebar-link"
                       ><i class="mdi mdi-hospital-building"></i
-                      ><span class="hide-menu">HealthCare Providers</span>
+                      ><span class="hide-menu ls-1">HealthCare Providers</span>
                     </a>
                   </li>
                   <li class="sidebar-item">
                     <a href="<?php echo base_url(); ?>super-admin/setup/company-doctors" class="sidebar-link"
                       ><i class="mdi mdi-account-star-variant"></i
-                      ><span class="hide-menu">Company Doctors</span>
+                      ><span class="hide-menu ls-1">Company Doctors</span>
                     </a>
                   </li>
                    <li class="sidebar-item">
                     <a href="<?php echo base_url(); ?>super-admin/setup/cost-types" class="sidebar-link"
                       ><i class="mdi mdi-code-string"></i
-                      ><span class="hide-menu">Cost Types</span>
+                      ><span class="hide-menu ls-1">Cost Types</span>
                     </a>
                   </li>
                 </ul>
@@ -106,7 +106,7 @@
                   href="<?php echo base_url(); ?>super-admin/accounts"
                   aria-expanded="false"
                   ><i class="mdi mdi-account-key"></i
-                  ><span class="hide-menu">User Accounts</span>
+                  ><span class="hide-menu ls-1">User Accounts</span>
                 </a>
               </li> 
 
@@ -117,7 +117,7 @@
                   href="<?php echo $account_settings_url; ?>"
                   aria-expanded="false"
                   ><i class="mdi mdi-settings"></i
-                  ><span class="hide-menu">Account Settings</span>
+                  ><span class="hide-menu ls-1">Account Settings</span>
                 </a>
               </li> 
 
@@ -127,7 +127,7 @@
                   href="javascript:void(0)" onclick="showDBBackupModal()"
                   aria-expanded="false"
                   ><i class="mdi mdi-database"></i
-                  ><span class="hide-menu">Database Backup</span>
+                  ><span class="hide-menu ls-1">Database Backup</span>
                 </a>
               </li> 
               
@@ -137,6 +137,6 @@
                   href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#logoutModal"
                   aria-expanded="false"
                   ><i class="mdi mdi-power"></i
-                  ><span class="hide-menu">Logout</span>
+                  ><span class="hide-menu ls-1">Logout</span>
                 </a>
               </li> 

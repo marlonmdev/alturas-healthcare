@@ -54,7 +54,7 @@
                         </li>
                         <li class="list-group-item d-flex justify-content-between bg-light">
                             <div class="text-secondary ls-1">
-                                <h6 class="my-0">Remaining Balance</h6>
+                                <h6 class="my-0">Remaining MBL Balance</h6>
                                 <span class="text-info fw-bold ls-1">
                                 &#8369;<?= number_format($remaining_balance, 2); ?>
                                 </span>
@@ -83,7 +83,7 @@
 
                                     <div class="col-md-2">
                                     <label class="form-label ls-1">Quantity</label>
-                                    <input type="number" class="form-control fw-bold" id="ct-qty-<?php echo $i; ?>" name="ct-qty" value="1" oninput="calculateTotal(`<?= $remaining_balance ?>`)" required>
+                                    <input type="number" class="form-control fw-bold" id="ct-qty-<?php echo $i; ?>" name="ct-qty" value="1" oninput="calculateTotalBilling(`<?= $remaining_balance ?>`)" required>
                                     <div class="invalid-feedback">
                                         Quantity is required
                                     </div>
@@ -91,7 +91,7 @@
 
                                     <div class="col-md-3">
                                     <label class="form-label ls-1">Cost</label>
-                                    <input type="number" class="ct-inputs form-control fw-bold" id="ct-cost-<?php echo $i; ?>" name="ct-cost" placeholder="Enter Amount" value="0" oninput="calculateTotal(`<?= $remaining_balance ?>`)" required>
+                                    <input type="number" class="ct-inputs form-control fw-bold" id="ct-cost-<?php echo $i; ?>" name="ct-cost" placeholder="Enter Amount" oninput="calculateTotalBilling(`<?= $remaining_balance ?>`)" required>
                                     <div class="invalid-feedback">
                                         Service Cost is required.
                                     </div>
@@ -102,10 +102,12 @@
                                 endif;
                                 endforeach;
                             ?>
-                            <div class="row my-3 d-none" id="excess-alert-div">
-                                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                    <strong>Oops!</strong> The Total Bill exceeds the patient remaining MBL Balance <span></span>excess will be added to Personal Charges.
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <div class="row my-3 d-none" id="charge-alert-div">
+                                <div class="col-12">
+                                    <div class="alert alert-cyan text-center" role="alert">
+                                        <strong class="ls-1">The Total Bill exceeds the patient Remaining MBL Balance. The <span class="text-danger fs-4">&#8369;</span><span class="text-danger fs-4" id="charge-amount"></span> excess amount will be added to his/her Personal Charges.
+                                        </strong>
+                                    </div>
                                 </div>
                             </div>
 
@@ -117,7 +119,7 @@
                                                 Total Bill <i class="mdi mdi-arrow-right-bold ms-1"></i> 
                                             </span>
                                         </div>
-                                        <input type="text" class="form-control fw-bold ls-1" id="total-bill" name="total-payment" disabled>
+                                        <input type="text" class="form-control fw-bold ls-1" id="total-bill" name="total-payment" value="0" readonly>
                                     </div>
                                 </div>
                                  <div class="col-lg-6 col-sm-12">
@@ -127,7 +129,7 @@
                                                 Personal Charge <i class="mdi mdi-arrow-right-bold ms-1"></i> 
                                             </span>
                                         </div>
-                                        <input type="text" class="form-control fw-bold ls-1" id="personal-charge" name="personal-charge" disabled>
+                                        <input type="text" class="form-control fw-bold ls-1" id="personal-charge" name="personal-charge" value="0" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -162,7 +164,7 @@
                             <hr class="my-4">
 
                             <div class="d-flex justify-content-end">
-                                <button class="btn btn-dark btn-lg ls-2" type="submit" disabled><i class="mdi mdi-file-check me-1"></i>Bill Now</button>
+                                <button type="submit" class="btn btn-dark btn-lg ls-2" id="btn-bill" disabled><i class="mdi mdi-file-check me-1"></i>Bill Now</button>
                             </div>
                         </form>
                     </div>
@@ -250,22 +252,49 @@
     </div>
 </div>
 <script>
-    function calculateTotal(remaining_balance) {
-        const costInputs = document.querySelectorAll(".ct-inputs");
-        const quantityInputs = document.querySelectorAll("input[name='ct-qty']");
-        const totalBill = document.querySelector("#total-bill");
-        const personalCharge = document.querySelector('#personal-charge');
-        let total = 0;
-        let charge = 0;
+    function calculateTotalBilling(remaining_balance) {
+        let total_bill = 0;
+        let charge_amount = 0;
+        const cost_inputs = document.querySelectorAll(".ct-inputs");
+        const quantity_inputs = document.querySelectorAll("input[name='ct-qty']");
+        const total_input = document.querySelector("#total-bill");
         
-        for (let i = 0; i < costInputs.length; i++) {
-            total += costInputs[i].value * quantityInputs[i].value;
-            charge = total - remaining_balance;
+        for (let i = 0; i < cost_inputs.length; i++) {
+            total_bill += cost_inputs[i].value * quantity_inputs[i].value;
+            charge_amount = total_bill - remaining_balance;
         }
 
-        totalBill.value = total;
-        if(charge > 0){
-            personalCharge.value = charge;
+        total_input.value = total_bill.toFixed(2);
+
+        enableBillButton(total_bill);
+        computePersonalCharge(charge_amount);
+        
+    }
+
+    function enableBillButton(total_bill){
+        const btnBill = document.querySelector('#btn-bill');
+
+        if(total_bill > 0){
+            btnBill.removeAttribute('disabled');
+        }else{
+            btnBill.setAttribute('disabled', true);
+        }
+    }
+
+    function computePersonalCharge(charge_amount){
+        const personalCharge = document.querySelector('#personal-charge');
+        const chargeAlertDiv = document.querySelector('#charge-alert-div');
+        const chargeAmount = document.querySelector('#charge-amount');
+
+        if(charge_amount > 0){
+            personalCharge.value = charge_amount.toFixed(2);
+            chargeAlertDiv.classList.remove('d-none');
+            chargeAlertDiv.classList.add('d-block');
+            chargeAmount.innerHTML = charge_amount.toFixed(2);
+        }else{
+            personalCharge.value = 0;
+            chargeAlertDiv.classList.remove('d-block');
+            chargeAlertDiv.classList.add('d-none');
         }
     }
 </script>

@@ -4,7 +4,7 @@
                   href="<?php echo base_url(); ?>head-office-accounting/dashboard"
                   aria-expanded="false"
                   ><i class="mdi mdi-view-dashboard"></i
-                  ><span class="hide-menu">Dashboard</span>
+                  ><span class="hide-menu ls-1">Dashboard</span>
                 </a>
               </li>
 
@@ -14,7 +14,7 @@
                   href="<?php echo base_url(); ?>head-office-accounting/billing-list"
                   aria-expanded="false"
                   ><i class="mdi mdi-receipt"></i
-                  ><span class="hide-menu">Billing List</span>
+                  ><span class="hide-menu ls-1">Billing List</span>
                 </a>
               </li>
 
@@ -24,7 +24,7 @@
                   href="<?php echo base_url(); ?>head-office-accounting/loa-request-list"
                   aria-expanded="false"
                   ><i class="mdi mdi-file-document"></i
-                  ><span class="hide-menu">LOA</span>
+                  ><span class="hide-menu ls-1">LOA</span>
                 </a>
               </li>
 
@@ -34,7 +34,7 @@
                   href="<?php echo base_url(); ?>head-office-accounting/noa-request-list"
                   aria-expanded="false"
                   ><i class="mdi mdi-file-chart"></i
-                  ><span class="hide-menu">NOA</span>
+                  ><span class="hide-menu ls-1">NOA</span>
                 </a>
               </li>
 
@@ -44,7 +44,7 @@
                   href="<?php echo $account_settings_url; ?>"
                   aria-expanded="false"
                   ><i class="mdi mdi-settings"></i
-                  ><span class="hide-menu">Account Settings</span>
+                  ><span class="hide-menu ls-1">Account Settings</span>
                 </a>
               </li>
               
@@ -54,6 +54,6 @@
                   href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#logoutModal"
                   aria-expanded="false"
                   ><i class="mdi mdi-power"></i
-                  ><span class="hide-menu">Logout</span>
+                  ><span class="hide-menu ls-1">Logout</span>
                 </a>
               </li> 

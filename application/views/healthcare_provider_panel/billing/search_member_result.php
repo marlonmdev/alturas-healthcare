@@ -75,13 +75,13 @@
                                             <?php
                                             if (!empty($loa_requests)) :
                                                 foreach ($loa_requests as $loa) :
+                                                    if($loa['status'] == 'Approved'){
                                             ?>
-                                                    <tr>
-                                                        <td class="fw-bold"><?= $loa['loa_no'] ?></td>
-                                                        <td class="fw-bold">
-                                                            <?= date("m/d/Y", strtotime($loa['request_date'])) ?>
-                                                        </td>
-                                                        <?php if ($loa['status'] == 'Approved') { ?>
+                                                        <tr>
+                                                            <td class="fw-bold"><?= $loa['loa_no'] ?></td>
+                                                            <td class="fw-bold">
+                                                                <?= date("m/d/Y", strtotime($loa['request_date'])) ?>
+                                                            </td>
                                                             <td class="fw-bold">
                                                                 <div class="col">
                                                                     <form method="post" action="<?= base_url() ?>healthcare-provider/billing/bill-loa/<?= $this->myhash->hasher($loa['loa_id'], 'encrypt') ?>">
@@ -94,12 +94,19 @@
                                                                     </form>
                                                                 </div>
                                                             </td>
-                                                        <?php } else { ?>
-                                                            <td><span class="badge bg-success px-2">Done</span></td>
-                                                        <?php } ?>
-
-                                                    </tr>
+                                                        </tr>
+                                                    <?php } else if($loa['status'] == 'Closed') { ?>
+                                                        <tr>
+                                                            <td class="fw-bold"><?= $loa['loa_no'] ?></td>
+                                                            <td class="fw-bold">
+                                                                <?= date("m/d/Y", strtotime($loa['request_date'])) ?>
+                                                            </td>
+                                                            <td class="fw-bold">
+                                                                <span class="badge bg-success px-2 ls-1">Billed</span>
+                                                            </td>
+                                                        </tr>
                                             <?php
+                                                    }
                                                 endforeach;
                                             endif;
                                             ?>
@@ -157,28 +164,35 @@
                                                 <?php
                                                     if (!empty($noa_requests)) :
                                                         foreach ($noa_requests as $noa) :
+                                                            if($noa['status'] == 'Approved') {
                                                 ?>
                                                             <tr>
                                                                 <td class="fw-bold"><?= $noa['noa_no'] ?></td>
                                                                 <td class="fw-bold">
                                                                     <?= date("m/d/Y", strtotime($noa['request_date'])) ?>
                                                                 </td>
-                                                                <?php if ($noa['status'] == 'Approved') { ?>
-                                                                    <td class="fw-bold">
-                                                                        <div class="col">
-                                                                            <button type="submit" onclick="document.getElementById('noa_select_id').value = '<?= $noa['noa_id'] ?>'" data-bs-toggle="tooltip" title="Click to Proceed" style="background-color: transparent;border:0;color:#4054F1;">
-                                                                                <span class="fw-bold">
-                                                                                    Proceed to Billing
-                                                                                </span>
-                                                                            </button>
-                                                                        </div>
-                                                                    </td>
-                                                                <?php } else { ?>
-                                                                    <td><span class="badge bg-success px-2">Done</span></td>
-                                                                <?php } ?>
-
+                                                                <td class="fw-bold">
+                                                                    <div class="col">
+                                                                        <button type="submit" onclick="document.getElementById('noa_select_id').value = '<?= $noa['noa_id'] ?>'" data-bs-toggle="tooltip" title="Click to Proceed" style="background-color: transparent;border:0;color:#4054F1;">
+                                                                            <span class="fw-bold">
+                                                                                Proceed to Billing
+                                                                            </span>
+                                                                        </button>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <?php } else if($noa['status'] == 'Closed') { ?>
+                                                            <tr>
+                                                                <td class="fw-bold"><?= $loa['noa_no'] ?></td>
+                                                                <td class="fw-bold">
+                                                                    <?= date("m/d/Y", strtotime($noa['request_date'])) ?>
+                                                                </td>
+                                                                <td class="fw-bold">
+                                                                    <span class="badge bg-success px-2 ls-1">Billed</span>
+                                                                </td>
                                                             </tr>
                                                 <?php
+                                                            }
                                                         endforeach;
                                                     endif;
                                                 ?>

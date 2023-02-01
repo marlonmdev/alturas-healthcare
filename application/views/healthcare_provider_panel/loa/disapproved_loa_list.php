@@ -67,6 +67,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
+                        <?php include 'view_disapproved_loa_details.php'; ?>
                         <table id="disapprovedLoaTable" class="table table-striped">
                             <thead>
                                 <tr>

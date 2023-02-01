@@ -6717,6 +6717,9 @@ fieldset:disabled .btn {
 .lh-lg {
 	line-height: 2 !important;
 }
+.bg-light-gray {
+	background-color: #FFF2F2 !important;
+}
 .bg-primary {
 	background-color: #7460ee !important;
 }

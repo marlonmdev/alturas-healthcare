@@ -12,46 +12,46 @@
                       <h4><strong>NOA REQUEST DETAILS</strong></h4>
                     </div>
                     <div class="row">
-                      <table class="table table-bordered table-hover table-responsive table-sm">
+                      <table class="table table-bordered table-striped table-hover table-responsive table-sm">
                         <tr>
-                          <td>Disapproved By :</td>
-                          <td id="disapproved-by"></td>
+                          <td class="ls-1">Disapproved By :</td>
+                          <td class="ls-1" id="disapproved-by"></td>
                         </tr>
                         <tr>
-                          <td>Disapproved On :</td>
-                          <td id="disapproved-on"></td>
+                          <td class="ls-1">Disapproved On :</td>
+                          <td class="ls-1" id="disapproved-on"></td>
                         </tr>
                         <tr>
-                          <td>Reason for Disapproval :</td>
-                          <td id="disapprove-reason"></td>
+                          <td class="ls-1">Reason for Disapproval :</td>
+                          <td class="ls-1" id="disapprove-reason"></td>
                         </tr>
                         <tr>
-                          <td>Full Name :</td>
-                          <td id="full-name"></td>
+                          <td class="ls-1">Full Name :</td>
+                          <td class="ls-1" id="full-name"></td>
                         </tr>
                         <tr>
-                          <td>Date of Birth :</td>
-                          <td id="date-of-birth"></td>
+                          <td class="ls-1">Date of Birth :</td>
+                          <td class="ls-1" id="date-of-birth"></td>
                         </tr>
                         <tr>
-                          <td>Age :</td>
-                          <td id="age"></td>
+                          <td class="ls-1">Age :</td>
+                          <td class="ls-1" id="age"></td>
                         </tr>
                         <tr>
-                          <td>Hospital :</td>
-                          <td id="hospital-name"></td>
+                          <td class="ls-1">Hospital :</td>
+                          <td class="ls-1" id="hospital-name"></td>
                         </tr>
                         <tr>
-                          <td>Admission Date :</td>
-                          <td id="admission-date"></td>
+                          <td class="ls-1">Admission Date :</td>
+                          <td class="ls-1" id="admission-date"></td>
                         </tr>
                         <tr>
-                          <td>Chief Complaint :</td>
-                          <td id="chief-complaint"></td>
+                          <td class="ls-1">Chief Complaint :</td>
+                          <td class="ls-1" id="chief-complaint"></td>
                         </tr>
                         <tr>
-                          <td>Requested On :</td>
-                          <td id="request-date"></td>
+                          <td class="ls-1">Requested On :</td>
+                          <td class="ls-1" id="request-date"></td>
                         </tr>
                       </table>
                     </div>

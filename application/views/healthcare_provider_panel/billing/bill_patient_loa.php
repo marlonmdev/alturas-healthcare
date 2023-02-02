@@ -91,20 +91,19 @@
 
                             <?php 
                                 $selectedOptions = explode(';', $loa['med_services']);
-                                $i = 1;
                                 foreach ($cost_types as $cost_type) :
-                                if (in_array($cost_type['ctype_id'], $selectedOptions)) :
+                                 if (in_array($cost_type['ctype_id'], $selectedOptions)) :
                             ?>
-                                 <input type="hidden" name="ctype_id" value="<?php echo $cost_type['ctype_id']; ?>">
+                                <input type="hidden" name="ctype_id" value="<?php echo $cost_type['ctype_id']; ?>">
                                 <div class="row mt-2">
                                     <div class="col-md-7">
                                         <label class="form-label ls-1">Cost Type</label>
-                                        <input type="text" class="form-control text-info fw-bold ls-1" id="ct-name-<?php echo $i; ?>" name="cost-type" value="<?php echo $cost_type['cost_type']; ?>" readonly>
+                                        <input type="text" class="form-control text-info fw-bold ls-1" name="ct-name[]" value="<?php echo $cost_type['cost_type']; ?>" readonly>
                                     </div>
 
                                     <div class="col-md-2">
                                         <label class="form-label ls-1">Quantity</label>
-                                        <input type="number" class="form-control fw-bold" id="ct-qty-<?php echo $i; ?>" name="ct-qty" oninput="calculateTotalBilling(`<?= $remaining_balance ?>`)" value="1" min="1" required>
+                                        <input type="number" class="ct-qty form-control fw-bold" name="ct-qty[]" oninput="calculateTotalBilling(`<?= $remaining_balance ?>`)" value="1" min="1" required>
                                         <div class="invalid-feedback">
                                             Quantity is required
                                         </div>
@@ -112,18 +111,36 @@
 
                                     <div class="col-md-3">
                                         <label class="form-label ls-1">Cost</label>
-                                        <input type="number" class="ct-inputs form-control fw-bold" id="ct-cost-<?php echo $i; ?>" name="ct-cost" placeholder="Enter Amount" oninput="calculateTotalBilling(`<?= $remaining_balance ?>`)" min="0" required>
+                                        <input type="number" class="ct-cost form-control fw-bold" name="ct-cost[]" placeholder="Enter Amount" oninput="calculateTotalBilling(`<?= $remaining_balance ?>`)" min="0" required>
                                         <div class="invalid-feedback">
                                             Service Cost is required.
                                         </div>
                                     </div>
                                 </div>
                             <?php 
-                                    $i += 1;
-                                endif;
+                                    endif;
                                 endforeach;
                             ?>
+
+                            <hr class="my-4">
+                            <div class="row">
+                                <h4 class="text-center ls-2">
+                                    <i class="mdi mdi-arrow-down-bold-circle"></i> Other Deductions <i class="mdi mdi-arrow-down-bold-circle"></i>
+                                </h4>
+                            </div>
+                            <div class="row my-4">
+                                <div class="col-md-6">
+                                    <label class="form-label ls-1">PhilHealth</label>
+                                    <input type="number" class="form-control fw-bold" id="deduct-philhealth" name="philhealth-deduction" placeholder="Enter Amount" oninput="calculateTotalBilling(`<?= $remaining_balance ?>`)" min="0" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label ls-1">SSS</label>
+                                    <input type="number" class="form-control fw-bold" id="deduct-sss" name="sss-deduction" placeholder="Enter Amount" oninput="calculateTotalBilling(`<?= $remaining_balance ?>`)" min="0" readonly>
+                                </div>
+                            </div>
                             
+                            <hr class="my-4">
+
                             <?php include 'personal_charge_alert.php'; ?>
 
                             <div class="row my-4">
@@ -293,51 +310,67 @@
     // function to be called if LOA Request Type is Diagnostic Test
     function calculateTotalBilling(remaining_balance) {
         let total_bill = 0;
+        let total_deduction = 0;
         let charge_amount = 0;
-        let block_chars = ['-', '+'];
-        const cost_inputs = document.querySelectorAll(".ct-inputs");
-        const quantity_inputs = document.querySelectorAll("input[name='ct-qty']");
+        let net_total = 0;
+        let philhealth_deduction = 0;
+        let sss_deduction = 0;
+
+        const cost_inputs = document.querySelectorAll(".ct-cost");
+        const quantity_inputs = document.querySelectorAll(".ct-qty");
         const total_input = document.querySelector("#total-bill");
+        const deduct_philhealth = document.querySelector("#deduct-philhealth");
+        const deduct_sss = document.querySelector("#deduct-sss");
         
         for (let i = 0; i < cost_inputs.length; i++) {
-
-            /* Preventing the user from entering any characters that are on the block_chars array. */
-            cost_inputs[i].onkeypress = function(event) {
-                let char = String.fromCharCode(event.which);
-                if (block_chars.indexOf(char) >= 0) {
-                    return false;
-                }
-                    return true;
-            };
-
-            /* Preventing the user from entering any characters that are on the block_chars array. */
-            quantity_inputs[i].onkeypress = function(event) {
-                let char = String.fromCharCode(event.which);
-                if (block_chars.indexOf(char) >= 0) {
-                    return false;
-                }
-                    return true;
-            };
+            /* Calls the function that prevents the user from entering any characters that exists in the block characcters array. */
+            blockCharacters(cost_inputs[i]);
+            blockCharacters(quantity_inputs[i]);
 
             total_bill += cost_inputs[i].value * quantity_inputs[i].value;
             charge_amount = total_bill - remaining_balance;
         }
 
-        total_input.value = total_bill.toFixed(2);
+        // Compute Deductions
+        philhealth_deduction = deduct_philhealth.value > 0 ? deduct_philhealth.value : 0;
+        sss_deduction = deduct_sss.value > 0 ? deduct_sss.value : 0;
+
+        total_deduction = parseFloat(philhealth_deduction) + parseFloat(sss_deduction);
+
+        if(total_deduction > 0) {
+            net_total = total_bill - total_deduction;
+            charge_amount = net_total - remaining_balance;
+        }else{
+            net_total = total_bill;
+            charge_amount = net_total - remaining_balance;
+        }
+
+        // set the net total as the value of total bill input
+        total_input.value = net_total.toFixed(2);
+
         // Calling other functions
-        enableBillButton(total_bill);
+        enableBillButtonAndDeductions(total_bill);
         computePersonalCharge(charge_amount);
+        blockCharacters(philhealth_deduction);
+        blockCharacters(sss_deduction);
     }
 
-    function enableBillButton(total_bill){
+    function enableBillButtonAndDeductions(total_bill){
         const btnBill = document.querySelector('#btn-bill');
+        const philhealth_deduction = document.querySelector("#deduct-philhealth");
+        const sss_deduction = document.querySelector("#deduct-sss");
 
         if(total_bill > 0){
             btnBill.removeAttribute('disabled');
+            philhealth_deduction.removeAttribute('readonly');
+            sss_deduction.removeAttribute('readonly');
         }else{
             btnBill.setAttribute('disabled', true);
+            philhealth_deduction.setAttribute('readonly', true);
+            sss_deduction.setAttribute('readonly', true);
         }
     }
+
 
     function computePersonalCharge(charge_amount){
         const personalCharge = document.querySelector('#personal-charge');

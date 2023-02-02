@@ -36,11 +36,11 @@
               <table class="table table-hover table-fit" id="healthCareProvidersTable">
                 <thead>
                   <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Address</th>
-                    <th>Actions</th>
+                    <th class="fw-bold">#</th>
+                    <th class="fw-bold">Name</th>
+                    <th class="fw-bold">Type</th>
+                    <th class="fw-bold">Address</th>
+                    <th class="fw-bold">Actions</th>
                   </tr>
                 </thead>
                 <tbody>

@@ -71,14 +71,13 @@
               <table class="table table-hover" id="memberPendingLoa">
                 <thead>
                   <tr>
-                    <th>LOA No.</th>
-                    <th>Request Date</th>
-                    <th>HealthCare Provider</th>
-                    <th>LOA Type</th>
-                    <!-- <th>Service Type</th> -->
-                    <th>RX File</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th class="fw-bold">LOA No.</th>
+                    <th class="fw-bold">Request Date</th>
+                    <th class="fw-bold">Healthcare Provider</th>
+                    <th class="fw-bold">LOA Type</th>
+                    <th class="fw-bold">RX File</th>
+                    <th class="fw-bold">Status</th>
+                    <th class="fw-bold">Actions</th>
                   </tr>
                 </thead>
                 <tbody>

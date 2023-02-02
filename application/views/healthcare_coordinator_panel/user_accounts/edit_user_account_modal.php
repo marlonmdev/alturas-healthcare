@@ -16,9 +16,9 @@
                           <label class="colored-label"><i class="bx bx-health icon-red"></i> User Role</label><br>
                           <select class="form-select" name="user-role" id="edit-user-role" onchange="showEditHcareProv()">
                             <option value="">Select User Role</option>
-                            <option value="healthcare-coordinator">HealthCare Coordinator</option>
+                            <option value="healthcare-coordinator">Healthcare Coordinator</option>
                             <option value="company-doctor">Company Doctor</option>
-                            <option value="healthcare-provider">HealthCare Provider</option>
+                            <option value="healthcare-provider">Healthcare Provider</option>
                             <option value="head-office-accounting">Head Office - Accounting</option>
                             <option value="head-office-iad">Head Office - IAD</option>
                           </select>

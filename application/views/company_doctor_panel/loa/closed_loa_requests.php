@@ -69,14 +69,14 @@
               <table class="table table-hover table-responsive" id="closedLoaTable">
                 <thead>
                   <tr>
-                    <th>LOA No.</th>
-                    <th>Name</th>
-                    <th>LOA Type</th>
-                    <th>Healthcare Provider</th>
-                    <th>RX File</th>
-                    <th>Request Date</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th class="fw-bold">LOA No.</th>
+                    <th class="fw-bold">Name</th>
+                    <th class="fw-bold">LOA Type</th>
+                    <th class="fw-bold">Healthcare Provider</th>
+                    <th class="fw-bold">RX File</th>
+                    <th class="fw-bold">Request Date</th>
+                    <th class="fw-bold">Status</th>
+                    <th class="fw-bold">Actions</th>
                   </tr>
                 </thead>
                 <tbody>

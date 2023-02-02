@@ -52,12 +52,12 @@
                 <table class="table table-hover" id="memberPersonalCharges">
                   <thead>
                     <tr>
-                      <th>#</th>
-                      <th>Billing No.</th>
-                      <th>Billing Date</th>
-                      <th>Charge Amount</th>
-                      <th>Status</th>
-                      <th>Actions</th>
+                      <th class="fw-bold">#</th>
+                      <th class="fw-bold">Billing No.</th>
+                      <th class="fw-bold">Billing Date</th>
+                      <th class="fw-bold">Charge Amount</th>
+                      <th class="fw-bold">Status</th>
+                      <th class="fw-bold">Actions</th>
                     </tr>
                   </thead>
                   <tbody>

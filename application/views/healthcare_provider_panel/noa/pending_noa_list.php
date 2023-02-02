@@ -71,13 +71,13 @@
                         <table id="pendingNoaTable" class="table table-striped" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>#</th>
-                                    <th>Name</th>
-                                    <th>Hosptial Name</th>
-                                    <th>Admission Date</th>
-                                    <th>Request Date</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
+                                    <th class="fw-bold">NOA No.</th>
+                                    <th class="fw-bold">Name</th>
+                                    <th class="fw-bold">Hosptial Name</th>
+                                    <th class="fw-bold">Admission Date</th>
+                                    <th class="fw-bold">Request Date</th>
+                                    <th class="fw-bold">Status</th>
+                                    <th class="fw-bold">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>

@@ -41,7 +41,7 @@
                         <div class="col-sm-8 offset-sm-2">
                           <label class="colored-label"><i class="bx bx-health icon-red"></i> HealthCare Provider</label><br>
                           <select class="form-select" name="dsg-hcare-prov" id="dsg-hcare-prov">
-                            <option value="" selected>Select HealthCare Provider</option>
+                            <option value="" selected>Select Healthcare Provider</option>
                             <?php
                             if (!empty($hcproviders)) :
                               foreach ($hcproviders as $hcprovider) :

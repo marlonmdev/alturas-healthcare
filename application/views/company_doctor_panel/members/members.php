@@ -31,14 +31,14 @@
                 <table class="table table-hover table-responsive" id="membersTable">
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>EmpType</th>
-                            <th>Status</th>
-                            <th>Business Unit</th>
-                            <th>Department</th>
-                            <th>Approval Status</th>
-                            <th>Actions</th>
+                            <th class="fw-bold">#</th>
+                            <th class="fw-bold">Name</th>
+                            <th class="fw-bold">EmpType</th>
+                            <th class="fw-bold">Status</th>
+                            <th class="fw-bold">Business Unit</th>
+                            <th class="fw-bold">Department</th>
+                            <th class="fw-bold">Approval Status</th>
+                            <th class="fw-bold">Actions</th>
                         </tr>
                     </thead>
                     <tbody>

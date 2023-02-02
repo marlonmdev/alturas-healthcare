@@ -68,12 +68,12 @@
               <table class="table table-hover" id="memberDisapprovedNoa">
                 <thead>
                   <tr>
-                    <th>NOA No.</th>
-                    <th>Admission Date</th>
-                    <th>Hospital Name</th>
-                    <th>Date Requested</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th class="fw-bold">NOA No.</th>
+                    <th class="fw-bold">Admission Date</th>
+                    <th class="fw-bold">Hospital Name</th>
+                    <th class="fw-bold">Request Date</th>
+                    <th class="fw-bold">Status</th>
+                    <th class="fw-bold">Actions</th>
                   </tr>
                 </thead>
                 <tbody>

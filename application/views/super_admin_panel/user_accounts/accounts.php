@@ -59,13 +59,13 @@
               <table class="table table-hover table-responsive" id="userAccountsTable">
                 <thead>
                   <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Role</th>
-                    <th>Username</th>
-                    <th>Change Status</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th class="fw-bold">#</th>
+                    <th class="fw-bold">Name</th>
+                    <th class="fw-bold">Role</th>
+                    <th class="fw-bold">Username</th>
+                    <th class="fw-bold">Change Status</th>
+                    <th class="fw-bold">Status</th>
+                    <th class="fw-bold">Actions</th>
                   </tr>
                 </thead>
                 <tbody></tbody>

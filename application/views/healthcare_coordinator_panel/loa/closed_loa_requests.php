@@ -69,14 +69,14 @@
               <table class="table table-hover table-responsive" id="closedLoaTable">
                 <thead>
                   <tr>
-                    <th>LOA No.</th>
-                    <th>Name</th>
-                    <th>LOA Type</th>
-                    <th>Service Type</th>
-                    <th>RX File</th>
-                    <th>Req. Date</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th class="fw-bold">LOA No.</th>
+                    <th class="fw-bold">Name</th>
+                    <th class="fw-bold">LOA Type</th>
+                    <th class="fw-bold">Healthcare Provider</th>
+                    <th class="fw-bold">RX File</th>
+                    <th class="fw-bold">Request Date</th>
+                    <th class="fw-bold">Status</th>
+                    <th class="fw-bold">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -118,7 +118,7 @@
 
       //Set column definition initialisation properties.
       columnDefs: [{
-        "targets": [3, 4, 6, 7], // numbering column
+        "targets": [4, 6, 7], // numbering column
         "orderable": false, //set not orderable
       }, ],
       responsive: true,

@@ -17,11 +17,14 @@ class Loa_controller extends CI_Controller {
 		$this->security->get_csrf_hash();
 		$status = 'Pending';
 		$list = $this->loa_model->get_datatables($status);
-		$cost_types = $this->loa_model->db_get_cost_types();
+		// $cost_types = $this->loa_model->db_get_cost_types();
 		$data = [];
 		foreach ($list as $loa) {
 			$loa_id = $this->myhash->hasher($loa['loa_id'], 'encrypt');
-			$ct_array = $row = [];
+			// $ct_array = $row = [];
+
+			$row = [];
+
 			$full_name = $loa['first_name'] . ' ' . $loa['middle_name'] . ' ' . $loa['last_name'] . ' ' . $loa['suffix'];
 
 			$custom_date = date("m/d/Y", strtotime($loa['request_date']));
@@ -34,24 +37,31 @@ class Loa_controller extends CI_Controller {
 
 			$custom_actions .= '<a href="JavaScript:void(0)" onclick="disapproveLoaRequest(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="Disapprove LOA"><i class="mdi mdi-thumb-down fs-2 text-danger"></i></a>';
 
+			// $short_med_services = '';
 			// initialize multiple varibles at once
-			$view_file = $short_med_services = '';
+			$view_file = $short_hp_name = '';
 			if ($loa['loa_request_type'] === 'Consultation') {
 				// if request is consultation set the view file and medical services to None
-				$view_file = $short_med_services = 'None';
+				// $short_med_services = 'Npne';
+				$view_file = 'None';
+				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
 			} else {
 				// convert into array members selected cost types/med_services using PHP explode
-				$selected_cost_types = explode(';', $loa['med_services']);
+				// $selected_cost_types = explode(';', $loa['med_services']);
 				// loop through all the cost types from DB
-				foreach ($cost_types as $cost_type) :
-					if (in_array($cost_type['ctype_id'], $selected_cost_types)) :
-						array_push($ct_array, $cost_type['cost_type']);
-					endif;
-				endforeach;
+				// foreach ($cost_types as $cost_type) :
+				// 	if (in_array($cost_type['ctype_id'], $selected_cost_types)) :
+				// 		array_push($ct_array, $cost_type['cost_type']);
+				// 	endif;
+				// endforeach;
 				// convert array to string and add comma as a separator using PHP implode
-				$med_services = implode(', ', $ct_array);
+				// $med_services = implode(', ', $ct_array);
 				// if medical services are too long for displaying to the table shorten it and add the ... characters at the end 
-				$short_med_services = strlen($med_services) > 35 ? substr($med_services, 0, 35) . "..." : $med_services;
+				// $short_med_services = strlen($med_services) > 35 ? substr($med_services, 0, 35) . "..." : $med_services;
+
+				// if Hospital Name is too long for displaying to the table shorten it and add the ... characters at the end 
+				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
+
 				// link to the file attached during loa request
 				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
 			}
@@ -60,7 +70,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $loa['loa_no'];
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
-			$row[] = $short_med_services;
+			$row[] = $short_hp_name;
 			$row[] = $view_file;
 			$row[] = $custom_date;
 			$row[] = $custom_status;
@@ -81,11 +91,12 @@ class Loa_controller extends CI_Controller {
 		$this->security->get_csrf_hash();
 		$status = 'Approved';
 		$list = $this->loa_model->get_datatables($status);
-		$cost_types = $this->loa_model->db_get_cost_types();
 		$data = [];
 		foreach ($list as $loa) {
 			$loa_id = $this->myhash->hasher($loa['loa_id'], 'encrypt');
-			$ct_array = $row = [];
+
+			$row = [];
+
 			$full_name = $loa['first_name'] . ' ' . $loa['middle_name'] . ' ' . $loa['last_name'] . ' ' . $loa['suffix'];
 
 			$custom_date = date("m/d/Y", strtotime($loa['request_date']));
@@ -95,23 +106,17 @@ class Loa_controller extends CI_Controller {
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
 			// initialize multiple varibles at once
-			$view_file = $short_med_services = '';
+			$view_file = $short_hp_name = '';
 			if ($loa['loa_request_type'] === 'Consultation') {
-				// if request is consultation set the view file and medical services to None
-				$view_file = $short_med_services = 'None';
+				// if request is consultation set the view file to None
+				$view_file = 'None';
+				// if Hospital Name is too long for displaying to the table shorten it and add the ... characters at the end 
+				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
+
 			} else {
-				// convert into array members selected cost types/med_services using PHP explode
-				$selected_cost_types = explode(';', $loa['med_services']);
-				// loop through all the cost types from DB
-				foreach ($cost_types as $cost_type) :
-					if (in_array($cost_type['ctype_id'], $selected_cost_types)) :
-						array_push($ct_array, $cost_type['cost_type']);
-					endif;
-				endforeach;
-				// convert array to string and add comma as a separator using PHP implode
-				$med_services = implode(', ', $ct_array);
-				// if medical services are too long for displaying to the table shorten it and add the ... characters at the end 
-				$short_med_services = strlen($med_services) > 35 ? substr($med_services, 0, 35) . "..." : $med_services;
+
+				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
+
 				// link to the file attached during loa request
 				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
 			}
@@ -120,7 +125,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $loa['loa_no'];
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
-			$row[] = $short_med_services;
+			$row[] = $short_hp_name;
 			$row[] = $view_file;
 			$row[] = $custom_date;
 			$row[] = $custom_status;
@@ -141,12 +146,13 @@ class Loa_controller extends CI_Controller {
 		$this->security->get_csrf_hash();
 		$status = 'Disapproved';
 		$list = $this->loa_model->get_datatables($status);
-		$cost_types = $this->loa_model->db_get_cost_types();
 		$data = [];
 		foreach ($list as $loa) {
 			// Myhash is a custom library located in application/libraries directory -> Enabled Globally
 			$loa_id = $this->myhash->hasher($loa['loa_id'], 'encrypt');
-			$ct_array = $row = [];
+
+			$row = [];
+
 			$full_name = $loa['first_name'] . ' ' . $loa['middle_name'] . ' ' . $loa['last_name'] . ' ' . $loa['suffix'];
 
 			$custom_date = date("m/d/Y", strtotime($loa['request_date']));
@@ -156,23 +162,18 @@ class Loa_controller extends CI_Controller {
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewDisapprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
 			// initialize multiple varibles at once
-			$view_file = $short_med_services = '';
+			$view_file = $short_hp_name = '';
 			if ($loa['loa_request_type'] === 'Consultation') {
-				// if request is consultation set the view file and medical services to None
-				$view_file = $short_med_services = 'None';
+				// if request is consultation set the view file to None
+				$view_file = 'None';
+
+				// if Hospital Name is too long for displaying to the table shorten it and add the ... characters at the end 
+				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
+
 			} else {
-				// convert into array members selected cost types/med_services using PHP explode
-				$selected_cost_types = explode(';', $loa['med_services']);
-				// loop through all the cost types from DB
-				foreach ($cost_types as $cost_type) :
-					if (in_array($cost_type['ctype_id'], $selected_cost_types)) :
-						array_push($ct_array, $cost_type['cost_type']);
-					endif;
-				endforeach;
-				// convert array to string and add comma as a separator using PHP implode
-				$med_services = implode(', ', $ct_array);
-				// if medical services are too long for displaying to the table shorten it and add the ... characters at the end 
-				$short_med_services = strlen($med_services) > 35 ? substr($med_services, 0, 35) . "..." : $med_services;
+
+				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
+
 				// link to the file attached during loa request
 				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
 			}
@@ -181,7 +182,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $loa['loa_no'];
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
-			$row[] = $short_med_services;
+			$row[] = $short_hp_name;
 			$row[] = $view_file;
 			$row[] = $custom_date;
 			$row[] = $custom_status;
@@ -203,11 +204,12 @@ class Loa_controller extends CI_Controller {
 		$this->security->get_csrf_hash();
 		$status = 'closed';
 		$list = $this->loa_model->get_datatables($status);
-		$cost_types = $this->loa_model->db_get_cost_types();
 		$data = [];
 		foreach ($list as $loa) {
 			$loa_id = $this->myhash->hasher($loa['loa_id'], 'encrypt');
-			$ct_array = $row = [];
+
+			$row = [];
+
 			$full_name = $loa['first_name'] . ' ' . $loa['middle_name'] . ' ' . $loa['last_name'] . ' ' . $loa['suffix'];
 
 			$custom_date = date("m/d/Y", strtotime($loa['request_date']));
@@ -217,23 +219,17 @@ class Loa_controller extends CI_Controller {
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewClosedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
 			// initialize multiple varibles at once
-			$view_file = $short_med_services = '';
+			$view_file = $short_hp_name = '';
 			if ($loa['loa_request_type'] === 'Consultation') {
-				// if request is consultation set the view file and medical services to None
-				$view_file = $short_med_services = 'None';
+				// if request is consultation set the view file to None
+				$view_file =  'None';
+				// if Hospital Name is too long for displaying to the table shorten it and add the ... characters at the end 
+				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
+
 			} else {
-				// convert into array members selected cost types/med_services using PHP explode
-				$selected_cost_types = explode(';', $loa['med_services']);
-				// loop through all the cost types from DB
-				foreach ($cost_types as $cost_type) :
-					if (in_array($cost_type['ctype_id'], $selected_cost_types)) :
-						array_push($ct_array, $cost_type['cost_type']);
-					endif;
-				endforeach;
-				// convert array to string and add comma as a separator using PHP implode
-				$med_services = implode(', ', $ct_array);
-				// if medical services are too long for displaying to the table shorten it and add the ... characters at the end 
-				$short_med_services = strlen($med_services) > 35 ? substr($med_services, 0, 35) . "..." : $med_services;
+
+				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
+
 				// link to the file attached during loa request
 				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
 			}
@@ -242,7 +238,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $loa['loa_no'];
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
-			$row[] = $short_med_services;
+			$row[] = $short_hp_name;
 			$row[] = $view_file;
 			$row[] = $custom_date;
 			$row[] = $custom_status;

@@ -73,9 +73,9 @@
                     <th>LOA No.</th>
                     <th>Name</th>
                     <th>LOA Type</th>
-                    <th>Service Type</th>
+                    <th>Healthcare Provider</th>
                     <th>RX File</th>
-                    <th>Req. Date</th>
+                    <th>Request Date</th>
                     <th>Status</th>
                     <th>Actions</th>
                   </tr>
@@ -117,7 +117,7 @@
 
       //Set column definition initialisation properties.
       columnDefs: [{
-        "targets": [3, 4, 6, 7], // numbering column
+        "targets": [4, 6, 7], // numbering column
         "orderable": false, //set not orderable
       }, ],
       responsive: true,

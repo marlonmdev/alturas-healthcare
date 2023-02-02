@@ -144,11 +144,17 @@ class Loa_controller extends CI_Controller {
 				// if request type is Consultation set rx_file and med_services to be empty
 				$rx_file = '';
 				$med_services = [];
+
 				// for physician multi-tags input
-				foreach ($physicians_tags as $physician_tag) :
-					array_push($physician_arr, ucwords($physician_tag['value']));
-				endforeach;
-				$attending_physician = implode(', ', $physician_arr);
+				if(empty($physicians_tags)) {
+					$attending_physician = '';
+				} else {
+					foreach ($physicians_tags as $physician_tag) :
+						array_push($physician_arr, ucwords($physician_tag['value']));
+					endforeach;
+					$attending_physician = implode(', ', $physician_arr);
+				}
+
 				//  Call function insert_loa
 				$this->insert_loa($input_post, $med_services, $attending_physician, $rx_file);
 				break;
@@ -182,11 +188,17 @@ class Loa_controller extends CI_Controller {
 						$rx_file = $upload_data['file_name'];
 
 						$med_services = $this->input->post('med-services');
+
 						// for physician multi-tags input
-						foreach ($physicians_tags as $physician_tag) :
-							array_push($physician_arr, ucwords($physician_tag['value']));
-						endforeach;
-						$attending_physician = implode(', ', $physician_arr);
+						if(empty($physicians_tags)) {
+							$attending_physician = '';
+						} else {
+							foreach ($physicians_tags as $physician_tag) :
+								array_push($physician_arr, ucwords($physician_tag['value']));
+							endforeach;
+							$attending_physician = implode(', ', $physician_arr);
+						}
+
 						// Call function insert_loa
 						$this->insert_loa($input_post, $med_services, $attending_physician, $rx_file);
 					}
@@ -295,11 +307,17 @@ class Loa_controller extends CI_Controller {
 					// if request type is Consultation set rx_file and med_services to be empty
 					$rx_file = '';
 					$med_services = [];
+					
 					// for physician multi-tags input
-					foreach ($physicians_tags as $physician_tag) :
-						array_push($physician_arr, ucwords($physician_tag['value']));
-					endforeach;
-					$attending_physician = implode(', ', $physician_arr);
+					if(empty($physicians_tags)) {
+						$attending_physician = '';
+					} else {
+						foreach ($physicians_tags as $physician_tag) :
+							array_push($physician_arr, ucwords($physician_tag['value']));
+						endforeach;
+						$attending_physician = implode(', ', $physician_arr);
+					}
+
 					// Call function update_loa
 					$this->update_loa($loa_id, $input_post, $med_services, $attending_physician, $rx_file);
 				}
@@ -317,10 +335,14 @@ class Loa_controller extends CI_Controller {
 					$med_services = $this->input->post('med-services');
 
 					// for physician multi-tags input
-					foreach ($physicians_tags as $physician_tag) :
-						array_push($physician_arr, ucwords($physician_tag['value']));
-					endforeach;
-					$attending_physician = implode(', ', $physician_arr);
+					if(empty($physicians_tags)) {
+						$attending_physician = '';
+					} else {
+						foreach ($physicians_tags as $physician_tag) :
+							array_push($physician_arr, ucwords($physician_tag['value']));
+						endforeach;
+						$attending_physician = implode(', ', $physician_arr);
+					}
 
 					// if there is no filename selected set the one from database
 					if (empty($_FILES['rx-file']['name'])) {

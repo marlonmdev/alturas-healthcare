@@ -116,7 +116,7 @@
               <span class="text-info fs-3 fw-bold ls-2"><i class="mdi mdi-file-document-box"></i> LOA REQUEST DETAILS</span>
               <div class="form-group row">
                 <div class="col-lg-7 col-sm-12 col-lg-offset-3 mb-2">
-                  <label class="colored-label"><i class="bx bx-health icon-red"></i> HealthCare Provider</label>
+                  <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> HealthCare Provider</label>
                   <select class="form-select" name="healthcare-provider" id="healthcare-provider">
                     <option value="" selected>Select HealthCare Provider</option>
                     <?php
@@ -132,7 +132,7 @@
                   <em id="healthcare-provider-error" class="text-danger"></em>
                 </div>
                 <div class="col-lg-5 col-sm-12 mb-2">
-                  <label class="colored-label"><i class="bx bx-health icon-red"></i> Type of LOA Request</label>
+                  <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Type of LOA Request</label>
                   <select class="form-select" name="loa-request-type" id="loa-request-type" onchange="showMedServices()">
                     <option value="" selected>Select LOA Request Type</option>
                     <option value="Consultation">Consultation</option>
@@ -145,7 +145,7 @@
 
               <div class="form-group row">
                 <div class="col-lg-7s col-sm-12 mb-2 d-none" id="med-services-div">
-                  <label class="colored-label"><i class="bx bx-health icon-red"></i> Select Medical Service/s</label><br>
+                  <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Select Medical Service/s</label><br>
                   <div id="med-services-wrapper">
                     <select class="form-select" multiple="multiple" id="med-services" name="med-services[]">
                       <?php
@@ -186,7 +186,7 @@
 
               <div class="form-group row">
                 <div class="col-sm-12 mb-2">
-                  <label class="colored-label"><i class="bx bx-health icon-red"></i> Chief Complaint/Diagnosis</label>
+                  <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Chief Complaint/Diagnosis</label>
                   <textarea class="form-control" name="chief-complaint" id="chief-complaint" cols="30" rows="6"></textarea>
                   <em id="chief-complaint-error" class="text-danger"></em>
                 </div>
@@ -194,7 +194,7 @@
 
               <div class="form-group row">
                 <div class="col-lg-6 col-sm-12 col-lg-offset-3 mb-2">
-                  <label class="colored-label"><i class="bx bx-health icon-red"></i> Requesting Physician</label>
+                  <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Requesting Physician</label>
                   <select class="form-select" id="requesting-physician" name="requesting-physician">
                     <option value="" selected>Select Requesting Physician</option>
                     <?php
@@ -229,7 +229,7 @@
                 </div>
                 <div class="form-group">
                   <div class="col-sm-12 mb-4">
-                    <label class="colored-label mb-1">RX/Request from Accredited Doctor</label>
+                    <label class="colored-label mb-1"><i class="mdi mdi-asterisk text-danger"></i> RX/Request from Accredited Doctor</label>
                     <div id="rx-file-wrapper">
                       <input type="file" class="dropify" name="rx-file" id="rx-file" data-height="300" data-max-file-size="3M" accept=".jpg, .jpeg, .png">
                     </div>

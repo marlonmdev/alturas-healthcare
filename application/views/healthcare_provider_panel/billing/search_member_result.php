@@ -34,6 +34,7 @@
             </div>
 
             <div class="tab-content" id="myTabContent">
+                <!-- Patient's LOA Requests Tab -->
                 <div class="tab-pane fade show active" id="loa-requests" role="tabpanel">
                     <div class="card">
                         <div class="container">
@@ -119,6 +120,7 @@
                     </div>
 
                 </div>
+                <!-- Patient's NOA Requests Tab -->
                 <div class="tab-pane fade  show" id="noa-requests" role="tabpanel">
                     <form action="<?php echo base_url(); ?>healthcare-provider/billing/billing-person/equipment" class="needs-validation" method="post" novalidate>
                         <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">

@@ -20,10 +20,10 @@ class Backup_controller extends CI_Controller {
 
 		$prefs = [
 			'format'    => 'zip',
-			'filename'  => $file_name .'_'. date("m-d-Y_h.i.s") . '.sql'
+			'filename'  => $file_name .'_'. date('m-d-Y_g:ia') . '.sql'
 		];
 
-		$db_name = $file_name .'_'. date("m-d-Y_h.i.s") . '.zip';
+		$db_name = $file_name .'_'. date('m-d-Y_g:ia') . '.zip';
 		$backup = $this->dbutil->backup($prefs);
 		force_download($db_name.'.zip', $backup);
 	}

@@ -22,6 +22,29 @@
     <div class="container-fluid">
         <div class="card py-4 px-4">
 
+            <!-- Go Back to Previous Page -->
+            <div class="col-12 mb-4 mt-0">
+                <form method="POST" action="<?php echo base_url(); ?>healthcare-provider/billing/search-by-healthcard" id="search-form-1" class="needs-validation" novalidate>
+                    <div class="input-group">
+                        <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
+                        <input type="hidden" name="healthcard_no" value="<?= $healthcard_no ?>">
+                        <button type="submit" class="btn btn-outline-dark" data-bs-toggle="tooltip" title="Click to Go Back">
+                            <strong class="ls-2" style="vertical-align:middle">
+                                <i class="mdi mdi-arrow-left-bold"></i> Go Back
+                            </strong>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- <div class="col-lg-12 mb-3 mt-0">
+                <a class="btn btn-dark btn-md text-white" href="<?= base_url() ?>healthcare-provider/billing/bill-loa/<?= $loa_id ?>" data-bs-toggle="tooltip" title="Click to Go Back">
+                    <strong class="ls-2" style="vertical-align:middle">
+                        <i class="mdi mdi-arrow-left-bold"></i> Go Back
+                    </strong>
+                </a>
+            </div> -->
+
             <div class="row">
                 <div class="col-md-4 col-lg-4">
                     <h4 class="d-flex justify-content-between align-items-center mb-2">
@@ -62,12 +85,17 @@
                         </li>
                     </ul>
                 </div>
+                <!-- Start of Diagnostic LOA Request Billing -->
                 <?php if($request_type == 'Diagnostic Test') : ?>
                     <div class="col-md-8 col-lg-8">
-                        <h4 class="mb-3 ls-1">LOA Request Type: <span class="text-danger"><?= $request_type ?></span></h4>
-                        <form class="needs-validation" novalidate>
+                        <h4 class="mb-3 ls-1">
+                            LOA Request Type: <span class="text-danger"><?= $request_type ?></span>
+                        </h4>
+                        <!-- Start of form Diagnostic Test -->
+                        <form method="POST" id="form-diagnostic" class="needs-validation" novalidate>
                             <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
                             <input type="hidden" name="loa_id" value="<?= $loa_id ?>">
+                            <input type="hidden" name="emp_id" value="<?= $member['emp_id'] ?>">
 
                             <?php 
                                 $selectedOptions = explode(';', $loa['med_services']);
@@ -75,6 +103,7 @@
                                 foreach ($cost_types as $cost_type) :
                                 if (in_array($cost_type['ctype_id'], $selectedOptions)) :
                             ?>
+                                 <input type="hidden" name="ctype_id" value="<?php echo $cost_type['ctype_id']; ?>">
                                 <div class="row mt-2">
                                     <div class="col-md-7">
                                         <label class="form-label ls-1">Cost Type</label>
@@ -102,14 +131,8 @@
                                 endif;
                                 endforeach;
                             ?>
-                            <div class="row my-3 d-none" id="charge-alert-div">
-                                <div class="col-12">
-                                    <div class="alert alert-cyan text-center" role="alert">
-                                        <strong class="ls-1">The Total Bill exceeds the patient's Remaining MBL Balance. The <span class="text-danger fs-4">&#8369;</span><span class="text-danger fs-4" id="charge-amount"></span> excess amount will be added to his/her Personal Charges.
-                                        </strong>
-                                    </div>
-                                </div>
-                            </div>
+                            
+                            <?php include 'personal_charge_alert.php'; ?>
 
                             <div class="row my-4">
                                 <div class="col-lg-6 col-sm-12">
@@ -119,7 +142,7 @@
                                                 Total Bill <i class="mdi mdi-arrow-right-bold ms-1"></i> 
                                             </span>
                                         </div>
-                                        <input type="text" class="form-control fw-bold ls-1" id="total-bill" name="total-payment" value="0" readonly>
+                                        <input type="text" class="form-control fw-bold ls-1" id="total-bill" name="total-bill" value="0" readonly>
                                     </div>
                                 </div>
                                  <div class="col-lg-6 col-sm-12">
@@ -167,14 +190,23 @@
                                 <button type="submit" class="btn btn-dark btn-lg ls-2" id="btn-bill" disabled><i class="mdi mdi-file-check me-1"></i>Bill Now</button>
                             </div>
                         </form>
+                        <!-- End of form Diagnostic Test -->
                     </div>
                 <?php endif; ?>
+                <!-- End of Diagnostic LOA Request Billing -->
                 
+                <!-- Start of Consultation LOA Request Billing -->
                 <?php if($request_type == 'Consultation') : ?>
                     <div class="col-md-8 col-lg-8">
-                        <h4 class="mb-3 ls-1">LOA Request Type: <span class="text-danger"><?= $request_type ?></span></h4>
-                        <form class="needs-validation" novalidate>
+                        <h4 class="mb-3 ls-1">
+                            LOA Request Type: <span class="text-danger"><?= $request_type ?></span>
+                        </h4>
+                        <!-- Start of form Consultation -->
+                        <form method="POST" id="form-consultation" class="needs-validation" novalidate>
                             <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
+                            <input type="hidden" name="loa_id" value="<?= $loa_id ?>">
+                            <input type="hidden" name="emp_id" value="<?= $member['emp_id'] ?>">
+                            
                             <div class="row">
                                 <div class="col-md-7">
                                     <label class="form-label ls-1">Consultation</label>
@@ -183,30 +215,42 @@
 
                                 <div class="col-md-2">
                                     <label class="form-label ls-1">Quantity</label>
-                                    <input type="number" class="form-control fw-bold" id="ct-quantity" name="ct-quantity" value="1" required>
+                                    <input type="number" class="form-control fw-bold" id="consult-quantity" name="consult-quantity" oninput="calculateConsultationBilling(`<?= $remaining_balance ?>`)" min="1" value="1" required>
                                     <div class="invalid-feedback">
                                         Quantity is required
                                     </div>
                                 </div>
 
                                 <div class="col-md-3">
-                                <label class="form-label ls-1">Cost</label>
-                                <input type="number" class="form-control fw-bold" id="ct-cost" name="ct-cost" value="0" required>
-                                <div class="invalid-feedback">
-                                    Service Cost is required.
-                                </div>
+                                    <label class="form-label ls-1">Cost</label>
+                                    <input type="number" class="form-control fw-bold" id="consult-cost" name="consult-cost" placeholder="Enter Amount" oninput="calculateConsultationBilling(`<?= $remaining_balance ?>`)" min="0" required>
+                                    <div class="invalid-feedback">
+                                        Service Cost is required.
+                                    </div>
                                 </div>
                             </div>
 
+                            <?php include 'personal_charge_alert.php'; ?>
+
                             <div class="row my-4">
-                                <div class="col-6 offset-3">
+                                <div class="col-lg-6 col-sm-12">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text bg-danger text-white ls-1">
                                                 Total Bill <i class="mdi mdi-arrow-right-bold ms-1"></i> 
                                             </span>
                                         </div>
-                                        <input type="text" class="form-control" id="total-payment" name="total-payment" disabled>
+                                        <input type="text" class="form-control fw-bold ls-1" id="total-bill" name="total-bill" value="0" readonly>
+                                    </div>
+                                </div>
+                                 <div class="col-lg-6 col-sm-12">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-danger text-white ls-1">
+                                                Personal Charge <i class="mdi mdi-arrow-right-bold ms-1"></i> 
+                                            </span>
+                                        </div>
+                                        <input type="text" class="form-control fw-bold ls-1" id="personal-charge" name="personal-charge" value="0" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -241,17 +285,20 @@
                             <hr class="my-4">
 
                             <div class="d-flex justify-content-end">
-                                <button class="btn btn-dark btn-lg ls-2" type="submit" disabled>Review Billing</button>
+                                <button type="submit" class="btn btn-dark btn-lg ls-2" id="btn-bill" disabled><i class="mdi mdi-file-check me-1"></i>Bill Now</button>
                             </div>
                         </form>
+                        <!-- End of form Consultation -->
                     </div>
                 <?php endif; ?>
+                <!-- End of Consulation LOA Request Billing -->
 
             </div>
         </div>        
     </div>
 </div>
 <script>
+    // function to be called if LOA Request Type is Diagnostic Test
     function calculateTotalBilling(remaining_balance) {
         let total_bill = 0;
         let charge_amount = 0;
@@ -302,6 +349,7 @@
 
     function computePersonalCharge(charge_amount){
         const personalCharge = document.querySelector('#personal-charge');
+        // the ids of the html elements below are found in personal-charge_alert.php
         const chargeAlertDiv = document.querySelector('#charge-alert-div');
         const chargeAmount = document.querySelector('#charge-amount');
 
@@ -315,5 +363,39 @@
             chargeAlertDiv.classList.remove('d-block');
             chargeAlertDiv.classList.add('d-none');
         }
+    }
+
+    // function to be called if LOA Request Type is Consultation
+    function calculateConsultationBilling(remaining_balance){
+        let total_bill = 0;
+        let charge_amount = 0;
+
+        const consult_qty = document.querySelector("#consult-quantity");
+        const consult_cost = document.querySelector("#consult-cost");
+        const total_input = document.querySelector("#total-bill");
+
+        // Calculate Total Billing and Personal Charge
+        total_bill = consult_cost.value * consult_qty.value;
+        charge_amount = total_bill - remaining_balance;
+
+        total_input.value = total_bill;
+
+        // Call the other functions to execute
+        blockCharacters(consult_qty);
+        blockCharacters(consult_cost);
+        computePersonalCharge(charge_amount);
+        enableBillButton(total_bill);
+    }
+
+    function blockCharacters(input){
+        const block_chars = ['-', '+'];
+        /* Preventing the user from entering any characters that are on the block_chars array. */
+        input.onkeypress = function(event) {
+            let char = String.fromCharCode(event.which);
+            if (block_chars.indexOf(char) >= 0) {
+                return false;
+            }
+                return true;
+        };
     }
 </script>

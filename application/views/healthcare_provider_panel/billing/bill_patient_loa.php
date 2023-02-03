@@ -143,24 +143,22 @@
                                 <div class="col-md-3">
                                     <label class="form-label ls-1">PhilHealth</label>
                                     <input type="number" class="input-deduction form-control fw-bold" id="deduct-philhealth" name="philhealth-deduction" placeholder="Enter Amount" oninput="calculateDiagnosticTestBilling(`<?= $remaining_balance ?>`)" min="0" readonly>
-                                    <span class="text-danger deduction-msg"></span>
+                                    <span class="text-danger fw-bold deduction-msg"></span>
                                 </div>
                                 <div class="col-md-3">
                                     <label class="form-label ls-1">SSS</label>
                                     <input type="number" class="input-deduction form-control fw-bold" id="deduct-sss" name="sss-deduction" placeholder="Enter Amount" oninput="calculateDiagnosticTestBilling(`<?= $remaining_balance ?>`)" min="0" readonly>
-                                    <span class="text-danger deduction-msg"></span>
+                                    <span class="text-danger fw-bold deduction-msg"></span>
                                 </div>
                                 <div class="col-md-3 d-flex justify-content-start align-items-end">
                                     <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addOtherDeductionInputs(`<?= $remaining_balance ?>`)" disabled>
-                                        <i class="mdi mdi-plus-circle"></i> Other Deduction
+                                        <i class="mdi mdi-plus-circle"></i> Add Deduction
                                     </button>
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-6" id="dynamic-deduction">
-
-                                </div>
+                            <div id="dynamic-deduction">
+                                
                             </div>
                             
                             <hr class="my-4">
@@ -270,7 +268,7 @@
                                     <input type="number" class="input-deduction form-control fw-bold" id="deduct-sss" name="sss-deduction" placeholder="Enter Amount" oninput="calculateConsultationBilling(`<?= $remaining_balance ?>`)" min="0" readonly>
                                 </div>
                                 <div class="col-md-3 d-flex justify-content-start align-items-end">
-                                    <button type="button" class="btn btn-info" id="add-other-deduction" onclick="addOtherDeductionInputs()"><i class="mdi mdi-plus-circle"></i> Other Deduction</button>
+                                    <button type="button" class="btn btn-info" id="add-other-deduction" onclick="addOtherDeductionInputs()"><i class="mdi mdi-plus-circle"></i> Add Deduction</button>
                                 </div>
                             </div>
                             
@@ -344,6 +342,7 @@
         let net_total = 0;
         let philhealth_deduction = 0;
         let sss_deduction = 0;
+        let other_deduction = 0;
 
         const cost_inputs = document.querySelectorAll(".ct-cost");
         const quantity_inputs = document.querySelectorAll(".ct-qty");
@@ -354,6 +353,9 @@
         const deduction_input = document.querySelector("#total-deduction");
         const input_deduction = document.querySelectorAll('.input-deduction');
         const deduction_msg = document.querySelectorAll('.deduction-msg');
+        const other_deduction_msg = document.querySelectorAll('.other-deduction-msg');
+        const row_deduction = document.querySelectorAll('.row-deduction');
+        const deduction_amount = document.querySelectorAll('.deduction-amount');
         
         for (let i = 0; i < cost_inputs.length; i++) {
             /* Calls the function that prevents the user from entering any characters that exists in the block characcters array. */
@@ -368,7 +370,14 @@
         philhealth_deduction = deduct_philhealth.value > 0 ? deduct_philhealth.value : 0;
         sss_deduction = deduct_sss.value > 0 ? deduct_sss.value : 0;
 
-        total_deduction = parseFloat(philhealth_deduction) + parseFloat(sss_deduction);
+        // calculate other deduction total
+        if(row_deduction.length > 0){
+            for (let i = 0; i < row_deduction.length; i++) {
+                other_deduction += deduction_amount[i].value * 1;
+            }
+        }
+
+        total_deduction = parseFloat(philhealth_deduction) + parseFloat(sss_deduction) + parseFloat(other_deduction);
 
         if(total_deduction > 0) {
             net_total = total_bill - total_deduction;
@@ -383,9 +392,16 @@
         if(net_total < 0) {
             net_bill.classList.add('is-invalid', 'text-danger');
 
+            // philhealth and sss deduction
             for (let i = 0; i < input_deduction.length; i++) {
                 input_deduction[i].classList.add('is-invalid', 'text-danger');
                 deduction_msg[i].innerHTML = "Deductions can't be greater than the Net Bill Amount";
+            }
+
+            // other deductions
+            for (let i = 0; i < row_deduction.length; i++) {
+                deduction_amount[i].classList.add('is-invalid', 'text-danger');
+                other_deduction_msg[i].innerHTML = "Deductions can't be greater than the Net Bill Amount";
             }
         }else{
             net_bill.classList.remove('is-invalid', 'text-danger');
@@ -396,10 +412,28 @@
             }
         }
 
-        // set the net total as the value of total bill input
-        total_input.value = total_bill.toFixed(2);
-        deduction_input.value = total_deduction.toFixed(2);
-        net_bill.value = net_total.toFixed(2);
+        if(total_bill == 0){
+            for (let i = 0; i < input_deduction.length; i++) {
+                input_deduction[i].value = '';
+                input_deduction[i].classList.remove('is-invalid', 'text-danger');
+                deduction_msg[i].innerHTML = "";
+            }
+
+            for (let i = 0; i < row_deduction.length; i++) {
+                row_deduction[i].remove();
+            }
+
+            total_input.value = 0;
+            deduction_input.value = 0;
+            net_bill.classList.remove('is-invalid', 'text-danger');
+            net_bill.value = 0;
+        }else{
+            // set the net total as the value of total bill input
+            total_input.value = total_bill.toFixed(2);
+            deduction_input.value = total_deduction.toFixed(2);
+            net_bill.value = net_total.toFixed(2);
+        }
+
 
         // Calling other functions
         enableButtonsAndDeductions(total_bill);
@@ -507,7 +541,7 @@
         };
     }
 
-    function addOtherDeductionInputs(remaining_balance){
+    function addOtherDeductionInputs1(remaining_balance){
         const container = document.getElementById('dynamic-deduction');
         const input1 = document.createElement("input");
 
@@ -515,7 +549,6 @@
         input1.setAttribute('name', 'other_deduction_name[]');
         input1.setAttribute('placeholder', 'Enter Deduction Name');
         input1.classList.add('form-control', 'fw-bold', 'ls-1');
-        // input1.addEventListener("click", calculateDiagnosticTestBilling(remaining_balance));
         container.appendChild(input1);
 
         const input2 = document.createElement("input");
@@ -524,7 +557,40 @@
         input2.setAttribute('name', 'other_deduction_amount[]');
         input2.setAttribute('placeholder', 'Enter Amount');
         input2.classList.add('form-control', 'fw-bold', 'ls-1');
-        // input2.addEventListener("click", calculateDiagnosticTestBilling(remaining_balance));
+        input2.addEventListener("click", calculateDiagnosticTestBilling(remaining_balance));
         container.appendChild(input2);
+    }
+
+    function addOtherDeductionInputs(remaining_balance){
+        const container = document.getElementById('dynamic-deduction');
+        let count = 1;
+        count++;
+
+        let html_code  = `<div class="row my-3 row-deduction" id="row${count}">`;
+
+            html_code += `<div class="col-md-3">
+                            <input type="text" name="deduction_name[]" class="form-control fw-bold ls-1" placeholder="Enter Deduction Name" required/>
+                         </div>`;
+
+            html_code += `<div class="col-md-3">
+                            <input type="number" name="deduction_amount[]" class="deduction-amount form-control fw-bold ls-1" placeholder="Enter Deduction Amount" oninput="calculateDiagnosticTestBilling(${remaining_balance})" required/>
+                            <span class="other-deduction-msg text-danger fw-bold"></span>
+                         </div>`;
+
+            html_code += `<div class="col-md-3">
+                            <button type="button" data-id="${count}" class="btn btn-danger btn-md btn-remove" onclick="removeRow(${remaining_balance})">
+                                <i class="mdi mdi-close"></i>
+                            </button>
+                         </div>`;
+
+            html_code += `</div>`;
+        // $('#dynamic-deduction').append(html_code);
+        document.querySelector("#dynamic-deduction").insertAdjacentHTML("beforeend", html_code);
+    }
+
+    function removeRow(remaining_balance){
+        const btn_id = document.querySelector('.btn-remove').getAttribute('data-id');
+        document.querySelector(`#row${btn_id}`).remove();
+        calculateDiagnosticTestBilling(remaining_balance);
     }
 </script>

@@ -57,7 +57,6 @@ class Billing_controller extends CI_Controller {
                 'b_member_bal' => $member_mbl['remaining_balance'],
                 'b_hcare_provider' => $hp_name,
                 'b_healthcard_no' => $member['health_card_no'],
-                'b_billing_no' => $billing_no
             ]);
 
             $this->load->view('templates/header', $data);
@@ -91,7 +90,6 @@ class Billing_controller extends CI_Controller {
                 'b_member_bal' => $member_mbl['remaining_balance'],
                 'b_hcare_provider' => $hp_name,
                 'b_healthcard_no' => $member['health_card_no'],
-                'b_billing_no' => $billing_no
             ]);
 
             $this->load->view('templates/header', $data);
@@ -117,7 +115,7 @@ class Billing_controller extends CI_Controller {
         $data['member_mbl'] = $this->session->userdata('b_member_mbl');
         $data['remaining_balance'] = $this->session->userdata('b_member_bal');
         $data['healthcard_no'] = $this->session->userdata('b_healthcard_no');
-        $data['billing_no'] = $this->session->userdata('b_billing_no');
+        $data['billing_no'] = "BLN-" . strtotime(date('Y-m-d h:i:s'));
         $data['loa_id'] = $url_id;
         $data['loa_no'] = $loa['loa_no'];
         $data['billed_by'] = $this->session->userdata('fullname');

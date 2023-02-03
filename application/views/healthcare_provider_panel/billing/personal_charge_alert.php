@@ -2,7 +2,7 @@
   <div class="row my-3 d-none" id="charge-alert-div">
       <div class="col-12">
           <div class="alert alert-cyan text-center" role="alert">
-              <strong class="ls-1">The Total Bill exceeds the patient's Remaining MBL Balance. The <span class="text-danger fs-4">&#8369;</span><span class="text-danger fs-4" id="charge-amount"></span> excess amount will be added to his/her Personal Charges.
+              <strong class="ls-1">The Net Bill exceeds the patient's Remaining MBL Balance. The <span class="text-danger fs-4">&#8369;</span><span class="text-danger fs-4" id="charge-amount"></span> excess amount will be added to his/her Personal Charges.
               </strong>
           </div>
       </div>

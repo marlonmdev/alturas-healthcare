@@ -58,7 +58,7 @@
 
                         <div class="col-md-2">
                             <label class="form-label ls-1">Remaining MBL</label>
-                            <input type="text" class="form-control text-danger fw-bold ls-1" id="request-type" name="request-type" value="<?= '&#8369;'.number_format($member_mbl, 2) ?>" readonly>
+                            <input type="text" class="form-control text-danger fw-bold ls-1" id="request-type" name="request-type" value="<?= '&#8369;'.number_format($remaining_balance, 2) ?>" readonly>
                         </div>
                     </div>
 
@@ -178,7 +178,7 @@
 
                                 <div class="col-lg-3">
                                     <label class="form-label ls-1">Net Bill</label>
-                                    <input type="text" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" value="0" readonly>
+                                    <input type="text" class="form-control text-primary fw-bold ls-1" id="net-bill" name="net-bill" value="0" readonly>
                                 </div>
 
                                 <div class="col-lg-3">
@@ -291,7 +291,7 @@
 
                                 <div class="col-lg-3">
                                     <label class="form-label ls-1">Net Bill</label>
-                                    <input type="text" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" value="0" readonly>
+                                    <input type="text" class="form-control fw-bold text-primary ls-1" id="net-bill" name="net-bill" value="0" readonly>
                                 </div>
 
                                 <div class="col-lg-3">
@@ -489,10 +489,15 @@
 
         /* Calculating the charge amount based on the amount of the transaction. */
         if(charge_amount > 0){
+            /* Converting the charge_amount to a currency format. */
+            let personal_charge_amount = charge_amount.toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'PHP',
+            });
             personalCharge.value = charge_amount.toFixed(2);
             chargeAlertDiv.classList.remove('d-none');
             chargeAlertDiv.classList.add('d-block');
-            chargeAmount.innerHTML = charge_amount.toFixed(2);
+            chargeAmount.innerHTML = personal_charge_amount;
         }else{
             personalCharge.value = 0;
             chargeAlertDiv.classList.remove('d-block');

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 01, 2023 at 10:45 AM
+-- Generation Time: Feb 03, 2023 at 10:51 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -378,7 +378,13 @@ INSERT INTO `loa_requests` (`loa_id`, `loa_no`, `emp_id`, `first_name`, `middle_
 (25, 'LOA-00000025', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '2', 'Diagnostic Test', '2;3', 'ACN-2022-23412', 'Alturas Supermarket Corporation', '2022-11-25', 'hellloooooooooooo diagnostic', '2', 'Safjkjs Kgjsgkskgs', 'd9edb0e324808df7fbe6caee8543e6b4.jpg', 'Approved', '56313-2022', '1', '2022-11-25', '', '', '0000-00-00'),
 (27, 'LOA-00000027', '23278-2022', 'George', 'Ayuban', 'Curay', 'Jr.', '5', 'Diagnostic Test', '6;8', 'ACN-2022-23278', 'Alturas Supermarket Corporation', '2022-12-05', 'asfaagasfgasfga', '2', 'Jaksfjkas Faaskfj', 'c5748afbcfc356fa4fa102c1bf104576.png', 'Pending', '23278-2022', '', '0000-00-00', '', '', '0000-00-00'),
 (28, 'LOA-00000028', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '5', 'Diagnostic Test', '6;7', 'ACN-2022-23412', 'Alturas Supermarket Corporation', '2023-01-24', 'Hey this is a sample request in 2023', '2', 'Asfha  Ffas, Jsafkjakf', '31cddcca2b2e011f38d9a26199e6b132.png', 'Pending', '56313-2022', '', '0000-00-00', '', '', '0000-00-00'),
-(29, 'LOA-00000029', '38343-2022', 'Gedym', 'Mae', 'Sab', '', '5', 'Diagnostic Test', '3;6;7;10;11', 'ACN-2023-38343', 'Alturas Supermarket Corporation', '2023-02-01', 'this is a test loa', '2', 'Doctor No', '500e8437904e5c106d7147b6fb7ea58e.jpg', 'Approved', '38343-2022', '1', '2023-02-01', '', '', '0000-00-00');
+(29, 'LOA-00000029', '38343-2022', 'Gedym', 'Mae', 'Sab', '', '5', 'Diagnostic Test', '3;6;7;10;11', 'ACN-2023-38343', 'Alturas Supermarket Corporation', '2023-02-01', 'this is a test loa', '2', 'Doctor No', '500e8437904e5c106d7147b6fb7ea58e.jpg', 'Approved', '38343-2022', '1', '2023-02-01', '', '', '0000-00-00'),
+(30, 'LOA-00000030', '38343-2022', 'Gedym', 'Mae', 'Sab', '', '5', 'Consultation', '', 'ACN-2023-38343', 'Alturas Supermarket Corporation', '2023-02-02', 'Kidney UTI', '2', '', '', 'Pending', '38343-2022', '', '0000-00-00', '', '', '0000-00-00'),
+(31, 'LOA-00000031', '38343-2022', 'Gedym', 'Mae', 'Sab', '', '5', 'Consultation', '', 'ACN-2023-38343', 'Alturas Supermarket Corporation', '2023-02-02', 'Kidney UTI', '2', 'Ahjfasjja Ksakfj', '', 'Approved', '38343-2022', '1', '2023-02-02', '', '', '0000-00-00'),
+(32, 'LOA-00000032', '23764-2022', 'Ruel', 'Budoy', 'Tumale', 'Jr.', '5', 'Diagnostic Test', '2;3;10;11;14', 'ACN-2022-23764', 'Alturas Supermarket Corporation', '2023-02-02', 'Budix\'s Diagnostic Test in 2023', '1', '', 'ae46b6772030f11f873483ff848efa98.png', 'Pending', '23764-2022', '', '0000-00-00', '', '', '0000-00-00'),
+(37, 'LOA-00000034', '23764-2022', 'Ruel', 'Budoy', 'Tumale', 'Jr.', '5', 'Consultation', '', 'ACN-2022-23764', 'Alturas Supermarket Corporation', '2023-02-02', 'asfgasfa ashfas faoh f aoif a', '2', 'Jasj Fajf, Jkasjf Asd', '', 'Pending', '23764-2022', '', '0000-00-00', '', '', '0000-00-00'),
+(38, 'LOA-00000038', '23764-2022', 'Ruel', 'Budoy', 'Tumale', 'Jr.', '5', 'Consultation', '', 'ACN-2022-23764', 'Alturas Supermarket Corporation', '2023-02-02', 'asfgasf asfasfasfas', '1', '', '', 'Pending', '23764-2022', '', '0000-00-00', '', '', '0000-00-00'),
+(39, 'LOA-00000039', '23764-2022', 'Ruel', 'Budoy', 'Tumale', 'Jr.', '1', 'Diagnostic Test', '2;3;4;5', 'ACN-2022-23764', 'Alturas Supermarket Corporation', '2023-02-02', 'sample diagnostic test of Budix', '2', '', 'b62fec98d0e87ad552cf7ad715b4708e.jpg', 'Pending', '23764-2022', '', '0000-00-00', '', '', '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -590,13 +596,13 @@ INSERT INTO `user_accounts` (`user_id`, `emp_id`, `full_name`, `user_role`, `dsg
 (9, '56313-2022', 'Marlon H. Muring', 'member', '', '', 'marlonm', '$2y$10$AZ7Px2zYdPm7SwKEvXRINeUGhnXmnh0DtMsOScF79PxwGyibUuvsm', 'Active', 0, '', '2022-09-29', '2022-10-28', 'Marlon H. Muring'),
 (10, '23278-2022', 'George Curay', 'healthcare-provider', '5', '', 'Ayuban17', '$2y$10$oFmxPMZWyEIKkFz/T3BwyezXI3aVO7XviWqzhudhyPGVGj8CQfjJO', 'Active', 1, '', '2022-10-03', '2022-10-21', 'Default HealthCare Coordinator '),
 (13, '23278-2022', 'George Curay', 'member', '', '', '23278-2022', '$2y$10$90/6gxZrfUZL7bEufvGHTuwhoyigRmk53HNyrr98iBFybiAlASpiq', 'Active', 0, '', '2022-10-05', '2022-10-14', 'Default HealthCare Coordinator '),
-(17, '56313-2022', 'Marlon H. Muring', 'healthcare-provider', '1', '', 'ramiro', '$2y$10$oJxLaPNrysWr2ClmVnLt3.X9dGutclB6ZEv7OjFMAmLyyTr/j7YdG', 'Active', 0, '', '2022-10-25', '2022-10-28', 'Marlon H. Muring'),
+(17, '56313-2022', 'Ramiro Hospital Coordinator', 'healthcare-provider', '1', '', 'ramiro', '$2y$10$o8BBCELJf6LqSI4wRp0nMe0bf2B4t4cri8nDgLbNqGHE.QwjVpryK', 'Active', 0, '', '2022-10-25', '2023-02-02', 'IT SysDev'),
 (18, '32544-2022', 'Lorlie Ochavillo', 'member', '', '', '32544-2022', '$2y$10$bmMBotTt.sqKzyMYD7n4LOZ3O.7bPzytxyyEIRqwXB1bSYNX.BqAu', 'Active', 0, '', '2022-10-26', '2022-11-10', 'IT SysDev'),
 (19, '56313-2022', 'Marlon H. Muring', 'healthcare-coordinator', '', '', 'hcoordinator', '$2y$10$Uy9qfSD2MgiYsik2PabkXugJ/w4EBLWwTu58YAyxE/ClXx1iUMu3i', 'Active', 0, '', '2022-10-26', '0000-00-00', ''),
 (20, '23278-2022', 'George Curay', 'head-office-accounting', '', '', 'accounting', '$2y$10$tp4gJrN/U2YKQqkfWs0fWeB6J6B1CrkX2ALp3qIXscUgELOQs8eW.', 'Active', 0, '', '2022-10-27', '2022-12-07', 'Marlon H. Muring'),
 (22, '32544-2022', 'Lorlie Gwapo Ochavillo ', 'healthcare-provider', '4', '', 'lorlie', '$2y$10$oo3b1O3nMEitemFxbaO1ZeemIXHvIoazBiQJIF.zEKaHa45Tow6N2', 'Active', 0, '', '2022-10-27', '2023-01-13', 'IT SysDev'),
 (23, '00281-2021', 'Ramon Ocsin Ortega ', 'member', '', '', '00281-2021', '$2y$10$M6tdItwvtki8x1qu1gnaSuKcYohObptxUVinCwf1I40R150pVX9bC', 'Active', 0, '', '2022-11-03', '2022-12-07', 'Marlon H. Muring'),
-(24, '23764-2022', 'Ruel Budoy Tumale Jr.', 'member', '', '', '23764-2022', '$2y$10$.4f83fL/D9m.4pi31unpk.oWBahh.Q6oCxqRrxIZz6nWx2RApk3ne', 'Active', 0, '', '2022-11-28', '2022-12-07', 'IT SysDev'),
+(24, '23764-2022', 'Ruel Budoy Tumale Jr.', 'member', '', '', 'akobudoy', '$2y$10$1NxWGdi0gJFbVaMVssUHQOECqkJaiFW2CJ.BfUaTAqSTzFnq.e2tK', 'Active', 0, '', '2022-11-28', '2023-02-02', 'Ruel Budoy Tumale Jr.'),
 (31, '', 'Dr. Michael D. Uy', 'company-doctor', '', '1', 'doctor', '$2y$10$ESojuDH6f8Eiz99eZtAeVeoHuZY8QI3nb7Wbc1.L5/WVRUEJkAn3K', 'Active', 0, '', '2022-12-02', '2023-01-27', 'Dr. Michael D. Uy'),
 (32, '', 'Dr. Nonaluz Pizarras', 'company-doctor', '', '2', 'drnona', '$2y$10$pLzJ7lOD.bshnFnke3ff/exRajtOknhpR9mqddW4iH2XCx2p0q.Ji', 'Active', 0, '', '2022-12-02', '2022-12-02', ''),
 (36, '38343-2022', 'Gedym Mae Sab ', 'member', '', '', 'gedymsab', '$2y$10$ujcJZQEJcJQjbk0duru1l.DpzmIn4zFAedY6PpI1XCvPmAb.y7DEm', 'Active', 0, '', '2023-01-05', '2023-02-01', 'Gedym Mae Sab ');
@@ -1036,7 +1042,7 @@ ALTER TABLE `healthcare_providers`
 -- AUTO_INCREMENT for table `loa_requests`
 --
 ALTER TABLE `loa_requests`
-  MODIFY `loa_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `loa_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `max_benefit_limits`

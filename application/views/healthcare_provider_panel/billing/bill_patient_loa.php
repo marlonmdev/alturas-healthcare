@@ -100,6 +100,8 @@
                             <input type="hidden" name="emp_id" value="<?= $member['emp_id'] ?>">
 
                             <?php 
+                                /* Exploding the string into an array and then checking if the array
+                                contains the value. */
                                 $selectedOptions = explode(';', $loa['med_services']);
                                 foreach ($cost_types as $cost_type) :
                                  if (in_array($cost_type['ctype_id'], $selectedOptions)) :
@@ -157,9 +159,7 @@
                                 </div>
                             </div>
 
-                            <div id="dynamic-deduction">
-                                
-                            </div>
+                            <div id="dynamic-deduction"></div>
                             
                             <hr class="my-4">
 
@@ -271,6 +271,8 @@
                                     <button type="button" class="btn btn-info" id="add-other-deduction" onclick="addOtherDeductionInputs()"><i class="mdi mdi-plus-circle"></i> Add Deduction</button>
                                 </div>
                             </div>
+
+                            <div id="dynamic-deduction"></div>
                             
                             <hr class="my-4">
 
@@ -370,15 +372,17 @@
         philhealth_deduction = deduct_philhealth.value > 0 ? deduct_philhealth.value : 0;
         sss_deduction = deduct_sss.value > 0 ? deduct_sss.value : 0;
 
-        // calculate other deduction total
+        // Calculate other deduction total
         if(row_deduction.length > 0){
             for (let i = 0; i < row_deduction.length; i++) {
                 other_deduction += deduction_amount[i].value * 1;
             }
         }
 
+        /* Calculating the total deduction, net total and charge amount. */
         total_deduction = parseFloat(philhealth_deduction) + parseFloat(sss_deduction) + parseFloat(other_deduction);
 
+        // Calculation of Net Bill and Charge amount based on some conditions
         if(total_deduction > 0) {
             net_total = total_bill - total_deduction;
             charge_amount = net_total - remaining_balance;
@@ -387,8 +391,10 @@
             charge_amount = net_total - remaining_balance;
         }
 
-        
-        // execute if net bill has negative value
+       /* Checking if the net total is less than 0. If it is, it will add the class is-invalid and
+       text-danger to the net_bill. It will also add the class is-invalid and text-danger to the
+       input_deduction and deduction_msg. It will also add the class is-invalid and text-danger to
+       the deduction_amount and other_deduction_msg. */
         if(net_total < 0) {
             net_bill.classList.add('is-invalid', 'text-danger');
 
@@ -398,20 +404,28 @@
                 deduction_msg[i].innerHTML = "Deductions can't be greater than the Net Bill Amount";
             }
 
-            // other deductions
+            // other dynamic deductions
             for (let i = 0; i < row_deduction.length; i++) {
                 deduction_amount[i].classList.add('is-invalid', 'text-danger');
                 other_deduction_msg[i].innerHTML = "Deductions can't be greater than the Net Bill Amount";
             }
         }else{
             net_bill.classList.remove('is-invalid', 'text-danger');
-
+            // remove error signs and messages philhealth and sss deduction
             for (let i = 0; i < input_deduction.length; i++) {
                 input_deduction[i].classList.remove('is-invalid', 'text-danger');
                 deduction_msg[i].innerHTML = "";
             }
-        }
 
+             // remove error signs and messages of other dynamic deductions
+            for (let i = 0; i < row_deduction.length; i++) {
+                deduction_amount[i].classList.remove('is-invalid', 'text-danger');
+                other_deduction_msg[i].innerHTML = "";
+            }
+        }
+        
+        /* Checking if the total bill is 0, if it is, it will remove the deductions and set the total
+        bill, total deduction and net bill to 0. */
         if(total_bill == 0){
             for (let i = 0; i < input_deduction.length; i++) {
                 input_deduction[i].value = '';
@@ -450,6 +464,9 @@
         const philhealth_deduction = document.querySelector("#deduct-philhealth");
         const sss_deduction = document.querySelector("#deduct-sss");
 
+       /* Checking if the total bill is greater than 0. If it is, it will remove the disabled attribute
+       from the buttons and the readonly attribute from the deductions. If it is not, it will add
+       the disabled attribute to the buttons and the readonly attribute to the deductions. */
         if(total_bill > 0){
             btnBill.removeAttribute('disabled');
             btnAddDeduction.removeAttribute('disabled');
@@ -470,6 +487,7 @@
         const chargeAlertDiv = document.querySelector('#charge-alert-div');
         const chargeAmount = document.querySelector('#charge-amount');
 
+        /* Calculating the charge amount based on the amount of the transaction. */
         if(charge_amount > 0){
             personalCharge.value = charge_amount.toFixed(2);
             chargeAlertDiv.classList.remove('d-none');
@@ -541,26 +559,9 @@
         };
     }
 
-    function addOtherDeductionInputs1(remaining_balance){
-        const container = document.getElementById('dynamic-deduction');
-        const input1 = document.createElement("input");
-
-        input1.setAttribute('type', 'text');
-        input1.setAttribute('name', 'other_deduction_name[]');
-        input1.setAttribute('placeholder', 'Enter Deduction Name');
-        input1.classList.add('form-control', 'fw-bold', 'ls-1');
-        container.appendChild(input1);
-
-        const input2 = document.createElement("input");
- 
-        input2.setAttribute('type', 'number');
-        input2.setAttribute('name', 'other_deduction_amount[]');
-        input2.setAttribute('placeholder', 'Enter Amount');
-        input2.classList.add('form-control', 'fw-bold', 'ls-1');
-        input2.addEventListener("click", calculateDiagnosticTestBilling(remaining_balance));
-        container.appendChild(input2);
-    }
-
+   /**
+    * It adds a row of inputs to the form
+    */
     function addOtherDeductionInputs(remaining_balance){
         const container = document.getElementById('dynamic-deduction');
         let count = 1;
@@ -570,11 +571,17 @@
 
             html_code += `<div class="col-md-3">
                             <input type="text" name="deduction_name[]" class="form-control fw-bold ls-1" placeholder="Enter Deduction Name" required/>
+                            <div class="invalid-feedback">
+                                Deduction name is required
+                            </div>
                          </div>`;
 
             html_code += `<div class="col-md-3">
                             <input type="number" name="deduction_amount[]" class="deduction-amount form-control fw-bold ls-1" placeholder="Enter Deduction Amount" oninput="calculateDiagnosticTestBilling(${remaining_balance})" required/>
                             <span class="other-deduction-msg text-danger fw-bold"></span>
+                            <div class="invalid-feedback">
+                                Deduction amount is required
+                            </div>
                          </div>`;
 
             html_code += `<div class="col-md-3">
@@ -584,10 +591,13 @@
                          </div>`;
 
             html_code += `</div>`;
-        // $('#dynamic-deduction').append(html_code);
+        // $('#dynamic-deduction').append(html_code); => this is a jquery syntax, below is vanilla js way. You can either use this one or the below code
         document.querySelector("#dynamic-deduction").insertAdjacentHTML("beforeend", html_code);
     }
 
+    /**
+    * It removes a row and then calls a function to recalculate the total.
+    */
     function removeRow(remaining_balance){
         const btn_id = document.querySelector('.btn-remove').getAttribute('data-id');
         document.querySelector(`#row${btn_id}`).remove();

@@ -178,7 +178,7 @@
 
                                 <div class="col-lg-3">
                                     <label class="form-label ls-1">Net Bill</label>
-                                    <input type="text" class="form-control text-primary fw-bold ls-1" id="net-bill" name="net-bill" value="0" readonly>
+                                    <input type="text" class="form-control text-danger fw-bold ls-1" id="net-bill" name="net-bill" value="0" readonly>
                                 </div>
 
                                 <div class="col-lg-3">
@@ -291,7 +291,7 @@
 
                                 <div class="col-lg-3">
                                     <label class="form-label ls-1">Net Bill</label>
-                                    <input type="text" class="form-control fw-bold text-primary ls-1" id="net-bill" name="net-bill" value="0" readonly>
+                                    <input type="text" class="form-control fw-bold text-danger ls-1" id="net-bill" name="net-bill" value="0" readonly>
                                 </div>
 
                                 <div class="col-lg-3">

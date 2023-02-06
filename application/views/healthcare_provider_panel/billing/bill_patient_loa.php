@@ -153,7 +153,7 @@
                                     <span class="text-danger fw-bold deduction-msg"></span>
                                 </div>
                                 <div class="col-md-3 d-flex justify-content-start align-items-end">
-                                    <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addOtherDeductionInputs(`<?= $remaining_balance ?>`)" disabled>
+                                    <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addOtherDeductionInputs1(`<?= $remaining_balance ?>`)" disabled>
                                         <i class="mdi mdi-plus-circle"></i> Add Deduction
                                     </button>
                                 </div>
@@ -262,13 +262,15 @@
                                 <div class="col-md-3">
                                     <label class="form-label ls-1">PhilHealth</label>
                                     <input type="number" class="input-deduction form-control fw-bold" id="deduct-philhealth" name="philhealth-deduction" placeholder="Enter Amount" oninput="calculateConsultationBilling(`<?= $remaining_balance ?>`)" min="0" readonly>
+                                    <span class="text-danger fw-bold deduction-msg"></span>
                                 </div>
                                 <div class="col-md-3">
                                     <label class="form-label ls-1">SSS</label>
                                     <input type="number" class="input-deduction form-control fw-bold" id="deduct-sss" name="sss-deduction" placeholder="Enter Amount" oninput="calculateConsultationBilling(`<?= $remaining_balance ?>`)" min="0" readonly>
+                                    <span class="text-danger fw-bold deduction-msg"></span>
                                 </div>
                                 <div class="col-md-3 d-flex justify-content-start align-items-end">
-                                    <button type="button" class="btn btn-info" id="add-other-deduction" onclick="addOtherDeductionInputs()"><i class="mdi mdi-plus-circle"></i> Add Deduction</button>
+                                    <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addOtherDeductionInputs2(`<?= $remaining_balance ?>`)"><i class="mdi mdi-plus-circle"></i> Add Deduction</button>
                                 </div>
                             </div>
 
@@ -522,6 +524,7 @@
         let net_total = 0;
         let philhealth_deduction = 0;
         let sss_deduction = 0;
+        let other_deduction = 0;
 
         const consult_qty = document.querySelector("#consult-quantity");
         const consult_cost = document.querySelector("#consult-cost");
@@ -546,7 +549,14 @@
         philhealth_deduction = deduct_philhealth.value > 0 ? deduct_philhealth.value : 0;
         sss_deduction = deduct_sss.value > 0 ? deduct_sss.value : 0;
 
-        total_deduction = parseFloat(philhealth_deduction) + parseFloat(sss_deduction);
+        // Calculate other deduction total
+        if(row_deduction.length > 0){
+            for (let i = 0; i < row_deduction.length; i++) {
+                other_deduction += deduction_amount[i].value * 1;
+            }
+        }           
+
+        total_deduction = parseFloat(philhealth_deduction) + parseFloat(sss_deduction) + parseFloat(other_deduction);
 
         if(total_deduction > 0) {
             net_total = total_bill - total_deduction;
@@ -554,6 +564,35 @@
         }else{
             net_total = total_bill;
             charge_amount = net_total - remaining_balance;
+        }
+
+        if(net_total < 0) {
+            net_bill.classList.add('is-invalid', 'text-danger');
+
+            // philhealth and sss deduction
+            for (let i = 0; i < input_deduction.length; i++) {
+                input_deduction[i].classList.add('is-invalid', 'text-danger');
+                deduction_msg[i].innerHTML = "Deductions can't be greater than the Net Bill Amount";
+            }
+
+            // other dynamic deductions
+            for (let i = 0; i < row_deduction.length; i++) {
+                deduction_amount[i].classList.add('is-invalid', 'text-danger');
+                other_deduction_msg[i].innerHTML = "Deductions can't be greater than the Net Bill Amount";
+            }
+        }else{
+            net_bill.classList.remove('is-invalid', 'text-danger');
+            // remove error signs and messages philhealth and sss deduction
+            for (let i = 0; i < input_deduction.length; i++) {
+                input_deduction[i].classList.remove('is-invalid', 'text-danger');
+                deduction_msg[i].innerHTML = "";
+            }
+
+            // remove error signs and messages of other dynamic deductions
+            for (let i = 0; i < row_deduction.length; i++) {
+                deduction_amount[i].classList.remove('is-invalid', 'text-danger');
+                other_deduction_msg[i].innerHTML = "";
+            }
         }
 
          
@@ -581,13 +620,8 @@
             net_bill.value = net_total.toFixed(2);
         }
 
-        // set the net total as the value of total bill input
-        total_input.value = total_bill.toFixed(2);
-        deduction_input.value = total_deduction.toFixed(2);
-        net_bill.value = net_total.toFixed(2);
-
         // Call the other functions to execute
-        showPersonalChargeNotification(charge_amount);
+        showPersonalChargeAlert(charge_amount);
         enableButtonsAndDeductions(total_bill);
     }
 
@@ -596,7 +630,7 @@
     */
     let count = 0; // declaring the count variable outside the function will persist its value even after the function is called, allowing it to increment by one each time the function is called.
 
-    function addOtherDeductionInputs(remaining_balance){
+    function addOtherDeductionInputs1(remaining_balance){
         const container = document.getElementById('dynamic-deduction');
         count++;
         let html_code  = `<div class="row my-3 row-deduction" id="row${count}">`;
@@ -619,7 +653,40 @@
             
            /* Adding a remove button to the html code. */
             html_code += `<div class="col-md-3">
-                            <button type="button" data-id="${count}" class="btn btn-danger btn-md btn-remove" onclick="removeRow(this, ${remaining_balance})" data-bs-toggle="tooltip" title="Click to remove Deduction">
+                            <button type="button" data-id="${count}" class="btn btn-danger btn-md btn-remove" onclick="removeRow1(this, ${remaining_balance})" data-bs-toggle="tooltip" title="Click to remove Deduction">
+                                <i class="mdi mdi-close"></i>
+                            </button>
+                         </div>`;
+
+            html_code += `</div>`;
+        // // $('#dynamic-deduction').append(html_code); => this is a jquery syntax, below is vanilla js way. You can either use this one or the below code
+        document.querySelector("#dynamic-deduction").insertAdjacentHTML("beforeend", html_code);
+    }
+
+    function addOtherDeductionInputs2(remaining_balance){
+        const container = document.getElementById('dynamic-deduction');
+        count++;
+        let html_code  = `<div class="row my-3 row-deduction" id="row${count}">`;
+
+           /* Creating a new input field with the name deduction_name[] */
+            html_code += `<div class="col-md-3">
+                            <input type="text" name="deduction_name[]" class="form-control fw-bold ls-1" placeholder="Enter Deduction Name" required/>
+                            <div class="invalid-feedback">
+                                Deduction name and amount is required
+                            </div>
+                         </div>`;
+
+            /* Creating a form input field with a name of deduction_amount[] and a class of
+            deduction-amount. */
+            html_code += `<div class="col-md-3">
+                            <input type="number" name="deduction_amount[]" class="deduction-amount form-control fw-bold ls-1" placeholder="Enter Deduction Amount" oninput="calculateConsultationBilling(${remaining_balance})" required/>
+                            <span class="other-deduction-msg text-danger fw-bold"></span>
+                         </div>`;
+
+            
+           /* Adding a remove button to the html code. */
+            html_code += `<div class="col-md-3">
+                            <button type="button" data-id="${count}" class="btn btn-danger btn-md btn-remove" onclick="removeRow2(this, ${remaining_balance})" data-bs-toggle="tooltip" title="Click to remove Deduction">
                                 <i class="mdi mdi-close"></i>
                             </button>
                          </div>`;
@@ -632,9 +699,15 @@
     /**
     * It removes a row and then calls a function to recalculate the total.
     */
-    function removeRow(remove_btn, remaining_balance){
+    function removeRow1(remove_btn, remaining_balance){
         const btn_id = remove_btn.getAttribute('data-id');
         document.querySelector(`#row${btn_id}`).remove();
         calculateDiagnosticTestBilling(remaining_balance);
+    }
+
+    function removeRow2(remove_btn, remaining_balance){
+        const btn_id = remove_btn.getAttribute('data-id');
+        document.querySelector(`#row${btn_id}`).remove();
+        calculateConsultationBilling(remaining_balance);
     }
 </script>

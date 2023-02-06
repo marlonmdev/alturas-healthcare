@@ -178,12 +178,12 @@
 
                                 <div class="col-lg-3">
                                     <label class="form-label ls-1">Net Bill</label>
-                                    <input type="text" class="form-control text-danger fw-bold ls-1" id="net-bill" name="net-bill" value="0" readonly>
+                                    <input type="text" class="form-control text-success fw-bold ls-1" id="net-bill" name="net-bill" value="0" readonly>
                                 </div>
 
                                 <div class="col-lg-3">
                                     <label class="form-label ls-1">Personal Charge</label>
-                                    <input type="text" class="form-control fw-bold ls-1" id="personal-charge" name="personal-charge" value="0" readonly>
+                                    <input type="text" class="form-control text-cyan fw-bold ls-1" id="personal-charge" name="personal-charge" value="0" readonly>
                                 </div>
                             </div>
 
@@ -291,12 +291,12 @@
 
                                 <div class="col-lg-3">
                                     <label class="form-label ls-1">Net Bill</label>
-                                    <input type="text" class="form-control fw-bold text-danger ls-1" id="net-bill" name="net-bill" value="0" readonly>
+                                    <input type="text" class="form-control text-success fw-bold ls-1" id="net-bill" name="net-bill" value="0" readonly>
                                 </div>
 
                                 <div class="col-lg-3">
                                     <label class="form-label ls-1">Personal Charge</label>
-                                    <input type="text" class="form-control fw-bold ls-1" id="personal-charge" name="personal-charge" value="0" readonly>
+                                    <input type="text" class="form-control text-cyan fw-bold ls-1" id="personal-charge" name="personal-charge" value="0" readonly>
                                 </div>
                             </div>
 
@@ -358,12 +358,12 @@
         const other_deduction_msg = document.querySelectorAll('.other-deduction-msg');
         const row_deduction = document.querySelectorAll('.row-deduction');
         const deduction_amount = document.querySelectorAll('.deduction-amount');
-        
-        for (let i = 0; i < cost_inputs.length; i++) {
-            /* Calls the function that prevents the user from entering any characters that exists in the block characcters array. */
-            blockCharacters(cost_inputs[i]);
-            blockCharacters(quantity_inputs[i]);
 
+        // calling this function to prevent negative inputs
+        validateNumberInputs();
+
+        /* Calculating the total bill and the charge amount. */
+        for (let i = 0; i < cost_inputs.length; i++) {
             total_bill += cost_inputs[i].value * quantity_inputs[i].value;
             charge_amount = total_bill - remaining_balance;
         }
@@ -377,12 +377,12 @@
             for (let i = 0; i < row_deduction.length; i++) {
                 other_deduction += deduction_amount[i].value * 1;
             }
-        }
+        }               
 
         /* Calculating the total deduction, net total and charge amount. */
         total_deduction = parseFloat(philhealth_deduction) + parseFloat(sss_deduction) + parseFloat(other_deduction);
 
-        // Calculation of Net Bill and Charge amount based on some conditions
+        // Calculation of Net Bill and Charge amount based on total deduction
         if(total_deduction > 0) {
             net_total = total_bill - total_deduction;
             charge_amount = net_total - remaining_balance;
@@ -417,7 +417,7 @@
                 deduction_msg[i].innerHTML = "";
             }
 
-             // remove error signs and messages of other dynamic deductions
+            // remove error signs and messages of other dynamic deductions
             for (let i = 0; i < row_deduction.length; i++) {
                 deduction_amount[i].classList.remove('is-invalid', 'text-danger');
                 other_deduction_msg[i].innerHTML = "";
@@ -427,12 +427,14 @@
         /* Checking if the total bill is 0, if it is, it will remove the deductions and set the total
         bill, total deduction and net bill to 0. */
         if(total_bill == 0){
+            // philhealth and sss deduction
             for (let i = 0; i < input_deduction.length; i++) {
                 input_deduction[i].value = '';
                 input_deduction[i].classList.remove('is-invalid', 'text-danger');
                 deduction_msg[i].innerHTML = "";
             }
 
+            // other dynamic deductions
             for (let i = 0; i < row_deduction.length; i++) {
                 row_deduction[i].remove();
             }
@@ -448,14 +450,21 @@
             net_bill.value = net_total.toFixed(2);
         }
 
-
         // Calling other functions
         enableButtonsAndDeductions(total_bill);
-        showPersonalChargeNotification(charge_amount);
-        blockCharacters(philhealth_deduction);
-        blockCharacters(sss_deduction);
+        showPersonalChargeAlert(charge_amount);
     }
 
+    function validateNumberInputs() {
+        const number_inputs = document.querySelectorAll("input[type='number']");
+        for (let i = 0; i < number_inputs.length; i++) {
+            number_inputs[i].addEventListener("input", function(event) {
+                if (isNaN(this.value) || this.value < 0) {
+                   this.value = "";
+                }
+            });
+        }
+    }
 
     // function to be called to enable or disable deduction inputs and bill button
     function enableButtonsAndDeductions(total_bill){
@@ -481,7 +490,7 @@
     }
 
      // function to be called to show patient's Personal Charge Alert if it Net Bill exceeds patient's remaining MBL balance
-    function showPersonalChargeNotification(charge_amount){
+    function showPersonalChargeAlert(charge_amount){
         const personalCharge = document.querySelector('#personal-charge');
         // the ids of the html elements below are found in personal-charge_alert.php
         const chargeAlertDiv = document.querySelector('#charge-alert-div');
@@ -489,7 +498,7 @@
 
         /* Calculating the charge amount based on the amount of the transaction. */
         if(charge_amount > 0){
-            /* Converting the charge_amount to a currency format. */
+            /* Converting the charge_amount to a Peso currency format. */
             let personal_charge_amount = charge_amount.toLocaleString('en-US', {
                 style: 'currency',
                 currency: 'PHP',
@@ -521,6 +530,14 @@
         const deduct_philhealth = document.querySelector("#deduct-philhealth");
         const deduct_sss = document.querySelector("#deduct-sss");
         const deduction_input = document.querySelector("#total-deduction");
+        const input_deduction = document.querySelectorAll('.input-deduction');
+        const deduction_msg = document.querySelectorAll('.deduction-msg');
+        const other_deduction_msg = document.querySelectorAll('.other-deduction-msg');
+        const row_deduction = document.querySelectorAll('.row-deduction');
+        const deduction_amount = document.querySelectorAll('.deduction-amount');
+
+        // calling this function to prevent negative inputs
+        validateNumberInputs();
 
         // Calculate Total Billing 
         total_bill = consult_qty.value * consult_cost.value;
@@ -570,23 +587,8 @@
         net_bill.value = net_total.toFixed(2);
 
         // Call the other functions to execute
-        blockCharacters(consult_qty);
-        blockCharacters(consult_cost);
         showPersonalChargeNotification(charge_amount);
         enableButtonsAndDeductions(total_bill);
-    }
-
-    // function to be called to banned some character on number inputs
-    function blockCharacters(input){
-        const block_chars = ['-', '+'];
-        /* Preventing the user from entering any characters that are on the block_chars array. */
-        input.onkeypress = function(event) {
-            let char = String.fromCharCode(event.which);
-            if (block_chars.indexOf(char) >= 0) {
-                return false;
-            }
-                return true;
-        };
     }
 
    /**
@@ -617,7 +619,7 @@
             
            /* Adding a remove button to the html code. */
             html_code += `<div class="col-md-3">
-                            <button type="button" data-id="${count}" class="btn btn-danger btn-md btn-remove" onclick="removeRow(this, ${remaining_balance})">
+                            <button type="button" data-id="${count}" class="btn btn-danger btn-md btn-remove" onclick="removeRow(this, ${remaining_balance})" data-bs-toggle="tooltip" title="Click to remove Deduction">
                                 <i class="mdi mdi-close"></i>
                             </button>
                          </div>`;

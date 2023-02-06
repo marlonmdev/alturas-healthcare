@@ -534,6 +534,31 @@
             charge_amount = net_total - remaining_balance;
         }
 
+         
+        /* Checking if the total bill is 0, if it is, it will remove the deductions and set the total
+        bill, total deduction and net bill to 0. */
+        if(total_bill == 0){
+            for (let i = 0; i < input_deduction.length; i++) {
+                input_deduction[i].value = '';
+                input_deduction[i].classList.remove('is-invalid', 'text-danger');
+                deduction_msg[i].innerHTML = "";
+            }
+
+            for (let i = 0; i < row_deduction.length; i++) {
+                row_deduction[i].remove();
+            }
+
+            total_input.value = 0;
+            deduction_input.value = 0;
+            net_bill.classList.remove('is-invalid', 'text-danger');
+            net_bill.value = 0;
+        }else{
+            // set the net total as the value of total bill input
+            total_input.value = total_bill.toFixed(2);
+            deduction_input.value = total_deduction.toFixed(2);
+            net_bill.value = net_total.toFixed(2);
+        }
+
         // set the net total as the value of total bill input
         total_input.value = total_bill.toFixed(2);
         deduction_input.value = total_deduction.toFixed(2);
@@ -562,44 +587,46 @@
    /**
     * It adds a row of inputs to the form
     */
+    let count = 0; // declaring the count variable outside the function will persist its value even after the function is called, allowing it to increment by one each time the function is called.
+
     function addOtherDeductionInputs(remaining_balance){
         const container = document.getElementById('dynamic-deduction');
-        let count = 1;
         count++;
-
         let html_code  = `<div class="row my-3 row-deduction" id="row${count}">`;
 
+           /* Creating a new input field with the name deduction_name[] */
             html_code += `<div class="col-md-3">
                             <input type="text" name="deduction_name[]" class="form-control fw-bold ls-1" placeholder="Enter Deduction Name" required/>
                             <div class="invalid-feedback">
-                                Deduction name is required
+                                Deduction name and amount is required
                             </div>
                          </div>`;
 
+            /* Creating a form input field with a name of deduction_amount[] and a class of
+            deduction-amount. */
             html_code += `<div class="col-md-3">
                             <input type="number" name="deduction_amount[]" class="deduction-amount form-control fw-bold ls-1" placeholder="Enter Deduction Amount" oninput="calculateDiagnosticTestBilling(${remaining_balance})" required/>
                             <span class="other-deduction-msg text-danger fw-bold"></span>
-                            <div class="invalid-feedback">
-                                Deduction amount is required
-                            </div>
                          </div>`;
 
+            
+           /* Adding a remove button to the html code. */
             html_code += `<div class="col-md-3">
-                            <button type="button" data-id="${count}" class="btn btn-danger btn-md btn-remove" onclick="removeRow(${remaining_balance})">
+                            <button type="button" data-id="${count}" class="btn btn-danger btn-md btn-remove" onclick="removeRow(this, ${remaining_balance})">
                                 <i class="mdi mdi-close"></i>
                             </button>
                          </div>`;
 
             html_code += `</div>`;
-        // $('#dynamic-deduction').append(html_code); => this is a jquery syntax, below is vanilla js way. You can either use this one or the below code
+        // // $('#dynamic-deduction').append(html_code); => this is a jquery syntax, below is vanilla js way. You can either use this one or the below code
         document.querySelector("#dynamic-deduction").insertAdjacentHTML("beforeend", html_code);
     }
 
     /**
     * It removes a row and then calls a function to recalculate the total.
     */
-    function removeRow(remaining_balance){
-        const btn_id = document.querySelector('.btn-remove').getAttribute('data-id');
+    function removeRow(remove_btn, remaining_balance){
+        const btn_id = remove_btn.getAttribute('data-id');
         document.querySelector(`#row${btn_id}`).remove();
         calculateDiagnosticTestBilling(remaining_balance);
     }

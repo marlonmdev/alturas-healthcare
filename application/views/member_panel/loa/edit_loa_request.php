@@ -299,6 +299,7 @@
 <script>
   const baseUrl = `<?= $this->config->base_url() ?>`;
   const redirectPage = `${baseUrl}member/requested-loa/pending`;
+
   $(document).ready(function() {
     $('#memberLoaRequestForm').submit(function(event) {
       event.preventDefault();
@@ -401,7 +402,7 @@
   });
 
 
-  function showMedServices() {
+  const showMedServices = () => {
     const loaType = document.querySelector('#loa-request-type').value;
     const medServices = document.querySelector('#med-services-div');
     const fileAttachment = document.querySelector('#div-attachment');

@@ -134,15 +134,17 @@
   <script>
     const baseUrl = "<?php echo base_url(); ?>";
 
-    window.onload = function generateCodes() {
+    onload = () => {
       $('#qrcode').html('');
       $('#barcode').html('');
       const emp_id = '<?= $row['emp_id'] ?>';
+
       new QRCode(document.getElementById("qrcode"), {
         text: emp_id,
         width: 130,
         height: 130,
       });
+
       JsBarcode("#barcode", emp_id, {
         displayValue: false,
         width: 2,
@@ -150,7 +152,7 @@
       });
     }
 
-    function printDiv(layer) {
+    const printDiv = (layer) => {
       $(layer).printThis({
         importCSS: true,
         copyTagClasses: true,

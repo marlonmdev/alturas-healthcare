@@ -115,8 +115,9 @@
 </div>
 
 <script type="text/javascript">
-  const baseUrl = `<?= $this->config->base_url() ?>`;
+  const baseUrl = `<?php echo $this->config->base_url(); ?>`;
   const redirectPage = `${baseUrl}member/requested-noa/pending`;
+
   $(document).ready(function() {
     $('#editNoaRequestForm').submit(function(event) {
       event.preventDefault();

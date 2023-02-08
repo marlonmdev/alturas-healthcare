@@ -97,7 +97,8 @@
 <!-- End Wrapper -->
 </div>
 <script>
-  const baseUrl = "<?= base_url() ?>";
+  const baseUrl = `<?php echo base_url(); ?>`;
+
   $(document).ready(function() {
     $("#memberPendingNoa").DataTable({
       ajax: {
@@ -120,7 +121,7 @@
     });
   });
 
-  function viewNoaInfoModal(req_id) {
+  const viewNoaInfoModal = (req_id) => {
     $.ajax({
       url: `${baseUrl}member/requested-noa/view/pending/${req_id}`,
       type: "GET",
@@ -171,7 +172,7 @@
     });
   }
 
-  function cancelPendingNoa(noa_id) {
+  const cancelPendingNoa = (noa_id) => {
     $.confirm({
       title: '<strong>Confirm!</strong>',
       content: 'Are you sure to delete NOA Request?',

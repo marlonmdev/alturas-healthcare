@@ -95,7 +95,8 @@
 <!-- End Wrapper -->
 </div>
 <script>
-  const baseUrl = `<?= base_url() ?>`;
+  const baseUrl = `<?php echo base_url(); ?>`;
+
   $(document).ready(function() {
     $("#memberDisapprovedNoa").DataTable({
       ajax: {
@@ -118,7 +119,7 @@
     });
   });
 
-  function viewNoaInfoModal(req_id) {
+  const viewNoaInfoModal = (req_id) => {
     $.ajax({
       url: `${baseUrl}member/requested-noa/view/disapproved/${req_id}`,
       type: "GET",
@@ -160,6 +161,7 @@
             $('#noa-status').html('<strong class="text-danger">[' + req_status + ']</strong>');
             break;
         }
+        
         $('#noa-no').html(noa_no);
         $('#disapproved-by').html(disapproved_by);
         $('#disapproved-on').html(disapproved_on);

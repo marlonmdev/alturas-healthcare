@@ -127,7 +127,7 @@
     });
   });
 
-  function viewImage(path) {
+  const viewImage = (path) => {
     let item = [{
       src: path, // path to image
       title: 'Attached RX File' // If you skip it, there will display the original image name
@@ -140,7 +140,7 @@
     let photoviewer = new PhotoViewer(item, options);
   }
 
-  function cancelPendingLoa(loa_id) {
+  const cancelPendingLoa = (loa_id) => {
     $.confirm({
       title: '<strong>Confirm!</strong>',
       content: 'Are you sure to delete LOA Request?',
@@ -197,7 +197,7 @@
     });
   }
 
-  function viewLoaInfoModal(req_id) {
+  const viewLoaInfoModal = (req_id) => {
     $.ajax({
       url: `${baseUrl}member/requested-loa/view/${req_id}`,
       type: "GET",

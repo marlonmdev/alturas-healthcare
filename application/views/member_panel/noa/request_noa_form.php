@@ -112,7 +112,8 @@
 </div>
 
 <script type="text/javascript">
-  const baseUrl = '<?= base_url() ?>';
+  const baseUrl = `<?php echo base_url(); ?>`;
+
   $(document).ready(function() {
     $('#memberNoaRequestForm').submit(function(event) {
       event.preventDefault();

@@ -368,16 +368,18 @@
   });
 
 
-  function showMedServices() {
+  const showMedServices = () => {
     const loaType = document.querySelector('#loa-request-type').value;
     const medServices = document.querySelector('#med-services-div');
     const fileAttachment = document.querySelector('#div-attachment');
-    if (loaType === "Consultation" || loaType === "") {
+
+    if (loaType === "Consultation" || loaType === ""){
       medServices.className = "d-none";
       fileAttachment.className = "d-none";
     } else if (loaType === "Diagnostic Test") {
       medServices.className = "col-lg-7 col-sm-12 mb-2 d-block";
       fileAttachment.className = "form-group row d-block";
+
     }
   }
 </script>

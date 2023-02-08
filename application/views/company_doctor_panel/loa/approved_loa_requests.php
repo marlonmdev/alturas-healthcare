@@ -97,7 +97,8 @@
   </div>
 <!-- End Wrapper -->
 <script>
-  const baseUrl = "<?= base_url() ?>";
+  const baseUrl = `<?php echo base_url(); ?>`;
+
   $(document).ready(function() {
 
     $('#approvedLoaTable').DataTable({
@@ -126,7 +127,7 @@
 
   });
 
-  function viewImage(path) {
+  const viewImage = (path) => {
     let item = [{
       src: path, // path to image
       title: 'Attached RX File' // If you skip it, there will display the original image name
@@ -139,7 +140,7 @@
     let photoviewer = new PhotoViewer(item, options);
   }
 
-  function viewApprovedLoaInfo(req_id) {
+  const viewApprovedLoaInfo = (req_id) => {
     $.ajax({
       url: `${baseUrl}company-doctor/loa/requests-list/view/${req_id}`,
       type: "GET",
@@ -196,8 +197,10 @@
             $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
             break;
         }
+
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
+        
         $('#loa-no').html(loa_no);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);

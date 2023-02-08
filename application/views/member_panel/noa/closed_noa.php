@@ -95,7 +95,8 @@
 <!-- End Wrapper -->
 </div>
 <script>
-  const baseUrl = "<?= base_url() ?>";
+  const baseUrl = `<?php echo base_url(); ?>`;
+
   $(document).ready(function() {
 
     $('#memberClosedNoa').DataTable({
@@ -124,7 +125,7 @@
 
   });
 
-  function viewNoaInfoModal(req_id) {
+  const viewNoaInfoModal = (req_id) => {
     $.ajax({
       url: `${baseUrl}member/requested-noa/view/closed/${req_id}`,
       type: "GET",
@@ -169,6 +170,7 @@
             $('#noa-status').html('<strong class="text-info">[' + req_status + ']</strong>');
             break;
         }
+        
         $('#noa-no').html(noa_no);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);

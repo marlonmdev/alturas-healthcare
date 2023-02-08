@@ -97,7 +97,8 @@
   </div>
 <!-- End Wrapper -->
 <script>
-  const baseUrl = `<?= base_url() ?>`;
+  const baseUrl = `<?php echo base_url(); ?>`;
+
   $(document).ready(function() {
 
     $('#pendingLoaTable').DataTable({
@@ -126,7 +127,7 @@
 
   });
 
-  function viewImage(path) {
+  const viewImage = (path) => {
     let item = [{
       src: path, // path to image
       title: 'Attached RX File' // If you skip it, there will display the original image name
@@ -139,7 +140,7 @@
     let photoviewer = new PhotoViewer(item, options);
   }
 
-  function viewPendingLoaInfo(req_id) {
+  const viewPendingLoaInfo = (req_id) => {
     $.ajax({
       url: `${baseUrl}company-doctor/loa/requests-list/view/${req_id}`,
       type: "GET",
@@ -193,8 +194,10 @@
             $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
             break;
         }
+
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
+
         $('#loa-no').html(loa_no);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
@@ -225,7 +228,7 @@
   }
 
   // $.confirm is a syntax of Jquery Confirm plugin
-  function approveLoaRequest(loa_id) {
+  const approveLoaRequest = (loa_id) => {
     const nextPage = `${baseUrl}company-doctor/loa/requests-list/approved`;
     $.confirm({
       title: '<strong>Confirm!</strong>',
@@ -286,7 +289,7 @@
     });
   }
 
-  function disapproveLoaRequest(loa_id) {
+  const disapproveLoaRequest = (loa_id) => {
     $('#loaDisapprovedReasonModal').modal('show');
     $('#disapprove-reason-error').html('');
     $('#disapprove-reason').removeClass('is-invalid');

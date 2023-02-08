@@ -38,8 +38,9 @@
                                 <table id="tbl-charges" class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th class="fw-bold">Description</th>
-                                            <th class="fw-bold">Charges</th>
+                                            <th class="fw-bold">Cost Type</th>
+                                            <th class="fw-bold">Quantity</th>
+                                            <th class="fw-bold">Fee</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -198,10 +199,13 @@
             success: function(response) {
                 $("#tbl-charges > tbody").append(
                     '<tr id="' + finalTrId + '" class="otherInput' + numberOfRow + '">\
-                        <td class="fw-bold">\
+                        <td class="fw-bold" style="width:50%">\
                             <span id="' + finalctName + '">' + name + '</span>\
                         </td>\
-                        <td class="fw-bold">\
+                        <td class="fw-bold" style="width:20%">\
+                            <input type="number" id="' + finalInId + '" class="inputCT form-control" value="1" min="1" required>\
+                        </td>\
+                        <td class="fw-bold" style="width:30%">\
                             <input type="number" id="' + finalInId + '" class="inputCT form-control" required>\
                         </td>\
                         <td>\

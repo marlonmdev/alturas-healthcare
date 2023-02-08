@@ -208,7 +208,7 @@
                             
                             <div class="row mt-4">
                                 <div class="col-md-12 d-flex justify-content-center align-items-center">
-                                    <button type="submit" class="btn btn-dark btn-lg ls-2" id="btn-bill" disabled>
+                                    <button type="button" onclick="submitLoaBilling(`<?= $loa_id ?>`)" class="btn btn-dark btn-lg ls-2" id="btn-bill" disabled>
                                         <i class="mdi mdi-file-check me-1"></i>Bill Now
                                     </button>
                                 </div>
@@ -323,7 +323,7 @@
 
                             <div class="row mt-4">
                                 <div class="col-md-12 d-flex justify-content-center align-items-center">
-                                    <button type="submit" class="btn btn-dark btn-lg ls-2" id="btn-bill" disabled>
+                                    <button type="submit" onclick="submitLoaBilling(`<?= $loa_id ?>`)" class="btn btn-dark btn-lg ls-2" id="btn-bill" disabled>
                                         <i class="mdi mdi-file-check me-1"></i>Bill Now
                                     </button>
                                 </div>
@@ -339,7 +339,8 @@
 </div>
 <script>
     // function to be called if LOA Request Type is Diagnostic Test
-    function calculateDiagnosticTestBilling(remaining_balance) {
+    const calculateDiagnosticTestBilling = (remaining_balance) => {
+
         let total_bill = 0;
         let total_deduction = 0;
         let charge_amount = 0;
@@ -457,7 +458,7 @@
         showPersonalChargeAlert(charge_amount);
     }
 
-    function validateNumberInputs() {
+    const validateNumberInputs = () => {
         const number_inputs = document.querySelectorAll("input[type='number']");
         for (let i = 0; i < number_inputs.length; i++) {
             number_inputs[i].addEventListener("input", function(event) {
@@ -469,7 +470,7 @@
     }
 
     // function to be called to enable or disable deduction inputs and bill button
-    function enableButtonsAndDeductions(total_bill){
+    const enableButtonsAndDeductions = (total_bill) => {
         const btnBill = document.querySelector('#btn-bill');
         const btnAddDeduction = document.querySelector('#btn-other-deduction');
         const philhealth_deduction = document.querySelector("#deduct-philhealth");
@@ -492,7 +493,7 @@
     }
 
      // function to be called to show patient's Personal Charge Alert if it Net Bill exceeds patient's remaining MBL balance
-    function showPersonalChargeAlert(charge_amount){
+    const showPersonalChargeAlert = (charge_amount) => {
         const personalCharge = document.querySelector('#personal-charge');
         // the ids of the html elements below are found in personal-charge_alert.php
         const chargeAlertDiv = document.querySelector('#charge-alert-div');
@@ -517,7 +518,8 @@
     }
 
     // function to be called if LOA Request Type is Consultation
-    function calculateConsultationBilling(remaining_balance){
+    const calculateConsultationBilling = (remaining_balance) => {
+
         let total_bill = 0;
         let total_deduction = 0;
         let charge_amount = 0;
@@ -631,7 +633,7 @@
     let count = 0; // declaring the count variable outside the function will persist its value even after the function is called, allowing it to increment by one each time the function is called.
 
      // this is for Diagnostic Test LOA Requests
-    function addOtherDeductionInputs1(remaining_balance){
+    const addOtherDeductionInputs1 = (remaining_balance) => {
         const container = document.getElementById('dynamic-deduction');
         count++;
         let html_code  = `<div class="row my-3 row-deduction" id="row${count}">`;
@@ -660,12 +662,12 @@
                          </div>`;
 
             html_code += `</div>`;
-        // // $('#dynamic-deduction').append(html_code); => this is a jquery syntax, below is vanilla js way. You can either use this one or the below code
+        // // $('#dynamic-deduction').append(html_code); => this is a jquery syntax, below is vanilla js way. You can either use this one or the one below
         document.querySelector("#dynamic-deduction").insertAdjacentHTML("beforeend", html_code);
     }
 
     // this is for Consultation LOA Requests
-    function addOtherDeductionInputs2(remaining_balance){
+    const addOtherDeductionInputs2 = (remaining_balance) => {
         const container = document.getElementById('dynamic-deduction');
         count++;
         let html_code  = `<div class="row my-3 row-deduction" id="row${count}">`;
@@ -701,15 +703,80 @@
     /**
     * It removes a row and then calls a function to recalculate the total.
     */
-    function removeRow1(remove_btn, remaining_balance){
+    // this one is for the dynamic diagnostic test deductions
+    const removeRow1 = (remove_btn, remaining_balance) => {
         const btn_id = remove_btn.getAttribute('data-id');
         document.querySelector(`#row${btn_id}`).remove();
         calculateDiagnosticTestBilling(remaining_balance);
     }
 
-    function removeRow2(remove_btn, remaining_balance){
+    // this one is for the dynamic consultation deductions
+    const removeRow2 = (remove_btn, remaining_balance) => {
         const btn_id = remove_btn.getAttribute('data-id');
         document.querySelector(`#row${btn_id}`).remove();
         calculateConsultationBilling(remaining_balance);
+    }
+
+    const baseUrl = `<?php echo base_url(); ?>`;
+    // $.confirm is a syntax of Jquery Confirm plugin
+    const submitLoaBilling = (loa_id) => {
+        const nextPage = `${baseUrl}healthcare-provider/billing/bill-loa/${loa_id}/success`;
+        $.confirm({
+            title: '<strong>Confirm!</strong>',
+            content: 'Are you sure to Bill?',
+            type: 'blue',
+            buttons: {
+                confirm: {
+                text: 'Yes',
+                btnClass: 'btn-blue',
+                action: function() {
+                    $.ajax({
+                    type: 'GET',
+                    url: `${baseUrl}healthcare-provider/billing/bill-loa/submit/${loa_id}`,
+                    data: {
+                        loa_id: loa_id
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        const {
+                            token,
+                            status,
+                            message
+                            } = response;
+                            if (status === 'success') {
+                                swal({
+                                    title: 'Success',
+                                    text: message,
+                                    timer: 3000,
+                                    showConfirmButton: false,
+                                    type: 'success'
+                                });
+
+                                setTimeout(function() {
+                                    window.location.href = nextPage;
+                                }, 3200);
+
+                            } else {
+                                swal({
+                                    title: 'Failed',
+                                    text: message,
+                                    timer: 3000,
+                                    showConfirmButton: false,
+                                    type: 'error'
+                                });
+                                }
+                            }
+                        });
+                    }   
+                },
+                cancel: {
+                    btnClass: 'btn-dark',
+                    action: function() {
+                        // close dialog
+                    }
+                },
+
+            }
+        });
     }
 </script>

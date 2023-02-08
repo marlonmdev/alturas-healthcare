@@ -100,7 +100,7 @@ class Billing_controller extends CI_Controller {
 
     function bill_patient_loa() {
         $this->security->get_csrf_hash();
-        $url_id = $this->uri->segment(4);
+        $url_id = $this->uri->segment(4); // encrypted id
         $loa_id = $this->myhash->hasher($url_id, 'decrypt');
         $billing_no = $this->security->xss_clean($this->input->post('billing_no'));
         $emp_id = $this->security->xss_clean($this->input->post('emp_id'));
@@ -155,7 +155,6 @@ class Billing_controller extends CI_Controller {
 
     function billing3BillNoa() {
         $token = $this->security->get_csrf_hash();
-
         $this->cart->destroy();
         $this->session->unset_userdata(array('equipments'));
         $member = array(
@@ -376,8 +375,4 @@ class Billing_controller extends CI_Controller {
         echo json_encode($this->billing_model->pay_billing_member($billingSchema));
     }
 
-
-    function billingServicesMember() {
-        $this->security->get_csrf_hash();
-    }
 }

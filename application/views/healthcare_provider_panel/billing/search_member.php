@@ -84,33 +84,46 @@
         </div>
     </div>
 <script>
+
+    // ES6 syntax for window.addEventListener('load', (e) {});
+    onload = (event) => {
+        searchMethods();
+    };
     
     $(document).ready(function(){
         /* This is a jQuery function that is used to hide and show the search form. */
         $("#search-select").on('change', function(){
-            if($(this).val() == "healthcard"){
-                $("#search-form-1")[0].reset();
-                $("#search-by-name").addClass('d-none');
-                $("#search-by-healthcard").removeClass('d-none is-invalid is-valid');
-            } else if($(this).val() == "name"){
-                $("#search-form-2")[0].reset();
-                $("#search-by-healthcard").addClass('d-none');
-                $("#search-by-name").removeClass('d-none is-invalid is-valid');
-            }else{
-                $("#search-by-healthcard").addClass('d-none');
-                $("#search-by-name").addClass('d-none');
-            }
+            searchMethods();
         });
     });    
+
+    const searchMethods = () => {
+        if($('#search-select').val() == "healthcard"){
+
+            $("#search-form-1")[0].reset();
+            $("#search-by-name").addClass('d-none');
+            $("#search-by-healthcard").removeClass('d-none is-invalid is-valid');
+
+        } else if($('#search-select').val() == "name"){
+
+            $("#search-form-2")[0].reset();
+            $("#search-by-healthcard").addClass('d-none');
+            $("#search-by-name").removeClass('d-none is-invalid is-valid');
+
+        }else{
+
+            $("#search-by-healthcard").addClass('d-none');
+            $("#search-by-name").addClass('d-none');
+
+        }
+    }
 
 
     // Example starter JavaScript for disabling form submissions if there are invalid fields
     (function() {
         'use strict'
-
         // Fetch all the forms we want to apply custom Bootstrap validation styles to
-        var forms = document.querySelectorAll('.needs-validation')
-
+        var forms = document.querySelectorAll('.needs-validation');
         // Loop over them and prevent submission
         Array.prototype.slice.call(forms)
             .forEach(function(form) {

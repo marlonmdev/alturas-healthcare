@@ -162,8 +162,9 @@ class Billing_controller extends CI_Controller {
         $ct_names = $posted_data['ct-name'];
         $ct_quantities = $posted_data['ct-quantity'];
         $ct_fees = $posted_data['ct-fee'];
-        $deduction_names = $posted_data['deduction-name'];
-        $deduction_amounts = $posted_data['deduction-amount'];
+        $philhealth_deduction = $posted_data['philhealth-deduction'];
+        $sss_deduction = $posted_data['sss-deduction'];
+        $deduction_count = $posted_data['deduction-count'];
         $total_bill = $posted_data['total-bill'];
         $total_deduction = $posted_data['total-deduction'];
         $net_bill = $posted_data['net-bill'];
@@ -188,6 +189,8 @@ class Billing_controller extends CI_Controller {
 
             $services = [];
             $deductions = []; 
+            $philhealth = [];
+            $sss = [];
 
             for ($x = 0; $x < count($ct_names); $x++) {
                 $services[] = [
@@ -201,15 +204,41 @@ class Billing_controller extends CI_Controller {
 
             $this->billing_model->insert_diagnostic_test_billing_services($services);
 
-            if(!empty($deduction_names)){
+            if($philhealth_deduction > 0){
+                $philhealth[] = [
+                    'deduction_name'   => 'Philhealth',
+                    'deduction_amount' => $philhealth_deduction,
+                    'billing_no'       => $billing_no,
+                    'date_created'     => date('Y-m-d')
+                ];
+
+                $this->billing_model->insert_diagnostic_test_billing_deductions($philhealth);
+            }
+
+            if($sss_deduction > 0){
+                $sss[] = [
+                    'deduction_name'   => 'SSS',
+                    'deduction_amount' => $sss_deduction,
+                    'billing_no'       => $billing_no,
+                    'date_created'     => date('Y-m-d')
+                ];
+
+                $this->billing_model->insert_diagnostic_test_billing_deductions($sss);
+            }
+
+            if($deduction_count > 0){
+                $deduction_names =  $this->security->xss_clean($this->input->post('deduction-name'));
+                $deduction_amounts = $this->security->xss_clean($this->input->post('deduction-amount'));
+
                 for ($y = 0; $y < count($deduction_names); $y++) {
                     $deductions[] = [
-                        'deduction_name' => $deduction_names[$y],
-                        'deduction_amount'  => $deduction_amounts[$y],
-                        'billing_no'   => $billing_no,
-                        'date_created' => date('Y-m-d')
+                        'deduction_name'   => $deduction_names[$y],
+                        'deduction_amount' => $deduction_amounts[$y],
+                        'billing_no'       => $billing_no,
+                        'date_created'     => date('Y-m-d')
                     ];
                 }
+
                 $this->billing_model->insert_diagnostic_test_billing_deductions($deductions);
             }
             

@@ -98,6 +98,7 @@
                             <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
                             <input type="hidden" name="loa-id" value="<?= $loa_id ?>">
                             <input type="hidden" name="emp-id" value="<?= $member['emp_id'] ?>">
+                            <input type="hidden" name="deduction-count-1" value="0" min="0" id="deduction-count-1">
 
                             <?php 
                                 /* Exploding the string into an array and then checking if the array
@@ -231,6 +232,7 @@
                             <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
                             <input type="hidden" name="loa-id" value="<?= $loa_id ?>">
                             <input type="hidden" name="emp-id" value="<?= $member['emp_id'] ?>">
+                            <input type="hidden" name="deduction-count-2" value="0" min="0" id="deduction-count-2">
                             
                             <div class="row">
                                 <div class="col-md-7">
@@ -640,8 +642,11 @@
 
      // this is for Diagnostic Test LOA Requests
     const addOtherDeductionInputs1 = (remaining_balance) => {
-        const container = document.getElementById('dynamic-deduction');
+        const container = document.querySelector('#dynamic-deduction');
+        const deduction_count_1 = document.querySelector('#deduction-count-1');
         count++;
+        deduction_count_1.value = count;
+
         let html_code  = `<div class="row my-3 row-deduction" id="row${count}">`;
 
            /* Creating a new input field with the name deduction_name[] */
@@ -675,7 +680,10 @@
     // this is for Consultation LOA Requests
     const addOtherDeductionInputs2 = (remaining_balance) => {
         const container = document.getElementById('dynamic-deduction');
+        const deduction_count_2 = document.querySelector('#deduction-count-2');
         count++;
+        deduction_count_2.value = count;
+
         let html_code  = `<div class="row my-3 row-deduction" id="row${count}">`;
 
            /* Creating a new input field with the name deduction_name[] */
@@ -711,14 +719,20 @@
     */
     // this one is for the dynamic diagnostic test deductions
     const removeRow1 = (remove_btn, remaining_balance) => {
+        count--;
         const btn_id = remove_btn.getAttribute('data-id');
+        const deduction_count_1 = document.querySelector('#deduction-count-1');
+        deduction_count_1.value = count;
         document.querySelector(`#row${btn_id}`).remove();
         calculateDiagnosticTestBilling(remaining_balance);
     }
 
     // this one is for the dynamic consultation deductions
     const removeRow2 = (remove_btn, remaining_balance) => {
+        count--;
         const btn_id = remove_btn.getAttribute('data-id');
+        const deduction_count_2 = document.querySelector('#deduction-count-2');
+        deduction_count_2.value = count;
         document.querySelector(`#row${btn_id}`).remove();
         calculateConsultationBilling(remaining_balance);
     }

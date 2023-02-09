@@ -152,6 +152,17 @@ class Billing_controller extends CI_Controller {
         echo json_encode($data);
     }
 
+    function diagnostic_loa_final_billing(){
+        $loa_id = $this->myhash->hasher($this->uri->segment(6), 'decrypt');
+        $response = [
+            'token' => $this->security->get_csrf_hash(),
+            'status' => 'success',
+            'message' => 'Hello World'
+        ];
+
+        echo json_encode($response);
+    }
+
 
     function billing3BillNoa() {
         $token = $this->security->get_csrf_hash();

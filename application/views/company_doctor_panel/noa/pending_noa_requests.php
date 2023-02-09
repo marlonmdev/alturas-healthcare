@@ -100,7 +100,8 @@
 <!-- End Wrapper -->
 
 <script>
-  const baseUrl = "<?php echo base_url(); ?>";
+  const baseUrl = `<?php echo base_url(); ?>`;
+
   $(document).ready(function() {
 
     $('#pendingNoaTable').DataTable({
@@ -129,7 +130,7 @@
 
   });
 
-  function viewNoaInfo(req_id) {
+  const viewNoaInfo = (req_id) => {
     $.ajax({
       url: `${baseUrl}company-doctor/noa/requests-list/view/${req_id}`,
       type: "GET",
@@ -246,7 +247,7 @@
   //   });
   // }
 
-  function approveNoaRequest(noa_id) {
+  const approveNoaRequest = (noa_id) => {
     $('#noaApproveForm')[0].reset();
     $('#noaApprovedModal').modal('show');
     $('#work-related-error').html('');
@@ -256,7 +257,7 @@
     $("#noaApproveForm").attr("action", `${baseUrl}company-doctor/noa/requests-list/approve/${noa_id}`);
   }
 
-  function disapproveNoaRequest(noa_id) {
+  const disapproveNoaRequest = (noa_id) => {
     $('#noaDisapproveForm')[0].reset();
     $('#noaDisapprovedReasonModal').modal('show');
     $('#disapprove-reason-error').html('');

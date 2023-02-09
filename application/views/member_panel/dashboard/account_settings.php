@@ -132,7 +132,8 @@
     <!-- End Wrapper -->
     </div>
   <script>
-    const baseUrl = '<?= base_url() ?>';
+    const baseUrl = `<?php echo base_url(); ?>`;
+
     $(document).ready(function() {
       /* The below code is a jQuery code that is used to submit a form using ajax. */
       $('#passwordUpdateForm').submit(function(event) {
@@ -310,7 +311,7 @@
    * It resets the form, removes the invalid and valid classes from the inputs, and removes the error
    * messages.
    */
-  function clearPasswordValidationErrors() {
+  const clearPasswordValidationErrors = () => {
     $('#passwordUpdateForm')[0].reset();
     $('#passwordUpdateForm').find('input').removeClass('is-invalid');
     $('#passwordUpdateForm').find('input').removeClass('is-valid');
@@ -320,7 +321,7 @@
   /**
  * It clears the form, removes the validation classes, and removes the validation error messages.
  */
-  function clearUsernameValidationErrors(){
+  const clearUsernameValidationErrors = () => {
     $('#usernameUpdateForm')[0].reset();
     $('#usernameUpdateForm').find('input').removeClass('is-invalid');
     $('#usernameUpdateForm').find('input').removeClass('is-valid');

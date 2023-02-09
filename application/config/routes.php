@@ -94,19 +94,13 @@ $route['healthcare-provider/search-member/healthcard'] = 'healthcare_provider/se
 $route['healthcare-provider/search-member/name'] = 'healthcare_provider/search_controller/search_member_by_name';
 
 
-//Member Profile
-// $route['healthcare-provider/dashboard'] = 'healthcare_provider/Member_profile_controller/memberProfile';
-// $route['healthcare-provider/profile/view']['post'] = 'healthcare_provider/Member_profile_controller/memberProfileInfo';
-// $route['healthcare-provider/profile/viewId']['post'] = 'healthcare_provider/Member_profile_controller/memberProfileInfoById';
-// $route['healthcare-provider/profile/view/mbl']['post']  = 'healthcare_provider/Member_profile_controller/memberProfileInfoMbl';
-
 // Patient's Billing
-
 $route['healthcare-provider/billing'] = 'healthcare_provider/billing_controller/billing_search_member';
 $route['healthcare-provider/billing/search-by-healthcard']  = 'healthcare_provider/billing_controller/search_member_by_healthcard';
 $route['healthcare-provider/billing/search-by-name'] = 'healthcare_provider/billing_controller/search_member_by_name';
 $route['healthcare-provider/billing/bill-loa/(:any)'] = 'healthcare_provider/billing_controller/bill_patient_loa';
 $route['healthcare-provider/billing/bill-loa/fetch/loa'] = 'healthcare_provider/billing_controller/fetch_loa_to_bill';
+$route['healthcare-provider/billing/bill-loa/diagnostic-test/submit/(:any)'] = 'healthcare_provider/billing_controller/diagnostic_loa_final_billing';
 
 // $route['healthcare-provider/billing/bill-loa/(:any)/(:any)/(:any)'] = 'healthcare_provider/billing_controller/bill_member_loa';
 

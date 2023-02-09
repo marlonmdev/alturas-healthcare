@@ -94,7 +94,7 @@
                     <div class="col-12">
 
                         <!-- Start of form Diagnostic Test -->
-                        <form method="POST" id="form-diagnostic" class="needs-validation" novalidate>
+                        <form method="POST" id="form-diagnostic-billing" class="needs-validation" novalidate>
                             <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
                             <input type="hidden" name="loa_id" value="<?= $loa_id ?>">
                             <input type="hidden" name="emp_id" value="<?= $member['emp_id'] ?>">
@@ -208,7 +208,7 @@
                             
                             <div class="row mt-4">
                                 <div class="col-md-12 d-flex justify-content-center align-items-center">
-                                    <button type="button" onclick="submitLoaBilling(`<?= $loa_id ?>`)" class="btn btn-dark btn-lg ls-2" id="btn-bill" disabled>
+                                    <button type="submit" class="btn btn-dark btn-lg ls-2" id="btn-bill" disabled>
                                         <i class="mdi mdi-file-check me-1"></i>Bill Now
                                     </button>
                                 </div>
@@ -338,6 +338,8 @@
     </div>
 </div>
 <script>
+    const baseUrl = `<?php echo base_url(); ?>`;
+
     // function to be called if LOA Request Type is Diagnostic Test
     const calculateDiagnosticTestBilling = (remaining_balance) => {
 
@@ -717,66 +719,130 @@
         calculateConsultationBilling(remaining_balance);
     }
 
-    const baseUrl = `<?php echo base_url(); ?>`;
-    // $.confirm is a syntax of Jquery Confirm plugin
-    const submitLoaBilling = (loa_id) => {
-        const nextPage = `${baseUrl}healthcare-provider/billing/bill-loa/${loa_id}/success`;
-        $.confirm({
-            title: '<strong>Confirm!</strong>',
-            content: 'Are you sure to Bill?',
-            type: 'blue',
-            buttons: {
-                confirm: {
-                text: 'Yes',
-                btnClass: 'btn-blue',
-                action: function() {
-                    $.ajax({
-                    type: 'GET',
-                    url: `${baseUrl}healthcare-provider/billing/bill-loa/submit/${loa_id}`,
+    const form = document.querySelector('#form-diagnostic-billing');
+    const loa_id = `<?php echo $loa_id; ?>`;
+    const token = `<?php echo $this->security->get_csrf_hash(); ?>`;
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        if (!form.checkValidity()) {
+            form.classList.add('was-validated');
+            return;
+        }
+
+        // show confirm dialog if the form has passed the submit validation check
+        notie.confirm({
+            text: 'Are you sure to bill now?',
+            cancelCallback: () => notie.alert({ type: 3, text: 'Cancelled' }),
+            submitCallback: () => {
+                $.ajax({
+                    type: 'POST',
+                    url: `${baseUrl}healthcare-provider/billing/bill-loa/diagnostic-test/submit/${loa_id}`,
                     data: {
-                        loa_id: loa_id
+                        loa_id,
+                        token
                     },
                     dataType: "json",
                     success: function(response) {
-                        const {
-                            token,
-                            status,
-                            message
-                            } = response;
-                            if (status === 'success') {
-                                swal({
-                                    title: 'Success',
-                                    text: message,
-                                    timer: 3000,
-                                    showConfirmButton: false,
-                                    type: 'success'
-                                });
+                        const { token, status, message } = response;
 
-                                setTimeout(function() {
-                                    window.location.href = nextPage;
-                                }, 3200);
+                        if (status === 'success') {
 
-                            } else {
-                                swal({
-                                    title: 'Failed',
-                                    text: message,
-                                    timer: 3000,
-                                    showConfirmButton: false,
-                                    type: 'error'
-                                });
-                                }
-                            }
-                        });
-                    }   
-                },
-                cancel: {
-                    btnClass: 'btn-dark',
-                    action: function() {
-                        // close dialog
+                            // notie.alert({ type: 'success', text: message });
+                            swal({
+                                title: 'Success',
+                                text: message,
+                                timer: 3000,
+                                showConfirmButton: false,
+                                type: 'success'
+                            });
+
+                            // setTimeout(function() {
+                            //     window.location.href = nextPage;
+                            // }, 3200);
+
+                        } else {
+                            swal({
+                                title: 'Failed',
+                                text: message,
+                                timer: 3000,
+                                showConfirmButton: false,
+                                type: 'error'
+                            });
+                        }
                     }
-                },
-
+                });
             }
-        });
-    }
+        })
+
+
+        // notie.confirm({
+        //     text: 'Are you sure to bill now?',
+        //     submitText: 'Yes', // optional, default = 'Yes'
+        //     cancelText: 'Cancel', // optional, default = 'Cancel'
+        //     position: String, // optional, default = 'top', enum: ['top', 'bottom']
+        //     submitCallback: Function,
+        //     cancelCallback: Function
+        // }, submitCallbackOptional(), cancelCallbackOptional())
+
+
+        // $.confirm({
+        //     title: '<strong>Confirm!</strong>',
+        //     content: 'Are you sure to Bill now?',
+        //     type: 'blue',
+        //     buttons: {
+        //         confirm: {
+        //             text: 'Yes',
+        //             btnClass: 'btn-blue',
+        //             action: function() {
+        //                 $.ajax({
+        //                     type: 'POST',
+        //                     url: `${baseUrl}healthcare-provider/billing/bill-loa/submit/${loa_id}`,
+        //                     data: {
+        //                         loa_id,
+        //                         token
+        //                     },
+        //                     dataType: "json",
+        //                     success: function(response) {
+        //                         const { token, status, message } = response;
+
+        //                         if (status === 'success') {
+        //                             swal({
+        //                                 title: 'Success',
+        //                                 text: message,
+        //                                 timer: 3000,
+        //                                 showConfirmButton: false,
+        //                                 type: 'success'
+        //                             });
+
+        //                             // setTimeout(function() {
+        //                             //     window.location.href = nextPage;
+        //                             // }, 3200);
+
+        //                         } else {
+        //                             swal({
+        //                                 title: 'Failed',
+        //                                 text: message,
+        //                                 timer: 3000,
+        //                                 showConfirmButton: false,
+        //                                 type: 'error'
+        //                             });
+        //                         }
+        //                     }
+        //                 });
+        //             }
+        //         },  
+        //         cancel: {
+        //             btnClass: 'btn-dark',
+        //             action: function() {
+        //                 // close dialog
+        //             }
+        //         },
+        //     }
+
+        // });
+
+    });
+
 </script>

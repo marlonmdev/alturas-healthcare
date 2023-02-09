@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/dropify/css/dropify.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/sweetalert2/sweetalert2.min.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/jquery-confirm/dist/jquery-confirm.min.css" />
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/Toastr/build/toastr.min.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/easy-select/easySelect.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/tagify/tagify.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/photoviewer/dist/photoviewer.min.css" />
@@ -31,6 +32,7 @@
     <script src="<?php echo base_url(); ?>assets/vendors/jsbarcode/jsBarcode.all.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/vendors/printThis/printThis.js"></script>
     <script src="<?php echo base_url(); ?>assets/vendors/photoviewer/dist/photoviewer.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/vendors/Toastr/build/toastr.min.js"></script>
   </head>
 
   <body>
@@ -218,7 +220,7 @@
                   <div class="dropdown-divider"></div>
                   <!-- Logout Link -->
                   <a class="dropdown-item" href="javascript:void(0)"
-                    data-bs-toggle="modal" data-bs-target="#logoutModal">
+                    onclick="logout(`<?= base_url() ?>`)">
                      <i class="mdi mdi-power me-1 ms-1"></i> Logout
                   </a>
                 </ul>

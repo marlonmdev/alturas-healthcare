@@ -38,6 +38,7 @@ function check_login() {
 				toastr.options = {
 					closeButton: true,
 					preventDuplicates: true,
+					positionClass: "toast-bottom-right",
 				};
 				input_username.value = username;
 				input_password.value = password;

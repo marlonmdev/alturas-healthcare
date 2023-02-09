@@ -58,7 +58,8 @@
 <!-- End Wrapper -->
 </div>
   <script>
-    const baseUrl = "<?php echo base_url(); ?>";
+    const baseUrl = `<?php echo base_url(); ?>`;
+
     $(document).ready(function () {
         
         $('#membersTable').DataTable({ 

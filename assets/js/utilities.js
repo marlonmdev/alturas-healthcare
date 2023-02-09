@@ -11,7 +11,7 @@ const logout = (baseUrl) => {
 					toastr.options = {
 						closeButton: false,
 						progressBar: true,
-						positionClass: "toast-bottom-right",
+						positionClass: "toast-top-center",
 						timeOut: "2500",
 					};
 					toastr["info"]("Logging You Out...");

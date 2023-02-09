@@ -270,7 +270,7 @@
       event.preventDefault();
       let $data = new FormData($(this)[0]);
       $.ajax({
-        type: "post",
+        type: "POST",
         url: $(this).attr('action'),
         data: $data,
         dataType: "json",

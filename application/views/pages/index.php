@@ -60,5 +60,4 @@
     <script src="<?= base_url() ?>assets/vendors/Toastr/build/toastr.min.js"></script>
     <script src="<?= base_url() ?>assets/js/authentication.js"></script>
 </body>
-
 </html>

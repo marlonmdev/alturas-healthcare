@@ -103,4 +103,16 @@ class Billing_model extends CI_Model {
         $query = $this->db->get();
         return $query->result();
     }
+
+    function insert_diagnostic_test_billing($data){
+        return $this->db->insert('billing', $data);
+    }
+
+    function insert_diagnostic_test_billing_services($services){
+        return $this->db->insert_batch('billing_services', $services);
+    }
+
+    function insert_diagnostic_test_billing_deductions($deductions){
+        return $this->db->insert_batch('deductions', $deductions);
+    }
 }

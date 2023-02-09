@@ -14,14 +14,14 @@
                         <input type="hidden" name="token" id="token" value="<?= $this->security->get_csrf_hash(); ?>">
                         <div class="form-group row text-center">
                             <div class="col-sm-12 mb-2">
-                                <label class="colored-label"><i class="bx bx-health icon-red"></i> Is it work related?</label><br>
+                                <label class="colored-label fs-4 ls-1"><i class="bx bx-health icon-red"></i> Is it work related?</label><br>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="work-related" id="option1" value="Yes">
-                                    <label class="form-check-label" for="option1">Yes</label>
+                                    <label class="form-check-label ls-1" for="option1">Yes</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="work-related" id="option2" value="No">
-                                    <label class="form-check-label" for="option2">No</label>
+                                    <label class="form-check-label ls-1" for="option2">No</label>
                                 </div>
                                 <em id="work-related-error" class="text-danger"></em>
                             </div>

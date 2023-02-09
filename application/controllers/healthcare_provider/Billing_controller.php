@@ -153,12 +153,79 @@ class Billing_controller extends CI_Controller {
     }
 
     function diagnostic_loa_final_billing(){
+        $token = $this->security->get_csrf_hash();
         $loa_id = $this->myhash->hasher($this->uri->segment(6), 'decrypt');
-        $response = [
-            'token' => $this->security->get_csrf_hash(),
-            'status' => 'success',
-            'message' => 'Hello World'
-        ];
+        $posted_data =  $this->input->post(NULL, TRUE);
+
+        $emp_id = $posted_data['emp-id'];
+        $billing_no = $posted_data['billing-no'];
+        $ct_names = $posted_data['ct-name'];
+        $ct_quantities = $posted_data['ct-quantity'];
+        $ct_fees = $posted_data['ct-fee'];
+        $deduction_names = $posted_data['deduction-name'];
+        $deduction_amounts = $posted_data['deduction-amount'];
+        $total_bill = $posted_data['total-bill'];
+        $total_deduction = $posted_data['total-deduction'];
+        $net_bill = $posted_data['net-bill'];
+        $personal_charge = $posted_data['personal-charge'];
+
+        $data = [
+            'billing_no'        => $billing_no,
+            'emp_id'            => $emp_id,
+            'loa_id'            => $loa_id,
+            'hp_id'             => $this->session->userdata('dsg_hcare_prov'),
+            'total_bill'        => $total_bill,
+            'total_deduction'   => $total_deduction,
+            'net_bill'          => $net_bill,
+            'personal_charge'   => $personal_charge,
+            'mbr_remaining_bal' => $this->session->userdata('b_member_bal'),
+            'billed_by'         => $this->session->userdata('fullname'),
+            'billed_on'         => date('Y-m-d')
+        ];        
+
+        $inserted = $this->billing_model->insert_diagnostic_test_billing($data);
+        if($inserted){
+
+            $services = [];
+            $deductions = []; 
+
+            for ($x = 0; $x < count($ct_names); $x++) {
+                $services[] = [
+                    'service_name' => $ct_names[$x],
+                    'service_quantity'  => $ct_quantities[$x],
+                    'service_fee'  => $ct_fees[$x],
+                    'billing_no'   => $billing_no,
+                    'date_created' => date('Y-m-d')
+                ];
+            }
+
+            $this->billing_model->insert_diagnostic_test_billing_services($services);
+
+            if(!empty($deduction_names)){
+                for ($y = 0; $y < count($deduction_names); $y++) {
+                    $deductions[] = [
+                        'deduction_name' => $deduction_names[$y],
+                        'deduction_amount'  => $deduction_amounts[$y],
+                        'billing_no'   => $billing_no,
+                        'date_created' => date('Y-m-d')
+                    ];
+                }
+                $this->billing_model->insert_diagnostic_test_billing_deductions($deductions);
+            }
+            
+            $response = [
+                'token' => $token,
+                'status' => 'success',
+                'message' => 'Billed Successfully'
+            ];
+
+        }else{
+            $response = [
+                'token' => $token,
+                'status' => 'error',
+                'message' => 'Bill Transaction Failed'
+            ];
+        }
 
         echo json_encode($response);
     }

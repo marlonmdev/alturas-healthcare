@@ -94,10 +94,10 @@
                     <div class="col-12">
 
                         <!-- Start of form Diagnostic Test -->
-                        <form method="POST" id="form-diagnostic-billing" class="needs-validation" novalidate>
-                            <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
-                            <input type="hidden" name="loa_id" value="<?= $loa_id ?>">
-                            <input type="hidden" name="emp_id" value="<?= $member['emp_id'] ?>">
+                        <form method="POST" id="formDiagnosticBilling" class="needs-validation" novalidate>
+                            <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
+                            <input type="hidden" name="loa-id" value="<?= $loa_id ?>">
+                            <input type="hidden" name="emp-id" value="<?= $member['emp_id'] ?>">
 
                             <?php 
                                 /* Exploding the string into an array and then checking if the array
@@ -114,16 +114,16 @@
                                     </div>
 
                                     <div class="col-md-2">
-                                        <label class="form-label ls-1">Quantity</label>
-                                        <input type="number" class="ct-qty form-control fw-bold" name="ct-qty[]" oninput="calculateDiagnosticTestBilling(`<?= $remaining_balance ?>`)" value="1" min="1" required>
+                                        <label class="form-label ls-1"><i class="mdi mdi-asterisk text-danger"></i>Quantity</label>
+                                        <input type="number" class="ct-qty form-control fw-bold" name="ct-quantity[]" oninput="calculateDiagnosticTestBilling(`<?= $remaining_balance ?>`)" value="1" min="1" required>
                                         <div class="invalid-feedback">
                                             Quantity is required
                                         </div>
                                     </div>
 
                                     <div class="col-md-3">
-                                        <label class="form-label ls-1">Cost</label>
-                                        <input type="number" class="ct-cost form-control fw-bold" name="ct-cost[]" placeholder="Enter Amount" oninput="calculateDiagnosticTestBilling(`<?= $remaining_balance ?>`)" min="0" required>
+                                        <label class="form-label ls-1"><i class="mdi mdi-asterisk text-danger"></i>Service Fee</label>
+                                        <input type="number" class="ct-cost form-control fw-bold" name="ct-fee[]" placeholder="Enter Amount" oninput="calculateDiagnosticTestBilling(`<?= $remaining_balance ?>`)" min="0" required>
                                         <div class="invalid-feedback">
                                             Service Cost is required.
                                         </div>
@@ -142,21 +142,25 @@
                                 </h4>
                             </div>
                             <div class="row my-2">
+
                                 <div class="col-md-3">
-                                    <label class="form-label ls-1">PhilHealth</label>
+                                    <label class="form-label ls-1">PhilHealth <span class="text-success fw-bold">(Optional)</span></label>
                                     <input type="number" class="input-deduction form-control fw-bold" id="deduct-philhealth" name="philhealth-deduction" placeholder="Enter Amount" oninput="calculateDiagnosticTestBilling(`<?= $remaining_balance ?>`)" min="0" readonly>
                                     <span class="text-danger fw-bold deduction-msg"></span>
                                 </div>
+
                                 <div class="col-md-3">
-                                    <label class="form-label ls-1">SSS</label>
+                                    <label class="form-label ls-1">SSS <span class="text-success fw-bold">(Optional)</span></label>
                                     <input type="number" class="input-deduction form-control fw-bold" id="deduct-sss" name="sss-deduction" placeholder="Enter Amount" oninput="calculateDiagnosticTestBilling(`<?= $remaining_balance ?>`)" min="0" readonly>
                                     <span class="text-danger fw-bold deduction-msg"></span>
                                 </div>
+
                                 <div class="col-md-3 d-flex justify-content-start align-items-end">
                                     <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addOtherDeductionInputs1(`<?= $remaining_balance ?>`)" disabled>
                                         <i class="mdi mdi-plus-circle"></i> Add Deduction
                                     </button>
                                 </div>
+
                             </div>
 
                             <div id="dynamic-deduction"></div>
@@ -224,9 +228,9 @@
                     <div class="col-12">
                         <!-- Start of form Consultation -->
                         <form method="POST" id="form-consultation" class="needs-validation" novalidate>
-                            <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
-                            <input type="hidden" name="loa_id" value="<?= $loa_id ?>">
-                            <input type="hidden" name="emp_id" value="<?= $member['emp_id'] ?>">
+                            <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
+                            <input type="hidden" name="loa-id" value="<?= $loa_id ?>">
+                            <input type="hidden" name="emp-id" value="<?= $member['emp_id'] ?>">
                             
                             <div class="row">
                                 <div class="col-md-7">
@@ -642,7 +646,7 @@
 
            /* Creating a new input field with the name deduction_name[] */
             html_code += `<div class="col-md-3">
-                            <input type="text" name="deduction_name[]" class="form-control fw-bold ls-1" placeholder="Enter Deduction Name" required/>
+                            <input type="text" name="deduction-name[]" class="form-control fw-bold ls-1" placeholder="*Enter Deduction Name" required/>
                             <div class="invalid-feedback">
                                 Deduction name and amount is required
                             </div>
@@ -651,7 +655,7 @@
             /* Creating a form input field with a name of deduction_amount[] and a class of
             deduction-amount. */
             html_code += `<div class="col-md-3">
-                            <input type="number" name="deduction_amount[]" class="deduction-amount form-control fw-bold ls-1" placeholder="Enter Deduction Amount" oninput="calculateDiagnosticTestBilling(${remaining_balance})" required/>
+                            <input type="number" name="deduction-amount[]" class="deduction-amount form-control fw-bold ls-1" placeholder="*Enter Deduction Amount" oninput="calculateDiagnosticTestBilling(${remaining_balance})" required/>
                             <span class="other-deduction-msg text-danger fw-bold"></span>
                          </div>`;
 
@@ -676,7 +680,7 @@
 
            /* Creating a new input field with the name deduction_name[] */
             html_code += `<div class="col-md-3">
-                            <input type="text" name="deduction_name[]" class="form-control fw-bold ls-1" placeholder="Enter Deduction Name" required/>
+                            <input type="text" name="deduction-name[]" class="form-control fw-bold ls-1" placeholder="Enter Deduction Name" required/>
                             <div class="invalid-feedback">
                                 Deduction name and amount is required
                             </div>
@@ -685,7 +689,7 @@
             /* Creating a form input field with a name of deduction_amount[] and a class of
             deduction-amount. */
             html_code += `<div class="col-md-3">
-                            <input type="number" name="deduction_amount[]" class="deduction-amount form-control fw-bold ls-1" placeholder="Enter Deduction Amount" oninput="calculateConsultationBilling(${remaining_balance})" required/>
+                            <input type="number" name="deduction-amount[]" class="deduction-amount form-control fw-bold ls-1" placeholder="Enter Deduction Amount" oninput="calculateConsultationBilling(${remaining_balance})" required/>
                             <span class="other-deduction-msg text-danger fw-bold"></span>
                          </div>`;
 
@@ -719,11 +723,11 @@
         calculateConsultationBilling(remaining_balance);
     }
 
-    const form = document.querySelector('#form-diagnostic-billing');
+    const form = document.querySelector('#formDiagnosticBilling');
     const loa_id = `<?php echo $loa_id; ?>`;
     const token = `<?php echo $this->security->get_csrf_hash(); ?>`;
 
-    form.addEventListener('submit', (event) => {
+    $('#formDiagnosticBilling').submit(function(event) {
         event.preventDefault();
 
         if (!form.checkValidity()) {
@@ -732,116 +736,59 @@
         }
 
         // show confirm dialog if the form has passed the submit validation check
-        notie.confirm({
-            text: 'Are you sure to bill now?',
-            cancelCallback: () => notie.alert({ type: 3, text: 'Cancelled' }),
-            submitCallback: () => {
-                $.ajax({
-                    type: 'POST',
-                    url: `${baseUrl}healthcare-provider/billing/bill-loa/diagnostic-test/submit/${loa_id}`,
-                    data: {
-                        loa_id,
-                        token
-                    },
-                    dataType: "json",
-                    success: function(response) {
-                        const { token, status, message } = response;
+        $.confirm({
+            title: '<strong>Confirm!</strong>',
+            content: 'Are you sure to Bill now?',
+            type: 'blue',
+            buttons: {
+                confirm: {
+                    text: 'Yes',
+                    btnClass: 'btn-blue',
+                    action: function() {
+                        let url = `${baseUrl}healthcare-provider/billing/bill-loa/diagnostic-test/submit/${loa_id}`;
+                        let data = $('#formDiagnosticBilling').serialize();
+                        $.ajax({
+                            type: 'POST',
+                            url: url,
+                            data: data,
+                            dataType: "json",
+                            success: function(response) {
+                                const { token, status, message } = response;
 
-                        if (status === 'success') {
+                                if (status == 'success') {
 
-                            // notie.alert({ type: 'success', text: message });
-                            swal({
-                                title: 'Success',
-                                text: message,
-                                timer: 3000,
-                                showConfirmButton: false,
-                                type: 'success'
-                            });
+                                    swal({
+                                        title: 'Success',
+                                        text: message,
+                                        timer: 3000,
+                                        showConfirmButton: false,
+                                        type: 'success'
+                                    });
 
-                            // setTimeout(function() {
-                            //     window.location.href = nextPage;
-                            // }, 3200);
+                                } else if(status == 'error') {
 
-                        } else {
-                            swal({
-                                title: 'Failed',
-                                text: message,
-                                timer: 3000,
-                                showConfirmButton: false,
-                                type: 'error'
-                            });
-                        }
+                                    swal({
+                                        title: 'Failed',
+                                        text: message,
+                                        timer: 3000,
+                                        showConfirmButton: false,
+                                        type: 'error'
+                                    });
+
+                                }
+                            }
+                        });
                     }
-                });
+                },  
+                cancel: {
+                    btnClass: 'btn-dark',
+                    action: function() {
+                        // close dialog
+                    }
+                },
             }
-        })
 
-
-        // notie.confirm({
-        //     text: 'Are you sure to bill now?',
-        //     submitText: 'Yes', // optional, default = 'Yes'
-        //     cancelText: 'Cancel', // optional, default = 'Cancel'
-        //     position: String, // optional, default = 'top', enum: ['top', 'bottom']
-        //     submitCallback: Function,
-        //     cancelCallback: Function
-        // }, submitCallbackOptional(), cancelCallbackOptional())
-
-
-        // $.confirm({
-        //     title: '<strong>Confirm!</strong>',
-        //     content: 'Are you sure to Bill now?',
-        //     type: 'blue',
-        //     buttons: {
-        //         confirm: {
-        //             text: 'Yes',
-        //             btnClass: 'btn-blue',
-        //             action: function() {
-        //                 $.ajax({
-        //                     type: 'POST',
-        //                     url: `${baseUrl}healthcare-provider/billing/bill-loa/submit/${loa_id}`,
-        //                     data: {
-        //                         loa_id,
-        //                         token
-        //                     },
-        //                     dataType: "json",
-        //                     success: function(response) {
-        //                         const { token, status, message } = response;
-
-        //                         if (status === 'success') {
-        //                             swal({
-        //                                 title: 'Success',
-        //                                 text: message,
-        //                                 timer: 3000,
-        //                                 showConfirmButton: false,
-        //                                 type: 'success'
-        //                             });
-
-        //                             // setTimeout(function() {
-        //                             //     window.location.href = nextPage;
-        //                             // }, 3200);
-
-        //                         } else {
-        //                             swal({
-        //                                 title: 'Failed',
-        //                                 text: message,
-        //                                 timer: 3000,
-        //                                 showConfirmButton: false,
-        //                                 type: 'error'
-        //                             });
-        //                         }
-        //                     }
-        //                 });
-        //             }
-        //         },  
-        //         cancel: {
-        //             btnClass: 'btn-dark',
-        //             action: function() {
-        //                 // close dialog
-        //             }
-        //         },
-        //     }
-
-        // });
+        });
 
     });
 

@@ -26,7 +26,7 @@
       <div class="row">
 
       <div class="col-lg-12">
-        <div class="card">
+        <div class="card shadow">
           <div class="card-body">
 
             <form method="post" action="<?= base_url() ?>super-admin/noa/request-noa/submit" enctype="multipart/form-data" class="mt-2" id="noaRequestForm">

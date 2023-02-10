@@ -57,7 +57,8 @@
               <li class="sidebar-item">
                 <a
                   class="sidebar-link"
-                  href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#logoutModal"
+                  href="javascript:void(0)"
+                  onclick="logout(`<?= base_url() ?>`)"
                   aria-expanded="false"
                   ><i class="mdi mdi-power"></i
                   ><span class="hide-menu ls-1">Logout</span>

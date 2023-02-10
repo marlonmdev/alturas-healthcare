@@ -25,7 +25,7 @@
       <div class="row">
         <div class="col-lg-12">
           
-          <div class="card">
+          <div class="card shadow">
             <div class="card-body">
               <div class="table-responsive">
                 <table class="table table-hover table-responsive" id="membersTable">

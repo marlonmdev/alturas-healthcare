@@ -1,6 +1,7 @@
   <!-- Start of Search Form -->
   <div class="col-12 mt-2">
-    <div class="card">
+    <div class="card shadow">
+      <div class="border border-2 border-dark"></div>
       <div class="card-body">
         <h4 class="card-title">Search Member</h4>
         <div class="col-lg-4 offset-lg-4 col-md-6 offset-md-3 col-sm-8 offset-sm-2 mt-3 mb-5">

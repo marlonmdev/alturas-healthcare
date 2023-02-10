@@ -63,7 +63,7 @@
                 </li>
             </ul>
 
-            <div class="card">
+            <div class="card shadow">
                 <div class="card-body">
                     <?php include 'view_pending_loa_details.php'; ?>
                     <div class="table-responsive">

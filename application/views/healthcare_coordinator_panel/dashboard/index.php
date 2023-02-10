@@ -80,32 +80,25 @@
 
           <div class="row">
             <div class="col-md-12">
-              <div class="card">
-                <div class="card-body">
-                  <div class="d-md-flex align-items-center">
-                    <div>
-                      <h4 class="card-title">Doctor's Availability</h4>
+              <div class="border border-2 border-secondary"></div>
+              <h4 class="page-title ls-2 mt-3 mb-4">Doctor's Availability</h4>
+              <div class="row">
+                <?php if (!empty($doctors)) : ?>
+                  <?php foreach ($doctors as $doc) : ?>
+                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 mb-3">
+                      <div class="bg-light p-30 text-white text-center shadow">
+                        <img src="<?php echo base_url(); ?>assets/images/company-doctor.svg" class="card-img-top img-responsive mb-3" alt="User Image" style="width:80px;height:auto;">
+                  
+                        <h5 class="text-dark mb-0 mt-1">
+                          <?php echo $doc['doctor_name']; ?>
+                        </h5>
+                        <strong style="letter-spacing:2px">
+                          <?php echo ($doc['online'] == 1) ? '<span class="text-success">Online</span>' : '<span class="text-warning">Offline</span>'; ?>
+                        </strong>
+                      </div>
                     </div>
-                  </div>
-                  <div class="row">
-                    <?php if (!empty($doctors)) : ?>
-                      <?php foreach ($doctors as $doc) : ?>
-                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 mb-3">
-                          <div class="bg-light p-30 text-white text-center">
-                            <img src="<?php echo base_url(); ?>assets/images/company-doctor.svg" class="card-img-top img-responsive mb-3" alt="User Image" style="width:80px;height:auto;">
-                      
-                            <h5 class="text-dark mb-0 mt-1">
-                              <?php echo $doc['doctor_name']; ?>
-                            </h5>
-                            <strong style="letter-spacing:2px">
-                              <?php echo ($doc['online'] == 1) ? '<span class="text-success">Online</span>' : '<span class="text-warning">Offline</span>'; ?>
-                            </strong>
-                          </div>
-                        </div>
-                      <?php endforeach; ?>
-                    <?php endif; ?>
-                  </div>
-                </div>
+                  <?php endforeach; ?>
+                <?php endif; ?>
               </div>
             </div>
            <!-- End Row  -->  

@@ -63,7 +63,7 @@
           </li>
         </ul>
 
-        <div class="card">
+        <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-hover" id="closedNoaTable">

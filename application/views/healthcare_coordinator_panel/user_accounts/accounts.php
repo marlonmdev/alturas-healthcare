@@ -52,7 +52,7 @@
         </div>
         <br>
 
-        <div class="card">
+        <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-hover table-responsive" id="userAccountsTable">
@@ -60,7 +60,7 @@
                   <tr>
                     <th class="fw-bold">#</th>
                     <th class="fw-bold">Name</th>
-                    <th class="fw-bold">Role</th>
+                    <th class="fw-bold">User Role</th>
                     <th class="fw-bold">Username</th>
                     <th class="fw-bold">Change Status</th>
                     <th class="fw-bold">Status</th>

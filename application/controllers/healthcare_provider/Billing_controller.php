@@ -164,7 +164,7 @@ class Billing_controller extends CI_Controller {
         $ct_fees = $posted_data['ct-fee'];
         $philhealth_deduction = $posted_data['philhealth-deduction'];
         $sss_deduction = $posted_data['sss-deduction'];
-        $deduction_count = $posted_data['deduction-count'];
+        $deduction_count = $posted_data['deduction-count-1'];
         $total_bill = $posted_data['total-bill'];
         $total_deduction = $posted_data['total-deduction'];
         $net_bill = $posted_data['net-bill'];
@@ -185,6 +185,7 @@ class Billing_controller extends CI_Controller {
         ];        
 
         $inserted = $this->billing_model->insert_diagnostic_test_billing($data);
+
         if($inserted){
 
             $services = [];
@@ -192,6 +193,7 @@ class Billing_controller extends CI_Controller {
             $philhealth = [];
             $sss = [];
 
+            // loop through each of the patient's availed services in LOA request dignostic test
             for ($x = 0; $x < count($ct_names); $x++) {
                 $services[] = [
                     'service_name' => $ct_names[$x],
@@ -204,6 +206,7 @@ class Billing_controller extends CI_Controller {
 
             $this->billing_model->insert_diagnostic_test_billing_services($services);
 
+             // if Philhealth deduction has value
             if($philhealth_deduction > 0){
                 $philhealth[] = [
                     'deduction_name'   => 'Philhealth',
@@ -215,6 +218,7 @@ class Billing_controller extends CI_Controller {
                 $this->billing_model->insert_diagnostic_test_billing_deductions($philhealth);
             }
 
+            // if sss deduction has value
             if($sss_deduction > 0){
                 $sss[] = [
                     'deduction_name'   => 'SSS',
@@ -226,6 +230,7 @@ class Billing_controller extends CI_Controller {
                 $this->billing_model->insert_diagnostic_test_billing_deductions($sss);
             }
 
+            // if the dynamic deductions exists
             if($deduction_count > 0){
                 $deduction_names =  $this->security->xss_clean($this->input->post('deduction-name'));
                 $deduction_amounts = $this->security->xss_clean($this->input->post('deduction-amount'));
@@ -245,7 +250,8 @@ class Billing_controller extends CI_Controller {
             $response = [
                 'token' => $token,
                 'status' => 'success',
-                'message' => 'Billed Successfully'
+                'message' => 'Billed Successfully',
+                'billing_no' => $billing_no
             ];
 
         }else{
@@ -257,6 +263,13 @@ class Billing_controller extends CI_Controller {
         }
 
         echo json_encode($response);
+    }
+
+    function loa_billing_success(){
+        $data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_provider_panel/billing/billing_success');
+		$this->load->view('templates/footer');
     }
 
 

@@ -26,8 +26,8 @@
 
           <div class="col-lg-6">
             <!-- Change password card-->
-            <div class="card">
-              <div class="card-header fs-5 font-bold ls-1">Change Password</div>
+            <div class="card shadow">
+              <div class="card-header bg-dark text-white fw-bold fs-5 ls-2">Change Password</div>
               <div class="card-body">
                 <form method="post" action="<?php echo base_url(); ?>healthcare-coordinator/account-settings/password/update" class="mt-2" id="passwordUpdateForm">
                   <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
@@ -69,8 +69,8 @@
           </div>
           <div class="col-lg-6">
             <!-- Change username card-->
-            <div class="card">
-              <div class="card-header fs-5 font-bold ls-1">Change Username</div>
+            <div class="card shadow">
+              <div class="card-header bg-dark text-white fw-bold fs-5 ls-2">Change Username</div>
               <div class="card-body">
                 <form method="post" action="<?php echo base_url(); ?>healthcare-coordinator/account-settings/username/update" class="mt-2" id="usernameUpdateForm">
                   <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">

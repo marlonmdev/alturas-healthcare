@@ -32,7 +32,7 @@
           <div class="row gutters-sm">
 
             <div class="col-md-4 mb-3">
-              <div class="card">
+              <div class="card shadow">
                 <div class="card-body pt-4">
                   <div class="d-flex flex-column align-items-center text-center">
                     <?php if ($member['photo'] == '') { ?>
@@ -51,7 +51,7 @@
                 </div>
               </div>
 
-              <div class="card mt-3">
+              <div class="card shadow mt-3">
                 <ul class="list-group list-group-flush">
                   <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
                     <h6 class="mb-0 text-secondary" style="font-weight:600;">Position Level: </h6>
@@ -86,7 +86,7 @@
 
             </div>
             <div class="col-md-8">
-              <div class="card mb-0">
+              <div class="card shadow mb-0">
                 <div class="card-body pt-4">
                   <div class="row">
                     <div class="col-sm-3">

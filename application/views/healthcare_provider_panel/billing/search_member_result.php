@@ -22,7 +22,7 @@
     <!-- Container fluid  -->
     <div class="container-fluid">
         <div class="row">
-            <div class="col-12">
+            <div class="col-12 mb-3">
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#loa-requests" type="button" role="tab" aria-controls="home" aria-selected="true"><strong>LOA Requests</strong></button>
@@ -36,7 +36,7 @@
             <div class="tab-content" id="myTabContent">
                 <!-- Patient's LOA Requests Tab -->
                 <div class="tab-pane fade show active" id="loa-requests" role="tabpanel">
-                    <div class="card">
+                    <div class="card shadow">
                         <div class="container">
                             <div class="row px-4 py-4">
                                 <!-- Member Profile Info -->
@@ -150,7 +150,7 @@
                         <input type="hidden" name="member_id" value="<?= $member['member_id'] ?>">
                         <input type="hidden" name="hp_id" value="<?= $hp_name->hp_id ?>">
                         <input type="hidden" name="noa_select_id" id="noa_select_id" value="<?= $hp_name->hp_id ?>">
-                        <div class="card">
+                        <div class="card shadow">
                             <div class="container">
                                 <div class="row px-4 py-4">
                                     <div class="col-4">

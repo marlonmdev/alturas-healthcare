@@ -101,6 +101,8 @@ $route['healthcare-provider/billing/search-by-name'] = 'healthcare_provider/bill
 $route['healthcare-provider/billing/bill-loa/(:any)'] = 'healthcare_provider/billing_controller/bill_patient_loa';
 $route['healthcare-provider/billing/bill-loa/fetch/loa'] = 'healthcare_provider/billing_controller/fetch_loa_to_bill';
 $route['healthcare-provider/billing/bill-loa/diagnostic-test/submit/(:any)'] = 'healthcare_provider/billing_controller/diagnostic_loa_final_billing';
+$route['healthcare-provider/billing/bill-loa/diagnostic-test/success'] = 'healthcare_provider/billing_controller/loa_billing_success';
+
 
 // $route['healthcare-provider/billing/bill-loa/(:any)/(:any)/(:any)'] = 'healthcare_provider/billing_controller/bill_member_loa';
 

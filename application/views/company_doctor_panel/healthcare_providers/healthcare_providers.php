@@ -28,7 +28,7 @@
           ?>
             <div class="mb-3">
               <h2>Hospitals<i class="mdi mdi-arrow-right-bold"></i><strong class="text-danger"><?= $hospitals_count ?></strong></h2>
-              <div class="hr-divider"></div>
+              <div class="border border-2 border-dark"></div>
             </div>
             <?php
             foreach ($hospitals as $hospital) :
@@ -59,7 +59,7 @@
           ?>
             <div class="mb-3">
               <h2>Laboratories<i class="mdi mdi-arrow-right-bold"></i><strong class="text-danger"><?= $labs_count ?></strong></h2>
-              <div class="hr-divider"></div>
+              <div class="border border-2 border-dark"></div>
             </div>
             <?php
             foreach ($labs as $lab) :
@@ -90,7 +90,7 @@
           ?>
             <div class="mb-3">
               <h1>Clinics<i class="mdi mdi-arrow-right-bold"></i><strong class="text-danger"><?= $clinics_count ?></strong></h1>
-              <div class="hr-divider"></div>
+              <div class="border border-2 border-dark"></div>
             </div>
             <?php
             foreach ($clinics as $clinic) :

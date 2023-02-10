@@ -25,7 +25,7 @@
     <div class="row">
 
       <div class="col-lg-12">
-        <div class="card">
+        <div class="card shadow">
           <div class="card-body">
 
             <form method="post" action="<?= base_url(); ?>member/request-loa/submit" class="mt-2" id="memberLoaRequestForm" enctype="multipart/form-data">

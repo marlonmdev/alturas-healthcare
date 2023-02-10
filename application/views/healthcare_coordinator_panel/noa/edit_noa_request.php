@@ -24,7 +24,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
-        <div class="card">
+        <div class="card shadow">
           <div class="card-body mt-3">
             <form method="post" action="<?= base_url() ?>healthcare-coordinator/noa/requested-noa/update/<?= $this->myhash->hasher($row['noa_id'], 'encrypt') ?>" class="mt-2" id="noaRequestForm">
               <!--  Start of Hidden Inputs -->

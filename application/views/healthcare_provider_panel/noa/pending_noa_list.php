@@ -25,67 +25,69 @@
             <div class="col-lg-12">
 
                 <ul class="nav nav-tabs mb-4" role="tablist">
-                <li class="nav-item">
-                    <a
-                    class="nav-link active"
-                    href="<?php echo base_url(); ?>healthcare-provider/noa-requests/pending"
-                    role="tab">
-                        <span class="hidden-sm-up"></span>
-                        <span class="hidden-xs-down fs-5 font-bold">Pending</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a
-                    class="nav-link"
-                    href="<?php echo base_url(); ?>healthcare-provider/noa-requests/approved"
-                    role="tab">
-                        <span class="hidden-sm-up"></span>
-                        <span class="hidden-xs-down fs-5 font-bold">Approved</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a
-                    class="nav-link"
-                    href="<?php echo base_url(); ?>healthcare-provider/noa-requests/disapproved"
-                    role="tab">
-                        <span class="hidden-sm-up"></span>
-                        <span class="hidden-xs-down fs-5 font-bold">Disapproved</span>
-                    </a>
-                </li>
                     <li class="nav-item">
-                    <a
-                    class="nav-link"
-                    href="<?php echo base_url(); ?>healthcare-provider/noa-requests/closed"
-                    role="tab">
-                        <span class="hidden-sm-up"></span>
-                        <span class="hidden-xs-down fs-5 font-bold">Closed</span>
-                    </a>
-                </li>
-            </ul>
+                        <a
+                        class="nav-link active"
+                        href="<?php echo base_url(); ?>healthcare-provider/noa-requests/pending"
+                        role="tab">
+                            <span class="hidden-sm-up"></span>
+                            <span class="hidden-xs-down fs-5 font-bold">Pending</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a
+                        class="nav-link"
+                        href="<?php echo base_url(); ?>healthcare-provider/noa-requests/approved"
+                        role="tab">
+                            <span class="hidden-sm-up"></span>
+                            <span class="hidden-xs-down fs-5 font-bold">Approved</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a
+                        class="nav-link"
+                        href="<?php echo base_url(); ?>healthcare-provider/noa-requests/disapproved"
+                        role="tab">
+                            <span class="hidden-sm-up"></span>
+                            <span class="hidden-xs-down fs-5 font-bold">Disapproved</span>
+                        </a>
+                    </li>
+                        <li class="nav-item">
+                        <a
+                        class="nav-link"
+                        href="<?php echo base_url(); ?>healthcare-provider/noa-requests/closed"
+                        role="tab">
+                            <span class="hidden-sm-up"></span>
+                            <span class="hidden-xs-down fs-5 font-bold">Closed</span>
+                        </a>
+                    </li>
+                </ul>
+                
 
-
-             <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive">  
-                        <?php include 'view_pending_noa_details.php'; ?>
-                        <table id="pendingNoaTable" class="table table-striped" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th class="fw-bold">NOA No.</th>
-                                    <th class="fw-bold">Name</th>
-                                    <th class="fw-bold">Hosptial Name</th>
-                                    <th class="fw-bold">Admission Date</th>
-                                    <th class="fw-bold">Request Date</th>
-                                    <th class="fw-bold">Status</th>
-                                    <th class="fw-bold">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="table-responsive">  
+                            <?php include 'view_pending_noa_details.php'; ?>
+                            <table id="pendingNoaTable" class="table table-striped" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th class="fw-bold">NOA No.</th>
+                                        <th class="fw-bold">Name</th>
+                                        <th class="fw-bold">Hosptial Name</th>
+                                        <th class="fw-bold">Admission Date</th>
+                                        <th class="fw-bold">Request Date</th>
+                                        <th class="fw-bold">Status</th>
+                                        <th class="fw-bold">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-            </div>               
+                </div>  
+            
+            </div>
         </div>
     </div>
 </div>

@@ -24,7 +24,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
-        <div class="card">
+        <div class="card shadow">
           <div class="card-body mt-3">
 
             <form method="post" action="<?= base_url() ?>member/request-noa/submit" enctype="multipart/form-data" class="mt-2" id="memberNoaRequestForm">

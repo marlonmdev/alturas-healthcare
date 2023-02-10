@@ -9164,7 +9164,7 @@ html[dir="ltr"] body .p-l-0 {
 	overflow: hidden;
 }
 .page-wrapper {
-	background: #f5f7fa;
+	background: #ffffff;
 	position: relative;
 }
 .page-wrapper > .container-fluid,
@@ -9287,7 +9287,7 @@ body {
 	margin: 0;
 	overflow-x: hidden;
 	color: #3e5569;
-	background: #f5f7fa;
+	background: #ffffff;
 }
 
 html {

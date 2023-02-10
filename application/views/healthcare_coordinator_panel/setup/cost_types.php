@@ -27,7 +27,7 @@
         <button type="button" class="btn btn-info btn-sm" onclick="showAddCostTypeModal()"><i class="mdi mdi-plus-circle fs-4"></i> Add New</button>
         <br><br>
 
-        <div class="card">
+        <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-hover table-fit" id="costTypesTable">

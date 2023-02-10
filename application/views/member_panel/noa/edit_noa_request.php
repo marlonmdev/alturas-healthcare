@@ -24,7 +24,7 @@
     <div class="row">
 
       <div class="col-lg-12">
-        <div class="card">
+        <div class="card shadow">
           <div class="card-body">
             <form method="post" action="<?php echo base_url(); ?>member/requested-noa/update/<?= $this->myhash->hasher($row['noa_id'], 'encrypt') ?>" enctype="multipart/form-data" class="mt-2" id="editNoaRequestForm">
               <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash(); ?>">

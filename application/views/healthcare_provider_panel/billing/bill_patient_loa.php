@@ -20,7 +20,7 @@
     <!-- End Bread crumb and right sidebar toggle -->
     <!-- Container fluid  -->
     <div class="container-fluid">
-        <div class="card py-4 px-4">
+        <div class="card shadow py-4 px-4">
 
             <!-- Go Back to Previous Page -->
             <div class="col-12 mb-4 mt-0">
@@ -213,7 +213,7 @@
                             
                             <div class="row mt-4">
                                 <div class="col-md-12 d-flex justify-content-center align-items-center">
-                                    <button type="submit" class="btn btn-dark btn-lg ls-2" id="btn-bill" disabled>
+                                    <button type="submit" class="btn btn-danger btn-lg ls-2" id="btn-bill" disabled>
                                         <i class="mdi mdi-file-check me-1"></i>Bill Now
                                     </button>
                                 </div>
@@ -749,6 +749,11 @@
             return;
         }
 
+        if($('#net-bill').val() < 0) {
+            form.classList.add('was-validated');
+            return;
+        }
+
         // show confirm dialog if the form has passed the submit validation check
         $.confirm({
             title: '<strong>Confirm!</strong>',
@@ -761,6 +766,7 @@
                     action: function() {
                         let url = `${baseUrl}healthcare-provider/billing/bill-loa/diagnostic-test/submit/${loa_id}`;
                         let data = $('#formDiagnosticBilling').serialize();
+
                         $.ajax({
                             type: 'POST',
                             url: url,
@@ -770,14 +776,18 @@
                                 const { token, status, message } = response;
 
                                 if (status == 'success') {
+                                    
+                                    setTimeout(function () {
+                                        window.location.href = `${baseUrl}healthcare-provider/billing/bill-loa/diagnostic-test/success`;
+                                    }, 500);
 
-                                    swal({
-                                        title: 'Success',
-                                        text: message,
-                                        timer: 3000,
-                                        showConfirmButton: false,
-                                        type: 'success'
-                                    });
+                                    // swal({
+                                    //     title: 'Success',
+                                    //     text: message,
+                                    //     timer: 3000,
+                                    //     showConfirmButton: false,
+                                    //     type: 'success'
+                                    // });
 
                                 } else if(status == 'error') {
 

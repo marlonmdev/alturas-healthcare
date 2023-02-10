@@ -33,7 +33,7 @@
       </div>
 
       <div class="col-lg-12">
-        <div class="card">
+        <div class="card shadow">
           <div class="card-body">
             <form method="post" action="<?= base_url() ?>super-admin/loa/requested-loa/update/<?= $this->myhash->hasher($row['loa_id'], 'encrypt') ?>" class="mt-2" id="loaRequestForm" enctype="multipart/form-data">
               <!-- Start of Hidden Inputs -->

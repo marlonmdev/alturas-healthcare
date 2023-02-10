@@ -64,7 +64,7 @@
             </ul>
 
 
-             <div class="card">
+             <div class="card shadow">
                 <div class="card-body">
                     <div class="table-responsive">  
                         <?php include 'view_disapproved_noa_details.php'; ?>

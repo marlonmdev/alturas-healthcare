@@ -19,8 +19,8 @@
         </div>
     </div>
     <!-- End Bread crumb and right sidebar toggle -->
-    <script src="<?php echo base_url(); ?>assets/js/lone/sweetalert2v11.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/lone/jqueryv3.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/lone/sweetalert2v11.js"></script>
     <!-- Start of Container fluid  -->
     <div class="container-fluid">
         <div class="row">
@@ -29,14 +29,15 @@
                 <script>
                     Swal.fire({
                         icon: 'error',
-                        title: 'Oops...',
-                        text: 'Member Not Found!'
+                        title: 'Error',
+                        text: 'Member Not Found'
                     })
                 </script>
             <?php endif; ?>
 
             <div class="col-12">
-                <div class="card">
+                <div class="card shadow">
+                    <div class="border border-2 border-dark"></div>
                     <div class="card-body">
                     <h4 class="card-title">Search For Billing</h4>
                     <div class="col-lg-4 offset-lg-4 col-md-6 offset-md-3 col-sm-8 offset-sm-2 mt-3 mb-5">

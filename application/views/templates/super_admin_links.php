@@ -4,7 +4,7 @@
                   href="<?php echo base_url(); ?>super-admin/dashboard"
                   aria-expanded="false"
                   >
-                  <i class="mdi mdi-view-dashboard text-warning"></i>
+                  <i class="mdi mdi-view-dashboard"></i>
                   <span class="hide-menu ls-1">Dashboard</span>
                 </a>
               </li>       
@@ -15,7 +15,7 @@
                   href="<?php echo base_url(); ?>super-admin/healthcare-providers"
                   aria-expanded="false"
                   >
-                  <i class="mdi mdi-hospital-building text-warning"></i>
+                  <i class="mdi mdi-hospital-building"></i>
                   <span class="hide-menu ls-1">Healthcare Providers</span>
                 </a>
               </li>
@@ -28,7 +28,7 @@
                   href="<?php echo base_url(); ?>super-admin/members"
                   aria-expanded="false"
                   >
-                  <i class="mdi mdi-account-multiple text-warning"></i>
+                  <i class="mdi mdi-account-multiple"></i>
                   <span class="hide-menu ls-1">Members</span>
                 </a>
               </li>
@@ -41,7 +41,7 @@
                   href="<?php echo base_url(); ?>super-admin/loa/requests-list"
                   aria-expanded="false"
                   >
-                  <i class="mdi mdi-file-document text-warning"></i>
+                  <i class="mdi mdi-file-document"></i>
                   <span class="hide-menu ls-1">LOA</span>
                 </a>
               </li>
@@ -54,7 +54,7 @@
                   href="javascript:void(0)"
                   aria-expanded="false"
                   >
-                  <i class="mdi mdi-file-chart text-warning"></i>
+                  <i class="mdi mdi-file-chart"></i>
                   <span class="hide-menu ls-1">NOA</span>
                 </a>
                 <ul aria-expanded="false" class="collapse first-level">
@@ -81,7 +81,7 @@
                   href="javascript:void(0)"
                   aria-expanded="false"
                   >
-                  <i class="mdi mdi-wrench text-warning"></i>
+                  <i class="mdi mdi-wrench"></i>
                   <span class="hide-menu ls-1">Setup</span>
                 </a>
                 <ul aria-expanded="false" class="collapse first-level">
@@ -112,7 +112,7 @@
                   href="<?php echo base_url(); ?>super-admin/accounts"
                   aria-expanded="false"
                   >
-                  <i class="mdi mdi-account-key text-warning"></i>
+                  <i class="mdi mdi-account-key"></i>
                   <span class="hide-menu ls-1">User Accounts</span>
                 </a>
               </li> 
@@ -124,7 +124,7 @@
                   href="<?php echo $account_settings_url; ?>"
                   aria-expanded="false"
                   >
-                  <i class="mdi mdi-settings text-warning"></i>
+                  <i class="mdi mdi-settings"></i>
                   <span class="hide-menu ls-1">Account Settings</span>
                 </a>
               </li> 
@@ -135,7 +135,7 @@
                   href="javascript:void(0)" onclick="showDBBackupModal()"
                   aria-expanded="false"
                   >
-                  <i class="mdi mdi-database text-warning"></i>
+                  <i class="mdi mdi-database"></i>
                   <span class="hide-menu ls-1">Database Backup</span>
                 </a>
               </li> 
@@ -147,7 +147,7 @@
                   onclick="logout(`<?= base_url() ?>`)"
                   aria-expanded="false"
                   >
-                  <i class="mdi mdi-power text-warning"></i>
+                  <i class="mdi mdi-power"></i>
                   <span class="hide-menu ls-1">Logout</span>
                 </a>
               </li> 

@@ -1,8 +1,8 @@
 <!-- Page wrapper  -->
  <div class="page-wrapper">
     <!-- internal scripts -->
-    <script src="<?php echo base_url(); ?>assets/js/lone/axios.js"></script>
-    <script src="<?php echo base_url(); ?>assets/js/lone/vue3.js"></script>
+    <!-- <script src="<?php echo base_url(); ?>assets/js/lone/axios.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/lone/vue3.js"></script> -->
     <script src="<?php echo base_url(); ?>assets/js/lone/sweetalert2v11.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/lone/jqueryv3.js"></script>
     <!-- Bread crumb and right sidebar toggle -->

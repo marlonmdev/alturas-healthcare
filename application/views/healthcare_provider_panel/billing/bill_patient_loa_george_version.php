@@ -92,7 +92,6 @@
                 <!-- Start of Diagnostic LOA Request Billing -->
                 <?php if($request_type == 'Diagnostic Test') : ?>
                     <div class="col-12">
-
                         <!-- Start of form Diagnostic Test -->
                         <form method="POST" id="formDiagnosticBilling" class="needs-validation" novalidate>
                             <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
@@ -289,22 +288,22 @@
                             <div class="row my-4">
                                 <div class="col-md-3">
                                     <label class="form-label ls-1">Total Bill</label>
-                                    <input type="text" class="form-control fw-bold ls-1" id="total-bill" name="total-bill" value="0" readonly>
+                                    <input type="text" class="form-control fw-bold ls-1" id="total-bill-2" name="total-bill" value="0" readonly>
                                 </div>
 
                                 <div class="col-lg-3">
                                     <label class="form-label ls-1">Total Deduction</label>
-                                    <input type="text" class="form-control fw-bold ls-1" id="total-deduction" name="total-deduction" value="0" readonly>
+                                    <input type="text" class="form-control fw-bold ls-1" id="total-deduction-2" name="total-deduction" value="0" readonly>
                                 </div>
 
                                 <div class="col-lg-3">
                                     <label class="form-label ls-1">Net Bill</label>
-                                    <input type="text" class="form-control text-success fw-bold ls-1" id="net-bill" name="net-bill" value="0" readonly>
+                                    <input type="text" class="form-control text-success fw-bold ls-1" id="net-bill-2" name="net-bill" value="0" readonly>
                                 </div>
 
                                 <div class="col-lg-3">
                                     <label class="form-label ls-1">Personal Charge</label>
-                                    <input type="text" class="form-control text-cyan fw-bold ls-1" id="personal-charge" name="personal-charge" value="0" readonly>
+                                    <input type="text" class="form-control text-cyan fw-bold ls-1" id="personal-charge-2" name="personal-charge" value="0" readonly>
                                 </div>
                             </div>
 
@@ -501,8 +500,32 @@
     }
 
      // function to be called to show patient's Personal Charge Alert if it Net Bill exceeds patient's remaining MBL balance
-    const showPersonalChargeAlert = (charge_amount) => {
+    const showPersonalChargeAlert1 = (charge_amount) => {
         const personalCharge = document.querySelector('#personal-charge');
+        // the ids of the html elements below are found in personal-charge_alert.php
+        const chargeAlertDiv = document.querySelector('#charge-alert-div');
+        const chargeAmount = document.querySelector('#charge-amount');
+
+        /* Calculating the charge amount based on the amount of the transaction. */
+        if(charge_amount > 0){
+            /* Converting the charge_amount to a Peso currency format. */
+            let personal_charge_amount = charge_amount.toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'PHP',
+            });
+            personalCharge.value = charge_amount.toFixed(2);
+            chargeAlertDiv.classList.remove('d-none');
+            chargeAlertDiv.classList.add('d-block');
+            chargeAmount.innerHTML = personal_charge_amount;
+        }else{
+            personalCharge.value = 0;
+            chargeAlertDiv.classList.remove('d-block');
+            chargeAlertDiv.classList.add('d-none');
+        }
+    }
+
+    const showPersonalChargeAlert2 = (charge_amount) => {
+        const personalCharge = document.querySelector('#personal-charge-2');
         // the ids of the html elements below are found in personal-charge_alert.php
         const chargeAlertDiv = document.querySelector('#charge-alert-div');
         const chargeAmount = document.querySelector('#charge-amount');
@@ -538,11 +561,11 @@
 
         const consult_qty = document.querySelector("#consult-quantity");
         const consult_cost = document.querySelector("#consult-cost");
-        const total_input = document.querySelector("#total-bill");
-        const net_bill = document.querySelector("#net-bill");
+        const total_input = document.querySelector("#total-bill-2");
+        const net_bill = document.querySelector("#net-bill-2");
         const deduct_philhealth = document.querySelector("#deduct-philhealth");
         const deduct_sss = document.querySelector("#deduct-sss");
-        const deduction_input = document.querySelector("#total-deduction");
+        const deduction_input = document.querySelector("#total-deduction-2");
         const input_deduction = document.querySelectorAll('.input-deduction');
         const deduction_msg = document.querySelectorAll('.deduction-msg');
         const other_deduction_msg = document.querySelectorAll('.other-deduction-msg');
@@ -631,7 +654,7 @@
         }
 
         // Call the other functions to execute
-        showPersonalChargeAlert(charge_amount);
+        showPersonalChargeAlert2(charge_amount);
         enableButtonsAndDeductions(total_bill);
     }
 
@@ -785,14 +808,6 @@
                                         window.location.href = `${baseUrl}healthcare-provider/billing/bill-loa/diagnostic-test/success`;
                                     }, 500);
 
-                                    // swal({
-                                    //     title: 'Success',
-                                    //     text: message,
-                                    //     timer: 3000,
-                                    //     showConfirmButton: false,
-                                    //     type: 'success'
-                                    // });
-
                                 } else if(status == 'error') {
 
                                     swal({
@@ -815,10 +830,9 @@
                     }
                 },
             }
-
         });
-
     });
+    // end of loa diagnostic test form submission
 
 
     const form_2 = document.querySelector('#formConsultationBilling');
@@ -863,14 +877,6 @@
                                         window.location.href = `${baseUrl}healthcare-provider/billing/bill-loa/consultation/success`;
                                     }, 500);
 
-                                    // swal({
-                                    //     title: 'Success',
-                                    //     text: message,
-                                    //     timer: 3000,
-                                    //     showConfirmButton: false,
-                                    //     type: 'success'
-                                    // });
-
                                 } else if(status == 'error') {
 
                                     swal({
@@ -893,9 +899,8 @@
                     }
                 },
             }
-
         });
-
     });
+    // end of loa consultation form submission
 
 </script>

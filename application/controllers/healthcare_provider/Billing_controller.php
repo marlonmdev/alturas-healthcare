@@ -121,8 +121,15 @@ class Billing_controller extends CI_Controller {
         $data['billed_by'] = $this->session->userdata('fullname');
         $data['hcare_provider'] = $hcare_provider['hp_name'];
 
+        $view_page = '';
+        if($loa["loa_request_type"] == 'Diagnostic Test'){
+            $view_page = 'bill_patient_diagnostic_test_loa';
+        }elseif($loa["loa_request_type"] == 'Consultation'){
+            $view_page = 'bill_patient_consultation_loa';
+        }
+
         $this->load->view('templates/header', $data);
-        $this->load->view('healthcare_provider_panel/billing/bill_patient_loa');
+        $this->load->view('healthcare_provider_panel/billing/'.$view_page);
         $this->load->view('templates/footer');
     }
 
@@ -165,7 +172,7 @@ class Billing_controller extends CI_Controller {
         $ct_fees = $posted_data['ct-fee'];
         $philhealth_deduction = $posted_data['philhealth-deduction'];
         $sss_deduction = $posted_data['sss-deduction'];
-        $deduction_count = $posted_data['deduction-count-1'];
+        $deduction_count = $posted_data['deduction-count'];
         $total_bill = $posted_data['total-bill'];
         $total_deduction = $posted_data['total-deduction'];
         $net_bill = $posted_data['net-bill'];
@@ -309,7 +316,7 @@ class Billing_controller extends CI_Controller {
         $consult_fee = $posted_data['consult-fee'];
         $philhealth_deduction = $posted_data['philhealth-deduction'];
         $sss_deduction = $posted_data['sss-deduction'];
-        $deduction_count = $posted_data['deduction-count-2'];
+        $deduction_count = $posted_data['deduction-count'];
         $total_bill = $posted_data['total-bill'];
         $total_deduction = $posted_data['total-deduction'];
         $net_bill = $posted_data['net-bill'];

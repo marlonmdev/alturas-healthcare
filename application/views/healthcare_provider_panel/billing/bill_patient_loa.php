@@ -228,7 +228,7 @@
                 <?php if($request_type == 'Consultation') : ?>
                     <div class="col-12">
                         <!-- Start of form Consultation -->
-                        <form method="POST" id="form-consultation" class="needs-validation" novalidate>
+                        <form method="POST" id="formConsultationBilling" class="needs-validation" novalidate>
                             <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
                             <input type="hidden" name="loa-id" value="<?= $loa_id ?>">
                             <input type="hidden" name="emp-id" value="<?= $member['emp_id'] ?>">
@@ -250,7 +250,7 @@
 
                                 <div class="col-md-3">
                                     <label class="form-label ls-1">Cost</label>
-                                    <input type="number" class="form-control fw-bold" id="consult-cost" name="consult-cost" placeholder="Enter Amount" oninput="calculateConsultationBilling(`<?= $remaining_balance ?>`)" min="0" required>
+                                    <input type="number" class="form-control fw-bold" id="consult-fee" name="consult-fee" placeholder="Enter Amount" oninput="calculateConsultationBilling(`<?= $remaining_balance ?>`)" min="0" required>
                                     <div class="invalid-feedback">
                                         Service Cost is required.
                                     </div>
@@ -722,7 +722,9 @@
         count--;
         const btn_id = remove_btn.getAttribute('data-id');
         const deduction_count_1 = document.querySelector('#deduction-count-1');
+        // update deduction count hidden input value for reference
         deduction_count_1.value = count;
+
         document.querySelector(`#row${btn_id}`).remove();
         calculateDiagnosticTestBilling(remaining_balance);
     }
@@ -732,25 +734,27 @@
         count--;
         const btn_id = remove_btn.getAttribute('data-id');
         const deduction_count_2 = document.querySelector('#deduction-count-2');
+        // update deduction count hidden input value for reference
         deduction_count_2.value = count;
+
         document.querySelector(`#row${btn_id}`).remove();
         calculateConsultationBilling(remaining_balance);
     }
 
-    const form = document.querySelector('#formDiagnosticBilling');
     const loa_id = `<?php echo $loa_id; ?>`;
-    const token = `<?php echo $this->security->get_csrf_hash(); ?>`;
+    const form_1 = document.querySelector('#formDiagnosticBilling');
 
+    // function to handle diagnostic test form submission
     $('#formDiagnosticBilling').submit(function(event) {
         event.preventDefault();
 
-        if (!form.checkValidity()) {
-            form.classList.add('was-validated');
+        if (!form_1.checkValidity()) {
+            form_1.classList.add('was-validated');
             return;
         }
 
         if($('#net-bill').val() < 0) {
-            form.classList.add('was-validated');
+            form_1.classList.add('was-validated');
             return;
         }
 
@@ -779,6 +783,84 @@
                                     
                                     setTimeout(function () {
                                         window.location.href = `${baseUrl}healthcare-provider/billing/bill-loa/diagnostic-test/success`;
+                                    }, 500);
+
+                                    // swal({
+                                    //     title: 'Success',
+                                    //     text: message,
+                                    //     timer: 3000,
+                                    //     showConfirmButton: false,
+                                    //     type: 'success'
+                                    // });
+
+                                } else if(status == 'error') {
+
+                                    swal({
+                                        title: 'Failed',
+                                        text: message,
+                                        timer: 3000,
+                                        showConfirmButton: false,
+                                        type: 'error'
+                                    });
+
+                                }
+                            }
+                        });
+                    }
+                },  
+                cancel: {
+                    btnClass: 'btn-dark',
+                    action: function() {
+                        // close dialog
+                    }
+                },
+            }
+
+        });
+
+    });
+
+
+    const form_2 = document.querySelector('#formConsultationBilling');
+    // function to handle consulation form submission
+    $('#formConsultationBilling').submit(function(event) {
+        event.preventDefault();
+
+        if (!form_2.checkValidity()) {
+            form_2.classList.add('was-validated');
+            return;
+        }
+
+        if($('#net-bill').val() < 0) {
+            form_2.classList.add('was-validated');
+            return;
+        }
+
+        // show confirm dialog if the form has passed the submit validation check
+        $.confirm({
+            title: '<strong>Confirm!</strong>',
+            content: 'Are you sure to Bill now?',
+            type: 'blue',
+            buttons: {
+                confirm: {
+                    text: 'Yes',
+                    btnClass: 'btn-blue',
+                    action: function() {
+                        let url = `${baseUrl}healthcare-provider/billing/bill-loa/consultation/submit/${loa_id}`;
+                        let data = $('#formConsultationBilling').serialize();
+
+                        $.ajax({
+                            type: 'POST',
+                            url: url,
+                            data: data,
+                            dataType: "json",
+                            success: function(response) {
+                                const { token, status, message } = response;
+
+                                if (status == 'success') {
+                                    
+                                    setTimeout(function () {
+                                        window.location.href = `${baseUrl}healthcare-provider/billing/bill-loa/consultation/success`;
                                     }, 500);
 
                                     // swal({

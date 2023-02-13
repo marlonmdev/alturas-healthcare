@@ -1,45 +1,53 @@
-          <div class="modal fade" id="viewNoaModal" tabindex="-1" data-bs-backdrop="static">
+          <div class="modal fade" id="viewPersonalChargeModal" tabindex="-1" data-bs-backdrop="static">
             <div class="modal-dialog modal-lg">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title">NOA #: <span id="noa-no" class="text-primary"></span> <span id="noa-status"></span></h5>
+                  <!-- <h5 class="modal-title">BILLING #: <span id="noa-no" class="text-primary"></span> <span id="noa-status"></span></h5> -->
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                   </button>
                 </div>
                 <div class="modal-body">
                   <div class="container">
                     <div class="row text-center">
-                      <h4><strong>NOA REQUEST DETAILS</strong></h4>
+                      <h4><strong>PERSONAL CHARGE DETAILS</strong></h4>
                     </div>
                     <div class="row">
                       <table class="table table-responsive table-striped border-secondary table-sm">
                         <tr>
-                          <td>Full Name :</td>
-                          <td id="full-name"></td>
+                          <td>Request No.</td>
+                          <td id="total-cost"></td>
                         </tr>
                         <tr>
-                          <td>Date of Birth :</td>
-                          <td id="date-of-birth"></td>
+                          <td>Billing No.</td>
+                          <td id="total-cost"></td>
                         </tr>
                         <tr>
-                          <td>Age :</td>
-                          <td id="age"></td>
+                          <td>Total Cost</td>
+                          <td id="total-cost"></td>
                         </tr>
                         <tr>
-                          <td>Hospital :</td>
-                          <td id="hospital-name"></td>
+                          <td>Total Deduction</td>
+                          <td id="total-deduction"></td>
                         </tr>
                         <tr>
-                          <td>Admission Date :</td>
-                          <td id="admission-date"></td>
+                          <td>Net Bill</td>
+                          <td id="net-bill"></td>
                         </tr>
                         <tr>
-                          <td>Chief Complaint :</td>
-                          <td id="chief-complaint"></td>
+                          <td>Personal Charge :</td>
+                          <td id="personal-charge"></td>
                         </tr>
                         <tr>
-                          <td>Requested On :</td>
-                          <td id="request-date"></td>
+                          <td>Remaining MBL (* at the time of billing):</td>
+                          <td id="remaining-mbl"></td>
+                        </tr>
+                        <tr>
+                          <td>Billed On :</td>
+                          <td id="billed-on"></td>
+                        </tr>
+                        <tr>
+                          <td>Billed By :</td>
+                          <td id="billed-by"></td>
                         </tr>
                       </table>
                     </div>

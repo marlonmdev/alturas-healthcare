@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 09, 2023 at 11:16 AM
+-- Generation Time: Feb 10, 2023 at 08:06 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -202,6 +202,27 @@ CREATE TABLE `billing` (
   `billed_on` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `billing`
+--
+
+INSERT INTO `billing` (`billing_id`, `billing_no`, `emp_id`, `loa_id`, `noa_id`, `hp_id`, `total_bill`, `total_deduction`, `net_bill`, `personal_charge`, `mbr_remaining_bal`, `billing_img`, `billed_by`, `billed_on`) VALUES
+(1, 'BLN-1676012708', '23278-2022', '2', '', '5', '36323.00', '4000.00', '32323.00', '2323.00', '30000', '', 'George Curay', '2023-02-10');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `billing_deductions`
+--
+
+CREATE TABLE `billing_deductions` (
+  `deduction_id` int(255) NOT NULL,
+  `deduction_name` varchar(200) NOT NULL,
+  `deduction_amount` varchar(50) NOT NULL,
+  `billing_no` varchar(50) NOT NULL,
+  `added_on` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- --------------------------------------------------------
 
 --
@@ -214,7 +235,7 @@ CREATE TABLE `billing_services` (
   `service_quantity` int(10) NOT NULL,
   `service_fee` varchar(30) NOT NULL,
   `billing_no` varchar(50) NOT NULL,
-  `date_created` date NOT NULL
+  `added_on` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -277,20 +298,6 @@ INSERT INTO `cost_types` (`ctype_id`, `cost_type`, `date_added`, `date_updated`)
 (18, 'Pre-natal and Post-natal Consultation', '2022-09-21', '2022-09-21'),
 (19, 'CT Scan', '2022-09-21', '2022-09-21'),
 (20, 'Dialysis', '2022-09-21', '2023-01-13');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `deductions`
---
-
-CREATE TABLE `deductions` (
-  `deduction_id` int(255) NOT NULL,
-  `deduction_name` varchar(200) NOT NULL,
-  `deduction_amount` varchar(50) NOT NULL,
-  `billing_no` varchar(50) NOT NULL,
-  `date_created` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -523,10 +530,10 @@ CREATE TABLE `personal_charges` (
   `emp_id` varchar(30) NOT NULL,
   `loa_id` int(255) NOT NULL,
   `noa_id` int(255) NOT NULL,
-  `pcharge_amount` varchar(30) NOT NULL,
+  `amount` varchar(30) NOT NULL,
   `billing_no` varchar(50) NOT NULL,
   `status` varchar(20) NOT NULL,
-  `date_created` date NOT NULL,
+  `added_on` date NOT NULL,
   `paid_on` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -593,7 +600,7 @@ INSERT INTO `user_accounts` (`user_id`, `emp_id`, `full_name`, `user_role`, `dsg
 (10, '23278-2022', 'George Curay', 'healthcare-provider', '5', '', 'Ayuban17', '$2y$10$oFmxPMZWyEIKkFz/T3BwyezXI3aVO7XviWqzhudhyPGVGj8CQfjJO', 'Active', 1, '', '2022-10-03', '2022-10-21', 'Default HealthCare Coordinator '),
 (13, '23278-2022', 'George Curay', 'member', '', '', '23278-2022', '$2y$10$90/6gxZrfUZL7bEufvGHTuwhoyigRmk53HNyrr98iBFybiAlASpiq', 'Active', 0, '', '2022-10-05', '2022-10-14', 'Default HealthCare Coordinator '),
 (17, '56313-2022', 'Ramiro Hospital Coordinator', 'healthcare-provider', '1', '', 'ramiro', '$2y$10$o8BBCELJf6LqSI4wRp0nMe0bf2B4t4cri8nDgLbNqGHE.QwjVpryK', 'Active', 0, '', '2022-10-25', '2023-02-02', 'IT SysDev'),
-(18, '32544-2022', 'Lorlie Ochavillo', 'member', '', '', '32544-2022', '$2y$10$bmMBotTt.sqKzyMYD7n4LOZ3O.7bPzytxyyEIRqwXB1bSYNX.BqAu', 'Active', 0, '', '2022-10-26', '2022-11-10', 'IT SysDev'),
+(18, '32544-2022', 'Lorlie Ochavillo', 'member', '', '', '32544-2022', '$2y$10$.uIaDmmPCIl2SugOYj0LPuPCXkLVKjGtflgB3J8fUu26jkJ5zkySi', 'Active', 0, '', '2022-10-26', '2023-02-10', 'Marlon H. Muring'),
 (19, '56313-2022', 'Marlon H. Muring', 'healthcare-coordinator', '', '', 'hcoordinator', '$2y$10$Uy9qfSD2MgiYsik2PabkXugJ/w4EBLWwTu58YAyxE/ClXx1iUMu3i', 'Active', 0, '', '2022-10-26', '0000-00-00', ''),
 (20, '23278-2022', 'George Curay', 'head-office-accounting', '', '', 'accounting', '$2y$10$tp4gJrN/U2YKQqkfWs0fWeB6J6B1CrkX2ALp3qIXscUgELOQs8eW.', 'Active', 0, '', '2022-10-27', '2022-12-07', 'Marlon H. Muring'),
 (22, '32544-2022', 'Lorlie Gwapo Ochavillo ', 'healthcare-provider', '4', '', 'lorlie', '$2y$10$oo3b1O3nMEitemFxbaO1ZeemIXHvIoazBiQJIF.zEKaHa45Tow6N2', 'Active', 0, '', '2022-10-27', '2023-01-13', 'IT SysDev'),
@@ -765,6 +772,17 @@ ALTER TABLE `billing`
   ADD KEY `personal_charge` (`personal_charge`);
 
 --
+-- Indexes for table `billing_deductions`
+--
+ALTER TABLE `billing_deductions`
+  ADD PRIMARY KEY (`deduction_id`),
+  ADD KEY `deduction_name` (`deduction_name`),
+  ADD KEY `deduction_cost` (`deduction_amount`),
+  ADD KEY `billing_no` (`billing_no`),
+  ADD KEY `date_created` (`added_on`),
+  ADD KEY `added_on` (`added_on`);
+
+--
 -- Indexes for table `billing_services`
 --
 ALTER TABLE `billing_services`
@@ -773,8 +791,9 @@ ALTER TABLE `billing_services`
   ADD KEY `bsv_ct_fee` (`service_fee`),
   ADD KEY `emp_id` (`billing_no`),
   ADD KEY `billing_no` (`billing_no`),
-  ADD KEY `date_created` (`date_created`),
-  ADD KEY `service_quantity` (`service_quantity`);
+  ADD KEY `date_created` (`added_on`),
+  ADD KEY `service_quantity` (`service_quantity`),
+  ADD KEY `added_on` (`added_on`);
 
 --
 -- Indexes for table `company_doctors`
@@ -797,16 +816,6 @@ ALTER TABLE `cost_types`
   ADD KEY `added_on` (`date_added`),
   ADD KEY `date_updated` (`date_updated`),
   ADD KEY `date_added` (`date_added`);
-
---
--- Indexes for table `deductions`
---
-ALTER TABLE `deductions`
-  ADD PRIMARY KEY (`deduction_id`),
-  ADD KEY `deduction_name` (`deduction_name`),
-  ADD KEY `deduction_cost` (`deduction_amount`),
-  ADD KEY `billing_no` (`billing_no`),
-  ADD KEY `date_created` (`date_created`);
 
 --
 -- Indexes for table `healthcare_providers`
@@ -955,13 +964,14 @@ ALTER TABLE `noa_requests`
 ALTER TABLE `personal_charges`
   ADD PRIMARY KEY (`pcharge_id`),
   ADD KEY `emp_id` (`emp_id`),
-  ADD KEY `pcharge_amount` (`pcharge_amount`),
+  ADD KEY `pcharge_amount` (`amount`),
   ADD KEY `status` (`status`),
   ADD KEY `loa_id` (`loa_id`),
   ADD KEY `noa_id` (`noa_id`),
   ADD KEY `billing_no` (`billing_no`),
   ADD KEY `paid_on` (`paid_on`),
-  ADD KEY `date_created` (`date_created`);
+  ADD KEY `date_created` (`added_on`),
+  ADD KEY `added_on` (`added_on`);
 
 --
 -- Indexes for table `temp`
@@ -1024,7 +1034,13 @@ ALTER TABLE `applicants_temp`
 -- AUTO_INCREMENT for table `billing`
 --
 ALTER TABLE `billing`
-  MODIFY `billing_id` int(255) NOT NULL AUTO_INCREMENT;
+  MODIFY `billing_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `billing_deductions`
+--
+ALTER TABLE `billing_deductions`
+  MODIFY `deduction_id` int(255) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `billing_services`
@@ -1043,12 +1059,6 @@ ALTER TABLE `company_doctors`
 --
 ALTER TABLE `cost_types`
   MODIFY `ctype_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
-
---
--- AUTO_INCREMENT for table `deductions`
---
-ALTER TABLE `deductions`
-  MODIFY `deduction_id` int(255) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `healthcare_providers`

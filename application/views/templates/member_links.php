@@ -3,8 +3,9 @@
                   class="sidebar-link"
                   href="<?php echo base_url(); ?>member/dashboard"
                   aria-expanded="false"
-                  ><i class="mdi mdi-view-dashboard"></i
-                  ><span class="hide-menu ls-1">Dashboard</span>
+                  >
+                  <i class="mdi mdi-view-dashboard text-warning"></i>
+                  <span class="hide-menu ls-1">Dashboard</span>
                 </a>
               </li>
 
@@ -13,8 +14,9 @@
                   class="sidebar-link"
                   href="<?php echo base_url(); ?>member/hmo-policy"
                   aria-expanded="false"
-                  ><i class="mdi mdi-book-open-page-variant"></i
-                  ><span class="hide-menu ls-1">Healthcare Policy</span>
+                  >
+                  <i class="mdi mdi-book-open-page-variant text-warning"></i>
+                  <span class="hide-menu ls-1">Healthcare Policy</span>
                 </a>
               </li>
 
@@ -23,8 +25,9 @@
                   class="sidebar-link"
                   href="<?php echo base_url(); ?>member/healthcare-providers"
                   aria-expanded="false"
-                  ><i class="mdi mdi-hospital-building"></i
-                  ><span class="hide-menu ls-1">Healthcare Providers</span>
+                  >
+                  <i class="mdi mdi-hospital-building text-warning"></i>
+                  <span class="hide-menu ls-1">Healthcare Providers</span>
                 </a>
               </li>
 
@@ -35,8 +38,9 @@
                   class="sidebar-link has-arrow"
                   href="javascript:void(0)"
                   aria-expanded="false"
-                  ><i class="mdi mdi-file-document"></i
-                  ><span class="hide-menu ls-1">LOA</span>
+                  >
+                  <i class="mdi mdi-file-document text-warning"></i>
+                  <span class="hide-menu ls-1">LOA</span>
                 </a>
                 <ul aria-expanded="false" class="collapse first-level">
                   <li class="sidebar-item">
@@ -60,8 +64,9 @@
                   class="sidebar-link has-arrow"
                   href="javascript:void(0)"
                   aria-expanded="false"
-                  ><i class="mdi mdi-file-chart"></i
-                  ><span class="hide-menu ls-1">NOA</span>
+                  >
+                  <i class="mdi mdi-file-chart text-warning"></i>
+                  <span class="hide-menu ls-1">NOA</span>
                 </a>
                 <ul aria-expanded="false" class="collapse first-level">
                   <li class="sidebar-item">
@@ -86,8 +91,9 @@
                   class="sidebar-link"
                   href="<?php echo base_url(); ?>member/personal-charges"
                   aria-expanded="false"
-                  ><i class="mdi mdi-receipt"></i
-                  ><span class="hide-menu ls-1">Personal Charges</span>
+                  >
+                  <i class="mdi mdi-receipt text-warning"></i>
+                  <span class="hide-menu ls-1">Personal Charges</span>
                 </a>
               </li>
               
@@ -96,8 +102,9 @@
                   class="sidebar-link has-arrow"
                   href="javascript:void(0)"
                   aria-expanded="false"
-                  ><i class="mdi mdi-account-box"></i
-                  ><span class="hide-menu ls-1">My Account</span>
+                  >
+                  <i class="mdi mdi-account-box text-warning"></i>
+                  <span class="hide-menu ls-1">My Account</span>
                 </a>
                 <ul aria-expanded="false" class="collapse first-level">
                   <li class="sidebar-item">
@@ -122,7 +129,8 @@
                   href="javascript:void(0)"
                   onclick="logout(`<?= base_url() ?>`)"
                   aria-expanded="false"
-                  ><i class="mdi mdi-power"></i
-                  ><span class="hide-menu ls-1">Logout</span>
+                  >
+                  <i class="mdi mdi-power text-warning"></i>
+                  <span class="hide-menu ls-1">Logout</span>
                 </a>
               </li> 

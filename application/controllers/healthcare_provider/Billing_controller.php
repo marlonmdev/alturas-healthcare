@@ -192,6 +192,7 @@ class Billing_controller extends CI_Controller {
             $deductions = []; 
             $philhealth = [];
             $sss = [];
+            $charge = [];
 
             // loop through each of the patient's availed services in LOA request dignostic test
             for ($x = 0; $x < count($ct_names); $x++) {
@@ -200,7 +201,7 @@ class Billing_controller extends CI_Controller {
                     'service_quantity'  => $ct_quantities[$x],
                     'service_fee'  => $ct_fees[$x],
                     'billing_no'   => $billing_no,
-                    'date_created' => date('Y-m-d')
+                    'added_on' => date('Y-m-d')
                 ];
             }
 
@@ -212,7 +213,7 @@ class Billing_controller extends CI_Controller {
                     'deduction_name'   => 'Philhealth',
                     'deduction_amount' => $philhealth_deduction,
                     'billing_no'       => $billing_no,
-                    'date_created'     => date('Y-m-d')
+                    'added_on'     => date('Y-m-d')
                 ];
 
                 $this->billing_model->insert_diagnostic_test_billing_deductions($philhealth);
@@ -224,7 +225,7 @@ class Billing_controller extends CI_Controller {
                     'deduction_name'   => 'SSS',
                     'deduction_amount' => $sss_deduction,
                     'billing_no'       => $billing_no,
-                    'date_created'     => date('Y-m-d')
+                    'added_on'     => date('Y-m-d')
                 ];
 
                 $this->billing_model->insert_diagnostic_test_billing_deductions($sss);
@@ -240,11 +241,40 @@ class Billing_controller extends CI_Controller {
                         'deduction_name'   => $deduction_names[$y],
                         'deduction_amount' => $deduction_amounts[$y],
                         'billing_no'       => $billing_no,
-                        'date_created'     => date('Y-m-d')
+                        'added_on'     => date('Y-m-d')
                     ];
                 }
 
                 $this->billing_model->insert_diagnostic_test_billing_deductions($deductions);
+            }
+
+            // if personal charges has amount
+            if($personal_charge > 0){
+                $charge = [
+                    'emp_id'        => $emp_id,
+                    'loa_id'        => $loa_id,
+                    'amount'        => $personal_charge,
+                    'billing_no'    => $billing_no,
+                    'status'        => 'Unpaid',
+                    'added_on'  => date('Y-m-d')
+                ];
+
+                $this->billing_model->insert_personal_charge($charge);
+            }
+
+            // Update Member's Remaining Credit Limit Balance
+            $remaining_bal = $this->session->userdata('b_member_bal');
+
+            if($net_bill > 0 && $net_bill < $remaining_bal){
+                // calculate deduction of member's remaining MBL balance
+                $new_balance = $remaining_bal - $net_bill;
+                $this->billing_model->update_member_remaining_balance($emp_id, $new_balance);
+
+            }else if($net_bill >= $remaining_bal){
+
+                $new_balance = 0;
+                $this->billing_model->update_member_remaining_balance($emp_id, $new_balance);
+
             }
             
             $response = [

@@ -170,6 +170,7 @@ class Setup_controller extends CI_Controller {
       $actions = '<a class="me-2" href="Javascript:void(0)" onclick="editCompanyDoctor(\'' . $doctor_id . '\')" data-toggle="tooltip" data-placement="top" title="Edit"><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a>';
 
       $actions .= '<a href="Javascript:void(0)" onclick="deleteCompanyDoctor(\'' . $doctor_id . '\')" data-toggle="tooltip" data-placement="top" title="Delete"><i class="mdi mdi-delete-circle fs-2 text-danger"></i></a>';
+      
       if ($value['doctor_signature'] != '') {
         $view_signature = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/doctor_signatures/' . $value['doctor_signature'] . '\')"><strong>View</strong></a>';
       } else {

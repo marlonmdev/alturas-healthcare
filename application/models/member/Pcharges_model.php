@@ -6,8 +6,8 @@ class Pcharges_model extends CI_Model {
 	// Start of server-side processing datatables
 	var $table_1 = 'personal_charges';
 	var $table_2 = 'billing';
-	var $column_order = ['tbl_1.pcharge_id', 'tbl_1.billing_no', 'tbl_1.pcharge_amount', 'tbl_2.billing_date']; //set column field database for datatable orderable
-	var $column_search = ['tbl_1.pcharge_id', 'tbl_1.billing_no', 'tbl_1.pcharge_amount', 'tbl_2.billing_date']; //set column field database for datatable searchable 
+	var $column_order = ['tbl_1.pcharge_id', 'tbl_1.billing_no', 'tbl_1.added_on', 'tbl_1.amount', null, null]; //set column field database for datatable orderable
+	var $column_search = ['tbl_1.pcharge_id', 'tbl_1.billing_no', 'tbl_1.amount', 'tbl_1.added_on']; //set column field database for datatable searchable 
 	var $order = ['tbl_1.pcharge_id' => 'desc']; // default order 
 
 	private function _get_datatables_query($status, $emp_id) {

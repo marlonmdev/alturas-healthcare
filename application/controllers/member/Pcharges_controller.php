@@ -23,21 +23,21 @@ class Pcharges_controller extends CI_Controller {
 			$row = [];
 			$pcharge_id = $this->myhash->hasher($pcharge['pcharge_id'], 'encrypt');
 
-			$billing_date = date("m/d/Y", strtotime($pcharge['billing_date']));
+			$added_on = date("m/d/Y", strtotime($pcharge['added_on']));
 
 			if ($pcharge['status']  == 'Unpaid') {
-				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $pcharge['status'] . '</span></div>';
+				$custom_status = '<div class="text-left"><span class="badge rounded-pill bg-warning">'. $pcharge['status'] . '</span></div>';
 			} else {
-				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $pcharge['status'] . '</span></div>';
+				$custom_status = '<div class="text-left"><span class="badge rounded-pill bg-success">'. $pcharge['status'] . '</span></div>';
 			}
 
-			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewPchargeModal(\'' . $pcharge_id . '\')" data-bs-toggle="tooltip" title="View Personal Charge"><i class="bi bi-zoom-in icon-primary"></i></a>';
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewPChargeModal(\'' . $pcharge_id . '\')" data-bs-toggle="tooltip" title="View Personal Charge"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
 			// this data will be rendered to the datatable
 			$row[] = $pcharge['pcharge_id'];
 			$row[] = $pcharge['billing_no'];
-			$row[] = $billing_date;
-			$row[] = $pcharge['pcharge_amount'];
+			$row[] = $pcharge['amount'];
+			$row[] = $added_on;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;
@@ -63,21 +63,21 @@ class Pcharges_controller extends CI_Controller {
 			$row = [];
 			$pcharge_id = $this->myhash->hasher($pcharge['pcharge_id'], 'encrypt');
 
-			$billing_date = date("m/d/Y", strtotime($pcharge['billing_date']));
+			$added_on = date("m/d/Y", strtotime($pcharge['added_on']));
 
 			if ($pcharge['status']  == 'Unpaid') {
-				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $pcharge['status'] . '</span></div>';
+				$custom_status = '<div class="text-left"><span class="badge rounded-pill bg-warning">' . $pcharge['status'] . '</span></div>';
 			} else {
-				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $pcharge['status'] . '</span></div>';
+				$custom_status = '<div class="text-left"><span class="badge rounded-pill bg-success">' . $pcharge['status'] . '</span></div>';
 			}
 
-			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewPchargeModal(\'' . $pcharge_id . '\')" data-bs-toggle="tooltip" title="View Personal Charge"><i class="bi bi-zoom-in icon-primary"></i></a>';
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewPChargeModal(\'' . $pcharge_id . '\')" data-bs-toggle="tooltip" title="View Personal Charge"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
 			// this data will be rendered to the datatable
 			$row[] = $pcharge['pcharge_id'];
 			$row[] = $pcharge['billing_no'];
-			$row[] = $billing_date;
-			$row[] = $pcharge['pcharge_amount'];
+			$row[] = $pcharge['amount'];
+			$row[] = $added_on;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;

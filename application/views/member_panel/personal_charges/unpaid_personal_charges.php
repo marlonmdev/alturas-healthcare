@@ -49,13 +49,13 @@
           <div class="card shadow">
             <div class="card-body">
               <div class="table-responsive">
-                <table class="table table-hover" id="memberPersonalCharges">
+                <table class="table table-striped table-hover" id="memberPersonalCharges">
                   <thead>
                     <tr>
                       <th class="fw-bold">#</th>
                       <th class="fw-bold">Billing No.</th>
-                      <th class="fw-bold">Billing Date</th>
                       <th class="fw-bold">Charge Amount</th>
+                      <th class="fw-bold">Added On</th>
                       <th class="fw-bold">Status</th>
                       <th class="fw-bold">Actions</th>
                     </tr>
@@ -106,50 +106,50 @@
     });
   });
 
-  function viewChargeInfoModal(pcharge_id) {
-    $.ajax({
-      url: `${baseUrl}member/personal-charges/view/unpaid/${pcharge_id}`,
-      type: "GET",
-      success: function(response) {
-        const res = JSON.parse(response);
-        const base_url = window.location.origin;
-        const {
-          status,
-          token,
-          noa_no,
-          first_name,
-          middle_name,
-          last_name,
-          suffix,
-          date_of_birth,
-          age,
-          hospital_name,
-          health_card_no,
-          requesting_company,
-          admission_date,
-          chief_complaint,
-          request_date,
-          req_status
-        } = res;
+  function viewPChargeModal(pcharge_id) {
+    // $.ajax({
+    //   url: `${baseUrl}member/personal-charges/view/unpaid/${pcharge_id}`,
+    //   type: "GET",
+    //   success: function(response) {
+    //     const res = JSON.parse(response);
+    //     const base_url = window.location.origin;
+    //     const {
+    //       status,
+    //       token,
+    //       noa_no,
+    //       first_name,
+    //       middle_name,
+    //       last_name,
+    //       suffix,
+    //       date_of_birth,
+    //       age,
+    //       hospital_name,
+    //       health_card_no,
+    //       requesting_company,
+    //       admission_date,
+    //       chief_complaint,
+    //       request_date,
+    //       req_status
+    //     } = res;
 
-        $("#viewNoaModal").modal("show");
-        switch (req_status) {
-          case 'Unpaid':
-            $('#noa-status').html('<strong class="text-warning">[' + req_status + ']</strong>');
-            break;
-          case 'Paid':
-            $('#noa-status').html('<strong class="text-success">[' + req_status + ']</strong>');
-            break;
-        }
-        $('#noa-no').html(noa_no);
-        $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
-        $('#date-of-birth').html(date_of_birth);
-        $('#age').html(age);
-        $('#hospital-name').html(hospital_name);
-        $('#admission-date').html(admission_date);
-        $('#chief-complaint').html(chief_complaint);
-        $('#request-date').html(request_date);
-      }
-    });
+        $("#viewPersonalChargeModal").modal("show");
+        // switch (req_status) {
+        //   case 'Unpaid':
+        //     $('#noa-status').html('<strong class="text-warning">[' + req_status + ']</strong>');
+        //     break;
+        //   case 'Paid':
+        //     $('#noa-status').html('<strong class="text-success">[' + req_status + ']</strong>');
+        //     break;
+        // }
+        // $('#noa-no').html(noa_no);
+        // $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
+        // $('#date-of-birth').html(date_of_birth);
+        // $('#age').html(age);
+        // $('#hospital-name').html(hospital_name);
+        // $('#admission-date').html(admission_date);
+        // $('#chief-complaint').html(chief_complaint);
+        // $('#request-date').html(request_date);
+    //   }
+    // });
   }
 </script>

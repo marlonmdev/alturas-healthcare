@@ -49,13 +49,13 @@
           <div class="card shadow">
             <div class="card-body">
               <div class="table-responsive">
-                <table class="table table-hover" id="memberPersonalCharges">
+                <table class="table table-striped table-hover" id="memberPersonalCharges">
                   <thead>
                     <tr>
                       <th class="fw-bold">#</th>
                       <th class="fw-bold">Billing No.</th>
-                      <th class="fw-bold">Billing Date</th>
                       <th class="fw-bold">Charge Amount</th>
+                      <th class="fw-bold">Added On</th>
                       <th class="fw-bold">Status</th>
                       <th class="fw-bold">Actions</th>
                     </tr>
@@ -105,7 +105,7 @@
     });
   });
 
-  function viewChargeInfoModal(pcharge_id) {
+  function viewPChargeModal(pcharge_id) {
     $.ajax({
       url: `${baseUrl}member/personal-charges/view/paid/${pcharge_id}`,
       type: "GET",

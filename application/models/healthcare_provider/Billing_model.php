@@ -104,15 +104,25 @@ class Billing_model extends CI_Model {
         return $query->result();
     }
 
-    function insert_diagnostic_test_billing($data){
+    function insert_diagnostic_test_billing($data) {
         return $this->db->insert('billing', $data);
     }
 
-    function insert_diagnostic_test_billing_services($services){
+    function insert_diagnostic_test_billing_services($services) {
         return $this->db->insert_batch('billing_services', $services);
     }
 
-    function insert_diagnostic_test_billing_deductions($deductions){
-        return $this->db->insert_batch('deductions', $deductions);
+    function insert_diagnostic_test_billing_deductions($deductions) {
+        return $this->db->insert_batch('billing_deductions', $deductions);
+    }
+
+    function insert_personal_charge($charge) {
+        return $this->db->insert('personal_charges', $charge);
+    }
+
+    function update_member_remaining_balance($emp_id, $new_balance) {
+        $this->db->set('remaining_balance', $new_balance)
+                 ->where('emp_id', $emp_id);
+        return $this->db->update('max_benefit_limits');
     }
 }

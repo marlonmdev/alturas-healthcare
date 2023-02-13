@@ -3,8 +3,9 @@
                   class="sidebar-link sidebar-link"
                   href="<?php echo base_url(); ?>healthcare-coordinator/dashboard"
                   aria-expanded="false"
-                  ><i class="mdi mdi-view-dashboard"></i
-                  ><span class="hide-menu ls-1">Dashboard</span>
+                  >
+                  <i class="mdi mdi-view-dashboard text-warning"></i>
+                  <span class="hide-menu ls-1">Dashboard</span>
                 </a>
               </li>       
 
@@ -13,8 +14,9 @@
                   class="sidebar-link sidebar-link"
                   href="<?php echo base_url(); ?>healthcare-coordinator/healthcare-providers"
                   aria-expanded="false"
-                  ><i class="mdi mdi-hospital-building"></i
-                  ><span class="hide-menu ls-1">Healthcare Providers</span>
+                  >
+                  <i class="mdi mdi-hospital-building text-warning"></i>
+                  <span class="hide-menu ls-1">Healthcare Providers</span>
                 </a>
               </li>
 
@@ -25,8 +27,9 @@
                   class="sidebar-link sidebar-link"
                   href="<?php echo base_url(); ?>healthcare-coordinator/members"
                   aria-expanded="false"
-                  ><i class="mdi mdi-account-multiple"></i
-                  ><span class="hide-menu ls-1">Members</span>
+                  >
+                  <i class="mdi mdi-account-multiple text-warning"></i>
+                  <span class="hide-menu ls-1">Members</span>
                 </a>
               </li>
 
@@ -37,8 +40,9 @@
                   class="sidebar-link sidebar-link"
                   href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list"
                   aria-expanded="false"
-                  ><i class="mdi mdi-file-document"></i
-                  ><span class="hide-menu ls-1">LOA</span>
+                  >
+                  <i class="mdi mdi-file-document text-warning"></i>
+                  <span class="hide-menu ls-1">LOA</span>
                 </a>
               </li>
 
@@ -49,8 +53,9 @@
                   class="sidebar-link has-arrow"
                   href="javascript:void(0)"
                   aria-expanded="false"
-                  ><i class="mdi mdi-file-chart"></i
-                  ><span class="hide-menu ls-1">NOA</span>
+                  >
+                  <i class="mdi mdi-file-chart text-warning"></i>
+                  <span class="hide-menu ls-1">NOA</span>
                 </a>
                 <ul aria-expanded="false" class="collapse first-level">
                   <li class="sidebar-item">
@@ -75,8 +80,9 @@
                   class="sidebar-link has-arrow"
                   href="javascript:void(0)"
                   aria-expanded="false"
-                  ><i class="mdi mdi-wrench"></i
-                  ><span class="hide-menu ls-1">Setup</span>
+                  >
+                  <i class="mdi mdi-wrench text-warning"></i>
+                  <span class="hide-menu ls-1">Setup</span>
                 </a>
                 <ul aria-expanded="false" class="collapse first-level">
                   <li class="sidebar-item">
@@ -105,8 +111,9 @@
                   class="sidebar-link"
                   href="<?php echo base_url(); ?>healthcare-coordinator/accounts"
                   aria-expanded="false"
-                  ><i class="mdi mdi-account-key"></i
-                  ><span class="hide-menu ls-1">User Accounts</span>
+                  >
+                  <i class="mdi mdi-account-key text-warning"></i>
+                  <span class="hide-menu ls-1">User Accounts</span>
                 </a>
               </li> 
 
@@ -116,8 +123,9 @@
                   class="sidebar-link"
                   href="<?php echo $account_settings_url; ?>"
                   aria-expanded="false"
-                  ><i class="mdi mdi-settings"></i
-                  ><span class="hide-menu ls-1">Account Settings</span>
+                  >
+                  <i class="mdi mdi-settings text-warning"></i>
+                  <span class="hide-menu ls-1">Account Settings</span>
                 </a>
               </li> 
               
@@ -127,7 +135,8 @@
                   href="javascript:void(0)"
                   onclick="logout(`<?= base_url() ?>`)"
                   aria-expanded="false"
-                  ><i class="mdi mdi-power"></i
-                  ><span class="hide-menu ls-1">Logout</span>
+                  >
+                  <i class="mdi mdi-power text-warning"></i>
+                  <span class="hide-menu ls-1">Logout</span>
                 </a>
               </li> 

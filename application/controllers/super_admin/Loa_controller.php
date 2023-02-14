@@ -853,6 +853,7 @@ class Loa_controller extends CI_Controller {
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['row'] = $exist = $this->loa_model->db_get_loa_info($loa_id);
+		$data['mbl'] = $this->loa_model->db_get_member_mbl($exist['emp_id']);
 		$data['cost_types'] = $this->loa_model->db_get_cost_types();
 		$data['req'] = $this->loa_model->db_get_doctor_by_id($exist['requesting_physician']);
 		$data['doc'] = $this->loa_model->db_get_doctor_by_id($exist['approved_by']);

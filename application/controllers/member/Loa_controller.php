@@ -724,12 +724,16 @@ class Loa_controller extends CI_Controller {
 	}
 
 	function generate_printable_loa() {
+		$emp_id = $this->session->userdata('emp_id');
 		$loa_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['row'] = $exist = $this->loa_model->db_get_loa_info($loa_id);
+		$data['mbl'] = $this->loa_model->db_get_member_mbl($emp_id);
 		$data['req'] = $this->loa_model->db_get_doctor_by_id($exist['requesting_physician']);
 		$data['doc'] = $this->loa_model->db_get_doctor_by_id($exist['approved_by']);
 		$data['cost_types'] = $this->loa_model->db_get_cost_types();
+		
 		if (!$exist) {
 			$this->load->view('pages/page_not_found');
 		} else {

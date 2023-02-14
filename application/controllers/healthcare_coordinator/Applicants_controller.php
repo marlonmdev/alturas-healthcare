@@ -185,6 +185,7 @@ class Applicants_controller extends CI_Controller {
 					$post_data = [
 						'emp_id' => $emp_id,
 						'max_benefit_limit' => $current_mbl,
+						'used_mbl'          => 0,
 						'remaining_balance' => $current_mbl,
 					];
 

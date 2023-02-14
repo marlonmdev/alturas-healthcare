@@ -180,7 +180,6 @@
         },
       });
       // End of AJAX Request
-
     });
   });
 

@@ -97,7 +97,6 @@ class Members_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 
-
 	private function _hash_password($password) {
 		$hashed_password = password_hash($password, PASSWORD_DEFAULT);
 		return $hashed_password;

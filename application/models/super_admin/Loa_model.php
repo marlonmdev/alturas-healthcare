@@ -106,6 +106,11 @@ class Loa_model extends CI_Model {
     return $query->row_array();
   }
 
+  function db_get_member_mbl($emp_id){
+    $query = $this->db->get_where('max_benefit_limits', ['emp_id' => $emp_id]);
+    return $query->row_array();
+  }
+
   function db_get_all_pending_loa() {
     $this->db->select('tbl_1.loa_id, tbl_1.loa_no, tbl_1.first_name, tbl_1.middle_name, tbl_1.last_name, tbl_1.suffix, tbl_2.hp_name, tbl_1.loa_request_type, tbl_1.med_services, tbl_1.request_date, tbl_1.rx_file, tbl_1.status, tbl_1.requested_by')
              ->from('loa_requests as tbl_1')

@@ -31,19 +31,20 @@
               &nbsp;
               <a class="btn btn-danger" href="javascript:void(0)" onclick="printDiv('#printableDiv')">
                 <i class="mdi mdi-printer"></i>
-                Print
+                Print LOA
               </a>
             </div>
           </div>
-          <div class="row mb-3" id="printableDiv" style="background:#ffff;border-radius:5px;margin:.1em;padding:1rem;">
-            <div class="col-sm-12 col-xs-12">
-              <div class="card">
-                <div class="card-body">
-                  <div class="card-title">
+
+          <div class="row" id="printableDiv" style="background:#ffff;padding:0 1rem 0 1rem;">
+            <div class=" col-xs-12">
+              <div class="grid request">
+                <div class="grid-body">
+                  <div class="request-title">
                     <div class="row">
                       <div class="col-xs-12 d-flex justify-content-center align-items-center">
                         <img src="<?= base_url(); ?>assets/images/hmo-logo.png" alt="Alturas Healthcare Logo" height="100">
-                        <strong style="font-size:2rem;">Alturas Healthcare</strong>
+                        <span class="fw-bold fs-1 ls-1">Alturas Healthcare</span>
                       </div>
                     </div>
                   </div>
@@ -51,32 +52,36 @@
 
                     <table>
                       <tr>
-                        <td style="padding-left:20px;">
-                          <strong style="font-size:1.4rem;">LETTER OF AUTHORIZATION</strong><br>
+                        <td class="ls-1" style="padding-left:20px;">
+                          <span class="fw-bold fs-3 ls-1">LETTER OF AUTHORIZATION</span><br>
                           <?php
                           $expires = strtotime('+2 weeks', strtotime($row['approved_on']));
                           $valid_until = date('F d, Y', $expires);
                           ?>
                           LOA Number : <strong><?= $row['loa_no'] ?></strong><br>
                           Approved On : <strong><?= date('F d, Y', strtotime($row['approved_on'])) ?></strong><br>
-                          HealthCare Provider: <strong><?= $row['hp_name'] ?></strong>
+                          Healthcare Provider: <strong><?= $row['hp_name'] ?></strong>
                         </td>
                         <td style="display:flex;justify-content:end;margin-right:20px;">
                           <div id="qrcode"></div>
                         </td>
                       </tr>
+
                       <tr>
-                        <td style="padding:40px 20px 0 20px;text-align:justify" colspan="2">
-                          We wish to authorize the following health care services for the account of Alturas HealthCare for our member, <strong><?= $row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] ?></strong> with Health Card No. <strong><?= $row['health_card_no'] ?></strong>. This authorization letter is valid until <strong><?= $valid_until ?></strong> only.
+                        <td class="ls-1" style="padding:20px 20px 0 20px;text-align:justify" colspan="2">
+                          We wish to authorize the following health care services for the account of Alturas Healthcare for our member, <strong><?= $row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] ?></strong> with Healthcard No. <strong><?= $row['health_card_no'] ?></strong>. This authorization letter is valid until <strong><?= $valid_until ?></strong> only.
                         </td>
                       </tr>
+
                       <tr>
                         <td colspan="2" style="padding: 0 20px 0 20px;">
-                          <hr>
+                          <div class="my-3" style="border:0.5px solid #585858;"></div>
                         </td>
                       </tr>
+
+
                       <tr>
-                        <td style="padding:0 0 0 20px;text-align:justify;vertical-align:baseline;">
+                        <td class="ls-1" style="padding:0 0 0 20px;text-align:justify;vertical-align:baseline;" colspan="2">
                           <?php
                           echo '<h5>' . strtoupper($row['loa_request_type']) . '</h5>';
                           $selected_cost_types = explode(';', $row['med_services']);
@@ -88,23 +93,28 @@
                           endforeach;
                           $med_services = implode(', ', $ct_array);
                           if ($row['loa_request_type'] !== 'Consultation') {
-                            echo '<i class="bi bi-caret-right-fill"></i> ' . $med_services;
+                            echo '<i class="mdi mdi-chevron-right fs-4"></i>' . $med_services;
                           }
                           ?>
                         </td>
-                        <td style="padding:0 20px 0 0;text-align:justify;vertical-align:baseline;">
-                          <h5>CHIEF COMPLAINT/DIAGNOSIS</h5>
-                          <i class="bi bi-caret-right-fill"></i> <?= $row['chief_complaint'] ?>
+                      </tr>
+
+                      <tr>
+                        <td class="ls-1" style="padding:10px 0 0 20px;text-align:justify;vertical-align:baseline;" colspan="2">
+                          <h5 class="ls-1">CHIEF COMPLAINT/DIAGNOSIS</h5>
+                          <i class="mdi mdi-chevron-right fs-4"></i><?= $row['chief_complaint'] ?>
                         </td>
                       </tr>
+
                       <tr>
                         <td colspan="2" style="padding: 0 20px 0 20px;">
-                          <hr>
+                          <div class="my-2" style="border:0.5px solid #585858;"></div>
                         </td>
                       </tr>
+
                       <tr>
-                        <td style="padding: 0 0 0 20px;text-align:justify">
-                          <i class="bi bi-info-circle-fill"></i> <strong>Patient Details:</strong><br>
+                        <td class="ls-1" style="padding: 0 0 0 20px;text-align:justify;vertical-align:baseline;">
+                          <i class="mdi mdi-information fs-4"></i> <strong>PATIENT DETAILS</strong><br>
                           Name: <?= $row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] ?><br>
                           <!-- Start of Age Calculator -->
                           <?php
@@ -121,44 +131,57 @@
                           Contact No.: <?= $row['contact_no'] ?><br>
                           Philhealth No.: <?= $row['philhealth_no'] ?>
                         </td>
-                        <td style="padding: 0 20px 0 0;vertical-align:baseline;">
-                          <i class="bi bi-info-circle-fill"></i> <strong>Contact Person Details:</strong><br>
+
+                        <td class="ls-1" style="padding: 0 20px 0 0;vertical-align:baseline;">
+                          <i class="mdi mdi-information fs-4"></i> <strong>CONTACT PERSON DETAILS</strong><br>
                           Name: <?= $row['contact_person'] ?><br>
                           Address: <?= $row['contact_person_addr'] ?><br>
                           Contact No.: <?= $row['contact_person_no'] ?>
+                          <br><br>
+                            <i class="mdi mdi-information fs-4"></i> <strong>PATIENT MBL DETAILS</strong><br>
+                            Maximum Benefit Limit: <?= '&#8369;' . number_format($mbl['max_benefit_limit']) ?><br>
+                            Used MBL: <?= '&#8369;' . number_format($mbl['used_mbl']) ?><br>
+                            Remaining MBL: <?=  '&#8369;' . number_format($mbl['remaining_balance']) ?>
                         </td>
                       </tr>
+
                       <tr>
                         <td colspan="2" style="padding: 0 20px 0 20px;">
-                          <hr>
+                          <div class="my-3" style="border:0.5px solid #585858;"></div>
                         </td>
                       </tr>
+
                       <tr>
-                        <td style="padding:0 0 0 20px;vertical-align:baseline;">
+                        <td class="ls-1" style="padding:0 0 0 20px;vertical-align:baseline;">
                           Requesting Physician: <br>
-                          <i class="bi bi-caret-right-fill"></i> <strong><?= $req['doctor_name'] ?></strong>
+                          <i class="mdi mdi-chevron-right fs-4"></i><span class="fw-bold"><?= $req['doctor_name'] ?></span>
                         </td>
-                        <td style="padding:0 20px 0 0;text-align:justify;">
+
+                        <td class="ls-1" style="padding:0 20px 0 0;text-align:justify;">
                           Attending Physician: <br>
-                          <i class="bi bi-caret-right-fill"></i> <strong><?= $row['attending_physician'] ?></strong>
+                          <i class="mdi mdi-chevron-right fs-4"></i><span class="fw-bold"><?= $row['attending_physician'] ?></span>
                         </td>
                       </tr>
+
                       <tr>
                         <td style="padding: 0 0 0 10px;">
                           <svg id="barcode"></svg>
                         </td>
-                        <td style="padding: 0 20px 0 0;">
-                          Approved By : <strong> <?= $doc['doctor_name'] ?></strong>
+
+                        <td class="ls-1" style="padding: 0 20px 0 0;">
+                          Approved By : <span class="fw-bold"><?= $doc['doctor_name'] ?></span>
                           <img src="<?= base_url() . "uploads/doctor_signatures/" . $doc['doctor_signature'] ?>" alt="Doctor's Signature" style="height:auto;width:170px;vertical-align:baseline;margin-left:-170px">
                           <br><small style="margin-left:105px;text-align:center;">Company Physician</small>
                         </td>
                       </tr>
                     </table>
+
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
         </div>
       <!-- End Container fluid  -->
       </div>
@@ -177,14 +200,14 @@
 
       new QRCode(document.getElementById("qrcode"), {
         text: emp_id,
-        width: 130,
-        height: 130,
+        width: 100,
+        height: 100,
       });
 
       JsBarcode("#barcode", emp_id, {
         displayValue: false,
-        width: 2,
-        height: 80,
+        width: 1.5,
+        height: 70,
       });
     }
 

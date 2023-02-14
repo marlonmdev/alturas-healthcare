@@ -32,8 +32,6 @@
 </li>
 
 
-
-
 <li class="nav-item">
   <a class="nav-link
         <?php echo ($this->uri->segment(3) === 'report-list') ? 'active' : '' ?>
@@ -42,9 +40,6 @@
     <span>Reports</span>
   </a>
 </li>
-
-
-
 
 
 <hr>

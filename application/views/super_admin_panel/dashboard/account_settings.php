@@ -27,7 +27,7 @@
           <div class="col-lg-6">
             <!-- Change password card-->
             <div class="card shadow">
-              <div class="card-header bg-dark text-white fw-bold fs-5 ls-2">Change Password</div>
+              <div class="card-header bg-secondary text-white fw-bold fs-5 ls-2">Change Password</div>
               <div class="card-body">
                 <form method="post" action="<?php echo base_url(); ?>super-admin/account-settings/password/update" class="mt-2" id="passwordUpdateForm">
                   <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
@@ -70,7 +70,7 @@
           <div class="col-lg-6">
             <!-- Change username card-->
             <div class="card shadow">
-              <div class="card-header bg-dark text-white fw-bold fs-5 ls-2">Change Username</div>
+              <div class="card-header bg-secondary text-white fw-bold fs-5 ls-2">Change Username</div>
               <div class="card-body">
                 <form method="post" action="<?php echo base_url(); ?>super-admin/account-settings/username/update" class="mt-2" id="usernameUpdateForm">
                   <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">

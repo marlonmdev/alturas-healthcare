@@ -136,4 +136,9 @@ class Noa_model extends CI_Model {
     $query = $this->db->get_where('company_doctors', ['doctor_id' => $doctor_id]);
     return $query->row_array();
   }
+
+  function db_get_member_mbl($emp_id){
+    $query = $this->db->get_where('max_benefit_limits', ['emp_id' => $emp_id]);
+    return $query->row_array();
+  }
 }

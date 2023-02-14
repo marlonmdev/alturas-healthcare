@@ -138,10 +138,10 @@
                           Address: <?= $row['contact_person_addr'] ?><br>
                           Contact No.: <?= $row['contact_person_no'] ?>
                           <br><br>
-                            <i class="mdi mdi-information fs-4"></i> <strong>PATIENT MBL DETAILS</strong><br>
-                            Maximum Benefit Limit: <?= '&#8369;' . number_format($mbl['max_benefit_limit']) ?><br>
-                            Used MBL: <?= '&#8369;' . number_format($mbl['used_mbl']) ?><br>
-                            Remaining MBL: <?=  '&#8369;' . number_format($mbl['remaining_balance']) ?>
+                          <i class="mdi mdi-information fs-4"></i> <strong>PATIENT MBL DETAILS</strong><br>
+                          Maximum Benefit Limit: <?= '&#8369;' . number_format($mbl['max_benefit_limit']) ?><br>
+                          Used MBL: <?= '&#8369;' . number_format($mbl['used_mbl']) ?><br>
+                          Remaining MBL: <?=  '&#8369;' . number_format($mbl['remaining_balance']) ?>
                         </td>
                       </tr>
 

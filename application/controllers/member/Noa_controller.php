@@ -496,6 +496,7 @@ class Noa_controller extends CI_Controller {
 		$data['page_title'] = 'Alturas Healthcare - Member';
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['row'] = $exist = $this->noa_model->db_get_noa_info($noa_id);
+		$data['mbl'] = $this->noa_model->db_get_member_mbl($exist['emp_id']);
 		$data['doc'] = $this->noa_model->db_get_doctor_by_id($exist['approved_by']);
 		if (!$exist) {
 			$this->load->view('pages/page_not_found');

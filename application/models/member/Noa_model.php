@@ -85,6 +85,11 @@ class Noa_model extends CI_Model {
     return $query->result_array();
   }
 
+  function db_get_member_mbl($emp_id){
+    $query = $this->db->get_where('max_benefit_limits', ['emp_id' => $emp_id]);
+    return $query->row_array();
+  }
+
   function db_update_noa_request($noa_id, $post_data) {
     $this->db->where('noa_id', $noa_id);
     return $this->db->update('noa_requests', $post_data);

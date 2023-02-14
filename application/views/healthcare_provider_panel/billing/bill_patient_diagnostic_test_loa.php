@@ -415,9 +415,9 @@
      // this is for Diagnostic Test LOA Requests
     const addOtherDeductionInputs = (remaining_balance) => {
         const container = document.querySelector('#dynamic-deduction');
-        const deduction_count_1 = document.querySelector('#deduction-count-1');
+        const deduction_count = document.querySelector('#deduction-count');
         count++;
-        deduction_count_1.value = count;
+        deduction_count.value = count;
 
         let html_code  = `<div class="row my-3 row-deduction" id="row${count}">`;
 

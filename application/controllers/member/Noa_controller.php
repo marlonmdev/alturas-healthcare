@@ -153,6 +153,8 @@ class Noa_controller extends CI_Controller {
 		foreach ($resultList as $key => $value) {
 			$noa_id = $this->myhash->hasher($value['noa_id'], 'encrypt');
 			// this is for datatable values
+			$custom_noa_no = '<mark class="bg-primary text-white">'.$value['noa_no'].'</mark>';
+
 			$button = '<a class="me-2" href="JavaScript:void(0)" onclick="viewNoaInfoModal(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
 			$button .= '<a class="me-2" href="' . base_url() . 'member/requested-noa/edit/' . $noa_id . '" data-bs-toggle="tooltip" title="Edit NOA"><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a>';
@@ -163,7 +165,7 @@ class Noa_controller extends CI_Controller {
 			$short_hosp_name = strlen($value['hp_name']) > 24 ? substr($value['hp_name'], 0, 24) . "..." : $value['hp_name'];
 
 			$result['data'][] = array(
-				$value['noa_no'],
+				$custom_noa_no,
 				date("m/d/Y", strtotime($value['admission_date'])),
 				$short_hosp_name,
 				date("m/d/Y", strtotime($value['request_date'])),
@@ -181,6 +183,8 @@ class Noa_controller extends CI_Controller {
 		foreach ($resultList as $key => $value) {
 			$noa_id = $this->myhash->hasher($value['noa_id'], 'encrypt');
 
+			$custom_noa_no = '<mark class="bg-primary text-white">'.$value['noa_no'].'</mark>';
+
 			$button = '<a class="me-2" href="JavaScript:void(0)" onclick="viewNoaInfoModal(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
 			$button .= '<a href="' . base_url() . 'member/requested-noa/generate-printable-noa/' . $noa_id . '" data-bs-toggle="tooltip" title="Print NOA"><i class="mdi mdi-printer fs-2 text-primary"></i></a>';
@@ -189,7 +193,7 @@ class Noa_controller extends CI_Controller {
 			$short_hosp_name = strlen($value['hp_name']) > 24 ? substr($value['hp_name'], 0, 24) . "..." : $value['hp_name'];
 
 			$result['data'][] = array(
-				$value['noa_no'],
+				$custom_noa_no,
 				date("m/d/Y", strtotime($value['admission_date'])),
 				$short_hosp_name,
 				date("m/d/Y", strtotime($value['request_date'])),
@@ -207,13 +211,15 @@ class Noa_controller extends CI_Controller {
 		foreach ($resultList as $key => $value) {
 			$noa_id = $this->myhash->hasher($value['noa_id'], 'encrypt');
 
+			$custom_noa_no = '<mark class="bg-primary text-white">'.$value['noa_no'].'</mark>';
+
 			$button = '<a href="JavaScript:void(0)" onclick="viewNoaInfoModal(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
 			// shorten name of values from db if its too long for viewing and add ...
 			$short_hosp_name = strlen($value['hp_name']) > 24 ? substr($value['hp_name'], 0, 24) . "..." : $value['hp_name'];
 
 			$result['data'][] = array(
-				$value['noa_no'],
+				$custom_noa_no,
 				date("m/d/Y", strtotime($value['admission_date'])),
 				$short_hosp_name,
 				date("m/d/Y", strtotime($value['request_date'])),
@@ -237,6 +243,8 @@ class Noa_controller extends CI_Controller {
 			$admission_date = date("m/d/Y", strtotime($noa['admission_date']));
 			$request_date = date("m/d/Y", strtotime($noa['request_date']));
 
+			$custom_noa_no = '<mark class="bg-primary text-white">'.$noa['noa_no'].'</mark>';
+
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-info">' . $noa['status'] . '</span></div>';
 
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewNoaInfoModal(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
@@ -245,7 +253,7 @@ class Noa_controller extends CI_Controller {
 			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];
 
 			// this data will be rendered to the datatable
-			$row[] = $noa['noa_no'];
+			$row[] = $custom_noa_no;
 			$row[] = $admission_date;
 			$row[] = $short_hosp_name;
 			$row[] = $request_date;

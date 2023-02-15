@@ -11,7 +11,7 @@
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Company Doctor</li>
               <li class="breadcrumb-item active" aria-current="page">
-                Approved NOA
+                Closed NOA
               </li>
             </ol>
           </nav>
@@ -107,7 +107,7 @@
 
       // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}company-doctor/noa/requests-list/closed/fetch`,
+        url: `${baseUrl}company-doctor/noa/requests-list/approved/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: {

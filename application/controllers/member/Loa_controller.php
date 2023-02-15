@@ -418,6 +418,8 @@ class Loa_controller extends CI_Controller {
 			// decrypt the id passed from the view which is encrypted
 			$loa_id = $this->myhash->hasher($value['loa_id'], 'encrypt');
 
+			$custom_loa_no = 	'<mark class="bg-primary text-white">'.$value['loa_no'].'</mark>';
+
 			$button = '<a class="me-2 align-top" style="top:-20px!important;" href="JavaScript:void(0)" onclick="viewLoaInfoModal(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
 			$button .= '<a class="me-2 align-top" style="top:-20px!important;" href="' . base_url() . 'member/requested-loa/edit/' . $loa_id . '" data-bs-toggle="tooltip" title="Edit LOA"><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a>';
@@ -447,7 +449,7 @@ class Loa_controller extends CI_Controller {
 			}
 
 			$result['data'][] = array(
-				$value['loa_no'],
+				$custom_loa_no,
 				date("m/d/Y", strtotime($value['request_date'])),
 				$short_hp_name,
 				$value['loa_request_type'],
@@ -468,6 +470,8 @@ class Loa_controller extends CI_Controller {
 		foreach ($resultList as $key => $value) {
 			// decrypt the id passed from the view which is encrypted
 			$loa_id = $this->myhash->hasher($value['loa_id'], 'encrypt');
+
+			$custom_loa_no = 	'<mark class="bg-primary text-white">'.$value['loa_no'].'</mark>';
 
 			$button = '<a class="me-2" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
@@ -496,7 +500,7 @@ class Loa_controller extends CI_Controller {
 			}
 
 			$result['data'][] = array(
-				$value['loa_no'],
+				$custom_loa_no,
 				date("m/d/Y", strtotime($value['request_date'])),
 				$short_hp_name,
 				$value['loa_request_type'],
@@ -516,6 +520,8 @@ class Loa_controller extends CI_Controller {
 		$result = [];
 		foreach ($resultList as $key => $value) {
 			$loa_id = $this->myhash->hasher($value['loa_id'], 'encrypt');
+
+			$custom_loa_no = 	'<mark class="bg-primary text-white">'.$value['loa_no'].'</mark>';
 
 			$button = '<a href="JavaScript:void(0)" onclick="viewDisapprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
@@ -542,7 +548,7 @@ class Loa_controller extends CI_Controller {
 			}
 
 			$result['data'][] = array(
-				$value['loa_no'],
+				$custom_loa_no,
 				date("m/d/Y", strtotime($value['request_date'])),
 				$short_hp_name,
 				$value['loa_request_type'],
@@ -565,6 +571,8 @@ class Loa_controller extends CI_Controller {
 		foreach ($list as $loa) {
 			$ct_array = $row = [];
 			$loa_id = $this->myhash->hasher($loa['loa_id'], 'encrypt');
+
+			$custom_loa_no = 	'<mark class="bg-primary text-white">'.$value['loa_no'].'</mark>';
 
 			$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
 
@@ -597,7 +605,7 @@ class Loa_controller extends CI_Controller {
 			}
 
 			// this data will be rendered to the datatable
-			$row[] = $loa['loa_no'];
+			$row[] = $custom_loa_no;
 			$row[] = $custom_date;
 			$row[] = $short_hp_name;
 			$row[] = $loa['loa_request_type'];

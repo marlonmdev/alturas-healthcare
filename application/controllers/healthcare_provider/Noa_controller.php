@@ -22,10 +22,13 @@ class Noa_controller extends CI_Controller {
 		foreach ($list as $noa) {
 			$noa_id = $this->myhash->hasher($noa['noa_id'], 'encrypt');
 			$row = [];
+
 			$full_name = $noa['first_name'] . ' ' . $noa['middle_name'] . ' ' . $noa['last_name'] . ' ' . $noa['suffix'];
 
 			$admission_date = date("m/d/Y", strtotime($noa['admission_date']));
 			$request_date = date("m/d/Y", strtotime($noa['request_date']));
+
+			$custom_noa_no = '<mark class="bg-primary text-white">'.$noa['noa_no'].'</mark>';
 
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $noa['status'] . '</span></div>';
 
@@ -34,7 +37,7 @@ class Noa_controller extends CI_Controller {
 			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];
 
 			// this data will be rendered to the datatable
-			$row[] = $noa['noa_no'];
+			$row[] = $custom_noa_no;
 			$row[] = $full_name;
 			$row[] = $short_hosp_name;
 			$row[] = $admission_date;

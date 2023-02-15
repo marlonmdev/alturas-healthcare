@@ -217,7 +217,6 @@
                                     <input type="text" class="form-control fw-bold ls-1" id="personal-charge" name="personal-charge" value="" readonly>
                                 </div>
                             </div>
-
                         </div>
 
                         <hr class="my-4">

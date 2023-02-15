@@ -161,7 +161,7 @@
                                                 <img src="<?= base_url() . 'uploads/profile_pics/' . $member['photo'] ?>" alt="Member" class="rounded-circle img-responsive" width="140" height="auto">
                                             <?php } ?>
                                             <div class="mt-3">
-                                                <span class="fw-bold text-info text-uppercase fs-4">
+                                                <span class="fw-bold text-info text-uppercase fs-4" name="full_name">
                                                     <?= $member['first_name'].' '.$member['middle_name'].' '. $member['last_name'].' '.$member['suffix'] ?>
                                                 </span>
                                                 <p class="fw-bold fs-5 mb-1">
@@ -193,6 +193,8 @@
                                                 ?>
                                                             <tr>
                                                                 <td class="fw-bold"><?= $noa['noa_no'] ?></td>
+                                                                <input type="hidden" name="emp_id" value="<?= $noa['emp_id'] ?>">
+                                                                <input type="hidden" name="billing_no" value="<?= $billing_no ?>">
                                                                 <td class="fw-bold">
                                                                     <?= date("m/d/Y", strtotime($noa['request_date'])) ?>
                                                                 </td>

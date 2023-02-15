@@ -37,6 +37,10 @@ class Billing_model extends CI_Model {
         $query = $this->db->get_where('loa_requests', ['loa_id' => $loa_id]);
         return $query->row_array();
     }
+    function get_noa_to_bill($noa_id) {
+        $query = $this->db->get_where('noa_requests', ['noa_id' => $noa_id]);
+        return $query->row_array();
+    }
 
     function get_cost_type_by_id($ctype_id) {
         $query = $this->db->get_where('cost_types', ['ctype_id' => $ctype_id]);

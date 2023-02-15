@@ -132,6 +132,7 @@ class Billing_controller extends CI_Controller {
         $this->load->view('healthcare_provider_panel/billing/'.$view_page);
         $this->load->view('templates/footer');
     }
+    
 
     function fetch_loa_to_bill() {
         $this->security->get_csrf_hash();
@@ -452,41 +453,87 @@ class Billing_controller extends CI_Controller {
 		$this->load->view('templates/footer');
     }
 
-
     function billing3BillNoa() {
         $token = $this->security->get_csrf_hash();
-        $this->cart->destroy();
-        $this->session->unset_userdata(array('equipments'));
+        $noa_id = $this->input->post('noa_select_id'); 
+        $emp_id = $this->security->xss_clean($this->input->post('emp_id'));
+        $hcare_provider = $this->billing_model->get_healthcare_provider_by_id($this->session->userdata('dsg_hcare_prov'));
+
+        $noa = $this->billing_model->get_noa_to_bill($noa_id);
+        $data['noa'] = $noa;
+        $data['member_id'] = $this->input->post('member_id');
+        $data['members'] = $this->session->userdata('b_member_info');
+        $data['member_mbl'] = $this->session->userdata('b_member_mbl');
+        $data['remaining_balance'] = $this->session->userdata('b_member_bal');
+        $data['healthcard_no'] = $this->session->userdata('b_healthcard_no');
+        $data['billing_no'] = "BLN-" . strtotime(date('Y-m-d h:i:s'));
+        $data['noa_id'] = $noa_id;
+        $data['noa_no'] = $noa['noa_no'];
+        $data['billed_by'] = $this->session->userdata('fullname');
+        $data['hcare_provider'] = $hcare_provider['hp_name'];
+        $data['hp_id'] = $this->input->post('hp_id');
+
         $member = array(
-            'hp_id' => $this->input->post('hp_id'),
-            'member_id' => $this->input->post('member_id'),
-            'first_name' => $this->input->post('first_name'),
-            'last_name' => $this->input->post('last_name'),
-            'full_name' => $this->input->post('full_name'),
-            'hospital_name' => $this->input->post('hospital_name'),
-            'date_service' => $this->input->post('date_service'),
-            'requesting_company' => $this->input->post('requesting_company'),
-            'billing_number' => $this->input->post('billing_number'),
-            'health_card_no' => $this->input->post('health_card_no'),
-            'emp_type' => $this->input->post('emp_type'),
-            'remaining_balance' => $this->input->post('remaining_balance'),
-            'noa_id' => $this->input->post('noa_select_id')
-        );
-        $this->session->set_userdata(array(
-            'intialBillingInfo' => $member
-        ));
+                    'hp_id' => $this->input->post('hp_id'),
+                    'member_id' => $this->input->post('member_id'),
+                    'date_service' => $this->input->post('date_service'),
+                    'requesting_company' => $this->input->post('requesting_company'),
+                    'billing_number' => $this->input->post('billing_number'),
+                    'emp_type' => $this->input->post('emp_type'),
+                );
 
         $cost_type = $this->billing_model->get_all_cost_types();
         $data['member'] = $member;
         $data['cost_type'] = $cost_type;
         $data['page_title'] = 'HMO - HealthCare Provider';
-        $data['noa_id'] = $this->input->post('noa_select_id');
         $data['user_role'] = $this->session->userdata('user_role');
 
         $this->load->view('templates/header', $data);
         $this->load->view('healthcare_provider_panel/billing/billing3Noa.php', array('data' => $data));
         $this->load->view('templates/footer');
     }
+
+
+    // function billing3BillNoa() {
+    //     $token = $this->security->get_csrf_hash();
+    //     $url_id = $this->uri->segment(4); // encrypted id
+    //     $noa_id = $this->myhash->hasher($url_id, 'decrypt');
+    //     $this->cart->destroy();
+    //     $this->session->unset_userdata(array('equipments'));
+    //     $noa = $this->billing_model->get_noa_to_bill($noa_id);
+    //     $member = array(
+    //         'hp_id' => $this->input->post('hp_id'),
+    //         'member_id' => $this->input->post('member_id'),
+    //         'first_name' => $this->input->post('first_name'),
+    //         'last_name' => $this->input->post('last_name'),
+    //         'middle_name' => $this->input->post('middle_name'),
+    //         'suffix' => $this->input->post('suffix'),
+    //         'hospital_name' => $this->input->post('hospital_name'),
+    //         'date_service' => $this->input->post('date_service'),
+    //         'requesting_company' => $this->input->post('requesting_company'),
+    //         'billing_number' => $this->input->post('billing_number'),
+    //         'health_card_no' => $this->input->post('health_card_no'),
+    //         'emp_type' => $this->input->post('emp_type'),
+    //         'member_mbl' => $this->session->userdata('b_member_mbl'),
+    //         'remaining_balance' => $this->input->post('remaining_balance'),
+    //         'noa_no' => $noa['noa_no'],
+    //         'noa_id' => $this->input->post('noa_select_id')
+    //     );
+    //     $this->session->set_userdata(array(
+    //         'intialBillingInfo' => $member
+    //     ));
+
+    //     $cost_type = $this->billing_model->get_all_cost_types();
+    //     $data['member'] = $member;
+    //     $data['cost_type'] = $cost_type;
+    //     $data['page_title'] = 'HMO - HealthCare Provider';
+    //     $data['noa_id'] = $this->input->post('noa_select_id');
+    //     $data['user_role'] = $this->session->userdata('user_role');
+
+    //     $this->load->view('templates/header', $data);
+    //     $this->load->view('healthcare_provider_panel/billing/billing3Noa.php', array('data' => $data));
+    //     $this->load->view('templates/footer');
+    // }
 
     function billing3NoaReview() {
         $this->security->get_csrf_hash();

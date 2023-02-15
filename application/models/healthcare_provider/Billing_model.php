@@ -104,6 +104,11 @@ class Billing_model extends CI_Model {
         return $query->result();
     }
 
+    function get_billing_info($billing_no){
+        $query = $this->db->get('billing');
+        return $query->row_array();
+    }
+
     function insert_billing($data) {
         return $this->db->insert('billing', $data);
     }

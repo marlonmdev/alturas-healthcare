@@ -536,12 +536,12 @@
                             data: data,
                             dataType: "json",
                             success: function(response) {
-                                const { token, status, message } = response;
+                                const { token, status, message, $billing_id } = response;
 
                                 if (status == 'success') {
                                     
                                     setTimeout(function () {
-                                        window.location.href = `${baseUrl}healthcare-provider/billing/bill-loa/diagnostic-test/success`;
+                                        window.location.href = `${baseUrl}healthcare-provider/billing/bill-loa/diagnostic-test/success/${$billing_id}`;
                                     }, 500);
 
                                 } else if(status == 'error') {

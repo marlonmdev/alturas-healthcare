@@ -52,11 +52,11 @@ class Billing_controller extends CI_Controller {
             $data['billing_no'] = $billing_no = "BLN-" . strtotime(date('Y-m-d h:i:s'));
 
             $this->session->set_userdata([
-                'b_member_info' => $member,
-                'b_member_mbl' => $member_mbl['max_benefit_limit'],
-                'b_member_bal' => $member_mbl['remaining_balance'],
+                'b_member_info'    => $member,
+                'b_member_mbl'     => $member_mbl['max_benefit_limit'],
+                'b_member_bal'     => $member_mbl['remaining_balance'],
                 'b_hcare_provider' => $hp_name,
-                'b_healthcard_no' => $member['health_card_no'],
+                'b_healthcard_no'  => $member['health_card_no'],
             ]);
 
             $this->load->view('templates/header', $data);
@@ -85,11 +85,11 @@ class Billing_controller extends CI_Controller {
             $data['billing_no'] = $billing_no = "BLN-" . strtotime(date('Y-m-d h:i:s'));
 
             $this->session->set_userdata([
-                'b_member_info' => $member,
-                'b_member_mbl' => $member_mbl['max_benefit_limit'],
-                'b_member_bal' => $member_mbl['remaining_balance'],
+                'b_member_info'    => $member,
+                'b_member_mbl'     => $member_mbl['max_benefit_limit'],
+                'b_member_bal'     => $member_mbl['remaining_balance'],
                 'b_hcare_provider' => $hp_name,
-                'b_healthcard_no' => $member['health_card_no'],
+                'b_healthcard_no'  => $member['health_card_no'],
             ]);
 
             $this->load->view('templates/header', $data);
@@ -148,12 +148,12 @@ class Billing_controller extends CI_Controller {
         endforeach;
 
         $data = [
-            'token' =>  $this->security->get_csrf_hash(),
-            'user_role' => $this->session->userdata('user_role'),
-            'member_mbl' => $this->session->userdata('b_member_mbl'),
+            'token'             => $this->security->get_csrf_hash(),
+            'user_role'         => $this->session->userdata('user_role'),
+            'member_mbl'        => $this->session->userdata('b_member_mbl'),
             'remaining_balance' => $this->session->userdata('b_member_bal'),
-            'loa_services' => $med_services,
-            'request_type' => $loa["loa_request_type"],
+            'loa_services'      => $med_services,
+            'request_type'      => $loa["loa_request_type"],
         ];
 
         echo json_encode($data);
@@ -195,7 +195,7 @@ class Billing_controller extends CI_Controller {
         $inserted = $this->billing_model->insert_billing($data);
 
         if($inserted){
-
+            
             $services = [];
             $deductions = []; 
             $philhealth = [];
@@ -205,11 +205,11 @@ class Billing_controller extends CI_Controller {
             // loop through each of the patient's availed services in LOA request dignostic test
             for ($x = 0; $x < count($ct_names); $x++) {
                 $services[] = [
-                    'service_name' => $ct_names[$x],
-                    'service_quantity'  => $ct_quantities[$x],
-                    'service_fee'  => $ct_fees[$x],
-                    'billing_no'   => $billing_no,
-                    'added_on' => date('Y-m-d')
+                    'service_name'     => $ct_names[$x],
+                    'service_quantity' => $ct_quantities[$x],
+                    'service_fee'      => $ct_fees[$x],
+                    'billing_no'       => $billing_no,
+                    'added_on'         => date('Y-m-d')
                 ];
             }
 
@@ -221,19 +221,19 @@ class Billing_controller extends CI_Controller {
                     'deduction_name'   => 'Philhealth',
                     'deduction_amount' => $philhealth_deduction,
                     'billing_no'       => $billing_no,
-                    'added_on'     => date('Y-m-d')
+                    'added_on'         => date('Y-m-d')
                 ];
 
                 $this->billing_model->insert_billing_deductions($philhealth);
             }
 
-            // if sss deduction has value
+            // if SSS deduction has value
             if($sss_deduction > 0){
                 $sss[] = [
                     'deduction_name'   => 'SSS',
                     'deduction_amount' => $sss_deduction,
                     'billing_no'       => $billing_no,
-                    'added_on'     => date('Y-m-d')
+                    'added_on'         => date('Y-m-d')
                 ];
 
                 $this->billing_model->insert_billing_deductions($sss);
@@ -249,7 +249,7 @@ class Billing_controller extends CI_Controller {
                         'deduction_name'   => $deduction_names[$y],
                         'deduction_amount' => $deduction_amounts[$y],
                         'billing_no'       => $billing_no,
-                        'added_on'     => date('Y-m-d')
+                        'added_on'         => date('Y-m-d')
                     ];
                 }
 
@@ -264,47 +264,74 @@ class Billing_controller extends CI_Controller {
                     'amount'        => $personal_charge,
                     'billing_no'    => $billing_no,
                     'status'        => 'Unpaid',
-                    'added_on'  => date('Y-m-d')
+                    'added_on'      => date('Y-m-d')
                 ];
 
                 $this->billing_model->insert_personal_charge($charge);
             }
 
-            // Update Member's Remaining Credit Limit Balance
-            $remaining_bal = $this->session->userdata('b_member_bal');
+            $member_mbl = $this->billing_model->get_member_mbl($emp_id);
+            $remaining_bal = $member_mbl['remaining_balance'];
+            $current_used_mbl = $member_mbl['used_mbl'] != '' ? $member_mbl['used_mbl'] : 0; 
+            
+            // calculate members used mbl
+            $total_used_mbl = $current_used_mbl + $net_bill;
 
+            // Update Member's Remaining Credit Limit Balance
             if($net_bill > 0 && $net_bill < $remaining_bal){
+                // set used mbl value for update
+                $used_mbl = $total_used_mbl >= $member_mbl['max_benefit_limit'] ?  $member_mbl['max_benefit_limit'] : $total_used_mbl;
+
                 // calculate deduction of member's remaining MBL balance
                 $new_balance = $remaining_bal - $net_bill;
                 $data = [
-                    'used_mbl' => $net_bill,
+                    'used_mbl'          => $used_mbl,
                     'remaining_balance' => $new_balance
                 ];
                 $this->billing_model->update_member_remaining_balance($emp_id, $data);
+                // call function to unset session userdata on final billing process
+                // unset_session_data();
             }else if($net_bill >= $remaining_bal){
                 $data = [
-                    'used_mbl' => $remaining_bal,
+                    'used_mbl'          => $member_mbl['remaining_balance'],
                     'remaining_balance' => 0
                 ];
                 $this->billing_model->update_member_remaining_balance($emp_id, $data);
+                // call function to unset session userdata on final billing process
+                // unset_session_data();
             }
-            
+
+            // get billing info based on billing number
+            $bill = $this->billing_model->get_billing_info($billing_no);
+            $encrypted_id = $this->myhash->hasher($bill['billing_id'], 'encrypt');
+
             $response = [
-                'token' => $token,
-                'status' => 'success',
-                'message' => 'Billed Successfully',
-                'billing_no' => $billing_no
+                'token'      => $token,
+                'status'     => 'success',
+                'message'    => 'Billed Successfully',
+                'billing_id' => $encrypted_id
             ];
 
         }else{
             $response = [
-                'token' => $token,
-                'status' => 'error',
+                'token'   => $token,
+                'status'  => 'error',
                 'message' => 'Bill Transaction Failed'
             ];
         }
 
         echo json_encode($response);
+    }
+
+    function unset_session_data(){
+        $temp_data = [
+            'b_member_info',
+            'b_member_mbl',
+            'b_member_bal',
+            'b_hcare_provider',
+            'b_healthcard_no'
+        ];
+		$this->session->unset_userdata($temp_data);
     }
 
 
@@ -351,11 +378,11 @@ class Billing_controller extends CI_Controller {
 
             // loop through each of the patient's availed services in LOA request dignostic test
             $services = [
-                'service_name' => $consultation,
-                'service_quantity'  => $consult_quantity,
-                'service_fee'  => $consult_fee,
-                'billing_no'   => $billing_no,
-                'added_on' => date('Y-m-d')
+                'service_name'     => $consultation,
+                'service_quantity' => $consult_quantity,
+                'service_fee'      => $consult_fee,
+                'billing_no'       => $billing_no,
+                'added_on'         => date('Y-m-d')
             ];
 
             $this->billing_model->insert_consultation_billing_services($services);
@@ -366,19 +393,19 @@ class Billing_controller extends CI_Controller {
                     'deduction_name'   => 'Philhealth',
                     'deduction_amount' => $philhealth_deduction,
                     'billing_no'       => $billing_no,
-                    'added_on'     => date('Y-m-d')
+                    'added_on'         => date('Y-m-d')
                 ];
 
                 $this->billing_model->insert_billing_deductions($philhealth);
             }
 
-            // if sss deduction has value
+            // if SSS deduction has value
             if($sss_deduction > 0){
                 $sss[] = [
                     'deduction_name'   => 'SSS',
                     'deduction_amount' => $sss_deduction,
                     'billing_no'       => $billing_no,
-                    'added_on'     => date('Y-m-d')
+                    'added_on'         => date('Y-m-d')
                 ];
 
                 $this->billing_model->insert_billing_deductions($sss);
@@ -394,7 +421,7 @@ class Billing_controller extends CI_Controller {
                         'deduction_name'   => $deduction_names[$y],
                         'deduction_amount' => $deduction_amounts[$y],
                         'billing_no'       => $billing_no,
-                        'added_on'     => date('Y-m-d')
+                        'added_on'         => date('Y-m-d')
                     ];
                 }
 
@@ -409,42 +436,58 @@ class Billing_controller extends CI_Controller {
                     'amount'        => $personal_charge,
                     'billing_no'    => $billing_no,
                     'status'        => 'Unpaid',
-                    'added_on'  => date('Y-m-d')
+                    'added_on'      => date('Y-m-d')
                 ];
 
                 $this->billing_model->insert_personal_charge($charge);
             }
 
-            // Update Member's Remaining Credit Limit Balance
-            $remaining_bal = $this->session->userdata('b_member_bal');
+            $member_mbl = $this->billing_model->get_member_mbl($emp_id);
+            $remaining_bal = $member_mbl['remaining_balance'];
+            $current_used_mbl = $member_mbl['used_mbl'] != '' ? $member_mbl['used_mbl'] : 0; 
+            
+            // calculate members used mbl
+            $total_used_mbl = $current_used_mbl + $net_bill;
 
+            // Update Member's Remaining Credit Limit Balance
             if($net_bill > 0 && $net_bill < $remaining_bal){
+                // set used mbl value for update
+                $used_mbl = $total_used_mbl >= $member_mbl['max_benefit_limit'] ?  $member_mbl['max_benefit_limit'] : $total_used_mbl;
+
                 // calculate deduction of member's remaining MBL balance
                 $new_balance = $remaining_bal - $net_bill;
                 $data = [
-                    'used_mbl' => $net_bill,
+                    'used_mbl'          => $used_mbl,
                     'remaining_balance' => $new_balance
                 ];
                 $this->billing_model->update_member_remaining_balance($emp_id, $data);
+                // call function to unset session userdata on final billing process
+                // unset_session_data();
             }else if($net_bill >= $remaining_bal){
                 $data = [
-                    'used_mbl' => $remaining_bal,
+                    'used_mbl'          => $member_mbl['max_benefit_limit'],
                     'remaining_balance' => 0
                 ];
                 $this->billing_model->update_member_remaining_balance($emp_id, $data);
+                // call function to unset session userdata on final billing process
+                // unset_session_data();
             }
+
+            // get billing info based on billing number
+            $bill = $this->billing_model->get_billing_info($billing_no);
+            $encrypted_id = $this->myhash->hasher($bill['billing_id'], 'encrypt');
             
             $response = [
-                'token' => $token,
-                'status' => 'success',
-                'message' => 'Billed Successfully',
-                'billing_no' => $billing_no
+                'token'      => $token,
+                'status'     => 'success',
+                'message'    => 'Billed Successfully',
+                'billing_id' => $encrypted_id
             ];
 
         }else{
             $response = [
-                'token' => $token,
-                'status' => 'error',
+                'token'   => $token,
+                'status'  => 'error',
                 'message' => 'Bill Transaction Failed'
             ];
         }
@@ -459,7 +502,6 @@ class Billing_controller extends CI_Controller {
 		$this->load->view('healthcare_provider_panel/billing/billing_success');
 		$this->load->view('templates/footer');
     }
-
 
     function billing3BillNoa() {
         $token = $this->security->get_csrf_hash();

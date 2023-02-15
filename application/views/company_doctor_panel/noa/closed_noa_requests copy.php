@@ -24,7 +24,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
-         <ul class="nav nav-tabs mb-4" role="tablist">
+        <ul class="nav nav-tabs mb-4" role="tablist">
           <li class="nav-item">
             <a
               class="nav-link"
@@ -63,7 +63,7 @@
           </li>
         </ul>
 
-        <div class="card shadow">
+       <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-hover" id="closedNoaTable">
@@ -88,15 +88,15 @@
         <?php include 'view_closed_noa_details.php'; ?>
 
       </div>
-      <!-- End Row  -->  
-      </div>
-    <!-- End Container fluid  -->
+    <!-- End Row  -->  
     </div>
-  <!-- End Page wrapper  -->
+  <!-- End Container fluid  -->
   </div>
+<!-- End Page wrapper  -->
+</div>
 <!-- End Wrapper -->
 <script>
-  const baseUrl = `<?php echo base_url(); ?>`;
+  const baseUrl = "<?php echo base_url(); ?>`;
 
   $(document).ready(function() {
 
@@ -107,11 +107,11 @@
 
       // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}company-doctor/noa/requests-list/closed/fetch`,
+        url: `${baseUrl}company-doctor/noa/requests-list/approved/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: {
-          'token': '<?php echo $this->security->get_csrf_hash(); ?>'
+          'token': '<?= $this->security->get_csrf_hash() ?>'
         }
       },
 
@@ -168,6 +168,9 @@
             break;
           case 'Disapproved':
             $('#noa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
+            break;
+          case 'Closed':
+            $('#noa-status').html(`<strong class="text-info">[${req_status}]</strong>`);
             break;
         }
         

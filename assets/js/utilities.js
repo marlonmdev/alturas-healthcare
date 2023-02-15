@@ -14,7 +14,7 @@ const logout = (baseUrl) => {
 						positionClass: "toast-bottom-right",
 						timeOut: "2000",
 					};
-					toastr["info"]("Logging You Out...");
+					toastr["info"]("Logging Out...");
 					setTimeout(function () {
 						window.location.href = `${baseUrl}logout`;
 					}, 2500);

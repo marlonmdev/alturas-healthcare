@@ -113,10 +113,16 @@
                             </div>
 
                             <div class="col-md-3">
-                                <label class="form-label ls-1">Fee</label>
-                                <input type="number" class="form-control fw-bold" id="consult-fee" name="consult-fee" placeholder="Enter Amount" oninput="calculateConsultationBilling(`<?= $remaining_balance ?>`)" min="0" required>
-                                <div class="invalid-feedback">
-                                    Service Cost is required.
+                                <label class="form-label ls-1"><i class="mdi mdi-asterisk text-danger"></i>Service Fee</label> 
+
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-primary text-white">&#8369;</span>
+
+                                    <input type="number" class="form-control fw-bold ls-1" id="consult-fee" name="consult-fee" placeholder="Enter Amount" oninput="calculateConsultationBilling(`<?= $remaining_balance ?>`)" min="0" required>
+
+                                    <div class="invalid-feedback">
+                                        Service Cost is required.
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -129,19 +135,35 @@
                             </h4>
                         </div>
                         <div class="row my-2">
+
                             <div class="col-md-3">
-                                <label class="form-label ls-1">PhilHealth</label>
-                                <input type="number" class="input-deduction form-control fw-bold" id="deduct-philhealth" name="philhealth-deduction" placeholder="Enter Amount" oninput="calculateConsultationBilling(`<?= $remaining_balance ?>`)" min="0" readonly>
-                                <span class="text-danger fw-bold deduction-msg"></span>
+                                <label class="form-label ls-1">PhilHealth</label> <span class="text-muted">(optional)</span>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-success text-white">&#8369;</span>
+
+                                    <input type="number" class="input-deduction form-control fw-bold ls-1" id="deduct-philhealth" name="philhealth-deduction" placeholder="Deduction Amount" oninput="calculateConsultationBilling(`<?= $remaining_balance ?>`)" min="0" readonly>
+
+                                    <span class="text-danger fw-bold deduction-msg"></span>
+                                </div>
                             </div>
+
                             <div class="col-md-3">
-                                <label class="form-label ls-1">SSS</label>
-                                <input type="number" class="input-deduction form-control fw-bold" id="deduct-sss" name="sss-deduction" placeholder="Enter Amount" oninput="calculateConsultationBilling(`<?= $remaining_balance ?>`)" min="0" readonly>
-                                <span class="text-danger fw-bold deduction-msg"></span>
+                                <label class="form-label ls-1">SSS</label> <span class="text-muted">(optional)</span>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-success text-white">&#8369;</span>
+
+                                    <input type="number" class="input-deduction form-control fw-bold ls-1" id="deduct-sss" name="sss-deduction" placeholder="Deduction Amount" oninput="calculateConsultationBilling(`<?= $remaining_balance ?>`)" min="0" readonly>
+
+                                    <span class="text-danger fw-bold deduction-msg"></span>
+                                </div>
                             </div>
-                            <div class="col-md-3 d-flex justify-content-start align-items-end">
-                                <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addOtherDeductionInputs(`<?= $remaining_balance ?>`)"><i class="mdi mdi-plus-circle"></i> Add Deduction</button>
+                            
+                            <div class="col-md-3" style="margin-top:28px;">
+                                <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addOtherDeductionInputs(`<?= $remaining_balance ?>`)" disabled>
+                                    <i class="mdi mdi-plus-circle"></i> Add Deduction
+                                </button>
                             </div>
+                            
                         </div>
 
                         <div id="dynamic-deduction"></div>
@@ -153,22 +175,34 @@
                         <div class="row my-4">
                             <div class="col-md-3">
                                 <label class="form-label ls-1">Total Bill</label>
-                                <input type="text" class="form-control fw-bold ls-1" id="total-bill" name="total-bill" value="0" readonly>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-cyan text-white">&#8369;</span>
+                                    <input type="text" class="form-control fw-bold ls-1" id="total-bill" name="total-bill" value="" readonly>
+                                </div>
                             </div>
 
-                            <div class="col-lg-3">
+                            <div class="col-md-3">
                                 <label class="form-label ls-1">Total Deduction</label>
-                                <input type="text" class="form-control fw-bold ls-1" id="total-deduction" name="total-deduction" value="0" readonly>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-cyan text-white">&#8369;</span>
+                                    <input type="text" class="form-control fw-bold ls-1" id="total-deduction" name="total-deduction" value="" readonly>
+                                </div>
                             </div>
 
-                            <div class="col-lg-3">
+                            <div class="col-md-3">
                                 <label class="form-label ls-1">Net Bill</label>
-                                <input type="text" class="form-control text-success fw-bold ls-1" id="net-bill" name="net-bill" value="0" readonly>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-cyan text-white">&#8369;</span>
+                                    <input type="text" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" value="" readonly>
+                                </div>
                             </div>
 
-                            <div class="col-lg-3">
+                            <div class="col-md-3">
                                 <label class="form-label ls-1">Personal Charge</label>
-                                <input type="text" class="form-control text-cyan fw-bold ls-1" id="personal-charge" name="personal-charge" value="0" readonly>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-cyan text-white">&#8369;</span>
+                                    <input type="text" class="form-control fw-bold ls-1" id="personal-charge" name="personal-charge" value="" readonly>
+                                </div>
                             </div>
                         </div>
 
@@ -402,9 +436,14 @@
             /* Creating a form input field with a name of deduction_amount[] and a class of
             deduction-amount. */
             html_code += `<div class="col-md-3">
-                            <input type="number" name="deduction-amount[]" class="deduction-amount form-control fw-bold ls-1" placeholder="Enter Deduction Amount" oninput="calculateConsultationBilling(${remaining_balance})" required/>
-                            <span class="other-deduction-msg text-danger fw-bold"></span>
-                         </div>`;
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-success text-white">&#8369;</span>
+
+                                    <input type="number" name="deduction-amount[]" class="deduction-amount form-control fw-bold ls-1" placeholder="*Deduction Amount" oninput="calculateDiagnosticTestBilling(${remaining_balance})" required/>
+
+                                    <span class="other-deduction-msg text-danger fw-bold"></span>
+                                </div>
+                          </div>`;
 
             
            /* Adding a remove button to the html code. */
@@ -452,8 +491,8 @@
 
         // show confirm dialog if the form has passed the submit validation check
         $.confirm({
-            title: '<strong>Confirm!</strong>',
-            content: 'Are you sure to Bill now?',
+            title: '<strong>Confirmation!</strong>',
+            content: 'Are you sure, please review before you proceed?',
             type: 'blue',
             buttons: {
                 confirm: {
@@ -469,12 +508,12 @@
                             data: data,
                             dataType: "json",
                             success: function(response) {
-                                const { token, status, message } = response;
+                                const { token, status, message, billing_id } = response;
 
                                 if (status == 'success') {
                                     
                                     setTimeout(function () {
-                                        window.location.href = `${baseUrl}healthcare-provider/billing/bill-loa/consultation/success`;
+                                        window.location.href = `${baseUrl}healthcare-provider/billing/bill-loa/consultation/success/${billing_id}`;
                                     }, 500);
 
                                 } else if(status == 'error') {

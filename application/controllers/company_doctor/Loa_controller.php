@@ -27,6 +27,8 @@ class Loa_controller extends CI_Controller {
 
 			$full_name = $loa['first_name'] . ' ' . $loa['middle_name'] . ' ' . $loa['last_name'] . ' ' . $loa['suffix'];
 
+			$custom_loa_no = '<mark class="bg-primary text-white">'.$loa['loa_no'].'</mark>';
+
 			$custom_date = date("m/d/Y", strtotime($loa['request_date']));
 
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $loa['status'] . '</span></div>';
@@ -67,7 +69,7 @@ class Loa_controller extends CI_Controller {
 			}
 
 			// this data will be rendered to the datatable
-			$row[] = $loa['loa_no'];
+			$row[] = $custom_loa_no;
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
@@ -99,6 +101,8 @@ class Loa_controller extends CI_Controller {
 
 			$full_name = $loa['first_name'] . ' ' . $loa['middle_name'] . ' ' . $loa['last_name'] . ' ' . $loa['suffix'];
 
+			$custom_loa_no = '<mark class="bg-primary text-white">'.$loa['loa_no'].'</mark>';
+
 			$custom_date = date("m/d/Y", strtotime($loa['request_date']));
 
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $loa['status'] . '</span></div>';
@@ -122,7 +126,7 @@ class Loa_controller extends CI_Controller {
 			}
 
 			// this data will be rendered to the datatable
-			$row[] = $loa['loa_no'];
+			$row[] = $custom_loa_no;
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
@@ -155,6 +159,8 @@ class Loa_controller extends CI_Controller {
 
 			$full_name = $loa['first_name'] . ' ' . $loa['middle_name'] . ' ' . $loa['last_name'] . ' ' . $loa['suffix'];
 
+			$custom_loa_no = '<mark class="bg-primary text-white">'.$loa['loa_no'].'</mark>';
+
 			$custom_date = date("m/d/Y", strtotime($loa['request_date']));
 
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-danger">' . $loa['status'] . '</span></div>';
@@ -179,7 +185,7 @@ class Loa_controller extends CI_Controller {
 			}
 
 			// this data will be rendered to the datatable
-			$row[] = $loa['loa_no'];
+			$row[] = $custom_loa_no;
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
@@ -212,6 +218,8 @@ class Loa_controller extends CI_Controller {
 
 			$full_name = $loa['first_name'] . ' ' . $loa['middle_name'] . ' ' . $loa['last_name'] . ' ' . $loa['suffix'];
 
+			$custom_loa_no = '<mark class="bg-primary text-white">'.$loa['loa_no'].'</mark>';
+
 			$custom_date = date("m/d/Y", strtotime($loa['request_date']));
 
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-info">' . $loa['status'] . '</span></div>';
@@ -235,7 +243,7 @@ class Loa_controller extends CI_Controller {
 			}
 
 			// this data will be rendered to the datatable
-			$row[] = $loa['loa_no'];
+			$row[] = $custom_loa_no;
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;

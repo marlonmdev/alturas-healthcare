@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 10, 2023 at 08:06 AM
+-- Generation Time: Feb 15, 2023 at 07:12 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -197,7 +197,7 @@ CREATE TABLE `billing` (
   `net_bill` varchar(30) NOT NULL,
   `personal_charge` varchar(30) NOT NULL,
   `mbr_remaining_bal` varchar(20) NOT NULL,
-  `billing_img` varchar(50) NOT NULL,
+  `receipt_img` varchar(50) NOT NULL,
   `billed_by` varchar(80) NOT NULL,
   `billed_on` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -206,8 +206,8 @@ CREATE TABLE `billing` (
 -- Dumping data for table `billing`
 --
 
-INSERT INTO `billing` (`billing_id`, `billing_no`, `emp_id`, `loa_id`, `noa_id`, `hp_id`, `total_bill`, `total_deduction`, `net_bill`, `personal_charge`, `mbr_remaining_bal`, `billing_img`, `billed_by`, `billed_on`) VALUES
-(1, 'BLN-1676012708', '23278-2022', '2', '', '5', '36323.00', '4000.00', '32323.00', '2323.00', '30000', '', 'George Curay', '2023-02-10');
+INSERT INTO `billing` (`billing_id`, `billing_no`, `emp_id`, `loa_id`, `noa_id`, `hp_id`, `total_bill`, `total_deduction`, `net_bill`, `personal_charge`, `mbr_remaining_bal`, `receipt_img`, `billed_by`, `billed_on`) VALUES
+(1, 'BLN-1676441439', '38343-2022', '31', '', '5', '5000.00', '2000.00', '3000.00', '0', '30000', '', 'George Curay', '2023-02-15');
 
 -- --------------------------------------------------------
 
@@ -223,6 +223,13 @@ CREATE TABLE `billing_deductions` (
   `added_on` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `billing_deductions`
+--
+
+INSERT INTO `billing_deductions` (`deduction_id`, `deduction_name`, `deduction_amount`, `billing_no`, `added_on`) VALUES
+(1, 'Philhealth', '2000', 'BLN-1676441439', '2023-02-15');
+
 -- --------------------------------------------------------
 
 --
@@ -237,6 +244,13 @@ CREATE TABLE `billing_services` (
   `billing_no` varchar(50) NOT NULL,
   `added_on` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `billing_services`
+--
+
+INSERT INTO `billing_services` (`service_id`, `service_name`, `service_quantity`, `service_fee`, `billing_no`, `added_on`) VALUES
+(1, 'Consultation', 1, '5000', 'BLN-1676441439', '2023-02-15');
 
 -- --------------------------------------------------------
 
@@ -399,6 +413,7 @@ CREATE TABLE `max_benefit_limits` (
   `mbl_id` int(20) NOT NULL,
   `emp_id` varchar(20) NOT NULL,
   `max_benefit_limit` varchar(10) NOT NULL,
+  `used_mbl` int(10) NOT NULL,
   `remaining_balance` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -406,13 +421,13 @@ CREATE TABLE `max_benefit_limits` (
 -- Dumping data for table `max_benefit_limits`
 --
 
-INSERT INTO `max_benefit_limits` (`mbl_id`, `emp_id`, `max_benefit_limit`, `remaining_balance`) VALUES
-(6, '56313-2022', '30000', '30000'),
-(9, '23278-2022', '30000', '30000'),
-(10, '32544-2022', '25000', '25000'),
-(11, '00281-2021', '25000', '25000'),
-(12, '23764-2022', '22500', '22500'),
-(13, '38343-2022', '30000', '30000');
+INSERT INTO `max_benefit_limits` (`mbl_id`, `emp_id`, `max_benefit_limit`, `used_mbl`, `remaining_balance`) VALUES
+(6, '56313-2022', '30000', 0, '30000'),
+(9, '23278-2022', '30000', 0, '30000'),
+(10, '32544-2022', '25000', 0, '25000'),
+(11, '00281-2021', '25000', 0, '25000'),
+(12, '23764-2022', '22500', 0, '22500'),
+(13, '38343-2022', '30000', 3000, '27000');
 
 -- --------------------------------------------------------
 
@@ -608,7 +623,7 @@ INSERT INTO `user_accounts` (`user_id`, `emp_id`, `full_name`, `user_role`, `dsg
 (24, '23764-2022', 'Ruel Budoy Tumale Jr.', 'member', '', '', 'akobudoy', '$2y$10$1NxWGdi0gJFbVaMVssUHQOECqkJaiFW2CJ.BfUaTAqSTzFnq.e2tK', 'Active', 0, '', '2022-11-28', '2023-02-02', 'Ruel Budoy Tumale Jr.'),
 (31, '', 'Dr. Michael D. Uy', 'company-doctor', '', '1', 'doctor', '$2y$10$ESojuDH6f8Eiz99eZtAeVeoHuZY8QI3nb7Wbc1.L5/WVRUEJkAn3K', 'Active', 0, '', '2022-12-02', '2023-01-27', 'Dr. Michael D. Uy'),
 (32, '', 'Dr. Nonaluz Pizarras', 'company-doctor', '', '2', 'drnona', '$2y$10$pLzJ7lOD.bshnFnke3ff/exRajtOknhpR9mqddW4iH2XCx2p0q.Ji', 'Active', 0, '', '2022-12-02', '2022-12-02', ''),
-(36, '38343-2022', 'Gedym Mae Sab ', 'member', '', '', 'gedymsab', '$2y$10$ujcJZQEJcJQjbk0duru1l.DpzmIn4zFAedY6PpI1XCvPmAb.y7DEm', 'Active', 0, '', '2023-01-05', '2023-02-01', 'Gedym Mae Sab ');
+(36, '38343-2022', 'Gedym Mae Sab ', 'member', '', '', 'gedymsab', '$2y$10$0G.RYXrRCklMg4eOMsOQ3OGl7FIRWaam8anyCyZEQFpsR3GHszJNq', 'Active', 0, '', '2023-01-05', '2023-02-14', 'IT SysDev');
 
 --
 -- Indexes for dumped tables
@@ -760,7 +775,7 @@ ALTER TABLE `billing`
   ADD KEY `billing_date` (`billed_on`),
   ADD KEY `total_bill` (`total_bill`),
   ADD KEY `personal_charges` (`personal_charge`),
-  ADD KEY `billing_img` (`billing_img`),
+  ADD KEY `billing_img` (`receipt_img`),
   ADD KEY `billed_by` (`billed_by`),
   ADD KEY `loa_no` (`loa_id`),
   ADD KEY `noa_no` (`noa_id`),
@@ -769,7 +784,8 @@ ALTER TABLE `billing`
   ADD KEY `mbr_remaining_bal` (`mbr_remaining_bal`),
   ADD KEY `billing_on` (`billed_on`),
   ADD KEY `billed_on` (`billed_on`),
-  ADD KEY `personal_charge` (`personal_charge`);
+  ADD KEY `personal_charge` (`personal_charge`),
+  ADD KEY `receipt_img` (`receipt_img`);
 
 --
 -- Indexes for table `billing_deductions`
@@ -877,7 +893,8 @@ ALTER TABLE `max_benefit_limits`
   ADD KEY `max_benefit_limit` (`max_benefit_limit`),
   ADD KEY `remaining_balance` (`remaining_balance`),
   ADD KEY `remaining_balance_2` (`remaining_balance`),
-  ADD KEY `max_benefit_limit_2` (`max_benefit_limit`);
+  ADD KEY `max_benefit_limit_2` (`max_benefit_limit`),
+  ADD KEY `used_mbl` (`used_mbl`);
 
 --
 -- Indexes for table `members`
@@ -1040,13 +1057,13 @@ ALTER TABLE `billing`
 -- AUTO_INCREMENT for table `billing_deductions`
 --
 ALTER TABLE `billing_deductions`
-  MODIFY `deduction_id` int(255) NOT NULL AUTO_INCREMENT;
+  MODIFY `deduction_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `billing_services`
 --
 ALTER TABLE `billing_services`
-  MODIFY `service_id` int(255) NOT NULL AUTO_INCREMENT;
+  MODIFY `service_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `company_doctors`

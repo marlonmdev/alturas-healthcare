@@ -11,7 +11,7 @@
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Company Doctor</li>
               <li class="breadcrumb-item active" aria-current="page">
-                Approved NOA
+                Closed NOA
               </li>
             </ol>
           </nav>
@@ -24,7 +24,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
-        <ul class="nav nav-tabs mb-4" role="tablist">
+         <ul class="nav nav-tabs mb-4" role="tablist">
           <li class="nav-item">
             <a
               class="nav-link"
@@ -88,15 +88,15 @@
         <?php include 'view_closed_noa_details.php'; ?>
 
       </div>
-    <!-- End Row  -->  
+      <!-- End Row  -->  
+      </div>
+    <!-- End Container fluid  -->
     </div>
-  <!-- End Container fluid  -->
+  <!-- End Page wrapper  -->
   </div>
-<!-- End Page wrapper  -->
-</div>
 <!-- End Wrapper -->
 <script>
-  const baseUrl = "<?php echo base_url(); ?>`;
+  const baseUrl = `<?php echo base_url(); ?>`;
 
   $(document).ready(function() {
 
@@ -168,9 +168,6 @@
             break;
           case 'Disapproved':
             $('#noa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
-            break;
-          case 'Closed':
-            $('#noa-status').html(`<strong class="text-info">[${req_status}]</strong>`);
             break;
         }
         

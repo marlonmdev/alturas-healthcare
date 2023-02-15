@@ -276,13 +276,17 @@ class Billing_controller extends CI_Controller {
             if($net_bill > 0 && $net_bill < $remaining_bal){
                 // calculate deduction of member's remaining MBL balance
                 $new_balance = $remaining_bal - $net_bill;
-                $this->billing_model->update_member_remaining_balance($emp_id, $new_balance);
-
+                $data = [
+                    'used_mbl' => $net_bill,
+                    'remaining_balance' => $new_balance
+                ];
+                $this->billing_model->update_member_remaining_balance($emp_id, $data);
             }else if($net_bill >= $remaining_bal){
-
-                $new_balance = 0;
-                $this->billing_model->update_member_remaining_balance($emp_id, $new_balance);
-
+                $data = [
+                    'used_mbl' => $remaining_bal,
+                    'remaining_balance' => 0
+                ];
+                $this->billing_model->update_member_remaining_balance($emp_id, $data);
             }
             
             $response = [
@@ -417,13 +421,17 @@ class Billing_controller extends CI_Controller {
             if($net_bill > 0 && $net_bill < $remaining_bal){
                 // calculate deduction of member's remaining MBL balance
                 $new_balance = $remaining_bal - $net_bill;
-                $this->billing_model->update_member_remaining_balance($emp_id, $new_balance);
-
+                $data = [
+                    'used_mbl' => $net_bill,
+                    'remaining_balance' => $new_balance
+                ];
+                $this->billing_model->update_member_remaining_balance($emp_id, $data);
             }else if($net_bill >= $remaining_bal){
-
-                $new_balance = 0;
-                $this->billing_model->update_member_remaining_balance($emp_id, $new_balance);
-
+                $data = [
+                    'used_mbl' => $remaining_bal,
+                    'remaining_balance' => 0
+                ];
+                $this->billing_model->update_member_remaining_balance($emp_id, $data);
             }
             
             $response = [

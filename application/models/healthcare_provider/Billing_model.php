@@ -124,9 +124,9 @@ class Billing_model extends CI_Model {
         return $this->db->insert('personal_charges', $charge);
     }
 
-    function update_member_remaining_balance($emp_id, $new_balance) {
-        $this->db->set('remaining_balance', $new_balance)
-                 ->where('emp_id', $emp_id);
-        return $this->db->update('max_benefit_limits');
+    function update_member_remaining_balance($emp_id, $data) {
+        $this->db->where('emp_id', $emp_id);
+        return $this->db->update('max_benefit_limits', $data);
     }
+
 }

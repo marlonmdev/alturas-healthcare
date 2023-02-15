@@ -86,9 +86,9 @@ class Noa_controller extends CI_Controller {
 
 				$saved = $this->noa_model->db_insert_noa_request($post_data);
 				if (!$saved) {
-					$response = array('status' => 'save-error', 'message' => 'NOA Request Failed');
+					$response = ['status' => 'save-error', 'message' => 'NOA Request Failed'];
 				}
-				$response = array('status' => 'success', 'message' => 'NOA Request Save Successfully');
+				$response = ['status' => 'success', 'message' => 'NOA Request Save Successfully'];
 			}
 			echo json_encode($response);
 		}
@@ -118,23 +118,23 @@ class Noa_controller extends CI_Controller {
 		$this->form_validation->set_rules('admission-date', 'Request Date of  Availment', 'required');
 		$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[1000]');
 		if ($this->form_validation->run() == FALSE) {
-			$response = array(
+			$response = [
 				'status' => 'error',
 				'hospital_name_error' => form_error('hospital-name'),
 				'admission_date_error' => form_error('admission-date'),
 				'chief_complaint_error' => form_error('chief-complaint'),
-			);
+			];
 		} else {
 			$hospital_id = $this->input->post('hospital-name');
 			$hospital_exist = $this->noa_model->db_check_hospital_exist($hospital_id);
 			if (!$hospital_exist) {
-				$response = array('status' => 'save-error', 'message' => 'Hospital Does Not Exist');
+				$response = ['status' => 'save-error', 'message' => 'Hospital Does Not Exist'];
 			} else {
-				$post_data = array(
+				$post_data = [
 					'hospital_id' => $inputPost['hospital-name'],
 					'admission_date' => $inputPost['admission-date'],
 					'chief_complaint' => strip_tags($inputPost['chief-complaint']),
-				);
+				];
 				$updated = $this->noa_model->db_update_noa_request($noa_id, $post_data);
 				if (!$updated) {
 					$response = array('status' => 'save-error', 'message' => 'NOA Request Update Failed');

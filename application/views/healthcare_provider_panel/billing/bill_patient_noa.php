@@ -109,10 +109,6 @@
 
                                 <div id="cost-types-div" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#costTypeAccordion">
 
-                                    <!-- <div class="d-flex justify-content-center mx-5 my-4">
-                                        <input type="text" id="myInput" onkeyup="searchFunction()" placeholder="Search Medical Services...">
-                                    </div> -->
-
                                     <div class="accordion-body">
 
                                         <div class="card px-3">
@@ -156,9 +152,7 @@
                         </div>
                         <!-- End of Cost Types Accordion -->
 
-
-
-                        <!-- <form method="POST" id="formNoaBilling" class="needs-validation" novalidate>
+                        <form method="POST" id="formNoaBilling" class="needs-validation" novalidate>
                             <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
                             <input type="hidden" name="noa-id" value="<?= $noa_id ?>">
                             <input type="hidden" name="emp-id" value="<?= $member['emp_id'] ?>">
@@ -166,33 +160,15 @@
                             <input type="hidden" name="selected-cost-types-count" value="0" min="0" id="deduction-count">
 
 
-                            <div class="card shadow">
-                                <div class="card-body">
+                           
+                        </form>                    
 
-                                    <div class="table-responsive">
-                                        <table id="tbl-charges" class="table table-hover">
-                                            <thead class="bg-cyan">
-                                                <tr class="text-center">
-                                                    <th class="text-white ls-2">COST TYPE</th>
-                                                    <th class="text-white ls-2">QUANTITY</th>
-                                                    <th class="text-white ls-2">SERVICE FEE</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="tbody">
-                                            </tbody>
-                                        </table>
-                                    </div>
-
-                                </div>
-                            </div>                    
-                        </form>                     -->
-
-                        <hr class="mt-4">
+                        <!-- <hr class="mt-4"> -->
 
                         <!-- this is a custom alert to show if the net bill exceeds the member's remaining balance -->
                         <?php include 'personal_charge_alert.php'; ?>
 
-                        <div class="row">
+                        <div class="row mt-4">
                             <h4 class="text-center text-secondary fw-bold ls-2">
                                 BILLING DEDUCTIONS
                             </h4>
@@ -204,7 +180,7 @@
                                 <label class="form-label ls-1">PhilHealth</label> <span class="text-muted">(Optional)</span>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text bg-success text-white">&#8369;</span>
-                                    <input type="number" class="input-deduction form-control fw-bold" id="deduct-philhealth" name="philhealth-deduction" placeholder="Enter Amount" oninput="CalculateNOABilling(`<?= $remaining_balance ?>`)" min="0" readonly>
+                                    <input type="number" class="input-deduction form-control fw-bold" id="deduct-philhealth" name="philhealth-deduction" placeholder="Enter Amount" oninput="calculateNoaBilling(`<?= $remaining_balance ?>`)" min="0" readonly>
                                     <span class="text-danger fw-bold deduction-msg ms-3" style="font-size:12px"></span>
                                 </div>
                             </div>
@@ -213,7 +189,7 @@
                                 <label class="form-label ls-1">SSS</label> <span class="text-muted">(Optional)</span>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text bg-success text-white">&#8369;</span>
-                                    <input type="number" class="input-deduction form-control fw-bold" id="deduct-sss" name="sss-deduction" placeholder="Enter Amount" oninput="CalculateNOABilling(`<?= $remaining_balance ?>`)" min="0" readonly>
+                                    <input type="number" class="input-deduction form-control fw-bold" id="deduct-sss" name="sss-deduction" placeholder="Enter Amount" oninput="calculateNoaBilling(`<?= $remaining_balance ?>`)" min="0" readonly>
                                     <span class="text-danger fw-bold deduction-msg ms-3" style="font-size:12px"></span>
                                 </div>
                             </div>
@@ -224,6 +200,8 @@
                                 </button>
                             </div>
                         </div>
+
+                        <div id="dynamic-deduction"></div>
 
                         <hr class="mt-4">
 
@@ -295,25 +273,24 @@
 
                 <!-- Scroll to top -->
                 <div class="d-flex justify-content-end align-items-end">
-                    <a href="#container-div" class="scroll-to-top pe-4" title="Scroll to top">
-                        <i class="mdi mdi-arrow-up-drop-circle-outline text-info fs-1"></i>
+                    <a href="#container-div" class="scroll-to-top pe-1" title="Scroll to top">
+                        <i class="mdi mdi-arrow-up-bold-circle-outline text-dark fs-1"></i>
                     </a>
                 </div>
 
             </div>
-            
-
-
+    
         </div>
         <!-- End of card div -->
     </div>
-
-    
-
 </div>
 
 <script>
     const baseUrl = `<?php echo base_url(); ?>`;
+
+    $(document).ready(function() {
+        $('#costTypesTable').DataTable();
+    });
 
     let count = 0; // declaring the count variable outside the function will persist its value even after the function is called, allowing it to increment by one each time the function is called.
 
@@ -329,8 +306,8 @@
             /* Creating a new input field with the name service_name[] */
             html_code += `<div class="col-md-6">
                             <div class="form-group">
-                                <label for="service-name">Service Name</label>
-                                <input type="text" class="form-control fw-bold ls-1" id="service-name" name="service-name[]" value="${ctype_name}" readonly/>
+                                <label for="ct-name">Service Name</label>
+                                <input type="text" class="ct-name form-control fw-bold ls-1" id="service-name" name="ct-name[]" value="${ctype_name}" readonly/>
                                 <div class="invalid-feedback">
                                     Service Name is required
                                 </div>
@@ -341,7 +318,7 @@
             html_code += `<div class="col-md-2">
                             <div class="form-group">
                                 <label for="service-qty"><i class="mdi mdi-asterisk text-danger"></i>Quantity</label>
-                                <input type="number" name="service-qty[]" class="service-qty form-control fw-bold ls-1" value="1" min="1" required/>
+                                <input type="number" name="ct-qty[]" class="ct-qty form-control fw-bold ls-1" value="1" min="1"  oninput="calculateNoaBilling(${remaining_balance})" required/>
                                 <div class="invalid-feedback">
                                     Service Name is required
                                 </div>
@@ -355,7 +332,7 @@
                                 <label class="form-label ls-1"><i class="mdi mdi-asterisk text-danger"></i>Service Fee</label> 
                                 <div class="input-group mb-3">
                                     <span class="input-group-text bg-dark text-white">&#8369;</span>
-                                    <input type="number" name="service-fee[]" class="service-fee form-control fw-bold ls-1" placeholder="*Enter Amount" oninput="calculateNoaBilling(${remaining_balance})" required/>
+                                    <input type="number" name="ct-fee[]" class="ct-fee form-control fw-bold ls-1" placeholder="*Enter Amount" oninput="calculateNoaBilling(${remaining_balance})" required/>
 
                                     <div class="invalid-feedback">
                                         Service Fee is required
@@ -378,34 +355,6 @@
         document.querySelector(`#btn-ctype-${ctype_id}`).setAttribute('disabled', true);
     }
 
-    $(document).ready(function() {
-
-        $('#costTypesTable').DataTable();
-
-
-        $('.accordion').on('shown.bs.collapse', function (e) {
-            var accordionBody = $(e.target).find('.accordion-body');
-            $('html, body').animate({scrollTop: accordionBody.offset().top - accordionBody.outerHeight()}, 800);
-        });
-        
-        $(window).scroll(function() {
-            if ($(this).scrollTop() > 100) {
-            $('.scroll-to-top').addClass('show');
-            } else {
-            $('.scroll-to-top').removeClass('show');
-            }
-        });
-
-        $('.scroll-to-top').click(function(event) {
-            event.preventDefault();
-            $('html, body').animate({scrollTop: 0}, 900);
-        });
-
-        $('.inputCT').click(function(){
-            $(this).closest('.parent_element').find('.accordion').slideUp();
-        });
-
-    });
 
     /**
     * It removes a row and then calls a function to recalculate the Billing Total.
@@ -425,29 +374,6 @@
     }
 
     const calculateNoaBilling = (remaining_balance) => {
-        console.log('Hello');
-    }
-
-    function searchFunction() {
-        var input, filter, table, tr, td, i, txtValue;
-        input = document.getElementById("myInput");
-        filter = input.value.toUpperCase();
-        table = document.getElementById("myTable");
-        tr = table.getElementsByTagName("tr");
-        for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[0];
-            if (td) {
-                txtValue = td.textContent || td.innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
-               }
-            }
-        }
-    }     
-          
-    const CalculateNOABilling = (remaining_balance) => {
         let totalBill = 0;
         let total_deduction = 0;
         let net_bill = 0;
@@ -457,8 +383,8 @@
         let other_deduction = 0;
         validateNumberInputs();
 
-        const cost_inputs = document.querySelectorAll('.ct_fee');
-        const quantity_inputs = document.querySelectorAll('.ct_qty');
+        const cost_inputs = document.querySelectorAll('.ct-fee');
+        const quantity_inputs = document.querySelectorAll('.ct-qty');
         const total_bill = document.querySelector('#total-bill');
         const deduct_philhealth = document.querySelector('#deduct-philhealth');
         const deduct_sss = document.querySelector('#deduct-sss');
@@ -473,16 +399,16 @@
 
         for(i = 0;i < cost_inputs.length;i++ ){
             totalBill += cost_inputs[i].value * quantity_inputs[i].value;
-            
         }
+
         total_bill.value = totalBill.toFixed(2);
         enableButtonandDeduction(totalBill);
         
         // Calculate other deduction total
         if(row_deduction.length > 0){
-                for (let i = 0; i < row_deduction.length; i++) {
-                    other_deduction += deduction_amount[i].value * 1;
-                }
+            for (let i = 0; i < row_deduction.length; i++) {
+                other_deduction += deduction_amount[i].value * 1;
+            }
         }
 
         philhealth_deduction = deduct_philhealth.value > 0 ? deduct_philhealth.value : 0;
@@ -541,12 +467,9 @@
         }
     }
 
-     /**
+    /**
     * It adds a row of inputs to the form
     */
-    // let count = 0; // declaring the count variable outside the function will persist its value even after the function is called, allowing it to increment by one each time the function is called.
-
-     // this is for Diagnostic Test LOA Requests
     const addOtherDeductionInputs = (remaining_balance) => {
         const container = document.querySelector('#dynamic-deduction');
         const deduction_count = document.querySelector('#deduction-count');
@@ -557,6 +480,7 @@
 
            /* Creating a new input field with the name deduction_name[] */
             html_code += `<div class="col-md-3">
+                            <label class="form-label ls-1"><i class="mdi mdi-asterisk text-danger"></i>Deduction Name</label> 
                             <input type="text" name="deduction-name[]" class="form-control fw-bold ls-1" placeholder="Enter Deduction Name" required/>
                             <div class="invalid-feedback">
                                 Deduction name and amount is required
@@ -566,17 +490,18 @@
             /* Creating a form input field with a name of deduction_amount[] and a class of
             deduction-amount. */
             html_code += `<div class="col-md-3">
+                                <label class="form-label ls-1"><i class="mdi mdi-asterisk text-danger"></i>Deduction Amount</label> 
                                 <div class="input-group mb-3">
                                     <span class="input-group-text bg-success text-white">&#8369;</span>
 
-                                    <input type="number" name="deduction-amount[]" class="deduction-amount form-control fw-bold ls-1" placeholder="Deduction Amount" oninput="CalculateNOABilling(${remaining_balance})" required/>
+                                    <input type="number" name="deduction-amount[]" class="deduction-amount form-control fw-bold ls-1" placeholder="Deduction Amount" oninput="calculateNoaBilling(${remaining_balance})" required/>
 
                                     <span class="other-deduction-msg text-danger fw-bold ms-3" style="font-size:12px"></span>
                                 </div>
                           </div>`;
 
            /* Adding a remove button to the html code. */
-            html_code += `<div class="col-md-3">
+            html_code += `<div class="col-md-3" style="margin-top:28px;">
                             <button type="button" data-id="${count}" class="btn btn-danger btn-md btn-remove" onclick="removeDeduction(this, ${remaining_balance})" data-bs-toggle="tooltip" title="Click to remove Deduction">
                                 <i class="mdi mdi-close"></i>
                             </button>
@@ -589,7 +514,6 @@
       /**
     * It removes a row and then calls a function to recalculate the total.
     */
-    // this one is for the dynamic deductions
     const removeDeduction = (remove_btn, remaining_balance) => {
         count--;
         const btn_id = remove_btn.getAttribute('data-id');
@@ -598,27 +522,30 @@
         deduction_count.value = count;
 
         document.querySelector(`#row${btn_id}`).remove();
-        CalculateNOABilling(remaining_balance);
+        calculateNoaBilling(remaining_balance);
     }
 
     const enableButtonandDeduction = (totalBill) =>{
         const input_philhealth = document.querySelector('#deduct-philhealth');
         const input_sss = document.querySelector('#deduct-sss');
         const deduct_btn = document.querySelector('#btn-other-deduction');
+        const bill_btn = document.querySelector('#btn-bill');
 
         if(totalBill > 0){
             input_philhealth.removeAttribute('readonly');
             input_sss.removeAttribute('readonly');
             deduct_btn.removeAttribute('disabled');
+            bill_btn.removeAttribute('disabled');
         }else{
             input_philhealth.setAttribute('readonly', true);
             input_sss.setAttribute('readonly', true);
             deduct_btn.setAttribute('disabled', true);
+            bill_btn.setAttribute('disabled', true);
         }
     }
 
-       // function to be called to show patient's Personal Charge Alert if it Net Bill exceeds patient's remaining MBL balance
-       const showPersonalChargeAlert = (charge_amount) => {
+    // function to be called to show patient's Personal Charge Alert if it Net Bill exceeds patient's remaining MBL balance
+    const showPersonalChargeAlert = (charge_amount) => {
         const personalCharge = document.querySelector('#personal-charge');
         // the ids of the html elements below are found in personal-charge_alert.php
         const chargeAlertDiv = document.querySelector('#charge-alert-div');
@@ -642,5 +569,92 @@
         }
     }
 
+    const noa_id = `<?php echo $noa_id; ?>`;
+    const form = document.querySelector('#formNoaBilling');
+    // function to handle consulation form submission
+    $('#formNoaBilling').submit(function(event) {
+        event.preventDefault();
+
+        if (!form.checkValidity()) {
+            form.classList.add('was-validated');
+            return;
+        }
+
+        if($('#net-bill').val() < 0) {
+            form.classList.add('was-validated');
+            return;
+        }
+
+        // show confirm dialog if the form has passed the submit validation check
+        $.confirm({
+            title: '<strong>Confirmation!</strong>',
+            content: 'Are you sure, please review before you proceed?',
+            type: 'blue',
+            buttons: {
+                confirm: {
+                    text: 'Yes',
+                    btnClass: 'btn-blue',
+                    action: function() {
+                        let url = `${baseUrl}healthcare-provider/billing/bill-noa/submit/${noa_id}`;
+                        let data = $('#formNoaBilling').serialize();
+
+                        $.ajax({
+                            type: 'POST',
+                            url: url,
+                            data: data,
+                            dataType: "json",
+                            success: function(response) {
+                                const { token, status, message, billing_id } = response;
+
+                                if (status == 'success') {
+                                    
+                                    setTimeout(function () {
+                                        window.location.href = `${baseUrl}healthcare-provider/billing/bill-noa/success/${billing_id}`;
+                                    }, 500);
+
+                                } else if(status == 'error') {
+
+                                    swal({
+                                        title: 'Failed',
+                                        text: message,
+                                        timer: 3000,
+                                        showConfirmButton: false,
+                                        type: 'error'
+                                    });
+
+                                }
+                            }
+                        });
+                    }
+                },  
+                cancel: {
+                    btnClass: 'btn-dark',
+                    action: function() {
+                        // close dialog
+                    }
+                },
+            }
+        });
+    });
+    // end of loa consultation form submission
+
+    // function searchFunction() {
+    //     var input, filter, table, tr, td, i, txtValue;
+    //     input = document.getElementById("myInput");
+    //     filter = input.value.toUpperCase();
+    //     table = document.getElementById("myTable");
+    //     tr = table.getElementsByTagName("tr");
+    //     for (i = 0; i < tr.length; i++) {
+    //         td = tr[i].getElementsByTagName("td")[0];
+    //         if (td) {
+    //             txtValue = td.textContent || td.innerText;
+    //             if (txtValue.toUpperCase().indexOf(filter) > -1) {
+    //                 tr[i].style.display = "";
+    //             } else {
+    //                 tr[i].style.display = "none";
+    //            }
+    //         }
+    //     }
+    // }     
 
 </script>

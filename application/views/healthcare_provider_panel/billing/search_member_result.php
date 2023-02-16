@@ -34,7 +34,7 @@
             </div>
 
             <div class="tab-content" id="myTabContent">
-                <!-- Patient's LOA Requests Tab -->
+                <!-- ================== Patient's LOA Requests Tab ==================== -->
                 <div class="tab-pane fade show active" id="loa-requests" role="tabpanel">
                     <div class="card shadow">
                         <div class="container">
@@ -106,7 +106,7 @@
                     </div>
 
                 </div>
-                <!-- ========================================== Patient's NOA Requests Tab =============================================== -->
+                <!-- ===================== Patient's NOA Requests Tab ========================= -->
                 <div class="tab-pane fade show" id="noa-requests" role="tabpanel">
                     <div class="card shadow">
                         <div class="container">

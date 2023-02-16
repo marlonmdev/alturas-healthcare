@@ -83,7 +83,7 @@
 
                     <div class="row">
                         <h4 class="text-center ls-2">
-                            <i class="mdi mdi-arrow-down-bold-circle"></i> Availed Services <i class="mdi mdi-arrow-down-bold-circle"></i>
+                            AVAILED SERVICES
                         </h4>
                     </div>
                 </div>
@@ -124,7 +124,7 @@
                                     <label class="form-label ls-1"><i class="mdi mdi-asterisk text-danger"></i>Service Fee</label> 
 
                                     <div class="input-group mb-3">
-                                        <span class="input-group-text bg-primary text-white">&#8369;</span>
+                                        <span class="input-group-text bg-dark text-white">&#8369;</span>
 
                                         <input type="number" class="ct-cost form-control fw-bold ls-1" name="ct-fee[]" placeholder="Enter Amount" oninput="calculateDiagnosticTestBilling(`<?= $remaining_balance ?>`)" min="0" required>
 
@@ -144,7 +144,7 @@
 
                         <div class="row">
                             <h4 class="text-center ls-2">
-                                <i class="mdi mdi-arrow-down-bold-circle"></i> Billing Deductions <i class="mdi mdi-arrow-down-bold-circle"></i>
+                                BILLING DEDUCTIONS
                             </h4>
                         </div>
                         <div class="row my-2">
@@ -182,7 +182,8 @@
                         <div id="dynamic-deduction"></div>
                         
                         <hr class="my-4">
-
+                        
+                        <!-- this is a custom alert to show if the net bill exceeds the member's remaining balance -->
                         <?php include 'personal_charge_alert.php'; ?>
 
                         <div class="row my-4">
@@ -475,7 +476,7 @@
             
            /* Adding a remove button to the html code. */
             html_code += `<div class="col-md-3">
-                            <button type="button" data-id="${count}" class="btn btn-danger btn-md btn-remove" onclick="removeRow(this, ${remaining_balance})" data-bs-toggle="tooltip" title="Click to remove Deduction">
+                            <button type="button" data-id="${count}" class="btn btn-danger btn-md btn-remove" onclick="removeDeduction(this, ${remaining_balance})" data-bs-toggle="tooltip" title="Click to remove Deduction">
                                 <i class="mdi mdi-close"></i>
                             </button>
                          </div>`;
@@ -489,7 +490,7 @@
     * It removes a row and then calls a function to recalculate the total.
     */
     // this one is for the dynamic deductions
-    const removeRow = (remove_btn, remaining_balance) => {
+    const removeDeduction = (remove_btn, remaining_balance) => {
         count--;
         const btn_id = remove_btn.getAttribute('data-id');
         const deduction_count = document.querySelector('#deduction-count');

@@ -80,7 +80,7 @@
                                     <table class="table table striped table-hover" id="tableLoa">
                                         <thead>
                                             <tr>
-                                                <th class="fw-bold">LOA Number</th>
+                                                <th class="fw-bold">LOA No.</th>
                                                 <th class="fw-bold">Request Date</th>
                                                 <th class="fw-bold">Action</th>
                                             </tr>
@@ -93,20 +93,18 @@
                                             ?>
                                                         <tr>
                                                             <td class="fw-bold">
-                                                                <?= $loa['loa_no'] ?>
+                                                                <mark class="bg-primary text-white ls-1"><?= $loa['loa_no'] ?></mark>
                                                             </td>
                                                             <td class="fw-bold">
                                                                 <?= date("m/d/Y", strtotime($loa['request_date'])) ?>
                                                             </td>
                                                             <td class="fw-bold">
                                                                 <div class="col">
-                                                                    <form method="post" action="<?= base_url() ?>healthcare-provider/billing/bill-loa/<?= $this->myhash->hasher($loa['loa_id'], 'encrypt') ?>">
+                                                                    <form method="POST" action="<?= base_url() ?>healthcare-provider/billing/bill-loa/<?= $this->myhash->hasher($loa['loa_id'], 'encrypt') ?>">
 
                                                                         <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
 
                                                                         <input type="hidden" name="emp_id" value="<?= $loa['emp_id'] ?>">
-
-                                                                        <input type="hidden" name="billing_no" value="<?= $billing_no ?>">
 
                                                                         <button type="submit" class="fw-bold" data-bs-toggle="tooltip" title="Click to Proceed" style="background-color: transparent;border:0;color:#4054F1;">
                                                                         Proceed to Billing
@@ -143,8 +141,8 @@
                     </div>
 
                 </div>
-                <!-- Patient's NOA Requests Tab -->
-                <div class="tab-pane fade  show" id="noa-requests" role="tabpanel">
+                <!-- ========================================== Patient's NOA Requests Tab =============================================== -->
+                <div class="tab-pane fade show" id="noa-requests" role="tabpanel">
                     <form action="<?php echo base_url(); ?>healthcare-provider/billing/billing-person/equipment" class="needs-validation" method="post" novalidate>
                         <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
                         <input type="hidden" name="member_id" value="<?= $member['member_id'] ?>">
@@ -180,7 +178,7 @@
                                         <table class="table table-striped table-hover" id="tableNoa">
                                             <thead>
                                                 <tr>
-                                                    <th class="fw-bold">NOA Number</th>
+                                                    <th class="fw-bold">NOA No.</th>
                                                     <th class="fw-bold">Request Date</th>
                                                     <th class="fw-bold">Action</th>
                                                 </tr>
@@ -192,25 +190,33 @@
                                                             if($noa['status'] == 'Approved') {
                                                 ?>
                                                             <tr>
-                                                                <td class="fw-bold"><?= $noa['noa_no'] ?></td>
-                                                                <input type="hidden" name="emp_id" value="<?= $noa['emp_id'] ?>">
-                                                                <input type="hidden" name="billing_no" value="<?= $billing_no ?>">
+                                                                <td class="fw-bold">
+                                                                    <mark class="bg-primary text-white ls-1"><?= $noa['noa_no'] ?></mark>
+                                                                </td>
                                                                 <td class="fw-bold">
                                                                     <?= date("m/d/Y", strtotime($noa['request_date'])) ?>
                                                                 </td>
                                                                 <td class="fw-bold">
                                                                     <div class="col">
-                                                                        <button type="submit" onclick="document.getElementById('noa_select_id').value = '<?= $noa['noa_id'] ?>'" data-bs-toggle="tooltip" title="Click to Proceed" style="background-color: transparent;border:0;color:#4054F1;">
-                                                                            <span class="fw-bold">
-                                                                                Proceed to Billing
-                                                                            </span>
-                                                                        </button>
+
+                                                                        <form method="POST" action="<?= base_url() ?>healthcare-provider/billing/bill-noa/<?= $this->myhash->hasher($noa['noa_id'], 'encrypt') ?>">
+
+                                                                            <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
+
+                                                                            <input type="hidden" name="emp_id" value="<?= $noa['emp_id'] ?>">
+
+                                                                            <button type="submit" class="fw-bold" data-bs-toggle="tooltip" title="Click to Proceed" style="background-color: transparent;border:0;color:#4054F1;">
+                                                                            Proceed to Billing
+                                                                            </button>
+                                                                        </form>
                                                                     </div>
                                                                 </td>
                                                             </tr>
                                                             <?php } else if($noa['status'] == 'Closed') { ?>
                                                             <tr>
-                                                                <td class="fw-bold"><?= $loa['noa_no'] ?></td>
+                                                                <td class="fw-bold">
+                                                                    <?= $loa['noa_no'] ?>
+                                                                </td>
                                                                 <td class="fw-bold">
                                                                     <?= date("m/d/Y", strtotime($noa['request_date'])) ?>
                                                                 </td>

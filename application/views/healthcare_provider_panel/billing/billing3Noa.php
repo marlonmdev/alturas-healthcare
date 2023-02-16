@@ -23,6 +23,7 @@
             </div>
         </div>
     </div>
+    <hr class="mt-3 mb-1">
     <!-- End Bread crumb and right sidebar toggle -->
 
     <!-- Container fluid  -->
@@ -87,7 +88,7 @@
             </div>
         </div>
             <div class="col-12 parent_element">
-                <form method="post" id="form-med-services" class="needs-validation" action="<?php echo base_url(); ?>healthcare-provider/billing/billing-person/finalBilling" onsubmit="submitEquipment()">
+                <form method="post" id="form_NOA_billing" class="needs-validation" novalidate>
                     <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
                     <input type="hidden" name="deduction-count" value="0" min="0" id="deduction-count">
                     <div class="card">
@@ -112,148 +113,147 @@
                             </div>
                         </div>
                     </div>                    
-                </form>
-
-                <div class="accordion accordion-flush border border-secondary" id="policyAccordionFlush">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="flush-headingOne">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#policy-ch-1" aria-expanded="false" aria-controls="policy-ch-1">
-                                <strong class="text-success fs-5">Click Here to add Medical Services<i class="mdi mdi-cursor-default-outline text-dark ms-2"></i></strong>
-                            </button>
-                        </h2>
-                        <div id="policy-ch-1" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#policyAccordionFlush">
-                            <div class="d-flex justify-content-center mx-5 pt-2">
-                                <input type="text" id="myInput" onkeyup="searchFunction()" placeholder="Search Medical Services...">
-                            </div>
-                            <div class="accordion-body">
-                                <div class="card ps-2 pe-2">
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table id="myTable" class="table table-hover">
-                                                <thead class="bg-light">
-                                                    <tr>
-                                                        <th class="fw-bold" style="width:700px">Name</th>
-                                                        <th class="fw-bold" style="width:200px">Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php
-                                                    if (!empty($cost_type)):
-                                                        foreach ($cost_type as $ct) :
-                                                    ?>
-                                                            <tr>
-                                                                <td class="fw-bold">
-                                                                    <?= $ct['cost_type']; ?>
-                                                                </td>
-                                                                <td>
-                                                                    <button class="btn btn-success" id="btn<?= $ct['ctype_id'] ?>" onclick="addService('<?= $ct['ctype_id'] ?>',' <?= $ct['cost_type'] ?>')">
-                                                                        <i class="mdi mdi-plus-circle"></i> Add
-                                                                    </button>
-                                                                </td>
-                                                            </tr>
-                                                    <?php
-                                                        endforeach;
-                                                    endif;
-                                                    ?>
-                                                </tbody>
-                                            </table>
+              
+                    <div class="accordion accordion-flush border border-secondary" id="policyAccordionFlush">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-headingOne">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#policy-ch-1" aria-expanded="false" aria-controls="policy-ch-1">
+                                    <strong class="text-success fs-5">Click Here to add Medical Services<i class="mdi mdi-cursor-default-outline text-dark ms-2"></i></strong>
+                                </button>
+                            </h2>
+                            <div id="policy-ch-1" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#policyAccordionFlush">
+                                <div class="d-flex justify-content-center mx-5 pt-2">
+                                    <input type="text" id="myInput" onkeyup="searchFunction()" placeholder="Search Medical Services...">
+                                </div>
+                                <div class="accordion-body">
+                                    <div class="card ps-2 pe-2">
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table id="myTable" class="table table-hover">
+                                                    <thead class="bg-light">
+                                                        <tr>
+                                                            <th class="fw-bold" style="width:700px">Name</th>
+                                                            <th class="fw-bold" style="width:200px">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php
+                                                        if (!empty($cost_type)):
+                                                            foreach ($cost_type as $ct) :
+                                                        ?>
+                                                                <tr>
+                                                                    <td class="fw-bold">
+                                                                        <?= $ct['cost_type']; ?>
+                                                                    </td>
+                                                                    <td>
+                                                                        <button class="btn btn-success" id="btn<?= $ct['ctype_id'] ?>" onclick="addService('<?= $ct['ctype_id'] ?>',' <?= $ct['cost_type'] ?>')">
+                                                                            <i class="mdi mdi-plus-circle"></i> Add
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                        <?php
+                                                            endforeach;
+                                                        endif;
+                                                        ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <hr class="mt-4">
-
-                <div class="row">
-                    <h4 class="text-center fw-bold ls-2">
-                        <i class="mdi mdi-arrow-down-bold-circle"></i> Billing Deductions <i class="mdi mdi-arrow-down-bold-circle"></i>
-                    </h4>
-                </div>
-                <div class="row my-2">
-
-                    <div class="col-md-3">
-                        <label class="form-label ls-1">PhilHealth <span class="text-info fw-bold fst-italic">(Optional)</span></label>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text bg-success text-white">&#8369;</span>
-                            <input type="number" class="input-deduction form-control fw-bold" id="deduct-philhealth" name="philhealth-deduction" placeholder="Enter Amount" oninput="CalculateNOABilling(`<?= $remaining_balance ?>`)" min="0" readonly>
-                            <span class="text-danger fw-bold deduction-msg ms-3" style="font-size:12px"></span>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <label class="form-label ls-1">SSS <span class="text-info fw-bold fst-italic">(Optional)</span></label>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text bg-success text-white">&#8369;</span>
-                            <input type="number" class="input-deduction form-control fw-bold" id="deduct-sss" name="sss-deduction" placeholder="Enter Amount" oninput="CalculateNOABilling(`<?= $remaining_balance ?>`)" min="0" readonly>
-                            <span class="text-danger fw-bold deduction-msg ms-3" style="font-size:12px"></span>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3" style="margin-top:28px;">
-                        <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addOtherDeductionInputs(`<?= $remaining_balance ?>`)" disabled>
-                            <i class="mdi mdi-plus-circle"></i> Add Deduction
-                        </button>
-                    </div>
-                </div>
-
-                <div id="dynamic-deduction"></div>
-
-                <hr class="mt-4">
-
-                <?php include 'personal_charge_alert.php'; ?>
-
-                <div class="row my-4">
-                    <div class="col-md-3">
-                        <label class="form-label ls-1">Total Bill</label>
-                        <input type="text" class="form-control fw-bold ls-1" id="total-bill" name="total-bill" value="0" readonly>
-                    </div>
-
-                    <div class="col-lg-3">
-                        <label class="form-label ls-1">Total Deduction</label>
-                        <input type="text" class="form-control fw-bold ls-1" id="total-deduction" name="total-deduction" value="0" readonly>
-                    </div>
-
-                    <div class="col-lg-3">
-                        <label class="form-label ls-1">Net Bill</label>
-                        <input type="text" class="form-control text-success fw-bold ls-1" id="net-bill" name="net-bill" value="0" readonly>
-                    </div>
-
-                    <div class="col-lg-3">
-                        <label class="form-label ls-1">Personal Charge</label>
-                        <input type="text" class="form-control text-cyan fw-bold ls-1" id="personal-charge" name="personal-charge" value="0" readonly>
-                    </div>
-                </div>
-
-                <hr class="mt-4">
-
-                <div class="row pt-3">
-                    <div class="col-md-4">
-                        <label class="form-label ls-1">Billing Number</label>
-                        <input type="text" class="form-control text-danger fw-bold ls-1" id="billing-no" name="billing-no" value="<?= $billing_no ?>" readonly>
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="form-label ls-1">Billing Date</label>
-                        <input type="text" class="form-control text-danger fw-bold ls-1" id="billing-date" name="billing-date" value="<?= date('m/d/Y') ?>" readonly>
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="form-label ls-1">Billed By</label>
-                        <input type="text" class="form-control text-danger fw-bold ls-1" id="billed-by" name="billed-by" value="<?= $billed_by ?>" readonly>
-                    </div>
-                    
                     <hr class="mt-4">
 
-                    <div class="row mt-3">
-                        <div class="col-md-12 d-flex offset-8">
-                            <button type="submit" class="btn btn-danger btn-lg ls-2" id="btn-bill" disabled>
-                                <i class="mdi mdi-file-check me-1"></i>Bill Now
+                    <div class="row">
+                        <h4 class="text-center fw-bold ls-2">
+                            <i class="mdi mdi-arrow-down-bold-circle"></i> Billing Deductions <i class="mdi mdi-arrow-down-bold-circle"></i>
+                        </h4>
+                    </div>
+                    <div class="row my-2">
+
+                        <div class="col-md-3">
+                            <label class="form-label ls-1">PhilHealth <span class="text-info fw-bold fst-italic">(Optional)</span></label>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text bg-success text-white">&#8369;</span>
+                                <input type="number" class="input-deduction form-control fw-bold" id="deduct-philhealth" name="philhealth-deduction" placeholder="Enter Amount" oninput="CalculateNOABilling(`<?= $remaining_balance ?>`)" min="0" readonly>
+                                <span class="text-danger fw-bold deduction-msg ms-3" style="font-size:12px"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label ls-1">SSS <span class="text-info fw-bold fst-italic">(Optional)</span></label>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text bg-success text-white">&#8369;</span>
+                                <input type="number" class="input-deduction form-control fw-bold" id="deduct-sss" name="sss-deduction" placeholder="Enter Amount" oninput="CalculateNOABilling(`<?= $remaining_balance ?>`)" min="0" readonly>
+                                <span class="text-danger fw-bold deduction-msg ms-3" style="font-size:12px"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3" style="margin-top:28px;">
+                            <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addOtherDeductionInputs(`<?= $remaining_balance ?>`)" disabled>
+                                <i class="mdi mdi-plus-circle"></i> Add Deduction
                             </button>
                         </div>
                     </div>
-                </div>
+
+                    <div id="dynamic-deduction"></div>
+
+                    <hr class="mt-3">
+
+                    <?php include 'personal_charge_alert.php'; ?>
+
+                    <div class="row my-4">
+                        <div class="col-md-3">
+                            <label class="form-label ls-1">Total Bill</label>
+                            <input type="text" class="form-control fw-bold ls-1" id="total-bill" name="total-bill" value="0" readonly>
+                        </div>
+
+                        <div class="col-lg-3">
+                            <label class="form-label ls-1">Total Deduction</label>
+                            <input type="text" class="form-control fw-bold ls-1" id="total-deduction" name="total-deduction" value="0" readonly>
+                        </div>
+
+                        <div class="col-lg-3">
+                            <label class="form-label ls-1">Net Bill</label>
+                            <input type="text" class="form-control text-success fw-bold ls-1" id="net-bill" name="net-bill" value="0" readonly>
+                        </div>
+
+                        <div class="col-lg-3">
+                            <label class="form-label ls-1">Personal Charge</label>
+                            <input type="text" class="form-control text-cyan fw-bold ls-1" id="personal-charge" name="personal-charge" value="0" readonly>
+                        </div>
+                    </div>
+
+                    <hr class="mt-4">
+
+                    <div class="row pt-3">
+                        <div class="col-md-4">
+                            <label class="form-label ls-1">Billing Number</label>
+                            <input type="text" class="form-control text-danger fw-bold ls-1" id="billing-no" name="billing-no" value="<?= $billing_no ?>" readonly>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label ls-1">Billing Date</label>
+                            <input type="text" class="form-control text-danger fw-bold ls-1" id="billing-date" name="billing-date" value="<?= date('m/d/Y') ?>" readonly>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label ls-1">Billed By</label>
+                            <input type="text" class="form-control text-danger fw-bold ls-1" id="billed-by" name="billed-by" value="<?= $billed_by ?>" readonly>
+                        </div>
+                        
+                        <div class="row mt-5">
+                            <div class="col-md-12 d-flex offset-8">
+                                <button type="submit" class="btn btn-danger btn-lg ls-2" id="btn-bill" disabled>
+                                    <i class="mdi mdi-file-check me-1"></i>Bill Now
+                                </button>
+                            </div>
+                        </div>
+                        <hr class="mt-4">
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -291,31 +291,6 @@
 </style>
 
 <script>
-    $(document).ready(function() {
-        $('.accordion').on('shown.bs.collapse', function (e) {
-            var accordionBody = $(e.target).find('.accordion-body');
-            $('html, body').animate({scrollTop: accordionBody.offset().top - accordionBody.outerHeight()}, 800);
-        });
-        
-        $(window).scroll(function() {
-            if ($(this).scrollTop() > 100) {
-            $('.scroll-to-top').addClass('show');
-            } else {
-            $('.scroll-to-top').removeClass('show');
-            }
-        });
-
-        $('.scroll-to-top').click(function(event) {
-            event.preventDefault();
-            $('html, body').animate({scrollTop: 0}, 900);
-        });
-
-        $('.inputCT').click(function(){
-            $(this).closest('.parent_element').find('.accordion').slideUp();
-        });
-
-    });
-
 
     var numberOfRow = 0;
     var chargesEquip = [];
@@ -409,12 +384,12 @@
                             <span id="' + finalctName + '">' + name + '</span>\
                         </td>\
                         <td class="fw-bold" style="width:20%">\
-                            <input type="number" id="' + finalInId + '" class="inputCT ct_qty form-control" value="1" min="1" oninput="CalculateNOABilling(`<?= $remaining_balance ?>`)" required>\
+                            <input type="number" id="' + finalInId + '" class="inputCT ct_qty form-control fw-bold" value="1" min="1" oninput="CalculateNOABilling(`<?= $remaining_balance ?>`)" required>\
                         </td>\
                         <td class="fw-bold" style="width:30%">\
                             <div class="input-group">\
                                 <span class="input-group-text bg-success text-white">&#8369;</span>\
-                                <input type="number" id="' + finalInId + '" class="inputCT ct_fee form-control" oninput="CalculateNOABilling(`<?= $remaining_balance ?>`)" required>\
+                                <input type="number" id="' + finalInId + '" class="inputCT ct_fee form-control fw-bold" oninput="CalculateNOABilling(`<?= $remaining_balance ?>`)" required>\
                             </div>\
                         </td>\
                         <td>\
@@ -519,6 +494,7 @@
         const deduction_msg = document.querySelectorAll('.deduction-msg');
         const other_deduction_msg = document.querySelectorAll('.other-deduction-msg');
         const input_deduction = document.querySelectorAll('.input-deduction');
+        
 
         for(i = 0;i < cost_inputs.length;i++ ){
             totalBill += cost_inputs[i].value * quantity_inputs[i].value;
@@ -541,7 +517,7 @@
         net_bill = totalBill - total_deduction;
 
         charge_amount = net_bill - remaining_balance;
-
+        
         if(charge_amount > 0){
             personal_charge.value = charge_amount.toFixed(2);
         }else{
@@ -564,6 +540,8 @@
                 other_deduction_msg[i].innerHTML = "Deduction can't be greater than the Net Bill Amount!";
             }  
         }else{
+            netBill.classList.remove('is-invalid', 'text-danger');
+
             for(i = 0; i < input_deduction.length; i++ ){
             input_deduction[i].classList.remove('is-invalid', 'text-danger');
             deduction_msg[i].innerHTML = " ";
@@ -606,7 +584,7 @@
 
            /* Creating a new input field with the name deduction_name[] */
             html_code += `<div class="col-md-3">
-                            <input type="text" name="deduction-name[]" class="form-control fw-bold ls-1" placeholder="Enter Deduction Name" required/>
+                            <input type="text" name="deduction-name[]" class="form-control fw-bold" placeholder="Enter Deduction Name" required/>
                             <div class="invalid-feedback">
                                 Deduction name and amount is required
                             </div>
@@ -654,15 +632,18 @@
         const input_philhealth = document.querySelector('#deduct-philhealth');
         const input_sss = document.querySelector('#deduct-sss');
         const deduct_btn = document.querySelector('#btn-other-deduction');
+        const btn_bill = document.querySelector('#btn-bill');
 
         if(totalBill > 0){
             input_philhealth.removeAttribute('readonly');
             input_sss.removeAttribute('readonly');
             deduct_btn.removeAttribute('disabled');
+            btn_bill.removeAttribute('disabled');
         }else{
             input_philhealth.setAttribute('readonly', true);
             input_sss.setAttribute('readonly', true);
             deduct_btn.setAttribute('disabled', true);
+            btn_bill.setAttribute('disabled', true)
         }
     }
 
@@ -690,6 +671,39 @@
             chargeAlertDiv.classList.add('d-none');
         }
     }
+    const form = document.querySelector('#form_NOA_billing');
+
+    $('#form_NOA_billing').submit(function(event){
+        event.preventDefault();
+        if(!form.checkValidity()){
+            form.classList.add('was-validated');
+            return;
+        }
+
+        if($('#net-bill').val() < 1 ){
+            form.classList.add('was-validated');
+            return;
+        }
+
+        $.confirm({
+            title: '<strong>Confirmation</strong>',
+            content: '<strong class="fs-4">Are you sure? Please review before you proceed.</strong><br> <p class="fs-5">Once it has been sent, you cannot undo it.</p>',
+            type: 'blue',
+            buttons: {
+                confirm:{
+                    text: 'Yes',
+                    btnClass: 'btn-blue',
+                    action: function(){
+                        
+                    },
+                },
+                cancel:{
+                    btnClass: 'btn-dark',
+                },
+            },
+            columnClass: 'col-md-5',
+        });
+    });
 
 
 </script>

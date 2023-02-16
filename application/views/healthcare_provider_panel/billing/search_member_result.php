@@ -39,45 +39,12 @@
                     <div class="card shadow">
                         <div class="container">
                             <div class="row px-4 py-4">
-                                <!-- Member Profile Info -->
                                 <div class="col-4">
-                                    <div class="d-flex flex-column align-items-center text-center">
-                                        <?php if ($member['photo'] == '') { ?>
-
-                                            <img src="<?= base_url() . 'assets/images/user.svg' ?>" alt="Member" class="rounded-circle img-responsive" width="150" height="auto">
-
-                                        <?php } else { ?>
-
-                                            <img src="<?= base_url() . 'uploads/profile_pics/' . $member['photo'] ?>" alt="Member" class="rounded-circle img-responsive" width="140" height="auto">
-
-                                        <?php } ?>
-                                        <div class="mt-3">
-                                            <span class="fw-bold text-info text-uppercase fs-4">
-                                                <?= $member['first_name'].' '.$member['middle_name'].' '. $member['last_name'].' '.$member['suffix'] ?>
-                                            </span>
-
-                                            <p class="fw-bold fs-5 mb-1">
-                                                Member Since : <span class="text-danger">
-                                                    <?= date('F d, Y', strtotime($member['date_approved'])) ?>
-                                                </span>
-                                            </p>
-
-                                            <p class="fw-bold fs-5 mb-1">
-                                                Healthcard No. : <span class="text-danger">
-                                                    <?= $member['health_card_no'] ?>
-                                                </span>
-                                            </p>
-
-                                            <p class="text-muted fs-5 ls-2">
-                                                <span class="badge rounded-pill bg-success fw-bold">
-                                                    <?= $member['current_status'] ?>
-                                                </span>
-                                            </p>
-                                        </div>
-                                    </div>                                
+                                    <!-- Member Profile Info -->
+                                    <?php include "search_member_profile.php"; ?>                             
                                 </div>
                                 <div class="col-8">
-                                    <table class="table table striped table-hover" id="tableLoa">
+                                    <table class="table table-hover" id="tableLoa">
                                         <thead>
                                             <tr>
                                                 <th class="fw-bold">LOA No.</th>
@@ -99,18 +66,16 @@
                                                                 <?= date("m/d/Y", strtotime($loa['request_date'])) ?>
                                                             </td>
                                                             <td class="fw-bold">
-                                                                <div class="col">
-                                                                    <form method="POST" action="<?= base_url() ?>healthcare-provider/billing/bill-loa/<?= $this->myhash->hasher($loa['loa_id'], 'encrypt') ?>">
+                                                                <form method="POST" action="<?= base_url() ?>healthcare-provider/billing/bill-loa/<?= $this->myhash->hasher($loa['loa_id'], 'encrypt') ?>">
 
-                                                                        <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
+                                                                    <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
 
-                                                                        <input type="hidden" name="emp_id" value="<?= $loa['emp_id'] ?>">
+                                                                    <input type="hidden" name="emp_id" value="<?= $loa['emp_id'] ?>">
 
-                                                                        <button type="submit" class="fw-bold" data-bs-toggle="tooltip" title="Click to Proceed" style="background-color: transparent;border:0;color:#4054F1;">
-                                                                        Proceed to Billing
-                                                                        </button>
-                                                                    </form>
-                                                                </div>
+                                                                    <button type="submit" class="fw-bold ls-1 text-danger border-0" data-bs-toggle="tooltip" title="Click to Proceed" style="background-color: transparent;">
+                                                                    Proceed to Billing <i class="mdi mdi-chevron-double-right fs-2" style="vertical-align:middle;"></i>
+                                                                    </button>
+                                                                </form>
                                                             </td>
                                                         </tr>
                                                     <?php } else if($loa['status'] == 'Closed') { ?>
@@ -143,99 +108,71 @@
                 </div>
                 <!-- ========================================== Patient's NOA Requests Tab =============================================== -->
                 <div class="tab-pane fade show" id="noa-requests" role="tabpanel">
-                    <form action="<?php echo base_url(); ?>healthcare-provider/billing/billing-person/equipment" class="needs-validation" method="post" novalidate>
-                        <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
-                        <input type="hidden" name="member_id" value="<?= $member['member_id'] ?>">
-                        <input type="hidden" name="hp_id" value="<?= $hp_name->hp_id ?>">
-                        <input type="hidden" name="noa_select_id" id="noa_select_id" value="<?= $hp_name->hp_id ?>">
-                        <div class="card shadow">
-                            <div class="container">
-                                <div class="row px-4 py-4">
-                                    <div class="col-4">
-                                        <div class="d-flex flex-column align-items-center text-center">
-                                            <?php if ($member['photo'] == '') { ?>
-                                                <img src="<?= base_url() . 'assets/images/user.svg' ?>" alt="Member" class="rounded-circle img-responsive" width="150" height="auto">
-                                            <?php } else { ?>
-                                                <img src="<?= base_url() . 'uploads/profile_pics/' . $member['photo'] ?>" alt="Member" class="rounded-circle img-responsive" width="140" height="auto">
-                                            <?php } ?>
-                                            <div class="mt-3">
-                                                <span class="fw-bold text-info text-uppercase fs-4" name="full_name">
-                                                    <?= $member['first_name'].' '.$member['middle_name'].' '. $member['last_name'].' '.$member['suffix'] ?>
-                                                </span>
-                                                <p class="fw-bold fs-5 mb-1">
-                                                    Member Since : <span class="text-danger"><?= date('F d, Y', strtotime($member['date_approved'])) ?></span>
-                                                </p>
-                                                <p class="fw-bold fs-5 mb-1">
-                                                    Healthcard No. : <span class="text-danger"><?= $member['health_card_no'] ?></span>
-                                                </p>
-                                                <p class="text-muted fs-5 ls-2">
-                                                    <span class="badge rounded-pill bg-success fw-bold"><?= $member['current_status'] ?></span>
-                                                </p>
-                                            </div>
-                                        </div>                                
-                                    </div>
-                                    <div class="col-8">
-                                        <table class="table table-striped table-hover" id="tableNoa">
-                                            <thead>
-                                                <tr>
-                                                    <th class="fw-bold">NOA No.</th>
-                                                    <th class="fw-bold">Request Date</th>
-                                                    <th class="fw-bold">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php
-                                                    if (!empty($noa_requests)) :
-                                                        foreach ($noa_requests as $noa) :
-                                                            if($noa['status'] == 'Approved') {
-                                                ?>
-                                                            <tr>
-                                                                <td class="fw-bold">
-                                                                    <mark class="bg-primary text-white ls-1"><?= $noa['noa_no'] ?></mark>
-                                                                </td>
-                                                                <td class="fw-bold">
-                                                                    <?= date("m/d/Y", strtotime($noa['request_date'])) ?>
-                                                                </td>
-                                                                <td class="fw-bold">
-                                                                    <div class="col">
+                    <div class="card shadow">
+                        <div class="container">
+                            <div class="row px-4 py-4">
+                                <div class="col-4">
+                                    <!-- Member Profile Info -->
+                                    <?php include "search_member_profile.php"; ?>                          
+                                </div>
+                                <div class="col-8">
+                                    <table class="table table-hover" id="tableNoa">
+                                        <thead>
+                                            <tr>
+                                                <th class="fw-bold">NOA No.</th>
+                                                <th class="fw-bold">Request Date</th>
+                                                <th class="fw-bold">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                                if (!empty($noa_requests)) :
+                                                    foreach ($noa_requests as $noa) :
+                                                        if($noa['status'] == 'Approved') {
+                                            ?>
+                                                        <tr>
+                                                            <td class="fw-bold">
+                                                                <mark class="bg-primary text-white ls-1"><?= $noa['noa_no'] ?></mark>
+                                                            </td>
+                                                            <td class="fw-bold">
+                                                                <?= date("m/d/Y", strtotime($noa['request_date'])) ?>
+                                                            </td>
+                                                            <td class="fw-bold">
+                                                                <form method="POST" action="<?= base_url() ?>healthcare-provider/billing/bill-noa/<?= $this->myhash->hasher($noa['noa_id'], 'encrypt') ?>">
 
-                                                                        <form method="POST" action="<?= base_url() ?>healthcare-provider/billing/bill-noa/<?= $this->myhash->hasher($noa['noa_id'], 'encrypt') ?>">
+                                                                    <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
 
-                                                                            <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
+                                                                    <input type="hidden" name="emp_id" value="<?= $noa['emp_id'] ?>">
 
-                                                                            <input type="hidden" name="emp_id" value="<?= $noa['emp_id'] ?>">
-
-                                                                            <button type="submit" class="fw-bold" data-bs-toggle="tooltip" title="Click to Proceed" style="background-color: transparent;border:0;color:#4054F1;">
-                                                                            Proceed to Billing
-                                                                            </button>
-                                                                        </form>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            <?php } else if($noa['status'] == 'Closed') { ?>
-                                                            <tr>
-                                                                <td class="fw-bold">
-                                                                    <?= $loa['noa_no'] ?>
-                                                                </td>
-                                                                <td class="fw-bold">
-                                                                    <?= date("m/d/Y", strtotime($noa['request_date'])) ?>
-                                                                </td>
-                                                                <td class="fw-bold">
-                                                                    <span class="badge bg-success px-2 ls-1">Billed</span>
-                                                                </td>
-                                                            </tr>
-                                                <?php
-                                                            }
-                                                        endforeach;
-                                                    endif;
-                                                ?>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                                                    <button type="submit" class="fw-bold ls-1 text-danger border-0" data-bs-toggle="tooltip" title="Click to Proceed" style="background-color: transparent;">
+                                                                    Proceed to Billing <i class="mdi mdi-chevron-double-right fs-2" style="vertical-align:middle;"></i>
+                                                                    </button>
+                                                                </form>
+                                                            </td>
+                                                        </tr>
+                                                        <?php } else if($noa['status'] == 'Closed') { ?>
+                                                        <tr>
+                                                            <td class="fw-bold">
+                                                                <?= $loa['noa_no'] ?>
+                                                            </td>
+                                                            <td class="fw-bold">
+                                                                <?= date("m/d/Y", strtotime($noa['request_date'])) ?>
+                                                            </td>
+                                                            <td class="fw-bold">
+                                                                <span class="badge bg-success px-2 ls-1">Billed</span>
+                                                            </td>
+                                                        </tr>
+                                            <?php
+                                                        }
+                                                    endforeach;
+                                                endif;
+                                            ?>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
             </form>

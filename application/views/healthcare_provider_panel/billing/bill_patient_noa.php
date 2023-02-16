@@ -118,8 +118,14 @@
                                         <div class="card px-3">
                                             <div class="card-body">
                                                 <div class="table-responsive">
-                                                    <table id="costTypesTable" class="table table-striped table-hover">
-                                                        
+                                                    <table id="costTypesTable" class="table table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="fw-bold ls-1">SERVICES</th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>                                                        
                                                         <?php
                                                         if (!empty($cost_types)):
                                                             foreach ($cost_types as $ct) :
@@ -128,9 +134,9 @@
                                                                     <td class="fw-bold">
                                                                         <?= $ct['cost_type']; ?>
                                                                     </td>
-                                                                    <td>
+                                                                    <td class="d-flex justify-content-end align-items-end">
                                                                         <button class="btn btn-cyan text-white" id="btn-ctype-<?= $ct['ctype_id'] ?>" onclick="addService('<?= $ct['ctype_id'] ?>','<?= $ct['cost_type'] ?>','<?= $remaining_balance ?>')">
-                                                                            <i class="mdi mdi-plus-circle"></i> Add
+                                                                            <i class="mdi mdi-plus-circle"></i> Add to Billing
                                                                         </button>
                                                                     </td>
                                                                 </tr>
@@ -138,7 +144,7 @@
                                                             endforeach;
                                                         endif;
                                                         ?>
-                                                       
+                                                       </tbody>
                                                     </table>
                                                 </div>
                                             </div>

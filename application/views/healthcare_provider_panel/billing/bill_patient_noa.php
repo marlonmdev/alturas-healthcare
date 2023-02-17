@@ -1,15 +1,10 @@
 <!-- Page wrapper  -->
  <div class="page-wrapper">
-    <!-- internal scripts -->
-    <!-- <script src="<?php echo base_url(); ?>assets/js/lone/axios.js"></script>
-    <script src="<?php echo base_url(); ?>assets/js/lone/vue3.js"></script> -->
-    <script src="<?php echo base_url(); ?>assets/js/lone/sweetalert2v11.js"></script>
-    <script src="<?php echo base_url(); ?>assets/js/lone/jqueryv3.js"></script>
     <!-- Bread crumb and right sidebar toggle -->
     <div class="page-breadcrumb">
         <div class="row">
             <div class="col-12 d-flex no-block align-items-center">
-            <h4 class="page-title ls-2">Bill Services</h4>
+                <h4 class="page-title ls-2">Bill Services</h4>
                 <div class="ms-auto text-end">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
@@ -32,7 +27,7 @@
 
                 <!-- Go Back to Previous Page -->
                 <div class="col-12 mb-4 mt-0">
-                    <form method="POST" action="<?php echo base_url(); ?>healthcare-provider/billing/search-by-healthcard" id="search-form-1" class="needs-validation" novalidate>
+                    <form method="POST" action="<?php echo base_url(); ?>healthcare-provider/billing/search-by-healthcard" class="needs-validation" novalidate>
                         <div class="input-group">
                             <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
                             <input type="hidden" name="healthcard_no" value="<?= $healthcard_no ?>">
@@ -83,191 +78,187 @@
 
                         <hr class="mt-4">
 
-                        <div class="row pb-2">
-                            <h4 class="text-center text-secondary ls-2">
-                                 MEDICAL SERVICES
-                            </h4>
-                            <div id="dynamic-services"></div>
-                            <input type="hidden" id="services-count" name="services-count" value="0" min="0">
-                        </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-12 parent_element">
-                        
-                        <!-- Start of Cost Types Accordion -->
-                        <div class="accordion accordion-flush" id="costTypeAccordion">
-                            <div class="accordion-item">
-                                <span class="accordion-header" id="flush-headingOne">
-                                    <a href="javascript:void()" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#cost-types-div" aria-expanded="false">
-                                        <i class="mdi mdi-hand-pointing-right text-success fs-1 align-end"></i>
-                                        <em class="text-info text-decoration-underline fw-bold fs-4 ls-1">
-                                            Click here to show and add Medical Services
-                                        </em>
-                                    </a>
-                                </span>
+                    <div class="col-12">
 
-                                <div id="cost-types-div" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#costTypeAccordion">
-
-                                    <div class="accordion-body">
-
-                                        <div class="card px-3">
-                                            <div class="card-body">
-                                                <div class="table-responsive">
-                                                    <table id="costTypesTable" class="table table-hover">
-                                                        <thead>
-                                                            <tr>
-                                                                <th class="fw-bold ls-1">SERVICES</th>
-                                                                <th></th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>                                                        
-                                                        <?php
-                                                        if (!empty($cost_types)):
-                                                            foreach ($cost_types as $ct) :
-                                                        ?>
-                                                                <tr>
-                                                                    <td class="fw-bold">
-                                                                        <?= $ct['cost_type']; ?>
-                                                                    </td>
-                                                                    <td class="d-flex justify-content-end align-items-end">
-                                                                        <button class="btn btn-cyan text-white" id="btn-ctype-<?= $ct['ctype_id'] ?>" onclick="addService('<?= $ct['ctype_id'] ?>','<?= $ct['cost_type'] ?>','<?= $remaining_balance ?>')">
-                                                                            <i class="mdi mdi-plus-circle"></i> Add to Billing
-                                                                        </button>
-                                                                    </td>
-                                                                </tr>
-                                                        <?php
-                                                            endforeach;
-                                                        endif;
-                                                        ?>
-                                                       </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- End of Card -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End of Cost Types Accordion -->
-
+                        <!-- Start of NOA Billing Form -->
                         <form method="POST" id="formNoaBilling" class="needs-validation" novalidate>
+                            <!-- start of hidden inputs -->
                             <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
                             <input type="hidden" name="noa-id" value="<?= $noa_id ?>">
                             <input type="hidden" name="emp-id" value="<?= $member['emp_id'] ?>">
-                            <input type="hidden" name="deduction-count" value="0" min="0" id="deduction-count">
-                            <input type="hidden" name="selected-cost-types-count" value="0" min="0" id="deduction-count">
+                            <input type="hidden" name="deduction-count" id="deduction-count" value="0" min="0">
+                            <input type="hidden" name="services-count" id="services-count" value="0" min="0">
+                            <!-- end of hidden inputs -->
 
+                            <h4 class="text-center text-secondary ls-2">MEDICAL SERVICES</h4>
 
-                           
-                        </form>                    
+                            <!-- services added to billing will append on this div -->
+                            <div id="dynamic-services"></div>
+                            <!-- this input value will the change based on the number of services added to billing -->
+                        
+                            <!-- Start of Cost Types Accordion -->
+                            <div class="accordion accordion-flush" id="costTypeAccordion">
+                                <div class="accordion-item align-middle" style="border:1px solid #f4f4f4;padding:0px" >
+                                    <span class="accordion-header" id="flush-headingOne">
+                                        <a href="javascript:void()" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#cost-types-div" aria-expanded="false">
+                                            <i class="mdi mdi-hand-pointing-right text-success fs-1 align-end"></i>
+                                            <span class="text-info text-decoration-underline fw-bold fs-4 ls-1">
+                                                Click here to show and add Medical Services
+                                            </span>
+                                        </a>
+                                    </span>
 
-                        <!-- <hr class="mt-4"> -->
+                                    <div id="cost-types-div" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#costTypeAccordion">
 
-                        <!-- this is a custom alert to show if the net bill exceeds the member's remaining balance -->
-                        <?php include 'personal_charge_alert.php'; ?>
+                                        <div class="accordion-body">
 
-                        <div class="row mt-4">
-                            <h4 class="text-center text-secondary fw-bold ls-2">
-                                BILLING DEDUCTIONS
-                            </h4>
-                        </div>
+                                            <div class="card px-3">
+                                                <div class="card-body">
+                                                    <div class="table-responsive">
+                                                        <table id="costTypesTable" class="table table-hover">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="fw-bold ls-1">SERVICES</th>
+                                                                    <th></th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>                                                        
+                                                            <?php
+                                                            if (!empty($cost_types)):
+                                                                foreach ($cost_types as $ct) :
+                                                            ?>
+                                                                    <tr>
+                                                                        <td class="fw-bold">
+                                                                            <?= $ct['cost_type']; ?>
+                                                                        </td>
+                                                                        <td class="d-flex justify-content-end align-items-end">
+                                                                            <button class="btn btn-cyan text-white ls-1" id="btn-ctype-<?= $ct['ctype_id'] ?>" onclick="addService('<?= $ct['ctype_id'] ?>','<?= $ct['cost_type'] ?>','<?= $remaining_balance ?>')">
+                                                                                <i class="mdi mdi-plus-circle"></i> Add to Billing
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
+                                                            <?php
+                                                                endforeach;
+                                                            endif;
+                                                            ?>
+                                                        </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- End of Card -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End of Cost Types Accordion -->
 
-                        <div class="row my-2">
+                            <!-- this is a custom alert to show if the net bill exceeds the member's remaining balance -->
+                            <?php include 'personal_charge_alert.php'; ?>
 
-                            <div class="col-md-3">
-                                <label class="form-label ls-1">PhilHealth</label> <span class="text-muted">(Optional)</span>
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text bg-success text-white">&#8369;</span>
-                                    <input type="number" class="input-deduction form-control fw-bold" id="deduct-philhealth" name="philhealth-deduction" placeholder="Enter Amount" oninput="calculateNoaBilling(`<?= $remaining_balance ?>`)" min="0" readonly>
-                                    <span class="text-danger fw-bold deduction-msg ms-3" style="font-size:12px"></span>
+                            <div class="row mt-4">
+                                <h4 class="text-center text-secondary fw-bold ls-2">
+                                    BILLING DEDUCTIONS
+                                </h4>
+                            </div>
+
+                            <div class="row my-2">
+                                <div class="col-md-3">
+                                    <label class="form-label ls-1">PhilHealth</label> <span class="text-muted">(Optional)</span>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-success text-white">&#8369;</span>
+                                        <input type="number" class="input-deduction form-control fw-bold" id="deduct-philhealth" name="philhealth-deduction" placeholder="Enter Amount" oninput="calculateNoaBilling(`<?= $remaining_balance ?>`)" min="0" readonly>
+                                        <span class="text-danger fw-bold deduction-msg ms-3" style="font-size:12px"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label ls-1">SSS</label> <span class="text-muted">(Optional)</span>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-success text-white">&#8369;</span>
+                                        <input type="number" class="input-deduction form-control fw-bold" id="deduct-sss" name="sss-deduction" placeholder="Enter Amount" oninput="calculateNoaBilling(`<?= $remaining_balance ?>`)" min="0" readonly>
+                                        <span class="text-danger fw-bold deduction-msg ms-3" style="font-size:12px"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3" style="margin-top:28px;">
+                                    <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addOtherDeductionInputs(`<?= $remaining_balance ?>`)" disabled>
+                                        <i class="mdi mdi-plus-circle"></i> Add Deduction
+                                    </button>
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
-                                <label class="form-label ls-1">SSS</label> <span class="text-muted">(Optional)</span>
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text bg-success text-white">&#8369;</span>
-                                    <input type="number" class="input-deduction form-control fw-bold" id="deduct-sss" name="sss-deduction" placeholder="Enter Amount" oninput="calculateNoaBilling(`<?= $remaining_balance ?>`)" min="0" readonly>
-                                    <span class="text-danger fw-bold deduction-msg ms-3" style="font-size:12px"></span>
+                            <!-- other deductions will append on this div -->
+                            <div id="dynamic-deduction"></div>
+
+                            <hr class="mt-4">
+
+                            <div class="row my-4">
+                                <div class="col-md-3">
+                                    <label class="form-label ls-1">Total Bill</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-cyan text-white">&#8369;</span>
+                                        <input type="text" class="form-control fw-bold ls-1" id="total-bill" name="total-bill" value="" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label ls-1">Total Deduction</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-cyan text-white">&#8369;</span>
+                                        <input type="text" class="form-control fw-bold ls-1" id="total-deduction" name="total-deduction" value="" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label ls-1">Net Bill</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-cyan text-white">&#8369;</span>
+                                        <input type="text" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" value="" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label ls-1">Personal Charge</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-cyan text-white">&#8369;</span>
+                                        <input type="text" class="form-control fw-bold ls-1" id="personal-charge" name="personal-charge" value="" readonly>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-3" style="margin-top:28px;">
-                                <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addOtherDeductionInputs(`<?= $remaining_balance ?>`)" disabled>
-                                    <i class="mdi mdi-plus-circle"></i> Add Deduction
-                                </button>
-                            </div>
-                        </div>
+                            <hr class="mt-4">
 
-                        <div id="dynamic-deduction"></div>
+                            <div class="row pt-3">
+                                <div class="col-md-4">
+                                    <label class="form-label ls-1">Billing Number</label>
+                                    <input type="text" class="form-control text-danger fw-bold ls-1" id="billing-no" name="billing-no" value="<?= $billing_no ?>" readonly>
+                                </div>
 
-                        <hr class="mt-4">
+                                <div class="col-md-4">
+                                    <label class="form-label ls-1">Billing Date</label>
+                                    <input type="text" class="form-control text-danger fw-bold ls-1" id="billing-date" name="billing-date" value="<?= date('m/d/Y') ?>" readonly>
+                                </div>
 
-                        <div class="row my-4">
-                            
-                            <div class="col-md-3">
-                                <label class="form-label ls-1">Total Bill</label>
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text bg-cyan text-white">&#8369;</span>
-                                    <input type="text" class="form-control fw-bold ls-1" id="total-bill" name="total-bill" value="" readonly>
+                                <div class="col-md-4">
+                                    <label class="form-label ls-1">Billed By</label>
+                                    <input type="text" class="form-control text-danger fw-bold ls-1" id="billed-by" name="billed-by" value="<?= $billed_by ?>" readonly>
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
-                                <label class="form-label ls-1">Total Deduction</label>
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text bg-cyan text-white">&#8369;</span>
-                                    <input type="text" class="form-control fw-bold ls-1" id="total-deduction" name="total-deduction" value="" readonly>
+                            <div class="row mt-4">
+                                <div class="col-md-12 d-flex justify-content-center align-items-center">
+                                    <button type="submit" class="btn btn-cyan text-white btn-lg ls-2" id="btn-bill" disabled>
+                                        <i class="mdi mdi-file-check me-1"></i>Bill Now
+                                    </button>
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
-                                <label class="form-label ls-1">Net Bill</label>
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text bg-cyan text-white">&#8369;</span>
-                                    <input type="text" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" value="" readonly>
-                                </div>
-                            </div>
-
-                            <div class="col-md-3">
-                                <label class="form-label ls-1">Personal Charge</label>
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text bg-cyan text-white">&#8369;</span>
-                                    <input type="text" class="form-control fw-bold ls-1" id="personal-charge" name="personal-charge" value="" readonly>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <hr class="mt-4">
-
-                        <div class="row pt-3">
-                            <div class="col-md-4">
-                                <label class="form-label ls-1">Billing Number</label>
-                                <input type="text" class="form-control text-danger fw-bold ls-1" id="billing-no" name="billing-no" value="<?= $billing_no ?>" readonly>
-                            </div>
-
-                            <div class="col-md-4">
-                                <label class="form-label ls-1">Billing Date</label>
-                                <input type="text" class="form-control text-danger fw-bold ls-1" id="billing-date" name="billing-date" value="<?= date('m/d/Y') ?>" readonly>
-                            </div>
-
-                            <div class="col-md-4">
-                                <label class="form-label ls-1">Billed By</label>
-                                <input type="text" class="form-control text-danger fw-bold ls-1" id="billed-by" name="billed-by" value="<?= $billed_by ?>" readonly>
-                            </div>
-                        </div>
-
-                        <div class="row mt-4">
-                            <div class="col-md-12 d-flex justify-content-center align-items-center">
-                                <button type="submit" class="btn btn-danger btn-lg ls-2" id="btn-bill" disabled>
-                                    <i class="mdi mdi-file-check me-1"></i>Bill Now
-                                </button>
-                            </div>
-                        </div>
-
+                        </form>
+                        <!-- End of NOA Billing Form -->
                     </div>
                 </div>
 

@@ -241,7 +241,7 @@
                         
                         <div class="row mt-4">
                             <div class="col-md-12 d-flex justify-content-center align-items-center">
-                                <button type="submit" class="btn btn-danger btn-lg ls-2" id="btn-bill" disabled>
+                                <button type="submit" class="btn btn-cyan text-white btn-lg ls-2" id="btn-bill" disabled>
                                     <i class="mdi mdi-file-check me-1"></i>Bill Now
                                 </button>
                             </div>

@@ -96,6 +96,7 @@
                         <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
                         <input type="hidden" name="loa-id" value="<?= $loa_id ?>">
                         <input type="hidden" name="emp-id" value="<?= $member['emp_id'] ?>">
+                        <input type="hidden" name="remaining-balance" value="<?= $remaining_balance ?>">
                         <input type="hidden" name="deduction-count" value="0" min="0" id="deduction-count">
                         
                         <div class="row">
@@ -228,7 +229,7 @@
 
                         <div class="row mt-4">
                             <div class="col-md-12 d-flex justify-content-center align-items-center">
-                                <button type="submit" class="btn btn-dark btn-lg ls-2" id="btn-bill" disabled>
+                                <button type="submit" class="btn btn-cyan text-white btn-lg ls-2" id="btn-bill" disabled>
                                     <i class="mdi mdi-file-check me-1"></i>Bill Now
                                 </button>
                             </div>

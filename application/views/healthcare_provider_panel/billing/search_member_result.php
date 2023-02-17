@@ -138,7 +138,7 @@
                                                                 <?= date("m/d/Y", strtotime($noa['request_date'])) ?>
                                                             </td>
                                                             <td class="fw-bold">
-                                                                <form method="POST" action="<?= base_url() ?>healthcare-provider/billing/bill-noa/<?= $this->myhash->hasher($noa['noa_id'], 'encrypt') ?>">
+                                                                <form method="POST" action="<?= base_url() ?>healthcare-provider/billing/bill-noa/request/<?= $this->myhash->hasher($noa['noa_id'], 'encrypt') ?>">
 
                                                                     <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
 

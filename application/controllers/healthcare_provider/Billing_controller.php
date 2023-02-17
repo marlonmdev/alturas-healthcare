@@ -100,7 +100,7 @@ class Billing_controller extends CI_Controller {
         $this->security->get_csrf_hash();
         $url_id = $this->uri->segment(4); // encrypted id
         $loa_id = $this->myhash->hasher($url_id, 'decrypt');
-        $emp_id = $this->security->xss_clean($this->input->post('emp_id'));
+        $emp_id = $this->input->post('emp_id', TRUE);
 
         $hcare_provider = $this->billing_model->get_healthcare_provider_by_id($this->session->userdata('dsg_hcare_prov'));
         $loa = $this->billing_model->get_loa_to_bill($loa_id);
@@ -160,156 +160,48 @@ class Billing_controller extends CI_Controller {
     
     function diagnostic_loa_final_billing(){
         $token = $this->security->get_csrf_hash();
+        // decrypt encrypted id from url
         $loa_id = $this->myhash->hasher($this->uri->segment(6), 'decrypt');
+        // get all input values from form with added XSS filter
         $posted_data =  $this->input->post(NULL, TRUE);
-
-        $emp_id = $posted_data['emp-id'];
-        $billing_no = $posted_data['billing-no'];
-        $ct_names = $posted_data['ct-name'];
-        $ct_quantities = $posted_data['ct-quantity'];
-        $ct_fees = $posted_data['ct-fee'];
-        $philhealth_deduction = $posted_data['philhealth-deduction'];
-        $sss_deduction = $posted_data['sss-deduction'];
-        $deduction_count = $posted_data['deduction-count'];
-        $total_bill = $posted_data['total-bill'];
-        $total_deduction = $posted_data['total-deduction'];
-        $net_bill = $posted_data['net-bill'];
-        $personal_charge = $posted_data['personal-charge'];
-
-        $data = [
-            'billing_no'        => $billing_no,
-            'emp_id'            => $emp_id,
-            'loa_id'            => $loa_id,
-            'hp_id'             => $this->session->userdata('dsg_hcare_prov'),
-            'total_bill'        => $total_bill,
-            'total_deduction'   => $total_deduction,
-            'net_bill'          => $net_bill,
-            'personal_charge'   => $personal_charge,
-            'mbr_remaining_bal' => $this->session->userdata('b_member_bal'),
-            'billed_by'         => $this->session->userdata('fullname'),
-            'billed_on'         => date('Y-m-d')
-        ];        
-
-        $inserted = $this->billing_model->insert_billing($data);
+        // request type for reference 
+        $type = 'LOA';
+        // call insert_patient_billing() function
+        $inserted = $this->insert_patient_billing($type, $posted_data, $loa_id);
 
         if($inserted){
-            
-            $services = [];
-            $deductions = []; 
-            $philhealth = [];
-            $sss = [];
-            $charge = [];
+            // if patients billing info is saved to DB call insert_billing_services() function
+            $this->insert_billing_services($posted_data['ct-name'], $posted_data['ct-qty'], $posted_data['ct-fee'], $posted_data['billing-no']);
 
-            // loop through each of the patient's availed services in LOA request dignostic test
-            for ($x = 0; $x < count($ct_names); $x++) {
-                $services[] = [
-                    'service_name'     => $ct_names[$x],
-                    'service_quantity' => $ct_quantities[$x],
-                    'service_fee'      => $ct_fees[$x],
-                    'billing_no'       => $billing_no,
-                    'added_on'         => date('Y-m-d')
-                ];
+            // if Philhealth deduction has value
+            if($posted_data['philhealth-deduction'] > 0){
+                $this->insert_philhealth_deduction($posted_data['philhealth-deduction'], $posted_data['billing-no']);
             }
-
-            $this->billing_model->insert_diagnostic_test_billing_services($services);
-
-             // if Philhealth deduction has value
-            if($philhealth_deduction > 0){
-                $philhealth[] = [
-                    'deduction_name'   => 'Philhealth',
-                    'deduction_amount' => $philhealth_deduction,
-                    'billing_no'       => $billing_no,
-                    'added_on'         => date('Y-m-d')
-                ];
-
-                $this->billing_model->insert_billing_deductions($philhealth);
-            }
-
             // if SSS deduction has value
-            if($sss_deduction > 0){
-                $sss[] = [
-                    'deduction_name'   => 'SSS',
-                    'deduction_amount' => $sss_deduction,
-                    'billing_no'       => $billing_no,
-                    'added_on'         => date('Y-m-d')
-                ];
-
-                $this->billing_model->insert_billing_deductions($sss);
+            if($posted_data['sss-deduction'] > 0){
+                $this->insert_sss_deduction($posted_data['sss-deduction'], $posted_data['billing-no']);
             }
-
-            // if the dynamic deductions exists
-            if($deduction_count > 0){
-                $deduction_names =  $this->security->xss_clean($this->input->post('deduction-name'));
-                $deduction_amounts = $this->security->xss_clean($this->input->post('deduction-amount'));
-
-                for ($y = 0; $y < count($deduction_names); $y++) {
-                    $deductions[] = [
-                        'deduction_name'   => $deduction_names[$y],
-                        'deduction_amount' => $deduction_amounts[$y],
-                        'billing_no'       => $billing_no,
-                        'added_on'         => date('Y-m-d')
-                    ];
-                }
-
-                $this->billing_model->insert_billing_deductions($deductions);
+            // if the dynamic deductions exists 
+            if($posted_data['deduction-count'] > 0){
+                $this->insert_other_deductions($posted_data['deduction-name'], $posted_data['deduction-amount'], $posted_data['billing-no']);
             }
-
             // if personal charges has amount
-            if($personal_charge > 0){
-                $charge = [
-                    'emp_id'        => $emp_id,
-                    'loa_id'        => $loa_id,
-                    'amount'        => $personal_charge,
-                    'billing_no'    => $billing_no,
-                    'status'        => 'Unpaid',
-                    'added_on'      => date('Y-m-d')
-                ];
-
-                $this->billing_model->insert_personal_charge($charge);
+            if($posted_data['personal-charge'] > 0){
+                $this->insert_personal_charge($type, $posted_data['emp-id'], $loa_id, $posted_data['personal-charge'], $posted_data['billing-no']);
             }
-
-            $member_mbl = $this->billing_model->get_member_mbl($emp_id);
-            $remaining_bal = $member_mbl['remaining_balance'];
-            $current_used_mbl = $member_mbl['used_mbl'] != '' ? $member_mbl['used_mbl'] : 0; 
-            
-            // calculate members used mbl
-            $total_used_mbl = $current_used_mbl + $net_bill;
-
-            // Update Member's Remaining Credit Limit Balance
-            if($net_bill > 0 && $net_bill < $remaining_bal){
-                // set used mbl value for update
-                $used_mbl = $total_used_mbl >= $member_mbl['max_benefit_limit'] ?  $member_mbl['max_benefit_limit'] : $total_used_mbl;
-
-                // calculate deduction of member's remaining MBL balance
-                $new_balance = $remaining_bal - $net_bill;
-                $data = [
-                    'used_mbl'          => $used_mbl,
-                    'remaining_balance' => $new_balance
-                ];
-                $this->billing_model->update_member_remaining_balance($emp_id, $data);
-                // call function to unset session userdata on final billing process
-                // unset_session_data();
-            }else if($net_bill >= $remaining_bal){
-                $data = [
-                    'used_mbl'          => $member_mbl['remaining_balance'],
-                    'remaining_balance' => 0
-                ];
-                $this->billing_model->update_member_remaining_balance($emp_id, $data);
-                // call function to unset session userdata on final billing process
-                // unset_session_data();
-            }
-
+            // call to function that updates member's credit limit
+            $this->update_member_mbl($posted_data);       
+            // call to a private function that deletes the temporary session userdata
+            $this->_unset_session_data();
             // get billing info based on billing number
-            $bill = $this->billing_model->get_billing_info($billing_no);
+            $bill = $this->billing_model->get_billing_info($posted_data['billing-no']);
             $encrypted_id = $this->myhash->hasher($bill['billing_id'], 'encrypt');
-
             $response = [
                 'token'      => $token,
                 'status'     => 'success',
                 'message'    => 'Billed Successfully',
                 'billing_id' => $encrypted_id
             ];
-
         }else{
             $response = [
                 'token'   => $token,
@@ -321,7 +213,7 @@ class Billing_controller extends CI_Controller {
         echo json_encode($response);
     }
 
-    function unset_session_data(){
+    private function _unset_session_data(){
         $temp_data = [
             'b_member_info',
             'b_member_mbl',
@@ -334,144 +226,48 @@ class Billing_controller extends CI_Controller {
 
     function consultation_loa_final_billing(){
         $token = $this->security->get_csrf_hash();
+        // decrypt encrypted id from url
         $loa_id = $this->myhash->hasher($this->uri->segment(6), 'decrypt');
+        // get all input values from form with added XSS filter
         $posted_data =  $this->input->post(NULL, TRUE);
-
-        $emp_id = $posted_data['emp-id'];
-        $billing_no = $posted_data['billing-no'];
-        $consultation = $posted_data['consultation'];
-        $consult_quantity = $posted_data['consult-quantity'];
-        $consult_fee = $posted_data['consult-fee'];
-        $philhealth_deduction = $posted_data['philhealth-deduction'];
-        $sss_deduction = $posted_data['sss-deduction'];
-        $deduction_count = $posted_data['deduction-count'];
-        $total_bill = $posted_data['total-bill'];
-        $total_deduction = $posted_data['total-deduction'];
-        $net_bill = $posted_data['net-bill'];
-        $personal_charge = $posted_data['personal-charge'];
-
-        $data = [
-            'billing_no'        => $billing_no,
-            'emp_id'            => $emp_id,
-            'loa_id'            => $loa_id,
-            'hp_id'             => $this->session->userdata('dsg_hcare_prov'),
-            'total_bill'        => $total_bill,
-            'total_deduction'   => $total_deduction,
-            'net_bill'          => $net_bill,
-            'personal_charge'   => $personal_charge,
-            'mbr_remaining_bal' => $this->session->userdata('b_member_bal'),
-            'billed_by'         => $this->session->userdata('fullname'),
-            'billed_on'         => date('Y-m-d')
-        ];        
-
-        $inserted = $this->billing_model->insert_billing($data);
+        $type = 'LOA';
+        // call to insert_patient_billing() function
+        $inserted = $this->insert_patient_billing($type, $posted_data, $loa_id);
 
         if($inserted){
-
-            $deductions = []; 
-            $philhealth = [];
-            $sss = [];
-            $charge = [];
-
-            // loop through each of the patient's availed services in LOA request dignostic test
+            // insert consultation service
             $services = [
-                'service_name'     => $consultation,
-                'service_quantity' => $consult_quantity,
-                'service_fee'      => $consult_fee,
-                'billing_no'       => $billing_no,
+                'service_name'     => $posted_data['consultation'],
+                'service_quantity' => $posted_data['consult-quantity'],
+                'service_fee'      => $posted_data['consult-fee'],
+                'billing_no'       => $posted_data['total-bill'],
                 'added_on'         => date('Y-m-d')
             ];
 
             $this->billing_model->insert_consultation_billing_services($services);
-
-             // if Philhealth deduction has value
-            if($philhealth_deduction > 0){
-                $philhealth[] = [
-                    'deduction_name'   => 'Philhealth',
-                    'deduction_amount' => $philhealth_deduction,
-                    'billing_no'       => $billing_no,
-                    'added_on'         => date('Y-m-d')
-                ];
-
-                $this->billing_model->insert_billing_deductions($philhealth);
+            // if Philhealth deduction has value
+            if($posted_data['philhealth-deduction'] > 0){
+                $this->insert_philhealth_deduction($posted_data['philhealth-deduction'], $posted_data['billing-no']);
             }
-
             // if SSS deduction has value
-            if($sss_deduction > 0){
-                $sss[] = [
-                    'deduction_name'   => 'SSS',
-                    'deduction_amount' => $sss_deduction,
-                    'billing_no'       => $billing_no,
-                    'added_on'         => date('Y-m-d')
-                ];
-
-                $this->billing_model->insert_billing_deductions($sss);
+            if($posted_data['sss-deduction'] > 0){
+                $this->insert_sss_deduction($posted_data['sss-deduction'], $posted_data['billing-no']);
             }
-
             // if the dynamic deductions exists
-            if($deduction_count > 0){
-                $deduction_names =  $this->security->xss_clean($this->input->post('deduction-name'));
-                $deduction_amounts = $this->security->xss_clean($this->input->post('deduction-amount'));
-
-                for ($y = 0; $y < count($deduction_names); $y++) {
-                    $deductions[] = [
-                        'deduction_name'   => $deduction_names[$y],
-                        'deduction_amount' => $deduction_amounts[$y],
-                        'billing_no'       => $billing_no,
-                        'added_on'         => date('Y-m-d')
-                    ];
-                }
-
-                $this->billing_model->insert_billing_deductions($deductions);
+            if($posted_data['deduction-count'] > 0){
+                $this->insert_other_deductions($posted_data['deduction-name'], $posted_data['deduction-amount'], $posted_data['billing-no']);
             }
-
             // if personal charges has amount
-            if($personal_charge > 0){
-                $charge = [
-                    'emp_id'        => $emp_id,
-                    'loa_id'        => $loa_id,
-                    'amount'        => $personal_charge,
-                    'billing_no'    => $billing_no,
-                    'status'        => 'Unpaid',
-                    'added_on'      => date('Y-m-d')
-                ];
-
-                $this->billing_model->insert_personal_charge($charge);
+            if($posted_data['personal-charge'] > 0){
+                $this->insert_personal_charge($type, $posted_data['emp-id'], $loa_id, $posted_data['personal-charge'], $posted_data['billing-no']);
             }
-
-            $member_mbl = $this->billing_model->get_member_mbl($emp_id);
-            $remaining_bal = $member_mbl['remaining_balance'];
-            $current_used_mbl = $member_mbl['used_mbl'] != '' ? $member_mbl['used_mbl'] : 0; 
-            
-            // calculate members used mbl
-            $total_used_mbl = $current_used_mbl + $net_bill;
-
-            // Update Member's Remaining Credit Limit Balance
-            if($net_bill > 0 && $net_bill < $remaining_bal){
-                // set used mbl value for update
-                $used_mbl = $total_used_mbl >= $member_mbl['max_benefit_limit'] ?  $member_mbl['max_benefit_limit'] : $total_used_mbl;
-
-                // calculate deduction of member's remaining MBL balance
-                $new_balance = $remaining_bal - $net_bill;
-                $data = [
-                    'used_mbl'          => $used_mbl,
-                    'remaining_balance' => $new_balance
-                ];
-                $this->billing_model->update_member_remaining_balance($emp_id, $data);
-                // call function to unset session userdata on final billing process
-                // unset_session_data();
-            }else if($net_bill >= $remaining_bal){
-                $data = [
-                    'used_mbl'          => $member_mbl['max_benefit_limit'],
-                    'remaining_balance' => 0
-                ];
-                $this->billing_model->update_member_remaining_balance($emp_id, $data);
-                // call function to unset session userdata on final billing process
-                // unset_session_data();
-            }
+            // call to function that updates member's credit limit
+            $this->update_member_mbl($posted_data);       
+            // call to a private function that deletes the temporary session userdata
+            $this->_unset_session_data();
 
             // get billing info based on billing number
-            $bill = $this->billing_model->get_billing_info($billing_no);
+            $bill = $this->billing_model->get_billing_info($posted_data['billing-no']);
             $encrypted_id = $this->myhash->hasher($bill['billing_id'], 'encrypt');
             
             $response = [
@@ -480,7 +276,6 @@ class Billing_controller extends CI_Controller {
                 'message'    => 'Billed Successfully',
                 'billing_id' => $encrypted_id
             ];
-
         }else{
             $response = [
                 'token'   => $token,
@@ -501,9 +296,9 @@ class Billing_controller extends CI_Controller {
 
     function bill_patient_noa() {
         $this->security->get_csrf_hash();
-        $url_id = $this->uri->segment(4); // encrypted id
+        $url_id = $this->uri->segment(5); // encrypted id
         $noa_id = $this->myhash->hasher($url_id, 'decrypt');
-        $emp_id = $this->security->xss_clean($this->input->post('emp_id'));
+        $emp_id = $this->input->post('emp_id', TRUE);
 
         $hcare_provider = $this->billing_model->get_healthcare_provider_by_id($this->session->userdata('dsg_hcare_prov'));
         $noa = $this->billing_model->get_noa_to_bill($noa_id);
@@ -526,223 +321,207 @@ class Billing_controller extends CI_Controller {
         $this->load->view('templates/footer');
     }
 
-    function billing3BillNoa() {
+    function noa_final_billing(){
         $token = $this->security->get_csrf_hash();
-        $this->cart->destroy();
-        $this->session->unset_userdata(array('equipments'));
-        $member = array(
-            'hp_id' => $this->input->post('hp_id'),
-            'member_id' => $this->input->post('member_id'),
-            'first_name' => $this->input->post('first_name'),
-            'last_name' => $this->input->post('last_name'),
-            'full_name' => $this->input->post('full_name'),
-            'hospital_name' => $this->input->post('hospital_name'),
-            'date_service' => $this->input->post('date_service'),
-            'requesting_company' => $this->input->post('requesting_company'),
-            'billing_number' => $this->input->post('billing_number'),
-            'health_card_no' => $this->input->post('health_card_no'),
-            'emp_type' => $this->input->post('emp_type'),
-            'remaining_balance' => $this->input->post('remaining_balance'),
-            'noa_id' => $this->input->post('noa_select_id')
-        );
+        // decrypt encrypted id from url
+        $noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+        // get all input values from form with added XSS filter
+        $posted_data =  $this->input->post(NULL, TRUE);
+        // request type for reference 
+        $type = 'NOA';
+        // call insert_patient_billing() function
+        $inserted = $this->insert_patient_billing($type, $posted_data, $noa_id);
 
-        $this->session->set_userdata(array(
-            'intialBillingInfo' => $member
-        ));
+        if($inserted){
+            // if patients billing info is saved to DB call insert_billing_services() function
+            $this->insert_billing_services($posted_data['ct-names'], $posted_data['ct-qtys'], $posted_data['ct-fees'], $posted_data['billing-no']);
 
-        $cost_type = $this->billing_model->get_all_cost_types();
-        $data['member'] = $member;
-        $data['noa_id'] = $this->input->post('noa_select_id');
-        $data['user_role'] = $this->session->userdata('user_role');
-
-        $this->load->view('templates/header', $data);
-        $this->load->view('healthcare_provider_panel/billing/billing3Noa.php', array('data' => $data));
-        $this->load->view('templates/footer');
+            // if Philhealth deduction has value
+            if($posted_data['philhealth-deduction'] > 0){
+                $this->insert_philhealth_deduction($posted_data['philhealth-deduction'], $posted_data['billing-no']);
+            }
+            // if SSS deduction has value
+            if($posted_data['sss-deduction'] > 0){
+                $this->insert_sss_deduction($posted_data['sss-deduction'], $posted_data['billing-no']);
+            }
+            // if the dynamic deductions exists 
+            if($posted_data['deduction-count'] > 0){
+                $this->insert_other_deductions($posted_data['deduction-name'], $posted_data['deduction-amount'], $posted_data['billing-no']);
+            }
+            // if personal charges has amount
+            if($posted_data['personal-charge'] > 0){
+                $this->insert_personal_charge($type, $posted_data['emp-id'], $noa_id, $posted_data['personal-charge'], $posted_data['billing-no']);
+            }
+            // call to function that updates member's credit limit
+            $this->update_member_mbl($posted_data);       
+            // call to a private function that deletes the temporary session userdata
+            $this->_unset_session_data();
+            // get billing info based on billing number
+            $bill = $this->billing_model->get_billing_info($posted_data['billing-no']);
+            $encrypted_id = $this->myhash->hasher($bill['billing_id'], 'encrypt');
+            $response = [
+                'token'      => $token,
+                'status'     => 'success',
+                'message'    => 'Billed Successfully',
+                'billing_id' => $encrypted_id
+            ];
+        }else{
+            $response = [
+                'token'   => $token,
+                'status'  => 'error',
+                'message' => 'Bill Transaction Failed'
+            ];
+        }
+        echo json_encode($response);
     }
 
-    function billing3NoaReview() {
-        $this->security->get_csrf_hash();
-        $data['payload'] = $this->session->userdata('intialBillingInfo');
-        $data['cost_type'] = $this->billing_model->find_cost_type();
-        $data['user_role'] = $this->session->userdata('user_role');
-        $data['equipments'] = $this->session->userdata('equipments');
-
-        $this->load->view('templates/header', $data);
-        $this->load->view('healthcare_provider_panel/billing/billing3NoaReview', array('data' => $data));
-        $this->load->view('templates/footer');
+    function insert_patient_billing($type, $posted_data, $id){
+        if($type === 'LOA'){
+             $data = [
+                'billing_no'        => $posted_data['billing-no'],
+                'emp_id'            => $posted_data['emp-id'],
+                'loa_id'            => $id,
+                'hp_id'             => $this->session->userdata('dsg_hcare_prov'),
+                'total_bill'        => $posted_data['total-bill'],
+                'total_deduction'   => $posted_data['total-deduction'],
+                'net_bill'          => $posted_data['net-bill'],
+                'personal_charge'   => $posted_data['personal-charge'],
+                'mbr_remaining_bal' => $posted_data['remaining-balance'],
+                'billed_by'         => $this->session->userdata('fullname'),
+                'billed_on'         => date('Y-m-d')
+            ];      
+        }else if($type === 'NOA'){
+             $data = [
+                'billing_no'        => $posted_data['billing-no'],
+                'emp_id'            => $posted_data['emp-id'],
+                'noa_id'            => $id,
+                'hp_id'             => $this->session->userdata('dsg_hcare_prov'),
+                'total_bill'        => $posted_data['total-bill'],
+                'total_deduction'   => $posted_data['total-deduction'],
+                'net_bill'          => $posted_data['net-bill'],
+                'personal_charge'   => $posted_data['personal-charge'],
+                'mbr_remaining_bal' => $posted_data['remaining-balance'],
+                'billed_by'         => $this->session->userdata('fullname'),
+                'billed_on'         => date('Y-m-d')
+            ];      
+        }
+        // return value is either TRUE or FAlSE
+        return $this->billing_model->insert_billing($data);
     }
 
-    function billing5Final() {
-        $this->security->get_csrf_hash();
-        $data['user_role'] = $this->session->userdata('user_role');
-
-        $data['payload'] = array(
-            'token' => $this->input->post('token'),
-            'hp_id' => $this->input->post('hp_id'),
-            'member_id' => $this->input->post('member_id'),
-            'hospital_name' => $this->input->post('hospital_name'),
-            'date_service' => $this->input->post('date_service'),
-            'requesting_company' => $this->input->post('requesting_company'),
-            'billing_number' => $this->input->post('billing_number'),
-            'full_name' => $this->input->post('full_name'),
-            'health_card_no' => $this->input->post('health_card_no'),
-            'emp_type' => $this->input->post('emp_type'),
-            'remaining_balance' => $this->input->post('remaining_balance'),
-            'philHealth' => $this->input->post('philHealth'),
-            'totalCost' => $this->input->post('totalCost'),
-        );
-
-        if ($this->input->post('personal_charges') > 0) {
-
-            $perosonalCharges = array(
-                'emp_id' =>  $this->session->userdata('bmember')->emp_id,
-                'loa_id' => "",
-                'noa_id' => $this->input->post('noa_id'),
-                'billing_no	' => $this->input->post('billing_number'),
-                'pcharge_amount' => $this->input->post('personal_charges'),
-                'date_created' => date("Y-m-d"),
-                'notes' => '',
-                'status' => 'Pending'
-            );
-
-            $this->billing_model->loa_personal_charges($perosonalCharges);
+    function insert_billing_services($ct_names, $ct_quantities, $ct_fees, $billing_no){
+        $services = [];
+        for ($x = 0; $x < count($ct_names); $x++) {
+            $services[] = [
+                'service_name'     => $ct_names[$x],
+                'service_quantity' => $ct_quantities[$x],
+                'service_fee'      => $ct_fees[$x],
+                'billing_no'       => $billing_no,
+                'added_on'         => date('Y-m-d')
+            ];
         }
 
-        $billingData = array(
-            'billing_no'         => $this->input->post('billing_number'),
-            'emp_id'             => $this->session->userdata('bmember')->emp_id,
-            'noa_id'             => $this->input->post('noa_id'),
-            'hp_id'              => $this->input->post('hp_id'),
-            'billed_by'          => $this->session->userdata('fullname'),
-            'billing_date'       => date("Y-m-d"),
-            'mbr_remaining_bal'  => $this->input->post('mbr_remaining_bal'),
-            'total_bill'         =>  $this->input->post('total_bill'),
-            'loa_id'             => '',
-            'billing_img'        => '',
-            'personal_charges'   => $this->input->post('personal_charges'),
-        );
+        $this->billing_model->insert_diagnostic_test_billing_services($services);
+    }
 
-        foreach ($this->cart->contents() as $extract) {
-            $dataSave = array(
-                'billing_no' =>  $this->input->post('billing_number'),
-                'emp_id' => $this->input->post('member_id'),
-                'billing_date' => date("Y-m-d"),
-                'bsv_cost_types' => $extract['id'],
-                'bsv_ct_fee' => $extract['price'],
-            );
-            $this->billing_model->loa_cost_type_by($dataSave);
+    function insert_philhealth_deduction($philhealth_deduction, $billing_no){
+        $philhealth = [];
+        $philhealth[] = [
+            'deduction_name'   => 'Philhealth',
+            'deduction_amount' => $philhealth_deduction,
+            'billing_no'       => $billing_no,
+            'added_on'         => date('Y-m-d')
+        ];
+
+        $this->billing_model->insert_billing_deductions($philhealth);
+    }
+
+    function insert_sss_deduction($sss_deduction, $billing_no){
+        $sss = [];
+        $sss[] = [
+            'deduction_name'   => 'SSS',
+            'deduction_amount' => $sss_deduction,
+            'billing_no'       => $billing_no,
+            'added_on'         => date('Y-m-d')
+        ];
+
+        $this->billing_model->insert_billing_deductions($sss);
+    }
+
+    function insert_other_deductions($deduction_names, $deduction_amounts, $billing_no){
+        $deductions = []; 
+        for ($y = 0; $y < count($deduction_names); $y++) {
+            $deductions[] = [
+                'deduction_name'   => $deduction_names[$y],
+                'deduction_amount' => $deduction_amounts[$y],
+                'billing_no'       => $posted_data['billing-no'],
+                'added_on'         => date('Y-m-d')
+            ];
         }
 
-        $this->billing_model->close_billing_noa_requests($this->input->post('noa_id'));
-        $this->billing_model->pay_billing_member($billingData);
-        redirect('healthcare-provider/billing/billing-person', 'refresh');
+        $this->billing_model->insert_billing_deductions($deductions);
     }
 
-    //Ajax call
-    function addEquip() {
-        $token = $this->security->get_csrf_hash();
-
-        $id = $this->uri->segment(6);
-        $data = $this->billing_model->addEquipment($id);
-        $res = array('token' => $token, 'name' => $data['cost_type']);
-        $this->cart->insert($res);
-        echo json_encode($res);
+    function insert_personal_charge($type, $emp_id, $id, $personal_charge, $billing_no){
+        if($type === 'LOA'){
+                $charge = [
+                'emp_id'            => $emp_id,
+                'loa_id'            => $id,
+                'amount'            => $personal_charge,
+                'billing_no'        => $billing_no,
+                'status'            => 'Unpaid',
+                'added_on'          => date('Y-m-d')
+            ];
+        }else if($type === 'NOA'){
+            $charge = [
+                'emp_id'            => $emp_id,
+                'noa_id'            => $id,
+                'amount'            => $personal_charge,
+                'billing_no'        => $billing_no,
+                'status'            => 'Unpaid',
+                'added_on'          => date('Y-m-d')
+            ];
+        }
+        $this->billing_model->insert_personal_charge($charge);
     }
 
+    function update_member_mbl($posted_data){
+        $emp_id = $posted_data['emp-id'];
+        $remaining_bal = $posted_data['remaining-balance'];
+        $net_bill = $posted_data['net-bill'];
+        $member_mbl = $this->billing_model->get_member_mbl($posted_data['emp-id']);
+        $remaining_bal = $member_mbl['remaining_balance'];
+        $current_used_mbl = $member_mbl['used_mbl'] != '' ? $member_mbl['used_mbl'] : 0; 
+        
+        // calculate members used mbl
+        $total_used_mbl = $current_used_mbl + $net_bill;
 
-    function addEquipments() {
-        $this->security->get_csrf_hash();
+        // Update Member's Remaining Credit Limit Balance
+        if($net_bill > 0 && $net_bill < $remaining_bal){
+            // set used mbl value for update
+            $used_mbl = $total_used_mbl >= $member_mbl['max_benefit_limit'] ?  $member_mbl['max_benefit_limit'] : $total_used_mbl;
 
-        $sessionPayload =  array(
-            'id' => $this->input->post('ctype_id'),
-            'qty'     => 1,
-            'price'   => $this->input->post('amount'),
-            'name'    => $this->input->post('cost_type'),
-            'options' => array('billingNumber' => $this->input->post('billingNumber'), 'emp_id' => $this->input->post('emp_id'))
-
-        );
-
-        $data = array(
-            'id'      => 'sku_123ABC',
-            'qty'     => 1,
-            'price'   => 39.95,
-            'name'    => 'T-Shirt',
-            'options' => array('Size' => 'L', 'Color' => 'Red')
-        );
-
-        $this->cart->insert($sessionPayload);
+            // calculate deduction of member's remaining MBL balance
+            $new_balance = $remaining_bal - $net_bill;
+            $data = [
+                'used_mbl'          => $used_mbl,
+                'remaining_balance' => $new_balance
+            ];
+            $this->billing_model->update_member_remaining_balance($emp_id, $data);
+        }else if($net_bill >= $remaining_bal){
+            $data = [
+                'used_mbl'          => $member_mbl['remaining_balance'],
+                'remaining_balance' => 0
+            ];
+            $this->billing_model->update_member_remaining_balance($emp_id, $data);
+        }
     }
 
-    function showAllEquipment() {
-        $this->security->get_csrf_hash();
-        $res = $this->cart->contents();
-        echo json_encode($res);
-    }
-
-    function postBillingLoa($data) {
-        $this->security->get_csrf_hash();
-        $this->load->view('templates/header', $data);
-        $this->load->view('healthcare_provider_panel/billing/billing5Final.php', array('data' => $data));
-        $this->load->view('templates/footer');
-    }
-    
-    function saveLoaCostType() {
-        $token = $this->security->get_csrf_hash();
-
-        $loaCostBy = array(
-            'billing_no' => $this->session->userdata('bbilling_number'),
-            'bsv_cost_types' => $this->input->post('bsv_cost_types'),
-            'bsv_ct_fee' => $this->input->post('bsv_ct_fee'),
-            'emp_id' => $this->session->userdata('bmember')->emp_id,
-            'billing_date' => date("Y-m-d"),
-        );
-        $this->billing_model->loa_cost_type_by($loaCostBy);
-        echo json_encode($loaCostBy);
-    }
-
-    function billPersonalCharges() {
-        $this->security->get_csrf_hash();
-
-        $perosonalCharges = array(
-            'emp_id' =>  $this->session->userdata('bmember')->emp_id,
-            'loa_id' => $this->input->post('loa_id'),
-            'noa_id' => "",
-            'billing_no	' => $this->session->userdata('bbilling_number'),
-            'pcharge_amount' => $this->input->post('pcharge_amount'),
-            'date_created' => date("Y-m-d"),
-            'notes' => '',
-            'status' => 'Pending'
-        );
-
-        $this->billing_model->loa_personal_charges($perosonalCharges);
-        echo json_encode($perosonalCharges);
-    }
-
-
-    function billLoaMember() {
-        $this->security->get_csrf_hash();
-
-        $mbr_remaining_bal = $this->input->post('mbr_remaining_bal');
-        $loa_id = $this->input->post('loa_id');
-        $total_bill = $this->input->post('total_bill');
-        $idHospital =  $this->session->userdata('dsg_hcare_prov');
-
-        $this->billing_model->close_get_loa_to_bill_requests($loa_id);
-
-        $billingSchema = array(
-            'billing_no' => $this->session->userdata('bbilling_number'),
-            'emp_id' => $this->session->userdata('bmember')->emp_id,
-            'loa_id' => $loa_id,
-            'noa_id' => "",
-            'hp_id' => $idHospital,
-            'total_bill' => $total_bill = $this->input->post('total_bill'),
-            'mbr_remaining_bal' =>  $mbr_remaining_bal,
-            'personal_charges' => $this->input->post('personal_charges'),
-            'billing_img' => '',
-            'billed_by' => $this->session->userdata('fullname'),
-            'billing_date' =>  date("Y-m-d")
-        );
-        echo json_encode($this->billing_model->pay_billing_member($billingSchema));
+    function noa_billing_success(){
+        $data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_provider_panel/billing/billing_success');
+		$this->load->view('templates/footer');
     }
 
 }

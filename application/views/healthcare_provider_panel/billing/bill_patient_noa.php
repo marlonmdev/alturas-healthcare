@@ -429,7 +429,6 @@
         netBill.value = net_bill.toFixed(2);
 
         if(net_bill < 0){
-            netBill.classList.add('is-invalid', 'text-danger');
 
             for(i = 0; i < input_deduction.length; i++ ){
                 input_deduction[i].classList.add('is-invalid', 'text-danger');
@@ -441,6 +440,8 @@
                 other_deduction_msg[i].innerHTML = "Deduction can't be greater than the Net Bill Amount!";
             }  
         }else{
+            netBill.classList.remove('is-invalid', 'text-danger');
+            
             for(i = 0; i < input_deduction.length; i++ ){
             input_deduction[i].classList.remove('is-invalid', 'text-danger');
             deduction_msg[i].innerHTML = " ";

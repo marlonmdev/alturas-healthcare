@@ -89,6 +89,7 @@
                             <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
                             <input type="hidden" name="noa-id" value="<?= $noa_id ?>">
                             <input type="hidden" name="emp-id" value="<?= $member['emp_id'] ?>">
+                            <input type="hidden" name="remaining-balance" value="<?= $remaining_balance ?>">
                             <input type="hidden" name="deduction-count" id="deduction-count" value="0" min="0">
                             <input type="hidden" name="services-count" id="services-count" value="0" min="0">
                             <!-- end of hidden inputs -->
@@ -294,37 +295,34 @@
 
         let html_code  = `<div class="row my-3 row-services" id="row${count}">`;
 
-            /* Creating a new input field with the name service_name[] */
+            /* cost type name input */
             html_code += `<div class="col-md-6">
                             <div class="form-group">
                                 <label for="ct-name">Service Name</label>
-                                <input type="text" class="ct-name form-control fw-bold ls-1" id="service-name" name="ct-name[]" value="${ctype_name}" readonly/>
+                                <input type="text" class="ct-name form-control fw-bold ls-1" name="ct-name[]" value="${ctype_name}" readonly/>
                                 <div class="invalid-feedback">
                                     Service Name is required
                                 </div>
                             </div>                            
                          </div>`;
 
-            /* Creating a new input field with the name service_name[] */
+            /* cost type quantity input */
             html_code += `<div class="col-md-2">
                             <div class="form-group">
                                 <label for="service-qty"><i class="mdi mdi-asterisk text-danger"></i>Quantity</label>
-                                <input type="number" name="ct-qty[]" class="ct-qty form-control fw-bold ls-1" value="1" min="1"  oninput="calculateNoaBilling(${remaining_balance})" required/>
+                                <input type="number" name="ct-qty[]" class="ct-qty form-control fw-bold ls-1" value="1" min="1" oninput="calculateNoaBilling(${remaining_balance})" required/>
                                 <div class="invalid-feedback">
                                     Service Name is required
                                 </div>
                             </div>     
                          </div>`;
 
-            /* Creating a form input field with a name of service_fee[] and a class of
-            service-amount. */
-
+            /* cost type fee input. */
             html_code += `<div class="col-md-3">
                                 <label class="form-label ls-1"><i class="mdi mdi-asterisk text-danger"></i>Service Fee</label> 
                                 <div class="input-group mb-3">
                                     <span class="input-group-text bg-dark text-white">&#8369;</span>
                                     <input type="number" name="ct-fee[]" class="ct-fee form-control fw-bold ls-1" placeholder="*Enter Amount" oninput="calculateNoaBilling(${remaining_balance})" required/>
-
                                     <div class="invalid-feedback">
                                         Service Fee is required
                                     </div>
@@ -342,7 +340,7 @@
             html_code += `</div>`;
         // // $('#dynamic-deduction').append(html_code); => this is a jquery syntax, below is vanilla js way. You can either use this one or the below code
         document.querySelector("#dynamic-services").insertAdjacentHTML("beforeend", html_code);
-        // set button to disable attribure to true on add services event
+        // set button to disable attribute to true on add services event
         document.querySelector(`#btn-ctype-${ctype_id}`).setAttribute('disabled', true);
     }
 
@@ -469,7 +467,7 @@
 
         let html_code  = `<div class="row my-3 row-deduction pt-1" id="row${count}">`;
 
-           /* Creating a new input field with the name deduction_name[] */
+           /* deduction_name input */
             html_code += `<div class="col-md-3">
                             <label class="form-label ls-1"><i class="mdi mdi-asterisk text-danger"></i>Deduction Name</label> 
                             <input type="text" name="deduction-name[]" class="form-control fw-bold ls-1" placeholder="Enter Deduction Name" required/>
@@ -478,8 +476,7 @@
                             </div>
                          </div>`;
 
-            /* Creating a form input field with a name of deduction_amount[] and a class of
-            deduction-amount. */
+            /* deduction-amount input. */
             html_code += `<div class="col-md-3">
                                 <label class="form-label ls-1"><i class="mdi mdi-asterisk text-danger"></i>Deduction Amount</label> 
                                 <div class="input-group mb-3">

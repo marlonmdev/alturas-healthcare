@@ -105,10 +105,10 @@ $route['healthcare-provider/billing/bill-loa/consultation/submit/(:any)'] = 'hea
 $route['healthcare-provider/billing/bill-loa/(:any)/success/(:any)'] = 'healthcare_provider/billing_controller/loa_billing_success';
 
 
-// $route['healthcare-provider/billing/bill-loa/(:any)/(:any)/(:any)'] = 'healthcare_provider/billing_controller/bill_member_loa';
+$route['healthcare-provider/billing/bill-noa/request/(:any)']  = 'healthcare_provider/billing_controller/bill_patient_noa';
+$route['healthcare-provider/billing/bill-noa/submit/(:any)'] = 'healthcare_provider/billing_controller/noa_final_billing';
+$route['healthcare-provider/billing/bill-noa/success/(:any)'] = 'healthcare_provider/billing_controller/noa_billing_success';
 
-
-$route['healthcare-provider/billing/bill-noa/(:any)']  = 'healthcare_provider/billing_controller/bill_patient_noa';
 $route['healthcare-provider/billing/billing-person/finalBilling']  = 'healthcare_provider/billing_controller/billing3NoaReview';
 $route['healthcare-provider/billing/billing-person/finish']['post']  = 'healthcare_provider/billing_controller/billing5Final';
 

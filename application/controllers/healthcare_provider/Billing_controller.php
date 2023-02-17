@@ -100,7 +100,7 @@ class Billing_controller extends CI_Controller {
         $this->security->get_csrf_hash();
         $url_id = $this->uri->segment(4); // encrypted id
         $loa_id = $this->myhash->hasher($url_id, 'decrypt');
-        $emp_id = $this->security->xss_clean($this->input->post('emp_id'));
+        $emp_id = $this->input->post('emp_id', TRUE);
 
         $hcare_provider = $this->billing_model->get_healthcare_provider_by_id($this->session->userdata('dsg_hcare_prov'));
         $loa = $this->billing_model->get_loa_to_bill($loa_id);
@@ -321,7 +321,7 @@ class Billing_controller extends CI_Controller {
         echo json_encode($response);
     }
 
-    function unset_session_data(){
+    private function _unset_session_data(){
         $temp_data = [
             'b_member_info',
             'b_member_mbl',
@@ -501,9 +501,9 @@ class Billing_controller extends CI_Controller {
 
     function bill_patient_noa() {
         $this->security->get_csrf_hash();
-        $url_id = $this->uri->segment(4); // encrypted id
+        $url_id = $this->uri->segment(5); // encrypted id
         $noa_id = $this->myhash->hasher($url_id, 'decrypt');
-        $emp_id = $this->security->xss_clean($this->input->post('emp_id'));
+        $emp_id = $this->input->post('emp_id', TRUE);
 
         $hcare_provider = $this->billing_model->get_healthcare_provider_by_id($this->session->userdata('dsg_hcare_prov'));
         $noa = $this->billing_model->get_noa_to_bill($noa_id);
@@ -524,6 +524,170 @@ class Billing_controller extends CI_Controller {
         $this->load->view('templates/header', $data);
         $this->load->view('healthcare_provider_panel/billing/bill_patient_noa');
         $this->load->view('templates/footer');
+    }
+
+    function noa_final_billing(){
+        $token = $this->security->get_csrf_hash();
+        // decrypt encrypted id from url
+        $noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+        // get all input values from form with XSS filter
+        $posted_data =  $this->input->post(NULL, TRUE);
+
+        $data = [
+            'billing_no'        => $posted_data['billing-no'],
+            'emp_id'            => $posted_data['emp-id'],
+            'noa_id'            => $noa_id,
+            'hp_id'             => $this->session->userdata('dsg_hcare_prov'),
+            'total_bill'        => $posted_data['total-bill'],
+            'total_deduction'   => $posted_data['total-deduction'],
+            'net_bill'          => $posted_data['net-bill'],
+            'personal_charge'   => $posted_data['personal-charge'],
+            'mbr_remaining_bal' => $posted_data['remaining-balance'],
+            'billed_by'         => $this->session->userdata('fullname'),
+            'billed_on'         => date('Y-m-d')
+        ];        
+
+        $inserted = $this->billing_model->insert_billing($data);
+
+        if($inserted){
+            
+            $charge = [];
+            $deductions = []; 
+            $philhealth = [];
+            $services = [];
+            $sss = [];
+
+            $ct_names = $posted_data['ct-name'];
+            $ct_quantities = $posted_data['ct-qty'];
+            $ct_fees = $posted_data['ct-fee'];
+
+            // loop through each of the selected billing services in NOA request
+            for ($x = 0; $x < count($ct_names); $x++) {
+                $services[] = [
+                    'service_name'     => $ct_names[$x],
+                    'service_quantity' => $ct_quantities[$x],
+                    'service_fee'      => $ct_fees[$x],
+                    'billing_no'       => $posted_data['billing-no'],
+                    'added_on'         => date('Y-m-d')
+                ];
+            }
+
+            $this->billing_model->insert_diagnostic_test_billing_services($services);
+
+             // if Philhealth deduction has value
+            if($posted_data['philhealth-deduction'] > 0){
+                $philhealth[] = [
+                    'deduction_name'   => 'Philhealth',
+                    'deduction_amount' => $posted_data['philhealth-deduction'],
+                    'billing_no'       => $posted_data['billing-no'],
+                    'added_on'         => date('Y-m-d')
+                ];
+
+                $this->billing_model->insert_billing_deductions($philhealth);
+            }
+
+            // if SSS deduction has value
+            if($posted_data['sss-deduction'] > 0){
+                $sss[] = [
+                    'deduction_name'   => 'SSS',
+                    'deduction_amount' => $posted_data['sss-deduction'],
+                    'billing_no'       => $posted_data['billing-no'],
+                    'added_on'         => date('Y-m-d')
+                ];
+
+                $this->billing_model->insert_billing_deductions($sss);
+            }
+
+            // if the dynamic deductions exists
+            if($posted_data['deduction-count'] > 0){
+                $deduction_names =  $posted_data['deduction-name'];
+                $deduction_amounts = $posted_data['deduction-amount'];
+
+                for ($y = 0; $y < count($deduction_names); $y++) {
+                    $deductions[] = [
+                        'deduction_name'   => $deduction_names[$y],
+                        'deduction_amount' => $deduction_amounts[$y],
+                        'billing_no'       => $posted_data['billing-no'],
+                        'added_on'         => date('Y-m-d')
+                    ];
+                }
+
+                $this->billing_model->insert_billing_deductions($deductions);
+            }
+
+            // if personal charges has amount
+            if($posted_data['personal-charge'] > 0){
+                $charge = [
+                    'emp_id'        => $posted_data['emp-id'],
+                    'noa_id'        => $noa_id,
+                    'amount'        => $posted_data['personal-charge'],
+                    'billing_no'    => $posted_data['billing-no'],
+                    'status'        => 'Unpaid',
+                    'added_on'      => date('Y-m-d')
+                ];
+
+                $this->billing_model->insert_personal_charge($charge);
+            }
+
+            $remaining_bal = $posted_data['remaining-balance'];
+            $net_bill = $posted_data['net-bill'];
+            $member_mbl = $this->billing_model->get_member_mbl($posted_data['emp-id']);
+            $remaining_bal = $member_mbl['remaining_balance'];
+            $current_used_mbl = $member_mbl['used_mbl'] != '' ? $member_mbl['used_mbl'] : 0; 
+            
+            // calculate members used mbl
+            $total_used_mbl = $current_used_mbl + $net_bill;
+
+            // Update Member's Remaining Credit Limit Balance
+            if($net_bill > 0 && $net_bill < $remaining_bal){
+                // set used mbl value for update
+                $used_mbl = $total_used_mbl >= $member_mbl['max_benefit_limit'] ?  $member_mbl['max_benefit_limit'] : $total_used_mbl;
+
+                // calculate deduction of member's remaining MBL balance
+                $new_balance = $remaining_bal - $net_bill;
+                $data = [
+                    'used_mbl'          => $used_mbl,
+                    'remaining_balance' => $new_balance
+                ];
+                $this->billing_model->update_member_remaining_balance($posted_data['emp-id'], $data);
+            }else if($net_bill >= $remaining_bal){
+                $data = [
+                    'used_mbl'          => $member_mbl['remaining_balance'],
+                    'remaining_balance' => 0
+                ];
+                $this->billing_model->update_member_remaining_balance($posted_data['emp-id'], $data);
+            }
+
+            // call the function that deletes the temporary session userdata
+            $this->_unset_session_data();
+
+            // get billing info based on billing number
+            $bill = $this->billing_model->get_billing_info($posted_data['billing-no']);
+            $encrypted_id = $this->myhash->hasher($bill['billing_id'], 'encrypt');
+
+            $response = [
+                'token'      => $token,
+                'status'     => 'success',
+                'message'    => 'Billed Successfully',
+                'billing_id' => $encrypted_id
+            ];
+
+        }else{
+            $response = [
+                'token'   => $token,
+                'status'  => 'error',
+                'message' => 'Bill Transaction Failed'
+            ];
+        }
+
+        echo json_encode($response);
+    }
+
+    function noa_billing_success(){
+        $data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_provider_panel/billing/billing_success');
+		$this->load->view('templates/footer');
     }
 
     function billing3BillNoa() {
@@ -649,7 +813,6 @@ class Billing_controller extends CI_Controller {
         echo json_encode($res);
     }
 
-
     function addEquipments() {
         $this->security->get_csrf_hash();
 
@@ -717,7 +880,6 @@ class Billing_controller extends CI_Controller {
         $this->billing_model->loa_personal_charges($perosonalCharges);
         echo json_encode($perosonalCharges);
     }
-
 
     function billLoaMember() {
         $this->security->get_csrf_hash();

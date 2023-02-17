@@ -96,6 +96,7 @@
                         <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
                         <input type="hidden" name="loa-id" value="<?= $loa_id ?>">
                         <input type="hidden" name="emp-id" value="<?= $member['emp_id'] ?>">
+                        <input type="hidden" name="remaining-balance" value="<?= $remaining_balance ?>">
                         <input type="hidden" name="deduction-count" value="0" min="0" id="deduction-count">
                         
                         <div class="row">

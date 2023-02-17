@@ -96,6 +96,7 @@
                         <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
                         <input type="hidden" name="loa-id" value="<?= $loa_id ?>">
                         <input type="hidden" name="emp-id" value="<?= $member['emp_id'] ?>">
+                        <input type="hidden" name="remaining-balance" value="<?= $remaining_balance ?>">
                         <input type="hidden" name="deduction-count" value="0" min="0" id="deduction-count">
 
                         <?php 
@@ -114,7 +115,7 @@
 
                                 <div class="col-md-2">
                                     <label class="form-label ls-1"><i class="mdi mdi-asterisk text-danger"></i>Quantity</label>
-                                    <input type="number" class="ct-qty form-control fw-bold" name="ct-quantity[]" oninput="calculateDiagnosticTestBilling(`<?= $remaining_balance ?>`)" value="1" min="1" required>
+                                    <input type="number" class="ct-qty form-control fw-bold" name="ct-qty[]" oninput="calculateDiagnosticTestBilling(`<?= $remaining_balance ?>`)" value="1" min="1" required>
                                     <div class="invalid-feedback">
                                         Quantity is required
                                     </div>
@@ -126,7 +127,7 @@
                                     <div class="input-group mb-3">
                                         <span class="input-group-text bg-dark text-white">&#8369;</span>
 
-                                        <input type="number" class="ct-cost form-control fw-bold ls-1" name="ct-fee[]" placeholder="Enter Amount" oninput="calculateDiagnosticTestBilling(`<?= $remaining_balance ?>`)" min="0" required>
+                                        <input type="number" class="ct-fee form-control fw-bold ls-1" name="ct-fee[]" placeholder="Enter Amount" oninput="calculateDiagnosticTestBilling(`<?= $remaining_balance ?>`)" min="0" required>
 
                                         <div class="invalid-feedback">
                                             Service Cost is required.
@@ -269,7 +270,7 @@
         let sss_deduction = 0;
         let other_deduction = 0;
 
-        const cost_inputs = document.querySelectorAll(".ct-cost");
+        const cost_inputs = document.querySelectorAll(".ct-fee");
         const quantity_inputs = document.querySelectorAll(".ct-qty");
         const total_input = document.querySelector("#total-bill");
         const net_bill = document.querySelector("#net-bill");

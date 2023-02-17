@@ -298,8 +298,8 @@
             /* cost type name input */
             html_code += `<div class="col-md-6">
                             <div class="form-group">
-                                <label for="ct-name">Service Name</label>
-                                <input type="text" class="ct-name form-control fw-bold ls-1" name="ct-name[]" value="${ctype_name}" readonly/>
+                                <label class="form-label ls-1">Service Name</label>
+                                <input type="text" name="ct-names[]" class="ct-names form-control fw-bold ls-1" value="${ctype_name}" readonly/>
                                 <div class="invalid-feedback">
                                     Service Name is required
                                 </div>
@@ -309,8 +309,8 @@
             /* cost type quantity input */
             html_code += `<div class="col-md-2">
                             <div class="form-group">
-                                <label for="service-qty"><i class="mdi mdi-asterisk text-danger"></i>Quantity</label>
-                                <input type="number" name="ct-qty[]" class="ct-qty form-control fw-bold ls-1" value="1" min="1" oninput="calculateNoaBilling(${remaining_balance})" required/>
+                                <label class="form-label ls-1"><i class="mdi mdi-asterisk text-danger"></i>Quantity</label>
+                                <input type="number" name="ct-qtys[]" class="ct-qtys form-control fw-bold ls-1" value="1" min="1" oninput="calculateNoaBilling(${remaining_balance})" required/>
                                 <div class="invalid-feedback">
                                     Service Name is required
                                 </div>
@@ -322,15 +322,14 @@
                                 <label class="form-label ls-1"><i class="mdi mdi-asterisk text-danger"></i>Service Fee</label> 
                                 <div class="input-group mb-3">
                                     <span class="input-group-text bg-dark text-white">&#8369;</span>
-                                    <input type="number" name="ct-fee[]" class="ct-fee form-control fw-bold ls-1" placeholder="*Enter Amount" oninput="calculateNoaBilling(${remaining_balance})" required/>
+                                    <input type="number" name="ct-fees[]" class="ct-fees form-control fw-bold ls-1" placeholder="*Enter Amount" oninput="calculateNoaBilling(${remaining_balance})" required/>
                                     <div class="invalid-feedback">
                                         Service Fee is required
                                     </div>
                                 </div>
                           </div>`;
 
-            
-           /* Adding a remove button to the html code. */
+            /* Adding a remove button to the html code. */
             html_code += `<div class="col-md-1" style="margin-top:28px;">
                             <button type="button" data-id="${count}" class="btn btn-danger btn-md btn-remove align-baseline" onclick="removeService(this, ${ctype_id}, ${remaining_balance})" data-bs-toggle="tooltip" title="Click to remove Deduction">
                                 <i class="mdi mdi-close"></i>
@@ -372,8 +371,8 @@
         let other_deduction = 0;
         validateNumberInputs();
 
-        const cost_inputs = document.querySelectorAll('.ct-fee');
-        const quantity_inputs = document.querySelectorAll('.ct-qty');
+        const cost_inputs = document.querySelectorAll('.ct-fees');
+        const quantity_inputs = document.querySelectorAll('.ct-qtys');
         const total_bill = document.querySelector('#total-bill');
         const deduct_philhealth = document.querySelector('#deduct-philhealth');
         const deduct_sss = document.querySelector('#deduct-sss');

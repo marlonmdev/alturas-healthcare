@@ -23,20 +23,19 @@
       <div class="container-fluid">
         <div class="row mb-3">
           <div class="col-sm-12">
-            <a class="btn btn-dark" href="<?php echo base_url(); ?>member/requested-noa/approved">
+            <a class="btn btn-dark me-2" href="<?php echo base_url(); ?>member/requested-noa/approved">
               <i class="mdi mdi-arrow-left-bold"></i>
               Go Back
             </a>
-            &nbsp;
-            <a class="btn btn-danger" href="javascript:void(0)" onclick="printDiv('#printableDiv')">
-              <i class="mdi mdi-printer"></i>
-              Print NOA
-            </a>
+
+            <button class="btn btn-info ls-1 me-2" onclick="saveAsImage()"><i class="mdi mdi-file-image"></i> Save as Image</button>
+
+            <button class="btn btn-danger ls-1" onclick="printDiv('#printableDiv')"><i class="mdi mdi-printer"></i> Print NOA</button>
           </div>
         </div>
 
-        <div class="card shadow py-5 px-5">
-          <div class="row" id="printableDiv" style="background:#ffff;padding:0 1rem 0 1rem;">
+        <div class="card shadow py-3 px-3">
+          <div class="row" id="printableDiv" style="background:#ffff;padding:20px 40px;">
             <div class=" col-xs-12">
               <div class="grid request">
                 <div class="grid-body">
@@ -159,6 +158,7 @@
 
   <script>
     const baseUrl = "<?php echo base_url(); ?>";
+    const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
 
     onload = () => {
       $('#qrcode').html('');
@@ -176,6 +176,24 @@
         width: 1.5,
         height: 70,
       });
+    }
+ 
+    const saveAsImage = () => {
+      // Get the div element you want to save as an image
+      const element = document.querySelector("#printableDiv");
+      // Use html2canvas to take a screenshot of the element
+      html2canvas(element)
+        .then(function(canvas) {
+          // Convert the canvas to an image data URL
+          const imgData = canvas.toDataURL("image/png");
+          // Create a temporary link element to download the image
+          const link = document.createElement("a");
+          link.download = `noa_${fileName}.png`;
+          link.href = imgData;
+
+          // Click the link to download the image
+          link.click();
+        });
     }
 
     const printDiv = (layer) => {

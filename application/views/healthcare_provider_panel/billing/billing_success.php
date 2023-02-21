@@ -236,7 +236,7 @@
   const baseUrl = `<?php echo base_url(); ?>`;
   const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
 
-  function saveAsImage(){
+  const saveAsImage = () => {
     // Get the div element you want to save as an image
     const element = document.querySelector("#printableDiv");
     // Use html2canvas to take a screenshot of the element
@@ -254,7 +254,7 @@
       });
   }
   
-  function printDiv(layer) {
+  const printDiv = (layer) => {
     $(layer).printThis({
       importCSS: true,
       copyTagClasses: true,

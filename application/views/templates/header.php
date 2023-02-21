@@ -28,11 +28,11 @@
     <!-- End of Vendors CSS -->
     <!-- Script Tags -->
     <script src="<?php echo base_url(); ?>assets/vendors/jquery/jquery.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/vendors/qrcodejs/qrcode.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/vendors/jsbarcode/jsBarcode.all.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/vendors/printThis/printThis.js"></script>
-    <script src="<?php echo base_url(); ?>assets/vendors/photoviewer/dist/photoviewer.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/vendors/Toastr/build/toastr.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/vendors/qrcodejs/qrcode.min.js" defer></script>
+    <script src="<?php echo base_url(); ?>assets/vendors/jsbarcode/jsBarcode.all.min.js" defer></script>
+    <script src="<?php echo base_url(); ?>assets/vendors/printThis/printThis.js" defer></script>
+    <script src="<?php echo base_url(); ?>assets/vendors/photoviewer/dist/photoviewer.min.js" defer></script>
+    <script src="<?php echo base_url(); ?>assets/vendors/Toastr/build/toastr.min.js" defer></script>
   </head>
 
   <body>

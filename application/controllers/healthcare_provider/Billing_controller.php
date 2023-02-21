@@ -194,19 +194,19 @@ class Billing_controller extends CI_Controller {
             // call to a private function that deletes the temporary session userdata
             $this->_unset_session_data();
             // get billing info based on billing number
-            $bill = $this->billing_model->get_billing_info($posted_data['billing-no']);
+            $bill = $this->billing_model->get_billing($posted_data['billing-no']);
             $encrypted_id = $this->myhash->hasher($bill['billing_id'], 'encrypt');
             $response = [
                 'token'      => $token,
                 'status'     => 'success',
                 'message'    => 'Billed Successfully',
-                'billing_id' => $encrypted_id
+                'billing_id' => $encrypted_id,
             ];
         }else{
             $response = [
                 'token'   => $token,
                 'status'  => 'error',
-                'message' => 'Bill Transaction Failed'
+                'message' => 'Bill Transaction Failed',
             ];
         }
 
@@ -240,7 +240,7 @@ class Billing_controller extends CI_Controller {
                 'service_name'     => $posted_data['consultation'],
                 'service_quantity' => $posted_data['consult-quantity'],
                 'service_fee'      => $posted_data['consult-fee'],
-                'billing_no'       => $posted_data['total-bill'],
+                'billing_no'       => $posted_data['billing-no'],
                 'added_on'         => date('Y-m-d')
             ];
 
@@ -267,7 +267,7 @@ class Billing_controller extends CI_Controller {
             $this->_unset_session_data();
 
             // get billing info based on billing number
-            $bill = $this->billing_model->get_billing_info($posted_data['billing-no']);
+            $bill = $this->billing_model->get_billing($posted_data['billing-no']);
             $encrypted_id = $this->myhash->hasher($bill['billing_id'], 'encrypt');
             
             $response = [
@@ -288,7 +288,12 @@ class Billing_controller extends CI_Controller {
     }
 
     function loa_billing_success(){
+        $billing_id = $this->myhash->hasher($this->uri->segment(6), 'decrypt');
         $data['user_role'] = $this->session->userdata('user_role');
+        $data['bill'] = $bill = $this->billing_model->get_billing_info($billing_id);
+        $data['mbl'] = $this->billing_model->get_member_mbl($bill['emp_id']);
+        $data['services'] = $this->billing_model->get_billing_services($bill['billing_no']);
+        $data['deductions'] = $this->billing_model->get_billing_deductions($bill['billing_no']);
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_provider_panel/billing/billing_success');
 		$this->load->view('templates/footer');
@@ -357,7 +362,7 @@ class Billing_controller extends CI_Controller {
             // call to a private function that deletes the temporary session userdata
             $this->_unset_session_data();
             // get billing info based on billing number
-            $bill = $this->billing_model->get_billing_info($posted_data['billing-no']);
+            $bill = $this->billing_model->get_billing($posted_data['billing-no']);
             $encrypted_id = $this->myhash->hasher($bill['billing_id'], 'encrypt');
             $response = [
                 'token'      => $token,
@@ -377,7 +382,7 @@ class Billing_controller extends CI_Controller {
 
     function insert_patient_billing($type, $posted_data, $id){
         if($type === 'LOA'){
-             $data = [
+            $data = [
                 'billing_no'        => $posted_data['billing-no'],
                 'emp_id'            => $posted_data['emp-id'],
                 'loa_id'            => $id,
@@ -391,7 +396,7 @@ class Billing_controller extends CI_Controller {
                 'billed_on'         => date('Y-m-d')
             ];      
         }else if($type === 'NOA'){
-             $data = [
+            $data = [
                 'billing_no'        => $posted_data['billing-no'],
                 'emp_id'            => $posted_data['emp-id'],
                 'noa_id'            => $id,
@@ -454,7 +459,7 @@ class Billing_controller extends CI_Controller {
             $deductions[] = [
                 'deduction_name'   => $deduction_names[$y],
                 'deduction_amount' => $deduction_amounts[$y],
-                'billing_no'       => $posted_data['billing-no'],
+                'billing_no'       => $billing_no,
                 'added_on'         => date('Y-m-d')
             ];
         }
@@ -518,7 +523,12 @@ class Billing_controller extends CI_Controller {
     }
 
     function noa_billing_success(){
+        $billing_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
         $data['user_role'] = $this->session->userdata('user_role');
+        $data['bill'] = $bill = $this->billing_model->get_billing_info($billing_id);
+        $data['mbl'] = $this->billing_model->get_member_mbl($bill['emp_id']);
+        $data['services'] = $this->billing_model->get_billing_services($bill['billing_no']);
+        $data['deductions'] = $this->billing_model->get_billing_deductions($bill['billing_no']);
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_provider_panel/billing/billing_success');
 		$this->load->view('templates/footer');

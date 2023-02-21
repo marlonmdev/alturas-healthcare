@@ -471,9 +471,6 @@
                                     <span class="other-deduction-msg text-danger fw-bold"></span>
                                 </div>
                           </div>`;
-
-                          
-
             
            /* Adding a remove button to the html code. */
             html_code += `<div class="col-md-3">

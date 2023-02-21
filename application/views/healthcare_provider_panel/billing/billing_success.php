@@ -37,15 +37,15 @@
                 </div>
 
                 <div class="mx-3" style="background:#F8F8F8;border:2px dashed #495579;padding:20px;">
-                  <div class="container" id="printableDiv">
+                  <div class="container" id="printableDiv" style="padding:40px 30px;">
                     <div class="row text-center">
                       <h3 class="ls-1"> BILLING # <i class="mdi mdi-arrow-right-bold"></i> <?= $bill['billing_no'] ?></h3>
                     </div>
-                    <div class="row">
-                      <div class="col-12 mt-3">
+                    <div class="row mt-3">
+                      <div class="col-6">
                         <ul class="list-unstyled">
                           <li class="text-secondary">
-                            <span class="ls-1 border-secondary border-2 border-top border-bottom pt-1 pb-1">
+                            <span class="ls-1 border-secondary border-2 border-bottom pb-1">
                               Issued To: <?= $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'] ?>
                             </span>
                           </li>
@@ -55,15 +55,19 @@
                               Issued By: <?= $bill['billed_by'] ?>
                             </span>
                           </li>
+                        </ul>
+                      </div>
 
-                          <li class="text-secondary mt-2">
+                      <div class="col-6">
+                        <ul class="list-unstyled">
+                              <li class="text-secondary">
                             <span class="ls-1 border-secondary border-2 border-bottom pb-1">
                               Issued On: <?= date('m/d/Y', strtotime($bill['billed_on'])) ?>
                             </span>
                           </li>
 
                           <li class="text-secondary mt-2"> 
-                            <span class="ls-1 border-secondary border-2 border-top border-bottom pt-1 pb-1">
+                            <span class="ls-1 border-secondary border-2 border-bottom pt-1 pb-1">
                               Healthcare Provider: <?= $bill['hp_name'] ?>
                             </span>
                           </li>
@@ -216,7 +220,8 @@
                 <div class="container mt-4 mb-4">
                   <div class="row">
                     <div class="col-12 d-flex justify-content-end align-items-end">
-                      <button class="btn btn-outline-info btn-lg ls-1" onclick="printDiv('#printableDiv')">Print Receipt</button>
+                      <button class="btn btn-outline-info btn-lg ls-1 me-3" onclick="saveAsImage()"><i class="mdi mdi-file-image"></i> Save as Image</button>
+                      <button class="btn btn-outline-danger btn-lg ls-1" onclick="printDiv('#printableDiv')"><i class="mdi mdi-printer"></i> Print Receipt</button>
                     </div>
                   </div>
                 </div>
@@ -229,6 +234,25 @@
 </div>
 <script>
   const baseUrl = `<?php echo base_url(); ?>`;
+  const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
+
+  function saveAsImage(){
+    // Get the div element you want to save as an image
+    const element = document.querySelector("#printableDiv");
+    // Use html2canvas to take a screenshot of the element
+    html2canvas(element)
+      .then(function(canvas) {
+        // Convert the canvas to an image data URL
+        const imgData = canvas.toDataURL("image/png");
+        // Create a temporary link element to download the image
+        const link = document.createElement("a");
+        link.download = `receipt_${fileName}.png`;
+        link.href = imgData;
+
+        // Click the link to download the image
+        link.click();
+      });
+  }
   
   function printDiv(layer) {
     $(layer).printThis({

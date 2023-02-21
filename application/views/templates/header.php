@@ -31,6 +31,7 @@
     <script src="<?php echo base_url(); ?>assets/vendors/qrcodejs/qrcode.min.js" defer></script>
     <script src="<?php echo base_url(); ?>assets/vendors/jsbarcode/jsBarcode.all.min.js" defer></script>
     <script src="<?php echo base_url(); ?>assets/vendors/printThis/printThis.js" defer></script>
+    <script src="<?php echo base_url(); ?>assets/vendors/html2canvas/html2canvas.js" defer></script>
     <script src="<?php echo base_url(); ?>assets/vendors/photoviewer/dist/photoviewer.min.js" defer></script>
     <script src="<?php echo base_url(); ?>assets/vendors/Toastr/build/toastr.min.js" defer></script>
   </head>

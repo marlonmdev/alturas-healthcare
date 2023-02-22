@@ -191,6 +191,8 @@ class Billing_controller extends CI_Controller {
             }
             // call to function that updates member's credit limit
             $this->update_member_mbl($posted_data);       
+            // call to function that updates loa request status
+            $this->update_request_status($type, $loa_id);
             // call to a private function that deletes the temporary session userdata
             $this->_unset_session_data();
             // get billing info based on billing number
@@ -262,7 +264,9 @@ class Billing_controller extends CI_Controller {
                 $this->insert_personal_charge($type, $posted_data['emp-id'], $loa_id, $posted_data['personal-charge'], $posted_data['billing-no']);
             }
             // call to function that updates member's credit limit
-            $this->update_member_mbl($posted_data);       
+            $this->update_member_mbl($posted_data);     
+            // call to function that updates loa request status
+            $this->update_request_status($type, $loa_id);  
             // call to a private function that deletes the temporary session userdata
             $this->_unset_session_data();
 
@@ -340,7 +344,6 @@ class Billing_controller extends CI_Controller {
         if($inserted){
             // if patients billing info is saved to DB call insert_billing_services() function
             $this->insert_billing_services($posted_data['ct-names'], $posted_data['ct-qtys'], $posted_data['ct-fees'], $posted_data['billing-no']);
-
             // if Philhealth deduction has value
             if($posted_data['philhealth-deduction'] > 0){
                 $this->insert_philhealth_deduction($posted_data['philhealth-deduction'], $posted_data['billing-no']);
@@ -359,6 +362,8 @@ class Billing_controller extends CI_Controller {
             }
             // call to function that updates member's credit limit
             $this->update_member_mbl($posted_data);       
+            // call to function that updates noa request status
+            $this->update_request_status($type, $noa_id);
             // call to a private function that deletes the temporary session userdata
             $this->_unset_session_data();
             // get billing info based on billing number
@@ -378,6 +383,18 @@ class Billing_controller extends CI_Controller {
             ];
         }
         echo json_encode($response);
+    }
+
+    function noa_billing_success(){
+        $billing_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+        $data['user_role'] = $this->session->userdata('user_role');
+        $data['bill'] = $bill = $this->billing_model->get_billing_info($billing_id);
+        $data['mbl'] = $this->billing_model->get_member_mbl($bill['emp_id']);
+        $data['services'] = $this->billing_model->get_billing_services($bill['billing_no']);
+        $data['deductions'] = $this->billing_model->get_billing_deductions($bill['billing_no']);
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_provider_panel/billing/billing_success');
+		$this->load->view('templates/footer');
     }
 
     function insert_patient_billing($type, $posted_data, $id){
@@ -522,15 +539,34 @@ class Billing_controller extends CI_Controller {
         }
     }
 
-    function noa_billing_success(){
-        $billing_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+    function update_request_status($type, $id){
+        $data = [
+                'status' => 'Billed'
+            ];
+
+        if($type == 'LOA'){
+            $this->billing_model->update_loa_request($id, $data);
+        }else if($type == 'NOA'){
+            $this->billing_model->update_noa_request($id, $data);
+        }
+    }
+
+    function view_request_billing(){
+        $id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+        $type = $this->uri->segment(3);
+
+        if($type == 'loa'){
+            $data['bill'] = $bill = $this->billing_model->get_loa_billing_info($id);
+        }else if($type == 'noa'){
+            $data['bill'] = $bill = $this->billing_model->get_noa_billing_info($id);
+        }
+        
         $data['user_role'] = $this->session->userdata('user_role');
-        $data['bill'] = $bill = $this->billing_model->get_billing_info($billing_id);
         $data['mbl'] = $this->billing_model->get_member_mbl($bill['emp_id']);
         $data['services'] = $this->billing_model->get_billing_services($bill['billing_no']);
         $data['deductions'] = $this->billing_model->get_billing_deductions($bill['billing_no']);
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_provider_panel/billing/billing_success');
+		$this->load->view('healthcare_provider_panel/billing/billing_receipt');
 		$this->load->view('templates/footer');
     }
 

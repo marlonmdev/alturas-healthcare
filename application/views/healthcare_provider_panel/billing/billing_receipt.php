@@ -21,22 +21,26 @@
     <!-- Container fluid  -->
     <div class="container-fluid">
       <div class="row">
+
+          <!-- Go Back to Previous Page -->
+          <div class="col-12 mb-4 mt-0">
+              <form method="POST" action="<?php echo base_url(); ?>healthcare-provider/billing/search-by-healthcard" id="search-form-1" class="needs-validation" novalidate>
+                  <div class="input-group">
+                      <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
+                      <input type="hidden" name="healthcard_no" value="<?= $bill['health_card_no'] ?>">
+                      <button type="submit" class="btn btn-outline-dark" data-bs-toggle="tooltip" title="Click to Go Back">
+                          <strong class="ls-2" style="vertical-align:middle">
+                              <i class="mdi mdi-arrow-left-bold"></i> Go Back
+                          </strong>
+                      </button>
+                  </div>
+              </form>
+          </div>
+
           <div class="col-md-12">
             <div class="card shadow">
               <div class="card-body">
-
-                <div class="container mb-4">
-                  <div class="row">
-                    <div class="text-center">
-                      <i class="mdi mdi-checkbox-marked-circle-outline text-success" style="font-size: 5rem;"></i>
-                    </div>
-                    <div class="text-center">
-                      <h3 class="ls-2">Billed Successfully!</h3>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="mx-3" style="background:#F8F8F8;border:2px dashed #495579;padding:20px;">
+                <div class="mx-3 mt-3" style="background:#F8F8F8;border:2px dashed #495579;padding:20px;">
                   <div class="container" id="printableDiv" style="padding:40px 30px;">
                     <div class="row text-center">
                       <h3 class="ls-1"> BILLING # <i class="mdi mdi-arrow-right-bold"></i> <?= $bill['billing_no'] ?></h3>

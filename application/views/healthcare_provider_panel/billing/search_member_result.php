@@ -47,8 +47,9 @@
                                     <table class="table table-hover" id="tableLoa">
                                         <thead>
                                             <tr>
-                                                <th class="fw-bold">LOA No.</th>
+                                                <th class="fw-bold">#</th>
                                                 <th class="fw-bold">Request Date</th>
+                                                <th class="fw-bold">Status</th>
                                                 <th class="fw-bold">Action</th>
                                             </tr>
                                         </thead>
@@ -66,30 +67,40 @@
                                                                 <?= date("m/d/Y", strtotime($loa['request_date'])) ?>
                                                             </td>
                                                             <td class="fw-bold">
+                                                                <span class="badge rounded-pill bg-success ls-1">
+                                                                    <?= $loa['status'] ?>
+                                                                </span>
+                                                            </td>
+                                                            <td class="fw-bold">
                                                                 <form method="POST" action="<?= base_url() ?>healthcare-provider/billing/bill-loa/<?= $this->myhash->hasher($loa['loa_id'], 'encrypt') ?>">
 
                                                                     <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
 
                                                                     <input type="hidden" name="emp_id" value="<?= $loa['emp_id'] ?>">
 
-                                                                    <button type="submit" class="fw-bold ls-1 text-danger border-0" data-bs-toggle="tooltip" title="Click to Proceed" style="background-color: transparent;">
-                                                                    Proceed to Billing <i class="mdi mdi-chevron-double-right fs-2" style="vertical-align:middle;"></i>
+                                                                    <button type="submit" class="fw-bold ls-1 text-danger border-0" data-bs-toggle="tooltip" title="Click to proceed to Billing" style="background-color: transparent;">
+                                                                    Bill Now <i class="mdi mdi-chevron-double-right fs-2" style="vertical-align:middle;"></i>
                                                                     </button>
                                                                 </form>
                                                             </td>
                                                         </tr>
-                                                    <?php } else if($loa['status'] == 'Closed') { ?>
+                                                    <?php } else if($loa['status'] == 'Billed') { ?>
                                                         <tr>
                                                             <td class="fw-bold">
-                                                                <?= $loa['loa_no'] ?>
+                                                                <mark class="bg-primary text-white ls-1"><?= $loa['loa_no'] ?></mark>
                                                             </td>
                                                             <td class="fw-bold">
                                                                 <?= date("m/d/Y", strtotime($loa['request_date'])) ?>
                                                             </td>
                                                             <td class="fw-bold">
-                                                                <span class="badge bg-success px-2 ls-1">
-                                                                    Billed
+                                                                <span class="badge rounded-pill bg-cyan ls-1">
+                                                                    <?= $loa['status'] ?>
                                                                 </span>
+                                                            </td>
+                                                            <td class="fw-bold">
+                                                                <a href="<?= base_url() ?>healthcare-provider/billing/loa/view-receipt/<?= $this->myhash->hasher($loa['loa_id'], 'encrypt') ?>" class="text-info fw-bold ls-1">
+                                                                    View Receipt
+                                                                </a>
                                                             </td>
                                                         </tr>
                                             <?php
@@ -119,8 +130,9 @@
                                     <table class="table table-hover" id="tableNoa">
                                         <thead>
                                             <tr>
-                                                <th class="fw-bold">NOA No.</th>
+                                                <th class="fw-bold">#</th>
                                                 <th class="fw-bold">Request Date</th>
+                                                <th class="fw-bold">Status</th>
                                                 <th class="fw-bold">Action</th>
                                             </tr>
                                         </thead>
@@ -138,28 +150,40 @@
                                                                 <?= date("m/d/Y", strtotime($noa['request_date'])) ?>
                                                             </td>
                                                             <td class="fw-bold">
+                                                                <span class="badge rounded-pill bg-success ls-1">
+                                                                    <?= $noa['status'] ?>
+                                                                </span>
+                                                            </td>
+                                                            <td class="fw-bold">
                                                                 <form method="POST" action="<?= base_url() ?>healthcare-provider/billing/bill-noa/request/<?= $this->myhash->hasher($noa['noa_id'], 'encrypt') ?>">
 
                                                                     <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
 
                                                                     <input type="hidden" name="emp_id" value="<?= $noa['emp_id'] ?>">
 
-                                                                    <button type="submit" class="fw-bold ls-1 text-danger border-0" data-bs-toggle="tooltip" title="Click to Proceed" style="background-color: transparent;">
-                                                                    Proceed to Billing <i class="mdi mdi-chevron-double-right fs-2" style="vertical-align:middle;"></i>
+                                                                    <button type="submit" class="fw-bold ls-1 text-danger border-0" data-bs-toggle="tooltip" title="Click to proceed to Billing" style="background-color: transparent;">
+                                                                    Bill Now<i class="mdi mdi-chevron-double-right fs-2" style="vertical-align:middle;"></i>
                                                                     </button>
                                                                 </form>
                                                             </td>
                                                         </tr>
-                                                        <?php } else if($noa['status'] == 'Closed') { ?>
+                                                        <?php } else if($noa['status'] == 'Billed') { ?>
                                                         <tr>
                                                             <td class="fw-bold">
-                                                                <?= $loa['noa_no'] ?>
+                                                                <mark class="bg-primary text-white ls-1"><?= $noa['noa_no'] ?></mark>
                                                             </td>
                                                             <td class="fw-bold">
                                                                 <?= date("m/d/Y", strtotime($noa['request_date'])) ?>
                                                             </td>
                                                             <td class="fw-bold">
-                                                                <span class="badge bg-success px-2 ls-1">Billed</span>
+                                                                <span class="badge rounded-pill bg-cyan ls-1">
+                                                                    <?= $noa['status'] ?>
+                                                                </span>
+                                                            </td>
+                                                            <td class="fw-bold text-justify">
+                                                                <a href="<?= base_url() ?>healthcare-provider/billing/noa/view-receipt/<?= $this->myhash->hasher($noa['noa_id'], 'encrypt') ?>" class="text-info fw-bold ls-1">
+                                                                    View Receipt
+                                                                </a>
                                                             </td>
                                                         </tr>
                                             <?php
@@ -184,7 +208,7 @@
         $('#tableLoa').DataTable({
             searching: false,
             columnDefs: [{
-                "targets": [2], // numbering column
+                "targets": [2, 3], // numbering column
                 "orderable": false, //set not orderable
             }],
         });
@@ -192,7 +216,7 @@
         $('#tableNoa').DataTable({
             searching: false,
             columnDefs: [{
-                "targets": [2], // numbering column
+                "targets": [2, 3], // numbering column
                 "orderable": false, //set not orderable
             }],
         });

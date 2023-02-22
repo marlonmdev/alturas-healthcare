@@ -135,4 +135,14 @@ class Billing_model extends CI_Model {
         return $this->db->update('max_benefit_limits', $data);
     }
 
+    function update_loa_request($loa_id, $data){
+        $this->db->where('loa_id', $loa_id);
+        return $this->db->update('loa_requests', $data);
+    }
+
+    function update_noa_request($noa_id, $data){
+        $this->db->where('noa_id', $noa_id);
+        return $this->db->update('noa_requests', $data);
+    }
+
 }

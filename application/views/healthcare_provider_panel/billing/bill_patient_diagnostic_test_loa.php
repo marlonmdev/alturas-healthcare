@@ -471,9 +471,6 @@
                                     <span class="other-deduction-msg text-danger fw-bold"></span>
                                 </div>
                           </div>`;
-
-                          
-
             
            /* Adding a remove button to the html code. */
             html_code += `<div class="col-md-3">
@@ -538,12 +535,12 @@
                             data: data,
                             dataType: "json",
                             success: function(response) {
-                                const { token, status, message, $billing_id } = response;
+                                const { token, status, message, billing_id } = response;
 
                                 if (status == 'success') {
-                                    
+    
                                     setTimeout(function () {
-                                        window.location.href = `${baseUrl}healthcare-provider/billing/bill-loa/diagnostic-test/success/${$billing_id}`;
+                                        window.location.href = `${baseUrl}healthcare-provider/billing/bill-loa/diagnostic-test/success/${billing_id}`;
                                     }, 500);
 
                                 } else if(status == 'error') {

@@ -21,110 +21,207 @@
     <!-- Container fluid  -->
     <div class="container-fluid">
       <div class="row">
-        <!-- <div class="vh-100 d-flex justify-content-center align-items-center"> -->
           <div class="col-md-12">
-            <!-- <div class="border border-3 border-info"></div> -->
             <div class="card shadow">
               <div class="card-body">
 
-                <div class="container">
+                <div class="containe mb-4">
                   <div class="row">
                     <div class="text-center">
                       <i class="mdi mdi-checkbox-marked-circle-outline text-success" style="font-size: 5rem;"></i>
                     </div>
                     <div class="text-center">
-                      <p class="fs-4 ls-2">Billed Successfully!</p>
+                      <h3 class="ls-2">Billed Successfully!</h3>
                     </div>
                   </div>
                 </div>
 
-                <div class="container" id="printableDiv">
-                  <div class="row">
-                    <div class="col-12">
-                      <ul class="list-unstyled">
-
-                        <li class="ls-1 fs-5">
-                          <i class="mdi mdi-checkbox-blank-circle text-secondary"></i> 
-                          Patient's Name: Marlon M.
-                        </li>
-
-                        <li class="ls-1 fs-5">
-                          <i class="mdi mdi-checkbox-blank-circle text-secondary"></i> 
-                          Healthcare Provider: Hospital's Name
-                        </li>
-
-                        <li class="ls-1 fs-5">
-                          <i class="mdi mdi-checkbox-blank-circle text-secondary"></i> 
-                          Billing No.: #123-45687
-                        </li>
-
-                        <li class="ls-1 fs-5">
-                          <i class="mdi mdi-checkbox-blank-circle text-secondary"></i> 
-                          Billed On: June 23,2023
-                        </li>
-
-                        <li class="ls-1 fs-5">
-                          <i class="mdi mdi-checkbox-blank-circle text-secondary"></i> Status:
-                          <span class="badge rounded-pill bg-warning text-black fw-bold">
-                            Unpaid
-                          </span>
-                        </li>
-
-                      </ul>
+                <div class="mx-3" style="background:#F8F8F8;border:2px dashed #495579;padding:20px;">
+                  <div class="container" id="printableDiv" style="padding:40px 30px;">
+                    <div class="row text-center">
+                      <h3 class="ls-1"> BILLING # <i class="mdi mdi-arrow-right-bold"></i> <?= $bill['billing_no'] ?></h3>
                     </div>
-                  </div>
+                    <div class="row mt-3">
+                      <div class="col-6">
+                        <ul class="list-unstyled">
+                          <li class="text-secondary">
+                            <span class="ls-1 border-secondary border-2 border-bottom pb-1">
+                              Issued To: <?= $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'] ?>
+                            </span>
+                          </li>
 
-                  <div class="row my-2 mx-1 justify-content-center">
-                    <table class="table table-striped">
-                      <thead class="bg-dark">
-                        <tr>
-                          <th class="text-white ls-2">Service</th>
-                          <th class="text-white ls-2">Qty</th>
-                          <th class="text-white ls-2">Fee</th>
-                          <th class="text-white ls-2">Amount</th>
-                        </tr>
-                      </thead>
+                          <li class="text-secondary mt-2">
+                            <span class="ls-1 border-secondary border-2 border-bottom pb-1">
+                              Issued By: <?= $bill['billed_by'] ?>
+                            </span>
+                          </li>
+                        </ul>
+                      </div>
 
-                      <tbody>
-                        <tr>
-                          <td>Pro Package</td>
-                          <td>4</td>
-                          <td>$200</td>
-                          <td>$800</td>
-                        </tr>
-                        <tr>
-                          <td>Web hosting</td>
-                          <td>1</td>
-                          <td>$10</td>
-                          <td>$10</td>
-                        </tr>
-                        <tr>
-                          <td>Consulting</td>
-                          <td>1</td>
-                          <td>$300</td>
-                          <td>$300</td>
-                        </tr>
-                      </tbody>
+                      <div class="col-6">
+                        <ul class="list-unstyled">
+                              <li class="text-secondary">
+                            <span class="ls-1 border-secondary border-2 border-bottom pb-1">
+                              Issued On: <?= date('m/d/Y', strtotime($bill['billed_on'])) ?>
+                            </span>
+                          </li>
 
-                    </table>
-                  </div>
+                          <li class="text-secondary mt-2"> 
+                            <span class="ls-1 border-secondary border-2 border-bottom pt-1 pb-1">
+                              Healthcare Provider: <?= $bill['hp_name'] ?>
+                            </span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
 
-                  <div class="row">
-                    <div class="col-12">
-                      <ul class="list-unstyled">
-                        <li class="text-muted ms-3"><span class="text-black me-2">Total Bill:</span>P 1110</li>
-                        <li class="text-muted ms-3 mt-2"><span class="text-black me-2">Total Deduction:</span>$111</li>
-                        <li class="text-muted ms-3 mt-2"><span class="text-black me-2">Net Bill:</span>$111</li>
-                        <li class="text-muted ms-3 mt-2"><span class="text-black me-2">Personal Charge:</span>$111</li>
-                      </ul>
+                    <div class="row my-2 mx-1 justify-content-center">
+                      <!-- Start of Medical Services Table -->
+                      <?php 
+                        if(!empty($services)): 
+                      ?>
+                        <h4 class="text-center ls-1">MEDICAL SERVICE/S</h4>
+                        <table class="table">
+                          <thead>
+                            <tr class="border-secondary border-2 border-0 border-top border-bottom">
+                              <th class="text-center fw-bold ls-2">Quantity</th>
+                              <th class="text-center fw-bold ls-2">Service</th>
+                              <th class="text-center fw-bold ls-2">Fee</th>
+                              <th class="text-center fw-bold ls-2">Amount</th>
+                            </tr>
+                          </thead>
+
+                          <tbody>
+                            <?php foreach($services as $service): ?>
+                              <tr>
+                                <td class="text-center ls-1"><?= $service['service_quantity'] ?></td>
+                                <td class="text-center ls-1"><?= $service['service_name'] ?></td>
+                                <td class="text-center ls-1">
+                                  &#8369;<?= number_format($service['service_fee'], 2) ?>
+                                </td>
+                                <td class="text-center ls-1">
+                                  &#8369;<?= number_format($service['service_quantity'] * $service['service_fee'], 2) ?>
+                                </td>
+                              </tr>
+                            <?php endforeach; ?>
+                              <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-center">
+                                  <span class="text-secondary fs-5 fw-bold ls-1 me-2">Total:</span>
+                                  <span class="text-secondary fw-bold fs-5 ls-1">
+                                    <?= '&#8369;'.number_format($bill['total_bill'], 2) ?>
+                                  </span>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      <?php 
+                        endif; 
+                      ?>
+                      <!-- End of Medical Services Table -->
+                      <div class="mt-3"></div> 
+                      <!-- Start of Billing Deductions Table -->
+                      <?php 
+                        if(!empty($deductions)): 
+                      ?>
+                        <h4 class="text-center ls-1">BILLING DEDUCTION/S</h4>
+                        <table class="table">
+                          <thead>
+                            <tr class="border-secondary border-2 border-0 border-top border-bottom">
+                              <th class="text-center fw-bold ls-2">Deduction Name</th>
+                              <th class="text-center fw-bold ls-2">Deduction Amount</th>
+                            </tr>
+                          </thead>
+
+                          <tbody>
+                            <?php foreach($deductions as $deduction): ?>
+                              <tr>
+                                <td class="text-center ls-1"><?= $deduction['deduction_name'] ?></td>
+                                <td class="text-center ls-1">
+                                  &#8369;<?= number_format($deduction['deduction_amount'], 2) ?>
+                                </td>
+                              </tr>
+                            <?php endforeach; ?>
+                            <tr>
+                              <td></td>
+                              <td class="text-center">
+                                <span class="text-secondary fs-5 fw-bold ls-1 me-2">Total:</span>
+                                <span class="text-secondary fw-bold fs-5 ls-1">
+                                  <?= '&#8369;'.number_format($bill['total_deduction'], 2) ?>
+                                </span>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      <?php 
+                        endif; 
+                      ?>
+                      <!-- End of Billing Deductions Table -->
+                      <div class="mt-3"></div>
+                       <!-- Start of member MBL Table -->
+                      <table>
+                        <tr class="">
+                          <td class="text-center">
+                            <span class="text-secondary me-2">Patient's Credit Limit:</span>
+                            <span class="text-secondary fw-bold fs-4 ls-1">
+                              &#8369;<?= number_format($mbl['max_benefit_limit'], 2) ?>
+                            </span>
+                          </td>
+
+                          <td class="text-center">
+                            <span class="text-secondary me-2">Patient's Remaining Balance:</span>
+                            <span class="text-secondary fw-bold fs-4 ls-1">
+                              &#8369;<?= number_format($bill['mbr_remaining_bal'], 2) ?>
+                            </span>
+                          </td>
+                        </tr>
+                      </table>
+                      <!-- End of member MBL Table -->
+                      <div class="mt-3"></div>
+                      <!-- Start of Billing Summary Table -->
+                      <table class="table table-bordered">
+                        <tr class="border-2 border-secondary">
+                          <td>
+                            <span class="text-secondary me-2">Total Bill:</span>
+                            <span class="text-danger fw-bold fs-4 ls-1">
+                              <?= '&#8369;'.number_format($bill['total_bill'], 2) ?>
+                            </span>
+                          </td>
+
+                          <td>
+                            <span class="text-secondary me-2">Total Deduction:</span>
+                            <span class="text-danger fw-bold fs-4 ls-1">
+                              <?= '&#8369;'.number_format($bill['total_deduction'], 2) ?>
+                            </span>
+                          </td>
+
+                          <td>
+                            <span class="text-secondary me-2">Net Bill:</span>
+                            <span class="text-info fw-bold fs-4 ls-1">
+                              <?= '&#8369;'.number_format($bill['net_bill'], 2) ?>
+                            </span>
+                          </td>
+
+                          <td>
+                            <span class="text-secondary me-2">Personal Charge:</span>
+                            <span class="text-info fw-bold fs-4 ls-1">
+                              <?= '&#8369;'.number_format($bill['personal_charge'], 2) ?>
+                            </span>
+                          </td>
+                        </tr>
+                      </table>
+                      <!-- End of Billing Summary Table -->                  
                     </div>
                   </div>
                 </div>
 
-                <div class="container mb-4">
+                <div class="container mt-4 mb-4">
                   <div class="row">
                     <div class="col-12 d-flex justify-content-end align-items-end">
-                      <button class="btn btn-outline-dark ls-1" onclick="printDiv('#printableDiv')">Print Receipt</button>
+                      <button class="btn btn-outline-info btn-lg ls-1 me-3" onclick="saveAsImage()"><i class="mdi mdi-file-image"></i> Save as Image</button>
+                      <button class="btn btn-outline-danger btn-lg ls-1" onclick="printDiv('#printableDiv')"><i class="mdi mdi-printer"></i> Print Receipt</button>
                     </div>
                   </div>
                 </div>
@@ -132,14 +229,32 @@
               </div>
             </div>
           </div>
-        <!-- </div> -->
       </div>
     </div>
 </div>
 <script>
   const baseUrl = `<?php echo base_url(); ?>`;
+  const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
+
+  const saveAsImage = () => {
+    // Get the div element you want to save as an image
+    const element = document.querySelector("#printableDiv");
+    // Use html2canvas to take a screenshot of the element
+    html2canvas(element)
+      .then(function(canvas) {
+        // Convert the canvas to an image data URL
+        const imgData = canvas.toDataURL("image/png");
+        // Create a temporary link element to download the image
+        const link = document.createElement("a");
+        link.download = `receipt_${fileName}.png`;
+        link.href = imgData;
+
+        // Click the link to download the image
+        link.click();
+      });
+  }
   
-  function printDiv(layer) {
+  const printDiv = (layer) => {
     $(layer).printThis({
       importCSS: true,
       copyTagClasses: true,

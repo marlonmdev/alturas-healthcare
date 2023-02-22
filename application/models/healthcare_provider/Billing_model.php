@@ -13,7 +13,6 @@ class Billing_model extends CI_Model {
         return $query->row_array();
     }
 
-
     function get_healthcare_provider($hcare_provider_id) {
         $query = $this->db->get_where('healthcare_providers', ['hp_id' => $hcare_provider_id]);
         return $query->row();
@@ -31,7 +30,6 @@ class Billing_model extends CI_Model {
                  ->where('hcare_provider', $hcare_provider_id)
                  ->order_by('loa_id', 'DESC');
         return $this->db->get()->result_array();
-
     }
     
     function get_loa_to_bill($loa_id) {
@@ -68,28 +66,6 @@ class Billing_model extends CI_Model {
         return $query->row_array();
     }
 
-    function pay_billing_member($data) {
-        return $this->db->insert('billing', $data);
-    }
-
-    function addEquipment($id) {
-        $query = $this->db->get_where('cost_types', ['ctype_id' => $id]);
-        return $query->row_array();
-    }
-
-    function create_billing($post_data) {
-        return $this->db->insert('billing', $post_data);
-    }
-
-    function loa_cost_type_by($cost_type) {
-        return $this->db->insert('billing_services', $cost_type);
-    }
-
-    function loa_personal_charges($personal_charges) {
-
-        return $this->db->insert('personal_charges', $personal_charges);
-    }
-
     function close_billing_loa_requests($id) {
         $this->db->set('status', 'Closed')
                  ->where('loa_id', $id);
@@ -110,9 +86,28 @@ class Billing_model extends CI_Model {
         return $query->result();
     }
 
-    function get_billing_info($billing_no){
-        $query = $this->db->get('billing');
+    function get_billing($billing_no){
+        $query = $this->db->get_where('billing', array('billing_no' => $billing_no));
         return $query->row_array();
+    }
+
+    function get_billing_info($billing_id){
+        $this->db->select('tbl_1.billing_id, tbl_1.billing_no, tbl_1.emp_id, tbl_1.hp_id, tbl_1.total_bill, tbl_1.total_deduction, tbl_1.net_bill, tbl_1.personal_charge, tbl_1.mbr_remaining_bal, tbl_1.billed_by, tbl_1.billed_on, tbl_2.first_name, tbl_2.middle_name, tbl_2.last_name, tbl_2.suffix, tbl_3.hp_name')
+                 ->from('billing as tbl_1')
+                 ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+                 ->join('healthcare_providers as tbl_3', 'tbl_1.hp_id = tbl_3.hp_id')
+                 ->where('tbl_1.billing_id', $billing_id);
+        return $this->db->get()->row_array();
+    }
+
+    function get_billing_services($billing_no){
+       $query = $this->db->get_where('billing_services', ['billing_no' => $billing_no]);
+       return $query->result_array();
+    }
+
+    function get_billing_deductions($billing_no){
+       $query = $this->db->get_where('billing_deductions', ['billing_no' => $billing_no]);
+       return $query->result_array();
     }
 
     function insert_billing($data) {

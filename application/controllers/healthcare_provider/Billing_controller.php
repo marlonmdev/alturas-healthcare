@@ -551,4 +551,23 @@ class Billing_controller extends CI_Controller {
         }
     }
 
+    function view_request_billing(){
+        $id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+        $type = $this->uri->segment(3);
+
+        if($type == 'loa'){
+            $data['bill'] = $bill = $this->billing_model->get_loa_billing_info($id);
+        }else if($type == 'noa'){
+            $data['bill'] = $bill = $this->billing_model->get_noa_billing_info($id);
+        }
+        
+        $data['user_role'] = $this->session->userdata('user_role');
+        $data['mbl'] = $this->billing_model->get_member_mbl($bill['emp_id']);
+        $data['services'] = $this->billing_model->get_billing_services($bill['billing_no']);
+        $data['deductions'] = $this->billing_model->get_billing_deductions($bill['billing_no']);
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_provider_panel/billing/billing_receipt');
+		$this->load->view('templates/footer');
+    }
+
 }

@@ -86,6 +86,24 @@ class Billing_model extends CI_Model {
         return $query->result();
     }
 
+    function get_loa_billing_info($id){
+        $this->db->select('tbl_1.billing_id, tbl_1.billing_no, tbl_1.emp_id, tbl_1.hp_id, tbl_1.total_bill, tbl_1.total_deduction, tbl_1.net_bill, tbl_1.personal_charge, tbl_1.mbr_remaining_bal, tbl_1.billed_by, tbl_1.billed_on, tbl_2.health_card_no, tbl_2.first_name, tbl_2.middle_name, tbl_2.last_name, tbl_2.suffix, tbl_3.hp_name')
+                 ->from('billing as tbl_1')
+                 ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+                 ->join('healthcare_providers as tbl_3', 'tbl_1.hp_id = tbl_3.hp_id')
+                 ->where('tbl_1.loa_id', $id);
+        return $this->db->get()->row_array();
+    }
+
+    function get_noa_billing_info($id){
+        $this->db->select('tbl_1.billing_id, tbl_1.billing_no, tbl_1.emp_id, tbl_1.hp_id, tbl_1.total_bill, tbl_1.total_deduction, tbl_1.net_bill, tbl_1.personal_charge, tbl_1.mbr_remaining_bal, tbl_1.billed_by, tbl_1.billed_on, tbl_2.health_card_no, tbl_2.first_name, tbl_2.middle_name, tbl_2.last_name, tbl_2.suffix, tbl_3.hp_name')
+                 ->from('billing as tbl_1')
+                 ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+                 ->join('healthcare_providers as tbl_3', 'tbl_1.hp_id = tbl_3.hp_id')
+                 ->where('tbl_1.noa_id', $id);
+        return $this->db->get()->row_array();
+    }
+
     function get_billing($billing_no){
         $query = $this->db->get_where('billing', array('billing_no' => $billing_no));
         return $query->row_array();

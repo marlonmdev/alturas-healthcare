@@ -103,6 +103,10 @@ $route['healthcare-provider/billing/bill-loa/fetch/loa'] = 'healthcare_provider/
 $route['healthcare-provider/billing/bill-loa/diagnostic-test/submit/(:any)'] = 'healthcare_provider/billing_controller/diagnostic_loa_final_billing';
 $route['healthcare-provider/billing/bill-loa/consultation/submit/(:any)'] = 'healthcare_provider/billing_controller/consultation_loa_final_billing';
 $route['healthcare-provider/billing/bill-loa/(:any)/success/(:any)'] = 'healthcare_provider/billing_controller/loa_billing_success';
+// viewing of loa and noa billing receipt
+$route['healthcare-provider/billing/loa/view-receipt/(:any)'] = 'healthcare_provider/billing_controller/view_request_billing';
+$route['healthcare-provider/billing/noa/view-receipt/(:any)'] = 'healthcare_provider/billing_controller/view_request_billing';
+
 
 
 $route['healthcare-provider/billing/bill-noa/request/(:any)']  = 'healthcare_provider/billing_controller/bill_patient_noa';

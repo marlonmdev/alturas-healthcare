@@ -519,7 +519,7 @@
         // show confirm dialog if the form has passed the submit validation check
         $.confirm({
             title: '<strong>Confirmation!</strong>',
-            content: 'Are you sure, please review before you proceed?',
+            content: 'Are you sure? Please review before you proceed.',
             type: 'blue',
             buttons: {
                 confirm: {

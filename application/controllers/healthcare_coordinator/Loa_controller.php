@@ -341,7 +341,10 @@ class Loa_controller extends CI_Controller {
 
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $loa['status'] . '</span></div>';
 
-			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			$custom_actions = '<a href="JavaScript:void(0)" class="me-2" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+
+			$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="Tag LOA Charge Type"><i class="mdi mdi-tag-plus fs-2 text-primary"></i></a>';
+
 
 			// if ($loa['requested_by'] !== $hcc_emp_id) {
 			// 	$custom_actions .= '<a readonly><i class="bi bi-pencil-square icon-disabled"></i></a>';
@@ -860,6 +863,39 @@ class Loa_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
+	function set_charge_type(){
+		$token = $this->security->get_csrf_hash();
+		$loa_id = $this->myhash->hasher($this->input->post('loa-id'), 'decrypt');
+		$charge_type = $this->input->post('charge-type', TRUE);
+
+		$this->form_validation->set_rules('charge-type', 'Charge Type', 'required');
+		if ($this->form_validation->run() == FALSE) {
+			$response = [
+				'token' => $token, 
+				'status' => 'error',
+				'charge_type_error' => form_error('charge-type'),
+			];
+			echo json_encode($response);
+		}else{
+			$updated = $this->loa_model->db_update_loa_charge_type($loa_id, $charge_type);
+
+			if (!$updated) {
+				$response = [
+					'token' => $token, 
+					'status' => 'save-error', 
+					'message' => 'Charge Type Set Failed!'
+				];
+			} else {
+				$response = [
+					'token' => $token, 
+					'status' => 'success', 
+					'message' => 'Charge Type Set Successfully!'
+				];
+			}
+			echo json_encode($response);
+		}
+	}
+
 	function generate_printable_loa() {
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$data['user_role'] = $this->session->userdata('user_role');
@@ -876,4 +912,5 @@ class Loa_controller extends CI_Controller {
 			$this->load->view('templates/footer');
 		}
 	}
+	
 }

@@ -35,6 +35,7 @@ class Applicants_controller extends CI_Controller {
 			// get all the applicant's details
 			$app_id = $result['app_id'];
 			$emp_id = $result['emp_id'];
+			$emp_no = $result['emp_no'];
 			$first_name = $result['first_name'];
 			$middle_name = $result['middle_name'];
 			$last_name = $result['last_name'];
@@ -88,6 +89,7 @@ class Applicants_controller extends CI_Controller {
 				// after inserting user account, insert the applicants details to members table
 				$member_data = [
 					'emp_id' => $emp_id,
+					'emp_no' => $emp_no,
 					'health_card_no' => $healthcard_no,
 					'first_name' => $first_name,
 					'middle_name' => $middle_name,

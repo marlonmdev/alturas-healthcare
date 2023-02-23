@@ -63,6 +63,8 @@
           </li>
         </ul>
 
+        <?php include 'charge_type.php'; ?>
+
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
@@ -200,7 +202,66 @@
     //   responsive: true,
     //   fixedHeader: true,
     // });
+
+    $('#formUpdateChargeType').submit(function(event) {
+      event.preventDefault();
+      $.ajax({
+        type: "post",
+        url: $(this).attr('action'),
+        data: $(this).serialize(),
+        dataType: "json",
+        success: function(response) {
+          const {
+            token,
+            status,
+            message,
+            charge_type_error,
+          } = response;
+          switch (status) {
+            case 'error':
+              // is-invalid class is a built in classname for errors in bootstrap
+              if (charge_type_error !== '') {
+                $('#charge-type-error').html(charge_type_error);
+                $('#charge-type').addClass('is-invalid');
+              } else {
+                $('#charge-type-error').html('');
+                $('#charge-type').removeClass('is-invalid');
+              }
+              break;
+            case 'save-error':
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
+              $("#pendingNoaTable").DataTable().ajax.reload();
+              break;
+            case 'success':
+              swal({
+                title: 'Success',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'success'
+              });
+              
+              $('#viewChargeTypeModal').modal('hide');
+              $("#pendingNoaTable").DataTable().ajax.reload();
+              break;
+          }
+        },
+      })
+    });
+
   });
+
+  const showTagChargeType = (noa_id) => {
+    $("#viewChargeTypeModal").modal("show");
+    $('#noa-id').val(noa_id);
+    $('#charge-type').val('');
+  }
 
   function viewNoaInfo(noa_id) {
     $.ajax({

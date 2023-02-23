@@ -287,6 +287,7 @@ $route['healthcare-coordinator/loa/closed/view/(:any)'] = 'healthcare_coordinato
 $route['healthcare-coordinator/loa/requests-list/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_loa_details';
 $route['healthcare-coordinator/loa/requests-list/approve/(:any)'] = 'healthcare_coordinator/loa_controller/approve_loa_request';
 $route['healthcare-coordinator/loa/requests-list/disapprove/(:any)'] = 'healthcare_coordinator/loa_controller/disapprove_loa_request';
+$route['healthcare-coordinator/loa/requests-list/set-charge-type'] = 'healthcare_coordinator/loa_controller/set_charge_type';
 $route['healthcare-coordinator/loa/member/search/(:any)'] = 'healthcare_coordinator/search_controller/get_searched_member_details';
 $route['healthcare-coordinator/loa/requested-loa/cancel/(:any)'] = 'healthcare_coordinator/loa_controller/cancel_loa_request';
 $route['healthcare-coordinator/loa/requested-loa/generate-printable-loa/(:any)'] = 'healthcare_coordinator/loa_controller/generate_printable_loa';
@@ -306,6 +307,7 @@ $route['healthcare-coordinator/noa/requested-loa/edit/(:any)'] = 'healthcare_coo
 $route['healthcare-coordinator/noa/requested-noa/update/(:any)'] = 'healthcare_coordinator/noa_controller/update_noa_request';
 $route['healthcare-coordinator/noa/requested-noa/cancel/(:any)'] = 'healthcare_coordinator/noa_controller/cancel_noa_request';
 $route['healthcare-coordinator/noa/requested-noa/generate-printable-noa/(:any)'] = 'healthcare_coordinator/noa_controller/generate_printable_noa';
+$route['healthcare-coordinator/noa/requests-list/set-charge-type'] = 'healthcare_coordinator/noa_controller/set_charge_type';
 
 
 // HealthCare Coordinator Setup Routes

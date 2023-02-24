@@ -55,10 +55,10 @@
             <li class="nav-item">
             <a
               class="nav-link"
-              href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/closed"
+              href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/completed"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Closed</span></a
+              <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
             >
           </li>
         </ul>

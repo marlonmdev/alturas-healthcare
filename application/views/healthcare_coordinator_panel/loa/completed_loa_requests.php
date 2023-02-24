@@ -10,7 +10,7 @@
               <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
               <li class="breadcrumb-item active" aria-current="page">
-                  Closed LOA
+                  Completed LOA
               </li>
               </ol>
           </nav>
@@ -54,10 +54,10 @@
               <li class="nav-item">
               <a
               class="nav-link active"
-              href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/closed"
+              href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Closed</span></a
+              <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
               >
           </li>
         </ul>
@@ -66,7 +66,7 @@
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover table-responsive" id="closedLoaTable">
+              <table class="table table-hover table-responsive" id="completedLoaTable">
                 <thead>
                   <tr>
                     <th class="fw-bold">LOA No.</th>
@@ -86,7 +86,7 @@
           </div>
         </div>
 
-        <?php include 'view_closed_loa_details.php'; ?>
+        <?php include 'view_completed_loa_details.php'; ?>
 
       </div>
       <!-- End Row  -->  
@@ -101,14 +101,14 @@
 
   $(document).ready(function() {
 
-    $('#closedLoaTable').DataTable({
+    $('#completedLoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
 
       // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}healthcare-coordinator/loa/requests-list/closed/fetch`,
+        url: `${baseUrl}healthcare-coordinator/loa/requests-list/completed/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: {
@@ -140,9 +140,9 @@
     let photoviewer = new PhotoViewer(item, options);
   }
 
-  function viewClosedLoaInfo(req_id) {
+  function viewCompletedLoaInfo(req_id) {
     $.ajax({
-      url: `${baseUrl}healthcare-coordinator/loa/closed/view/${req_id}`,
+      url: `${baseUrl}healthcare-coordinator/loa/completed/view/${req_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);
@@ -153,6 +153,7 @@
           loa_no,
           member_mbl,
           remaining_mbl,
+          work_related,
           first_name,
           middle_name,
           last_name,
@@ -207,6 +208,7 @@
         $('#approved-on').html(approved_on);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
+        $('#work-related').html(work_related);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
         $('#date-of-birth').html(date_of_birth);
         $('#age').html(age);

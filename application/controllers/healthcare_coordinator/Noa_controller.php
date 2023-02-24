@@ -251,9 +251,9 @@ class Noa_controller extends CI_Controller {
 	}
 
 
-	function fetch_all_closed_noa() {
+	function fetch_all_completed_noa() {
 		$this->security->get_csrf_hash();
-		$status = 'Closed';
+		$status = 'Completed';
 		$list = $this->noa_model->get_datatables($status);
 		$data = [];
 		foreach ($list as $noa) {
@@ -268,7 +268,7 @@ class Noa_controller extends CI_Controller {
 
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-info">' . $noa['status'] . '</span></div>';
 
-			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewClosedNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewCompletedNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
 			// shorten name of values from db if its too long for viewing and add ...
 			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];
@@ -321,6 +321,7 @@ class Noa_controller extends CI_Controller {
 			// Full Month Date Year Format (F d Y)
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'req_status' => $row['status'],
+			'work_related' => $row['work_related'],
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		];
@@ -364,6 +365,7 @@ class Noa_controller extends CI_Controller {
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'work_related' => $row['work_related'],
 			'req_status' => $row['status'],
+			'work_related' => $row['work_related'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
@@ -408,6 +410,7 @@ class Noa_controller extends CI_Controller {
 			// Full Month Date Year Format (F d Y)
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'req_status' => $row['status'],
+			'work_related' => $row['work_related'],
 			'disapproved_by' => $doctor_name,
 			'disapprove_reason' => $row['disapprove_reason'],
 			'disapproved_on' => date("F d, Y", strtotime($row['approved_on'])),
@@ -417,7 +420,7 @@ class Noa_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	function get_closed_noa_info() {
+	function get_completed_noa_info() {
 		$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$row = $this->noa_model->db_get_noa_info($noa_id);
 

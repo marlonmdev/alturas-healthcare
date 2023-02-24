@@ -528,9 +528,9 @@ class Loa_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 
-	function fetch_all_closed_loa() {
+	function fetch_all_completed_loa() {
 		$this->security->get_csrf_hash();
-		$status = 'Closed';
+		$status = 'Completed';
 		$list = $this->loa_model->get_datatables($status);
 		$data = [];
 		foreach ($list as $loa) {
@@ -546,7 +546,7 @@ class Loa_controller extends CI_Controller {
 
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-info">' . $loa['status'] . '</span></div>';
 
-			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewClosedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewCompletedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
@@ -784,7 +784,7 @@ class Loa_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	function get_closed_loa_info() {
+	function get_completed_loa_info() {
 		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$this->load->model('healthcare_coordinator/loa_model');
 		$row = $this->loa_model->db_get_loa_details($loa_id);

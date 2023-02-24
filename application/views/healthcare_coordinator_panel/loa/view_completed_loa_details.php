@@ -31,7 +31,7 @@
                       </tr>
                       <tr>
                         <td class="fw-bold ls-1">Work Related :</td>
-                        <td class="fw-bold ls-1" id="work-related-val"></td>
+                        <td class="fw-bold ls-1" id="work-related"></td>
                       </tr>
                       <tr>
                         <td class="fw-bold ls-1">Full Name :</td>

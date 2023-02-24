@@ -232,7 +232,8 @@
           requesting_physician,
           attending_physician,
           rx_file,
-          req_status
+          req_status,
+          work_related
         } = res;
 
         $("#viewLoaModal").modal("show");
@@ -275,6 +276,13 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
+        if(work_related != ''){
+          $('#work-related-info').removeClass('d-none');
+          $('#work-related-val').html(work_related);
+        }else{
+          $('#work-related-info').addClass('d-none');
+          $('#work-related-val').html('');
+        }
       }
     });
   }

@@ -339,7 +339,13 @@ class Loa_controller extends CI_Controller {
 
 			$custom_date = date("m/d/Y", strtotime($loa['request_date']));
 
-			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $loa['status'] . '</span></div>';
+			
+			if($loa['work_related'] == ''){
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $loa['status'] . '</span></div>';
+
+			}else{
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-cyan">for Approval</span></div>';
+			}
 
 			$custom_actions = '<a href="JavaScript:void(0)" class="me-2" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
@@ -632,6 +638,7 @@ class Loa_controller extends CI_Controller {
 			'attending_physician' => $row['attending_physician'],
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
+			'work_related' => $row['work_related'],
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		];
@@ -698,6 +705,7 @@ class Loa_controller extends CI_Controller {
 			'attending_physician' => $row['attending_physician'],
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
+			'work_related' => $row['work_related'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
@@ -766,6 +774,7 @@ class Loa_controller extends CI_Controller {
 			'attending_physician' => $row['attending_physician'],
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
+			'work_related' => $row['work_related'],
 			'disapproved_by' => $doctor_name,
 			'disapprove_reason' => $row['disapprove_reason'],
 			'disapproved_on' => date("F d, Y", strtotime($row['approved_on'])),
@@ -835,6 +844,7 @@ class Loa_controller extends CI_Controller {
 			'attending_physician' => $row['attending_physician'],
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
+			'work_related' => $row['work_related'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),

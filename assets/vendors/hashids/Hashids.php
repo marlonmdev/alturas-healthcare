@@ -177,7 +177,8 @@ class Hashids {
 
       $excess = strlen($ret) - $this->_min_hash_length;
       if ($excess > 0)
-        $ret = substr($ret, $excess / 2, $this->_min_hash_length);
+        // $ret = substr($ret, $excess / 2, $this->_min_hash_length);
+        $ret = substr($ret, intval($excess / 2), $this->_min_hash_length);
     }
 
     return $ret;

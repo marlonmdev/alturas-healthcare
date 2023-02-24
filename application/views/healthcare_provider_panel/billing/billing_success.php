@@ -173,7 +173,7 @@
                           <td class="text-center">
                             <span class="text-secondary me-2">Patient's Remaining Balance:</span>
                             <span class="text-secondary fw-bold fs-4 ls-1">
-                              &#8369;<?= number_format($bill['mbr_remaining_bal'], 2) ?>
+                              &#8369;<?= number_format($bill['before_remaining_bal'], 2) ?>
                             </span>
                           </td>
                         </tr>

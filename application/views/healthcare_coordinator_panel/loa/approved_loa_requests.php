@@ -182,6 +182,7 @@
           attending_physician,
           rx_file,
           req_status,
+          work_related,
           approved_by,
           approved_on
         } = res;
@@ -206,6 +207,7 @@
         $('#approved-on').html(approved_on);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
+        $('#work-related-val').html(work_related);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
         $('#date-of-birth').html(date_of_birth);
         $('#age').html(age);

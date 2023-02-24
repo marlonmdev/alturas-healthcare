@@ -144,7 +144,7 @@ class Noa_model extends CI_Model {
 
   function db_update_noa_charge_type($noa_id, $charge_type) {
     $data = [
-      'charge_type' => $charge_type,
+      'work_related' => $charge_type,
     ];
     $this->db->where('noa_id', $noa_id);
     return $this->db->update('noa_requests', $data);

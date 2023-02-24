@@ -136,7 +136,7 @@ class Noa_controller extends CI_Controller {
 			} else {
 				$custom_actions .= '<a class="me-2" href="' . $view_url . '" data-bs-toggle="tooltip" title="Edit NOA" readonly><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a>';
 
-				$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Tag LOA Charge Type"><i class="mdi mdi-tag-plus fs-2 text-primary"></i></a>';
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Tag NOA Charge Type"><i class="mdi mdi-tag-plus fs-2 text-primary"></i></a>';
 
 				$custom_actions .= '<a href="Javascript:void(0)" onclick="cancelNoaRequest(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Delete NOA"><i class="mdi mdi-delete-circle fs-2 text-danger"></i></a>';
 			}
@@ -566,13 +566,13 @@ class Noa_controller extends CI_Controller {
 				$response = [
 					'token' => $token, 
 					'status' => 'save-error', 
-					'message' => 'Charge Type Set Failed!'
+					'message' => 'Save Failed'
 				];
 			} else {
 				$response = [
 					'token' => $token, 
 					'status' => 'success', 
-					'message' => 'Charge Type Set Successfully!'
+					'message' => 'Saved Successfully'
 				];
 			}
 			echo json_encode($response);

@@ -197,18 +197,10 @@ class Loa_model extends CI_Model {
 
   function db_update_loa_charge_type($loa_id, $charge_type) {
     $data = [
-      'charge_type' => $charge_type,
+      'work_related' => $charge_type,
     ];
     $this->db->where('loa_id', $loa_id);
     return $this->db->update('loa_requests', $data);
-  }
-
-  function db_update_noa_charge_type($noa_id, $charge_type) {
-    $data = [
-      'charge_type' => $charge_type,
-    ];
-    $this->db->where('noa_id', $loa_id);
-    return $this->db->update('noa_requests', $data);
   }
 
 }

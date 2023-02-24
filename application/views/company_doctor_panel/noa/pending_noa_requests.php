@@ -87,7 +87,7 @@
         </div>
 
         <?php include 'view_noa_details.php'; ?>
-        <?php include 'noa_approve_modal.php'; ?>
+        <!-- < include 'noa_approve_modal.php'; ?> -->
 
       </div>
       <!-- End Row  -->  
@@ -154,6 +154,7 @@
           requesting_company,
           admission_date,
           chief_complaint,
+          work_related,
           request_date,
           req_status
         } = res;
@@ -181,81 +182,88 @@
         $('#admission-date').html(admission_date);
         $('#chief-complaint').html(chief_complaint);
         $('#request-date').html(request_date);
+        if(work_related != ''){
+          $('#work-related-info').removeClass('d-none');
+          $('#work-related-val').html(work_related);
+        }else{
+          $('#work-related-info').addClass('d-none');
+          $('#work-related-val').html('');
+        }
       }
     });
   }
 
-  // function approveNoaRequest(noa_id) {
-  //   const next_page = `${baseUrl}company-doctor/noa/requests-list/approved`;
-  //   // $.confirm is a convention of a Jquery Confirm plugin 
-  //   $.confirm({
-  //     title: '<strong>Confirm!</strong>',
-  //     content: 'Are you sure to Approve NOA Request?',
-  //     type: 'green',
-  //     buttons: {
-  //       confirm: {
-  //         text: 'Yes',
-  //         btnClass: 'btn-green',
-  //         action: function() {
-  //           $.ajax({
-  //             type: 'GET',
-  //             url: `${baseUrl}company-doctor/noa/requests-list/approve/${noa_id}`,
-  //             data: {
-  //               noa_id: noa_id
-  //             },
-  //             dataType: "json",
-  //             success: function(response) {
-  //               const {
-  //                 token,
-  //                 status,
-  //                 message
-  //               } = response;
-  //               if (status === 'success') {
-  //                 swal({
-  //                   title: 'Success',
-  //                   text: message,
-  //                   timer: 3000,
-  //                   showConfirmButton: false,
-  //                   type: 'success'
-  //                 });
+  function approveNoaRequest(noa_id) {
+    const next_page = `${baseUrl}company-doctor/noa/requests-list/approved`;
+    // $.confirm is a convention of a Jquery Confirm plugin 
+    $.confirm({
+      title: '<strong>Confirm!</strong>',
+      content: 'Are you sure to Approve NOA Request?',
+      type: 'green',
+      buttons: {
+        confirm: {
+          text: 'Yes',
+          btnClass: 'btn-green',
+          action: function() {
+            $.ajax({
+              type: 'GET',
+              url: `${baseUrl}company-doctor/noa/requests-list/approve/${noa_id}`,
+              data: {
+                noa_id: noa_id
+              },
+              dataType: "json",
+              success: function(response) {
+                const {
+                  token,
+                  status,
+                  message
+                } = response;
+                if (status === 'success') {
+                  swal({
+                    title: 'Success',
+                    text: message,
+                    timer: 3000,
+                    showConfirmButton: false,
+                    type: 'success'
+                  });
 
-  //                 setTimeout(function() {
-  //                   window.location.href = next_page;
-  //                 }, 3200);
+                  setTimeout(function() {
+                    window.location.href = next_page;
+                  }, 3200);
 
-  //               } else {
-  //                 swal({
-  //                   title: 'Failed',
-  //                   text: message,
-  //                   timer: 3000,
-  //                   showConfirmButton: false,
-  //                   type: 'error'
-  //                 });
-  //               }
-  //             }
-  //           });
-  //         }
-  //       },
-  //       cancel: {
-  //         btnClass: 'btn-dark',
-  //         action: function() {
-  //           // close dialog
-  //         }
-  //       },
+                } else {
+                  swal({
+                    title: 'Failed',
+                    text: message,
+                    timer: 3000,
+                    showConfirmButton: false,
+                    type: 'error'
+                  });
+                }
+              }
+            });
+          }
+        },
+        cancel: {
+          btnClass: 'btn-dark',
+          action: function() {
+            // close dialog
+          }
+        },
 
-  //     }
-  //   });
-  // }
-
-  const approveNoaRequest = (noa_id) => {
-    $('#noaApproveForm')[0].reset();
-    $('#noaApprovedModal').modal('show');
-    $('#work-related-error').html('');
-    $('#work-related').removeClass('is-invalid');
-    $('#option1').removeClass('is-invalid');
-    $('#option2').removeClass('is-invalid');
-    $("#noaApproveForm").attr("action", `${baseUrl}company-doctor/noa/requests-list/approve/${noa_id}`);
+      }
+    });
   }
+
+  // const approveNoaRequest = (noa_id) => {
+  //   $('#noaApproveForm')[0].reset();
+  //   $('#noaApprovedModal').modal('show');
+  //   $('#work-related-error').html('');
+  //   $('#work-related').removeClass('is-invalid');
+  //   $('#option1').removeClass('is-invalid');
+  //   $('#option2').removeClass('is-invalid');
+  //   $("#noaApproveForm").attr("action", `${baseUrl}company-doctor/noa/requests-list/approve/${noa_id}`);
+  // }
 
   const disapproveNoaRequest = (noa_id) => {
     $('#noaDisapproveForm')[0].reset();

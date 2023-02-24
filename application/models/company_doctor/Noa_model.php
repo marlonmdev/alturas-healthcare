@@ -105,10 +105,9 @@ class Noa_model extends CI_Model {
   }
 
 
-  function db_approve_noa_request($noa_id, $work_related, $approved_by, $approved_on) {
+  function db_approve_noa_request($noa_id, $approved_by, $approved_on) {
     $data = array(
       'status' => 'Approved',
-      'work_related' => $work_related,
       'approved_by' => $approved_by,
       'approved_on' => $approved_on
     );

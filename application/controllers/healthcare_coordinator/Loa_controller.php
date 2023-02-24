@@ -883,13 +883,13 @@ class Loa_controller extends CI_Controller {
 				$response = [
 					'token' => $token, 
 					'status' => 'save-error', 
-					'message' => 'Charge Type Set Failed!'
+					'message' => 'Save Failed'
 				];
 			} else {
 				$response = [
 					'token' => $token, 
 					'status' => 'success', 
-					'message' => 'Charge Type Set Successfully!'
+					'message' => 'Saved Successfully'
 				];
 			}
 			echo json_encode($response);

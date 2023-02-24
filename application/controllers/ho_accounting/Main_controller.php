@@ -44,4 +44,40 @@ class Main_controller extends CI_Controller {
 		$this->load->view('ho_accounting_panel/dashboard/index');
 		$this->load->view('templates/footer');
 	}
+
+	public function fetch_unbilled(){
+		$this->security->get_csrf_hash();
+		$list = $this->List_model->get_datatables();
+		$data = [];
+
+		foreach($list as $bill){
+			$row = [];
+			
+			$charge = $bill['company_charge'] == '' ? 0 : $bill['company_charge'];
+			$fullname = $bill['first_name']. ' ' .$bill['middle_name']. ' ' .$bill['last_name'];
+			if($bill['loa_id'] != ''){
+				$cost_type = '<p>LOA</p>';
+			}
+			if($bill['noa_id'] != ''){
+				$cost_type = '<p>NOA</p>';
+			}
+
+			$custom_actions = '<a class="" title="View Details"><i class="mdi mdi-format-list-bulleted"></i></a>';
+
+			$row[] = $bill['billing_no'];
+			$row[] = $fullname;
+			$row[] = $cost_type;
+			$row[] = $bill['billed_on'];
+			$row[] = $charge;
+			$row[] = $custom_actions;
+			$data[] = $row;
+		}
+		$output = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->List_model->count_all(),
+			"recordsFiltered" => $this->List_model->count_filtered(),
+			"data" => $data,
+		];
+		echo json_encode($output);
+	}
 }

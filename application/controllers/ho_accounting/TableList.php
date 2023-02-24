@@ -16,9 +16,25 @@ class TableList extends CI_Controller {
     public function index() {
         $this->security->get_csrf_hash();
         $data['user_role'] = $this->session->userdata('user_role');
-        $payloadLoa =  $this->List_model->billingList();
+        $data_options['options'] = $this->List_model->get_hc_provider();
         $this->load->view('templates/header', $data);
-        $this->load->view('ho_accounting_panel/list_table/index',  array('payloadLoa' => $payloadLoa));
+        $this->load->view('ho_accounting_panel/billing_list_table/unbilled_table', $data_options);
+        $this->load->view('templates/footer');
+    }
+
+    public function billed_record(){
+        $this->security->get_csrf_hash();
+        $data['user_role'] = $this->session->userdata('user_role');
+        $this->load->view('templates/header', $data);
+        $this->load->view('ho_accounting_panel/billing_list_table/billed_table');
+        $this->load->view('templates/footer');
+    }
+
+    public function closed_record(){
+        $this->security->get_csrf_hash();
+        $data['user_role'] = $this->session->userdata('user_role');
+        $this->load->view('templates/header', $data);
+        $this->load->view('ho_accounting_panel/billing_list_table/closed_table');
         $this->load->view('templates/footer');
     }
 
@@ -29,7 +45,7 @@ class TableList extends CI_Controller {
         $payloadLoa =  $this->List_model->billing_search($search);
 
         $this->load->view('templates/header', $data);
-        $this->load->view('ho_accounting_panel/list_table/index',  array('payloadLoa' => $payloadLoa));
+        $this->load->view('ho_accounting_panel/billing_list_table/unbilled_table',  array('payloadLoa' => $payloadLoa));
         $this->load->view('templates/footer');
     }
 
@@ -45,7 +61,7 @@ class TableList extends CI_Controller {
 
         $payloadBilling =  $this->List_model->getInHospitalDate($idHospital, $month, $year);
         $this->load->view('templates/header', $data);
-        $this->load->view('ho_accounting_panel/list_table/listByHopital',  array('payloadBilling' => $payloadBilling));
+        $this->load->view('ho_accounting_panel/billing_list_table/listByHopital',  array('payloadBilling' => $payloadBilling));
         $this->load->view('templates/footer');
     }
 
@@ -53,7 +69,7 @@ class TableList extends CI_Controller {
         $this->security->get_csrf_hash();
         $payloadLoa =  $this->List_model->loa_member();
         $this->load->view('templates/header');
-        $this->load->view('ho_accounting_panel/list_table/listInfoSummary',  array('payloadLoa' => $payloadLoa));
+        $this->load->view('ho_accounting_panel/billing_list_table/listInfoSummary',  array('payloadLoa' => $payloadLoa));
         $this->load->view('templates/footer');
     }
 }

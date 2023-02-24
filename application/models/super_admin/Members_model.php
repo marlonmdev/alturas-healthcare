@@ -6,7 +6,7 @@ class Members_model extends CI_Model {
   // Start of server-side processing datatables
   var $table = 'members';
   var $column_order = ['member_id', 'first_name', 'emp_type', 'current_status', 'business_unit', 'dept_name']; //set column field database for datatable orderable
-  var $column_search = ['member_id', 'first_name', 'middle_name', 'last_name', 'suffix', 'emp_type', 'current_status', 'business_unit', 'dept_name']; //set column field database for datatable searchable 
+  var $column_search = ['member_id', 'first_name', 'middle_name', 'last_name', 'suffix', 'emp_type', 'current_status', 'business_unit', 'dept_name', 'CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)']; //set column field database for datatable searchable 
   var $order = ['member_id' => 'desc']; // default order 
 
   private function _get_datatables_query($approval_status) {

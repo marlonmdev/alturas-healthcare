@@ -31,11 +31,18 @@ class Loa_controller extends CI_Controller {
 
 			$custom_date = date("m/d/Y", strtotime($loa['request_date']));
 
-			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $loa['status'] . '</span></div>';
-
 			$custom_actions = '<a class="me-2" href="JavaScript:void(0)" onclick="viewPendingLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
-			$custom_actions .= '<a class="me-2" href="JavaScript:void(0)" onclick="approveLoaRequest(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="Approve LOA"><i class="mdi mdi-thumb-up fs-2 text-success"></i></a>';
+			// if work_related field is set to either yes or no, show either disabled or not disabled approve button 
+			if($loa['work_related'] == ''){
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $loa['status'] . '</span></div>';
+
+				$custom_actions .= '<a class="me-2" data-bs-toggle="tooltip" title="Charge type is not yet set by HRD Coordinator" disabled><i class="mdi mdi-thumb-up fs-2 icon-disabled"></i></a>';
+			}else{
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-cyan">for Approval</span></div>';
+
+				$custom_actions .= '<a class="me-2" href="JavaScript:void(0)" onclick="approveLoaRequest(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="Approve LOA"><i class="mdi mdi-thumb-up fs-2 text-success"></i></a>';
+			}
 
 			$custom_actions .= '<a href="JavaScript:void(0)" onclick="disapproveLoaRequest(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="Disapprove LOA"><i class="mdi mdi-thumb-down fs-2 text-danger"></i></a>';
 
@@ -335,6 +342,7 @@ class Loa_controller extends CI_Controller {
 			'attending_physician' => $row['attending_physician'],
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
+			'work_related' => $row['work_related'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'disapproved_by' =>  $doctor_name,

@@ -28,11 +28,18 @@ class Noa_controller extends CI_Controller {
 
 			$custom_noa_no = '<mark class="bg-primary text-white">'.$noa['noa_no'].'</mark>';
 
-			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $noa['status'] . '</span></div>';
-
 			$custom_actions = '<a class="me-2" href="JavaScript:void(0)" onclick="viewNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
-			$custom_actions .= '<a class="me-2" href="JavaScript:void(0)" onclick="approveNoaRequest(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Approve NOA"><i class="mdi mdi-thumb-up fs-2 text-success"></i></a>';
+			// if work_related field is set to either yes or no, show either disabled or not disabled approve button 
+			if($noa['work_related'] == ''){
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $noa['status'] . '</span></div>';
+
+				$custom_actions .= '<a class="me-2" data-bs-toggle="tooltip" title="Charge type is not yet set by HRD Coordinator" disabled><i class="mdi mdi-thumb-up fs-2 icon-disabled"></i></a>';
+			}else{
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-cyan">for Approval</span></div>';
+
+				$custom_actions .= '<a class="me-2" href="JavaScript:void(0)" onclick="approveNoaRequest(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Approve NOA"><i class="mdi mdi-thumb-up fs-2 text-success"></i></a>';
+			}
 
 			$custom_actions .= '<a href="JavaScript:void(0)" onclick="disapproveNoaRequest(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Disapprove NOA"><i class="mdi mdi-thumb-down fs-2 text-danger"></i></a>';
 
@@ -240,43 +247,18 @@ class Noa_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	// public function approve_noa_request1() {
-	// 	$token = $this->security->get_csrf_hash();
-	// 	$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
-	// 	$approved_by = 'Dr. ' . $this->session->userdata('fullname');
-	// 	$approved_on = date("Y-m-d");
-	// 	$approved = $this->noa_model->db_approve_noa_request($noa_id, $approved_by, $approved_on);
-	// 	if ($approved) {
-	// 		$response = array('token' => $token, 'status' => 'success', 'message' => 'NOA Request Approved Successfully');
-	// 	} else {
-	// 		$response = array('token' => $token, 'status' => 'error', 'message' => 'Unable to Approve NOA Request!');
-	// 	}
-	// 	echo json_encode($response);
-	// }
-
 	public function approve_noa_request() {
 		$token = $this->security->get_csrf_hash();
 		$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
-		$work_related = $this->input->post('work-related');
 		$approved_by = $this->session->userdata('doctor_id');
 		$approved_on = date("Y-m-d");
-		$this->form_validation->set_rules('work-related', 'Work Related', 'required');
-		if ($this->form_validation->run() == FALSE) {
-			$response = array(
-				'token' => $token,
-				'status' => 'error',
-				'work_related_error' => form_error('work-related'),
-			);
-			echo json_encode($response);
+		$approved = $this->noa_model->db_approve_noa_request($noa_id, $approved_by, $approved_on);
+		if ($approved) {
+			$response = ['token' => $token, 'status' => 'success', 'message' => 'NOA Request Approved Successfully'];
 		} else {
-			$approved = $this->noa_model->db_approve_noa_request($noa_id, $work_related, $approved_by, $approved_on);
-			if ($approved) {
-				$response = array('token' => $token, 'status' => 'success', 'message' => 'NOA Request Approved Successfully');
-			} else {
-				$response = array('token' => $token, 'status' => 'error', 'message' => 'Unable to Approve NOA Request!');
-			}
-			echo json_encode($response);
+			$response = ['token' => $token, 'status' => 'error', 'message' => 'Unable to Approve NOA Request!'];
 		}
+		echo json_encode($response);
 	}
 
 	public function disapprove_noa_request() {

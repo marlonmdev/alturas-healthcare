@@ -12,12 +12,12 @@ const logout = (baseUrl) => {
 						closeButton: false,
 						progressBar: true,
 						positionClass: "toast-bottom-right",
-						timeOut: "2000",
+						timeOut: "1500",
 					};
 					toastr["info"]("Logging Out...");
 					setTimeout(function () {
 						window.location.href = `${baseUrl}logout`;
-					}, 2500);
+					}, 2000);
 				},
 			},
 			cancel: {

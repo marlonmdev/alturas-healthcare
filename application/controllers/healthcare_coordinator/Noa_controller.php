@@ -129,9 +129,15 @@ class Noa_controller extends CI_Controller {
 
 			if ($noa['requested_by'] !== $hcc_emp_id) {
 				$custom_actions .= '<a class="me-2" disabled><i class="mdi mdi-pencil-circle fs-2 text-success icon-disabled"></i></a>';
+
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Tag LOA Charge Type"><i class="mdi mdi-tag-plus fs-2 text-primary"></i></a>';
+
 				$custom_actions .= '<a disabled><i class="mdi mdi-delete-circle fs-2 icon-disabled"></i></a>';
 			} else {
 				$custom_actions .= '<a class="me-2" href="' . $view_url . '" data-bs-toggle="tooltip" title="Edit NOA" readonly><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a>';
+
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Tag NOA Charge Type"><i class="mdi mdi-tag-plus fs-2 text-primary"></i></a>';
+
 				$custom_actions .= '<a href="Javascript:void(0)" onclick="cancelNoaRequest(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Delete NOA"><i class="mdi mdi-delete-circle fs-2 text-danger"></i></a>';
 			}
 
@@ -539,4 +545,39 @@ class Noa_controller extends CI_Controller {
 			$this->load->view('templates/footer');
 		}
 	}
+
+	function set_charge_type(){
+		$token = $this->security->get_csrf_hash();
+		$noa_id = $this->myhash->hasher($this->input->post('noa-id'), 'decrypt');
+		$charge_type = $this->input->post('charge-type', TRUE);
+
+		$this->form_validation->set_rules('charge-type', 'Charge Type', 'required');
+		if ($this->form_validation->run() == FALSE) {
+			$response = [
+				'token' => $token, 
+				'status' => 'error',
+				'charge_type_error' => form_error('charge-type'),
+			];
+			echo json_encode($response);
+		}else{
+			$updated = $this->noa_model->db_update_noa_charge_type($noa_id, $charge_type);
+
+			if (!$updated) {
+				$response = [
+					'token' => $token, 
+					'status' => 'save-error', 
+					'message' => 'Save Failed'
+				];
+			} else {
+				$response = [
+					'token' => $token, 
+					'status' => 'success', 
+					'message' => 'Saved Successfully'
+				];
+			}
+			echo json_encode($response);
+		}
+
+	}
+
 }

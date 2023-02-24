@@ -64,6 +64,8 @@
           </li>
         </ul>
 
+        <?php include 'charge_type.php'; ?>
+
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
@@ -124,6 +126,59 @@
       fixedHeader: true,
     });
 
+    $('#formUpdateChargeType').submit(function(event) {
+      event.preventDefault();
+      $.ajax({
+        type: "post",
+        url: $(this).attr('action'),
+        data: $(this).serialize(),
+        dataType: "json",
+        success: function(response) {
+          const {
+            token,
+            status,
+            message,
+            charge_type_error,
+          } = response;
+          switch (status) {
+            case 'error':
+              // is-invalid class is a built in classname for errors in bootstrap
+              if (charge_type_error !== '') {
+                $('#charge-type-error').html(charge_type_error);
+                $('#charge-type').addClass('is-invalid');
+              } else {
+                $('#charge-type-error').html('');
+                $('#charge-type').removeClass('is-invalid');
+              }
+              break;
+            case 'save-error':
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
+              $("#pendingLoaTable").DataTable().ajax.reload();
+              break;
+            case 'success':
+              swal({
+                title: 'Success',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'success'
+              });
+              
+              $('#viewChargeTypeModal').modal('hide');
+              $("#pendingLoaTable").DataTable().ajax.reload();
+              break;
+          }
+        },
+      })
+    });
+
+
   });
 
   function viewImage(path) {
@@ -177,7 +232,8 @@
           requesting_physician,
           attending_physician,
           rx_file,
-          req_status
+          req_status,
+          work_related
         } = res;
 
         $("#viewLoaModal").modal("show");
@@ -220,11 +276,24 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
+        if(work_related != ''){
+          $('#work-related-info').removeClass('d-none');
+          $('#work-related-val').html(work_related);
+        }else{
+          $('#work-related-info').addClass('d-none');
+          $('#work-related-val').html('');
+        }
       }
     });
   }
 
-  function cancelLoaRequest(loa_id) {
+  const showTagChargeType = (loa_id) => {
+    $("#viewChargeTypeModal").modal("show");
+    $('#loa-id').val(loa_id);
+    $('#charge-type').val('');
+  }
+
+  const cancelLoaRequest = (loa_id) => {
     $.confirm({
       title: '<strong>Confirm!</strong>',
       content: 'Are you sure to cancel LOA Request?',

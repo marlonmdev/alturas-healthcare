@@ -30,6 +30,10 @@
                         <td class="fw-bold ls-1">&#8369;<span id="remaining-mbl"></span></td>
                       </tr>
                       <tr>
+                        <td class="fw-bold ls-1">Work Related :</td>
+                        <td class="fw-bold ls-1" id="work-related-val"></td>
+                      </tr>
+                      <tr>
                         <td class="fw-bold ls-1">Full Name :</td>
                         <td class="fw-bold ls-1" id="full-name"></td>
                       </tr>

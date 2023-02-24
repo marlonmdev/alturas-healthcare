@@ -13,7 +13,7 @@
                     <div class="row mb-3">
                       <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
                       <input type="hidden" name="noa-id" id="noa-id">
-                      <select class="form-select" name="charge-type" id="charge-type">
+                      <select class="form-select ls-1" name="charge-type" id="charge-type">
                         <option value="">Please select...</option>
                         <option value="Yes">Work-related</option>
                         <option value="No">Nonwork-related</option>

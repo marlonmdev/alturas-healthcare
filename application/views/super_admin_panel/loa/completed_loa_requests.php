@@ -57,10 +57,10 @@
             <li class="nav-item">
             <a
               class="nav-link active"
-              href="<?php echo base_url(); ?>super-admin/loa/requests-list/closed"
+              href="<?php echo base_url(); ?>super-admin/loa/requests-list/completed"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Closed</span></a
+              <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
             >
           </li>
         </ul>
@@ -68,7 +68,7 @@
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover table-responsive" id="closedLoaTable">
+              <table class="table table-hover table-responsive" id="completedLoaTable">
                 <thead>
                   <tr>
                     <th class="fw-bold">LOA No.</th>
@@ -88,7 +88,7 @@
           </div>
         </div>
 
-        <?php include 'view_closed_loa_details.php'; ?>
+        <?php include 'view_completed_loa_details.php'; ?>
 
       </div>
     </div>
@@ -99,14 +99,14 @@
 
   $(document).ready(function() {
 
-    $('#closedLoaTable').DataTable({
+    $('#completedLoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
 
       // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}super-admin/loa/requests-list/closed/fetch`,
+        url: `${baseUrl}super-admin/loa/requests-list/completed/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: {
@@ -138,9 +138,9 @@
     let photoviewer = new PhotoViewer(item, options);
   }
 
-  function viewClosedLoaInfo(req_id) {
+  function viewCompletedLoaInfo(req_id) {
     $.ajax({
-      url: `${baseUrl}super-admin/loa/closed/view/${req_id}`,
+      url: `${baseUrl}super-admin/loa/completed/view/${req_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);
@@ -178,6 +178,7 @@
           attending_physician,
           rx_file,
           req_status,
+          work_related,
           approved_by,
           approved_on
         } = res;
@@ -194,7 +195,7 @@
           case 'Disapproved':
             $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
             break;
-          case 'Closed':
+          case 'Completed':
             $('#loa-status').html(`<strong class="text-info">[${req_status}]</strong>`);
             break;
         }

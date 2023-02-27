@@ -339,10 +339,10 @@ class Loa_controller extends CI_Controller {
 
 			$custom_date = date("m/d/Y", strtotime($loa['request_date']));
 
-			
+			/* Checking if the work_related column is empty. If it is empty, it will display the status column.
+			If it is not empty, it will display the text "for Approval". */
 			if($loa['work_related'] == ''){
 				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $loa['status'] . '</span></div>';
-
 			}else{
 				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-cyan">for Approval</span></div>';
 			}
@@ -637,7 +637,7 @@ class Loa_controller extends CI_Controller {
 			'requesting_physician' => $row['doctor_name'],
 			'attending_physician' => $row['attending_physician'],
 			'rx_file' => $row['rx_file'],
-			'req_status' => $row['status'],
+			'req_status' =>  $row['work_related'] != '' ? 'for Approval': $row['status'],
 			'work_related' => $row['work_related'],
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),

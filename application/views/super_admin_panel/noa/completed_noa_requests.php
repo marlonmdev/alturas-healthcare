@@ -57,10 +57,10 @@
             <li class="nav-item">
             <a
               class="nav-link active"
-              href="<?php echo base_url(); ?>super-admin/noa/requests-list/closed"
+              href="<?php echo base_url(); ?>super-admin/noa/requests-list/completed"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Closed</span></a
+              <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
             >
           </li>
         </ul>
@@ -68,7 +68,7 @@
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover" id="closedNoaTable">
+              <table class="table table-hover" id="completedNoaTable">
                 <thead>
                   <tr>
                     <th class="fw-bold">NOA No.</th>
@@ -170,14 +170,14 @@
   const baseUrl = `<?php echo base_url(); ?>`;
   $(document).ready(function() {
 
-    $('#closedNoaTable').DataTable({
+    $('#completedNoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
 
       // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}super-admin/noa/requests-list/closed/fetch`,
+        url: `${baseUrl}super-admin/noa/requests-list/completed/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: {
@@ -197,9 +197,9 @@
   });
 
 
-  function viewClosedNoaInfo(req_id) {
+  function viewCompletedNoaInfo(req_id) {
     $.ajax({
-      url: `${baseUrl}super-admin/noa/closed/view/${req_id}`,
+      url: `${baseUrl}super-admin/noa/completed/view/${req_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);
@@ -239,7 +239,7 @@
           case 'Disapproved':
             $('#noa-status').html('<strong class="text-danger">[' + req_status + ']</strong>');
             break;
-          case 'Closed':
+          case 'Completed':
             $('#noa-status').html('<strong class="text-info">[' + req_status + ']</strong>');
             break;
         }

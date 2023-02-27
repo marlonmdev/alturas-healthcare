@@ -350,11 +350,11 @@ $route['company-doctor/setup/affiliate-hospitals'] = 'company_doctor/pages_contr
 $route['company-doctor/loa/requests-list'] = 'company_doctor/pages_controller/view_pending_loa_list';
 $route['company-doctor/loa/requests-list/approved'] = 'company_doctor/pages_controller/view_approved_loa_list';
 $route['company-doctor/loa/requests-list/disapproved'] = 'company_doctor/pages_controller/view_disapproved_loa_list';
-$route['company-doctor/loa/requests-list/closed'] = 'company_doctor/pages_controller/view_closed_loa_list';
+$route['company-doctor/loa/requests-list/completed'] = 'company_doctor/pages_controller/view_completed_loa_list';
 $route['company-doctor/noa/requests-list'] = 'company_doctor/pages_controller/view_pending_noa_list';
 $route['company-doctor/noa/requests-list/approved'] = 'company_doctor/pages_controller/view_approved_noa_list';
 $route['company-doctor/noa/requests-list/disapproved'] = 'company_doctor/pages_controller/view_disapproved_noa_list';
-$route['company-doctor/noa/requests-list/closed'] = 'company_doctor/pages_controller/view_closed_noa_list';
+$route['company-doctor/noa/requests-list/completed'] = 'company_doctor/pages_controller/view_completed_noa_list';
 
 
 // Company Doctor User Account Routes
@@ -372,7 +372,7 @@ $route['company-doctor/member/view/(:any)'] = 'company_doctor/members_controller
 $route['company-doctor/loa/requests-list/fetch'] = 'company_doctor/loa_controller/fetch_all_pending_loa';
 $route['company-doctor/loa/requests-list/approved/fetch'] = 'company_doctor/loa_controller/fetch_all_approved_loa';
 $route['company-doctor/loa/requests-list/disapproved/fetch'] = 'company_doctor/loa_controller/fetch_all_disapproved_loa';
-$route['company-doctor/loa/requests-list/closed/fetch'] = 'company_doctor/loa_controller/fetch_all_closed_loa';
+$route['company-doctor/loa/requests-list/completed/fetch'] = 'company_doctor/loa_controller/fetch_all_completed_loa';
 $route['company-doctor/loa/requests-list/view/(:any)'] = 'company_doctor/loa_controller/get_loa_info';
 $route['company-doctor/loa/requests-list/approve/(:any)'] = 'company_doctor/loa_controller/approve_loa_request';
 $route['company-doctor/loa/requests-list/disapprove/(:any)'] = 'company_doctor/loa_controller/disapprove_loa_request';
@@ -382,7 +382,7 @@ $route['company-doctor/loa/requests-list/disapprove/(:any)'] = 'company_doctor/l
 $route['company-doctor/noa/requests-list/fetch'] = 'company_doctor/noa_controller/fetch_all_pending_noa';
 $route['company-doctor/noa/requests-list/approved/fetch'] = 'company_doctor/noa_controller/fetch_all_approved_noa';
 $route['company-doctor/noa/requests-list/disapproved/fetch'] = 'company_doctor/noa_controller/fetch_all_disapproved_noa';
-$route['company-doctor/noa/requests-list/closed/fetch'] = 'company_doctor/noa_controller/fetch_all_closed_noa';
+$route['company-doctor/noa/requests-list/completed/fetch'] = 'company_doctor/noa_controller/fetch_all_completed_noa';
 $route['company-doctor/noa/requests-list/view/(:any)'] = 'company_doctor/noa_controller/get_noa_info';
 $route['company-doctor/noa/requests-list/approve/(:any)'] = 'company_doctor/noa_controller/approve_noa_request';
 $route['company-doctor/noa/requests-list/disapprove/(:any)'] = 'company_doctor/noa_controller/disapprove_noa_request';
@@ -406,11 +406,11 @@ $route['super-admin/loa/request-loa'] = 'super_admin/pages_controller/view_reque
 $route['super-admin/loa/requests-list'] = 'super_admin/pages_controller/view_pending_loa_list';
 $route['super-admin/loa/requests-list/approved'] = 'super_admin/pages_controller/view_approved_loa_list';
 $route['super-admin/loa/requests-list/disapproved'] = 'super_admin/pages_controller/view_disapproved_loa_list';
-$route['super-admin/loa/requests-list/closed'] = 'super_admin/pages_controller/view_closed_loa_list';
+$route['super-admin/loa/requests-list/completed'] = 'super_admin/pages_controller/view_completed_loa_list';
 $route['super-admin/noa/requests-list'] = 'super_admin/pages_controller/view_pending_noa_list';
 $route['super-admin/noa/requests-list/approved'] = 'super_admin/pages_controller/view_approved_noa_list';
 $route['super-admin/noa/requests-list/disapproved'] = 'super_admin/pages_controller/view_disapproved_noa_list';
-$route['super-admin/noa/requests-list/closed'] = 'super_admin/pages_controller/view_closed_noa_list';
+$route['super-admin/noa/requests-list/completed'] = 'super_admin/pages_controller/view_completed_noa_list';
 $route['super-admin/noa/request-noa'] = 'super_admin/pages_controller/request_noa_form';
 
 // Super Admin User Account Routes
@@ -452,11 +452,11 @@ $route['super-admin/loa/requested-loa/update/(:any)'] = 'super_admin/loa_control
 $route['super-admin/loa/requests-list/fetch'] = 'super_admin/loa_controller/fetch_all_pending_loa';
 $route['super-admin/loa/requests-list/approved/fetch'] = 'super_admin/loa_controller/fetch_all_approved_loa';
 $route['super-admin/loa/requests-list/disapproved/fetch'] = 'super_admin/loa_controller/fetch_all_disapproved_loa';
-$route['super-admin/loa/requests-list/closed/fetch'] = 'super_admin/loa_controller/fetch_all_closed_loa';
+$route['super-admin/loa/requests-list/completed/fetch'] = 'super_admin/loa_controller/fetch_all_completed_loa';
 $route['super-admin/loa/pending/view/(:any)'] = 'super_admin/loa_controller/get_pending_loa_info';
 $route['super-admin/loa/approved/view/(:any)'] = 'super_admin/loa_controller/get_approved_loa_info';
 $route['super-admin/loa/disapproved/view/(:any)'] = 'super_admin/loa_controller/get_disapproved_loa_info';
-$route['super-admin/loa/closed/view/(:any)'] = 'super_admin/loa_controller/get_closed_loa_info';
+$route['super-admin/loa/completed/view/(:any)'] = 'super_admin/loa_controller/get_completed_loa_info';
 $route['super-admin/loa/requests-list/approve/(:any)'] = 'super_admin/loa_controller/approve_loa_request';
 $route['super-admin/loa/requests-list/disapprove/(:any)'] = 'super_admin/loa_controller/disapprove_loa_request';
 $route['super-admin/loa/member/search/(:any)'] = 'super_admin/search_controller/get_searched_member_details';
@@ -468,11 +468,11 @@ $route['super-admin/loa/requested-loa/generate-printable-loa/(:any)'] = 'super_a
 $route['super-admin/noa/requests-list/fetch'] = 'super_admin/noa_controller/fetch_all_pending_noa';
 $route['super-admin/noa/requests-list/approved/fetch'] = 'super_admin/noa_controller/fetch_all_approved_noa';
 $route['super-admin/noa/requests-list/disapproved/fetch'] = 'super_admin/noa_controller/fetch_all_disapproved_noa';
-$route['super-admin/noa/requests-list/closed/fetch'] = 'super_admin/noa_controller/fetch_all_closed_noa';
+$route['super-admin/noa/requests-list/completed/fetch'] = 'super_admin/noa_controller/fetch_all_completed_noa';
 $route['super-admin/noa/pending/view/(:any)'] = 'super_admin/noa_controller/get_pending_noa_info';
 $route['super-admin/noa/approved/view/(:any)'] = 'super_admin/noa_controller/get_approved_noa_info';
 $route['super-admin/noa/disapproved/view/(:any)'] = 'super_admin/noa_controller/get_disapproved_noa_info';
-$route['super-admin/noa/closed/view/(:any)'] = 'super_admin/noa_controller/get_closed_noa_info';
+$route['super-admin/noa/completed/view/(:any)'] = 'super_admin/noa_controller/get_completed_noa_info';
 $route['super-admin/noa/requests-list/approve/(:any)'] = 'super_admin/noa_controller/approve_noa_request';
 $route['super-admin/noa/requests-list/disapprove/(:any)'] = 'super_admin/noa_controller/disapprove_noa_request';
 $route['super-admin/noa/request-noa/submit'] = 'super_admin/noa_controller/submit_noa_request';
@@ -511,9 +511,9 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 
 
 // QR Code Routes
-$route['qrcode'] = 'home';
-$route['qrcode/read'] = 'home/read_qrcode';
-$route['codes/generate'] = 'qrcode_controller/generate';
+// $route['qrcode'] = 'home';
+// $route['qrcode/read'] = 'home/read_qrcode';
+// $route['codes/generate'] = 'qrcode_controller/generate';
 
 
 $route['404_override'] = 'auth_controller/page_not_found';

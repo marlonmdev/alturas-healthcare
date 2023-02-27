@@ -56,10 +56,10 @@
             <li class="nav-item">
             <a
               class="nav-link"
-              href="<?php echo base_url(); ?>super-admin/noa/requests-list/closed"
+              href="<?php echo base_url(); ?>super-admin/noa/requests-list/completed"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Closed</span></a
+              <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
             >
           </li>
         </ul>
@@ -108,6 +108,10 @@
                       <tr>
                         <td class="fw-bold ls-1">Member's Remaining MBL :</td>
                         <td class="fw-bold ls-1">&#8369;<span id="remaining-mbl"></span></td>
+                      </tr>
+                      <tr class="d-none" id="work-related-info">
+                        <td class="fw-bold ls-1">Work Related :</td>
+                        <td class="fw-bold ls-1" id="work-related-val"></td>
                       </tr>
                       <tr>
                         <td class="fw-bold ls-1">Full Name :</td>
@@ -206,22 +210,21 @@
           admission_date,
           chief_complaint,
           request_date,
-          req_status
+          req_status,
+          work_related
         } = res;
 
         $("#viewNoaModal").modal("show");
-        switch (req_status) {
-          case 'Pending':
-            $('#noa-status').html('<strong class="text-warning">[' + req_status + ']</strong>');
-            break;
-          case 'Approved':
-            $('#noa-status').html('<strong class="text-success">[' + req_status + ']</strong>');
-            break;
-          case 'Disapproved':
-            $('#noa-status').html('<strong class="text-danger">[' + req_status + ']</strong>');
-            break;
+
+        let rstat = '';
+        if(req_status == 'Pending'){
+          req_stat = `<strong class="text-warning">[${req_status}]</strong>`;
+        }else{
+          req_stat = `<strong class="text-cyan">[${req_status}]</strong>`;
         }
+
         $('#noa-no').html(noa_no);
+        $('#noa-status').html(req_stat);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
@@ -231,6 +234,13 @@
         $('#admission-date').html(admission_date);
         $('#chief-complaint').html(chief_complaint);
         $('#request-date').html(request_date);
+        if(work_related != ''){
+          $('#work-related-info').removeClass('d-none');
+          $('#work-related-val').html(work_related);
+        }else{
+          $('#work-related-info').addClass('d-none');
+          $('#work-related-val').html('');
+        }
       }
     });
   }

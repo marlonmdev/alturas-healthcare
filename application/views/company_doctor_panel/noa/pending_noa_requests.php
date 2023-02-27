@@ -56,10 +56,10 @@
             <li class="nav-item">
             <a
               class="nav-link"
-              href="<?php echo base_url(); ?>company-doctor/noa/requests-list/closed"
+              href="<?php echo base_url(); ?>company-doctor/noa/requests-list/completed"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Closed</span></a
+              <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
             >
           </li>
         </ul>
@@ -165,6 +165,9 @@
           case 'Pending':
             $('#noa-status').html('<strong class="text-warning">[' + req_status + ']</strong>');
             break;
+          case 'for Approval':
+            $('#noa-status').html('<strong class="text-cyan">[' + req_status + ']</strong>');
+            break;
           case 'Approved':
             $('#noa-status').html('<strong class="text-success">[' + req_status + ']</strong>');
             break;
@@ -172,6 +175,7 @@
             $('#noa-status').html('<strong class="text-danger">[' + req_status + ']</strong>');
             break;
         }
+
         $('#noa-no').html(noa_no);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);

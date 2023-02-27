@@ -116,7 +116,13 @@ class Noa_controller extends CI_Controller {
 
 			$custom_noa_no = '<mark class="bg-primary text-white">'.$noa['noa_no'].'</mark>';
 
-			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $noa['status'] . '</span></div>';
+			/* Checking if the work_related column is empty. If it is empty, it will display the status column.
+			If it is not empty, it will display the text "for Approval". */
+			if($noa['work_related'] == ''){
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $noa['status'] . '</span></div>';
+			}else{
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-cyan">for Approval</span></div>';
+			}
 
 			$custom_actions = '<a class="me-2" href="JavaScript:void(0)" onclick="viewNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
@@ -233,7 +239,7 @@ class Noa_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 
-	function fetch_all_closed_noa() {
+	function fetch_all_completed_noa() {
 		$this->security->get_csrf_hash();
 		$status = 'Closed';
 		$list = $this->noa_model->get_datatables($status);
@@ -302,7 +308,8 @@ class Noa_controller extends CI_Controller {
 			'chief_complaint' => $row['chief_complaint'],
 			// Full Month Date Year Format (F d Y)
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
-			'req_status' => $row['status'],
+			'req_status' => $row['work_related'] != '' ? 'for Approval': $row['status'],
+			'work_related' => $row['work_related'],
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		];
@@ -389,6 +396,7 @@ class Noa_controller extends CI_Controller {
 			'chief_complaint' => $row['chief_complaint'],
 			// Full Month Date Year Format (F d Y)
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
+			'work_related' => $row['work_related'],
 			'req_status' => $row['status'],
 			'disapproved_by' => $doctor_name,
 			'disapprove_reason' => $row['disapprove_reason'],
@@ -399,7 +407,7 @@ class Noa_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	function get_closed_noa_info() {
+	function get_completed_noa_info() {
 		$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$row = $this->noa_model->db_get_noa_info($noa_id);
 

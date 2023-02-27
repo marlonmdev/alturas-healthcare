@@ -123,7 +123,13 @@ class Noa_controller extends CI_Controller {
 
 			$custom_noa_no = '<mark class="bg-primary text-white">'.$noa['noa_no'].'</mark>';
 
-			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $noa['status'] . '</span></div>';
+			/* Checking if the work_related column is empty. If it is empty, it will display the status column.
+			If it is not empty, it will display the text "for Approval". */
+			if($noa['work_related'] == ''){
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $noa['status'] . '</span></div>';
+			}else{
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-cyan">for Approval</span></div>';
+			}
 
 			$custom_actions = '<a class="me-2" href="JavaScript:void(0)" onclick="viewNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
@@ -285,10 +291,10 @@ class Noa_controller extends CI_Controller {
 		}
 
 		$output = [
-			"draw" => $_POST['draw'],
-			"recordsTotal" => $this->noa_model->count_all($status),
+			"draw"            => $_POST['draw'],
+			"recordsTotal"    => $this->noa_model->count_all($status),
 			"recordsFiltered" => $this->noa_model->count_filtered($status),
-			"data" => $data,
+			"data"            => $data,
 		];
 		echo json_encode($output);
 	}
@@ -320,7 +326,7 @@ class Noa_controller extends CI_Controller {
 			'chief_complaint' => $row['chief_complaint'],
 			// Full Month Date Year Format (F d Y)
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
-			'req_status' => $row['status'],
+			'req_status' => $row['work_related'] != '' ? 'for Approval': $row['status'],
 			'work_related' => $row['work_related'],
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),

@@ -420,6 +420,12 @@ class Loa_controller extends CI_Controller {
 
 			$custom_loa_no = 	'<mark class="bg-primary text-white">'.$value['loa_no'].'</mark>';
 
+			// if($value['work_related'] != ''){
+			// 	$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $value['status'] . '</span></div>';
+			// }else{
+			// 	$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-cyan">for Approval</span></div>';
+			// }
+
 			$button = '<a class="me-2 align-top" style="top:-20px!important;" href="JavaScript:void(0)" onclick="viewLoaInfoModal(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
 			$button .= '<a class="me-2 align-top" style="top:-20px!important;" href="' . base_url() . 'member/requested-loa/edit/' . $loa_id . '" data-bs-toggle="tooltip" title="Edit LOA"><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a>';
@@ -455,6 +461,7 @@ class Loa_controller extends CI_Controller {
 				$value['loa_request_type'],
 				// $short_med_serv,
 				$view_file,
+				// $custom_status,
 				'<span class="badge rounded-pill bg-warning">' . $value['status'] . '</span>',
 				$button
 			);

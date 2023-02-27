@@ -56,10 +56,10 @@
             <li class="nav-item">
             <a
               class="nav-link"
-              href="<?php echo base_url(); ?>company-doctor/loa/requests-list/closed"
+              href="<?php echo base_url(); ?>company-doctor/loa/requests-list/completed"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Closed</span></a
+              <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
             >
           </li>
         </ul>
@@ -186,13 +186,16 @@
         $("#viewLoaModal").modal("show");
         switch (req_status) {
           case 'Pending':
-            $('#loa-status').html(`<strong class="text-warning">[${req_status}]</strong>`);
+            $('#noa-status').html('<strong class="text-warning">[' + req_status + ']</strong>');
+            break;
+          case 'for Approval':
+            $('#noa-status').html('<strong class="text-cyan">[' + req_status + ']</strong>');
             break;
           case 'Approved':
-            $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
+            $('#noa-status').html('<strong class="text-success">[' + req_status + ']</strong>');
             break;
           case 'Disapproved':
-            $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
+            $('#noa-status').html('<strong class="text-danger">[' + req_status + ']</strong>');
             break;
         }
 

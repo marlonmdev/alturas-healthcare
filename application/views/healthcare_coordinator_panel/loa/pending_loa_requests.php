@@ -91,7 +91,6 @@
 
         <?php include 'view_loa_details.php'; ?>
 
-
       <!-- End Row  -->  
       </div>
     <!-- End Container fluid  -->
@@ -238,20 +237,18 @@
 
         $("#viewLoaModal").modal("show");
 
-        switch (req_status) {
-          case 'Pending':
-            $('#loa-status').html(`<strong class="text-warning">[${req_status}]</strong>`);
-            break;
-          case 'Approved':
-            $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
-            break;
-          case 'Disapproved':
-            $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
-            break;
-        }
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
+        
+        let rstat = '';
+        if(req_status == 'Pending'){
+          req_stat = `<strong class="text-warning">[${req_status}]</strong>`;
+        }else{
+          req_stat = `<strong class="text-cyan">[${req_status}]</strong>`;
+        }
+
         $('#loa-no').html(loa_no);
+        $('#loa-status').html(req_stat);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);

@@ -115,21 +115,7 @@
                     </div>
         </div>  
     </div>
-    <!-- <script>
-        const startDateInput = document.getElementById('start_date');
-        const endDateInput = document.getElementById('end_date');
 
-        startDateInput.addEventListener('input', () => {
-            const selectedDate = new Date(startDateInput.value);
-            const formattedDate = selectedDate.toISOString().slice(0, 10);
-            startDateInput.value = formattedDate;
-        });
-        endDateInput.addEventListener('input', () => {
-            const selectedDate = new Date(endDateInput.value);
-            const formattedDate = selectedDate.toISOString().slice(0, 10);
-            endDateInput.value = formattedDate;
-        });
-    </script> -->
     <script>
          const baseUrl = "<?php echo base_url(); ?>";
          $(document).ready(function(){

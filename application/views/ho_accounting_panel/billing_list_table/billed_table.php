@@ -63,7 +63,7 @@
                             <i class="mdi mdi-filter"></i>
                             </span>
                         </div>
-                        <select class="form-select fw-bold" name="hospital-filter" id="hospital-filter">
+                        <select class="form-select fw-bold" name="hospital-filter" id="hospital-filter" oninput="enableDate()">
                                 <option value="">Select Hospital</option>
                                 <?php foreach($options as $option) : ?>
                                 <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
@@ -77,13 +77,18 @@
                             <div class="input-group-append">
                                 <span class="input-group-text bg-secondary text-white ms-2">FROM: </span>
                             </div>
-                            <input type="date" name="start_date" id="date" class="form-control" placeholder="mm/dd/yyyy">
+                            <input type="date" name="start_date" id="start_date" class="form-control" placeholder="mm/dd/yyyy" readonly>
 
                             <div class="input-group-append">
                                 <span class="input-group-text bg-secondary text-white ms-2">TO: </span>
                             </div>
-                            <input type="date" name="end_date" id="date" class="form-control" placeholder="mm/dd/yyyy">
+                            <input type="date" name="end_date" id="end_date" class="form-control" placeholder="mm/dd/yyyy" readonly>
+                            
+                            <!-- <div class="input-group-append">
+                                <button class="input-group-text bg-info text-white ms-2" title="Filter"><i class="mdi mdi-magnify"></i></button>
+                            </div> -->
                         </div>
+                        
                     </div>
                 </div>
             </div><br>
@@ -126,6 +131,8 @@
                 data: function(data) {
                 data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
                 data.filter = $('#hospital-filter').val();
+                data.startDate = $('#start_date').val();
+                data.endDate = $('#end_date').val();
                 }
             },
 
@@ -142,6 +149,20 @@
                 userTable.draw();
             });
          });
+
+        function enableDate(){
+            const hp_filter = document.querySelector('#hospital-filter');
+            const start_date = document.querySelector('#start_date');
+            const end_date = document.querySelector('#end_date');
+
+            if(hp_filter != ''){
+                start_date.removeAttribute('readonly');
+                end_date.removeAttribute('readonly');
+            }else{
+                start_date.setAttribute('readonly', true);
+                end_date.setAttributte('readonly', true);
+            }
+        }
 
     </script>
            

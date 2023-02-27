@@ -30,7 +30,13 @@ class Noa_controller extends CI_Controller {
 
 			$custom_noa_no = '<mark class="bg-primary text-white">'.$noa['noa_no'].'</mark>';
 
-			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $noa['status'] . '</span></div>';
+			/* Checking if the work_related column is empty. If it is empty, it will display the status column.
+			If it is not empty, it will display the text "for Approval". */
+			if($noa['work_related'] == ''){
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $noa['status'] . '</span></div>';
+			}else{
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-cyan">for Approval</span></div>';
+			}
 
 			$custom_actions = '<a class="me-2" href="JavaScript:void(0)" onclick="viewNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 			// shorten name of values from db if its too long for viewing and add ...
@@ -145,10 +151,10 @@ class Noa_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 
-	function fetch_closed_noa_requests() {
+	function fetch_completed_noa_requests() {
 		$this->security->get_csrf_hash();
-		$status = 'Closed';
-        $hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
+		$status = 'Completed';
+    $hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
 		$list = $this->noa_model->get_datatables($status, $hcare_provider_id);
 		$data = [];
 		foreach ($list as $noa) {
@@ -208,6 +214,14 @@ class Noa_controller extends CI_Controller {
 		$diff = date_diff(date_create($dateOfBirth), date_create($today));
 		$age = $diff->format('%y') . ' years old';
 
+		/* Checking if the status is pending and the work related is not empty. If it is, then it will set
+		the req_stat to for approval. If not, then it will set the req_stat to the status. */
+		if($row['status'] == 'Pending' && $row['work_related'] != ''){
+			$req_stat = 'for Approval';
+		}else{
+			$req_stat = $row['status'];
+		}
+
 		$response = array(
 			'status' => 'success',
 			'token' => $this->security->get_csrf_hash(),
@@ -227,7 +241,7 @@ class Noa_controller extends CI_Controller {
 			// Full Month Date Year Format (F d Y)
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'work_related' => $row['work_related'],
-			'req_status' => $row['status'],
+			'req_status' => $req_stat,
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'disapproved_by' => $doctor_name,

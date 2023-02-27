@@ -54,10 +54,10 @@
                     <li class="nav-item">
                     <a
                     class="nav-link"
-                    href="<?php echo base_url(); ?>healthcare-provider/noa-requests/closed"
+                    href="<?php echo base_url(); ?>healthcare-provider/noa-requests/completed"
                     role="tab">
                         <span class="hidden-sm-up"></span>
-                        <span class="hidden-xs-down fs-5 font-bold">Closed</span>
+                        <span class="hidden-xs-down fs-5 font-bold">Completed</span>
                     </a>
                 </li>
             </ul>
@@ -153,18 +153,8 @@
 
         $("#viewNoaModal").modal("show");
 
-        switch (req_status) {
-          case 'Pending':
-            $('#noa-status').html(`<strong class="text-warning">[${req_status}]</strong>`);
-            break;
-          case 'Approved':
-            $('#noa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
-            break;
-          case 'Disapproved':
-            $('#noa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
-            break;
-        }
         $('#noa-no').html(noa_no);
+        $('#noa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
         $('#member-mbl').html(member_mbl);
@@ -175,8 +165,8 @@
         $('#hospital-name').html(hospital_name);
         $('#admission-date').html(admission_date);
         $('#chief-complaint').html(chief_complaint);
-        $('#work-related').html(work_related);
         $('#request-date').html(request_date);
+        $('#work-related').html(work_related);
       }
     });
   }

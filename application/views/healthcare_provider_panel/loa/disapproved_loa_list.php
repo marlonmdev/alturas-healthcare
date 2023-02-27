@@ -55,10 +55,10 @@
                     <li class="nav-item">
                     <a
                     class="nav-link"
-                    href="<?php echo base_url(); ?>healthcare-provider/loa-requests/closed"
+                    href="<?php echo base_url(); ?>healthcare-provider/loa-requests/completed"
                     role="tab"
                     ><span class="hidden-sm-up"></span>
-                    <span class="hidden-xs-down fs-5 font-bold">Closed</span></a
+                    <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
                     >
                 </li>
             </ul>
@@ -134,26 +134,17 @@
                     suffix, date_of_birth, age, gender, philhealth_no, blood_type, contact_no, home_address,
                     city_address, email, contact_person, contact_person_addr, contact_person_no, healthcare_provider,
                     loa_request_type, med_services, health_card_no, requesting_company, request_date, chief_complaint,
-                    requesting_physician, attending_physician, rx_file, req_status, disapproved_by, disapprove_reason,
+                    requesting_physician, attending_physician, rx_file, req_status, work_related, disapproved_by, disapprove_reason,
                     disapproved_on
                 } = res;
 
                 $("#viewLoaModal").modal("show");
 
-                switch (req_status) {
-                    case 'Pending':
-                        $('#loa-status').html(`<strong class="text-warning">[${req_status}]</strong>`);
-                        break;
-                    case 'Approved':
-                        $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
-                        break;
-                    case 'Disapproved':
-                        $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
-                        break;
-                }
                 const med_serv = med_services !== '' ? med_services : 'None';
                 const at_physician = attending_physician !== '' ? attending_physician : 'None';
+
                 $('#loa-no').html(loa_no);
+                $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
                 $('#disapproved-by').html(disapproved_by);
                 $('#disapproved-on').html(disapproved_on);
                 $('#disapprove-reason').html(disapprove_reason);
@@ -181,6 +172,13 @@
                 $('#chief-complaint').html(chief_complaint);
                 $('#requesting-physician').html(requesting_physician);
                 $('#attending-physician').html(at_physician);
+                if(work_related != ''){
+                    $('#work-related-info').removeClass('d-none');
+                    $('#work-related').html(work_related);
+                }else{
+                    $('#work-related-info').addClass('d-none');
+                    $('#work-related').html('');
+                }
             }
         });
     }

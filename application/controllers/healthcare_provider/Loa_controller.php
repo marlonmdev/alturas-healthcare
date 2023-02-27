@@ -9,7 +9,7 @@ class Loa_controller extends CI_Controller {
         $user_role = $this->session->userdata('user_role');
         $logged_in = $this->session->userdata('logged_in');
         if ($logged_in !== true && $user_role !== 'healthcare-provider') {
-            redirect(base_url());
+          redirect(base_url());
         }
     }
 
@@ -30,7 +30,13 @@ class Loa_controller extends CI_Controller {
 
 				$custom_date = date("m/d/Y", strtotime($loa['request_date']));
 
-				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $loa['status'] . '</span></div>';
+				/* Checking if the work_related column is empty. If it is empty, it will display the status column.
+				If it is not empty, it will display the text "for Approval". */
+				if($loa['work_related'] == ''){
+					$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $loa['status'] . '</span></div>';
+				}else{
+					$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-cyan">for Approval</span></div>';
+				}
 
 				$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
@@ -94,7 +100,7 @@ class Loa_controller extends CI_Controller {
 
 				$custom_date = date("m/d/Y", strtotime($loa['request_date']));
 
-				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $loa['status'] . '</span></div>';
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $loa['status'] . '</span></div>';
 
 				$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
@@ -158,7 +164,7 @@ class Loa_controller extends CI_Controller {
 
 				$custom_date = date("m/d/Y", strtotime($loa['request_date']));
 
-				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $loa['status'] . '</span></div>';
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-danger">' . $loa['status'] . '</span></div>';
 
 				$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
@@ -205,9 +211,9 @@ class Loa_controller extends CI_Controller {
 			echo json_encode($output);
     }
 
-    function fetch_closed_loa_requests(){
+    function fetch_completed_loa_requests(){
       $this->security->get_csrf_hash();
-			$status = 'Closed';
+			$status = 'Completed';
       $hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
 			$list = $this->loa_model->get_datatables($status, $hcare_provider_id);
 			$cost_types = $this->loa_model->db_get_cost_types();
@@ -320,7 +326,8 @@ class Loa_controller extends CI_Controller {
 			'requesting_physician' => $row['doctor_name'],
 			'attending_physician' => $row['attending_physician'],
 			'rx_file' => $row['rx_file'],
-			'req_status' => $row['status'],
+			'req_status' => $row['work_related'] != '' ? 'for Approval': $row['status'],
+			'work_related' => $row['work_related'],
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		];
@@ -386,6 +393,7 @@ class Loa_controller extends CI_Controller {
 			'attending_physician' => $row['attending_physician'],
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
+			'work_related' => $row['work_related'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
@@ -453,6 +461,7 @@ class Loa_controller extends CI_Controller {
 			'attending_physician' => $row['attending_physician'],
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
+			'work_related' => $row['work_related'],
 			'disapproved_by' => $doctor_name,
 			'disapprove_reason' => $row['disapprove_reason'],
 			'disapproved_on' => date("F d, Y", strtotime($row['approved_on'])),
@@ -462,7 +471,7 @@ class Loa_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	function get_closed_loa_info() {
+	function get_completed_loa_info() {
 		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$row = $this->loa_model->db_get_loa_info($loa_id);
 		$doctor_name = "";
@@ -521,6 +530,7 @@ class Loa_controller extends CI_Controller {
 			'attending_physician' => $row['attending_physician'],
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
+			'work_related' => $row['work_related'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),

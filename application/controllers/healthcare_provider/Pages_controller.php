@@ -48,10 +48,10 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
-	function closed_loa_requests() {
+	function completed_loa_requests() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_provider_panel/loa/closed_loa_list');
+		$this->load->view('healthcare_provider_panel/loa/completed_loa_list');
 		$this->load->view('templates/footer');
 	}
 
@@ -79,10 +79,10 @@ class Pages_controller extends CI_Controller {
 	}
 
 
-	function closed_noa_requests() {
+	function completed_noa_requests() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_provider_panel/noa/closed_noa_list');
+		$this->load->view('healthcare_provider_panel/noa/completed_noa_list');
 		$this->load->view('templates/footer');
 	}
 

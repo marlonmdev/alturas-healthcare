@@ -2,78 +2,79 @@
 <div class="page-wrapper">
   <!-- Bread crumb and right sidebar toggle -->
   <div class="page-breadcrumb">
-    <div class="row">
+      <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">Requested LOA</h4>
-        <div class="ms-auto text-end">
+          <h4 class="page-title ls-2">Letter of Authorization</h4>
+          <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item">Member</li>
+              <ol class="breadcrumb">
+              <li class="breadcrumb-item">Healthcare Coordinator</li>
               <li class="breadcrumb-item active" aria-current="page">
-                Closed LOA
+                  Completed LOA
               </li>
-            </ol>
+              </ol>
           </nav>
-        </div>
+          </div>
       </div>
-    </div>
+      </div>
   </div>
   <!-- End Bread crumb and right sidebar toggle -->
   <!-- Start of Container fluid  -->
   <div class="container-fluid">
     <div class="row">
-
       <div class="col-lg-12">
-         <ul class="nav nav-tabs mb-4" role="tablist">
-            <li class="nav-item">
+        <ul class="nav nav-tabs mb-4" role="tablist">
+          <li class="nav-item">
               <a
-                class="nav-link"
-                href="<?php echo base_url(); ?>member/requested-loa/pending"
-                role="tab"
-                ><span class="hidden-sm-up"></span>
-                <span class="hidden-xs-down fs-5 font-bold">Pending</span></a
+              class="nav-link"
+              href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Pending</span></a
               >
-            </li>
-            <li class="nav-item">
+          </li>
+          <li class="nav-item">
               <a
-                class="nav-link"
-                href="<?php echo base_url(); ?>member/requested-loa/approved"
-                role="tab"
-                ><span class="hidden-sm-up"></span>
-                <span class="hidden-xs-down fs-5 font-bold">Approved</span></a
+              class="nav-link"
+              href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Approved</span></a
               >
-            </li>
-            <li class="nav-item">
+          </li>
+          <li class="nav-item">
               <a
-                class="nav-link"
-                href="<?php echo base_url(); ?>member/requested-loa/disapproved"
-                role="tab"
-                ><span class="hidden-sm-up"></span>
-                <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
+              class="nav-link"
+              href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/disapproved"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
               >
-            </li>
-             <li class="nav-item">
+          </li>
+              <li class="nav-item">
               <a
-                class="nav-link active"
-                href="<?php echo base_url(); ?>member/requested-loa/closed"
-                role="tab"
-                ><span class="hidden-sm-up"></span>
-                <span class="hidden-xs-down fs-5 font-bold">Closed</span></a
+              class="nav-link active"
+              href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
               >
-            </li>
-          </ul>
+          </li>
+        </ul>
+
 
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover" id="memberClosedLoa">
+              <table class="table table-hover table-responsive" id="completedLoaTable">
                 <thead>
                   <tr>
                     <th class="fw-bold">LOA No.</th>
-                    <th class="fw-bold">Request Date</th>
-                    <th class="fw-bold">Healthcare Provider</th>
+                    <th class="fw-bold">Name</th>
                     <th class="fw-bold">LOA Type</th>
+                    <th class="fw-bold">Healthcare Provider</th>
                     <th class="fw-bold">RX File</th>
+                    <th class="fw-bold">Request Date</th>
                     <th class="fw-bold">Status</th>
                     <th class="fw-bold">Actions</th>
                   </tr>
@@ -85,9 +86,9 @@
           </div>
         </div>
 
-      </div>
-      <?php include 'view_closed_loa_details.php'; ?>
+        <?php include 'view_completed_loa_details.php'; ?>
 
+      </div>
       <!-- End Row  -->  
       </div>
     <!-- End Container fluid  -->
@@ -95,21 +96,19 @@
   <!-- End Page wrapper  -->
   </div>
 <!-- End Wrapper -->
-</div>
-
 <script>
-  const baseUrl = "<?= base_url() ?>";
+  const baseUrl = "<?php echo base_url(); ?>";
 
   $(document).ready(function() {
 
-    $('#memberClosedLoa').DataTable({
+    $('#completedLoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
 
       // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}member/requested-loa/closed/fetch`,
+        url: `${baseUrl}healthcare-coordinator/loa/requests-list/completed/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: {
@@ -119,8 +118,7 @@
 
       //Set column definition initialisation properties.
       columnDefs: [{
-        // "targets": [5, 6, 7], // numbering column
-        "targets": [4, 5, 6],
+        "targets": [4, 6, 7], // numbering column
         "orderable": false, //set not orderable
       }, ],
       responsive: true,
@@ -129,7 +127,7 @@
 
   });
 
-  const viewImage = (path) => {
+  function viewImage(path) {
     let item = [{
       src: path, // path to image
       title: 'Attached RX File' // If you skip it, there will display the original image name
@@ -142,9 +140,9 @@
     let photoviewer = new PhotoViewer(item, options);
   }
 
-  const viewClosedLoaInfo = (req_id) => {
+  function viewCompletedLoaInfo(req_id) {
     $.ajax({
-      url: `${baseUrl}member/requested-loa/view/${req_id}`,
+      url: `${baseUrl}healthcare-coordinator/loa/completed/view/${req_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);
@@ -153,8 +151,9 @@
           status,
           token,
           loa_no,
-          approved_by,
-          approved_on,
+          member_mbl,
+          remaining_mbl,
+          work_related,
           first_name,
           middle_name,
           last_name,
@@ -181,7 +180,9 @@
           requesting_physician,
           attending_physician,
           rx_file,
-          req_status
+          req_status,
+          approved_by,
+          approved_on
         } = res;
 
         $("#viewLoaModal").modal("show");
@@ -205,6 +206,9 @@
         $('#loa-no').html(loa_no);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
+        $('#member-mbl').html(member_mbl);
+        $('#remaining-mbl').html(remaining_mbl);
+        $('#work-related').html(work_related);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
         $('#date-of-birth').html(date_of_birth);
         $('#age').html(age);

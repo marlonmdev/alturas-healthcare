@@ -10,7 +10,7 @@
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
               <li class="breadcrumb-item active" aria-current="page">
-                Closed NOA
+                Complted NOA
               </li>
             </ol>
           </nav>
@@ -54,10 +54,10 @@
             <li class="nav-item">
             <a
               class="nav-link active"
-              href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/closed"
+              href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/completed"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Closed</span></a
+              <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
             >
           </li>
         </ul>
@@ -65,7 +65,7 @@
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover" id="closedNoaTable">
+              <table class="table table-hover" id="completedNoaTable">
                 <thead>
                   <tr>
                     <th class="fw-bold">NOA No.</th>
@@ -115,6 +115,10 @@
                       <tr>
                         <td class="fw-bold ls-1">Member's Remaining MBL :</td>
                         <td class="fw-bold ls-1">&#8369;<span id="remaining-mbl"></span></td>
+                      </tr>
+                      <tr>
+                        <td class="fw-bold ls-1">Work-Related :</td>
+                        <td class="fw-bold ls-1" id="work-related"></td>
                       </tr>
                       <tr>
                         <td class="fw-bold ls-1">Full Name :</td>
@@ -172,14 +176,14 @@
   const baseUrl = "<?php echo base_url(); ?>";
   $(document).ready(function() {
 
-    $('#closedNoaTable').DataTable({
+    $('#completedNoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
 
       // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}healthcare-coordinator/noa/requests-list/closed/fetch`,
+        url: `${baseUrl}healthcare-coordinator/noa/requests-list/completed/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: {
@@ -198,9 +202,9 @@
 
   });
 
-  function viewClosedNoaInfo(req_id) {
+  function viewCompletedNoaInfo(req_id) {
     $.ajax({
-      url: `${baseUrl}healthcare-coordinator/noa/closed/view/${req_id}`,
+      url: `${baseUrl}healthcare-coordinator/noa/completed/view/${req_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);

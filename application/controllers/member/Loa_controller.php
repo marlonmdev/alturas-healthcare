@@ -420,6 +420,14 @@ class Loa_controller extends CI_Controller {
 
 			$custom_loa_no = 	'<mark class="bg-primary text-white">'.$value['loa_no'].'</mark>';
 
+			/* Checking if the work_related column is empty. If it is empty, it will display the status column.
+			If it is not empty, it will display the text "for Approval". */
+			if($value['work_related'] == ''){
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $value['status'] . '</span></div>';
+			}else{
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-cyan">for Approval</span></div>';
+			}
+
 			$button = '<a class="me-2 align-top" style="top:-20px!important;" href="JavaScript:void(0)" onclick="viewLoaInfoModal(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
 			$button .= '<a class="me-2 align-top" style="top:-20px!important;" href="' . base_url() . 'member/requested-loa/edit/' . $loa_id . '" data-bs-toggle="tooltip" title="Edit LOA"><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a>';
@@ -455,7 +463,7 @@ class Loa_controller extends CI_Controller {
 				$value['loa_request_type'],
 				// $short_med_serv,
 				$view_file,
-				'<span class="badge rounded-pill bg-warning">' . $value['status'] . '</span>',
+				$custom_status,
 				$button
 			);
 		}
@@ -561,9 +569,9 @@ class Loa_controller extends CI_Controller {
 		echo json_encode($result);
 	}
 
-	function fetch_closed_loa() {
+	function fetch_completed_loa() {
 		$token = $this->security->get_csrf_hash();
-		$status = 'Closed';
+		$status = 'Completed';
 		$emp_id = $this->session->userdata('emp_id');
 		$list = $this->loa_model->get_datatables($status, $emp_id);
 		$cost_types = $this->loa_model->db_get_cost_types();
@@ -580,7 +588,7 @@ class Loa_controller extends CI_Controller {
 
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-info">' . $loa['status'] . '</span></div>';
 
-			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewClosedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewCompletedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
 			// initialize multiple varibles at once
 			$view_file = $short_med_services = '';
@@ -656,6 +664,11 @@ class Loa_controller extends CI_Controller {
 		$diff = date_diff(date_create($birth_date), date_create($current_date));
 		$age = $diff->format("%y") . ' years old';
 
+		/* Taking the med_services column from the database and exploding it into an array.
+		Then it is looping through the cost_types array and checking if the ctype_id is in the
+		selected_cost_types array.
+		If it is, it pushes the cost_type into the ct_array.
+		Then it implodes the ct_array into a string and assigns it to the  variable. */
 		$selected_cost_types = explode(';', $row['med_services']);
 		$ct_array = [];
 		foreach ($cost_types as $cost_type) :
@@ -664,6 +677,15 @@ class Loa_controller extends CI_Controller {
 			}
 		endforeach;
 		$med_serv = implode(', ', $ct_array);
+
+		/* Checking if the status is pending and the work related is not empty. If it is, then it will set
+		the req_stat to for approval. If not, then it will set the req_stat to the status. */
+		$req_stat = '';
+		if($row['status'] == 'Pending' && $row['work_related'] != ''){
+			$req_stat = 'for Approval';
+		}else{
+			$req_stat = $row['status'];
+		}
 
 		$response = [
 			'status' => 'success',
@@ -696,7 +718,8 @@ class Loa_controller extends CI_Controller {
 			'requesting_physician' => $requesting_physician,
 			'attending_physician' => $row['attending_physician'],
 			'rx_file' => $row['rx_file'],
-			'req_status' => $row['status'],
+			'req_status' => $req_stat,
+			'work_related' => $row['work_related'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'disapproved_by' => $doctor_name,

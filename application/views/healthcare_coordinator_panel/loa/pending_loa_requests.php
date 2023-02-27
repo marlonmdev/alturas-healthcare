@@ -56,10 +56,10 @@
             <li class="nav-item">
             <a
               class="nav-link"
-              href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/closed"
+              href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Closed</span></a
+              <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
             >
           </li>
         </ul>
@@ -90,7 +90,6 @@
         </div>
 
         <?php include 'view_loa_details.php'; ?>
-
 
       <!-- End Row  -->  
       </div>
@@ -238,20 +237,18 @@
 
         $("#viewLoaModal").modal("show");
 
-        switch (req_status) {
-          case 'Pending':
-            $('#loa-status').html(`<strong class="text-warning">[${req_status}]</strong>`);
-            break;
-          case 'Approved':
-            $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
-            break;
-          case 'Disapproved':
-            $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
-            break;
-        }
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
+        
+        let rstat = '';
+        if(req_status == 'Pending'){
+          req_stat = `<strong class="text-warning">[${req_status}]</strong>`;
+        }else{
+          req_stat = `<strong class="text-cyan">[${req_status}]</strong>`;
+        }
+
         $('#loa-no').html(loa_no);
+        $('#loa-status').html(req_stat);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);

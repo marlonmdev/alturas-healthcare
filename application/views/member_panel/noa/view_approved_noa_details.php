@@ -14,44 +14,48 @@
                     <div class="row">
                       <table class="table table-bordered table-striped table-hover table-responsive table-sm">
                         <tr>
-                          <td class="ls-1">Approved By :</td>
-                          <td class="ls-1" id="approved-by"></td>
+                          <td class="fw-bold ls-1">Approved By :</td>
+                          <td class="fw-bold ls-1" id="approved-by"></td>
                         </tr>
                         <tr>
-                          <td class="ls-1">Approved On :</td>
-                          <td class="ls-1" id="approved-on"></td>
+                          <td class="fw-bold ls-1">Approved On :</td>
+                          <td class="fw-bold ls-1" id="approved-on"></td>
                         </tr>
                         <tr>
-                          <td class="ls-1">Full Name :</td>
-                          <td class="ls-1" id="full-name"></td>
+                          <td class="fw-bold ls-1">Work Related :</td>
+                          <td class="fw-bold ls-1" id="work-related-val"></td>
                         </tr>
                         <tr>
-                          <td class="ls-1">Date of Birth :</td>
-                          <td class="ls-1" id="date-of-birth"></td>
+                          <td class="fw-bold ls-1">Full Name :</td>
+                          <td class="fw-bold ls-1" id="full-name"></td>
                         </tr>
                         <tr>
-                          <td class="ls-1">Age :</td>
-                          <td class="ls-1" id="age"></td>
+                          <td class="fw-bold ls-1">Date of Birth :</td>
+                          <td class="fw-bold ls-1" id="date-of-birth"></td>
                         </tr>
                         <tr>
-                          <td class="ls-1">Hospital :</td>
-                          <td class="ls-1" id="hospital-name"></td>
+                          <td class="fw-bold ls-1">Age :</td>
+                          <td class="fw-bold ls-1" id="age"></td>
                         </tr>
                         <tr>
-                          <td class="ls-1">Admission Date :</td>
-                          <td class="ls-1" id="admission-date"></td>
+                          <td class="fw-bold ls-1">Hospital :</td>
+                          <td class="fw-bold ls-1" id="hospital-name"></td>
                         </tr>
                         <tr>
-                          <td class="ls-1">Chief Complaint :</td>
-                          <td class="ls-1" id="chief-complaint"></td>
+                          <td class="fw-bold ls-1">Admission Date :</td>
+                          <td class="fw-bold ls-1" id="admission-date"></td>
                         </tr>
                         <tr>
-                          <td class="ls-1">Work-Related :</td>
-                          <td class="ls-1" id="work-related"></td>
+                          <td class="fw-bold ls-1">Chief Complaint :</td>
+                          <td class="fw-bold ls-1" id="chief-complaint"></td>
                         </tr>
                         <tr>
-                          <td class="ls-1">Requested On :</td>
-                          <td class="ls-1" id="request-date"></td>
+                          <td class="fw-bold ls-1">Work-Related :</td>
+                          <td class="fw-bold ls-1" id="work-related"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Requested On :</td>
+                          <td class="fw-bold ls-1" id="request-date"></td>
                         </tr>
                       </table>
                     </div>

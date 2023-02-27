@@ -2,7 +2,7 @@
           <div class="modal-dialog modal-sm">
             <div class="modal-content">
               <div class="modal-header">
-                <h4 class="modal-title ls-2">Charge Type<span id="loa-status"></span></h4>
+                <h4 class="modal-title ls-2">Charge Type</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
               </div>
@@ -13,7 +13,7 @@
                     <div class="row mb-3">
                       <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
                       <input type="hidden" name="loa-id" id="loa-id">
-                      <select class="form-select" name="charge-type" id="charge-type">
+                      <select class="form-select ls-1" name="charge-type" id="charge-type">
                         <option value="">Please Select...</option>
                         <option value="Yes">Work-related</option>
                         <option value="No">Nonwork-related</option>

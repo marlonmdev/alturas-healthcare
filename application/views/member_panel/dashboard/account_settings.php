@@ -96,7 +96,7 @@
                 <div class="col-lg-6">
                   <!-- Change username card-->
                   <div class="card shadow">
-                    <div class="card-header bg-secondary text-white fs-5"><strong>Change Username</strong></div>
+                    <div class="card-header bg-secondary text-white ls-2 fs-5"><strong>Change Username</strong></div>
                     <div class="card-body">
                       <form method="post" action="<?= base_url() ?>member/account-settings/username/update" class="mt-2" id="usernameUpdateForm">
                         <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">

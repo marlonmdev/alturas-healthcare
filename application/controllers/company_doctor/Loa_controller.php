@@ -213,7 +213,7 @@ class Loa_controller extends CI_Controller {
 	}
 
 
-	function fetch_all_closed_loa() {
+	function fetch_all_completed_loa() {
 		$this->security->get_csrf_hash();
 		$status = 'closed';
 		$list = $this->loa_model->get_datatables($status);
@@ -231,7 +231,7 @@ class Loa_controller extends CI_Controller {
 
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-info">' . $loa['status'] . '</span></div>';
 
-			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewClosedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewCompletedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
@@ -301,6 +301,11 @@ class Loa_controller extends CI_Controller {
 		$diff = date_diff(date_create($birthDate), date_create($currentDate));
 		$age = $diff->format("%y");
 
+		/* Taking the med_services column from the database and exploding it into an array.
+		Then it is looping through the cost_types array and checking if the ctype_id is in the
+		selected_cost_types array.
+		If it is, it pushes the cost_type into the ct_array.
+		Then it implodes the ct_array into a string and assigns it to the  variable. */
 		$selected_cost_types = explode(';', $row['med_services']);
 		$ct_array = [];
 		foreach ($cost_types as $cost_type) :
@@ -309,6 +314,14 @@ class Loa_controller extends CI_Controller {
 			endif;
 		endforeach;
 		$med_serv = implode(', ', $ct_array);
+
+		/* Checking if the status is pending and the work related is not empty. If it is, then it will set
+		the req_stat to for approval. If not, then it will set the req_stat to the status. */
+		if($row['status'] == 'Pending' && $row['work_related'] != ''){
+			$req_stat = 'for Approval';
+		}else{
+			$req_stat = $row['status'];
+		}
 
 		$response = [
 			'status' => 'success',
@@ -341,7 +354,7 @@ class Loa_controller extends CI_Controller {
 			'requesting_physician' => $requesting_physician,
 			'attending_physician' => $row['attending_physician'],
 			'rx_file' => $row['rx_file'],
-			'req_status' => $row['status'],
+			'req_status' => $req_stat,
 			'work_related' => $row['work_related'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),

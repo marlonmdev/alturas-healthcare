@@ -55,10 +55,10 @@
              <li class="nav-item">
               <a
                 class="nav-link"
-                href="<?php echo base_url(); ?>member/requested-loa/closed"
+                href="<?php echo base_url(); ?>member/requested-loa/completed"
                 role="tab"
                 ><span class="hidden-sm-up"></span>
-                <span class="hidden-xs-down fs-5 font-bold">Closed</span></a
+                <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
               >
             </li>
           </ul>
@@ -177,25 +177,17 @@
           requesting_physician,
           attending_physician,
           rx_file,
-          req_status
+          req_status,
+          work_related
         } = res;
 
         $("#viewLoaModal").modal("show");
 
-        switch (req_status) {
-          case 'Pending':
-            $('#loa-status').html(`<strong class="text-warning">[${req_status}]</strong>`);
-            break;
-          case 'Approved':
-            $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
-            break;
-          case 'Disapproved':
-            $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
-            break;
-        }
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
+
         $('#loa-no').html(loa_no);
+        $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
         $('#disapproved-by').html(disapproved_by);
         $('#disapproved-on').html(disapproved_on);
         $('#disapprove-reason').html(disapprove_reason);
@@ -221,6 +213,13 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
+        if(work_related != ''){
+          $('#work-related-info').removeClass('d-none');
+          $('#work-related-val').html(work_related);
+        }else{
+          $('#work-related-info').addClass('d-none');
+          $('#work-related-val').html('');
+        }
       }
     });
   }

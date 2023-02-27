@@ -56,10 +56,10 @@
             <li class="nav-item">
             <a
               class="nav-link"
-              href="<?php echo base_url(); ?>member/requested-noa/closed"
+              href="<?php echo base_url(); ?>member/requested-noa/completed"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Closed</span></a
+              <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
             >
           </li>
         </ul>
@@ -144,23 +144,21 @@
           admission_date,
           chief_complaint,
           request_date,
-          req_status
+          req_status,
+          work_related
         } = res;
 
         $("#viewNoaModal").modal("show");
 
-        switch (req_status) {
-          case 'Pending':
-            $('#noa-status').html('<strong class="text-warning">[' + req_status + ']</strong>');
-            break;
-          case 'Approved':
-            $('#noa-status').html('<strong class="text-success">[' + req_status + ']</strong>');
-            break;
-          case 'Disapproved':
-            $('#noa-status').html('<strong class="text-danger">[' + req_status + ']</strong>');
-            break;
+        let rstat = '';
+        if(req_status == 'Pending'){
+          req_stat = `<strong class="text-warning">[${req_status}]</strong>`;
+        }else{
+          req_stat = `<strong class="text-cyan">[${req_status}]</strong>`;
         }
+
         $('#noa-no').html(noa_no);
+        $('#loa-status').html(req_stat);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
         $('#date-of-birth').html(date_of_birth);
         $('#age').html(age);
@@ -168,6 +166,13 @@
         $('#admission-date').html(admission_date);
         $('#chief-complaint').html(chief_complaint);
         $('#request-date').html(request_date);
+        if(work_related != ''){
+          $('#work-related-info').removeClass('d-none');
+          $('#work-related-val').html(work_related);
+        }else{
+          $('#work-related-info').addClass('d-none');
+          $('#work-related-val').html('');
+        }
       }
     });
   }

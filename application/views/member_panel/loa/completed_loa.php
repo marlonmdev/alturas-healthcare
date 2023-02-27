@@ -10,7 +10,7 @@
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Member</li>
               <li class="breadcrumb-item active" aria-current="page">
-                Closed LOA
+                Completed LOA
               </li>
             </ol>
           </nav>
@@ -55,10 +55,10 @@
              <li class="nav-item">
               <a
                 class="nav-link active"
-                href="<?php echo base_url(); ?>member/requested-loa/closed"
+                href="<?php echo base_url(); ?>member/requested-loa/completed"
                 role="tab"
                 ><span class="hidden-sm-up"></span>
-                <span class="hidden-xs-down fs-5 font-bold">Closed</span></a
+                <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
               >
             </li>
           </ul>
@@ -66,7 +66,7 @@
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover" id="memberClosedLoa">
+              <table class="table table-hover" id="memberCompletedLoa">
                 <thead>
                   <tr>
                     <th class="fw-bold">LOA No.</th>
@@ -86,7 +86,7 @@
         </div>
 
       </div>
-      <?php include 'view_closed_loa_details.php'; ?>
+      <?php include 'view_completed_loa_details.php'; ?>
 
       <!-- End Row  -->  
       </div>
@@ -102,14 +102,14 @@
 
   $(document).ready(function() {
 
-    $('#memberClosedLoa').DataTable({
+    $('#memberCompletedLoa').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
 
       // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}member/requested-loa/closed/fetch`,
+        url: `${baseUrl}member/requested-loa/completed/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: {
@@ -142,7 +142,7 @@
     let photoviewer = new PhotoViewer(item, options);
   }
 
-  const viewClosedLoaInfo = (req_id) => {
+  const viewCompletedLoaInfo = (req_id) => {
     $.ajax({
       url: `${baseUrl}member/requested-loa/view/${req_id}`,
       type: "GET",
@@ -181,28 +181,17 @@
           requesting_physician,
           attending_physician,
           rx_file,
-          req_status
+          req_status,
+          work_related
         } = res;
 
         $("#viewLoaModal").modal("show");
 
-        switch (req_status) {
-          case 'Pending':
-            $('#loa-status').html(`<strong class="text-warning">[${req_status}]</strong>`);
-            break;
-          case 'Approved':
-            $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
-            break;
-          case 'Disapproved':
-            $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
-            break;
-          case 'Closed':
-            $('#loa-status').html(`<strong class="text-info">[${req_status}]</strong>`);
-            break;
-        }
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
+
         $('#loa-no').html(loa_no);
+        $('#loa-status').html(`<strong class="text-info">[${req_status}]</strong>`);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
@@ -227,6 +216,7 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
+        $('#work-related-val').html(work_related);
       }
     });
   }

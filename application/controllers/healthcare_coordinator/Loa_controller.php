@@ -637,7 +637,7 @@ class Loa_controller extends CI_Controller {
 			'requesting_physician' => $row['doctor_name'],
 			'attending_physician' => $row['attending_physician'],
 			'rx_file' => $row['rx_file'],
-			'req_status' =>  $row['work_related'] != '' ? 'for Approval': $row['status'],
+			'req_status' => $row['work_related'] != '' ? 'for Approval': $row['status'],
 			'work_related' => $row['work_related'],
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),

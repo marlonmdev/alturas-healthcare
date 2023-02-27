@@ -230,7 +230,7 @@ class Noa_controller extends CI_Controller {
 		echo json_encode($result);
 	}
 
-	function fetch_closed_noa() {
+	function fetch_completed_noa() {
 		$token = $this->security->get_csrf_hash();
 		$status = 'Closed';
 		$emp_id = $this->session->userdata('emp_id');
@@ -301,7 +301,8 @@ class Noa_controller extends CI_Controller {
 			'chief_complaint' => $row['chief_complaint'],
 			// Full Month Date Year Format (F d Y)
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
-			'req_status' => $row['status'],
+			'req_status' => $row['work_related'] != '' ? 'for Approval': $row['status'],
+			'work_related' => $row['work_related']
 		];
 		echo json_encode($response);
 	}
@@ -387,6 +388,7 @@ class Noa_controller extends CI_Controller {
 			// Full Month Date Year Format (F d Y)
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'req_status' => $row['status'],
+			'work_related' => $row['work_related'],
 			'disapproved_by' => $doctor_name,
 			'disapprove_reason' => $row['disapprove_reason'],
 			'disapproved_on' => date("F d, Y", strtotime($row['disapproved_on'])),
@@ -394,7 +396,7 @@ class Noa_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	function get_closed_noa_info() {
+	function get_completed_noa_info() {
 		$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$this->load->model('member/noa_model');
 		$row = $this->noa_model->db_get_closed_noa_info($noa_id);
@@ -478,6 +480,7 @@ class Noa_controller extends CI_Controller {
 			// Full Month Date Year Format (F d Y)
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'req_status' => $row['status'],
+			'work_related' => $row['work_related'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'disapproved_by' => $doctor_name,

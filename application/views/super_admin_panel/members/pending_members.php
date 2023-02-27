@@ -342,29 +342,34 @@
     // End of Document Ready function
 
     // Admin Members Show Create User Account Modal
-    function showCreateUserAccount(emp_no, emp_year) {
+    function showCreateUserAccount(emp_id, emp_no) {
         const emp_id_input = document.querySelector('#emp-id');
         const healthcard_no = document.querySelector('#healthcard-no');
         const username = document.querySelector('#username');
         const password = document.querySelector('#password');
         const current_year = new Date().getFullYear();
+
         $('#createMemberUserAccountForm')[0].reset();
         $('#createMemberUserAccountModal').modal('show');
-        const emp_id = emp_no.toString() + '-' + emp_year.toString();
-        healthcard_no.value = 'ACN' + '-' + current_year + '-' + emp_no.toString();
-        username.value = emp_id;
+
+        healthcard_no.value = `ACN-${emp_no.toString()}`;
+        username.value = emp_id.toString();
         password.value = generateRandomString(4) + current_year;
         emp_id_input.value = emp_id;
     }
 
-    function showUpdateProfilePhoto(app_id, full_name, photo) {
+    function showUpdateProfilePhoto(app_id, full_name, photo, photo_status, gender) {
         const baseUrl = '<?php echo base_url(); ?>';
         $('#updateProfilePicForm')[0].reset();
 
         $('#profile-pic').removeClass('is-invalid');
         $('#profile-pic-error').html('');
-        if (photo == '') {
-            $('#photo').attr('src', `${baseUrl}assets/images/user.svg`);
+        if (photo == '' || photo_status == 'Not Found') {
+            if(gender == 'Male' || gender == 'male'){
+                $('#photo').attr('src', `${baseUrl}assets/images/male_avatar.svg`);
+            }else if(gender == 'Female' || gender == 'female'){
+                $('#photo').attr('src', `${baseUrl}assets/images/female_avatar.svg`);
+            }
         } else {
             $('#photo').attr('src', `${baseUrl}uploads/profile_pics/${photo}`);
         }

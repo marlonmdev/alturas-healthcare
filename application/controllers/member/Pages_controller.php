@@ -155,10 +155,14 @@ class Pages_controller extends CI_Controller {
 		$emp_id = $this->session->userdata('emp_id');
 		$this->load->model('member/account_model');
 		$this->load->model('member/mbl_model');
-		$data['page_title'] = 'HMO - HealthCare Coordinator';
 		$data['user_role'] = $this->session->userdata('user_role');
-		$data['member'] = $this->account_model->db_get_user_details($emp_id);
+		$data['member'] = $member = $this->account_model->db_get_user_details($emp_id);
 		$data['mbl'] = $this->mbl_model->get_member_mbl($emp_id);
+
+		/* This is checking if the image file exists in the directory. */
+		$file_path = './uploads/profile_pics/' . $member['photo'];
+		$data['member_photo_status'] = file_exists($file_path) ? 'Exist' : 'Not Found';
+
 		$this->load->view('templates/header', $data);
 		$this->load->view('member_panel/dashboard/user_profile');
 		$this->load->view('templates/footer');

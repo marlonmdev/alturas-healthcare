@@ -245,6 +245,11 @@ class Applicants_controller extends CI_Controller {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['member'] = $member = $this->applicants_model->db_get_applicant_details($app_id);
 		$data['mbl'] = $this->applicants_model->db_get_member_mbl($member['emp_id']);
+
+		/* This is checking if the image file exists in the directory. */
+		$file_path = './uploads/profile_pics/' . $member['photo'];
+		$data['member_photo_status'] = file_exists($file_path) ? 'Exist' : 'Not Found';
+
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/members/member_profile');
 		$this->load->view('templates/footer');

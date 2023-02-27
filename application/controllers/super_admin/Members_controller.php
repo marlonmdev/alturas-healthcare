@@ -20,12 +20,12 @@ class Members_controller extends CI_Controller {
 		$data = [];
 		foreach ($list as $member) {
 			$row = [];
-			$employee_id = $member['emp_id'];
 			$app_id = $this->myhash->hasher($member['app_id'], 'encrypt');
 			// split employee id number through the dash(-) separator
-			$exploded = preg_split('/-(?=[0-9])/', $employee_id, 2);
-			$emp_no = $exploded[0];
-			$emp_year = $exploded[1];
+			// $employee_id = $member['emp_id'];
+			// $exploded = preg_split('/-(?=[0-9])/', $employee_id, 2);
+			// $emp_no = $exploded[0];
+			// $emp_year = $exploded[1];
 
 			$full_name = $member['first_name'] . ' ' . $member['middle_name'] . ' ' . $member['last_name'] . ' ' . $member['suffix'];
 			$view_url = base_url() . 'super-admin/members/view/applicant/' . $app_id;
@@ -34,9 +34,13 @@ class Members_controller extends CI_Controller {
 
 			$custom_actions = '<a class="me-2" href="' . $view_url . '" data-bs-toggle="tooltip" title="View Member Profile"><i class="mdi mdi-account-card-details fs-2 text-info"></i></a>';
 
-			$custom_actions .= '<a class="me-2" href="JavaScript:void(0)" onclick="showCreateUserAccount(\'' . $emp_no . '\', \'' . $emp_year . '\')" data-bs-toggle="tooltip" title="Create Member Account"><i class="mdi mdi-account-plus fs-2 text-primary"></i></a>';
+			$custom_actions .= '<a class="me-2" href="JavaScript:void(0)" onclick="showCreateUserAccount(\'' . $member['emp_id'] . '\', \'' . $member['emp_no'] . '\')" data-bs-toggle="tooltip" title="Create Member Account"><i class="mdi mdi-account-plus fs-2 text-primary"></i></a>';
 
-			$custom_actions .= '<a href="Javascript:void(0)" data-bs-toggle="tooltip" title="Update Profile Photo" onclick="showUpdateProfilePhoto(\'' . $app_id . '\', \'' . $full_name . '\', \'' . $member['photo'] . '\')"><i class="mdi mdi-account-edit fs-2 text-success"></i></a>';
+			/* This is checking if the image file exists in the directory. */
+			$file_path = './uploads/profile_pics/' . $member['photo'];
+			$photo_status = file_exists($file_path) ? 'Exist' : 'Not Found';
+
+			$custom_actions .= '<a href="Javascript:void(0)" data-bs-toggle="tooltip" title="Update Profile Photo" onclick="showUpdateProfilePhoto(\'' . $app_id . '\', \'' . $full_name . '\', \'' . $member['photo'] . '\', \'' . $photo_status . '\', \'' . $member['gender'] . '\')"><i class="mdi mdi-account-edit fs-2 text-success"></i></a>';
 
 			// this data will be rendered to the datatable
 			$row[] = $member['app_id'];
@@ -74,7 +78,11 @@ class Members_controller extends CI_Controller {
 
 			$custom_actions = '<a class="me-2" href="' . $view_url . '" data-bs-toggle="tooltip" title="View Member Profile"><i class="mdi mdi-account-card-details fs-2 text-info"></i></a>';
 
-			$custom_actions .= '<a href="Javascript:void(0)" data-bs-toggle="tooltip" title="Update Profile Photo" onclick="showUpdateProfilePhoto(\'' . $member_id . '\', \'' . $full_name . '\', \'' . $member['photo'] . '\')"><i class="mdi mdi-account-edit fs-2 text-success"></i></a>';
+			/* This is checking if the image file exists in the directory. */
+			$file_path = './uploads/profile_pics/' . $member['photo'];
+			$photo_status = file_exists($file_path) ? 'Exist' : 'Not Found';
+
+			$custom_actions .= '<a href="Javascript:void(0)" data-bs-toggle="tooltip" title="Update Profile Photo" onclick="showUpdateProfilePhoto(\'' . $member_id . '\', \'' . $full_name . '\', \'' . $member['photo'] . '\', \'' . $photo_status . '\', \'' . $member['gender'] . '\')"><i class="mdi mdi-account-edit fs-2 text-success"></i></a>';
 
 			// this data will be rendered to the datatable
 			$row[] = $member['member_id'];
@@ -272,6 +280,11 @@ class Members_controller extends CI_Controller {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['member'] = $member = $this->members_model->db_get_member_details($member_id);
 		$data['mbl'] = $this->members_model->db_get_member_mbl($member['emp_id']);
+
+		/* This is checking if the image file exists in the directory. */
+		$file_path = './uploads/profile_pics/' . $member['photo'];
+		$data['member_photo_status'] = file_exists($file_path) ? 'Exist' : 'Not Found';
+
 		$this->load->view('templates/header', $data);
 		$this->load->view('super_admin_panel/members/member_profile');
 		$this->load->view('templates/footer');

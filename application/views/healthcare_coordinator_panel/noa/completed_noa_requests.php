@@ -10,7 +10,7 @@
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
               <li class="breadcrumb-item active" aria-current="page">
-                Complted NOA
+                Completed NOA
               </li>
             </ol>
           </nav>

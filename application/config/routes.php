@@ -192,7 +192,8 @@ $route['healthcare-provider/account-settings/username/update'] = 'healthcare_pro
 // ===================================================================================================
 
 $route['head-office-accounting/dashboard'] = 'ho_accounting/main_controller';
-$route['head-office-accounting/billing-list/unbilled/fetch'] = 'ho_accounting/main_controller/fetch_unbilled';
+$route['head-office-accounting/billing-list/billed/fetch'] = 'ho_accounting/main_controller/fetch_unbilled';
+$route['head-office-accounting/billing-list/billed/view/(:any)'] = 'ho_accounting/main_controller/view_billed_details';
 
 $route['head-office-accounting/billing-list'] = 'ho_accounting/TableList';
 $route['head-office-accounting/billing-list/billed'] = 'ho_accounting/TableList/billed_record';

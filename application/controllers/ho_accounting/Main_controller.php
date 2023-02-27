@@ -51,7 +51,10 @@ class Main_controller extends CI_Controller {
 		$data = [];
 
 		foreach($list as $bill){
+			
 			$row = [];
+			// calling Myhash custom library inside application/libraries folder
+			$billing_id = $this->myhash->hasher($bill['billing_id'], 'encrypt');
 			
 			$charge = $bill['company_charge'] == '' ? 0 : $bill['company_charge'];
 			$fullname = $bill['first_name']. ' ' .$bill['middle_name']. ' ' .$bill['last_name'];
@@ -62,7 +65,7 @@ class Main_controller extends CI_Controller {
 				$cost_type = '<p>NOA</p>';
 			}
 
-			$custom_actions = '<a class="" title="View Details"><i class="mdi mdi-format-list-bulleted"></i></a>';
+			$custom_actions = '<a class="text-info fw-bold ls-1" href="' . base_url() . 'head-office-accounting/billing-list/billed/view/' . $billing_id . '" data-bs-toggle="tooltip"><u>View Receipt</u></a>';
 
 			$row[] = $bill['billing_no'];
 			$row[] = $fullname;
@@ -79,5 +82,19 @@ class Main_controller extends CI_Controller {
 			"data" => $data,
 		];
 		echo json_encode($output);
+	}
+
+	public function view_billed_details(){
+		$id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+
+		$data['bill'] = $bill = $this->List_model->get_billing_info($id);
+		$data['user_role'] = $this->session->userdata('user_role');
+        $data['mbl'] = $this->List_model->get_member_mbl($bill['emp_id']);
+        $data['services'] = $this->List_model->get_billing_services($bill['billing_no']);
+        $data['deductions'] = $this->List_model->get_billing_deductions($bill['billing_no']);
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/billing_receipt');
+		$this->load->view('templates/footer');
+		
 	}
 }

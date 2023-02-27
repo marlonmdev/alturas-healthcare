@@ -10,7 +10,7 @@ class List_model extends CI_Model
     var $table_3 = 'healthcare_providers';
 	var $column_order = ['tbl_1.billing_no', 'tbl_2.first_name', 'tbl_1.billed_on', 'tbl_1.company_charge', NULL]; //set column field database for datatable orderable
 	var $column_search = ['tbl_1.hp_id', 'tbl_1.billing_no', 'tbl_2.first_name', 'tbl_2.middle_name', 'tbl_2.last_name', 'tbl_3.hp_name', 'tbl_1.billed_on']; //set column field database for datatable searchable 
-	var $order = ['tbl_1.billing_id' => 'desc']; // default order 
+	var $order = ['tbl_1.billing_id' => 'asc']; // default order 
 
 	private function _get_datatables_query() {
 
@@ -74,6 +74,38 @@ class List_model extends CI_Model
 
         return $this->db->get('healthcare_providers')->result_array();
     }
+
+    function get_billing_info($id){
+        $this->db->select('tbl_1.billing_id, tbl_1.billing_no, tbl_1.emp_id, tbl_1.hp_id, tbl_1.total_bill, tbl_1.total_deduction, tbl_1.net_bill, tbl_1.company_charge, tbl_1.personal_charge, tbl_1.before_remaining_bal, tbl_1.after_remaining_bal, tbl_1.billed_by, tbl_1.billed_on, tbl_2.health_card_no, tbl_2.first_name, tbl_2.middle_name, tbl_2.last_name, tbl_2.suffix, tbl_3.hp_name')
+                 ->from('billing as tbl_1')
+                 ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+                 ->join('healthcare_providers as tbl_3', 'tbl_1.hp_id = tbl_3.hp_id')
+                 ->where('tbl_1.billing_id', $id);
+        return $this->db->get()->row_array();
+    }
+
+    function get_member_mbl($emp_id) {
+        $query = $this->db->get_where('max_benefit_limits', ['emp_id' => $emp_id]);
+        return $query->row_array();
+    } 
+
+    function get_billing_services($billing_no){
+        $query = $this->db->get_where('billing_services', ['billing_no' => $billing_no]);
+        return $query->result_array();
+     }
+
+    function get_billing_deductions($billing_no){
+        $query = $this->db->get_where('billing_deductions', ['billing_no' => $billing_no]);
+        return $query->result_array();
+     }
+
+    function get_billing($billing_no){
+        $query = $this->db->get_where('billing', array('billing_no' => $billing_no));
+        return $query->row_array();
+    }
+    
+
+
 
     public function loa_member()
     {

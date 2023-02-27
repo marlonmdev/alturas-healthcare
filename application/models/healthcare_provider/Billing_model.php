@@ -18,10 +18,10 @@ class Billing_model extends CI_Model {
         return $query->row();
     }
 
-    function get_member_mbl($emp_id) {
+   function get_member_mbl($emp_id) {
         $query = $this->db->get_where('max_benefit_limits', ['emp_id' => $emp_id]);
         return $query->row_array();
-    }
+    } 
 
     function get_member_loa($emp_id, $hcare_provider_id) {
         $this->db->select('loa_id, loa_no, emp_id, request_date, hcare_provider, status')

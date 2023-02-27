@@ -58,6 +58,7 @@ class Main_controller extends CI_Controller {
 			
 			$charge = $bill['company_charge'] == '' ? 0 : $bill['company_charge'];
 			$fullname = $bill['first_name']. ' ' .$bill['middle_name']. ' ' .$bill['last_name'];
+			$custom_bill_no = '<mark class="bg-primary text-white">'. $bill['billing_no'] .'</mark>';
 			if($bill['loa_id'] != ''){
 				$cost_type = 'LOA';
 			}
@@ -67,7 +68,7 @@ class Main_controller extends CI_Controller {
 
 			$custom_actions = '<a class="text-info fw-bold ls-1" href="' . base_url() . 'head-office-accounting/billing-list/billed/view/' . $billing_id . '" data-bs-toggle="tooltip"><u>View Receipt</u></a>';
 
-			$row[] = $bill['billing_no'];
+			$row[] = $custom_bill_no;
 			$row[] = $fullname;
 			$row[] = $cost_type;
 			$row[] = $bill['billed_on'];

@@ -67,15 +67,15 @@
 
                     <div class="col-sm-12 col-md-10 offset-md-1 text-center mb-5 d-none" id="search-by-name">
                         <form method="POST" action="<?php echo base_url(); ?>healthcare-provider/billing/search-by-name" id="search-form-2" class="needs-validation" novalidate>
-                        <div class="input-group">
-                            <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
-                            <span class="input-group-text bg-dark text-white">Name :</span>
-                            <input type="text" name="first_name" class="form-control" placeholder="Enter Firstname" required>
-                            <input type="text" name="last_name" class="form-control" placeholder="Enter Lastname" required>
-                            <span class="input-group-text bg-dark text-white">Birthday :</span>
-                            <input type="date" name="date_of_birth" class="form-control" required>
-                            <button type="submit" class="btn btn-info" id="btn-search"><i class="mdi mdi-magnify me-1"></i>Search</button>
-                        </div>
+                            <div class="input-group">
+                                <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
+                                <span class="input-group-text bg-dark text-white">Name :</span>
+                                <input type="text" name="first_name" class="form-control" placeholder="Enter Firstname" required>
+                                <input type="text" name="last_name" class="form-control" placeholder="Enter Lastname" required>
+                                <span class="input-group-text bg-dark text-white">Birthday :</span>
+                                <input type="date" name="date_of_birth" class="form-control" required>
+                                <button type="submit" class="btn btn-info" id="btn-search"><i class="mdi mdi-magnify me-1"></i>Search</button>
+                            </div>
                         </form>
                     </div>
                     

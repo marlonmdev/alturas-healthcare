@@ -15,7 +15,6 @@
     <script src="<?php echo base_url(); ?>assets/vendors/easy-select/easySelect.js"></script>
     <script src="<?php echo base_url(); ?>assets/vendors/tagify/tagify.js"></script>
     <script src="<?php echo base_url(); ?>assets/vendors/tagify/tagify.polyfills.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/vendors/Inputmask-5.x/dist/jquery.inputmask.min.js"></script>
 
     <!-- Custom Scripts -->
     <script src="<?php echo base_url(); ?>assets/js/plugins.js"></script>

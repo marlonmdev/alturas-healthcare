@@ -1,5 +1,5 @@
 
-    <!-- Start of Page wrapper  -->
+<!-- Start of Page wrapper  -->
 <div class="page-wrapper">
     <!-- Bread crumb and right sidebar toggle -->
     <div class="page-breadcrumb">
@@ -77,63 +77,47 @@
                             <div class="input-group-append">
                                 <span class="input-group-text bg-secondary text-white ms-2">FROM: </span>
                             </div>
-                            <input type="date" name="start_date" id="start_date" class="form-control" readonly>
+                            <input type="date" class="form-control" name="start_date" id="start-date" oninput="validateDateRange()" readonly>
 
                             <div class="input-group-append">
                                 <span class="input-group-text bg-secondary text-white ms-2">TO: </span>
                             </div>
-                            <input type="date" name="end_date" id="end_date" class="form-control" readonly>
-                            
-                            <!-- <div class="input-group-append">
-                                <button class="input-group-text bg-info text-white ms-2" title="Filter"><i class="mdi mdi-magnify"></i></button>
-                            </div> -->
+                            <input type="date" class="form-control" name="end_date" id="end-date" oninput="validateDateRange()" readonly>
+                        
                         </div>
                         
                     </div>
                 </div>
             </div><br>
            
-                    <div class="card shadow">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-hover bg-light" id="billedTable">
-                                    <thead>
-                                        <tr>
-                                            <td class="fw-bold">Billing #</td>
-                                            <td class="fw-bold">Patient Name</td>
-                                            <td class="fw-bold">Request Type</td>
-                                            <td class="fw-bold">Billed on</td>
-                                            <td class="fw-bold">Charge</td>
-                                            <td class="fw-bold">Action</td>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover bg-light" id="billedTable">
+                                <thead>
+                                    <tr>
+                                        <td class="fw-bold">Billing #</td>
+                                        <td class="fw-bold">Patient Name</td>
+                                        <td class="fw-bold">Request Type</td>
+                                        <td class="fw-bold">Billed on</td>
+                                        <td class="fw-bold">Charge</td>
+                                        <td class="fw-bold">Action</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
+                </div>
+            </div>
         </div>  
     </div>
-    <!-- <script>
-        const startDateInput = document.getElementById('start_date');
-        const endDateInput = document.getElementById('end_date');
 
-        startDateInput.addEventListener('input', () => {
-            const selectedDate = new Date(startDateInput.value);
-            const formattedDate = selectedDate.toISOString().slice(0, 10);
-            startDateInput.value = formattedDate;
-        });
-        endDateInput.addEventListener('input', () => {
-            const selectedDate = new Date(endDateInput.value);
-            const formattedDate = selectedDate.toISOString().slice(0, 10);
-            endDateInput.value = formattedDate;
-        });
-    </script> -->
     <script>
-         const baseUrl = "<?php echo base_url(); ?>";
-         $(document).ready(function(){
-            let userTable = $('#billedTable').DataTable({
+        const baseUrl = "<?php echo base_url(); ?>";
+        $(document).ready(function(){
+            let billingTable = $('#billedTable').DataTable({
             processing: true, //Feature control the processing indicator.
             serverSide: true, //Feature control DataTables' server-side processing mode.
             order: [], //Initial no order.
@@ -145,14 +129,14 @@
                 data: function(data) {
                 data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
                 data.filter = $('#hospital-filter').val();
-                data.startDate = $('#start_date').val();
-                data.endDate = $('#end_date').val();
+                data.startDate = $('#start-date').val();
+                data.endDate = $('#end-date').val();
                 }
             },
 
             //Set column definition initialisation properties.
             columnDefs: [{
-                "targets": [5], //4th, 5th, and 6th column / numbering column
+                "targets": [5], // 5th column / numbering column
                 "orderable": false, //set not orderable
             }, ],
             responsive: true,
@@ -160,14 +144,23 @@
             });
 
             $('#hospital-filter').change(function(){
-                userTable.draw();
+                billingTable.draw();
             });
+
+            $('#start-date').change(function(){
+                billingTable.draw();
+            });
+
+            $('#end-date').change(function(){
+                billingTable.draw();
+            });
+
          });
 
-        function enableDate(){
+        const enableDate = () => {
             const hp_filter = document.querySelector('#hospital-filter');
-            const start_date = document.querySelector('#start_date');
-            const end_date = document.querySelector('#end_date');
+            const start_date = document.querySelector('#start-date');
+            const end_date = document.querySelector('#end-date');
 
             if(hp_filter != ''){
                 start_date.removeAttribute('readonly');
@@ -177,6 +170,30 @@
                 end_date.setAttributte('readonly', true);
             }
         }
+
+        const validateDateRange = () => {
+            const startDateInput = document.querySelector('#start-date');
+            const endDateInput = document.querySelector('#end-date');
+            const startDate = new Date(startDateInput.value);
+            const endDate = new Date(endDateInput.value);
+
+            if (startDateInput.value === '' || endDateInput.value === '') {
+                return; // Don't do anything if either input is empty
+            }
+
+            if (endDate < startDate) {
+                alert('End date must be greater than or equal to the start date');
+                endDateInput.value = '';
+                return;
+            }
+
+            if (startDate > endDate) {
+                alert('Start date must be less than or equal to the end date');
+                startDateInput.value = '';
+                return;
+            }           
+        }
+
 
     </script>
            

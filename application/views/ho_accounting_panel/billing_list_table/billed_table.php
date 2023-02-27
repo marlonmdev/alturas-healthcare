@@ -77,12 +77,12 @@
                             <div class="input-group-append">
                                 <span class="input-group-text bg-secondary text-white ms-2">FROM: </span>
                             </div>
-                            <input type="date" name="start_date" id="start_date" class="form-control" placeholder="mm/dd/yyyy" readonly>
+                            <input type="date" name="start_date" id="start_date" class="form-control" readonly>
 
                             <div class="input-group-append">
                                 <span class="input-group-text bg-secondary text-white ms-2">TO: </span>
                             </div>
-                            <input type="date" name="end_date" id="end_date" class="form-control" placeholder="mm/dd/yyyy" readonly>
+                            <input type="date" name="end_date" id="end_date" class="form-control" readonly>
                             
                             <!-- <div class="input-group-append">
                                 <button class="input-group-text bg-info text-white ms-2" title="Filter"><i class="mdi mdi-magnify"></i></button>
@@ -115,7 +115,21 @@
                     </div>
         </div>  
     </div>
-  
+    <!-- <script>
+        const startDateInput = document.getElementById('start_date');
+        const endDateInput = document.getElementById('end_date');
+
+        startDateInput.addEventListener('input', () => {
+            const selectedDate = new Date(startDateInput.value);
+            const formattedDate = selectedDate.toISOString().slice(0, 10);
+            startDateInput.value = formattedDate;
+        });
+        endDateInput.addEventListener('input', () => {
+            const selectedDate = new Date(endDateInput.value);
+            const formattedDate = selectedDate.toISOString().slice(0, 10);
+            endDateInput.value = formattedDate;
+        });
+    </script> -->
     <script>
          const baseUrl = "<?php echo base_url(); ?>";
          $(document).ready(function(){

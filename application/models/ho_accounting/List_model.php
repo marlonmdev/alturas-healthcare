@@ -23,12 +23,14 @@ class List_model extends CI_Model
 			$this->db->like('tbl_1.hp_id', $this->input->post('filter'));
 		}
 
-        if ($this->input->post('startDate') && $this->input->post('endDate')) {
-            $startDate = date('Y-m-d', strtotime($this->input->post('startDate')));
-            $endDate = date('Y-m-d', strtotime($this->input->post('endDate')));
-            // $this->db->where('tbl_1.billed_on >=', $startDate);
-            // $this->db->where('tbl_1.billed_on <=', $endDate);
-            $this->db->where("date BETWEEN '$startDate' AND '$endDate'");
+        if ($this->input->post('startDate')) {
+            // $startDate = date('Y-m-d', strtotime($this->input->post('startDate')));
+            // $endDate = date('Y-m-d', strtotime($this->input->post('endDate')));
+            $this->db->where('tbl_1.billed_on >=', $this->input->post('startDate'));
+        }
+        if ($this->input->post('endDate')){
+
+            $this->db->where('tbl_1.billed_on <=', $this->input->post('endDate'));
         }
 
 		// loop column 

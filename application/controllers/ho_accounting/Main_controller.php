@@ -59,10 +59,10 @@ class Main_controller extends CI_Controller {
 			$charge = $bill['company_charge'] == '' ? 0 : $bill['company_charge'];
 			$fullname = $bill['first_name']. ' ' .$bill['middle_name']. ' ' .$bill['last_name'];
 			if($bill['loa_id'] != ''){
-				$cost_type = '<p>LOA</p>';
+				$cost_type = 'LOA';
 			}
 			if($bill['noa_id'] != ''){
-				$cost_type = '<p>NOA</p>';
+				$cost_type = 'NOA';
 			}
 
 			$custom_actions = '<a class="text-info fw-bold ls-1" href="' . base_url() . 'head-office-accounting/billing-list/billed/view/' . $billing_id . '" data-bs-toggle="tooltip"><u>View Receipt</u></a>';

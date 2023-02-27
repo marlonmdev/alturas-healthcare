@@ -31,8 +31,8 @@ class Auth_controller extends CI_Controller {
 	 */
 	public function check_login() {
 		$token = $this->security->get_csrf_hash();
-		$username = strip_tags($this->input->post('username'));
-		$password = strip_tags($this->input->post('password'));
+		$username = strip_tags(trim($this->input->post('username')));
+		$password = strip_tags(trim($this->input->post('password')));
 
 		$this->load->library('form_validation');
 		$this->form_validation->set_rules('username', 'Username', 'trim|required');

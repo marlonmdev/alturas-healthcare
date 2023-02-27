@@ -55,10 +55,10 @@
                         <li class="nav-item">
                         <a
                         class="nav-link"
-                        href="<?php echo base_url(); ?>healthcare-provider/noa-requests/closed"
+                        href="<?php echo base_url(); ?>healthcare-provider/noa-requests/completed"
                         role="tab">
                             <span class="hidden-sm-up"></span>
-                            <span class="hidden-xs-down fs-5 font-bold">Closed</span>
+                            <span class="hidden-xs-down fs-5 font-bold">Completed</span>
                         </a>
                     </li>
                 </ul>
@@ -123,46 +123,44 @@
 
     function viewNoaInfo(noa_id) {
         $.ajax({
-        url: `${baseUrl}healthcare-provider/noa-requests/view/${noa_id}`,
-        type: "GET",
-        success: function(response) {
-            const res = JSON.parse(response);
-            const baseUrl = window.location.origin;
-            const {
-            status,
-            token,
-            noa_no,
-            member_mbl,
-            remaining_mbl,
-            first_name,
-            middle_name,
-            last_name,
-            suffix,
-            date_of_birth,
-            age,
-            hospital_name,
-            health_card_no,
-            requesting_company,
-            admission_date,
-            chief_complaint,
-            request_date,
-            req_status
-            } = res;
+            url: `${baseUrl}healthcare-provider/noa-requests/view/${noa_id}`,
+            type: "GET",
+            success: function(response) {
+                const res = JSON.parse(response);
+                const baseUrl = window.location.origin;
+                const {
+                status,
+                token,
+                noa_no,
+                member_mbl,
+                remaining_mbl,
+                first_name,
+                middle_name,
+                last_name,
+                suffix,
+                date_of_birth,
+                age,
+                hospital_name,
+                health_card_no,
+                requesting_company,
+                admission_date,
+                chief_complaint,
+                request_date,
+                req_status,
+                work_related
+                } = res;
 
-            $("#viewNoaModal").modal("show");
+                $("#viewNoaModal").modal("show");
 
-            switch (req_status) {
-                case 'Pending':
-                    $('#noa-status').html('<strong class="text-warning">[' + req_status + ']</strong>');
-                    break;
-                case 'Approved':
-                    $('#noa-status').html('<strong class="text-success">[' + req_status + ']</strong>');
-                    break;
-                case 'Disapproved':
-                    $('#noa-status').html('<strong class="text-danger">[' + req_status + ']</strong>');
-                    break;
+                let rstat = '';
+                if(req_status == 'Pending'){
+                    req_stat = `<strong class="text-warning">[${req_status}]</strong>`;
+                }else{
+                    req_stat = `<strong class="text-cyan">[${req_status}]</strong>`;
                 }
+
                 $('#noa-no').html(noa_no);
+                $('#noa-status').html(req_stat);
                 $('#member-mbl').html(member_mbl);
                 $('#remaining-mbl').html(remaining_mbl);
                 $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
@@ -172,6 +170,13 @@
                 $('#admission-date').html(admission_date);
                 $('#chief-complaint').html(chief_complaint);
                 $('#request-date').html(request_date);
+                if(work_related != ''){
+                    $('#work-related-info').removeClass('d-none');
+                    $('#work-related').html(work_related);
+                }else{
+                    $('#work-related-info').addClass('d-none');
+                    $('#work-related').html('');
+                }
             }
         });
     }

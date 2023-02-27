@@ -10,7 +10,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">Healthcare Provider</li>
                     <li class="breadcrumb-item active" aria-current="page">
-                    Closed NOA
+                    Completed NOA
                     </li>
                 </ol>
                 </nav>
@@ -55,10 +55,10 @@
                     <li class="nav-item">
                     <a
                     class="nav-link active"
-                    href="<?php echo base_url(); ?>healthcare-provider/noa-requests/closed"
+                    href="<?php echo base_url(); ?>healthcare-provider/noa-requests/completed"
                     role="tab"
                     ><span class="hidden-sm-up"></span>
-                    <span class="hidden-xs-down fs-5 font-bold">Closed</span></a
+                    <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
                     >
                 </li>
             </ul>
@@ -66,8 +66,8 @@
              <div class="card shadow">
                 <div class="card-body">
                     <div class="table-responsive">  
-                        <?php include 'view_closed_noa_details.php'; ?>
-                        <table id="closedNoaTable" class="table table-striped" style="width:100%">
+                        <?php include 'view_completed_noa_details.php'; ?>
+                        <table id="completedNoaTable" class="table table-striped" style="width:100%">
                             <thead>
                                 <tr>
                                     <th class="fw-bold">NOA No.</th>
@@ -91,14 +91,14 @@
     const baseUrl = "<?php echo base_url(); ?>";
     $(document).ready(function() {
 
-        $('#closedNoaTable').DataTable({
+        $('#completedNoaTable').DataTable({
         processing: true, //Feature control the processing indicator.
         serverSide: true, //Feature control DataTables' server-side processing mode.
         order: [], //Initial no order.
 
         // Load data for the table's content from an Ajax source
         ajax: {
-            url: `${baseUrl}healthcare-provider/noa-requests/closed/fetch`,
+            url: `${baseUrl}healthcare-provider/noa-requests/completed/fetch`,
             type: "POST",
             // passing the token as data so that requests will be allowed
             data: {
@@ -119,52 +119,39 @@
 
     function viewNoaInfo(req_id) {
         $.ajax({
-        url: `${baseUrl}healthcare-provider/noa-requests/view/${req_id}`,
-        type: "GET",
-        success: function(response) {
-            const res = JSON.parse(response);
-            const base_url = window.location.origin;
-            const {
-            status,
-            token,
-            noa_no,
-            approved_by,
-            approved_on,
-            member_mbl,
-            remaining_mbl,
-            first_name,
-            middle_name,
-            last_name,
-            suffix,
-            date_of_birth,
-            age,
-            hospital_name,
-            health_card_no,
-            requesting_company,
-            admission_date,
-            chief_complaint,
-            work_related,
-            request_date,
-            req_status,
-            } = res;
+            url: `${baseUrl}healthcare-provider/noa-requests/view/${req_id}`,
+            type: "GET",
+            success: function(response) {
+                const res = JSON.parse(response);
+                const base_url = window.location.origin;
+                const {
+                status,
+                token,
+                noa_no,
+                approved_by,
+                approved_on,
+                member_mbl,
+                remaining_mbl,
+                first_name,
+                middle_name,
+                last_name,
+                suffix,
+                date_of_birth,
+                age,
+                hospital_name,
+                health_card_no,
+                requesting_company,
+                admission_date,
+                chief_complaint,
+                work_related,
+                request_date,
+                req_status,
+                } = res;
 
-            $("#viewNoaModal").modal("show");
+                $("#viewNoaModal").modal("show");
 
-            switch (req_status) {
-                case 'Pending':
-                    $('#noa-status').html('<strong class="text-warning">[' + req_status + ']</strong>');
-                    break;
-                case 'Approved':
-                    $('#noa-status').html('<strong class="text-success">[' + req_status + ']</strong>');
-                    break;
-                case 'Disapproved':
-                    $('#noa-status').html('<strong class="text-danger">[' + req_status + ']</strong>');
-                    break;
-                case 'Closed':
-                    $('#noa-status').html('<strong class="text-info">[' + req_status + ']</strong>');
-                    break;
-                }
                 $('#noa-no').html(noa_no);
+                $('#noa-status').html('<strong class="text-info">[' + req_status + ']</strong>');
                 $('#approved-by').html(approved_by);
                 $('#approved-on').html(approved_on);
                 $('#member-mbl').html(member_mbl);

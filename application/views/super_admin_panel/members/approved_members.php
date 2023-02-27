@@ -212,14 +212,18 @@
 
     })
 
-    function showUpdateProfilePhoto(member_id, full_name, photo) {
+    function showUpdateProfilePhoto(member_id, full_name, photo, photo_status, gender) {
         const baseUrl = '<?php echo base_url(); ?>';
         $('#updateProfilePicForm')[0].reset();
 
         $('#profile-pic').removeClass('is-invalid');
         $('#profile-pic-error').html('');
-        if (photo == '') {
-            $('#photo').attr('src', `${baseUrl}assets/images/user.svg`);
+        if (photo == '' || photo_status == 'Not Found') {
+            if(gender == 'Male' || gender == 'male'){
+                $('#photo').attr('src', `${baseUrl}assets/images/male_avatar.svg`);
+            }else if(gender == 'Female' || gender == 'female'){
+                $('#photo').attr('src', `${baseUrl}assets/images/female_avatar.svg`);
+            }
         } else {
             $('#photo').attr('src', `${baseUrl}uploads/profile_pics/${photo}`);
         }

@@ -238,17 +238,18 @@
     // End of Document Ready function
 
     // Admin Members Show Create User Account Modal
-    function showCreateUserAccount(emp_no, emp_year) {
+    function showCreateUserAccount(emp_id, emp_no) {
         const emp_id_input = document.querySelector('#emp-id');
         const healthcard_no = document.querySelector('#healthcard-no');
         const username = document.querySelector('#username');
         const password = document.querySelector('#password');
         const current_year = new Date().getFullYear();
+
         $('#createMemberUserAccountForm')[0].reset();
         $('#createMemberUserAccountModal').modal('show');
-        const emp_id = emp_no.toString() + '-' + emp_year.toString();
-        healthcard_no.value = 'ACN' + '-' + current_year + '-' + emp_no.toString();
-        username.value = emp_id;
+
+        healthcard_no.value = `ACN-${emp_no.toString()}`;
+        username.value = emp_id.toString();
         password.value = generateRandomString(4) + current_year;
         emp_id_input.value = emp_id;
     }

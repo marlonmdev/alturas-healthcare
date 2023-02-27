@@ -10,7 +10,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">Healthcare Provider</li>
                     <li class="breadcrumb-item active" aria-current="page">
-                    Closed LOA
+                    Completed LOA
                     </li>
                 </ol>
                 </nav>
@@ -54,10 +54,10 @@
                         <li class="nav-item">
                         <a
                         class="nav-link active"
-                        href="<?php echo base_url(); ?>healthcare-provider/loa-requests/closed"
+                        href="<?php echo base_url(); ?>healthcare-provider/loa-requests/completed"
                         role="tab"
                         ><span class="hidden-sm-up"></span>
-                        <span class="hidden-xs-down fs-5 font-bold">Closed</span></a
+                        <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
                         >
                     </li>
                 </ul>
@@ -65,8 +65,8 @@
                 <div class="card shadow">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <?php include 'view_closed_loa_details.php'; ?>
-                            <table id="closedLoaTable" class="table table-striped">
+                            <?php include 'view_completed_loa_details.php'; ?>
+                            <table id="completedLoaTable" class="table table-striped">
                                 <thead>
                                     <tr>
                                         <th class="fw-bold">LOA No.</th>
@@ -93,14 +93,14 @@
     const baseUrl = `<?php echo base_url(); ?>`;
     $(document).ready(function() {
 
-        $('#closedLoaTable').DataTable({
+        $('#completedLoaTable').DataTable({
             processing: true, //Feature control the processing indicator.
             serverSide: true, //Feature control DataTables' server-side processing mode.
             order: [], //Initial no order.
 
             // Load data for the table's content from an Ajax source
             ajax: {
-                url: `${baseUrl}healthcare-provider/loa-requests/closed/fetch`,
+                url: `${baseUrl}healthcare-provider/loa-requests/completed/fetch`,
                 type: "POST",
                 // passing the token as data so that requests will be allowed
                 data: {
@@ -121,7 +121,7 @@
 
      function viewLoaInfo(req_id) {
     $.ajax({
-      url: `${baseUrl}healthcare-provider/loa-requests/closed/view/${req_id}`,
+      url: `${baseUrl}healthcare-provider/loa-requests/completed/view/${req_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);
@@ -132,28 +132,16 @@
           suffix, date_of_birth, age, gender, philhealth_no, blood_type, contact_no, home_address,
           city_address, email, contact_person, contact_person_addr, contact_person_no, healthcare_provider,
           loa_request_type, med_services, health_card_no, requesting_company, request_date, chief_complaint,
-          requesting_physician, attending_physician, rx_file, req_status, approved_by, approved_on
+          requesting_physician, attending_physician, rx_file, req_status, work_related, approved_by, approved_on
         } = res;
 
         $("#viewLoaModal").modal("show");
 
-        switch (req_status) {
-          case 'Pending':
-            $('#loa-status').html(`<strong class="text-warning">[${req_status}]</strong>`);
-            break;
-          case 'Approved':
-            $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
-            break;
-          case 'Disapproved':
-            $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
-            break;
-          case 'Closed':
-            $('#loa-status').html(`<strong class="text-info">[${req_status}]</strong>`);
-            break;
-        }
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
+
         $('#loa-no').html(loa_no);
+        $('#loa-status').html(`<strong class="text-info">[${req_status}]</strong>`);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
         $('#member-mbl').html(member_mbl);
@@ -180,6 +168,7 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
+        $('#work-related').html(work_related);
       }
     });
   }

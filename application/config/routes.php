@@ -119,32 +119,32 @@ $route['healthcare-provider/billing/billing-person/finish']['post']  = 'healthca
 $route['healthcare-provider/loa-requests/pending'] = 'healthcare_provider/pages_controller/pending_loa_requests';
 $route['healthcare-provider/loa-requests/approved'] = 'healthcare_provider/pages_controller/approved_loa_requests';
 $route['healthcare-provider/loa-requests/disapproved'] = 'healthcare_provider/pages_controller/disapproved_loa_requests';
-$route['healthcare-provider/loa-requests/closed'] = 'healthcare_provider/pages_controller/closed_loa_requests';
+$route['healthcare-provider/loa-requests/completed'] = 'healthcare_provider/pages_controller/completed_loa_requests';
 
 // LOA Datatables fetch data routes
 $route['healthcare-provider/loa-requests/pending/fetch'] = 'healthcare_provider/loa_controller/fetch_pending_loa_requests';
 $route['healthcare-provider/loa-requests/approved/fetch'] = 'healthcare_provider/loa_controller/fetch_approved_loa_requests';
 $route['healthcare-provider/loa-requests/disapproved/fetch'] = 'healthcare_provider/loa_controller/fetch_disapproved_loa_requests';
-$route['healthcare-provider/loa-requests/closed/fetch'] = 'healthcare_provider/loa_controller/fetch_closed_loa_requests';
+$route['healthcare-provider/loa-requests/completed/fetch'] = 'healthcare_provider/loa_controller/fetch_completed_loa_requests';
 
 // LOA modal view
 $route['healthcare-provider/loa-requests/pending/view/(:any)'] = 'healthcare_provider/loa_controller/get_pending_loa_info';
 $route['healthcare-provider/loa-requests/approved/view/(:any)'] = 'healthcare_provider/loa_controller/get_approved_loa_info';
 $route['healthcare-provider/loa-requests/disapproved/view/(:any)'] = 'healthcare_provider/loa_controller/get_disapproved_loa_info';
-$route['healthcare-provider/loa-requests/closed/view/(:any)'] = 'healthcare_provider/loa_controller/get_closed_loa_info';
+$route['healthcare-provider/loa-requests/completed/view/(:any)'] = 'healthcare_provider/loa_controller/get_completed_loa_info';
 
 
 // NOA Pages
 $route['healthcare-provider/noa-requests/pending'] = 'healthcare_provider/pages_controller/pending_noa_requests';
 $route['healthcare-provider/noa-requests/approved'] = 'healthcare_provider/pages_controller/approved_noa_requests';
 $route['healthcare-provider/noa-requests/disapproved'] = 'healthcare_provider/pages_controller/disapproved_noa_requests';
-$route['healthcare-provider/noa-requests/closed'] = 'healthcare_provider/pages_controller/closed_noa_requests';
+$route['healthcare-provider/noa-requests/completed'] = 'healthcare_provider/pages_controller/completed_noa_requests';
 
 // Noa Datatables fetch data routes
 $route['healthcare-provider/noa-requests/pending/fetch'] = 'healthcare_provider/noa_controller/fetch_pending_noa_requests';
 $route['healthcare-provider/noa-requests/approved/fetch'] = 'healthcare_provider/noa_controller/fetch_approved_noa_requests';
 $route['healthcare-provider/noa-requests/disapproved/fetch'] = 'healthcare_provider/noa_controller/fetch_disapproved_noa_requests';
-$route['healthcare-provider/noa-requests/closed/fetch'] = 'healthcare_provider/noa_controller/fetch_closed_noa_requests';
+$route['healthcare-provider/noa-requests/completed/fetch'] = 'healthcare_provider/noa_controller/fetch_completed_noa_requests';
 
 // NOA modal view
 $route['healthcare-provider/noa-requests/view/(:any)'] = 'healthcare_provider/noa_controller/get_noa_info';

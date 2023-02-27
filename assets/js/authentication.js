@@ -125,7 +125,7 @@ function login_validated(
 				$("#btnLoginText").html("LOGGING IN...");
 				setTimeout(function () {
 					window.location.href = next_page;
-				}, 3000);
+				}, 2500);
 			} else {
 				toastr.options = {
 					closeButton: true,

@@ -36,11 +36,21 @@
               <div class="card shadow">
                 <div class="card-body pt-4">
                   <div class="d-flex flex-column align-items-center text-center">
-                    <?php if ($member['photo'] == '') { ?>
-                      <img src="<?= base_url() . 'assets/images/user.svg' ?>" alt="Member" class="rounded-circle img-responsive" width="150" height="auto">
+
+                    <?php if ($member['photo'] == '' || $member_photo_status == 'Not Found') { ?>
+
+                      <?php if($member['gender'] == 'Male' || $member['gender'] == 'male'): ?>
+                        <img src="<?= base_url() . 'assets/images/male_avatar.svg' ?>" alt="Member" class="img-responsive" width="150" height="auto">
+                      <?php endif; ?>
+
+                      <?php if($member['gender'] == 'Female' || $member['gender'] == 'female'): ?>
+                        <img src="<?= base_url() . 'assets/images/female_avatar.svg' ?>" alt="Member" class="img-responsive" width="150" height="auto">
+                      <?php endif; ?>
+                      
                     <?php } else { ?>
                       <img src="<?= base_url() . 'uploads/profile_pics/' . $member['photo'] ?>" alt="Member" class="rounded-circle img-responsive" width="200" height="auto">
                     <?php } ?>
+
                     <div class="mt-3">
                       <p class="mb-1"><strong><?= $member['business_unit']; ?></strong></p>
                       <p class="mb-1"><strong><?= $member['dept_name']; ?></strong></p>
@@ -55,11 +65,19 @@
               <div class="card shadow mt-3">
                 <ul class="list-group list-group-flush">
                   <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                    <h6 class="mb-0 text-secondary" style="font-weight:600;">Employee ID: </h6>
+                    <span style="font-weight:600;" class="colored-label">
+                      <?= $member['emp_id'] ?>
+                    </span>
+                  </li>
+
+                  <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
                     <h6 class="mb-0 text-secondary" style="font-weight:600;">Position Level: </h6>
                     <span style="font-weight:600;" class="colored-label">
                       <?= $member['position_level'] ?>
                     </span>
                   </li>
+
                   <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
                     <h6 class="mb-0 text-secondary" style="font-weight:600;">Health Card No: </h6>
                     <span style="font-weight:600;" class="colored-label">
@@ -68,6 +86,7 @@
                       ?>
                     </span>
                   </li>
+
                   <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
                     <h6 class="mb-0 text-secondary" style="font-weight:600;">Max Benefit Limit: </h6>
                     <span style="font-weight:600;" class="colored-label">
@@ -76,6 +95,7 @@
                       ?>
                     </span>
                   </li>
+
                   <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
                     <h6 class="mb-0 text-secondary" style="font-weight:600;">Remaining Balance: </h6>
                     <span style="font-weight:600;" class="colored-label">

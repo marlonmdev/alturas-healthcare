@@ -10,7 +10,7 @@
             <ol class="breadcrumb">
             <li class="breadcrumb-item">Company Doctor</li>
             <li class="breadcrumb-item active" aria-current="page">
-                Closed LOA
+                Completed LOA
             </li>
             </ol>
         </nav>
@@ -180,6 +180,7 @@
           attending_physician,
           rx_file,
           req_status,
+          work_related,
           approved_by,
           approved_on
         } = res;
@@ -217,6 +218,7 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
+        $('#work-related-val').html(work_related);
       }
     });
   }

@@ -151,6 +151,7 @@
           chief_complaint,
           request_date,
           req_status,
+          work_related,
           disapproved_by,
           disapprove_reason,
           disapproved_on
@@ -183,6 +184,13 @@
         $('#admission-date').html(admission_date);
         $('#chief-complaint').html(chief_complaint);
         $('#request-date').html(request_date);
+        if(work_related != ''){
+          $('#work-related-info').removeClass('d-none');
+          $('#work-related-val').html(work_related);
+        }else{
+          $('#work-related-info').addClass('d-none');
+          $('#work-related-val').html('');
+        }
       }
     });
   }

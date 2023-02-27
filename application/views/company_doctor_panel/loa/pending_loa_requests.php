@@ -184,25 +184,19 @@
         } = res;
 
         $("#viewLoaModal").modal("show");
-        switch (req_status) {
-          case 'Pending':
-            $('#noa-status').html('<strong class="text-warning">[' + req_status + ']</strong>');
-            break;
-          case 'for Approval':
-            $('#noa-status').html('<strong class="text-cyan">[' + req_status + ']</strong>');
-            break;
-          case 'Approved':
-            $('#noa-status').html('<strong class="text-success">[' + req_status + ']</strong>');
-            break;
-          case 'Disapproved':
-            $('#noa-status').html('<strong class="text-danger">[' + req_status + ']</strong>');
-            break;
+        
+        let rstat = '';
+        if(req_status == 'Pending'){
+          req_stat = `<strong class="text-warning">[${req_status}]</strong>`;
+        }else{
+          req_stat = `<strong class="text-cyan">[${req_status}]</strong>`;
         }
 
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
 
         $('#loa-no').html(loa_no);
+        $('#loa-status').html(req_stat);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);

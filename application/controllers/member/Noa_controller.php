@@ -232,7 +232,7 @@ class Noa_controller extends CI_Controller {
 
 	function fetch_completed_noa() {
 		$token = $this->security->get_csrf_hash();
-		$status = 'Closed';
+		$status = 'Completed';
 		$emp_id = $this->session->userdata('emp_id');
 		$list = $this->noa_model->get_datatables($status, $emp_id);
 		$data = array();

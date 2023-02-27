@@ -11,7 +11,7 @@
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Company Doctor</li>
               <li class="breadcrumb-item active" aria-current="page">
-                Closed NOA
+                Completed NOA
               </li>
             </ol>
           </nav>
@@ -170,8 +170,8 @@
         $('#hospital-name').html(hospital_name);
         $('#admission-date').html(admission_date);
         $('#chief-complaint').html(chief_complaint);
-        $('#work-related').html(work_related);
         $('#request-date').html(request_date);
+        $('#work-related').html(work_related);
       }
     });
   }

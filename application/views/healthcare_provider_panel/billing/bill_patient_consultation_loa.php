@@ -281,7 +281,8 @@
     const calculateConsultationBilling = (remaining_balance) => {
         let total_bill = 0;
         let total_deduction = 0;
-        let charge_amount = 0;
+        let personal_charge_amount = 0;
+        let company_charge_amount = 0;
         let net_total = 0;
         let philhealth_deduction = 0;
         let sss_deduction = 0;
@@ -291,6 +292,7 @@
         const consult_fee = document.querySelector("#consult-fee");
         const total_input = document.querySelector("#total-bill");
         const net_bill = document.querySelector("#net-bill");
+        const company_charge = document.querySelector("#company-charge");
         const deduct_philhealth = document.querySelector("#deduct-philhealth");
         const deduct_sss = document.querySelector("#deduct-sss");
         const deduction_input = document.querySelector("#total-deduction");
@@ -305,6 +307,7 @@
 
         // Calculate Total Billing 
         total_bill = consult_qty.value * consult_fee.value;
+        company_charge_amount = total_bill > remaining_balance ? remaining_balance : total_bill;
 
         // Compute Deductions
         philhealth_deduction = deduct_philhealth.value > 0 ? deduct_philhealth.value : 0;
@@ -321,10 +324,12 @@
 
         if(total_deduction > 0) {
             net_total = total_bill - total_deduction;
-            charge_amount = net_total - remaining_balance;
+            personal_charge_amount = net_total - remaining_balance;
+            company_charge_amount = net_total > remaining_balance ? remaining_balance : net_total;
         }else{
             net_total = total_bill;
-            charge_amount = net_total - remaining_balance;
+            personal_charge_amount = net_total - remaining_balance;
+            company_charge_amount = net_total > remaining_balance ? remaining_balance : net_total;
         }
 
         if(net_total < 0) {
@@ -374,15 +379,17 @@
             deduction_input.value = 0;
             net_bill.classList.remove('is-invalid', 'text-danger');
             net_bill.value = 0;
+            company_charge.value = 0;
         }else{
             // set the net total as the value of total bill input
             total_input.value = total_bill.toFixed(2);
             deduction_input.value = total_deduction.toFixed(2);
             net_bill.value = net_total.toFixed(2);
+            company_charge.value = parseFloat(company_charge_amount).toFixed(2);
         }
 
         // Call the other functions to execute
-        showPersonalChargeAlert(charge_amount);
+        showPersonalChargeAlert(personal_charge_amount);
         enableButtonsAndDeductions(total_bill);
     }
 
@@ -421,20 +428,15 @@
     }
 
      // function to be called to show patient's Personal Charge Alert if it Net Bill exceeds patient's remaining MBL balance
-    const showPersonalChargeAlert = (charge_amount) => {
+    const showPersonalChargeAlert = (personal_charge_amount) => {
         const personalCharge = document.querySelector('#personal-charge');
         // the ids of the html elements below are found in personal-charge_alert.php
         const chargeAlertDiv = document.querySelector('#charge-alert-div');
         const chargeAmount = document.querySelector('#charge-amount');
 
         /* Calculating the charge amount based on the amount of the transaction. */
-        if(charge_amount > 0){
-            /* Converting the charge_amount to a Peso currency format. */
-            let personal_charge_amount = charge_amount.toLocaleString('en-US', {
-                style: 'currency',
-                currency: 'PHP',
-            });
-            personalCharge.value = charge_amount.toFixed(2);
+        if(personal_charge_amount > 0){
+            personalCharge.value = personal_charge_amount.toFixed(2);
             chargeAlertDiv.classList.remove('d-none');
             chargeAlertDiv.classList.add('d-block');
             chargeAmount.innerHTML = personal_charge_amount;

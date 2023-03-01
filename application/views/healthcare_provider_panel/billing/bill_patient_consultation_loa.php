@@ -51,29 +51,31 @@
                             <input type="text" class="form-control text-danger fw-bold ls-1" name="healthcard-no" value="<?= $healthcard_no ?>" readonly>
                         </div>
 
-                        <div class="col-md-2">
-                            <label class="form-label ls-1">Patient's MBL</label>
-                            <input type="text" class="form-control text-danger fw-bold ls-1" name="patient-mbl" value="<?= '&#8369;'.number_format($member_mbl, 2) ?>" readonly>
-                        </div>
-
-                        <div class="col-md-2">
-                            <label class="form-label ls-1">Remaining MBL</label>
-                            <input type="text" class="form-control text-danger fw-bold ls-1" id="request-type" name="request-type" value="<?= '&#8369;'.number_format($remaining_balance, 2) ?>" readonly>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-3 my-1">
+                        <div class="col-md-4 my-1">
                             <label class="form-label ls-1">LOA Number</label>
                             <input type="text" class="form-control text-danger fw-bold ls-1" id="loa-no" name="loa-no" value="<?= $loa_no ?>" readonly>
                         </div>
 
-                        <div class="col-md-3 my-1">
+                        <!-- <div class="col-md-2">
+                            <label class="form-label ls-1">Patient's MBL</label>
+                            <input type="text" class="form-control text-danger fw-bold ls-1" name="patient-mbl" value="< '&#8369;'.number_format($member_mbl, 2) ?>" readonly>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label ls-1">Remaining MBL</label>
+                            <input type="text" class="form-control text-danger fw-bold ls-1" id="request-type" name="request-type" value="< '&#8369;'.number_format($remaining_balance, 2) ?>" readonly>
+                        </div> -->
+                    </div>
+
+                    <div class="row">
+                        
+
+                        <div class="col-md-4 my-1">
                             <label class="form-label ls-1">LOA Request Type</label>
                             <input type="text" class="form-control text-danger fw-bold ls-1" id="request-type" name="request-type" value="<?= $request_type ?>" readonly>
                         </div>
 
-                        <div class="col-md-6 my-1">
+                        <div class="col-md-8 my-1">
                             <label class="form-label ls-1">Healthcare Provider</label>
                             <input type="text" class="form-control text-danger fw-bold ls-1" id="hcare-provider" name="hcare-provider" value="<?= $hcare_provider ?>" readonly>
                         </div>
@@ -175,7 +177,7 @@
                         <?php include 'personal_charge_alert.php'; ?>
 
                         <div class="row my-4">
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <label class="form-label ls-1">Total Bill</label>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text bg-cyan text-white">&#8369;</span>
@@ -183,7 +185,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <label class="form-label ls-1">Total Deduction</label>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text bg-cyan text-white">&#8369;</span>
@@ -191,18 +193,44 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <label class="form-label ls-1">Net Bill</label>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text bg-cyan text-white">&#8369;</span>
                                     <input type="text" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" value="" readonly>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="row my-4">
+                            <div class="col-md-3">
+                                <label class="form-label ls-1">Patient's MBL</label>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-info text-white">&#8369;</span>
+                                    <input type="text" class="form-control fw-bold ls-1" id="patient-mbl" name="patient-mbl" value="<?= number_format($member_mbl, 2) ?>" readonly>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label ls-1">Patient's Remaining MBL</label>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-info text-white">&#8369;</span>
+                                    <input type="text" class="form-control fw-bold ls-1" id="remaining-mbl" name="remaining-mbl" value="<?= number_format($remaining_balance, 2) ?>" readonly>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label ls-1">Company Charge</label>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-danger text-white">&#8369;</span>
+                                    <input type="text" class="form-control fw-bold ls-1" id="company-charge" name="company-charge" value="" readonly>
+                                </div>
+                            </div>
 
                             <div class="col-md-3">
                                 <label class="form-label ls-1">Personal Charge</label>
                                 <div class="input-group mb-3">
-                                    <span class="input-group-text bg-cyan text-white">&#8369;</span>
+                                    <span class="input-group-text bg-danger text-white">&#8369;</span>
                                     <input type="text" class="form-control fw-bold ls-1" id="personal-charge" name="personal-charge" value="" readonly>
                                 </div>
                             </div>

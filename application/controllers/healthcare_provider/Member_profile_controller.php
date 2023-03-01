@@ -71,6 +71,7 @@ class Member_profile_controller extends CI_Controller {
             $this->redirectBack();
         }
     }
+    
     function memberProfileInfoMbl() {
         $idMember = $this->input->post('id');
         $token = $this->security->get_csrf_hash();

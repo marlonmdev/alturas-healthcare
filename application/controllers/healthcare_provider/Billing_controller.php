@@ -82,6 +82,10 @@ class Billing_controller extends CI_Controller {
             $data['loa_requests'] = $this->billing_model->get_member_loa($member['emp_id'], $hcare_provider_id);
             $data['noa_requests'] = $this->billing_model->get_member_noa($member['emp_id'], $hcare_provider_id);
 
+            /* This is checking if the image file exists in the directory. */
+            $file_path = './uploads/profile_pics/' . $member['photo'];
+            $data['member_photo_status'] = file_exists($file_path) ? 'Exist' : 'Not Found';
+
             $this->session->set_userdata([
                 'b_member_info'    => $member,
                 'b_member_mbl'     => $member_mbl['max_benefit_limit'],

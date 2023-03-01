@@ -127,10 +127,10 @@
                 url: `${baseUrl}head-office-accounting/billing-list/billed/fetch`,
                 type: "POST",
                 data: function(data) {
-                data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
-                data.filter = $('#hospital-filter').val();
-                data.startDate = $('#start-date').val();
-                data.endDate = $('#end-date').val();
+                    data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
+                    data.filter = $('#hospital-filter').val();
+                    data.startDate = $('#start-date').val();
+                    data.endDate = $('#end-date').val();
                 }
             },
 

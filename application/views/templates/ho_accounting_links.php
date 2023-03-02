@@ -21,7 +21,7 @@
               <li class="sidebar-item">
                 <a
                   class="sidebar-link"
-                  href="<?php echo base_url(); ?>head-office-accounting/loa-request-list"
+                  href="<?php echo base_url(); ?>head-office-accounting/loa-request-list/loa-approved"
                   aria-expanded="false"
                   ><i class="mdi mdi-file-document"></i
                   ><span class="hide-menu ls-1">LOA</span>
@@ -31,7 +31,7 @@
                <li class="sidebar-item">
                 <a
                   class="sidebar-link"
-                  href="<?php echo base_url(); ?>head-office-accounting/noa-request-list"
+                  href="<?php echo base_url(); ?>head-office-accounting/noa-request-list/noa-approved"
                   aria-expanded="false"
                   ><i class="mdi mdi-file-chart"></i
                   ><span class="hide-menu ls-1">NOA</span>
@@ -47,7 +47,7 @@
                   ><span class="hide-menu ls-1">Account Settings</span>
                 </a>
               </li>
-              
+              <hr class="pt-1 bg-light">
               <li class="sidebar-item">
                 <a
                   class="sidebar-link"

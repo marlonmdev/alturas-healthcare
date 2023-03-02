@@ -110,8 +110,22 @@
                         </div>
                     </div>
                 </div>
+                <?php include 'payment_details_modal.php'?>
+                <div class="row col-lg-6 offset-6 pt-3 pb-3">
+                    <div class="input-group">
+                        <div class="input-group-append">
+                            <span class="input-group-text bg-secondary text-white ms-2 fw-bold fs-5">TOTAL PAYABLE: </span>
+                        </div>
+                        <input type="text" class="form-control fs-5 text-danger" readonly>
+                        
+                        <div class="input-group-append">
+                            <a href="javascript:void(0)" onclick="add_payment()" class="input-group-text bg-success text-dark ms-2 fw-bold fs-4" id="add-payment-btn">Add Payment Details </a>
+                        </div>
+                    </div>
+                </div>
+                <hr class="pt-2">
             </div>
-        </div>  
+        </div> 
     </div>
 
     <script>
@@ -182,16 +196,21 @@
             }
 
             if (endDate < startDate) {
-                alert('End date must be greater than or equal to the start date');
+                // alert('End date must be greater than or equal to the start date');
+                swal({
+                    title: 'Failed',
+                    text: 'End date must be greater than or equal to the start date',
+                    // timer: 4000,
+                    showConfirmButton: true,
+                    type: 'error'
+                });
                 endDateInput.value = '';
                 return;
-            }
+            }          
+        }
 
-            if (startDate > endDate) {
-                alert('Start date must be less than or equal to the end date');
-                startDateInput.value = '';
-                return;
-            }           
+        const add_payment = () => {
+            $('#addPaymentModal').modal('show');
         }
 
 

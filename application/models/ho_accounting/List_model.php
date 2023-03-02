@@ -111,8 +111,33 @@ class List_model extends CI_Model{
         $query = $this->db->get_where('billing', array('billing_no' => $billing_no));
         return $query->row_array();
     }
-    
 
+    function get_loa_approved($userHospital){
+        $query = $this->db->get_where('loa_requests', array('hcare_provider' => $userHospital));
+        return $query->result_array();
+    }
+
+    function get_hcare_provider($hp_id){
+		$this->db->select('*')
+                 ->from('healthcare_providers')
+                 ->where('hp_id', $hp_id);
+		$query = $this->db->get();
+		return $query->row_array();
+	}
+
+    function hp_approved_loa_count($hp_id){
+        return $this->db->get_where('loa_requests', array('hcare_provider' => $hp_id, 'status' => 'Approved'))->num_rows();
+    }
+    
+    function hp_approved_noa_count($hp_id){
+        return $this->db->get_where('noa_requests', array('hospital_id' => $hp_id, 'status' => 'Approved'))->num_rows();
+    }
+    
+    function hp_done_billing_count($hp_id){
+        return $this->db->get_where('billing', array('hp_id' => $hp_id))->num_rows();
+    }
+    
+// george code below
     public function loa_member()
     {
         return $this->db->get('loa_requests')->result_array();

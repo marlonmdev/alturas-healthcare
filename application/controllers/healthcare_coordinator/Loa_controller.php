@@ -647,17 +647,17 @@ class Loa_controller extends CI_Controller {
 
 	function get_approved_loa_info() {
 		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
-		$this->load->model('healthcare_coordinator/loa_model');
-		$row = $this->loa_model->db_get_loa_details($loa_id);
+		$this->load->model('ho_accounting/Loa_model');
+		$row = $this->Loa_model->db_get_loa_details($loa_id);
 		$doctor_name = "";
 		if ($row['approved_by']) {
-			$doc = $this->loa_model->db_get_doctor_by_id($row['approved_by']);
+			$doc = $this->Loa_model->db_get_doctor_by_id($row['approved_by']);
 			$doctor_name = $doc['doctor_name'];
 		} else {
 			$doctor_name = "Does not exist from Database";
 		}
 
-		$cost_types = $this->loa_model->db_get_cost_types();
+		$cost_types = $this->Loa_model->db_get_cost_types();
 		// Calculate Age
 		$birthDate = date("d-m-Y", strtotime($row['date_of_birth']));
 		$currentDate = date("d-m-Y");

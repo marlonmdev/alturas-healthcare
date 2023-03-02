@@ -190,13 +190,28 @@ $route['healthcare-provider/account-settings/username/update'] = 'healthcare_pro
 // Start of Head Office Accounting Routes
 // ===================================================================================================
 
-$route['head-office-accounting/dashboard'] = 'ho_accounting/main_controller';
+$route['head-office-accounting/dashboard'] = 'ho_accounting/Pages_controller';
 $route['head-office-accounting/billing-list/billed/fetch'] = 'ho_accounting/main_controller/fetch_unbilled';
 $route['head-office-accounting/billing-list/billed/view/(:any)'] = 'ho_accounting/main_controller/view_billed_details';
 
 $route['head-office-accounting/billing-list'] = 'ho_accounting/TableList';
 $route['head-office-accounting/billing-list/billed'] = 'ho_accounting/TableList/billed_record';
 $route['head-office-accounting/billing-list/closed'] = 'ho_accounting/TableList/closed_record';
+// calling LOA pages
+$route['head-office-accounting/loa-request-list/loa-approved'] = 'ho_accounting/Pages_controller/approved_loa_requests';
+$route['head-office-accounting/loa-request-list/loa-completed'] = 'ho_accounting/Pages_controller/completed_loa_requests';
+// calling NOA pages
+$route['head-office-accounting/noa-request-list/noa-approved'] = 'ho_accounting/Pages_controller/approved_noa_requests';
+$route['head-office-accounting/noa-request-list/noa-completed'] = 'ho_accounting/Pages_controller/completed_noa_requests';
+// LOA datatables
+$route['head-office-accounting/loa-request-list/loa-approved/fetch'] = 'ho_accounting/Loa_ho_controller/get_approved_loa';
+$route['head-office-accounting/loa-request-list/loa-completed/fetch'] = 'ho_accounting/Loa_ho_controller/get_completed_loa';
+$route['head-office-accounting/loa-request-list/loa-approved/view/(:any)'] = 'ho_accounting/Loa_ho_controller/get_approved_loa_info';
+// NOA datatables
+$route['head-office-accounting/noa-request-list/noa-approved/fetch'] = 'ho_accounting/Noa_ho_controller/get_approved_noa';
+$route['head-office-accounting/noa-request-list/noa-completed/fetch'] = 'ho_accounting/Noa_ho_controller/get_completed_noa';
+$route['head-office-accounting/noa-request-list/noa-approved/view/(:any)'] = 'ho_accounting/Noa_ho_controller/get_approved_noa_info';
+
 $route['head-office-accounting/list/hospital/(:any)/(:any)'] = 'ho_accounting/TableList/listByHopital';
 $route['head-office-accounting/list/summary/(:any)'] = 'ho_accounting/TableList/listInfoSummary';
 
@@ -209,7 +224,7 @@ $route['head-office-accounting/account-settings/password/update'] = 'ho_accounti
 $route['head-office-accounting/account-settings/username/update'] = 'ho_accounting/account_controller/update_account_username';
 
 
-$route['head-office-accounting/loa-request-list'] = 'ho_accounting/Loa_ho_controller/get_all_loa';
+
 $route['head-office-accounting/noa-request-list'] = 'ho_accounting/Noa_ho_controller/get_all_noa';
 
 // End of Head Office Accounting Routes

@@ -84,9 +84,9 @@ class Loa_controller extends CI_Controller {
     }
 
     function fetch_approved_loa_requests(){
-      $this->security->get_csrf_hash();
+      		$this->security->get_csrf_hash();
 			$status = 'Approved';
-      $hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
+      		$hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
 			$list = $this->loa_model->get_datatables($status, $hcare_provider_id);
 			$cost_types = $this->loa_model->db_get_cost_types();
 			$data = [];

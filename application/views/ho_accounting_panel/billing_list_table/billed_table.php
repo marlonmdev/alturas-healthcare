@@ -116,7 +116,7 @@
                         <div class="input-group-append">
                             <span class="input-group-text bg-secondary text-white ms-2 fw-bold fs-5">TOTAL PAYABLE: </span>
                         </div>
-                        <input type="text" class="form-control fs-5 text-danger" readonly>
+                        <input type="text" class="form-control fs-5 text-danger" id="total_charge" readonly>
                         
                         <div class="input-group-append">
                             <a href="javascript:void(0)" onclick="add_payment()" class="input-group-text bg-success text-dark ms-2 fw-bold fs-4" id="add-payment-btn">Add Payment Details </a>
@@ -145,6 +145,9 @@
                     data.filter = $('#hospital-filter').val();
                     data.startDate = $('#start-date').val();
                     data.endDate = $('#end-date').val();
+                },
+                success: function(response){
+                    $('#total_charge').val(response.total_company_charge);
                 }
             },
 

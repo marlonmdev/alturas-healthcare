@@ -11,8 +11,10 @@ class List_model extends CI_Model{
 	var $column_search = ['tbl_1.hp_id', 'tbl_1.billing_no', 'tbl_2.first_name', 'tbl_2.middle_name', 'tbl_2.last_name', 'tbl_3.hp_name', 'tbl_1.billed_on']; //set column field database for datatable searchable 
 	var $order = ['tbl_1.billing_id' => 'asc']; // default order 
 
-	private function _get_datatables_query() {
-
+    var $select_columns  = 'tbl_1.loa_id, tbl_1.noa_id, tbl_1.company_charge, tbl_1.billing_id, tbl_1.hp_id, tbl_1.billing_no, tbl_2.first_name, tbl_2.middle_name, tbl_2.last_name, tbl_3.hp_name, tbl_1.billed_on, SUM(tbl_1.company_charge) as sum_value';
+	
+    private function _get_datatables_query() {
+        $this->db->select($this->select_columns);
 		$this->db->from($this->table_1. ' as tbl_1');
         $this->db->join($this->table_2. ' as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
         $this->db->join($this->table_3. ' as tbl_3', 'tbl_1.hp_id = tbl_3.hp_id');
@@ -31,6 +33,7 @@ class List_model extends CI_Model{
             $endDate = date('Y-m-d', strtotime($this->input->post('endDate')));
             $this->db->where('tbl_1.billed_on <=', $endDate);
         }
+
 
 		// loop column 
 		foreach ($this->column_search as $item) {
@@ -79,7 +82,7 @@ class List_model extends CI_Model{
 	}
 	// End of server-side processing datatables
 
-    public function get_hc_provider(){
+    function get_hc_provider(){
         return $this->db->get('healthcare_providers')->result_array();
     }
 

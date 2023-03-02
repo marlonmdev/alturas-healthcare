@@ -67,7 +67,7 @@ class Main_controller extends CI_Controller {
 			}
 
 			$custom_actions = '<a class="text-info fw-bold ls-1" href="' . base_url() . 'head-office-accounting/billing-list/billed/view/' . $billing_id . '" data-bs-toggle="tooltip"><u>View Receipt</u></a>';
-
+			$sum = $list['sum_value'];
 			$row[] = $custom_bill_no;
 			$row[] = $fullname;
 			$row[] = $cost_type;
@@ -81,6 +81,7 @@ class Main_controller extends CI_Controller {
 			"recordsTotal" => $this->List_model->count_all(),
 			"recordsFiltered" => $this->List_model->count_filtered(),
 			"data" => $data,
+			"total_company_charge" => $sum 
 		];
 		echo json_encode($output);
 	}

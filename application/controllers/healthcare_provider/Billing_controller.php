@@ -402,33 +402,39 @@ class Billing_controller extends CI_Controller {
     }
 
     function insert_patient_billing($type, $posted_data, $id){
+        $after_billing_balance = $posted_data['remaining-balance'] - $posted_data['net-bill'];
+
         if($type === 'LOA'){
             $data = [
-                'billing_no'        => $posted_data['billing-no'],
-                'emp_id'            => $posted_data['emp-id'],
-                'loa_id'            => $id,
-                'hp_id'             => $this->session->userdata('dsg_hcare_prov'),
-                'total_bill'        => $posted_data['total-bill'],
-                'total_deduction'   => $posted_data['total-deduction'],
-                'net_bill'          => $posted_data['net-bill'],
-                'personal_charge'   => $posted_data['personal-charge'],
-                'mbr_remaining_bal' => $posted_data['remaining-balance'],
-                'billed_by'         => $this->session->userdata('fullname'),
-                'billed_on'         => date('Y-m-d')
+                'billing_no'            => $posted_data['billing-no'],
+                'emp_id'                => $posted_data['emp-id'],
+                'loa_id'                => $id,
+                'hp_id'                 => $this->session->userdata('dsg_hcare_prov'),
+                'total_bill'            => $posted_data['total-bill'],
+                'total_deduction'       => $posted_data['total-deduction'],
+                'net_bill'              => $posted_data['net-bill'],
+                'company_charge'        => $posted_data['company-charge'],
+                'personal_charge'       => $posted_data['personal-charge'],
+                'before_remaining_bal'  => $posted_data['remaining-balance'],
+                'after_remaining_bal'   => $after_rm_balance,
+                'billed_by'             => $this->session->userdata('fullname'),
+                'billed_on'             => date('Y-m-d')
             ];      
         }else if($type === 'NOA'){
             $data = [
-                'billing_no'        => $posted_data['billing-no'],
-                'emp_id'            => $posted_data['emp-id'],
-                'noa_id'            => $id,
-                'hp_id'             => $this->session->userdata('dsg_hcare_prov'),
-                'total_bill'        => $posted_data['total-bill'],
-                'total_deduction'   => $posted_data['total-deduction'],
-                'net_bill'          => $posted_data['net-bill'],
-                'personal_charge'   => $posted_data['personal-charge'],
-                'mbr_remaining_bal' => $posted_data['remaining-balance'],
-                'billed_by'         => $this->session->userdata('fullname'),
-                'billed_on'         => date('Y-m-d')
+                'billing_no'            => $posted_data['billing-no'],
+                'emp_id'                => $posted_data['emp-id'],
+                'noa_id'                => $id,
+                'hp_id'                 => $this->session->userdata('dsg_hcare_prov'),
+                'total_bill'            => $posted_data['total-bill'],
+                'total_deduction'       => $posted_data['total-deduction'],
+                'net_bill'              => $posted_data['net-bill'],
+                'company_charge'        => $posted_data['company-charge'],
+                'personal_charge'       => $posted_data['personal-charge'],
+                'before_remaining_bal'  => $posted_data['remaining-balance'],
+                'after_remaining_bal'   => $after_billing_balance,
+                'billed_by'             => $this->session->userdata('fullname'),
+                'billed_on'             => date('Y-m-d')
             ];      
         }
         // return value is either TRUE or FAlSE

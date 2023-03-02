@@ -132,7 +132,7 @@
                       <h6 class="mb-0 text-secondary" style="font-weight:600;">City Address:</h6>
                     </div>
                     <div class="col-sm-9 colored-label" style="font-weight:600;">
-                      <?= $member['city_address'] ?>
+                      <?= $member['city_address'] != '' ? $member['city_address'] : 'None' ?>
                     </div>
                   </div>
                   <hr>
@@ -204,7 +204,7 @@
                       <h6 class="mb-0 text-secondary" style="font-weight:600;">Blood Type:</h6>
                     </div>
                     <div class="col-sm-9 colored-label" style="font-weight:600;">
-                      <?= $member['blood_type'] ?>
+                      <?= $member['blood_type'] != '' ? $member['blood_type'] : 'None' ?>
                     </div>
                   </div>
                   <hr>

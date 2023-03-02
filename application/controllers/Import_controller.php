@@ -197,4 +197,61 @@ class Import_controller extends CI_Controller {
       echo json_encode($response);
     }
   }
+
+  // for future reference if needed
+  function parse_text_file($filename) {
+    // Open the file for reading
+    $file = fopen($filename, 'r');
+
+    // Read the contents of the file into a string
+    $content = fread($file, filesize($filename));
+
+    // Split the contents into an array of lines
+    $lines = explode("\n", $content);
+
+    // Initialize an empty array to hold the output
+    $output = array();
+
+    // Loop through each line of the file and parse it
+    foreach ($lines as $line) {
+      // Split the line into an array of values
+      $values = explode(",", $line);
+
+      // Map the values to a key-value pair
+      $output[$values[0]] = $values[1];
+    }
+
+    // Close the file
+    fclose($file);
+
+    // Return the parsed output
+    return $output;
+  }
+
+  // for future reference if needed
+  function compare_text_file_to_database($filename) {
+    // Open a connection to the database
+    $this->load->database();
+
+    // Parse the contents of the text file
+    $parsed = parseTextFile($filename);
+
+    // Initialize an empty array to hold the matching values
+    $matches = array();
+
+    // Loop through the parsed values and compare them to the database
+    foreach ($parsed as $key => $value) {
+        // Query the database for the matching value
+        $query = $this->db->get_where('table', array('name' => $key, 'age' => $value));
+
+        // If there is a match, add it to the matches array
+        if ($query->num_rows() > 0) {
+            $matches[] = $query->result_array()[0];
+        }
+    }
+
+    // Return the matches array
+    return $matches;
+  }
+
 }

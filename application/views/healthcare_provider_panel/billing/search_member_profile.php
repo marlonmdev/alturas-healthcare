@@ -1,9 +1,16 @@
 <div class="d-flex flex-column align-items-center text-center">
-  <?php if ($member['photo'] == '') { ?>
-      <img src="<?= base_url() . 'assets/images/user.svg' ?>" alt="Member" class="rounded-circle img-responsive" width="150" height="auto">
-  <?php } else { ?>
-      <img src="<?= base_url() . 'uploads/profile_pics/' . $member['photo'] ?>" alt="Member" class="rounded-circle img-responsive" width="140" height="auto">
-  <?php } ?>
+    <?php if ($member['photo'] == '' || $member_photo_status == 'Not Found') { ?>
+        <?php if($member['gender'] == 'Male' || $member['gender'] == 'male'): ?>
+        <img src="<?= base_url() . 'assets/images/male_avatar.svg' ?>" alt="Member" class="img-responsive" width="150" height="auto">
+        <?php endif; ?>
+
+        <?php if($member['gender'] == 'Female' || $member['gender'] == 'female'): ?>
+        <img src="<?= base_url() . 'assets/images/female_avatar.svg' ?>" alt="Member" class="img-responsive" width="150" height="auto">
+        <?php endif; ?>
+    <?php } else { ?>
+        <img src="<?= base_url() . 'uploads/profile_pics/' . $member['photo'] ?>" alt="Member" class="rounded-circle img-responsive" width="200" height="auto">
+    <?php } ?>
+
   <div class="mt-3">
       <span class="fw-bold text-info text-uppercase fs-4" name="full_name">
           <?= $member['first_name'].' '.$member['middle_name'].' '. $member['last_name'].' '.$member['suffix'] ?>

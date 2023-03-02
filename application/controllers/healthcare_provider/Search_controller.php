@@ -33,6 +33,10 @@ class Search_controller extends CI_Controller {
             $member_mbl = empty($row['max_benefit_limit']) ? 'None' : '&#8369;' . number_format($row['max_benefit_limit'], 2);
             // Format Remaining Balance
             $member_rmg_bal = empty($row['remaining_balance']) ? 'None' : '&#8369;' . number_format($row['remaining_balance'], 2);
+
+            /* This is checking if the image file exists in the directory. */
+            $file_path = './uploads/profile_pics/' . $row['photo'];
+            // $data['member_photo_status'] = file_exists($file_path) ? 'Exist' : 'Not Found';
             
             $response = [
                 'token' => $token,
@@ -52,7 +56,7 @@ class Search_controller extends CI_Controller {
                 'height' => $row['height'],
                 'weight' => $row['weight'],
                 'home_address' => $row['home_address'],
-                'city_address' => $row['city_address'],
+                'city_address' => $row['city_address'] != '' ? $row['city_address'] : 'None',
                 'contact_no' => $row['contact_no'],
                 'email' => $row['email'],
                 'position' => $row['position'],
@@ -65,7 +69,8 @@ class Search_controller extends CI_Controller {
                 'contact_person_addr' => $row['contact_person_addr'],
                 'contact_person_no' => $row['contact_person_no'],
                 'mbr_mbl' => $member_mbl,
-                'mbr_rmg_bal' => $member_rmg_bal
+                'mbr_rmg_bal' => $member_rmg_bal,
+                'photo_status' => file_exists($file_path) ? 'Exist' : 'Not Found'
             ];
         }
         echo json_encode($response);
@@ -93,6 +98,8 @@ class Search_controller extends CI_Controller {
             $member_mbl = empty($row['max_benefit_limit']) ? 'None' : '&#8369;' . number_format($row['max_benefit_limit'], 2);
             // Format Remaining Balance
             $member_rmg_bal = empty($row['remaining_balance']) ? 'None' : '&#8369;' . number_format($row['remaining_balance'], 2);
+            /* This is checking if the image file exists in the directory. */
+            $file_path = './uploads/profile_pics/' . $row['photo'];
 
             $response = [
                 'token' => $token,
@@ -112,7 +119,7 @@ class Search_controller extends CI_Controller {
                 'height' => $row['height'],
                 'weight' => $row['weight'],
                 'home_address' => $row['home_address'],
-                'city_address' => $row['city_address'],
+                'city_address' => $row['city_address'] != '' ? $row['city_address'] : 'None',
                 'contact_no' => $row['contact_no'],
                 'email' => $row['email'],
                 'position' => $row['position'],
@@ -126,7 +133,8 @@ class Search_controller extends CI_Controller {
                 'contact_person_no' => $row['contact_person_no'],
                 'requesting_company' => $row['company'],
                 'mbr_mbl' => $member_mbl,
-                'mbr_rm_mbl' => $member_rmg_bal
+                'mbr_rm_mbl' => $member_rmg_bal,
+                'photo_status' => file_exists($file_path) ? 'Exist' : 'Not Found'
             ];
         }
         echo json_encode($response);

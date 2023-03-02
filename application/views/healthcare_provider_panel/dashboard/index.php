@@ -77,7 +77,7 @@
     <!-- End Wrapper -->
     </div>
     <script>
-      const base_url = "<?php echo base_url(); ?>";
+      const base_url = `<?php echo base_url(); ?>`;
 
       $(document).ready(function(){
         /* This is a jQuery function that is used to hide and show the search form. */
@@ -115,7 +115,16 @@
               }else if(res.status == 'success'){
                 $("#mbr-profile-div").removeClass('d-none');
                 // if member exist populate member profile with dynamic data 
-                const img_url = res.photo == '' ? `${base_url}assets/images/default.png` : `${base_url}uploads/profile_pics/${res.photo}`;
+                let img_url = '';
+                if(res.photo == '' || res.photo_status == 'Not Found'){
+                  if(res.gender == 'Male' || res.gender == 'male'){
+                    img_url = `${base_url}assets/images/male_avatar.svg`;
+                  }else{
+                    img_url = `${base_url}assets/images/female_avatar.svg`;
+                  }
+                }else{
+                  img_url = `${base_url}uploads/profile_pics/${res.photo}`;
+                }
 
                 $("#mbr-photo").attr("src", img_url);
                 $("#bus-unit").html(res.business_unit);
@@ -174,7 +183,16 @@
               }else if(res.status == 'success'){
                 $("#mbr-profile-div").removeClass('d-none');
                 // if member exist populate member profile with dynamic data 
-                const img_url = res.photo == '' ? `${base_url}assets/images/default.png` : `${base_url}uploads/profile_pics/${res.photo}`;
+                let img_url = '';
+                if(res.photo == '' || res.photo_status == 'Not Found'){
+                  if(res.gender == 'Male' || res.gender == 'male'){
+                    img_url = `${base_url}assets/images/male_avatar.svg`;
+                  }else{
+                    img_url = `${base_url}assets/images/female_avatar.svg`;
+                  }
+                }else{
+                  img_url = `${base_url}uploads/profile_pics/${res.photo}`;
+                }
 
                 $("#mbr-photo").attr("src", img_url);
                 $("#bus-unit").html(res.business_unit);

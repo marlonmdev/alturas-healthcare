@@ -51,9 +51,34 @@ class Pages_controller extends CI_Controller {
 
     function completed_noa_requests() {
         $data['user_role'] = $this->session->userdata('user_role');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
 		$this->load->view('templates/header', $data);
-		$this->load->view('ho_accounting_panel/noa_billing_list/completed_noa_list.php');
+		$this->load->view('ho_accounting_panel/noa_billing_list/completed_noa_list.php', $hc_provider);
 		$this->load->view('templates/footer');
     }
+
+	function show_payment_history_form() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/payment_history.php', $hc_provider);
+		$this->load->view('templates/footer');
+	}
+
+	function unbilled_loa_form() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/unbilled_loa.php', $hc_provider);
+		$this->load->view('templates/footer');
+	}
+
+	function unbilled_noa_form() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/unbilled_noa.php', $hc_provider);
+		$this->load->view('templates/footer');
+	}
 
 }

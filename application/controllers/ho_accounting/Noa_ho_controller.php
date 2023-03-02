@@ -144,4 +144,49 @@ class Noa_ho_controller extends CI_Controller {
 		];
 		echo json_encode($response);
 	}
+
+	function get_completed_noa_info() {
+		$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$row = $this->Noa_model->db_get_noa_info($noa_id);
+
+		$doctor_name = "";
+		if ($row['approved_by']) {
+			$doc = $this->Noa_model->db_get_doctor_by_id($row['approved_by']);
+			$doctor_name = $doc['doctor_name'];
+		} else {
+			$doctor_name = "Does not exist from Database";
+		}
+
+		$birthday = $row['date_of_birth'];
+		$today = date("Y-m-d");
+		$diff = date_diff(date_create($birthday), date_create($today));
+		$age = $diff->format('%y') . ' years old';
+
+		$response = [
+			'status' => 'success',
+			'token' => $this->security->get_csrf_hash(),
+			'noa_id' => $row['noa_id'],
+			'noa_no' => $row['noa_no'],
+			'health_card_no' => $row['health_card_no'],
+			'requesting_company' => $row['requesting_company'],
+			'first_name' => $row['first_name'],
+			'middle_name' => $row['middle_name'],
+			'last_name' => $row['last_name'],
+			'suffix' => $row['suffix'],
+			'date_of_birth' => date("F d, Y", strtotime($row['date_of_birth'])),
+			'age' => $age,
+			'hospital_name' => $row['hp_name'],
+			'admission_date' => date("F d, Y", strtotime($row['admission_date'])),
+			'chief_complaint' => $row['chief_complaint'],
+			// Full Month Date Year Format (F d Y)
+			'request_date' => date("F d, Y", strtotime($row['request_date'])),
+			'work_related' => $row['work_related'],
+			'req_status' => $row['status'],
+			'approved_by' => $doctor_name,
+			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
+			'member_mbl' => number_format($row['max_benefit_limit'], 2),
+			'remaining_mbl' => number_format($row['remaining_balance'], 2),
+		];
+		echo json_encode($response);
+	}
 }

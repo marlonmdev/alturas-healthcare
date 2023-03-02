@@ -83,6 +83,14 @@ class List_model extends CI_Model{
         return $this->db->get('healthcare_providers')->result_array();
     }
 
+    function get_hcare_provider($hp_id){
+		$this->db->select('*')
+                 ->from('healthcare_providers')
+                 ->where('hp_id', $hp_id);
+		$query = $this->db->get();
+		return $query->row_array();
+	}
+
     function get_billing_info($id){
         $this->db->select('tbl_1.billing_id, tbl_1.billing_no, tbl_1.emp_id, tbl_1.hp_id, tbl_1.total_bill, tbl_1.total_deduction, tbl_1.net_bill, tbl_1.company_charge, tbl_1.personal_charge, tbl_1.before_remaining_bal, tbl_1.after_remaining_bal, tbl_1.billed_by, tbl_1.billed_on, tbl_2.health_card_no, tbl_2.first_name, tbl_2.middle_name, tbl_2.last_name, tbl_2.suffix, tbl_3.hp_name')
                  ->from('billing as tbl_1')
@@ -111,6 +119,19 @@ class List_model extends CI_Model{
         $query = $this->db->get_where('billing', array('billing_no' => $billing_no));
         return $query->row_array();
     }
+    
+    function hp_approved_loa_count($hp_id){
+        return $this->db->get_where('loa_requests', array('hcare_provider' => $hp_id, 'status' => 'Approved'))->num_rows();
+    }
+    
+    function hp_approved_noa_count($hp_id){
+        return $this->db->get_where('noa_requests', array('hospital_id' => $hp_id, 'status' => 'Approved'))->num_rows();
+    }
+    
+    function hp_done_billing_count($hp_id){
+        return $this->db->get_where('billing', array('hp_id' => $hp_id))->num_rows();
+    }
+    
     
 
     public function loa_member()

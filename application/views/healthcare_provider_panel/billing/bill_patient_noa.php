@@ -53,24 +53,14 @@
                                 <input type="text" class="form-control text-danger fw-bold ls-1" name="healthcard-no" value="<?= $healthcard_no ?>" readonly>
                             </div>
 
-                            <div class="col-md-2">
-                                <label class="form-label ls-1">Patient's MBL</label>
-                                <input type="text" class="form-control text-danger fw-bold ls-1" name="patient-mbl" value="<?= '&#8369;'.number_format($member_mbl, 2) ?>" readonly>
-                            </div>
-
-                            <div class="col-md-2">
-                                <label class="form-label ls-1">Remaining MBL</label>
-                                <input type="text" class="form-control text-danger fw-bold ls-1" id="request-type" name="request-type" value="<?= '&#8369;'.number_format($remaining_balance, 2) ?>" readonly>
+                            <div class="col-md-4 my-1">
+                                <label class="form-label ls-1">NOA Number</label>
+                                <input type="text" class="form-control text-danger fw-bold ls-1" id="noa-no" name="noa-no" value="<?= $noa_no ?>" readonly>
                             </div>
                         </div>
 
                         <div class="row pt-2">
-                            <div class="col-md-3 my-1">
-                                <label class="form-label ls-1">NOA Number</label>
-                                <input type="text" class="form-control text-danger fw-bold ls-1" id="noa-no" name="noa-no" value="<?= $noa_no ?>" readonly>
-                            </div>
-
-                            <div class="col-md-5 my-1">
+                            <div class="col-md-8 my-1">
                                 <label class="form-label ls-1">Healthcare Provider</label>
                                 <input type="text" class="form-control text-danger fw-bold ls-1" id="hcare-provider" name="hcare-provider" value="<?= $hcare_provider ?>" readonly>
                             </div>
@@ -198,7 +188,7 @@
                             <hr class="mt-4">
 
                             <div class="row my-4">
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <label class="form-label ls-1">Total Bill</label>
                                     <div class="input-group mb-3">
                                         <span class="input-group-text bg-cyan text-white">&#8369;</span>
@@ -206,7 +196,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <label class="form-label ls-1">Total Deduction</label>
                                     <div class="input-group mb-3">
                                         <span class="input-group-text bg-cyan text-white">&#8369;</span>
@@ -214,18 +204,44 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <label class="form-label ls-1">Net Bill</label>
                                     <div class="input-group mb-3">
                                         <span class="input-group-text bg-cyan text-white">&#8369;</span>
                                         <input type="text" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" value="" readonly>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div class="row my-4">
+                                <div class="col-md-3">
+                                    <label class="form-label ls-1">Patient's MBL</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-info text-white">&#8369;</span>
+                                        <input type="text" class="form-control fw-bold ls-1" id="patient-mbl" name="patient-mbl" value="<?= number_format($member_mbl, 2) ?>" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label ls-1">Patient's Remaining MBL</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-info text-white">&#8369;</span>
+                                        <input type="text" class="form-control fw-bold ls-1" id="remaining-mbl" name="remaining-mbl" value="<?= number_format($remaining_balance, 2) ?>" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label ls-1">Company Charge</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-danger text-white">&#8369;</span>
+                                        <input type="text" class="form-control fw-bold ls-1" id="company-charge" name="company-charge" value="" readonly>
+                                    </div>
+                                </div>
 
                                 <div class="col-md-3">
                                     <label class="form-label ls-1">Personal Charge</label>
                                     <div class="input-group mb-3">
-                                        <span class="input-group-text bg-cyan text-white">&#8369;</span>
+                                        <span class="input-group-text bg-danger text-white">&#8369;</span>
                                         <input type="text" class="form-control fw-bold ls-1" id="personal-charge" name="personal-charge" value="" readonly>
                                     </div>
                                 </div>
@@ -343,7 +359,6 @@
         document.querySelector(`#btn-ctype-${ctype_id}`).setAttribute('disabled', true);
     }
 
-
     /**
     * It removes a row and then calls a function to recalculate the Billing Total.
     */
@@ -362,10 +377,11 @@
     }
 
     const calculateNoaBilling = (remaining_balance) => {
-        let totalBill = 0;
+        let total_bill = 0;
         let total_deduction = 0;
         let net_bill = 0;
-        let charge_amount = 0;
+        let company_charge_amount = 0;
+        let personal_charge_amount = 0;
         let philhealth_deduction = 0;
         let sss_deduction = 0;
         let other_deduction = 0;
@@ -373,11 +389,12 @@
 
         const cost_inputs = document.querySelectorAll('.ct-fees');
         const quantity_inputs = document.querySelectorAll('.ct-qtys');
-        const total_bill = document.querySelector('#total-bill');
+        const total_input = document.querySelector('#total-bill');
         const deduct_philhealth = document.querySelector('#deduct-philhealth');
         const deduct_sss = document.querySelector('#deduct-sss');
-        const totalDeduction = document.querySelector('#total-deduction');
-        const netBill = document.querySelector('#net-bill');
+        const deduction_input = document.querySelector('#total-deduction');
+        const net_input = document.querySelector('#net-bill');
+        const company_charge = document.querySelector('#company-charge');
         const personal_charge = document.querySelector('#personal-charge');
         const row_deduction = document.querySelectorAll('.row-deduction');
         const deduction_amount = document.querySelectorAll('.deduction-amount');
@@ -386,13 +403,13 @@
         const input_deduction = document.querySelectorAll('.input-deduction');
 
         for(i = 0;i < cost_inputs.length;i++ ){
-            totalBill += cost_inputs[i].value * quantity_inputs[i].value;
+            total_bill += cost_inputs[i].value * quantity_inputs[i].value;
         }
 
-        total_bill.value = totalBill.toFixed(2);
-        enableButtonandDeduction(totalBill);
+        total_input.value = parseFloat(total_bill).toFixed(2);
+        enableButtonandDeduction(total_bill);
         
-        // Calculate other deduction total
+        // Calculate other deductions total
         if(row_deduction.length > 0){
             for (let i = 0; i < row_deduction.length; i++) {
                 other_deduction += deduction_amount[i].value * 1;
@@ -402,21 +419,32 @@
         philhealth_deduction = deduct_philhealth.value > 0 ? deduct_philhealth.value : 0;
         sss_deduction = deduct_sss.value > 0 ? deduct_sss.value : 0;
 
+        // total deduction calculation
         total_deduction = parseFloat(philhealth_deduction) + parseFloat(sss_deduction) + parseFloat(other_deduction);
-        net_bill = totalBill - total_deduction;
 
-        charge_amount = net_bill - remaining_balance;
-
-        if(charge_amount > 0){
-            personal_charge.value = charge_amount.toFixed(2);
+       /* Calculating the net bill, personal charge amount and company charge amount. */
+        if(total_deduction > 0){
+            net_bill = total_bill - total_deduction;
+            personal_charge_amount = net_bill - remaining_balance;
+            company_charge_amount = net_bill >= remaining_balance ? remaining_balance : net_bill;
         }else{
-            personal_charge.value = 0;
+            net_bill = total_bill;
+            personal_charge_amount = net_bill - remaining_balance;
+            company_charge_amount = net_bill >= remaining_balance ?  remaining_balance : net_bill;
         }
 
-        totalDeduction.value = total_deduction.toFixed(2);
-        netBill.value = net_bill.toFixed(2);
+        deduction_input.value = parseFloat(total_deduction).toFixed(2);
 
+        net_input.value = parseFloat(net_bill).toFixed(2);
+
+        company_charge.value = company_charge_amount > 0 ? parseFloat(company_charge_amount).toFixed(2) : 0;
+
+        personal_charge.value = personal_charge_amount > 0 ? parseFloat(personal_charge_amount).toFixed(2) : 0;
+
+        /* Checking if the net bill is less than 0. If it is, it will add the class is-invalid and
+        text-danger to the net bill input, deduction inputs, row deductions. */
         if(net_bill < 0){
+            net_input.classList.add('is-invalid', 'text-danger');
 
             for(i = 0; i < input_deduction.length; i++ ){
                 input_deduction[i].classList.add('is-invalid', 'text-danger');
@@ -428,23 +456,26 @@
                 other_deduction_msg[i].innerHTML = "Deduction can't be greater than the Net Bill Amount!";
             }  
         }else{
-            netBill.classList.remove('is-invalid', 'text-danger');
+            net_input.classList.remove('is-invalid', 'text-danger');
             
             for(i = 0; i < input_deduction.length; i++ ){
-            input_deduction[i].classList.remove('is-invalid', 'text-danger');
-            deduction_msg[i].innerHTML = " ";
+                input_deduction[i].classList.remove('is-invalid', 'text-danger');
+                deduction_msg[i].innerHTML = " ";
             }
 
             for(i = 0; i < row_deduction.length; i++ ){
-            row_deduction[i].classList.remove('is-invalid', 'text-danger');
-            other_deduction_msg[i].innerHTML = " ";
+                row_deduction[i].classList.remove('is-invalid', 'text-danger');
+                other_deduction_msg[i].innerHTML = " ";
             } 
         }
-
         
-        showPersonalChargeAlert(charge_amount);
+        // call to showPersonalChargeAlert function
+        showPersonalChargeAlert(personal_charge_amount);
     }
 
+    /* Adding an event listener to all the number inputs on the page. When the user inputs a value, the
+    code checks if the value is a number and if it is greater than 0. If it is not, the value is set
+    to an empty string. */
     const validateNumberInputs = () => {
         const number_inputs = document.querySelectorAll("input[type='number']");
         for (let i = 0; i < number_inputs.length; i++) {
@@ -506,6 +537,7 @@
         count--;
         const btn_id = remove_btn.getAttribute('data-id');
         const deduction_count = document.querySelector('#deduction-count');
+
         // update deduction count hidden input value for reference
         deduction_count.value = count;
 
@@ -513,13 +545,13 @@
         calculateNoaBilling(remaining_balance);
     }
 
-    const enableButtonandDeduction = (totalBill) =>{
+    const enableButtonandDeduction = (total_bill) =>{
         const input_philhealth = document.querySelector('#deduct-philhealth');
         const input_sss = document.querySelector('#deduct-sss');
         const deduct_btn = document.querySelector('#btn-other-deduction');
         const bill_btn = document.querySelector('#btn-bill');
 
-        if(totalBill > 0){
+        if(total_bill > 0){
             input_philhealth.removeAttribute('readonly');
             input_sss.removeAttribute('readonly');
             deduct_btn.removeAttribute('disabled');
@@ -533,23 +565,24 @@
     }
 
     // function to be called to show patient's Personal Charge Alert if it Net Bill exceeds patient's remaining MBL balance
-    const showPersonalChargeAlert = (charge_amount) => {
+    const showPersonalChargeAlert = (personal_charge_amount) => {
         const personalCharge = document.querySelector('#personal-charge');
         // the ids of the html elements below are found in personal-charge_alert.php
         const chargeAlertDiv = document.querySelector('#charge-alert-div');
         const chargeAmount = document.querySelector('#charge-amount');
 
         /* Calculating the charge amount based on the amount of the transaction. */
-        if(charge_amount > 0){
-            /* Converting the charge_amount to a Peso currency format. */
-            let personal_charge_amount = charge_amount.toLocaleString('en-Ph', {
+        if(personal_charge_amount > 0){
+            let pcharge_amount = personal_charge_amount.toLocaleString('en-Ph', {
                 style: 'currency',
                 currency: 'PHP',
             });
-            personalCharge.value = charge_amount.toFixed(2);
+
+            personalCharge.value = parseFloat(personal_charge_amount).toFixed(2);
+
             chargeAlertDiv.classList.remove('d-none');
             chargeAlertDiv.classList.add('d-block');
-            chargeAmount.innerHTML = personal_charge_amount;
+            chargeAmount.innerHTML = pcharge_amount;
         }else{
             personalCharge.value = 0;
             chargeAlertDiv.classList.remove('d-block');

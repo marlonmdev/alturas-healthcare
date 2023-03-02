@@ -61,10 +61,10 @@
                 </ul>
             </div>
             <div class="row mb-3 pt-2">
-                <div class="col-lg-5 ps-5">
+                <div class="col-lg-5">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text bg-secondary text-white">
+                            <span class="input-group-text bg-dark text-white">
                             <i class="mdi mdi-filter"></i>
                             </span>
                         </div>
@@ -77,15 +77,15 @@
                     </div>
                 </div>
                 
-                <div class="row col-lg-6 offset-1">
+                <div class="col-lg-6 offset-1">
                         <div class="input-group">
                             <div class="input-group-append">
-                                <span class="input-group-text bg-secondary text-white ms-2">FROM: </span>
+                                <span class="input-group-text bg-dark text-white ls-1 ms-2">From : </span>
                             </div>
                             <input type="date" class="form-control" name="start_date" id="start-date" oninput="validateDateRange()" readonly>
 
                             <div class="input-group-append">
-                                <span class="input-group-text bg-secondary text-white ms-2">TO: </span>
+                                <span class="input-group-text bg-dark text-white ls-1 ms-2">To : </span>
                             </div>
                             <input type="date" class="form-control" name="end_date" id="end-date" oninput="validateDateRange()" readonly>
                         
@@ -95,7 +95,7 @@
                 </div>
             </div><br>
            
-                <div class="card bg-light">
+                <div class="card shadow">
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-hover" id="billedTable">
@@ -107,6 +107,7 @@
                                         <td class="fw-bold">Billed on</td>
                                         <td class="fw-bold">Company Charge</td>
                                         <td class="fw-bold">Action</td>
+                                        <td class="fw-bold">Total Charge</td>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -115,16 +116,17 @@
                         </div>
                     </div>
                 </div>
+
                 <?php include 'payment_details_modal.php'?>
-                <div class="row col-lg-6 offset-6 pt-3 pb-3">
+                <div class="row col-lg-7 offset-5 pt-3 pb-3">
                     <div class="input-group">
                         <div class="input-group-append">
-                            <span class="input-group-text bg-secondary text-white ms-2 fw-bold fs-5">TOTAL PAYABLE: </span>
+                            <span class="input-group-text bg-dark text-white ls-1 fs-5">TOTAL PAYABLE: </span>
                         </div>
                         <input type="text" class="form-control fs-5 text-danger" id="total_charge" readonly>
                         
                         <div class="input-group-append">
-                            <a href="javascript:void(0)" onclick="add_payment()" class="input-group-text bg-success text-dark ms-2 fw-bold fs-4" id="add-payment-btn">Add Payment Details </a>
+                            <a href="javascript:void(0)" onclick="add_payment()" class="input-group-text bg-cyan text-white ms-2 px-3 fs-5 ls-1" id="add-payment-btn">Add Payment Details </a>
                         </div>
                     </div>
                 </div>
@@ -141,33 +143,46 @@
     <script>
         const baseUrl = "<?php echo base_url(); ?>";
         $(document).ready(function(){
+
             let billingTable = $('#billedTable').DataTable({
-            processing: true, //Feature control the processing indicator.
-            serverSide: true, //Feature control DataTables' server-side processing mode.
-            order: [], //Initial no order.
+                processing: true, //Feature control the processing indicator.
+                serverSide: true, //Feature control DataTables' server-side processing mode.
+                order: [], //Initial no order.
 
-            // Load data for the table's content from an Ajax source
-            ajax: {
-                url: `${baseUrl}head-office-accounting/billing-list/billed/fetch`,
-                type: "POST",
-                data: function(data) {
-                    data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
-                    data.filter = $('#hospital-filter').val();
-                    data.startDate = $('#start-date').val();
-                    data.endDate = $('#end-date').val();
+                // Load data for the table's content from an Ajax source
+                ajax: {
+                    url: `${baseUrl}head-office-accounting/billing-list/billed/fetch`,
+                    type: "POST",
+                    data: function(data) {
+                        data.token     = '<?php echo $this->security->get_csrf_hash(); ?>';
+                        data.filter    = $('#hospital-filter').val();
+                        data.startDate = $('#start-date').val();
+                        data.endDate   = $('#end-date').val();
+                    },
                 },
-                success: function(response){
-                    $('#total_charge').val(response.total_company_charge);
-                }
-            },
 
-            //Set column definition initialisation properties.
-            columnDefs: [{
-                "targets": [5], // 5th column / numbering column
-                "orderable": false, //set not orderable
-            }, ],
-            responsive: true,
-            fixedHeader: true,
+
+
+                // footerCallback: function (row, data, start, end, display) {
+                //     var api = this.api();
+
+                //     // Calculate the sum of values in column 4
+                //     var column5Total = api.column(4).data().reduce(function (acc, val) {
+                //         return acc + parseFloat(val);
+                //     }, 0);
+
+                //     // Update the footer value for column 4
+                //     $('#total_charge').html(data.total);
+                // },
+               
+                
+                //Set column definition initialisation properties.
+                columnDefs: [{
+                    "targets": [5], // 5th column / numbering column
+                    "orderable": false, //set not orderable
+                }, ],
+                responsive: true,
+                fixedHeader: true,
             });
 
             $('#hospital-filter').change(function(){
@@ -182,7 +197,7 @@
                 billingTable.draw();
             });
 
-         });
+        });
 
         const enableDate = () => {
             const hp_filter = document.querySelector('#hospital-filter');

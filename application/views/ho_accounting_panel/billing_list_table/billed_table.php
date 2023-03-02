@@ -90,10 +90,10 @@
                 </div>
             </div><br>
            
-                <div class="card shadow">
+                <div class="card bg-light">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover bg-light" id="billedTable">
+                            <table class="table table-hover" id="billedTable">
                                 <thead>
                                     <tr>
                                         <td class="fw-bold">Billing #</td>

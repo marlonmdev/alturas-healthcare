@@ -11,10 +11,20 @@
               <li class="sidebar-item">
                 <a
                   class="sidebar-link"
-                  href="<?php echo base_url(); ?>head-office-accounting/billing-list"
+                  href="<?php echo base_url(); ?>head-office-accounting/billing-list/billed"
+                  aria-expanded="false"
+                  ><i class="mdi mdi-file-check"></i
+                  ><span class="hide-menu ls-1">Billing List</span>
+                </a>
+              </li>
+
+              <li class="sidebar-item">
+                <a
+                  class="sidebar-link"
+                  href="<?php echo base_url(); ?>head-office-accounting/payment_history"
                   aria-expanded="false"
                   ><i class="mdi mdi-receipt"></i
-                  ><span class="hide-menu ls-1">Billing List</span>
+                  ><span class="hide-menu ls-1">Payment History</span>
                 </a>
               </li>
 

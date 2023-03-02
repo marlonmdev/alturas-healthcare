@@ -16,8 +16,9 @@ class TableList extends CI_Controller {
     public function index() {
         $this->security->get_csrf_hash();
         $data['user_role'] = $this->session->userdata('user_role');
+        $data_options['options'] = $this->List_model->get_hc_provider();
         $this->load->view('templates/header', $data);
-        $this->load->view('ho_accounting_panel/billing_list_table/unbilled_table');
+        $this->load->view('ho_accounting_panel/billing_list_table/unbilled_table', $data_options);
         $this->load->view('templates/footer');
     }
 
@@ -33,8 +34,9 @@ class TableList extends CI_Controller {
     public function closed_record(){
         $this->security->get_csrf_hash();
         $data['user_role'] = $this->session->userdata('user_role');
+        $data_options['options'] = $this->List_model->get_hc_provider();
         $this->load->view('templates/header', $data);
-        $this->load->view('ho_accounting_panel/billing_list_table/closed_table');
+        $this->load->view('ho_accounting_panel/billing_list_table/closed_table', $data_options);
         $this->load->view('templates/footer');
     }
 

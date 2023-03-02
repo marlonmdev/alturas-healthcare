@@ -46,7 +46,21 @@
                     >
                 </li>
             </ul>
-
+            <div class="col-lg-5 ps-5 pb-3">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text bg-dark text-white">
+                        <i class="mdi mdi-filter"></i>
+                        </span>
+                    </div>
+                    <select class="form-select fw-bold" name="hospital-filter" id="hospital-filter">
+                            <option value="">Select Hospital</option>
+                            <?php foreach($hc_provider as $option) : ?>
+                            <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
+                            <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
              <div class="card shadow">
                 <div class="card-body">
                     <div class="table-responsive">  
@@ -75,7 +89,7 @@
     const baseUrl = "<?php echo base_url(); ?>";
     $(document).ready(function() {
 
-        $('#completedNoaTable').DataTable({
+        let noaTable = $('#completedNoaTable').DataTable({
         processing: true, //Feature control the processing indicator.
         serverSide: true, //Feature control DataTables' server-side processing mode.
         order: [], //Initial no order.
@@ -85,8 +99,9 @@
             url: `${baseUrl}head-office-accounting/noa-request-list/noa-completed/fetch`,
             type: "POST",
             // passing the token as data so that requests will be allowed
-            data: {
-            'token': '<?php echo $this->security->get_csrf_hash(); ?>'
+            data: function(data){
+                data.token = '<?php echo $this->security->get_csrf_hash(); ?>',
+                data.filter = $('#hospital-filter').val()
             }
         },
 
@@ -99,11 +114,15 @@
         fixedHeader: true,
         });
 
+        $('#hospital-filter').change(function(){
+            noaTable.draw();
+        });
+
     });
 
-    function viewNoaInfo(req_id) {
+    function viewNoaInfo(noa_id) {
         $.ajax({
-            url: `${baseUrl}healthcare-provider/noa-requests/view/${req_id}`,
+            url: `${baseUrl}head-office-accounting/noa-request-list/noa-completed/view/${noa_id}`,
             type: "GET",
             success: function(response) {
                 const res = JSON.parse(response);

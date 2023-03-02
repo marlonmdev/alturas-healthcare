@@ -446,14 +446,15 @@
         /* Calculating the charge amount based on the amount of the transaction. */
         if(personal_charge_amount > 0){
             /* Converting the charge_amount to a Peso currency format. */
-            // let personal_charge_amount = charge_amount.toLocaleString('en-US', {
-            //     style: 'currency',
-            //     currency: 'PHP',
-            // });
-            personalCharge.value = personal_charge_amount.toFixed(2);
+            let pcharge_amount = personal_charge_amount.toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'PHP',
+            });
+
+            personalCharge.value = personal_charge_amount.toLocaleString('en-US', { minimumFractionDigits: 2 });
             chargeAlertDiv.classList.remove('d-none');
             chargeAlertDiv.classList.add('d-block');
-            chargeAmount.innerHTML = personal_charge_amount.toFixed(2);
+            chargeAmount.innerHTML = pcharge_amount;
         }else{
             personalCharge.value = 0;
             chargeAlertDiv.classList.remove('d-block');

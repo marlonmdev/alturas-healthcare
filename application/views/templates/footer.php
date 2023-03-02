@@ -15,6 +15,8 @@
     <script src="<?php echo base_url(); ?>assets/vendors/easy-select/easySelect.js"></script>
     <script src="<?php echo base_url(); ?>assets/vendors/tagify/tagify.js"></script>
     <script src="<?php echo base_url(); ?>assets/vendors/tagify/tagify.polyfills.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/vendors/pickadate/picker.js"></script>
+    <script src="<?php echo base_url(); ?>assets/vendors/pickadate/picker.date.js"></script>
 
     <!-- Custom Scripts -->
     <script src="<?php echo base_url(); ?>assets/js/plugins.js"></script>

@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/matrixDashboard/dist/css/style.min.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/matrixDashboard/dist/css/cards.css" />
     <!-- End of Custom CSS -->
-    <!-- Start Vendors CSS -->
+    <!-- Start Vendors CSS -->  
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/dataTables/datatables.min.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/dropify/css/dropify.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/sweetalert2/sweetalert2.min.css" />
@@ -25,6 +25,8 @@
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/easy-select/easySelect.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/tagify/tagify.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/photoviewer/dist/photoviewer.min.css" />
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/pickadate/themes/default.css" />
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/pickadate/themes/default.date.css" />
     <!-- End of Vendors CSS -->
     <!-- Script Tags -->
     <script src="<?php echo base_url(); ?>assets/vendors/jquery/jquery.min.js"></script>

@@ -77,12 +77,12 @@
                             <div class="input-group-append">
                                 <span class="input-group-text bg-dark text-white ls-1 ms-2">From : </span>
                             </div>
-                            <input type="date" class="form-control" name="start_date" id="start-date" oninput="validateDateRange()" readonly>
+                            <input type="date" class="form-control" name="start_date" id="start-date" oninput="validateDateRange()" placeholder="mm/dd/yyyy" disabled>
 
                             <div class="input-group-append">
                                 <span class="input-group-text bg-dark text-white ls-1 ms-2">To : </span>
                             </div>
-                            <input type="date" class="form-control" name="end_date" id="end-date" oninput="validateDateRange()" readonly>
+                            <input type="date" class="form-control" name="end_date" id="end-date" oninput="validateDateRange()" placeholder="mm/dd/yyyy" disabled>
                         
                         </div>
                         
@@ -187,6 +187,21 @@
                 billingTable.draw();
             });
 
+
+            // $("#start-date").pickadate({
+            //     format: 'mm/dd/yyyy',
+            //     today: 'Today',
+            //     clear: 'Clear',
+            //     close: 'Close',
+            // });
+
+            // $('#end-date').pickadate({
+            //     format: 'mm/dd/yyyy',
+            //     today: 'Today',
+            //     clear: 'Clear',
+            //     close: 'Close',
+            // });
+
         });
 
         const enableDate = () => {
@@ -195,11 +210,13 @@
             const end_date = document.querySelector('#end-date');
 
             if(hp_filter != ''){
-                start_date.removeAttribute('readonly');
-                end_date.removeAttribute('readonly');
+                start_date.removeAttribute('disabled');
+                end_date.removeAttribute('disabled');
             }else{
-                start_date.setAttribute('readonly', true);
-                end_date.setAttributte('readonly', true);
+                start_date.setAttribute('disabled', true);
+                start_date.value = '';
+                end_date.setAttributte('disabled', true);
+                end_date.value = '';
             }
         }
 
@@ -208,6 +225,8 @@
             const endDateInput = document.querySelector('#end-date');
             const startDate = new Date(startDateInput.value);
             const endDate = new Date(endDateInput.value);
+
+
 
             if (startDateInput.value === '' || endDateInput.value === '') {
                 return; // Don't do anything if either input is empty

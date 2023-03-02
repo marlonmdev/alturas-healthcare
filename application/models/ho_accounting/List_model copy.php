@@ -7,12 +7,15 @@ class List_model extends CI_Model{
 	var $table_1 = 'billing';
     var $table_2 = 'members';
     var $table_3 = 'healthcare_providers';
-	var $column_order = ['tbl_1.billing_no', 'tbl_2.first_name', 'tbl_1.billed_on', 'tbl_1.company_charge', NULL, NULL]; //set column field database for datatable orderable
+
+	var $column_order = ['tbl_1.billing_no', 'tbl_2.first_name', 'tbl_1.billed_on', 'tbl_1.company_charge', NULL]; //set column field database for datatable orderable
+
 	var $column_search = ['tbl_1.hp_id', 'tbl_1.billing_no', 'tbl_2.first_name', 'tbl_2.middle_name', 'tbl_2.last_name', 'tbl_3.hp_name', 'tbl_1.billed_on']; //set column field database for datatable searchable 
 	var $order = ['tbl_1.billing_id' => 'asc']; // default order 
 
-	private function _get_datatables_query() {
-
+    // var $select_columns  = 'tbl_1.loa_id, tbl_1.noa_id, tbl_1.company_charge, tbl_1.billing_id, tbl_1.hp_id, tbl_1.billing_no, tbl_2.first_name, tbl_2.middle_name, tbl_2.last_name, tbl_3.hp_name, tbl_1.billed_on, SUM(tbl_1.company_charge) as sum_value';
+	
+    private function _get_datatables_query() {
 		$this->db->from($this->table_1. ' as tbl_1');
         $this->db->join($this->table_2. ' as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
         $this->db->join($this->table_3. ' as tbl_3', 'tbl_1.hp_id = tbl_3.hp_id');
@@ -79,7 +82,7 @@ class List_model extends CI_Model{
 	}
 	// End of server-side processing datatables
 
-    public function get_hc_provider(){
+    function get_hc_provider(){
         return $this->db->get('healthcare_providers')->result_array();
     }
 
@@ -111,8 +114,33 @@ class List_model extends CI_Model{
         $query = $this->db->get_where('billing', array('billing_no' => $billing_no));
         return $query->row_array();
     }
-    
 
+    function get_loa_approved($userHospital){
+        $query = $this->db->get_where('loa_requests', array('hcare_provider' => $userHospital));
+        return $query->result_array();
+    }
+
+    function get_hcare_provider($hp_id){
+		$this->db->select('*')
+                 ->from('healthcare_providers')
+                 ->where('hp_id', $hp_id);
+		$query = $this->db->get();
+		return $query->row_array();
+	}
+
+    function hp_approved_loa_count($hp_id){
+        return $this->db->get_where('loa_requests', array('hcare_provider' => $hp_id, 'status' => 'Approved'))->num_rows();
+    }
+    
+    function hp_approved_noa_count($hp_id){
+        return $this->db->get_where('noa_requests', array('hospital_id' => $hp_id, 'status' => 'Approved'))->num_rows();
+    }
+    
+    function hp_done_billing_count($hp_id){
+        return $this->db->get_where('billing', array('hp_id' => $hp_id))->num_rows();
+    }
+    
+// george code below
     public function loa_member()
     {
         return $this->db->get('loa_requests')->result_array();

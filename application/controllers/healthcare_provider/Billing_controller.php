@@ -113,6 +113,7 @@ class Billing_controller extends CI_Controller {
         $data['cost_types'] = $this->billing_model->get_all_cost_types();
         $data['loa'] = $loa;
         $data['request_type'] = $loa["loa_request_type"];
+        $data['work_related'] = $loa["work_related"];
         $data['member'] = $this->session->userdata('b_member_info');
         $data['member_mbl'] = $this->session->userdata('b_member_mbl');
         $data['remaining_balance'] = $this->session->userdata('b_member_bal');
@@ -322,6 +323,7 @@ class Billing_controller extends CI_Controller {
         $data['member'] = $this->session->userdata('b_member_info');
         $data['member_mbl'] = $this->session->userdata('b_member_mbl');
         $data['remaining_balance'] = $this->session->userdata('b_member_bal');
+        $data['work_related'] = $noa["work_related"];
         $data['healthcard_no'] = $this->session->userdata('b_healthcard_no');
         $data['billing_no'] = "BLN-" . strtotime(date('Y-m-d h:i:s'));
         $data['noa_id'] = $url_id;

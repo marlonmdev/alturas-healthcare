@@ -55,27 +55,20 @@
                             <label class="form-label ls-1">LOA Number</label>
                             <input type="text" class="form-control text-danger fw-bold ls-1" id="loa-no" name="loa-no" value="<?= $loa_no ?>" readonly>
                         </div>
-
-                        <!-- <div class="col-md-2">
-                            <label class="form-label ls-1">Patient's MBL</label>
-                            <input type="text" class="form-control text-danger fw-bold ls-1" name="patient-mbl" value="< '&#8369;'.number_format($member_mbl, 2) ?>" readonly>
-                        </div>
-
-                        <div class="col-md-2">
-                            <label class="form-label ls-1">Remaining MBL</label>
-                            <input type="text" class="form-control text-danger fw-bold ls-1" id="request-type" name="request-type" value="< '&#8369;'.number_format($remaining_balance, 2) ?>" readonly>
-                        </div> -->
                     </div>
 
                     <div class="row">
-                        
-
-                        <div class="col-md-4 my-1">
+                        <div class="col-md-3 my-1">
                             <label class="form-label ls-1">LOA Request Type</label>
                             <input type="text" class="form-control text-danger fw-bold ls-1" id="request-type" name="request-type" value="<?= $request_type ?>" readonly>
                         </div>
 
-                        <div class="col-md-8 my-1">
+                        <div class="col-md-2 my-1">
+                            <label class="form-label ls-1">Work-Related</label>
+                            <input type="text" class="form-control text-danger fw-bold ls-1" id="work-related" name="work-related" value="<?= $work_related ?>" readonly>
+                        </div>
+
+                        <div class="col-md-7 my-1">
                             <label class="form-label ls-1">Healthcare Provider</label>
                             <input type="text" class="form-control text-danger fw-bold ls-1" id="hcare-provider" name="hcare-provider" value="<?= $hcare_provider ?>" readonly>
                         </div>
@@ -301,6 +294,7 @@
         const other_deduction_msg = document.querySelectorAll('.other-deduction-msg');
         const row_deduction = document.querySelectorAll('.row-deduction');
         const deduction_amount = document.querySelectorAll('.deduction-amount');
+        const work_related = document.querySelector('#work-related');
 
         // calling this function to prevent negative inputs
         validateNumberInputs();
@@ -324,12 +318,22 @@
 
         if(total_deduction > 0) {
             net_total = total_bill - total_deduction;
-            personal_charge_amount = net_total - remaining_balance;
-            company_charge_amount = net_total > remaining_balance ? remaining_balance : net_total;
+            if(work_related.value === 'Yes'){
+                personal_charge_amount = 0;
+                company_charge_amount = net_total;
+            }else{
+                personal_charge_amount = net_total - remaining_balance;
+                company_charge_amount = net_total > remaining_balance ? remaining_balance : net_total;
+            }
         }else{
             net_total = total_bill;
-            personal_charge_amount = net_total - remaining_balance;
-            company_charge_amount = net_total > remaining_balance ? remaining_balance : net_total;
+             if(work_related.value === 'Yes'){
+                personal_charge_amount = 0;
+                company_charge_amount = net_total;
+            }else{
+                personal_charge_amount = net_total - remaining_balance;
+                company_charge_amount = net_total > remaining_balance ? remaining_balance : net_total;
+            }
         }
 
         if(net_total < 0) {
@@ -360,11 +364,10 @@
                 other_deduction_msg[i].innerHTML = "";
             }
         }
-
-         
+     
         /* Checking if the total bill is 0, if it is, it will remove the deductions and set the total
         bill, total deduction and net bill to 0. */
-        if(total_bill == 0){
+        if(total_bill === 0){
             for (let i = 0; i < input_deduction.length; i++) {
                 input_deduction[i].value = '';
                 input_deduction[i].classList.remove('is-invalid', 'text-danger');
@@ -382,9 +385,9 @@
             company_charge.value = 0;
         }else{
             // set the net total as the value of total bill input
-            total_input.value = total_bill.toFixed(2);
-            deduction_input.value = total_deduction.toFixed(2);
-            net_bill.value = net_total.toFixed(2);
+            total_input.value = parseFloat(total_bill).toFixed(2);
+            deduction_input.value = parseFloat(total_deduction).toFixed(2);
+            net_bill.value = parseFloat(net_total).toFixed(2);
             company_charge.value = parseFloat(company_charge_amount).toFixed(2);
         }
 

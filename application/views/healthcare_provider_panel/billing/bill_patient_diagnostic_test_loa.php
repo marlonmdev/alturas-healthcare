@@ -58,12 +58,18 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-4 my-1">
+                        <div class="col-md-3 my-1">
                             <label class="form-label ls-1">LOA Request Type</label>
                             <input type="text" class="form-control text-danger fw-bold ls-1" id="request-type" name="request-type" value="<?= $request_type ?>" readonly>
                         </div>
 
-                        <div class="col-md-8 my-1">
+                        <div class="col-md-2 my-1">
+                            <label class="form-label ls-1">Work-Related</label>
+                            <input type="text" class="form-control text-danger fw-bold ls-1" id="work-related" name="work-related" value="<?= $work_related ?>" readonly>
+                        </div>
+
+
+                        <div class="col-md-7 my-1">
                             <label class="form-label ls-1">Healthcare Provider</label>
                             <input type="text" class="form-control text-danger fw-bold ls-1" id="hcare-provider" name="hcare-provider" value="<?= $hcare_provider ?>" readonly>
                         </div>
@@ -300,6 +306,7 @@
         const other_deduction_msg = document.querySelectorAll('.other-deduction-msg');
         const row_deduction = document.querySelectorAll('.row-deduction');
         const deduction_amount = document.querySelectorAll('.deduction-amount');
+        const work_related = document.querySelector('#work-related');
 
         // calling this function to prevent negative inputs
         validateNumberInputs();
@@ -328,12 +335,22 @@
         // Calculation of Net Bill and Charge amount based on total deduction
         if(total_deduction > 0) {
             net_total = total_bill - total_deduction;
-            personal_charge_amount = net_total - remaining_balance;
-            company_charge_amount = net_total > remaining_balance ? remaining_balance : net_total;
+            if(work_related.value === 'Yes'){
+                personal_charge_amount = 0;
+                company_charge_amount = net_total;
+            }else{
+                personal_charge_amount = net_total - remaining_balance;
+                company_charge_amount = net_total > remaining_balance ? remaining_balance : net_total;
+            }
         }else{
             net_total = total_bill;
-            personal_charge_amount = net_total - remaining_balance;
-            company_charge_amount = net_total > remaining_balance ? remaining_balance : net_total;
+            if(work_related.value === 'Yes'){
+                personal_charge_amount = 0;
+                company_charge_amount = net_total;
+            }else{
+                personal_charge_amount = net_total - remaining_balance;
+                company_charge_amount = net_total > remaining_balance ? remaining_balance : net_total;
+            }
         }
 
        /* Checking if the net total is less than 0. If it is, it will add the class is-invalid and
@@ -391,9 +408,9 @@
             company_charge.value = 0;
         }else{
             // set the net total as the value of total bill input
-            total_input.value = total_bill.toFixed(2);
-            deduction_input.value = total_deduction.toFixed(2);
-            net_bill.value = net_total.toFixed(2);
+            total_input.value = parseFloat(total_bill).toFixed(2);
+            deduction_input.value = parseFloat(total_deduction).toFixed(2);
+            net_bill.value = parseFloat(net_total).toFixed(2);
             company_charge.value = parseFloat(company_charge_amount).toFixed(2);
         }
 

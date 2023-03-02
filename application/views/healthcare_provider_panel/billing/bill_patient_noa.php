@@ -60,7 +60,12 @@
                         </div>
 
                         <div class="row pt-2">
-                            <div class="col-md-8 my-1">
+                            <div class="col-md-2 my-1">
+                                <label class="form-label ls-1">Work-Related</label>
+                                <input type="text" class="form-control text-danger fw-bold ls-1" id="work-related" name="work-related" value="<?= $work_related ?>" readonly>
+                            </div>
+
+                            <div class="col-md-6 my-1">
                                 <label class="form-label ls-1">Healthcare Provider</label>
                                 <input type="text" class="form-control text-danger fw-bold ls-1" id="hcare-provider" name="hcare-provider" value="<?= $hcare_provider ?>" readonly>
                             </div>
@@ -401,6 +406,7 @@
         const deduction_msg = document.querySelectorAll('.deduction-msg');
         const other_deduction_msg = document.querySelectorAll('.other-deduction-msg');
         const input_deduction = document.querySelectorAll('.input-deduction');
+        const work_related = document.querySelector('#work-related');
 
         for(i = 0;i < cost_inputs.length;i++ ){
             total_bill += cost_inputs[i].value * quantity_inputs[i].value;
@@ -425,12 +431,22 @@
        /* Calculating the net bill, personal charge amount and company charge amount. */
         if(total_deduction > 0){
             net_bill = total_bill - total_deduction;
-            personal_charge_amount = net_bill - remaining_balance;
-            company_charge_amount = net_bill >= remaining_balance ? remaining_balance : net_bill;
+            if(work_related.value === 'Yes'){
+                personal_charge_amount = 0;
+                company_charge_amount = net_bill;
+            }else{
+                personal_charge_amount = net_bill - remaining_balance;
+                company_charge_amount = net_bill > remaining_balance ? remaining_balance : net_bill;
+            }
         }else{
             net_bill = total_bill;
-            personal_charge_amount = net_bill - remaining_balance;
-            company_charge_amount = net_bill >= remaining_balance ?  remaining_balance : net_bill;
+             if(work_related.value === 'Yes'){
+                personal_charge_amount = 0;
+                company_charge_amount = net_bill;
+            }else{
+                personal_charge_amount = net_bill - remaining_balance;
+                company_charge_amount = net_bill > remaining_balance ? remaining_balance : net_bill;
+            }
         }
 
         deduction_input.value = parseFloat(total_deduction).toFixed(2);

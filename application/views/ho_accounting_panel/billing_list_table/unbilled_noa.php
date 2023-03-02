@@ -75,10 +75,11 @@
                     </select>
                 </div>
             </div>
+            <?php include 'view_completed_noa_details.php'; ?>
             <div class="card shadow">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover" id="unbilledTable">
+                        <table class="table table-hover" id="unbilledNoaTable">
                             <thead>
                                 <tr>
                                     <th class="fw-bold">NOA No.</th>
@@ -103,4 +104,90 @@
             background-color: #5f86fa;
         }
     </style>
-           
+
+<script>
+    const baseUrl = "<?php echo base_url(); ?>";
+    $(document).ready(function() {
+
+        let noaTable = $('#unbilledNoaTable').DataTable({
+        processing: true, //Feature control the processing indicator.
+        serverSide: true, //Feature control DataTables' server-side processing mode.
+        order: [], //Initial no order.
+
+        // Load data for the table's content from an Ajax source
+        ajax: {
+            url: `${baseUrl}head-office-accounting/billing-list/unbilled_noa/fetch`,
+            type: "POST",
+            // passing the token as data so that requests will be allowed
+            data: function(data){
+                data.token = '<?php echo $this->security->get_csrf_hash(); ?>',
+                data.filter = $('#hospital-filter').val()
+            }
+        },
+
+        //Set column definition initialisation properties.
+        columnDefs: [{
+            "targets": [5, 6], // numbering column
+            "orderable": false, //set not orderable
+        }, ],
+        responsive: true,
+        fixedHeader: true,
+        });
+
+        $('#hospital-filter').change(function(){
+            noaTable.draw();
+        });
+
+    });
+
+    function viewNoaInfo(noa_id) {
+        $.ajax({
+            url: `${baseUrl}head-office-accounting/billing-list/unbilled_noa/view/${noa_id}`,
+            type: "GET",
+            success: function(response) {
+                const res = JSON.parse(response);
+                const base_url = window.location.origin;
+                const {
+                status,
+                token,
+                noa_no,
+                approved_by,
+                approved_on,
+                member_mbl,
+                remaining_mbl,
+                first_name,
+                middle_name,
+                last_name,
+                suffix,
+                date_of_birth,
+                age,
+                hospital_name,
+                health_card_no,
+                requesting_company,
+                admission_date,
+                chief_complaint,
+                work_related,
+                request_date,
+                req_status,
+                } = res;
+
+                $("#viewNoaModal").modal("show");
+
+                $('#noa-no').html(noa_no);
+                $('#noa-status').html('<strong class="text-info">[' + req_status + ']</strong>');
+                $('#approved-by').html(approved_by);
+                $('#approved-on').html(approved_on);
+                $('#member-mbl').html(member_mbl);
+                $('#remaining-mbl').html(remaining_mbl);
+                $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
+                $('#date-of-birth').html(date_of_birth);
+                $('#age').html(age);
+                $('#hospital-name').html(hospital_name);
+                $('#admission-date').html(admission_date);
+                $('#chief-complaint').html(chief_complaint);
+                $('#work-related').html(work_related);
+                $('#request-date').html(request_date);
+            }
+        });
+    }
+</script>    

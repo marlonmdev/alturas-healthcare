@@ -325,5 +325,17 @@ class Main_controller extends CI_Controller {
 		];
 		echo json_encode($response);
 	}
+
+	function get_hp_name() {
+		$token = $this->security->get_csrf_hash();
+		$hp_id = $this->input->post('hp_id');
+		$hc_provider = $this->List_model->db_get_hp_name($hp_id);
+
+		$response = [
+			'token' => $token,
+			'hp_name' => $hc_provider['hp_name'],
+		];
+		echo json_encode($response);
+	}
 }
 

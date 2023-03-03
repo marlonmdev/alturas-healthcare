@@ -21,5 +21,7 @@
     <!-- Custom Scripts -->
     <script src="<?php echo base_url(); ?>assets/js/plugins.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/utilities.js"></script>
+
+    <script src="<?php echo base_url(); ?>assets/js/bignumber.js"></script>
   </body>
 </html>

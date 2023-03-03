@@ -9,6 +9,7 @@
               </li>
 
               <li class="sidebar-item">
+              <?php echo ($this->uri->segment(4) == 'closed' || $this->uri->segment(4) == 'unbilled') ? 'selected' : ''; ?>
                 <a
                   class="sidebar-link"
                   href="<?php echo base_url(); ?>head-office-accounting/billing-list/billed"
@@ -39,6 +40,7 @@
               </li>
 
                <li class="sidebar-item">
+                <?php echo ($this->uri->segment(3) == 'noa-request-list') ? 'selected' : '' ; ?>
                 <a
                   class="sidebar-link"
                   href="<?php echo base_url(); ?>head-office-accounting/noa-request-list/noa-approved"
@@ -57,7 +59,7 @@
                   ><span class="hide-menu ls-1">Account Settings</span>
                 </a>
               </li>
-              <hr class="pt-1 bg-light">
+              
               <li class="sidebar-item">
                 <a
                   class="sidebar-link"

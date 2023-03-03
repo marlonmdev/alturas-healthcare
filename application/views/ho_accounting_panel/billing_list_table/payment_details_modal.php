@@ -15,7 +15,7 @@
                                     <div class="input-group-prepend">
                                         <span><i class="mdi mdi-hospital-building fs-3 text-danger pe-2"></i></span>
                                     </div>
-                                        <input class="form-control text-dark fw-bold ls-1 fs-6" placeholder="Hospital Name" name="hospital" id="hospital" readonly>
+                                        <input class="form-control text-dark fw-bold ls-1 fs-6" placeholder="" name="hospital_filtered" id="hospital_filtered" readonly>
                                 </div>
                             </div>
                         
@@ -24,12 +24,12 @@
                                     <div class="input-group-append">
                                         <label class="text-danger ls-1 me-2">From : </label>
                                     </div>
-                                        <input class="form-control text-dark fw-bold ls-1 fs-6" placeholder="Start Date" name="start_date" id="start_date" readonly>
+                                        <input class="form-control text-dark fw-bold ls-1 fs-6" placeholder="" name="start_date" id="start_date" readonly>
 
                                     <div class="input-group-append ms-2">
                                         <label class="text-danger ls-1 me-2">To : </label>
                                     </div>
-                                    <input class="form-control text-dark fw-bold ls-1 fs-6" placeholder="End Date" name="end_date" id="end_date" readonly>
+                                    <input class="form-control text-dark fw-bold ls-1 fs-6" placeholder="" name="end_date" id="end_date" readonly>
                                 </div>
                             </div>
                         </div>
@@ -38,52 +38,52 @@
                     <div class="row pt-2">
 
                         <div class="row col-lg-4 pb-3 pt-2">
-                            <label class=" text-dark fw-bold ms-2 fs-5">Hospital Bank Account: </label>
+                            <label class=" text-dark fw-bold ms-2 fs-5">Account Number: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="text" class="form-control text-dark fs-5" name="" id=""  required>
+                            <input type="text" class="form-control text-dark fs-5" name="acc-number" id="acc-number"  required>
                         </div>
 
                         <div class="row col-lg-4 pb-3 pt-2">
-                            <label class=" text-dark fw-bold ms-2 fs-5">Hospital Account Number: </label>
+                            <label class=" text-dark fw-bold ms-2 fs-5">Account Name: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="text" class="form-control text-dark fs-5" name="" id=""  required>
+                            <input type="text" class="form-control text-dark fs-5" name="acc-name" id="acc-name"  required>
                         </div>
 
                         <div class="row col-lg-4 pb-3 pt-2">
-                            <label class=" text-dark fw-bold ms-2 fs-5">AGC Bank Account: </label>
+                            <label class=" text-dark fw-bold ms-2 fs-5">Check Number: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="text" class="form-control text-dark fs-5" name="" id=""  required>
+                            <input type="text" class="form-control text-dark fs-5" name="check-number" id="check-number"  required>
                         </div>
                         
                         <div class="row col-lg-4 pb-3 pt-2">
-                            <label class=" text-dark fw-bold ms-2 fs-5">AGC Account Number: </label>
+                            <label class=" text-dark fw-bold ms-2 fs-5">Check Date: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="text" class="form-control text-dark fs-5" name="" id=""  required>
+                            <input type="date" class="form-control text-dark fs-5" name="check-date" id="check-date"  required>
                         </div>
                        
                         <div class="row col-lg-4 pb-3 pt-2">
-                            <label class=" text-dark fw-bold ms-2 fs-5">AGC Account Name: </label>
+                            <label class=" text-dark fw-bold ms-2 fs-5">Bank: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="text" class="form-control text-dark fs-5" name="" id=""  required>
+                            <input type="text" class="form-control text-dark fs-5" name="bank" id="bank"  required>
                         </div>
 
                         <div class="row col-lg-4 pb-3 pt-2">
-                            <label class=" text-dark fw-bold ms-2 fs-5">Payment Date: </label>
+                            <label class=" text-dark fw-bold ms-2 fs-5">Amount Paid: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="date" class="form-control text-dark fs-5" name="" id=""  required>
+                            <input type="number" class="form-control text-dark fs-5" name="amount-paid" id="amount-paid"  required>
                         </div>
                         
                         <div class="row col-lg-4 pb-3 pt-2">
-                            <label class=" text-dark fw-bold ms-2 fs-5">Payment Type: </label>
+                            <label class=" text-dark fw-bold ms-2 fs-5">Supporting Document: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="text" class="form-control text-dark fs-5" name="" id=""  required>
+                            <input type="file" class="form-control text-dark fs-5" name="supporting-docu" id="supporting-docu"  required>
                         </div>
 
                     </div>

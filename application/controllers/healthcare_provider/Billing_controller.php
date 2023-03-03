@@ -404,10 +404,14 @@ class Billing_controller extends CI_Controller {
     }
 
     function insert_patient_billing($type, $posted_data, $id){
-        if($posted_data['work-related'] === 'Yes'){
-            $after_billing_balance = $posted_data['remaining-balance'] - $posted_data['net-bill'];
+        $work_related = $posted_data['work-related'];
+        $net_bill = $posted_data['net-bill'];
+        $remaining_bal = $posted_data['remaining-balance'];
+
+        if($work_related == 'Yes' && $net_bill > $remaining_bal){
+            $after_billing_balance = 0;
         }else{
-            $after_billing_balance = $posted_data['remaining-balance'] - $posted_data['net-bill'];
+            $after_billing_balance = $remaining_bal - $net_bill;
         }
 
         if($type === 'LOA'){

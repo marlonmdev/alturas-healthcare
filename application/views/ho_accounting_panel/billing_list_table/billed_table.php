@@ -127,7 +127,7 @@
                         <div class="input-group-append">
                             <span class="input-group-text bg-dark text-white ls-1 fs-5">TOTAL PAYABLE: </span>
                         </div>
-                        <input type="text" class="form-control fs-4 text-danger" id="total_charge" value="" readonly>
+                        <input type="text" class="form-control fw-bold text-danger fs-4 ls-1" id="total_charge" value="" readonly>
                         
                         <div class="input-group-append">
                             <a href="javascript:void(0)" onclick="add_payment()" class="input-group-text bg-cyan text-white ms-2 px-3 fs-5 ls-1 ps-1" id="add-payment-btn"><i class="mdi mdi-plus fs-4"></i> Add Payment Details </a>
@@ -371,7 +371,7 @@
             const total_charge = document.querySelector('#total_charge').value;
 
             $('#addPaymentModal').modal('show');
-            
+            check_date.style.backgroundColor = '#ffff';
             $('#hospital_filtered').val(hospital_name);
             $('#start_date').val(start_date);
             $('#end_date').val(end_date );

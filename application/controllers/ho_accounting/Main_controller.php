@@ -68,8 +68,7 @@ class Main_controller extends CI_Controller {
 
 			$cost_type = $value['loa_id'] != '' ? 'LOA' : 'NOA'; 
 
-			$custom_actions = '<a class="text-info fw-bold ls-1" href="' . base_url() . 'head-office-accounting/billing-list/billed/view/'
-								 . $billing_id . '" data-bs-toggle="tooltip"><u>View Receipt</u></a>';
+			$custom_actions = '<a class="text-info fw-bold ls-1" href="' . base_url() . 'head-office-accounting/billing-list/billed/view/'. $billing_id . '" data-bs-toggle="tooltip"><u>View Receipt</u></a>';
 			
 			$row[] = $custom_bill_no;
 			$row[] = $fullname;

@@ -88,7 +88,7 @@
                   <li class="sidebar-item">
                     <a href="<?php echo base_url(); ?>super-admin/setup/healthcare-providers" class="sidebar-link"
                       ><i class="mdi mdi-hospital-building"></i
-                      ><span class="hide-menu ls-1">HealthCare Providers</span>
+                      ><span class="hide-menu ls-1">Healthcare Providers</span>
                     </a>
                   </li>
                   <li class="sidebar-item">

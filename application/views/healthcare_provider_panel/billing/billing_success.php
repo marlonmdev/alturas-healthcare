@@ -162,7 +162,7 @@
                       <div class="mt-3"></div>
                        <!-- Start of member MBL Table -->
                       <table>
-                        <tr class="border-secondary border-2 border-0 border-top border-bottom">
+                        <tr>
                           <td class="text-center">
                             <span class="text-secondary me-2">Patient's Max Benefit Limit:</span>
                             <span class="text-secondary fw-bold fs-4 ls-1">
@@ -188,8 +188,8 @@
                       <!-- End of member MBL Table -->
                       <div class="mt-3"></div>
                       <!-- Start of Billing Summary Table -->
-                      <table>
-                        <tr>
+                      <table class="table table-bordered">
+                        <tr class="border-2 border-secondary">
                           <td class="text-center">
                             <span class="text-secondary me-2">Total Bill:</span>
                             <span class="text-info fw-bold fs-4 ls-1">
@@ -224,7 +224,7 @@
                             </span>
                           </td>
 
-                          <td class="text-center">
+                          <td>
                             <span class="text-secondary me-2">Personal Charge:</span>
                             <span class="text-danger fw-bold fs-3 ls-1">
                               <?= '&#8369;'.number_format($bill['personal_charge'], 2) ?>

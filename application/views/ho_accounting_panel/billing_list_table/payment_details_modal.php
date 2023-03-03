@@ -55,14 +55,14 @@
                             <label class=" text-dark fw-bold ms-2 fs-5">Check Number: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="text" class="form-control text-dark fs-5" name="check-number" id="check-number"  required>
+                            <input type="text" class="form-control text-dark fs-5" name="check-number" id="check-number" required>
                         </div>
                         
                         <div class="row col-lg-4 pb-3 pt-2">
                             <label class=" text-dark fw-bold ms-2 fs-5">Check Date: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="date" class="form-control text-dark fs-5" name="check-date" id="check-date" placeholder="Enter Date"  required>
+                            <input type="date" class="form-control text-dark fs-5" name="check-date" id="check-date" placeholder="Enter Date" required>
                         </div>
                        
                         <div class="row col-lg-4 pb-3 pt-2">

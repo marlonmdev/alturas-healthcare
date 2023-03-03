@@ -132,6 +132,10 @@ class List_model extends CI_Model{
         return $this->db->get_where('billing', array('hp_id' => $hp_id))->num_rows();
     }
     
+    function db_get_hp_name($hp_id) {
+        $query = $this->db->get_where('healthcare_providers', ['hp_id' => $hp_id]);
+        return $query->row_array();
+    }
     
 
     public function loa_member()

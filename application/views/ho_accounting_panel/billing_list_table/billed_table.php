@@ -74,6 +74,7 @@
                                 <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
                                 <?php endforeach; ?>
                         </select>
+                        <input type="hidden" id="hospital-name">
                     </div>
                 </div>
                 
@@ -123,10 +124,10 @@
                         <div class="input-group-append">
                             <span class="input-group-text bg-dark text-white ls-1 fs-5">TOTAL PAYABLE: </span>
                         </div>
-                        <input type="text" class="form-control fs-5 text-danger" id="total_charge" readonly>
+                        <input type="text" class="form-control fs-5 text-danger" id="total_charge" value="" readonly>
                         
                         <div class="input-group-append">
-                            <a href="javascript:void(0)" onclick="add_payment()" class="input-group-text bg-cyan text-white ms-2 px-3 fs-5 ls-1" id="add-payment-btn">Add Payment Details </a>
+                            <a href="javascript:void(0)" onclick="add_payment()" class="input-group-text bg-cyan text-white ms-2 px-3 fs-5 ls-1 ps-1" id="add-payment-btn"><i class="mdi mdi-plus fs-4"></i> Add Payment Details </a>
                         </div>
                     </div>
                 </div>
@@ -187,6 +188,21 @@
 
             $('#hospital-filter').change(function(){
                 billingTable.draw();
+
+                $.ajax({
+                    type: 'post',
+                    url: `${baseUrl}head-office-accounting/billing-list/billed/hp_name`,
+                    data: {
+                        'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
+                        'hp_id' : $('#hospital-filter').val(),
+                    },
+                    dataType: "json",
+                    success: function(response){
+                        $('#hospital-name').val(response.hp_name);
+                    },
+
+                });
+
             });
 
             $('#start-date').change(function(){
@@ -196,6 +212,43 @@
             $('#end-date').change(function(){
                 billingTable.draw();
             });
+
+
+            // $("#start-date").pickadate({
+            //     format: 'mm/dd/yyyy',
+            //     today: 'Today',
+            //     clear: 'Clear',
+            //     close: 'Close',
+            // });
+
+            // $('#end-date').pickadate({
+            //     format: 'mm/dd/yyyy',
+            //     today: 'Today',
+            //     clear: 'Clear',
+            //     close: 'Close',
+            // });
+
+          // Assuming DataTable is already initialized and loaded with data
+            let table = $('#billedTable').DataTable();
+
+            // Get the column data using the column() method
+            let columnData = table.column(6).data().toArray(); // assuming column index is 0
+
+            // Convert the column data to BigNumber objects
+            let bigNumberColumnData = columnData.map(function(value) {
+            return new BigNumber(value);
+            });
+
+            // Filter out any NaN or undefined values
+            let filteredBigNumberColumnData = bigNumberColumnData.filter(function(value) {
+            return  !isNaN(value);
+            });
+
+            // Find the greatest numeric value using BigNumber.max() method
+            let greatestValue = BigNumber.max(...filteredBigNumberColumnData);
+
+            // Display the greatest value
+            console.log('Greatest value in column:', greatestValue.toString());
 
         });
 
@@ -242,7 +295,15 @@
         }
 
         const add_payment = () => {
+            const hospital_name = document.querySelector('#hospital-name').value;
+            const start_date = document.querySelector('#start-date').value;
+            const end_date = document.querySelector('#end-date').value;
+
             $('#addPaymentModal').modal('show');
+            
+            $('#hospital_filtered').val(hospital_name);
+            $('#start_date').val(start_date);
+            $('#end_date').val(end_date );
         }
 
 

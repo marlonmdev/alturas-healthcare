@@ -28,7 +28,7 @@
                     
                     <li class="nav-item">
                         <a
-                            class="nav-link "
+                            class="nav-link"
                             href="<?php echo base_url(); ?>head-office-accounting/billing-list/billed"
                             role="tab"
                             ><span class="hidden-sm-up"></span>

@@ -197,6 +197,7 @@ $route['head-office-accounting/billing-list/unbilled_loa/fetch'] = 'ho_accountin
 $route['healthcare-provider/loa-requests/unbilled_loa/view/(:any)'] = 'ho_accounting/main_controller/unbilled_loa_details';
 $route['head-office-accounting/billing-list/unbilled_noa/fetch'] = 'ho_accounting/main_controller/fetch_unbilled_noa';
 $route['head-office-accounting/billing-list/unbilled_noa/view/(:any)'] = 'ho_accounting/main_controller/unbilled_noa_details';
+$route['head-office-accounting/billing-list/billed/hp_name'] = 'ho_accounting/main_controller/get_hp_name';
 
 $route['head-office-accounting/billing-list'] = 'ho_accounting/TableList';
 $route['head-office-accounting/billing-list/billed'] = 'ho_accounting/TableList/billed_record';
@@ -214,6 +215,7 @@ $route['head-office-accounting/billing-list/unbilled/noa'] = 'ho_accounting/Page
 $route['head-office-accounting/loa-request-list/loa-approved/fetch'] = 'ho_accounting/Loa_ho_controller/get_approved_loa';
 $route['head-office-accounting/loa-request-list/loa-completed/fetch'] = 'ho_accounting/Loa_ho_controller/get_completed_loa';
 $route['head-office-accounting/loa-request-list/loa-approved/view/(:any)'] = 'ho_accounting/Loa_ho_controller/get_approved_loa_info';
+$route['head-office-accounting/loa-request-list/loa-completed/view/(:any)'] = 'ho_accounting/Loa_ho_controller/get_completed_loa_info';
 // NOA datatables
 $route['head-office-accounting/noa-request-list/noa-approved/fetch'] = 'ho_accounting/Noa_ho_controller/get_approved_noa';
 $route['head-office-accounting/noa-request-list/noa-completed/fetch'] = 'ho_accounting/Noa_ho_controller/get_completed_noa';

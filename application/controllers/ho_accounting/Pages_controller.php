@@ -36,8 +36,9 @@ class Pages_controller extends CI_Controller {
 
     function completed_loa_requests() {
         $data['user_role'] = $this->session->userdata('user_role');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
 		$this->load->view('templates/header', $data);
-		$this->load->view('ho_accounting_panel/loa_billing_list/completed_loa_list.php');
+		$this->load->view('ho_accounting_panel/loa_billing_list/completed_loa_list.php', $hc_provider);
 		$this->load->view('templates/footer');
     }
 

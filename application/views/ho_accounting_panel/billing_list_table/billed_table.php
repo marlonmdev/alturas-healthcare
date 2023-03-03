@@ -197,21 +197,6 @@
                 billingTable.draw();
             });
 
-
-            // $("#start-date").pickadate({
-            //     format: 'mm/dd/yyyy',
-            //     today: 'Today',
-            //     clear: 'Clear',
-            //     close: 'Close',
-            // });
-
-            // $('#end-date').pickadate({
-            //     format: 'mm/dd/yyyy',
-            //     today: 'Today',
-            //     clear: 'Clear',
-            //     close: 'Close',
-            // });
-
         });
 
         const enableDate = () => {

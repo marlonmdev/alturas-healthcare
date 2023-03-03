@@ -77,7 +77,6 @@
                 </div>
                 <div class="row">
                     <div class="col-12">
-
                         <!-- Start of NOA Billing Form -->
                         <form method="POST" id="formNoaBilling" class="needs-validation" novalidate>
                             <!-- start of hidden inputs -->
@@ -85,6 +84,7 @@
                             <input type="hidden" name="noa-id" value="<?= $noa_id ?>">
                             <input type="hidden" name="emp-id" value="<?= $member['emp_id'] ?>">
                             <input type="hidden" name="remaining-balance" value="<?= $remaining_balance ?>">
+                            <input type="hidden" name="work-related" value="<?= $work_related ?>">
                             <input type="hidden" name="deduction-count" id="deduction-count" value="0" min="0">
                             <input type="hidden" name="services-count" id="services-count" value="0" min="0">
                             <!-- end of hidden inputs -->
@@ -431,7 +431,7 @@
        /* Calculating the net bill, personal charge amount and company charge amount. */
         if(total_deduction > 0){
             net_bill = total_bill - total_deduction;
-            if(work_related.value === 'Yes'){
+            if(work_related.value === 'Yes' || work_related.value === 'yes'){
                 personal_charge_amount = 0;
                 company_charge_amount = net_bill;
             }else{
@@ -440,7 +440,7 @@
             }
         }else{
             net_bill = total_bill;
-             if(work_related.value === 'Yes'){
+             if(work_related.value === 'Yes' || work_related.value === 'yes'){
                 personal_charge_amount = 0;
                 company_charge_amount = net_bill;
             }else{

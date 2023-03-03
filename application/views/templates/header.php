@@ -25,8 +25,8 @@
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/easy-select/easySelect.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/tagify/tagify.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/photoviewer/dist/photoviewer.min.css" />
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/pickadate/themes/default.css" />
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/pickadate/themes/default.date.css" />
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/flatpickr/flatpickr.min.css" />
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/flatpickr/themes/confetti.css" />
     <!-- End of Vendors CSS -->
     <!-- Script Tags -->
     <script src="<?php echo base_url(); ?>assets/vendors/jquery/jquery.min.js"></script>

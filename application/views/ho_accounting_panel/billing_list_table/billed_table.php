@@ -83,12 +83,12 @@
                             <div class="input-group-append">
                                 <span class="input-group-text bg-dark text-white ls-1 ms-2">From : </span>
                             </div>
-                            <input type="date" class="form-control" name="start_date" id="start-date" oninput="validateDateRange()" placeholder="mm/dd/yyyy" disabled>
+                            <input type="date" class="form-control" name="start_date" id="start-date" oninput="validateDateRange()" placeholder="mm-dd-yyyy" disabled>
 
                             <div class="input-group-append">
                                 <span class="input-group-text bg-dark text-white ls-1 ms-2">To : </span>
                             </div>
-                            <input type="date" class="form-control" name="end_date" id="end-date" oninput="validateDateRange()" placeholder="mm/dd/yyyy" disabled>
+                            <input type="date" class="form-control" name="end_date" id="end-date" oninput="validateDateRange()" placeholder="mm-dd-yyyy" disabled>
                         
                         </div>
                         
@@ -214,19 +214,13 @@
             });
 
 
-            // $("#start-date").pickadate({
-            //     format: 'mm/dd/yyyy',
-            //     today: 'Today',
-            //     clear: 'Clear',
-            //     close: 'Close',
-            // });
+            $("#start-date").flatpickr({
+                dateFormat: 'm-d-Y',
+            });
 
-            // $('#end-date').pickadate({
-            //     format: 'mm/dd/yyyy',
-            //     today: 'Today',
-            //     clear: 'Clear',
-            //     close: 'Close',
-            // });
+            $('#end-date').flatpickr({
+                dateFormat: 'm-d-Y',
+            });
 
           // Assuming DataTable is already initialized and loaded with data
             let table = $('#billedTable').DataTable();
@@ -259,12 +253,14 @@
 
             if(hp_filter != ''){
                 start_date.removeAttribute('disabled');
+                start_date.style.backgroundColor = '#ffff';
                 end_date.removeAttribute('disabled');
+                end_date.style.backgroundColor = '#ffff';
             }else{
-                start_date.setAttribute('disabled', true);
-                start_date.value = '';
-                end_date.setAttributte('disabled', true);
-                end_date.value = '';
+               start_date.setAttribute('disabled', true);
+               start_date.value = '';
+               end_date.setAttributte('disabled', true);
+               end_date.value = '';
             }
         }
 

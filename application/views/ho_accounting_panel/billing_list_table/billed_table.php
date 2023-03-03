@@ -371,16 +371,12 @@
             const total_charge = document.querySelector('#total_charge').value;
 
             $('#addPaymentModal').modal('show');
-            check_date.style.backgroundColor = '#ffff';
+            // check_date.style.backgroundColor = '#ffff';
             $('#hospital_filtered').val(hospital_name);
             $('#start_date').val(start_date);
             $('#end_date').val(end_date );
             $('#total-company-charge').val(total_charge);
             $('#hp_id').val(hp_id);
         }
-
-
-
-
     </script>
            

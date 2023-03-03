@@ -194,6 +194,83 @@
 
             });
 
+            $("#payment_details_form").submit(function(event){
+                event.preventDefault();
+                let formdata = new FormData($(this)[0]);
+                $.ajax({
+                    url: "<?php echo base_url();?>head-office-accounting/billing-list/billed/payment-details",
+                    method: "POST",
+                    data: formdata,
+                    dataType: "json",
+                    processData: false,
+                    contentType: false,
+                    success: function(response){
+                        if(response.status == 'error'){
+                            if(response.acc_num_error != ''){
+                                $("#acc-number-error").html(response.acc_num_error);
+                                $("#acc-number").addClass('is-invalid');
+                            }else{
+                                $("#acc-number-error").html("");
+                                $("#acc-number").removeClass('is-invalid');
+                            }
+
+                            if(response.acc_name_error != ''){
+                                $("#acc-name-error").html(response.acc_name_error);
+                                $("#acc-name").addClass('is-invalid');
+                            }else{
+                                $("#acc-name-error").html("");
+                                $("#acc-name").removeClass('is-invalid');
+                            }
+
+                            if(response.check_num_error != ''){
+                                $("#check-number-error").html(response.check_num_error);
+                                $("#check-number").addClass('is-invalid');
+                            }else{
+                                $("#check-number-error").html("");
+                                $("#check-number").removeClass('is-invalid');
+                            }
+
+                            if(response.check_date_error != ''){
+                                $("#check-date-error").html(response.check_date_error);
+                                $("#check-date").addClass('is-invalid');
+                            }else{
+                                $("#check-date-error").html("");
+                                $("#check-date").removeClass('is-invalid');
+                            }
+
+                            if(response.bank_error != ''){
+                                $("#bank-error").html(response.bank_error);
+                                $("#bank").addClass('is-invalid');
+                            }else{
+                                $("#bank-error").html("");
+                                $("#bank").removeClass('is-invalid');
+                            }
+
+                            if(response.paid_error != ''){
+                                $("#paid-error").html(response.paid_error);
+                                $("#amount-paid").addClass('is-invalid');
+                            }else{
+                                $("#paid-error").html("");
+                                $("#amount-paid").removeClass('is-invalid');
+                            }
+
+                            if(response.image_error != ''){
+                                $("#file-error").html(response.image_error);
+                                $("#supporting-docu").addClass('is-invalid');
+                            }else{
+                                $("#file-error").html("");
+                                $("#supporting-docu").removeClass('is-invalid');
+                            }
+                        }else if(response.status == 'success'){
+                            // let page = '<?php echo base_url()?>prod_table';
+                            $("#payment_details_form")[0].reset();
+                                alert(response.message);
+                                // redirectPage(page, 200);
+                        }
+                    },
+                });       
+            });
+
             $('#start-date').change(function(){
                 billingTable.draw();
                 get_total_company_charge();
@@ -216,6 +293,8 @@
             $("#check-date").flatpickr({
                 // dateFormat: 'm-d-Y',
             });
+
+
 
         });
 
@@ -266,8 +345,6 @@
             const startDate = new Date(startDateInput.value);
             const endDate = new Date(endDateInput.value);
 
-
-
             if (startDateInput.value === '' || endDateInput.value === '') {
                 return; // Don't do anything if either input is empty
             }
@@ -288,15 +365,21 @@
 
         const add_payment = () => {
             const hospital_name = document.querySelector('#hospital-name').value;
+            const hp_id = document.querySelector('#hospital-filter').value;
             const start_date = document.querySelector('#start-date').value;
             const end_date = document.querySelector('#end-date').value;
+            const total_charge = document.querySelector('#total_charge').value;
 
             $('#addPaymentModal').modal('show');
             
             $('#hospital_filtered').val(hospital_name);
             $('#start_date').val(start_date);
             $('#end_date').val(end_date );
+            $('#total-company-charge').val(total_charge);
+            $('#hp_id').val(hp_id);
         }
+
+
 
 
     </script>

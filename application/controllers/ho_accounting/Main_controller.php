@@ -103,7 +103,75 @@ class Main_controller extends CI_Controller {
 		];
 
 		echo json_encode($response);
+	}
 
+	function check_image($str){
+		if(isset($_FILES['supporting-docu']['name']) && !empty($_FILES['supporting-docu']['name'])){
+			return true;
+		}else{
+			$this->form_validation->set_message('check_image', 'Supporting Document is Required!');
+			return false;
+		}
+	}
+
+	function add_payment_details() {
+		$this->security->get_csrf_hash();
+
+		$this->form_validation->set_rules('acc-number', 'Account Number', 'required');
+		$this->form_validation->set_rules('acc-name', 'Account Name', 'required');
+		$this->form_validation->set_rules('check-number', 'Check Number', 'required');
+		$this->form_validation->set_rules('check-date', 'Check Date', 'required');
+		$this->form_validation->set_rules('bank', 'Bank', 'required');
+		$this->form_validation->set_rules('amount-paid', 'Amount Paid', 'required');
+		$this->form_validation->set_rules('supporting-docu', '', 'callback_check_image');
+
+		if(!$this->form_validation->run()){
+			echo json_encode([
+				'status' => 'error',
+				'acc_num_error' => form_error('acc-number'),
+				'acc_name_error' => form_error('acc-name'),
+				'check_num_error' => form_error('check-number'),
+				'check_date_error' => form_error('check-date'),
+				'bank_error' => form_error('bank'),
+				'paid_error' => form_error('amount-paid'),
+				'image_error' => form_error('supporting-docu')
+			]);
+		}else{
+			$config['upload_path'] = './assets/paymentDetails/';
+			$config['allowed_types'] = 'jpg|jpeg|png';
+			$config['encrypt_name'] = TRUE;
+			$this->load->library('upload', $config);
+			if(!$this->upload->do_upload('supporting-docu')){
+				echo json_encode([
+					'status' => 'error',
+					'message' => 'Image upload failed!'
+				]);
+			}else{
+				$uploadData = $this->upload->data();
+				$payment_id = "PMD-" . strtotime(date('Y-m-d h:i:s'));
+
+				$data = array(
+					"payment_no" => $payment_id,
+					"hp_id" => $this->input->post('hp_id'),
+					"start_date" => $this->input->post('start_date'),
+					"end_date" => $this->input->post('end_date'),
+					"company_charge" => $this->input->post('total-company-charge'),
+					"acc_number" => $this->input->post('acc-number'),
+					"acc_name" => $this->input->post('acc-name'),
+					"check_num" => $this->input->post('check-number'),
+					"check_date" => $this->input->post('check-date'),
+					"bank" => $this->input->post('bank'),
+					"amount_paid" => $this->input->post('amount-paid'),
+					"supporting_file" => $uploadData['file_name']
+				);
+
+				$this->List_model->add_payment_details($data);
+				echo json_encode([
+					'status' => 'success',
+					'message' => 'Data Added Successfully!'
+				]);
+			}
+		}
 	}
 
 	function fetch_unbilled_loa() {

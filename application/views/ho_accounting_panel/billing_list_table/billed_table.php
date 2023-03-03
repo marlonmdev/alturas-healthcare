@@ -81,14 +81,18 @@
                 <div class="col-lg-6 offset-1">
                         <div class="input-group">
                             <div class="input-group-append">
-                                <span class="input-group-text bg-dark text-white ls-1 ms-2">From : </span>
+                                <span class="input-group-text bg-dark text-white ls-1 ms-2">
+                                    <i class="mdi mdi-filter"></i>
+                                </span>
                             </div>
-                            <input type="date" class="form-control" name="start_date" id="start-date" oninput="validateDateRange()" placeholder="mm-dd-yyyy" disabled>
+                            <input type="date" class="form-control" name="start_date" id="start-date" oninput="validateDateRange()" placeholder="Start Date" disabled>
 
                             <div class="input-group-append">
-                                <span class="input-group-text bg-dark text-white ls-1 ms-2">To : </span>
+                                <span class="input-group-text bg-dark text-white ls-1 ms-2">
+                                    <i class="mdi mdi-filter"></i>
+                                </span>
                             </div>
-                            <input type="date" class="form-control" name="end_date" id="end-date" oninput="validateDateRange()" placeholder="mm-dd-yyyy" disabled>
+                            <input type="date" class="form-control" name="end-date" id="end-date" oninput="validateDateRange()" placeholder="End Date" disabled>
                         
                         </div>
                         

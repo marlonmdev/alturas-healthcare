@@ -62,7 +62,7 @@
                             <label class=" text-dark fw-bold ms-2 fs-5">Check Date: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="date" class="form-control text-dark fs-5" name="check-date" id="check-date"  required>
+                            <input type="date" class="form-control text-dark fs-5" name="check-date" id="check-date" placeholder="Enter Date"  required>
                         </div>
                        
                         <div class="row col-lg-4 pb-3 pt-2">

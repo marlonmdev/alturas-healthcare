@@ -112,7 +112,6 @@
                                         <td class="fw-bold">Billed on</td>
                                         <td class="fw-bold">Company Charge</td>
                                         <td class="fw-bold">Action</td>
-                                        <td class="fw-bold">Total Charge</td>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -128,7 +127,7 @@
                         <div class="input-group-append">
                             <span class="input-group-text bg-dark text-white ls-1 fs-5">TOTAL PAYABLE: </span>
                         </div>
-                        <input type="text" class="form-control fs-5 text-danger" id="total_charge" value="" readonly>
+                        <input type="text" class="form-control fs-4 text-danger" id="total_charge" value="" readonly>
                         
                         <div class="input-group-append">
                             <a href="javascript:void(0)" onclick="add_payment()" class="input-group-text bg-cyan text-white ms-2 px-3 fs-5 ls-1 ps-1" id="add-payment-btn"><i class="mdi mdi-plus fs-4"></i> Add Payment Details </a>
@@ -164,23 +163,9 @@
                         data.startDate = $('#start-date').val();
                         data.endDate   = $('#end-date').val();
                     },
+                
                 },
 
-
-
-                // footerCallback: function (row, data, start, end, display) {
-                //     var api = this.api();
-
-                //     // Calculate the sum of values in column 4
-                //     var column5Total = api.column(4).data().reduce(function (acc, val) {
-                //         return acc + parseFloat(val);
-                //     }, 0);
-
-                //     // Update the footer value for column 4
-                //     $('#total_charge').html(data.total);
-                // },
-               
-                
                 //Set column definition initialisation properties.
                 columnDefs: [{
                     "targets": [5], // 5th column / numbering column
@@ -192,7 +177,7 @@
 
             $('#hospital-filter').change(function(){
                 billingTable.draw();
-
+                // get_total_company_charge();
                 $.ajax({
                     type: 'post',
                     url: `${baseUrl}head-office-accounting/billing-list/billed/hp_name`,
@@ -211,44 +196,51 @@
 
             $('#start-date').change(function(){
                 billingTable.draw();
+                get_total_company_charge();
             });
 
             $('#end-date').change(function(){
                 billingTable.draw();
+                get_total_company_charge();
             });
 
 
             $("#start-date").flatpickr({
-                dateFormat: 'm-d-Y',
+                // dateFormat: 'm-d-Y',
             });
 
             $('#end-date').flatpickr({
-                dateFormat: 'm-d-Y',
+                // dateFormat: 'm-d-Y',
             });
 
-          // Assuming DataTable is already initialized and loaded with data
-            let table = $('#billedTable').DataTable();
-
-            // Get the column data using the column() method
-            let columnData = table.column(6).data().toArray(); // assuming column index is 0
-
-            // Convert the column data to BigNumber objects
-            let bigNumberColumnData = columnData.map(function(value) {
-            return new BigNumber(value);
+            $("#check-date").flatpickr({
+                // dateFormat: 'm-d-Y',
             });
-
-            // Filter out any NaN or undefined values
-            let filteredBigNumberColumnData = bigNumberColumnData.filter(function(value) {
-            return  !isNaN(value);
-            });
-
-            // Find the greatest numeric value using BigNumber.max() method
-            let greatestValue = BigNumber.max(...filteredBigNumberColumnData);
-
-            // Display the greatest value
-            console.log('Greatest value in column:', greatestValue.toString());
 
         });
+
+       const get_total_company_charge = () => {
+            const hp_filter = document.querySelector('#hospital-filter').value;
+            const start_date = document.querySelector('#start-date').value;
+            const end_date = document.querySelector('#end-date').value;
+            const total_charge = document.querySelector('#total_charge');
+
+                $.ajax({
+                    type: 'post',
+                    url: `${baseUrl}head-office-accounting/billing-list/billed/sum`,
+                    dataType: "json",
+                    data: {
+                        'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
+                        'hp_id' : hp_filter,
+                        'startDate' : start_date,
+                        'endDate' : end_date,
+                    },
+                    success: function(response){
+                        total_charge.value = response.total_company_charge
+                    },
+
+                });
+       }
 
         const enableDate = () => {
             const hp_filter = document.querySelector('#hospital-filter');

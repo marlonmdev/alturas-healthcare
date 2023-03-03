@@ -7,7 +7,7 @@ class List_model extends CI_Model{
 	var $table_1 = 'billing';
     var $table_2 = 'members';
     var $table_3 = 'healthcare_providers';
-	var $column_order = ['tbl_1.billing_no', 'tbl_2.first_name', 'tbl_1.billed_on', 'tbl_1.company_charge', NULL, NULL]; //set column field database for datatable orderable
+	var $column_order = ['tbl_1.billing_no', 'tbl_2.first_name', 'tbl_1.billed_on', 'tbl_1.company_charge', NULL]; //set column field database for datatable orderable
 	var $column_search = ['tbl_1.hp_id', 'tbl_1.billing_no', 'tbl_2.first_name', 'tbl_2.middle_name', 'tbl_2.last_name', 'tbl_3.hp_name', 'tbl_1.billed_on']; //set column field database for datatable searchable 
 	var $order = ['tbl_1.billing_id' => 'asc']; // default order 
 
@@ -78,6 +78,17 @@ class List_model extends CI_Model{
 		return $this->db->count_all_results();
 	}
 	// End of server-side processing datatables
+
+    function get_column_sum($hp_id, $startDate, $endDate) {
+        $this->db->select_sum('company_charge')
+                ->where('hp_id', $hp_id)
+                ->where('billed_on >=', $startDate)
+                ->where('billed_on <=', $endDate);
+        $query = $this->db->get('billing');
+        $result = $query->result_array();
+        $sum = $result[0]['company_charge'];
+        return $sum;
+    }
 
     public function get_hc_provider(){
         return $this->db->get('healthcare_providers')->result_array();

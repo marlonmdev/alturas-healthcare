@@ -59,14 +59,12 @@ class Main_controller extends CI_Controller {
 			// calling Myhash custom library inside application/libraries folder
 			$billing_id = $this->myhash->hasher($value['billing_id'], 'encrypt');
 			
-			$charge = $value['company_charge'] == '' ? 0 : $value['company_charge'];
-
-			$custom_comp_charge = '<span class="sum">'.$charge.'</span>';
+			$charge = $value['company_charge'] == '' ? 0 : number_format($value['company_charge'], 2);
 
 			$fullname = $value['first_name']. ' ' .$value['middle_name']. ' ' .$value['last_name'];
 			$custom_bill_no = '<mark class="bg-primary text-white">'. $value['billing_no'] .'</mark>';
 
-			$total_charge = $total_charge + floatval($value["company_charge"]);
+			//$total_charge = $total_charge + floatval($value["company_charge"]);
 
 			$cost_type = $value['loa_id'] != '' ? 'LOA' : 'NOA'; 
 
@@ -77,9 +75,8 @@ class Main_controller extends CI_Controller {
 			$row[] = $fullname;
 			$row[] = $cost_type;
 			$row[] = $value['billed_on'];
-			$row[] = $custom_comp_charge;
+			$row[] = $charge;
 			$row[] = $custom_actions;
-			$row[] = $total_charge;
 			$data[] = $row;
 		}
 		
@@ -91,6 +88,22 @@ class Main_controller extends CI_Controller {
 			"total" => number_format($total_charge, 2)
 		];
 		echo json_encode($output);
+	}
+
+	function get_company_charge_total() {
+		$token = $this->security->get_csrf_hash();
+		$hp_id = $this->input->post('hp_id');
+		$startDate = $this->input->post('startDate');
+		$endDate = $this->input->post('endDate');
+		$result = $this->List_model->get_column_sum($hp_id, $startDate, $endDate);
+
+		$response = [
+			'token' => $token,
+			'total_company_charge' => number_format($result, 2),
+		];
+
+		echo json_encode($response);
+
 	}
 
 	function fetch_unbilled_loa() {

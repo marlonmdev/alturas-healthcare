@@ -25,17 +25,30 @@
           <div class="row">
 
             <div class="col-lg-3 col-sm-6">
-              <div class="card-box bg-green">
+              <div class="card-box bg-cyan">
                 <div class="inner">
-                  <h3><?php echo $bllled_count; ?></h3>
-                  <p>Serviced</p>
+                  <h3><?php echo $billed_count; ?></h3>
+                  <p>Billed</p>
                 </div>
                 <div class="icon">
-                  <i class="mdi mdi-checkbox-marked" aria-hidden="true"></i>
+                  <i class="mdi mdi-file-document" aria-hidden="true"></i>
                 </div>
+                <a href="<?php echo base_url() ?>head-office-accounting/billing-list/billed" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
               </div>
             </div>
 
+            <div class="col-lg-3 col-sm-6">
+              <div class="card-box bg-green">
+                <div class="inner">
+                  <h3><?php echo $payment_count; ?></h3>
+                  <p>Payment History</p>
+                </div>
+                <div class="icon">
+                  <i class="mdi mdi-file-document" aria-hidden="true"></i>
+                </div>
+                <a href="<?php echo base_url() ?>head-office-accounting/payment_history" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
 
             <div class="col-lg-3 col-sm-6">
               <div class="card-box bg-orange">
@@ -62,6 +75,11 @@
                 <a href="<?php echo base_url() ?>head-office-accounting/noa-request-list/noa-approved" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
               </div>
             </div>
+            
+            <div class="col-lg-6 col-sm-6 pb-2"><br>
+              <div class="pt-3" id="chartContainer" style="height: 370px; width: 100%;"></div>
+            </div>
+
           </div>
         <!-- End Container fluid  -->
         </div>
@@ -69,3 +87,43 @@
       </div>
     <!-- End Wrapper -->
     </div>
+
+    <script>
+
+      <?php
+        // foreach($paid_count as $bill){
+
+            $dataPoints = array( 
+              // array("label"=>,"sg", "y"=>23.3),
+              array("label"=>$hp_name, "y"=>$paid_count),
+              array("label"=>"IE", "y"=>8.47),
+              array("label"=>"Safari", "y"=>6.08),
+              array("label"=>"Edge", "y"=>4.29),
+              array("label"=>"Others", "y"=>4.59)
+            );
+            ?>
+     
+        
+       
+      
+      window.onload = function() {
+      
+      var chart = new CanvasJS.Chart("chartContainer", {
+        animationEnabled: true,
+        title: {
+          text: "Paid Bill in every Healthcare Provider"
+        },
+        subtitles: [{
+          text: "   "
+        }],
+        data: [{
+          type: "pie",
+          yValueFormatString: "#,##0.00\"%\"",
+          indexLabel: "{label} ({y})",
+          dataPoints: <?php echo json_encode($dataPoints, JSON_NUMERIC_CHECK); ?>
+        }]
+      });
+      chart.render();
+      
+      }
+</script>

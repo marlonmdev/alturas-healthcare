@@ -14,13 +14,25 @@ class Pages_controller extends CI_Controller {
     }
 
     function index() {
-		$hp_id = $this->session->userdata('dsg_hcare_prov');
 		$data['user_role'] = $this->session->userdata('user_role');
-		$row = $this->List_model->get_hcare_provider($hp_id);
-		//$data['hp_name'] = $row['hp_name'];
-		$data['loa_count'] = $this->List_model->hp_approved_loa_count($hp_id);
-		$data['noa_count'] = $this->List_model->hp_approved_noa_count($hp_id);
-		$data['bllled_count'] = $this->List_model->hp_done_billing_count($hp_id);
+		$data['billed_count'] = $this->List_model->hp_billed_count();
+		$data['payment_count'] = $this->List_model->hp_payment_history_count();
+		$data['loa_count'] = $this->List_model->hp_approved_loa_count();
+		$data['noa_count'] = $this->List_model->hp_approved_noa_count();
+
+		$bill = $this->List_model->hp_paid_bill();
+
+		foreach($bill as $paid){
+			$hp_id = $paid['hp_id'];
+			$data['paid_count'] = $this->List_model->hp_count_paid($hp_id);
+			$data['hp_name'] = $paid['hp_name'];
+		}
+		
+		// $data_paid = [
+		// 	'hp_name' => $paid['hp_name'],
+		// 	'paid_count' => $paid,
+		// ];
+
 		$this->load->view('templates/header', $data);
 		$this->load->view('ho_accounting_panel/dashboard/index');
 		$this->load->view('templates/footer');

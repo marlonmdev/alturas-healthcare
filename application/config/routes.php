@@ -191,16 +191,24 @@ $route['healthcare-provider/account-settings/username/update'] = 'healthcare_pro
 // ===================================================================================================
 
 $route['head-office-accounting/dashboard'] = 'ho_accounting/Pages_controller';
+//Billed
 $route['head-office-accounting/billing-list/billed/fetch'] = 'ho_accounting/main_controller/fetch_billed';
 $route['head-office-accounting/billing-list/billed/view/(:any)'] = 'ho_accounting/main_controller/view_billed_details';
+$route['head-office-accounting/billing-list/billed/hp_name'] = 'ho_accounting/main_controller/get_hp_name';
+$route['head-office-accounting/billing-list/billed/sum'] = 'ho_accounting/main_controller/get_company_charge_total';
+$route['head-office-accounting/billing-list/billed/payment-details'] = 'ho_accounting/main_controller/add_payment_details';
+//Closed
+$route['head-office-accounting/billing-list/closed/fetch'] = 'ho_accounting/main_controller/fetch_closed';
+//Unbilled
 $route['head-office-accounting/billing-list/unbilled_loa/fetch'] = 'ho_accounting/main_controller/fetch_unbilled_loa';
 $route['healthcare-provider/loa-requests/unbilled_loa/view/(:any)'] = 'ho_accounting/main_controller/unbilled_loa_details';
 $route['head-office-accounting/billing-list/unbilled_noa/fetch'] = 'ho_accounting/main_controller/fetch_unbilled_noa';
 $route['head-office-accounting/billing-list/unbilled_noa/view/(:any)'] = 'ho_accounting/main_controller/unbilled_noa_details';
-$route['head-office-accounting/billing-list/billed/hp_name'] = 'ho_accounting/main_controller/get_hp_name';
-$route['head-office-accounting/billing-list/billed/sum'] = 'ho_accounting/main_controller/get_company_charge_total';
-$route['head-office-accounting/billing-list/billed/payment-details'] = 'ho_accounting/main_controller/add_payment_details';
-
+//Payment
+$route['head-office-accounting/billing-list/payment-history/fetch'] = 'ho_accounting/main_controller/payment_history_fetch';
+$route['head-office-accounting/billing-list/view-payment-details/(:any)'] = 'ho_accounting/main_controller/view_payment_details';
+$route['head-office-accounting/billing-list/view-employee-payment/(:any)'] = 'ho_accounting/main_controller/view_employee_payment';
+//Pages
 $route['head-office-accounting/billing-list'] = 'ho_accounting/TableList';
 $route['head-office-accounting/billing-list/billed'] = 'ho_accounting/TableList/billed_record';
 $route['head-office-accounting/billing-list/closed'] = 'ho_accounting/TableList/closed_record';

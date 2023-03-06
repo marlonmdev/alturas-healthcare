@@ -45,7 +45,7 @@
                         >
                     </li>
 
-                    <div class="dropdown">
+                    <!-- <div class="dropdown">
                         <li class="nav-item">
                             <button class="btn dropdown-toggle active" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                             <span class="hidden-sm-up"></span>
@@ -56,7 +56,7 @@
                                 <li><a class="dropdown-item fw-bold" href="<?php echo base_url(); ?>head-office-accounting/billing-list/unbilled/noa">NOA</a></li>
                             </ul>
                         </li>
-                    </div>
+                    </div> -->
                 </ul>
             </div>
             <div class="col-lg-5 ps-5 pb-4">
@@ -85,6 +85,8 @@
                                     <td class="fw-bold">Request Type</td>
                                     <td class="fw-bold">Billed on</td>
                                     <td class="fw-bold">Company Charge</td>
+                                    <td class="fw-bold">Check Date</td>
+                                    <td class="fw-bold">Status</td>
                                     <td class="fw-bold">Action</td>
                                 </tr>
                             </thead>
@@ -96,9 +98,79 @@
             </div>
         </div>  
     </div>
+    <?php include 'view_employee_payment_details.php' ?>
     <style>
         .dropdown-item:hover {
             background-color: #5f86fa;
         }
     </style>
+
+    <script>
+        const baseUrl = "<?php echo base_url(); ?>";
+        $(document).ready(function(){
+            let closedTable = $('#closedTable').DataTable({
+                processing: true, //Feature control the processing indicator.
+                serverSide: true, //Feature control DataTables' server-side processing mode.
+                order: [], //Initial no order.
+
+                // Load data for the table's content from an Ajax source
+                ajax: {
+                    url: `${baseUrl}head-office-accounting/billing-list/closed/fetch`,
+                    type: "POST",
+                    data: function(data) {
+                        data.token     = '<?php echo $this->security->get_csrf_hash(); ?>';
+                        data.filter    = $('#hospital-filter').val();
+                    },
+                
+                },
+
+                //Set column definition initialisation properties.
+                columnDefs: [{
+                    "targets": [5], // 5th column / numbering column
+                    "orderable": false, //set not orderable
+                }, ],
+                responsive: true,
+                fixedHeader: true,
+            });
+
+            $('#hospital-filter').change(function(){
+                closedTable.draw();
+            });
+        });
+
+        const viewEmployeePaymentD = (billing_id) => {
+            $.ajax({
+                type: 'GET',
+                url: `${baseUrl}head-office-accounting/billing-list/view-employee-payment/${billing_id}`,
+                success: function(response){
+                    const res = JSON.parse(response);
+                    const base_url = window.location.origin;
+                    const {
+                        token,
+                        billing_no,
+                        hp_name,
+                        fullname,
+                        request_type,
+                        billed_on,
+                        company_charge,
+                        payment_no,
+                        check_date,
+                        status
+                    } = res;
+                    
+                    $('#paymentDetails').modal('show');
+
+                    $('#payment-no').html(payment_no);
+                    $('#status').html(status);
+                    $('#billing-num').html(billing_no);
+                    $('#hp-name').html(hp_name);
+                    $('#full-name').html(fullname);
+                    $('#req-type').html(request_type);
+                    $('#billed-on').html(billed_on);
+                    $('#company-charge').html(parseFloat(company_charge).toFixed(2));
+                    $('#check-date').html(check_date);
+                }
+            });
+        }
+    </script>
            

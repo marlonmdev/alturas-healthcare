@@ -1,4 +1,4 @@
-              <li class="sidebar-item">
+<li class="sidebar-item">
                 <a
                   class="sidebar-link sidebar-link"
                   href="<?php echo base_url(); ?>healthcare-coordinator/dashboard"
@@ -101,6 +101,12 @@
                     <a href="<?php echo base_url(); ?>healthcare-coordinator/setup/cost-types" class="sidebar-link"
                       ><i class="mdi mdi-code-string"></i
                       ><span class="hide-menu ls-1">Cost Types</span>
+                    </a>
+                  </li>
+                  <li class="sidebar-item">
+                    <a href="<?php echo base_url(); ?>healthcare-coordinator/setup/room-types" class="sidebar-link"
+                      ><i class="mdi mdi-houzz-box"></i
+                      ><span class="hide-menu ls-1">Room Types</span>
                     </a>
                   </li>
                 </ul>

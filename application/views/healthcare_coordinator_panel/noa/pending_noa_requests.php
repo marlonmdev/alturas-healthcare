@@ -51,7 +51,7 @@
               ><span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
             >
-          </li>
+          <!-- </li>
             <li class="nav-item">
             <a
               class="nav-link"
@@ -60,7 +60,7 @@
               ><span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
             >
-          </li>
+          </li> -->
         </ul>
 
         <?php include 'charge_type.php'; ?>
@@ -265,6 +265,8 @@
     $("#viewChargeTypeModal").modal("show");
     $('#noa-id').val(noa_id);
     $('#charge-type').val('');
+    $( ".wr" ).hide();
+    $( ".nwr" ).hide();
   }
 
   function viewNoaInfo(noa_id) {

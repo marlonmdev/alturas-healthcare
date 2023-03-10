@@ -48,8 +48,8 @@ class Main_controller extends CI_Controller {
 
 	public function fetch_billed(){
 		$this->security->get_csrf_hash();
-
-		$lists = $this->List_model->get_datatables();
+		$status = 'Billed';
+		$lists = $this->List_model->get_datatables($status);
 		$data = [];
 		$total_charge = 0;
 
@@ -63,8 +63,6 @@ class Main_controller extends CI_Controller {
 
 			$fullname = $value['first_name']. ' ' .$value['middle_name']. ' ' .$value['last_name'];
 			$custom_bill_no = '<mark class="bg-primary text-white">'. $value['billing_no'] .'</mark>';
-
-			//$total_charge = $total_charge + floatval($value["company_charge"]);
 
 			$cost_type = $value['loa_id'] != '' ? 'LOA' : 'NOA'; 
 
@@ -82,9 +80,8 @@ class Main_controller extends CI_Controller {
 		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->List_model->count_all(),
-			"recordsFiltered" => $this->List_model->count_filtered(),
-			"data" => $data,
-			"total" => number_format($total_charge, 2)
+			"recordsFiltered" => $this->List_model->count_filtered($status),
+			"data" => $data
 		];
 		echo json_encode($output);
 	}
@@ -94,7 +91,8 @@ class Main_controller extends CI_Controller {
 		$hp_id = $this->input->post('hp_id');
 		$startDate = $this->input->post('startDate');
 		$endDate = $this->input->post('endDate');
-		$result = $this->List_model->get_column_sum($hp_id, $startDate, $endDate);
+		$status = 'Billed';
+		$result = $this->List_model->get_column_sum($hp_id, $startDate, $endDate, $status);
 
 		$response = [
 			'token' => $token,
@@ -147,30 +145,130 @@ class Main_controller extends CI_Controller {
 				]);
 			}else{
 				$uploadData = $this->upload->data();
-				$payment_id = "PMD-" . strtotime(date('Y-m-d h:i:s'));
+				$payment_no = "PMD-" . strtotime(date('Y-m-d h:i:s'));
+				//$added_by = $this->session->userdata('full_name');
 
 				$data = array(
-					"payment_no" => $payment_id,
+					"payment_no" => $payment_no,
 					"hp_id" => $this->input->post('hp_id'),
 					"start_date" => $this->input->post('start_date'),
 					"end_date" => $this->input->post('end_date'),
-					"company_charge" => $this->input->post('total-company-charge'),
+					"company_charge_paid" => $this->input->post('total-company-charge'),
 					"acc_number" => $this->input->post('acc-number'),
 					"acc_name" => $this->input->post('acc-name'),
 					"check_num" => $this->input->post('check-number'),
 					"check_date" => $this->input->post('check-date'),
 					"bank" => $this->input->post('bank'),
 					"amount_paid" => $this->input->post('amount-paid'),
-					"supporting_file" => $uploadData['file_name']
+					"supporting_file" => $uploadData['file_name'],
+					"date_added" => date('Y-m-d h:i:s'),
+					
 				);
-
 				$this->List_model->add_payment_details($data);
+
+				$hp_id = $this->input->post('hp_id');
+				$startDate = $this->input->post('start_date');
+				$endDate = $this->input->post('end_date');
+				$status = 'Billed';
+
+				$this->List_model->set_payment_no($hp_id, $startDate, $endDate, $payment_no, $status);
+
+				$result = $this->List_model->get_loa_noa_id($hp_id, $startDate, $endDate);
+				
+				if (!empty($result)) {
+					foreach ($result as $row) {
+						$loa_id = $row['loa_id'];
+						$noa_id = $row['noa_id'];
+				
+						if (!empty($loa_id)) {
+							$this->List_model->set_loa_status($loa_id);
+						}
+						if (!empty($noa_id)) {
+							$this->List_model->set_noa_status($noa_id);
+						}
+					}
+				}
+
 				echo json_encode([
 					'status' => 'success',
 					'message' => 'Data Added Successfully!'
 				]);
 			}
 		}
+	}
+
+	function fetch_closed() {
+		$this->security->get_csrf_hash();
+		$status = 'Paid';
+		$lists = $this->List_model->get_closed_datatables($status);
+		$data = [];
+		$total_charge = 0;
+
+		foreach($lists as $value){
+			
+			$row = [];
+			// calling Myhash custom library inside application/libraries folder
+			$billing_id = $this->myhash->hasher($value['billing_id'], 'encrypt');
+			
+			$charge = $value['company_charge'] == '' ? 0 : number_format($value['company_charge'], 2);
+
+			$fullname = $value['first_name']. ' ' .$value['middle_name']. ' ' .$value['last_name'];
+			$custom_bill_no = '<mark class="bg-primary text-white">'. $value['billing_no'] .'</mark>';
+
+			$cost_type = $value['loa_id'] != '' ? 'LOA' : 'NOA'; 
+
+			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $value['status'] . '</span></div>';
+
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewEmployeePaymentD(\'' . $billing_id . '\')" data-bs-toggle="tooltip" title="View Payment Details"><i class="mdi mdi-view-list fs-3 text-info"></i></a>';
+			
+			$row[] = $custom_bill_no;
+			$row[] = $fullname;
+			$row[] = $cost_type;
+			$row[] = $value['billed_on'];
+			$row[] = $charge;
+			$row[] = $value['check_date'];
+			$row[] = $custom_status;
+			$row[] = $custom_actions;
+			$data[] = $row;
+		}
+		
+		$output = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->List_model->count_closed_all(),
+			"recordsFiltered" => $this->List_model->count_closed_filtered($status),
+			"data" => $data
+		];
+		echo json_encode($output);
+	}
+
+	function view_employee_payment() {
+		$token = $this->security->get_csrf_hash();
+		$billing_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+
+		$payment = $this->List_model->get_employee_payment($billing_id);
+
+			$full_name = $payment['first_name'] . ' ' . $payment['middle_name'] . ' ' . $payment['last_name'] . ' ' . $payment['suffix'];
+			$status = '<span class="text-success">[Paid]</span>';
+
+			if($payment['loa_id'] != ''){
+				$request_type = 'LOA';
+			}else{
+				$request_type = 'NOA';
+			}
+
+			$response = [
+				'token' => $token,
+				'billing_no' => $payment['billing_no'],
+				'hp_name' => $payment['hp_name'],
+				'fullname' => $full_name,
+				'request_type' => $request_type,
+				'billed_on' => $payment['billed_on'],
+				'company_charge' => $payment['company_charge'],
+				'payment_no' => $payment['payment_no'],
+				'check_date' => $payment['check_date'],
+				'status' => $status
+			];
+			echo json_encode($response);
 	}
 
 	function fetch_unbilled_loa() {
@@ -415,6 +513,62 @@ class Main_controller extends CI_Controller {
 			'token' => $token,
 			'hp_name' => $hc_provider['hp_name'],
 		];
+		echo json_encode($response);
+	}
+
+	function payment_history_fetch() {
+		$this->security->get_csrf_hash();
+
+		$list = $this->List_model->get_payment_datatables();
+		$data = [];
+
+		foreach($list as $payment){
+			$row = [];
+			$payment_id = $this->myhash->hasher($payment['payment_id'], 'encrypt');
+
+			$custom_payment_no = 	'<mark class="bg-primary text-white">'.$payment['payment_no'].'</mark>';
+
+			$custom_actions = '<a class="text-info fw-bold ls-1" href="JavaScript:void(0)" onclick="viewPaymentInfo(\'' . $payment_id . '\')"  data-bs-toggle="tooltip"><u><i class="mdi mdi-view-list fs-3" title="View Payment Details"></i></u></a>';
+
+			$custom_actions .= '<a class="text-info fw-bold ls-1 ps-2" href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'assets/paymentDetails/' . $payment['supporting_file'] . '\')" data-bs-toggle="tooltip"><u><i class="mdi mdi-file-image fs-3" title="View Proof"></i></u></a>';
+
+			$row[] = $custom_payment_no;
+			$row[] = $payment['acc_number'];
+			$row[] = $payment['acc_name'];
+			$row[] = $payment['check_num'];
+			$row[] = $payment['check_date'];
+			$row[] = $payment['bank'];
+			$row[] = $custom_actions;
+			$data[] = $row;
+
+		}
+		$output = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->List_model->count_payment_all(),
+			"recordsFiltered" => $this->List_model->count_payment_filtered(),
+			"data" => $data
+		];
+		echo json_encode($output);
+	}
+
+	function view_payment_details() {
+		$payment_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$payment = $this->List_model->get_payment_details($payment_id);
+
+			$response = [
+				'status' => 'success',
+				'token' => $this->security->get_csrf_hash(),
+				'payment_no' => $payment['payment_no'],
+				'hp_name' => $payment['hp_name'],
+				'start_date' => $payment['start_date'],
+				'end_date' => $payment['end_date'],
+				'acc_number' => $payment['acc_number'],
+				'acc_name' => $payment['acc_name'],
+				'check_num' => $payment['check_num'],
+				'check_date' => $payment['check_date'],
+				'bank' => $payment['bank'],
+				'amount_paid' => $payment['amount_paid']
+			]; 
 		echo json_encode($response);
 	}
 }

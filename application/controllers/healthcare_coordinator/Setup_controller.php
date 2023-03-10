@@ -404,39 +404,66 @@ class Setup_controller extends CI_Controller {
   }
 
   function fetch_all_cost_types() {
-    $resultList = $this->setup_model->db_get_all_cost_types();
-    $result = [];
-    foreach ($resultList as $key => $value) {
-      $actions = '<a class="me-2" href="Javascript:void(0)" onclick="editCostType(' . $value['ctype_id'] . ')" data-toggle="tooltip" data-placement="top" title="Edit"><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a> ';
+    $resultList = $this->setup_model->get_datatables();
+    $data = [];
+    foreach ($resultList as $value) {
+      $row = [];
+      // $actions = '<a class="me-2" href="Javascript:void(0)" onclick="editCostType(' . $value['ctype_id'] . ')" data-toggle="tooltip" data-placement="top" title="Edit"><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a> ';
 
-      $actions .= '<a href="Javascript:void(0)" onclick="deleteCostType(' . $value['ctype_id'] . ')" data-toggle="tooltip" data-placement="top" title="Delete"><i class="mdi mdi-delete-circle fs-2 text-danger"></i></a>';
+      // $actions = '<a href="Javascript:void(0)" onclick="deleteCostType(' . $value['ctype_id'] . ')" data-toggle="tooltip" data-placement="top" title="Delete"><i class="mdi mdi-delete-circle fs-2 text-danger"></i></a>';
 
-      $result['data'][] = [
-        $value['ctype_id'],
-        $value['cost_type'],
-        date("m/d/Y", strtotime($value['date_added'])),
-        date("m/d/Y", strtotime($value['date_updated'])),
-        $actions
+      if($value['date_added'] == '' ){
+          $added_on = '03/08/2023';
+      }else{
+        $added_on = date("m/d/Y", strtotime($value['date_added']));
+      }
+  
+      $row[] = $value['item_id'];
+      $row[] = $value['item_description'];
+      $row[] = number_format($value['op_price']);
+      $row[] = number_format($value['ip_price']);
+      $row[] =  $added_on;
+      $data[] = $row;
+
+      $output = [
+        "draw" => $_POST['draw'],
+        "recordsTotal" => $this->setup_model->count_all(),
+        "recordsFiltered" => $this->setup_model->count_filtered(),
+        "data" => $data,
       ];
     }
-    echo json_encode($result);
+    echo json_encode($output);
   }
 
   function register_cost_type() {
     $this->security->get_csrf_hash();
-    $cost_type = ucfirst(strip_tags($this->input->post('cost-type')));
-    $this->form_validation->set_rules('cost-type', 'Cost Type', 'trim|required|callback_check_cost_type_exist');
+    $price_list = strtoupper(strip_tags($this->input->post('price-list')));
+    $item_id = (strip_tags($this->input->post('item-id')));
+    $cost_type = strtoupper(strip_tags($this->input->post('cost-type')));
+    $op_price = (strip_tags($this->input->post('op-price')));
+    $ip_price = (strip_tags($this->input->post('ip-price')));
+    
+    $this->form_validation->set_rules('price-list', 'Price List', 'trim|required');
+    $this->form_validation->set_rules('cost-type', 'Item Description', 'trim|required|callback_check_cost_type_exist');    
+    $this->form_validation->set_rules('op-price', 'Outpatient Price', 'trim|required');
+    $this->form_validation->set_rules('ip-price', 'Inpatient Price', 'trim|required');
 
     if ($this->form_validation->run() == FALSE) {
       $response = [
         'status' => 'error',
+        'price_list_error' => form_error('price-list'),
         'cost_type_error' => form_error('cost-type'),
+        'op_price_error' => form_error('op-price'),
+        'ip_price_error' => form_error('ip-price'),
       ];
     } else {
       $post_data = [
-        'cost_type' => $cost_type,
+        'price_list_group' => $price_list,
+        'item_id' => $item_id,
+        'item_description' => $cost_type,
+        'op_price' => $op_price,
+        'ip_price' => $ip_price,
         'date_added' => date("Y-m-d"),
-        'date_updated' => date("Y-m-d"),
       ];
       $saved = $this->setup_model->db_insert_cost_type($post_data);
       if (!$saved) {
@@ -469,7 +496,11 @@ class Setup_controller extends CI_Controller {
     $response = [
       'status' => 'success',
       'token' => $this->security->get_csrf_hash(),
-      'cost_type' => $row['cost_type'],
+      'price_group' =>$row['price_list_group'],
+      'item_id' => $row['item_id'],
+      'item_description' => $row['item_description'],
+      'op_price' => $row['op_price'],
+      'ip_price' => $row['ip_price']
     ];
     echo json_encode($response);
   }
@@ -477,7 +508,9 @@ class Setup_controller extends CI_Controller {
   function update_cost_type() {
     $token = $this->security->get_csrf_hash();
     $ctype_id = $this->input->post('ctype-id');
+    $item_id = $this->input->post('item-id');
     $cost_type = $this->input->post('cost-type');
+    $price_cost = $this->input->post('price-cost');
     $this->form_validation->set_rules('cost-type', 'Cost Type', 'trim|required');
     if ($this->form_validation->run() == FALSE) {
       $response = [
@@ -486,7 +519,9 @@ class Setup_controller extends CI_Controller {
       ];
     } else {
       $post_data = array(
+        'item_id' => $item_id,
         'cost_type' => $cost_type,
+        'price_cost' => $price_cost,
         'date_updated' => date("Y-m-d"),
       );
       $updated = $this->setup_model->db_update_cost_type($ctype_id, $post_data);
@@ -521,6 +556,78 @@ class Setup_controller extends CI_Controller {
         'token' => $token, 
         'status' => 'success', 
         'message' => 'Cost Type Deleted Successfully'
+      ];
+    }
+    echo json_encode($response);
+  }
+
+  function fetch_room_types() {
+    $result = $this->setup_model->get_room_datatables();
+    $data = [];
+
+    foreach($result as $room){
+      $row = [];
+      if($room['date_added'] == "" ){
+        $date_added = '03/08/2023';
+      }else{
+        $date_added = date('m/d/Y', strtotime($room['date_added']));
+      }
+
+      $row[] = $room['room_type'];
+      $row[] = $room['room_typ_hmo_req'];
+      $row[] = $room['room_number'];
+      $row[] = number_format($room['room_rate']);
+      $row[] = $date_added;
+      $data[] =$row;
+      
+      $response = [
+        "draw" => $_POST['draw'],
+        "recordsTotal" => $this->setup_model->count_all_room(),
+        "recordsFiltered" => $this->setup_model->count_room_filtered(),
+        "data" => $data,
+      ];
+    }
+    echo json_encode($response);
+  }
+
+  function register_room_type() {
+    $this->security->get_csrf_hash();
+    $room_group = ucwords(strip_tags($this->input->post('room-group')));
+    $room_type = ucwords(strip_tags($this->input->post('room-type')));
+    $room_hmo_req = strip_tags($this->input->post('room-hmo-req'));
+    $room_number = strip_tags($this->input->post('room-num'));
+    $room_rate = strip_tags($this->input->post('room-rate'));
+    
+    $this->form_validation->set_rules('room-type', 'Room Type', 'trim|required');    
+    $this->form_validation->set_rules('room-num', 'Room Number', 'trim|required');
+    $this->form_validation->set_rules('room-rate', 'Room Rate', 'trim|required');
+
+    if ($this->form_validation->run() == FALSE) {
+      $response = [
+        'status' => 'error',
+        'room_type_error' => form_error('room-type'),
+        'room_num_error' => form_error('room-num'),
+        'room_rate_error' => form_error('room-rate'),
+      ];
+    } else {
+      $post_data = [
+        'room_group' => $room_group,
+        'room_type' => $room_type,
+        'room_typ_hmo_req' => $room_hmo_req,
+        'room_number' => $room_number,
+        'room_rate' => $room_rate,
+        'date_added' => date("Y-m-d"),
+      ];
+      $saved = $this->setup_model->db_insert_room_type($post_data);
+      if (!$saved) {
+        $response = [
+          'status' => 'save-error', 
+          'message' => 'Cost Type Saved Failed'
+        ];
+      }
+      $response = [
+        'status' => 'success', 
+        'message' => 'Cost Type Saved Successfully'
       ];
     }
     echo json_encode($response);

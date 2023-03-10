@@ -237,6 +237,7 @@ class Loa_controller extends CI_Controller {
 			'health_card_no' => $member['health_card_no'],
 			'requesting_company' => $member['company'],
 			'request_date' => date("Y-m-d"),
+			'availment_date' => $input_post['availment-date'],
 			'chief_complaint' => strip_tags($input_post['chief-complaint']),
 			'requesting_physician' => ucwords($input_post['requesting-physician']),
 			'attending_physician' => $attending_physician,
@@ -447,7 +448,7 @@ class Loa_controller extends CI_Controller {
 				// loop through all the cost types from DB
 				foreach ($cost_types as $cost_type) :
 					if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
-						array_push($ct_array, $cost_type['cost_type']);
+						array_push($ct_array, $cost_type['item_description']);
 					}
 				endforeach;
 				// convert array to string and add comma as a separator using PHP implode
@@ -483,7 +484,7 @@ class Loa_controller extends CI_Controller {
 
 			$button = '<a class="me-2" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
-			$button .= '<a href="' . base_url() . 'member/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Generate Printable LOA"><i class="mdi mdi-printer fs-2 text-primary"></i></a>';
+			// $button .= '<a href="' . base_url() . 'member/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Generate Printable LOA"><i class="mdi mdi-printer fs-2 text-primary"></i></a>';
 
 			// initialize multiple varibles at once
 			$view_file = $short_med_serv = '';
@@ -498,7 +499,7 @@ class Loa_controller extends CI_Controller {
 				// loop through all the cost types from DB
 				foreach ($cost_types as $cost_type) :
 					if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
-						array_push($ct_array, $cost_type['cost_type']);
+						array_push($ct_array, $cost_type['item_description']);
 					}
 				endforeach;
 				// convert array to string and add comma as a separator using PHP implode
@@ -546,7 +547,7 @@ class Loa_controller extends CI_Controller {
 				// loop through all the cost types from DB
 				foreach ($cost_types as $cost_type) :
 					if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
-						array_push($ct_array, $cost_type['cost_type']);
+						array_push($ct_array, $cost_type['item_description']);
 					}
 				endforeach;
 				// convert array to string and add comma as a separator using PHP implode
@@ -580,7 +581,7 @@ class Loa_controller extends CI_Controller {
 			$ct_array = $row = [];
 			$loa_id = $this->myhash->hasher($loa['loa_id'], 'encrypt');
 
-			$custom_loa_no = 	'<mark class="bg-primary text-white">'.$value['loa_no'].'</mark>';
+			$custom_loa_no = 	'<mark class="bg-primary text-white">'.$loa['loa_no'].'</mark>';
 
 			$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
 
@@ -601,7 +602,7 @@ class Loa_controller extends CI_Controller {
 				// loop through all the cost types from DB
 				foreach ($cost_types as $cost_type) :
 					if (in_array($cost_type['ctype_id'], $selected_cost_types)) :
-						array_push($ct_array, $cost_type['cost_type']);
+						array_push($ct_array, $cost_type['item_description']);
 					endif;
 				endforeach;
 				// convert array to string and add comma as a separator using PHP implode
@@ -673,7 +674,7 @@ class Loa_controller extends CI_Controller {
 		$ct_array = [];
 		foreach ($cost_types as $cost_type) :
 			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
-				array_push($ct_array, $cost_type['cost_type']);
+				array_push($ct_array, $cost_type['item_description']);
 			}
 		endforeach;
 		$med_serv = implode(', ', $ct_array);

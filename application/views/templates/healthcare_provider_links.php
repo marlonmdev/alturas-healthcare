@@ -1,4 +1,4 @@
-              <li class="sidebar-item">
+<li class="sidebar-item">
                 <a
                   class="sidebar-link"
                   href="<?php echo base_url(); ?>healthcare-provider/dashboard"
@@ -6,19 +6,6 @@
                   >
                     <i class="mdi mdi-view-dashboard"></i>
                     <span class="hide-menu ls-1">Dashboard</span>
-                </a>
-              </li>
-
-              <li class="sidebar-item
-              <?php echo $this->uri->segment(2) == "billing" ? "selected" : ""; ?>
-              ">
-                <a
-                  class="sidebar-link"
-                  href="<?php echo base_url(); ?>healthcare-provider/billing"
-                  aria-expanded="false"
-                  >
-                  <i class="mdi mdi-receipt"></i>
-                  <span class="hide-menu ls-1">Billing</span>
                 </a>
               </li>
 
@@ -46,6 +33,33 @@
                   <i class="mdi mdi-file-chart"></i>
                   <span class="hide-menu ls-1">NOA</span>
                 </a>
+              </li>
+
+              <li class="sidebar-item
+              <?php echo $this->uri->segment(2) == "billing" ? "selected" : ""; ?>
+              ">
+                <a
+                  class="sidebar-link has-arrow"
+                  href="javascript:void(0)"
+                  aria-expanded="false"
+                  >
+                  <i class="mdi mdi-file-chart"></i>
+                  <span class="hide-menu ls-1">Billing</span>
+                </a>
+                <ul aria-expanded="false" class="collapse first-level">
+                  <li class="sidebar-item">
+                    <a href="<?php echo base_url(); ?>healthcare-provider/billing" class="sidebar-link"
+                      ><i class="mdi mdi-receipt"></i
+                      ><span class="hide-menu ls-1">Manual Input</span>
+                    </a>
+                  </li>
+                  <li class="sidebar-item">
+                    <a href="<?php echo base_url(); ?>healthcare-provider/billing/upload-texfile" class="sidebar-link"
+                      ><i class="mdi mdi-upload"></i
+                      ><span class="hide-menu ls-1">Upload Textfile</span>
+                    </a>
+                  </li>
+                </ul>
               </li>
 
               <li class="sidebar-item">

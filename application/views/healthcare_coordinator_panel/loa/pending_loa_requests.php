@@ -288,7 +288,10 @@
     $("#viewChargeTypeModal").modal("show");
     $('#loa-id').val(loa_id);
     $('#charge-type').val('');
+    $( ".wr" ).hide();
+    $( ".nwr" ).hide();
   }
+
 
   const cancelLoaRequest = (loa_id) => {
     $.confirm({

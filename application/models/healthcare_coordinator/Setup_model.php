@@ -110,12 +110,126 @@ class Setup_model extends CI_Model {
 		return $this->db->affected_rows() > 0 ? true : false;
 	}
 
-	function db_get_all_cost_types() {
-		$this->db->select('*')
-						 ->from('cost_types')
-						 ->order_by('ctype_id', 'DESC');
-		return $this->db->get()->result_array();
-	}
+	 // Start of cost_types server-side processing datatables
+	 var $table = 'cost_types';
+	 var $column_order = ['item_id', 'item_description', 'op_price', 'ip_price', 'date_added']; //set column field database for datatable orderable
+	 var $column_search = ['item_id', 'item_description', 'op_price', 'ip_price']; //set column field database for datatable searchable 
+	 var $order = ['ctype_id' => 'asc']; // default order 
+   
+	 private function _get_datatables_query() {
+	   $this->db->from($this->table);
+	   $i = 0;
+
+	   if($this->input->post('filter')){
+			$this->db->like('price_list_group', $this->input->post('filter'));
+	   }
+
+	   // loop column 
+	   foreach ($this->column_search as $item) {
+		 // if datatable send POST for search
+		 if ($_POST['search']['value']) {
+		   // first loop
+		   if ($i === 0) {
+			 $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+			 $this->db->like($item, $_POST['search']['value']);
+		   } else {
+			 $this->db->or_like($item, $_POST['search']['value']);
+		   }
+   
+		   if (count($this->column_search) - 1 == $i) //last loop
+			 $this->db->group_end(); //close bracket
+		 }
+		 $i++;
+	   }
+   
+	   // here order processing
+	   if (isset($_POST['order'])) {
+		 $this->db->order_by($this->column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+	   } else if (isset($this->order)) {
+		 $order = $this->order;
+		 $this->db->order_by(key($order), $order[key($order)]);
+	   }
+	 }
+   
+	 function get_datatables() {
+	   $this->_get_datatables_query();
+	   if ($_POST['length'] != -1)
+		 $this->db->limit($_POST['length'], $_POST['start']);
+	   $query = $this->db->get();
+	   return $query->result_array();
+	 }
+   
+	 function count_filtered() {
+	   $this->_get_datatables_query();
+	   $query = $this->db->get();
+	   return $query->num_rows();
+	 }
+   
+	 function count_all() {
+	   $this->db->from($this->table);
+	   return $this->db->count_all_results();
+	 }
+	 // End of server-side processing datatables
+
+	  // Start of room_types server-side processing datatables
+	  var $room_table = 'room_price';
+	  var $room_column_order = ['room_type', 'room_typ_hmo_req', 'room_number', 'room_rate', 'date_added']; //set column field database for datatable orderable
+	  var $room_column_search = ['room_type', 'room_typ_hmo_req', 'room_number', 'room_rate']; //set column field database for datatable searchable 
+	  var $room_order = ['room_id' => 'asc']; // default order 
+	
+	  private function _get_room_datatables_query() {
+		$this->db->from($this->room_table);
+		$i = 0;
+		// loop column 
+		foreach ($this->room_column_search as $item) {
+		  // if datatable send POST for search
+		  if ($_POST['search']['value']) {
+			// first loop
+			if ($i === 0) {
+			  $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+			  $this->db->like($item, $_POST['search']['value']);
+			} else {
+			  $this->db->or_like($item, $_POST['search']['value']);
+			}
+	
+			if (count($this->room_column_search) - 1 == $i) //last loop
+			  $this->db->group_end(); //close bracket
+		  }
+		  $i++;
+		}
+	
+		// here order processing
+		if (isset($_POST['order'])) {
+		  $this->db->order_by($this->room_column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+		} else if (isset($this->room_order)) {
+		  $order = $this->room_order;
+		  $this->db->order_by(key($order), $order[key($order)]);
+		}
+	  }
+	
+	  function get_room_datatables() {
+		$this->_get_room_datatables_query();
+		if ($_POST['length'] != -1)
+		  $this->db->limit($_POST['length'], $_POST['start']);
+		$query = $this->db->get();
+		return $query->result_array();
+	  }
+	
+	  function count_room_filtered() {
+		$this->_get_room_datatables_query();
+		$query = $this->db->get();
+		return $query->num_rows();
+	  }
+	
+	  function count_all_room() {
+		$this->db->from($this->room_table);
+		return $this->db->count_all_results();
+	  }
+	  // End of server-side processing datatables
+
+	 function get_price_group() {
+		return $this->db->get('cost_types')->result_array();
+	 }
 
 	function db_get_cost_type_info($ctype_id) {
 		$query = $this->db->get_where('cost_types', ['ctype_id' => $ctype_id]);
@@ -127,18 +241,26 @@ class Setup_model extends CI_Model {
 	}
 
 	function db_check_cost_type($cost_type) {
-		$query = $this->db->get_where('cost_types', ['cost_type' => $cost_type]);
+		$query = $this->db->get_where('cost_types', ['item_description' => $cost_type]);
 		return $query->num_rows() > 0 ? true : false;
 	}
 
-	function db_update_cost_type($ctype_id, $post_data) {
-		$this->db->where('ctype_id', $ctype_id);
-		return $this->db->update('cost_types', $post_data);
+	function db_insert_room_type($post_data) {
+		return $this->db->insert('room_price', $post_data);
 	}
 
-	function db_delete_cost_type($ctype_id) {
-		$this->db->where('ctype_id', $ctype_id)
-						 ->delete('cost_types');
-		return $this->db->affected_rows() > 0 ? true : false;
+	function db_get_all_cost_types() {
+		return $this->db->get('cost_types')->result_array();
 	}
+
+	// function db_update_cost_type($ctype_id, $post_data) {
+	// 	$this->db->where('ctype_id', $ctype_id);
+	// 	return $this->db->update('cost_types', $post_data);
+	// }
+
+	// function db_delete_cost_type($ctype_id) {
+	// 	$this->db->where('ctype_id', $ctype_id)
+	// 					 ->delete('cost_types');
+	// 	return $this->db->affected_rows() > 0 ? true : false;
+	// }
 }

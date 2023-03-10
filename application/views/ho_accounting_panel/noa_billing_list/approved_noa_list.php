@@ -35,7 +35,7 @@
                     </a>
                 </li>
                 
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a
                     class="nav-link"
                     href="<?php echo base_url(); ?>head-office-accounting/noa-request-list/noa-completed"
@@ -43,7 +43,7 @@
                         <span class="hidden-sm-up"></span>
                         <span class="hidden-xs-down fs-5 font-bold">Completed</span>
                     </a>
-                </li>
+                </li> -->
             </ul>
             <div class="col-lg-5 ps-5 pb-3">
                 <div class="input-group">

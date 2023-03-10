@@ -23,21 +23,44 @@
   <!-- Start of Container fluid  -->
   <div class="container-fluid">
     <div class="row">
-      <div class="col-lg-12">
-        <button type="button" class="btn btn-info btn-sm" onclick="showAddCostTypeModal()"><i class="mdi mdi-plus-circle fs-4"></i> Add New</button>
-        <br><br>
-
+      <div class="col-lg-">
+        <div class="row pt-2 pb-2">
+            <div class="col-lg-3">
+                <button type="button" class="btn btn-info btn-sm" onclick="showAddCostTypeModal()"><i class="mdi mdi-plus-circle fs-4"></i> Add New</button>
+            </div>
+            <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
+            <div class="col-lg-5 offset-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text bg-info text-white">
+                        <i class="mdi mdi-filter"></i>
+                        </span>
+                    </div>
+                    <select class="form-select fw-bold" name="price-filter" id="price-filter">
+                        <option value="">Select Price List</option>
+                        <?php
+                            // Remove duplicates from $price_group array
+                            $unique_price_groups = array_unique(array_column($price_group, 'price_list_group'));
+                            foreach($unique_price_groups as $group) :
+                        ?>
+                        <option value="<?php echo $group; ?>"><?php echo $group; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
+        </div> <br>
+       
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-hover table-fit" id="costTypesTable">
                 <thead>
                   <tr>
-                    <th class="fw-bold">#</th>
-                    <th class="fw-bold">Cost Type</th>
-                    <th class="fw-bold">Date Added</th>
-                    <th class="fw-bold">Date Updated</th>
-                    <th class="fw-bold">Actions</th>
+                    <th class="fw-bold">ITEM ID</th>
+                    <th class="fw-bold">ITEM DESCRIPTION</th>
+                    <th class="fw-bold">OP PRICE</th>
+                    <th class="fw-bold">IP PRICE</th>
+                    <th class="fw-bold">DATE ADDED</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -60,26 +83,34 @@
 <script>
   const baseUrl = `<?= base_url() ?>`;
   $(document).ready(function() {
+    
+    let costTypeTable = $('#costTypesTable').DataTable({
+                processing: true, //Feature control the processing indicator.
+                serverSide: true, //Feature control DataTables' server-side processing mode.
+                order: [], //Initial no order.
 
-    $("#costTypesTable").DataTable({
-      ajax: {
-        url: `${baseUrl}healthcare-coordinator/setup/cost-types/fetch`,
-        dataSrc: function(data) {
-          if (data == "") {
-            return [];
-          } else {
-            return data.data;
-          }
-        }
-      },
-      order: [],
-      responsive: true,
-      fixedHeader: true,
-      //Set column definition initialisation properties.
-      columnDefs: [{
-        "targets": [4], // numbering column
-        "orderable": false, //set not orderable
-      }, ],
+                // Load data for the table's content from an Ajax source
+                ajax: {
+                    url: `${baseUrl}healthcare-coordinator/setup/cost-types/fetch`,
+                    type: "POST",
+                    data: function(data) {
+                        data.token     = '<?php echo $this->security->get_csrf_hash(); ?>';
+                        data.filter    = $('#price-filter').val();
+                    
+                    },
+                },
+
+                //Set column definition initialisation properties.
+                columnDefs: [{
+                    "targets": [], // 5th column / numbering column
+                    "orderable": false, //set not orderable
+                }, ],
+                responsive: true,
+                fixedHeader: true,
+            });
+
+    $('#price-filter').change(function(){
+        costTypeTable.draw();
     });
 
     $('#registerCostTypeForm').submit(function(event) {
@@ -94,7 +125,10 @@
             token,
             status,
             message,
-            cost_type_error
+            price_list_error,
+            cost_type_error,
+            op_price_error,
+            ip_price_error
           } = response;
           switch (status) {
             case 'error':
@@ -104,6 +138,27 @@
               } else {
                 $('#cost-type-error').html('');
                 $('#cost-type').removeClass('is-invalid');
+              }
+              if (price_list_error !== '') {
+                $('#price-list-error').html(price_list_error);
+                $('#price-list').addClass('is-invalid');
+              } else {
+                $('#price-list-error').html('');
+                $('#price-list').removeClass('is-invalid');
+              }
+              if (op_price_error !== '') {
+                $('#op-price-error').html(op_price_error);
+                $('#op-price').addClass('is-invalid');
+              } else {
+                $('#op-price-error').html('');
+                $('#op-price').removeClass('is-invalid');
+              }
+              if (ip_price_error !== '') {
+                $('#ip-price-error').html(ip_price_error);
+                $('#ip-price').addClass('is-invalid');
+              } else {
+                $('#ip-price-error').html('');
+                $('#ip-price').removeClass('is-invalid');
               }
               break;
             case 'save-error':
@@ -190,24 +245,30 @@
     $('#cost-type').removeClass('is-invalid');
   }
 
-  function editCostType(ctype_id) {
-    $.ajax({
-      url: `${baseUrl}healthcare-coordinator/setup/cost-types/edit/${ctype_id}`,
-      type: "GET",
-      success: function(response) {
-        const res = JSON.parse(response);
-        const {
-          status,
-          token,
-          cost_type
-        } = res;
-        $('#editCostTypeForm')[0].reset();
-        $("#editCostTypeModal").modal("show");
-        $('#ctype-id').val(ctype_id);
-        $('#edit-cost-type').val(cost_type);
-      }
-    });
-  }
+  // function editCostType(ctype_id) {
+  //   $.ajax({
+  //     url: `${baseUrl}healthcare-coordinator/setup/cost-types/edit/${ctype_id}`,
+  //     type: "GET",
+  //     success: function(response) {
+  //       const res = JSON.parse(response);
+  //       const {
+  //         status,
+  //         token,
+  //         price_group,
+  //         item_id,
+  //         item_description,
+  //         op_price,
+  //         ip_price,
+  //       } = res;
+  //       $('#editCostTypeForm')[0].reset();
+  //       $("#editCostTypeModal").modal("show");
+  //       $('#ctype-id').val(ctype_id);
+  //       $('#edit-item-id').val(item_id);
+  //       $('#edit-cost-type').val(cost_type);
+  //       $('#edit-price-cost').val(price_cost);
+  //     }
+  //   });
+  // }
 
   function deleteCostType(ctype_id) {
     $.confirm({

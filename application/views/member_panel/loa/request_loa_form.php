@@ -117,7 +117,7 @@
               <div class="form-group row">
                 <div class="col-lg-7 col-sm-12 col-lg-offset-3 mb-2">
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> HealthCare Provider</label>
-                  <select class="form-select" name="healthcare-provider" id="healthcare-provider">
+                  <select class="form-select" name="healthcare-provider" id="healthcare-provider" oninput="enableMedService()">
                     <option value="" selected>Select HealthCare Provider</option>
                     <?php
                     if (!empty($hcproviders)) :
@@ -147,12 +147,12 @@
                 <div class="col-lg-7s col-sm-12 mb-2 d-none" id="med-services-div">
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Select Medical Service/s</label><br>
                   <div id="med-services-wrapper">
-                    <select class="form-select" multiple="multiple" id="med-services" name="med-services[]">
+                    <select class="form-select" multiple="multiple" id="med-services" name="med-services[]" disabled>
                       <?php
                       if (!empty($costtypes)) :
                         foreach ($costtypes as $ct) :
                       ?>
-                          <option value="<?= $ct['ctype_id']; ?>"><?= $ct['cost_type']; ?></option>
+                          <option value="<?= $ct['ctype_id']; ?>"><?= $ct['item_description']; ?></option>
                       <?php
                         endforeach;
                       endif;
@@ -160,6 +160,11 @@
                     </select>
                   </div>
                   <em id="med-services-error" class="text-danger"></em>
+                </div>
+
+                <div class="col-lg-3 pb-2">
+                    <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i>  Date of Availment</label>
+                    <input type="date" class="form-control" name="availment-date" id="availment-date">
                 </div>
               </div>
 
@@ -179,7 +184,7 @@
                   $year = date('Y');
                   $today = $year . '-' . $month . '-' . $day;
                   ?>
-                  <label class="colored-label">Request Date of Availment</label>
+                  <label class="colored-label">Request Date</label>
                   <input type="text" class="form-control" name="request-date" value="<?= $today; ?>" disabled>
                 </div>
               </div>
@@ -266,6 +271,7 @@
   const baseUrl = "<?= base_url() ?>";
 
   $(document).ready(function() {
+
     $('#memberLoaRequestForm').submit(function(event) {
       event.preventDefault();
       let $data = new FormData($(this)[0]);
@@ -365,9 +371,20 @@
         },
       })
     });
+    
   });
 
+    const enableMedService = () => {
+    const hc_provider = document.querySelector('#healthcare-provider').value;
+    const med_services = document.querySelector('#med-services');
 
+        if( hc_provider != '' ){
+          med_services.disabled = false;
+        }else{
+          med_services.disabled = true;
+        }
+    } 
+  
   const showMedServices = () => {
     const loaType = document.querySelector('#loa-request-type').value;
     const medServices = document.querySelector('#med-services-div');

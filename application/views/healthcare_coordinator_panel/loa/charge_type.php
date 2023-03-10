@@ -13,17 +13,13 @@
                     <div class="row mb-3">
                       <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
                       <input type="hidden" name="loa-id" id="loa-id">
-<<<<<<< HEAD
                       <select class="chargetype fs-5" name="charge-type">
-=======
-                      <select class="form-select chargetype" name="charge-type">
->>>>>>> 3e3f2f581a8dafb522f97909d6e235d186f3e821
                         <option value="">Please Select...</option>
                         <option value="Yes">Work related</option>
                         <option value="No">Non-work related</option>
                       </select>
 
-		                  <!-- <div class="form-group row pt-4">
+		                  <div class="form-group row pt-4">
 		                    <div class="wr" id="percentage">
 		                      <div id="med-services-wrapper">
 		                        <div class="mb-2 fs-5">
@@ -33,7 +29,7 @@
 		                      </div>
 		                      <em id="wpercentage-error" class="text-danger"></em>
 		                    </div>
-		                  </div> -->
+		                  </div>
 
 	                    <div class="form-group row">
 	                      <div class="nwr" id="percentage">

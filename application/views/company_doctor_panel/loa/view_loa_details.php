@@ -122,8 +122,9 @@
                       </table>
                     </div>
                   </div>
-                </div>
+                </section>
                 <div class="modal-footer">
+                  <button class="btn btn-dark ls-1 me-2" onclick="saveAsImage()"><i class="mdi mdi-file-image"></i> Save as Image</button>
                   <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                 </div>
               </div>

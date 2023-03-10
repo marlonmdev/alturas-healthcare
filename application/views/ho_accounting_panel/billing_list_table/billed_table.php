@@ -411,6 +411,10 @@
             const start_date = document.querySelector('#start-date').value;
             const end_date = document.querySelector('#end-date').value;
             const total_charge = document.querySelector('#total_charge').value;
+<<<<<<< HEAD
+
+            $('#addPaymentModal').modal('show');
+=======
             const parsed_total = parseFloat(total_charge.replace(/,/g, ''));
             
             if(total_charge != ''){
@@ -420,6 +424,7 @@
                 modal.removeAttribute("data-bs-toggle");
             }
             
+>>>>>>> 3990aa6214f8729fe4a4fb1df85bf7bf36c46cb9
             // check_date.style.backgroundColor = '#ffff';
             $('#hospital_filtered').val(hospital_name);
             $('#start_date').val(start_date);
@@ -427,6 +432,9 @@
             $('#total-company-charge').val(parsed_total);
             $('#hp_id').val(hp_id);
         }
+<<<<<<< HEAD
+=======
 
+>>>>>>> 3990aa6214f8729fe4a4fb1df85bf7bf36c46cb9
     </script>
            

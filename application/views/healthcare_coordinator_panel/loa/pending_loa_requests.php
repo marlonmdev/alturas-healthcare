@@ -99,6 +99,8 @@
   </div>
 <script>
   const baseUrl = `<?= base_url(); ?>`;
+  const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
+
   $(document).ready(function() {
 
     $('#pendingLoaTable').DataTable({
@@ -290,6 +292,24 @@
     $('#charge-type').val('');
     $( ".wr" ).hide();
     $( ".nwr" ).hide();
+  }
+
+  const saveAsImage = () => {
+    // Get the div element you want to save as an image
+    const element = document.querySelector("#printableDiv");
+    // Use html2canvas to take a screenshot of the element
+    html2canvas(element)
+      .then(function(canvas) {
+        // Convert the canvas to an image data URL
+        const imgData = canvas.toDataURL("image/png");
+        // Create a temporary link element to download the image
+        const link = document.createElement("a");
+        link.download = `loa_${fileName}.png`;
+        link.href = imgData;
+
+        // Click the link to download the image
+        link.click();
+      });
   }
 
 

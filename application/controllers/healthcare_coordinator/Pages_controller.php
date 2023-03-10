@@ -88,9 +88,18 @@ class Pages_controller extends CI_Controller {
 	}
 
 	function view_all_cost_types() {
+		$this->load->model('healthcare_coordinator/setup_model');
+		$data['price_group'] = $this->setup_model->get_price_group();
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/setup/cost_types');
+		$this->load->view('templates/footer');
+	}
+
+	function view_all_room_types() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/setup/room_types');
 		$this->load->view('templates/footer');
 	}
 

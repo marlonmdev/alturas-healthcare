@@ -1,4 +1,4 @@
-<li class="sidebar-item">
+              <li class="sidebar-item">
                 <a
                   class="sidebar-link sidebar-link"
                   href="<?php echo base_url(); ?>healthcare-coordinator/dashboard"

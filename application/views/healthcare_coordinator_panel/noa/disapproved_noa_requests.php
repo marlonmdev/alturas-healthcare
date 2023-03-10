@@ -51,7 +51,7 @@
               <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
             >
           </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
             <a
               class="nav-link"
               href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/completed"
@@ -59,7 +59,7 @@
               ><span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
             >
-          </li>
+          </li> -->
         </ul>
 
         <div class="card shadow">

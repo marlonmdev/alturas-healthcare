@@ -23,62 +23,70 @@
         <!-- Start of Container fluid  -->
         <div class="container-fluid">
           <div class="row">
+            <div class="row shadow">
+              <div class="col-lg-3 col-sm-6">
+                <div class="card-box bg-cyan">
+                  <div class="inner">
+                    <h3><?php echo $billed_count; ?></h3>
+                    <p>Billed</p>
+                  </div>
+                  <div class="icon">
+                    <i class="mdi mdi-file-document" aria-hidden="true"></i>
+                  </div>
+                  <a href="<?php echo base_url() ?>head-office-accounting/billing-list/billed" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                </div>
+              </div>
 
-            <div class="col-lg-3 col-sm-6">
-              <div class="card-box bg-cyan">
-                <div class="inner">
-                  <h3><?php echo $billed_count; ?></h3>
-                  <p>Billed</p>
+              <div class="col-lg-3 col-sm-6">
+                <div class="card-box bg-green">
+                  <div class="inner">
+                    <h3><?php echo $payment_count; ?></h3>
+                    <p>Payment History</p>
+                  </div>
+                  <div class="icon">
+                    <i class="mdi mdi-file-document" aria-hidden="true"></i>
+                  </div>
+                  <a href="<?php echo base_url() ?>head-office-accounting/payment_history" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
-                <div class="icon">
-                  <i class="mdi mdi-file-document" aria-hidden="true"></i>
+              </div>
+
+              <div class="col-lg-3 col-sm-6">
+                <div class="card-box bg-orange">
+                  <div class="inner">
+                    <h3><?php echo $loa_count; ?></h3>
+                    <p>LOA Requests</p>
+                  </div>
+                  <div class="icon">
+                    <i class="mdi mdi-file-document" aria-hidden="true"></i>
+                  </div>
+                  <a href="<?php echo base_url() ?>head-office-accounting/loa-request-list/loa-approved" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
-                <a href="<?php echo base_url() ?>head-office-accounting/billing-list/billed" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+              </div>
+              
+              <div class="col-lg-3 col-sm-6">
+                <div class="card-box bg-red">
+                  <div class="inner">
+                    <h3><?php echo $noa_count; ?></h3>
+                    <p>NOA Requests</p>
+                  </div>
+                  <div class="icon">
+                    <i class="mdi mdi-file-chart" aria-hidden="true"></i>
+                  </div>
+                  <a href="<?php echo base_url() ?>head-office-accounting/noa-request-list/noa-approved" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                </div>
               </div>
             </div>
-
-            <div class="col-lg-3 col-sm-6">
-              <div class="card-box bg-green">
-                <div class="inner">
-                  <h3><?php echo $payment_count; ?></h3>
-                  <p>Payment History</p>
-                </div>
-                <div class="icon">
-                  <i class="mdi mdi-file-document" aria-hidden="true"></i>
-                </div>
-                <a href="<?php echo base_url() ?>head-office-accounting/payment_history" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+           
+            <div class="row pt-3 pb-3">
+              <div class="col-lg-6 col-sm-6 pb-2 shadow"><br>
+                <div class="pt-3" id="chartContainer" style="height: 370px; width: 100%;"></div>
               </div>
-            </div>
-
-            <div class="col-lg-3 col-sm-6">
-              <div class="card-box bg-orange">
-                <div class="inner">
-                  <h3><?php echo $loa_count; ?></h3>
-                  <p>LOA Requests</p>
-                </div>
-                <div class="icon">
-                  <i class="mdi mdi-file-document" aria-hidden="true"></i>
-                </div>
-                <a href="<?php echo base_url() ?>head-office-accounting/loa-request-list/loa-approved" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+              
+              <div class="col-lg-6 col-sm-6 shadow"><br>
+                <div class="pt-3" id="chartBarContainer" style="height: 370px; width: 100%;"></div>
               </div>
             </div>
             
-            <div class="col-lg-3 col-sm-6">
-              <div class="card-box bg-red">
-                <div class="inner">
-                  <h3><?php echo $noa_count; ?></h3>
-                  <p>NOA Requests</p>
-                </div>
-                <div class="icon">
-                  <i class="mdi mdi-file-chart" aria-hidden="true"></i>
-                </div>
-                <a href="<?php echo base_url() ?>head-office-accounting/noa-request-list/noa-approved" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
-              </div>
-            </div>
-            
-            <div class="col-lg-6 col-sm-6 pb-2"><br>
-              <div class="pt-3" id="chartContainer" style="height: 370px; width: 100%;"></div>
-            </div>
 
           </div>
         <!-- End Container fluid  -->
@@ -87,9 +95,7 @@
       </div>
     <!-- End Wrapper -->
     </div>
-
-    <script>
-
+<script>
       <?php
         // foreach($paid_count as $bill){
 
@@ -103,9 +109,7 @@
             );
             ?>
      
-        
-       
-      
+
       window.onload = function() {
       
       var chart = new CanvasJS.Chart("chartContainer", {
@@ -124,6 +128,28 @@
         }]
       });
       chart.render();
-      
+
+      var chartCol = new CanvasJS.Chart("chartBarContainer", {
+      theme: "light1", // "light2", "dark1", "dark2"
+      animationEnabled: false, // change to true		
+      title:{
+        text: "Basic Column Chart"
+      },
+      data: [
+      {
+          // Change type to "bar", "area", "spline", "pie",etc.
+          type: "column",
+          dataPoints: [
+            { label: "apple",  y: 10  },
+            { label: "orange", y: 15  },
+            { label: "banana", y: 25  },
+            { label: "mango",  y: 30  },
+            { label: "grape",  y: 28  }
+          ]
+        }
+        ]
+      });
+      chartCol.render();
+        
       }
 </script>

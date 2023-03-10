@@ -592,4 +592,139 @@ class Billing_controller extends CI_Controller {
 		$this->load->view('templates/footer');
     }
 
+    
+    function db_upload_textfile(){
+        $token = $this->security->get_csrf_hash();
+        $arr_f      = [];     
+        if(!empty($_FILES['textfile']['tmp_name']))            
+        {   
+            $filename   = $_FILES['textfile']['tmp_name']; 
+            $myfile     = fopen($filename, "r") or die("Unable to open file!");
+            while(! feof($myfile)) {
+                $arr_f[]= fgets($myfile);                  
+            }
+
+            $fname      = $_FILES['textfile']['name'];
+            $ext        = explode(".",$fname); 
+            $ext        = $ext[1];
+
+            if($ext == "csv"){ 
+                $delimeter = ",";
+            }else if($ext == "txt"){
+                $delimeter = "|";
+            }else{
+                $response = [
+                    'token' => $token,
+                    'status' => 'error-delimiter',
+                    'message' => 'Error in file format delimiter.',
+                ];
+                echo json_encode($response);
+                exit;
+            }
+
+            fclose($myfile);     
+            $flag = '';
+            $check = explode("|", $arr_f[0]);
+            $countcolumn = count($check);
+            
+            if(trim($countcolumn) != 8 && trim($countcolumn) != 6){
+                $response = [
+                    'token' => $token,
+                    'status' => 'error-format',
+                    'message' => 'Textfile Uploading Failed. Text file format does not match with the uploaded file!',
+                ];
+                echo json_encode($response);
+                die();
+            }
+            else
+            {                
+                for ($i=0; $i < count($arr_f); $i++) 
+                {
+                    $arr = [];                
+                    $arr = explode($delimeter, trim(str_replace('"', "", $arr_f[$i] )) );              
+                    
+                    if(trim($arr[0])!="" && $countcolumn == 8 )
+                    {                          
+                        $vcode              = $arr[0]; 
+                        $vname              = $arr[1];                            
+                        $address            = $arr[2];                            
+                        $address2           = $arr[3];                            
+                        $city               = $arr[4];                            
+                        $contact            = $arr[5];                            
+                        $vposting           = $arr[6];                            
+                        $currency           = @$arr[7];                            
+                    }else if(trim($arr[0])!="" && $countcolumn == 6){
+                        $vcode              = $arr[0]; 
+                        $vname              = $arr[1];                            
+                        $address            = $arr[2];                            
+                        $address2           = $arr[3];                            
+                        $city               = $arr[4];                            
+                        $contact            = $arr[5];                            
+                        $vposting           = "";
+                        $currency           = "";     
+                    }
+                    $user_fullname = $this->session->userdata('full_name');
+                    $data = [
+                        'tf_2' => $vcode,
+                        'tf_3' => $vname,
+                        'tf_4' => $address,
+                        'tf_5' => $address2,
+                        'tf_6' => $city,
+                        'tf_7' => $contact,
+                        'tf_8' => $vposting,
+                        'tf_9' => $currency,
+                        'date_added' => date('Y-m-d'),
+                        'added_by' => $user_fullname,
+                        'status' => 'Posted'
+                    ];
+
+                    //dli pwede mag double ug upload ang same vendor code ug vendor name
+                    // if($vposting == "CONSIGNOR"){
+
+                    //     $where   = "vendor_code = '$vcode' ";  
+                    //     $buid    = $this->getStore($vcode);
+                    //     $exist   = $this->vendor_model->check_if_already_exist("vendor_code","tbl_vendor",$where);
+                    //     if($exist == 0){
+                            $flag = $this->billing_model->insert_textfile($data);
+
+                            //LOGS
+                           /* $log  = date('Y-m-d H:i:s')."| $vcode | $vname | ".$this->vendor_model->session_user()." \r\n";                          
+                            $this->vendor_model->writeLogs($log,"../logs/","UPLOAD VENDOR-");*/
+                    //     }else{
+                    //         $flag = 1;
+                    //     }
+                    // }
+                } 
+
+                if($flag){
+                    $response = [
+                        'token' => $token,
+                        'status' => 'success',
+                        'message' => 'Textfile Uploading Done.',
+                    ];
+                    echo json_encode($response);
+                    
+                }else{
+                    $response = [
+                        'token' => $token,
+                        'status' => 'error',
+                        'message' => 'Textfile Uploading Failed. Error in inserting data in the table!',
+                    ];
+                    echo json_encode($response);
+                    
+                } 
+            }
+               
+        }else{
+            $response = [
+                'token' => $token,
+                'status' => 'empty',
+                'message' => 'There must be an error in uploading text file.',
+            ];
+            echo json_encode($response);
+           
+        }       
+    }  
+
+
 }

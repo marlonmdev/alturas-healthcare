@@ -45,7 +45,7 @@ class Loa_ho_controller extends CI_Controller
                 // loop through all the cost types from DB
                 foreach ($cost_types as $cost_type) :
                     if (in_array($cost_type['ctype_id'], $selected_cost_types)) :
-                        array_push($ct_array, $cost_type['cost_type']);
+                        array_push($ct_array, $cost_type['item_description']);
                     endif;
                 endforeach;
                 // convert array to string and add comma as a separator using PHP implode
@@ -108,7 +108,7 @@ class Loa_ho_controller extends CI_Controller
 					// loop through all the cost types from DB
 					foreach ($cost_types as $cost_type) :
 						if (in_array($cost_type['ctype_id'], $selected_cost_types)) :
-							array_push($ct_array, $cost_type['cost_type']);
+							array_push($ct_array, $cost_type['item_description']);
 						endif;
 					endforeach;
 					// convert array to string and add comma as a separator using PHP implode
@@ -163,7 +163,7 @@ class Loa_ho_controller extends CI_Controller
 		$ct_array = [];
 		foreach ($cost_types as $cost_type) :
 			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
-				array_push($ct_array, $cost_type['cost_type']);
+				array_push($ct_array, $cost_type['item_description']);
 			}
 		endforeach;
 		$med_serv = implode(', ', $ct_array);
@@ -201,6 +201,7 @@ class Loa_ho_controller extends CI_Controller
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
@@ -231,7 +232,7 @@ class Loa_ho_controller extends CI_Controller
 		$ct_array = [];
 		foreach ($cost_types as $cost_type) :
 			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
-				array_push($ct_array, $cost_type['cost_type']);
+				array_push($ct_array, $cost_type['item_description']);
 			}
 		endforeach;
 		$med_serv = implode(', ', $ct_array);
@@ -269,6 +270,7 @@ class Loa_ho_controller extends CI_Controller
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),

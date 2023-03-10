@@ -416,7 +416,7 @@ $route['company-doctor/loa/requests-list/completed/fetch'] = 'company_doctor/loa
 $route['company-doctor/loa/requests-list/view/(:any)'] = 'company_doctor/loa_controller/get_loa_info';
 $route['company-doctor/loa/requests-list/approve/(:any)'] = 'company_doctor/loa_controller/approve_loa_request';
 $route['company-doctor/loa/requests-list/disapprove/(:any)'] = 'company_doctor/loa_controller/disapprove_loa_request';
-
+$route['company-doctor/loa/requested-loa/generate-printable-loa/(:any)'] = 'company_doctor/loa_controller/generate_printable_loa';
 
 // Company Doctor NOA Routes
 $route['company-doctor/noa/requests-list/fetch'] = 'company_doctor/noa_controller/fetch_all_pending_noa';
@@ -426,7 +426,7 @@ $route['company-doctor/noa/requests-list/completed/fetch'] = 'company_doctor/noa
 $route['company-doctor/noa/requests-list/view/(:any)'] = 'company_doctor/noa_controller/get_noa_info';
 $route['company-doctor/noa/requests-list/approve/(:any)'] = 'company_doctor/noa_controller/approve_noa_request';
 $route['company-doctor/noa/requests-list/disapprove/(:any)'] = 'company_doctor/noa_controller/disapprove_noa_request';
-
+$route['company-doctor/noa/requested-noa/generate-printable-noa/(:any)'] = 'company_doctor/noa_controller/generate_printable_noa';
 // End of Company Doctor Routes
 //========================================================================================================
 
@@ -548,7 +548,8 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 
 // End of Super Admin Routes
 //========================================================================================================
-
+//IAD
+$route['head-office-iad/dashboard'] = 'ho_iad/pages_controller';
 
 // QR Code Routes
 // $route['qrcode'] = 'home';

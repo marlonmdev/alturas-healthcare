@@ -166,6 +166,7 @@
             rx_file,
             req_status,
             work_related,
+            percentage,
             approved_by,
             approved_on
             } = res;
@@ -202,6 +203,7 @@
             $('#chief-complaint').html(chief_complaint);
             $('#requesting-physician').html(requesting_physician);
             $('#attending-physician').html(at_physician);
+            $('#percentage').html(percentage);
         }
         });
     }

@@ -429,7 +429,8 @@ class Billing_controller extends CI_Controller {
                 'before_remaining_bal'  => $posted_data['remaining-balance'],
                 'after_remaining_bal'   => $after_billing_balance,
                 'billed_by'             => $this->session->userdata('fullname'),
-                'billed_on'             => date('Y-m-d')
+                'billed_on'             => date('Y-m-d'),
+                'status'                => 'Billed'
             ];      
         }else if($type === 'NOA'){
             $data = [
@@ -446,7 +447,8 @@ class Billing_controller extends CI_Controller {
                 'before_remaining_bal'  => $posted_data['remaining-balance'],
                 'after_remaining_bal'   => $after_billing_balance,
                 'billed_by'             => $this->session->userdata('fullname'),
-                'billed_on'             => date('Y-m-d')
+                'billed_on'             => date('Y-m-d'),
+                'status'                => 'Billed'
             ];      
         }
         // return value is either TRUE or FAlSE
@@ -663,7 +665,7 @@ class Billing_controller extends CI_Controller {
                         $vposting           = "";
                         $currency           = "";     
                     }
-                    $user_fullname = $this->session->userdata('full_name');
+                    $user_fullname = $this->session->userdata('fullname');
                     $data = [
                         'tf_2' => $vcode,
                         'tf_3' => $vname,

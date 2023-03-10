@@ -147,6 +147,7 @@
                 admission_date,
                 chief_complaint,
                 work_related,
+                percentage,
                 request_date,
                 req_status,
                 } = res;
@@ -166,6 +167,7 @@
                 $('#admission-date').html(admission_date);
                 $('#chief-complaint').html(chief_complaint);
                 $('#work-related').html(work_related);
+                $('#percentage').html(percentage);
                 $('#request-date').html(request_date);
             }
         });

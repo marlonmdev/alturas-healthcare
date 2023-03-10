@@ -25,7 +25,7 @@
 
         <div class="row mb-3">
           <div class="col-sm-12">
-            <a class="btn btn-dark me-2" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved">
+            <a class="btn btn-dark me-2" href="<?php echo base_url(); ?>company-doctor/loa/requests-list/approved">
               <i class="mdi mdi-arrow-left-bold"></i>
               Go Back
             </a>

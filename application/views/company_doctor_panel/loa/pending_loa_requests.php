@@ -178,6 +178,8 @@
           attending_physician,
           rx_file,
           work_related,
+          percentage,
+          availment_date,
           req_status,
           member_mbl,
           remaining_mbl
@@ -221,9 +223,11 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
+        $('#percentage').html(percentage);
         if(work_related != ''){
           $('#work-related-info').removeClass('d-none');
           $('#work-related-val').html(work_related);
+          
         }else{
           $('#work-related-info').addClass('d-none');
           $('#work-related-val').html('');

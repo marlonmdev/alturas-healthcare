@@ -142,9 +142,10 @@ class Noa_model extends CI_Model {
     return $query->row_array();
   }
 
-  function db_update_noa_charge_type($noa_id, $charge_type) {
+  function db_update_noa_charge_type($noa_id, $charge_type,$percentage) {
     $data = [
       'work_related' => $charge_type,
+      'percentage' => $percentage
     ];
     $this->db->where('noa_id', $noa_id);
     return $this->db->update('noa_requests', $data);

@@ -265,8 +265,8 @@
     $("#viewChargeTypeModal").modal("show");
     $('#noa-id').val(noa_id);
     $('#charge-type').val('');
-    $( ".wr" ).hide();
-    $( ".nwr" ).hide();
+    // $( ".wr" ).hide();
+    // $( ".nwr" ).hide();
   }
 
   function viewNoaInfo(noa_id) {

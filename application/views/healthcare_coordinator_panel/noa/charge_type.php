@@ -21,7 +21,7 @@
                       <em id="charge-type-error" class="text-danger"></em>
                     </div>
 
-                    <div class="form-group row pt-4">
+                    <!-- <div class="form-group row pt-4">
                       <div class="wr" id="percentage">
                         <div id="med-services-wrapper">
                           <div class="mb-3 fs-5">
@@ -31,14 +31,14 @@
                         </div>
                         <em id="wpercentage-error" class="text-danger"></em>
                       </div>
-                    </div>
+                    </div> -->
 
-                    <div class="form-group row">
+                    <div class="form-group row pt-4">
                       <div class="nwr" id="percentage">
                         <div id="med-services-wrapper">
                           <div class="mb-3 fs-5">
-                            <label class="colored-label">Enter Percentage (nonwork-related)</label>
-                            <input type="text" class="form-control" name="nwr_percentage">
+                            <label class="colored-label">Enter Percentage</label>
+                            <input type="text" class="form-control" name="percentage">
                           </div>
                         </div>
                         <em id="med-services-error" class="text-danger"></em>
@@ -63,20 +63,20 @@
 <script>
   $(document).ready(function(){
 
-    $('.chargetype').on('change',function(){
-      var value = $(this).val();
-      if(value == "Yes"){
-        $( ".wr" ).show();
-        $( ".nwr" ).hide();
+    // $('.chargetype').on('change',function(){
+    //   var value = $(this).val();
+    //   if(value == "Yes"){
+    //     $( ".wr" ).show();
+    //     $( ".nwr" ).hide();
 
-      }else if(value == "No"){
-        $( ".wr" ).hide();
-        $( ".nwr" ).show();
-      }else if(value == ""){
-        $( ".wr" ).hide();
-        $( ".nwr" ).hide();
-      }
-    });
+    //   }else if(value == "No"){
+    //     $( ".wr" ).hide();
+    //     $( ".nwr" ).show();
+    //   }else if(value == ""){
+    //     $( ".wr" ).hide();
+    //     $( ".nwr" ).hide();
+    //   }
+    // });
   });
 
 </script>

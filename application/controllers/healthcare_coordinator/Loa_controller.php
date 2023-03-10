@@ -877,6 +877,7 @@ class Loa_controller extends CI_Controller {
 		$token = $this->security->get_csrf_hash();
 		$loa_id = $this->myhash->hasher($this->input->post('loa-id'), 'decrypt');
 		$charge_type = $this->input->post('charge-type', TRUE);
+		$percentage = $this->input->post('percentage', TRUE);
 
 		$this->form_validation->set_rules('charge-type', 'Charge Type', 'required');
 		if ($this->form_validation->run() == FALSE) {
@@ -887,7 +888,7 @@ class Loa_controller extends CI_Controller {
 			];
 			echo json_encode($response);
 		}else{
-			$updated = $this->loa_model->db_update_loa_charge_type($loa_id, $charge_type);
+			$updated = $this->loa_model->db_update_loa_charge_type($loa_id, $charge_type, $percentage);
 
 			if (!$updated) {
 				$response = [

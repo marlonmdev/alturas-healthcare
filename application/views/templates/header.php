@@ -263,7 +263,7 @@
                       include "ho_accounting_links.php";
                       break;
                     case "head-office-iad":
-                      include "ho_iad_links.php";
+                      include "ho_iad_nav_links.php";
                       break;
                   }
                 ?>

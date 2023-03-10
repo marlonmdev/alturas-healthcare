@@ -128,6 +128,17 @@ class Loa_model extends CI_Model {
     return $this->db->get()->row_array();
   }
 
+  function db_get_member_mbl($emp_id){
+    $query = $this->db->get_where('max_benefit_limits', ['emp_id' => $emp_id]);
+    return $query->row_array();
+  }
+
+  function db_get_doctor_by_id($doctor_id) {
+    $query = $this->db->get_where('company_doctors', ['doctor_id' => $doctor_id]);
+    return $query->row_array();
+  }
+
+
   function db_get_requesting_physician($doctor_id) {
     $query = $this->db->get_where('company_doctors', ['doctor_id' => $doctor_id]);
     return $query->row_array();

@@ -116,6 +116,8 @@ class Loa_controller extends CI_Controller {
 
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
+			$custom_actions .= '<a href="' . base_url() . 'company-doctor/loa/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Print LOA"><i class="mdi mdi-printer fs-2 ps-2 text-primary"></i></a>';
+
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
 			if ($loa['loa_request_type'] === 'Consultation') {
@@ -151,6 +153,23 @@ class Loa_controller extends CI_Controller {
 			"data" => $data,
 		);
 		echo json_encode($output);
+	}
+
+	function generate_printable_loa() {
+		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['row'] = $exist = $this->loa_model->db_get_loa_info($loa_id);
+		$data['mbl'] = $this->loa_model->db_get_member_mbl($exist['emp_id']);
+		$data['cost_types'] = $this->loa_model->db_get_cost_types();
+		$data['req'] = $this->loa_model->db_get_doctor_by_id($exist['requesting_physician']);
+		$data['doc'] = $this->loa_model->db_get_doctor_by_id($exist['approved_by']);
+		if (!$exist) {
+			$this->load->view('pages/page_not_found');
+		} else {
+			$this->load->view('templates/header', $data);
+			$this->load->view('company_doctor_panel/loa/generate_printable_loa');
+			$this->load->view('templates/footer');
+		}
 	}
 
 	function fetch_all_disapproved_loa() {
@@ -310,7 +329,7 @@ class Loa_controller extends CI_Controller {
 		$ct_array = [];
 		foreach ($cost_types as $cost_type) :
 			if (in_array($cost_type['ctype_id'], $selected_cost_types)) :
-				array_push($ct_array, $cost_type['cost_type']);
+				array_push($ct_array, $cost_type['item_description']);
 			endif;
 		endforeach;
 		$med_serv = implode(', ', $ct_array);
@@ -356,6 +375,7 @@ class Loa_controller extends CI_Controller {
 			'rx_file' => $row['rx_file'],
 			'req_status' => $req_stat,
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'disapproved_by' =>  $doctor_name,
@@ -406,4 +426,5 @@ class Loa_controller extends CI_Controller {
 			echo json_encode($response);
 		}
 	}
+
 }

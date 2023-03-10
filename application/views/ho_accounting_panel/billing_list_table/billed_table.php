@@ -131,7 +131,7 @@
                         <input type="text" class="form-control fw-bold text-danger fs-4 ls-1" id="total_charge" value="" readonly>
                         
                         <div class="input-group-append" id="payment">
-                            <a href="javascript:void(0)" onclick="add_payment()" class="input-group-text bg-cyan text-white ms-2 px-3 fs-5 ls-1 ps-1" id="add-payment-btn"><i class="mdi mdi-plus fs-4"></i> Add Payment Details </a>
+                            <a href="JavaScript:void(0)" onclick="add_payment()" class="input-group-text bg-cyan text-white ms-2 px-3 fs-5 ls-1 ps-1" id="add-payment-btn"><i class="mdi mdi-plus fs-4"></i> Add Payment Details </a>
                         </div>
                     </div>
                 </div>
@@ -360,7 +360,6 @@
                     },
 
                 });
-              
        }
 
         const enableDate = () => {
@@ -411,10 +410,6 @@
             const start_date = document.querySelector('#start-date').value;
             const end_date = document.querySelector('#end-date').value;
             const total_charge = document.querySelector('#total_charge').value;
-<<<<<<< HEAD
-
-            $('#addPaymentModal').modal('show');
-=======
             const parsed_total = parseFloat(total_charge.replace(/,/g, ''));
             
             if(total_charge != ''){
@@ -424,7 +419,6 @@
                 modal.removeAttribute("data-bs-toggle");
             }
             
->>>>>>> 3990aa6214f8729fe4a4fb1df85bf7bf36c46cb9
             // check_date.style.backgroundColor = '#ffff';
             $('#hospital_filtered').val(hospital_name);
             $('#start_date').val(start_date);
@@ -432,9 +426,5 @@
             $('#total-company-charge').val(parsed_total);
             $('#hp_id').val(hp_id);
         }
-<<<<<<< HEAD
-=======
-
->>>>>>> 3990aa6214f8729fe4a4fb1df85bf7bf36c46cb9
     </script>
            

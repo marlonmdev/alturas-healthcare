@@ -38,7 +38,7 @@
 
                             <div class="col-lg-6 pt-3">
                                 <div class="input-group">
-                                    <div class="input-group-prepend pt-1">
+                                    <div class="input-group-prepend pt-2">
                                         <span class="text-danger fs-5 fw-bold pe-2">Total Payable : </span>
                                     </div>
                                         <input class="form-control text-dark fw-bold ls-1 fs-5" placeholder="" name="total-company-charge" id="total-company-charge" readonly>

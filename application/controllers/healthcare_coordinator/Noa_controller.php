@@ -559,6 +559,7 @@ class Noa_controller extends CI_Controller {
 		$token = $this->security->get_csrf_hash();
 		$noa_id = $this->myhash->hasher($this->input->post('noa-id'), 'decrypt');
 		$charge_type = $this->input->post('charge-type', TRUE);
+		$percentage = $this->input->post('percentage', TRUE);
 
 		$this->form_validation->set_rules('charge-type', 'Charge Type', 'required');
 		if ($this->form_validation->run() == FALSE) {
@@ -569,7 +570,7 @@ class Noa_controller extends CI_Controller {
 			];
 			echo json_encode($response);
 		}else{
-			$updated = $this->noa_model->db_update_noa_charge_type($noa_id, $charge_type);
+			$updated = $this->noa_model->db_update_noa_charge_type($noa_id, $charge_type, $percentage);
 
 			if (!$updated) {
 				$response = [

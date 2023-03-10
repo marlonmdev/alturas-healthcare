@@ -95,8 +95,19 @@ class Noa_model extends CI_Model {
              ->from('noa_requests as tbl_1')
              ->join('healthcare_providers as tbl_2', 'tbl_1.hospital_id = tbl_2.hp_id')
              ->join('max_benefit_limits as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id')
+             ->join('members as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id')
              ->where('tbl_1.noa_id', $noa_id);
     return $this->db->get()->row_array();
+  }
+
+  function db_get_member_mbl($emp_id){
+    $query = $this->db->get_where('max_benefit_limits', ['emp_id' => $emp_id]);
+    return $query->row_array();
+  }
+
+  function db_get_doctor_by_id($doctor_id) {
+    $query = $this->db->get_where('company_doctors', ['doctor_id' => $doctor_id]);
+    return $query->row_array();
   }
 
   function db_get_doctor_name_by_id($doctor_id) {

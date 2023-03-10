@@ -136,7 +136,7 @@
           suffix, date_of_birth, age, gender, philhealth_no, blood_type, contact_no, home_address,
           city_address, email, contact_person, contact_person_addr, contact_person_no, healthcare_provider,
           loa_request_type, med_services, health_card_no, requesting_company, request_date, chief_complaint,
-          requesting_physician, attending_physician, rx_file, req_status, work_related, approved_by, approved_on
+          requesting_physician, attending_physician, rx_file, req_status, work_related, percentage, approved_by, approved_on
         } = res;
 
         $("#viewLoaModal").modal("show");
@@ -173,6 +173,7 @@
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
         $('#work-related').html(work_related);
+        $('#percentage').html(percentage);
       }
     });
   }

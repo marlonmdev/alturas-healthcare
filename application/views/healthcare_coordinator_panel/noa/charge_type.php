@@ -17,6 +17,7 @@
                         <option value="">Please select...</option>
                         <option value="Yes">Work-related</option>
                         <option value="No">Nonwork-related</option>
+                        <option value="percentage">Percentage</option>
                       </select>
                       <em id="charge-type-error" class="text-danger"></em>
                     </div>

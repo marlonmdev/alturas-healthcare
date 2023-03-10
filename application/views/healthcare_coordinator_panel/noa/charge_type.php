@@ -13,7 +13,7 @@
                     <div class="row mb-3">
                       <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
                       <input type="hidden" name="noa-id" id="noa-id">
-                      <select class="chargetype" name="charge-type">
+                      <select class="chargetype fs-5" name="charge-type">
                         <option value="">Please select...</option>
                         <option value="Yes">Work related</option>
                         <option value="No">Non-work related</option>
@@ -21,11 +21,11 @@
                       <em id="charge-type-error" class="text-danger"></em>
                     </div>
 
-                    <div class="form-group row">
+                    <div class="form-group row pt-4">
                       <div class="wr" id="percentage">
                         <div id="med-services-wrapper">
-                          <div class="mb-3">
-                            <label class="colored-label">Enter Percentage</label>
+                          <div class="mb-3 fs-5">
+                            <label class="colored-label">Enter Percentage (work-related)</label>
                             <input type="text" class="form-control" name="wr_percentage">
                           </div>
                         </div>
@@ -36,8 +36,8 @@
                     <div class="form-group row">
                       <div class="nwr" id="percentage">
                         <div id="med-services-wrapper">
-                          <div class="mb-3">
-                            <label class="colored-label">Enter Percentage</label>
+                          <div class="mb-3 fs-5">
+                            <label class="colored-label">Enter Percentage (nonwork-related)</label>
                             <input type="text" class="form-control" name="nwr_percentage">
                           </div>
                         </div>
@@ -47,8 +47,8 @@
 
                     <div class="row mb-2">
                       <div class="col-12 text-center">
-                        <button type="submit" class="btn btn-info me-2">Save</button>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-info ls-1 me-2">SUBMIT</button>
+                        <button type="button" class="btn btn-danger ls-1" data-bs-dismiss="modal">CANCEL</button>
                       </div>
                     </div>
 

@@ -13,29 +13,29 @@
                     <div class="row mb-3">
                       <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
                       <input type="hidden" name="loa-id" id="loa-id">
-                      <select class="form-select chargetype" name="charge-type">
+                      <select class="chargetype fs-5" name="charge-type">
                         <option value="">Please Select...</option>
                         <option value="Yes">Work related</option>
                         <option value="No">Non-work related</option>
                       </select>
 
-		                  <!-- <div class="form-group row pt-4">
+		                  <div class="form-group row pt-4">
 		                    <div class="wr" id="percentage">
 		                      <div id="med-services-wrapper">
-		                        <div class="mb-2">
-		                          <label class="colored-label">Enter Percentage (work related)</label>
+		                        <div class="mb-2 fs-5">
+		                          <label class="colored-label">Enter Percentage (work-related)</label>
 		                          <input type="number" class="form-control" name="wr_percentage">
 		                        </div>
 		                      </div>
 		                      <em id="wpercentage-error" class="text-danger"></em>
 		                    </div>
-		                  </div> -->
+		                  </div>
 
 	                    <div class="form-group row">
 	                      <div class="nwr" id="percentage">
 	                        <div id="med-services-wrapper">
-	                          <div class="mb-2">
-	                            <label class="colored-label">Enter Percentage (non-work related)</label>
+	                          <div class="mb-2 fs-5">
+	                            <label class="colored-label">Enter Percentage (nonwork-related)</label>
 	                            <input type="number" class="form-control" name="nwr_percentage">
 	                          </div>
 	                        </div>
@@ -65,14 +65,13 @@
     $('.chargetype').on('change',function(){
       var value = $(this).val();
       if(value == "Yes"){
-        $( ".wr" ).hide();
-        $( ".nwr" ).show();
-
-      }else if(value == "No"){
         $( ".wr" ).show();
         $( ".nwr" ).hide();
-      }
-      else if(value == ""){
+
+      }else if(value == "No"){
+        $( ".wr" ).hide();
+        $( ".nwr" ).show();
+      }else if(value == ""){
         $( ".wr" ).hide();
         $( ".nwr" ).hide();
       }

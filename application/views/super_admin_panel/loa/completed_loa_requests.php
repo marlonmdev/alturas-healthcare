@@ -96,6 +96,7 @@
 </div>
 <script>
   const baseUrl = "<?php echo base_url(); ?>";
+  const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
 
   $(document).ready(function() {
 
@@ -125,7 +126,7 @@
 
   });
 
-  function viewImage(path) {
+  const viewImage = (path) => {
     let item = [{
       src: path, // path to image
       title: 'Attached RX File' // If you skip it, there will display the original image name
@@ -138,7 +139,26 @@
     let photoviewer = new PhotoViewer(item, options);
   }
 
-  function viewCompletedLoaInfo(req_id) {
+  const saveAsImage = () => {
+    // Get the div element you want to save as an image
+    const element = document.querySelector("#printableDiv");
+    // Use html2canvas to take a screenshot of the element
+    html2canvas(element)
+      .then(function(canvas) {
+        // Convert the canvas to an image data URL
+        const imgData = canvas.toDataURL("image/png");
+        // Create a temporary link element to download the image
+        const link = document.createElement("a");
+        link.download = `loa_${fileName}.png`;
+        link.href = imgData;
+
+        // Click the link to download the image
+        link.click();
+      });
+  }
+
+
+  const viewCompletedLoaInfo = (req_id) => {
     $.ajax({
       url: `${baseUrl}super-admin/loa/completed/view/${req_id}`,
       type: "GET",

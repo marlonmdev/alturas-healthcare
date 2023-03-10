@@ -26,7 +26,7 @@
             <div class="card">
                 <div class="card-body shadow">
                     <div class="col-lg-6 pb-4 ps-3" id="file-form">
-                        <label class="fw-bold pt-3 pb-3 fs-5"><i class="mdi mdi-asterisk text-danger ms-1"></i> Upload SOA Textfile : </label>
+                        <label class="fw-bold pt-3 pb-3 fs-5 ls-1"><i class="mdi mdi-asterisk text-danger ms-1"></i> Upload SOA Textfile : </label>
                         <input class="form-control fs-5" type="file" name="textfile" id="textfile" accept=".csv, .txt">
                         <em class="text-danger">Allowed file format (.txt & .csv)</em>
                     </div>

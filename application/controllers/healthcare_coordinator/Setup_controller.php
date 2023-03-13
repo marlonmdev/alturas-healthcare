@@ -412,11 +412,13 @@ class Setup_controller extends CI_Controller {
 
       // $actions = '<a href="Javascript:void(0)" onclick="deleteCostType(' . $value['ctype_id'] . ')" data-toggle="tooltip" data-placement="top" title="Delete"><i class="mdi mdi-delete-circle fs-2 text-danger"></i></a>';
 
-      if($value['date_added'] == '' ){
-          $added_on = '03/08/2023';
-      }else{
-        $added_on = date("m/d/Y", strtotime($value['date_added']));
-      }
+      // if($value['date_added'] == '' ){
+      //     $added_on = '03/08/2023';
+      // }else{
+      //   $added_on = date("m/d/Y", strtotime($value['date_added']));
+      // }
+
+      $added_on = $value['date_added'] == '' ? '03/08/2023' :  date("m/d/Y", strtotime($value['date_added']));
   
       $row[] = $value['item_id'];
       $row[] = $value['item_description'];

@@ -144,10 +144,10 @@
               </div>
 
               <div class="form-group row">
-                <div class="col-lg-9 col-sm-12 mb-2 d-none" id="med-services-div">
+                <div class="col-lg-7s col-sm-12 mb-2 d-none" id="med-services-div">
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Select Medical Service/s</label><br>
                   <div id="med-services-wrapper">
-                    <select class="med-services" multiple="multiple" id="med-services" name="med-services[]">
+                    <select class="form-select" multiple="multiple" id="med-services" name="med-services[]" disabled>
                       <?php
                       if (!empty($costtypes)) :
                         foreach ($costtypes as $ct) :
@@ -371,8 +371,7 @@
         },
       })
     });
-
-
+    
   });
 
     const enableMedService = () => {

@@ -81,33 +81,28 @@
   </div>
 <!-- End Wrapper -->
 <script>
-  const baseUrl = `<?= base_url() ?>`;
+  const baseUrl = `<?php echo base_url(); ?>`;
+
   $(document).ready(function() {
     
     let costTypeTable = $('#costTypesTable').DataTable({
-                processing: true, //Feature control the processing indicator.
-                serverSide: true, //Feature control DataTables' server-side processing mode.
-                order: [], //Initial no order.
+        processing: true, //Feature control the processing indicator.
+        serverSide: true, //Feature control DataTables' server-side processing mode.
+        order: [], //Initial no order.
 
-                // Load data for the table's content from an Ajax source
-                ajax: {
-                    url: `${baseUrl}healthcare-coordinator/setup/cost-types/fetch`,
-                    type: "POST",
-                    data: function(data) {
-                        data.token     = '<?php echo $this->security->get_csrf_hash(); ?>';
-                        data.filter    = $('#price-filter').val();
-                    
-                    },
-                },
-
-                //Set column definition initialisation properties.
-                columnDefs: [{
-                    "targets": [], // 5th column / numbering column
-                    "orderable": false, //set not orderable
-                }, ],
-                responsive: true,
-                fixedHeader: true,
-            });
+        // Load data for the table's content from an Ajax source
+        ajax: {
+            url: `${baseUrl}healthcare-coordinator/setup/cost-types/fetch`,
+            type: "POST",
+            data: function(data) {
+                data.token     = '<?php echo $this->security->get_csrf_hash(); ?>';
+                data.filter    = $('#price-filter').val();
+            
+            },
+        },
+        responsive: true,
+        fixedHeader: true,
+    });
 
     $('#price-filter').change(function(){
         costTypeTable.draw();

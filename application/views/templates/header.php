@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/jquery-confirm/dist/jquery-confirm.min.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/Toastr/build/toastr.min.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/easy-select/easySelect.css" />
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/select2/css/select2.min.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/tagify/tagify.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/photoviewer/dist/photoviewer.min.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/flatpickr/flatpickr.min.css" />
@@ -103,7 +104,7 @@
               <!-- Logo icon -->
               <b class="align-middle ps-md-2 ps-lg-2 ps-sm-0 ps-xs-0">
                 <img
-                  src="<?php echo base_url(); ?>assets/images/AhcLogo.png"
+                  src="<?php echo base_url(); ?>assets/images/AhcLogo2.png"
                   alt="Logo"
                   class="light-logo"
                   width="180"

@@ -346,6 +346,26 @@ class List_model extends CI_Model{
         return $this->db->get()->row_array();
     }
 
+    function get_loa($payment_no) {
+        $this->db->select('*');
+        $this->db->from('billing as tbl_1');
+        if('tbl_1.loa_id' !=''){
+            $this->db->join('loa_requests as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id');
+        }
+        $this->db->where('payment_no', $payment_no);
+        return $this->db->get()->result_array();
+    }
+
+    function get_noa($payment_no) {
+        $this->db->select('*');
+        $this->db->from('billing as tbl_1');
+        if('tbl_1.noa_id' !=''){
+            $this->db->join('noa_requests as tbl_2', 'tbl_1.noa_id = tbl_2.noa_id');
+        }
+        $this->db->where('payment_no', $payment_no);
+        return $this->db->get()->result_array();
+    }
+
     function get_employee_payment($billing_id) {
         $this->db->select('*')
                 ->from('billing as tbl_1')

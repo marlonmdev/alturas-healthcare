@@ -424,7 +424,7 @@ class Setup_controller extends CI_Controller {
       $row[] = $value['item_description'];
       $row[] = number_format($value['op_price']);
       $row[] = number_format($value['ip_price']);
-      $row[] =  $added_on;
+      $row[] =  date("m/d/Y", strtotime($value['date_added']));
       $data[] = $row;
 
       $output = [
@@ -569,17 +569,12 @@ class Setup_controller extends CI_Controller {
 
     foreach($result as $room){
       $row = [];
-      if($room['date_added'] == "" ){
-        $date_added = '03/08/2023';
-      }else{
-        $date_added = date('m/d/Y', strtotime($room['date_added']));
-      }
 
       $row[] = $room['room_type'];
       $row[] = $room['room_typ_hmo_req'];
       $row[] = $room['room_number'];
       $row[] = number_format($room['room_rate']);
-      $row[] = $date_added;
+      $row[] = date("m/d/Y", strtotime($room['date_added']));
       $data[] =$row;
       
       $response = [

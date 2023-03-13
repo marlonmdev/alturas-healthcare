@@ -7,12 +7,12 @@ $route['default_controller'] = 'page_controller';
 $route['check-login'] = 'auth_controller/check_login';
 $route['redirect-to-dashboard'] = 'auth_controller/redirect_to_dashboard';
 $route['logout'] = 'auth_controller/logout';
-$route['import/members'] = 'masterfile_controller';
+// $route['import/members'] = 'masterfile_controller';
 
 // Import Members Data Routes
-$route['import/members'] = 'import_controller';
-$route['members/import'] = 'import_controller/import_csv_to_database';
-$route['members/format-download'] = 'import_controller/csv_format_download';
+// $route['import/members'] = 'import_controller';
+// $route['members/import'] = 'import_controller/import_csv_to_database';
+// $route['members/format-download'] = 'import_controller/csv_format_download';
 
 // Import Text Files
 $route['import/txt'] = 'import_controller/import_txt_file_page';

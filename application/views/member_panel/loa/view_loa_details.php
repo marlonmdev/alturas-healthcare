@@ -14,9 +14,17 @@
                       </div>
                       <div class="row">
                         <table class="table table-bordered table-hover table-striped table-responsive table-sm">
+                          <tr>
+                            <td class="fw-bold ls-1">Requested On :</td>
+                            <td class="fw-bold ls-1" id="request-date"></td>
+                          </tr>
                           <tr class="d-none" id="work-related-info">
                             <td class="fw-bold ls-1">Work Related :</td>
                             <td class="fw-bold ls-1" id="work-related-val"></td>
+                          </tr>
+                          <tr>
+                            <td class="fw-bold ls-1">Healthcard Number :</td>
+                            <td class="fw-bold ls-1" id="health-card-no"></td>
                           </tr>
                           <tr>
                             <td class="fw-bold ls-1">Full Name :</td>
@@ -71,7 +79,7 @@
                             <td class="fw-bold ls-1" id="contact-person-no"></td>
                           </tr>
                           <tr>
-                            <td class="fw-bold ls-1">HealthCare Provider :</td>
+                            <td class="fw-bold ls-1">Healthcare Provider :</td>
                             <td class="fw-bold ls-1" id="healthcare-provider"></td>
                           </tr>
                           <tr>
@@ -83,16 +91,8 @@
                             <td class="fw-bold ls-1" id="loa-med-services"></td>
                           </tr>
                           <tr>
-                            <td class="fw-bold ls-1">Health Card Number :</td>
-                            <td class="fw-bold ls-1" id="health-card-no"></td>
-                          </tr>
-                          <tr>
                             <td class="fw-bold ls-1">Requesting Company :</td>
                             <td class="fw-bold ls-1" id="requesting-company"></td>
-                          </tr>
-                          <tr>
-                            <td class="fw-bold ls-1">Availment Request Date :</td>
-                            <td class="fw-bold ls-1" id="request-date"></td>
                           </tr>
                           <tr>
                             <td class="fw-bold ls-1">Chief Complaint :</td>

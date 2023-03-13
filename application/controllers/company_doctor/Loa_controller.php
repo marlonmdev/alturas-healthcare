@@ -329,10 +329,10 @@ class Loa_controller extends CI_Controller {
 		$ct_array = [];
 		foreach ($cost_types as $cost_type) :
 			if (in_array($cost_type['ctype_id'], $selected_cost_types)) :
-				array_push($ct_array, $cost_type['item_description']);
+				array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
 			endif;
 		endforeach;
-		$med_serv = implode(', ', $ct_array);
+		$med_serv = implode(' ', $ct_array);
 
 		/* Checking if the status is pending and the work related is not empty. If it is, then it will set
 		the req_stat to for approval. If not, then it will set the req_stat to the status. */
@@ -359,7 +359,7 @@ class Loa_controller extends CI_Controller {
 			'contact_no' => $row['contact_no'],
 			'home_address' => $row['home_address'],
 			'city_address' => $row['city_address'],
-			'email' => $row['email'],
+			'email' => $row['email'] != '' ? $row['email'] : 'None',
 			'contact_person' => $row['contact_person'],
 			'contact_person_addr' => $row['contact_person_addr'],
 			'contact_person_no' => $row['contact_person_no'],
@@ -375,7 +375,7 @@ class Loa_controller extends CI_Controller {
 			'rx_file' => $row['rx_file'],
 			'req_status' => $req_stat,
 			'work_related' => $row['work_related'],
-			'percentage' => $row['percentage'],
+			'percentage' => $row['percentage'] != '' ? $row['percentage'].'%' : 'None',
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'disapproved_by' =>  $doctor_name,

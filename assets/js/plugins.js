@@ -8,11 +8,17 @@ $(document).ready(function () {
 	});
 
 	// Multiselect
-	$("#med-services").easySelect({
-		selectColor: "#414c52",
-		placeholder: "",
-		showEachItem: true,
-	});
+	// $("#med-services").easySelect({
+	// 	selectColor: "#414c52",
+	// 	placeholder: "",
+	// 	showEachItem: true,
+	// });
+
+	$(".chosen-select").chosen({
+		width: "100%",
+		no_results_text: "Oops, nothing found!"
+	}); 
+   
 
 	// initialize Tagify plugin on the above input node reference
 	const tags_input = document.querySelector("#tags-input");

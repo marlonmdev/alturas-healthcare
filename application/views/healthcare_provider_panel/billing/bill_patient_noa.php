@@ -128,10 +128,10 @@
                                                             ?>
                                                                     <tr>
                                                                         <td class="fw-bold">
-                                                                            <?= $ct['cost_type']; ?>
+                                                                            <?= $ct['item_description']; ?>
                                                                         </td>
                                                                         <td class="d-flex justify-content-end align-items-end">
-                                                                            <button class="btn btn-cyan text-white ls-1" id="btn-ctype-<?= $ct['ctype_id'] ?>" onclick="addService('<?= $ct['ctype_id'] ?>','<?= $ct['cost_type'] ?>','<?= $remaining_balance ?>')">
+                                                                            <button class="btn btn-cyan text-white ls-1" id="btn-ctype-<?= $ct['ctype_id'] ?>" onclick="addService('<?= $ct['ctype_id'] ?>', '<?= $ct['item_description'] ?>', '<?= $ct['ip_price'] ?>','<?= $remaining_balance ?>')">
                                                                                 <i class="mdi mdi-plus-circle"></i> Add to Billing
                                                                             </button>
                                                                         </td>
@@ -300,6 +300,7 @@
 
 <script>
     const baseUrl = `<?php echo base_url(); ?>`;
+    const rmBal = `<?php echo $remaining_balance; ?>`;
 
     $(document).ready(function() {
         $('#costTypesTable').DataTable();
@@ -308,7 +309,7 @@
     let count = 0; // declaring the count variable outside the function will persist its value even after the function is called, allowing it to increment by one each time the function is called.
 
     // this is for Consultation LOA Requests
-    const addService = (ctype_id, ctype_name, remaining_balance) => {
+    const addService = (ctype_id, ctype_name, price, remaining_balance) => {
         const container = document.getElementById('dynamic-services');
         const services_count = document.querySelector('#services-count');
         count++;
@@ -343,7 +344,7 @@
                                 <label class="form-label ls-1"><i class="mdi mdi-asterisk text-danger"></i>Service Fee</label> 
                                 <div class="input-group mb-3">
                                     <span class="input-group-text bg-dark text-white">&#8369;</span>
-                                    <input type="number" name="ct-fees[]" class="ct-fees form-control fw-bold ls-1" placeholder="*Enter Amount" oninput="calculateNoaBilling(${remaining_balance})" required/>
+                                    <input type="number" name="ct-fees[]" class="ct-fees form-control fw-bold ls-1" placeholder="*Enter Amount" value="${price}" oninput="calculateNoaBilling(${remaining_balance})" required readonly/>
                                     <div class="invalid-feedback">
                                         Service Fee is required
                                     </div>
@@ -362,6 +363,9 @@
         document.querySelector("#dynamic-services").insertAdjacentHTML("beforeend", html_code);
         // set button to disable attribute to true on add services event
         document.querySelector(`#btn-ctype-${ctype_id}`).setAttribute('disabled', true);
+
+        // call function to calculate billing
+        calculateNoaBilling(rmBal);
     }
 
     /**

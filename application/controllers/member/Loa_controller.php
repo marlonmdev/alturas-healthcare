@@ -237,7 +237,6 @@ class Loa_controller extends CI_Controller {
 			'health_card_no' => $member['health_card_no'],
 			'requesting_company' => $member['company'],
 			'request_date' => date("Y-m-d"),
-			'availment_date' => $input_post['availment-date'],
 			'chief_complaint' => strip_tags($input_post['chief-complaint']),
 			'requesting_physician' => ucwords($input_post['requesting-physician']),
 			'attending_physician' => $attending_physician,
@@ -674,10 +673,10 @@ class Loa_controller extends CI_Controller {
 		$ct_array = [];
 		foreach ($cost_types as $cost_type) :
 			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
-				array_push($ct_array, $cost_type['item_description']);
+				array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
 			}
 		endforeach;
-		$med_serv = implode(', ', $ct_array);
+		$med_serv = implode(' ', $ct_array);
 
 		/* Checking if the status is pending and the work related is not empty. If it is, then it will set
 		the req_stat to for approval. If not, then it will set the req_stat to the status. */

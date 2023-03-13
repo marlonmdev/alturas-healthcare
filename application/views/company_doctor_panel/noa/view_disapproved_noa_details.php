@@ -15,6 +15,10 @@
                       <div class="row">
                         <table class="table table-bordered table-striped table-hover table-responsive table-sm">
                           <tr>
+                            <td class="fw-bold ls-1">Requested On :</td>
+                            <td class="fw-bold ls-1" id="request-date"></td>
+                          </tr>
+                          <tr>
                             <td class="fw-bold ls-1">Disapproved By :</td>
                             <td class="fw-bold ls-1" id="disapproved-by"></td>
                           </tr>
@@ -61,10 +65,6 @@
                           <tr>
                             <td class="fw-bold ls-1">Chief Complaint :</td>
                             <td class="fw-bold ls-1" id="chief-complaint"></td>
-                          </tr>
-                          <tr>
-                            <td class="fw-bold ls-1">Requested On :</td>
-                            <td class="fw-bold ls-1" id="request-date"></td>
                           </tr>
                         </table>
                       </div>

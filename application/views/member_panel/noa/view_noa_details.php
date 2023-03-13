@@ -14,6 +14,10 @@
                       </div>
                       <div class="row">
                         <table class="table table-sm table-bordered  table-striped table-hover table-responsive">
+                          <tr>
+                            <td class="fw-bold ls-1">Requested On :</td>
+                            <td class="fw-bold ls-1" id="request-date"></td>
+                          </tr>
                           <tr class="d-none" id="work-related-info">
                             <td class="fw-bold ls-1">Work Related :</td>
                             <td class="fw-bold ls-1" id="work-related-val"></td>
@@ -41,10 +45,6 @@
                           <tr>
                             <td class="fw-bold ls-1">Chief Complaint :</td>
                             <td class="fw-bold ls-1" id="chief-complaint"></td>
-                          </tr>
-                          <tr>
-                            <td class="fw-bold ls-1">Requested On :</td>
-                            <td class="fw-bold ls-1" id="request-date"></td>
                           </tr>
                         </table>
                       </div>

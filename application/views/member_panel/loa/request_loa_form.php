@@ -116,9 +116,9 @@
               <span class="text-info fs-3 fw-bold ls-2"><i class="mdi mdi-file-document-box"></i> LOA REQUEST DETAILS</span>
               <div class="form-group row">
                 <div class="col-lg-7 col-sm-12 col-lg-offset-3 mb-2">
-                  <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> HealthCare Provider</label>
+                  <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Healthcare Provider</label>
                   <select class="form-select" name="healthcare-provider" id="healthcare-provider" oninput="enableMedService()">
-                    <option value="" selected>Select HealthCare Provider</option>
+                    <option value="" selected>Select Healthcare Provider</option>
                     <?php
                     if (!empty($hcproviders)) :
                       foreach ($hcproviders as $hcprovider) :
@@ -137,17 +137,16 @@
                     <option value="" selected>Select LOA Request Type</option>
                     <option value="Consultation">Consultation</option>
                     <option value="Diagnostic Test">Diagnostic Test</option>
-                    <!-- <option value="Special Diagnostic Procedures">Special Diagnostic Procedures</option> -->
                   </select>
                   <em id="loa-request-type-error" class="text-danger"></em>
                 </div>
               </div>
 
               <div class="form-group row">
-                <div class="col-lg-7s col-sm-12 mb-2 d-none" id="med-services-div">
+                <div class="col-lg-12 col-sm-12 mb-2 d-none" id="med-services-div">
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Select Medical Service/s</label><br>
                   <div id="med-services-wrapper">
-                    <select class="form-select" multiple="multiple" id="med-services" name="med-services[]" disabled>
+                    <select class="form-select chosen-select" data-placeholder="Choose services..." id="med-services" name="med-services[]" multiple>
                       <?php
                       if (!empty($costtypes)) :
                         foreach ($costtypes as $ct) :
@@ -160,11 +159,6 @@
                     </select>
                   </div>
                   <em id="med-services-error" class="text-danger"></em>
-                </div>
-
-                <div class="col-lg-3 pb-2">
-                    <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i>  Date of Availment</label>
-                    <input type="date" class="form-control" name="availment-date" id="availment-date">
                 </div>
               </div>
 
@@ -371,7 +365,8 @@
         },
       })
     });
-    
+
+
   });
 
     const enableMedService = () => {

@@ -172,13 +172,13 @@
                 <div class="col-lg-7 col-sm-12 mb-2 <?= $row['loa_request_type'] === 'Consultation' ? 'd-none' : ''; ?>" id="med-services-div">
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Select Medical Service/s</label><br>
                   <div id="med-services-wrapper">
-                    <select class="form-select" multiple="multiple" id="med-services" name="med-services[]">
+                    <select class="form-select chosen-select" data-placeholder="Choose services..." id="med-services" name="med-services[]" multiple>
                       <?php
                       $selectedOptions = explode(';', $row['med_services']);
                       foreach ($costtypes as $costtype) :
                       ?>
                         <option value="<?= $costtype['ctype_id']; ?>" <?= in_array($costtype['ctype_id'], $selectedOptions) ? 'selected' : ''; ?>>
-                          <?= $costtype['cost_type']; ?>
+                          <?= $costtype['item_description']; ?>
                         </option>
                       <?php
                       endforeach;
@@ -205,7 +205,7 @@
                   $year = date('Y');
                   $today = $year . '-' . $month . '-' . $day;
                   ?>
-                  <label class="colored-label">Request Date of Availment</label>
+                  <label class="colored-label">Request Date</label>
                   <input type="text" class="form-control" name="request-date" value="<?= $today; ?>" disabled>
                 </div>
               </div>

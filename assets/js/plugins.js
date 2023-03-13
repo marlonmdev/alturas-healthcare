@@ -14,12 +14,11 @@ $(document).ready(function () {
 	// 	showEachItem: true,
 	// });
 
-	// $("#med-services").select2();
-
-	$(".med-services").select2({
-		dropdownAutoWidth: true
-	});
-    
+	$(".chosen-select").chosen({
+		width: "100%",
+		no_results_text: "Oops, nothing found!"
+	}); 
+   
 
 	// initialize Tagify plugin on the above input node reference
 	const tags_input = document.querySelector("#tags-input");

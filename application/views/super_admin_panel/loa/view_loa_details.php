@@ -15,6 +15,10 @@
                       <div class="row">
                         <table class="table table-bordered table-striped table-hover table-responsive table-sm">
                           <tr>
+                            <td class="fw-bold ls-1">Requested On :</td>
+                            <td class="fw-bold ls-1" id="request-date"></td>
+                          </tr>
+                          <tr>
                             <td class="fw-bold ls-1">Member's Maximum Benefit Limit :</td>
                             <td class="fw-bold ls-1">&#8369;<span id="member-mbl"></span></td>
                           </tr>
@@ -97,10 +101,6 @@
                           <tr>
                             <td class="fw-bold ls-1">Requesting Company :</td>
                             <td class="fw-bold ls-1" id="requesting-company"></td>
-                          </tr>
-                          <tr>
-                            <td class="fw-bold ls-1">Availment Request Date :</td>
-                            <td class="fw-bold ls-1" id="request-date"></td>
                           </tr>
                           <tr>
                             <td class="fw-bold ls-1">Chief Complaint :</td>

@@ -147,7 +147,7 @@
                 <div class="col-lg-9 col-sm-12 mb-2 d-none" id="med-services-div">
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Select Medical Service/s</label><br>
                   <div id="med-services-wrapper">
-                    <select class="med-services" multiple="multiple" id="med-services" name="med-services[]">
+                    <select class="form-select chosen-select" data-placeholder="Choose services..."  multiple="multiple" id="med-services" name="med-services[]">
                       <?php
                       if (!empty($costtypes)) :
                         foreach ($costtypes as $ct) :
@@ -162,10 +162,10 @@
                   <em id="med-services-error" class="text-danger"></em>
                 </div>
 
-                <div class="col-lg-3 pb-2">
+                <!-- <div class="col-lg-3 pb-2">
                     <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i>  Date of Availment</label>
                     <input type="date" class="form-control" name="availment-date" id="availment-date">
-                </div>
+                </div> -->
               </div>
 
               <div class="form-group row">

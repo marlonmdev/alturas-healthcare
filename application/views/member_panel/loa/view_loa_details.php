@@ -23,6 +23,10 @@
                             <td class="fw-bold ls-1" id="work-related-val"></td>
                           </tr>
                           <tr>
+                            <td class="fw-bold ls-1">Healthcard Number :</td>
+                            <td class="fw-bold ls-1" id="health-card-no"></td>
+                          </tr>
+                          <tr>
                             <td class="fw-bold ls-1">Full Name :</td>
                             <td class="fw-bold ls-1" id="full-name"></td>
                           </tr>
@@ -75,7 +79,7 @@
                             <td class="fw-bold ls-1" id="contact-person-no"></td>
                           </tr>
                           <tr>
-                            <td class="fw-bold ls-1">HealthCare Provider :</td>
+                            <td class="fw-bold ls-1">Healthcare Provider :</td>
                             <td class="fw-bold ls-1" id="healthcare-provider"></td>
                           </tr>
                           <tr>
@@ -85,10 +89,6 @@
                           <tr>
                             <td class="fw-bold ls-1">Services :</td>
                             <td class="fw-bold ls-1" id="loa-med-services"></td>
-                          </tr>
-                          <tr>
-                            <td class="fw-bold ls-1">Health Card Number :</td>
-                            <td class="fw-bold ls-1" id="health-card-no"></td>
                           </tr>
                           <tr>
                             <td class="fw-bold ls-1">Requesting Company :</td>

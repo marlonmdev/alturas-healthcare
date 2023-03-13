@@ -290,10 +290,10 @@ class Loa_controller extends CI_Controller {
 		$ct_array = [];
 		foreach ($cost_types as $cost_type) :
 			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
-				array_push($ct_array, $cost_type['item_description']);
+				array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
 			}
 		endforeach;
-		$med_serv = implode(', ', $ct_array);
+		$med_serv = implode(' ', $ct_array);
 
 		$response = [
 			'status' => 'success',
@@ -356,10 +356,10 @@ class Loa_controller extends CI_Controller {
 		$ct_array = [];
 		foreach ($cost_types as $cost_type) :
 			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
-				array_push($ct_array, $cost_type['item_description']);
+				array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
 			}
 		endforeach;
-		$med_serv = implode(', ', $ct_array);
+		$med_serv = implode(' ', $ct_array);
 
 		$response = [
 			'status' => 'success',
@@ -424,10 +424,10 @@ class Loa_controller extends CI_Controller {
 		$ct_array = [];
 		foreach ($cost_types as $cost_type) :
 			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
-				array_push($ct_array, $cost_type['item_description']);
+				array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
 			}
 		endforeach;
-		$med_serv = implode(', ', $ct_array);
+		$med_serv = implode(' ', $ct_array);
 
 		$response = [
 			'status' => 'success',
@@ -493,10 +493,10 @@ class Loa_controller extends CI_Controller {
 		$ct_array = [];
 		foreach ($cost_types as $cost_type) :
 			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
-				array_push($ct_array, $cost_type['item_description']);
+				array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
 			}
 		endforeach;
-		$med_serv = implode(', ', $ct_array);
+		$med_serv = implode(' ', $ct_array);
 
 		$response = [
 			'status' => 'success',

@@ -172,7 +172,7 @@ class Setup_model extends CI_Model {
 	 // End of server-side processing datatables
 
 	  // Start of room_types server-side processing datatables
-	  var $room_table = 'room_price';
+	  var $room_table = 'room_types';
 	  var $room_column_order = ['room_type', 'room_typ_hmo_req', 'room_number', 'room_rate', 'date_added']; //set column field database for datatable orderable
 	  var $room_column_search = ['room_type', 'room_typ_hmo_req', 'room_number', 'room_rate']; //set column field database for datatable searchable 
 	  var $room_order = ['room_id' => 'asc']; // default order 
@@ -184,46 +184,46 @@ class Setup_model extends CI_Model {
 		foreach ($this->room_column_search as $item) {
 		  // if datatable send POST for search
 		  if ($_POST['search']['value']) {
-			// first loop
-			if ($i === 0) {
-			  $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
-			  $this->db->like($item, $_POST['search']['value']);
-			} else {
-			  $this->db->or_like($item, $_POST['search']['value']);
+				// first loop
+				if ($i === 0) {
+					$this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+					$this->db->like($item, $_POST['search']['value']);
+				} else {
+					$this->db->or_like($item, $_POST['search']['value']);
+				}
+		
+				if (count($this->room_column_search) - 1 == $i) //last loop
+					$this->db->group_end(); //close bracket
+				}
+				$i++;
 			}
 	
-			if (count($this->room_column_search) - 1 == $i) //last loop
-			  $this->db->group_end(); //close bracket
-		  }
-		  $i++;
-		}
-	
-		// here order processing
-		if (isset($_POST['order'])) {
-		  $this->db->order_by($this->room_column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
-		} else if (isset($this->room_order)) {
-		  $order = $this->room_order;
-		  $this->db->order_by(key($order), $order[key($order)]);
-		}
+			// here order processing
+			if (isset($_POST['order'])) {
+				$this->db->order_by($this->room_column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+			} else if (isset($this->room_order)) {
+				$order = $this->room_order;
+				$this->db->order_by(key($order), $order[key($order)]);
+			}
 	  }
 	
 	  function get_room_datatables() {
-		$this->_get_room_datatables_query();
-		if ($_POST['length'] != -1)
-		  $this->db->limit($_POST['length'], $_POST['start']);
-		$query = $this->db->get();
-		return $query->result_array();
+			$this->_get_room_datatables_query();
+			if ($_POST['length'] != -1)
+				$this->db->limit($_POST['length'], $_POST['start']);
+			$query = $this->db->get();
+			return $query->result_array();
 	  }
 	
 	  function count_room_filtered() {
-		$this->_get_room_datatables_query();
-		$query = $this->db->get();
-		return $query->num_rows();
+			$this->_get_room_datatables_query();
+			$query = $this->db->get();
+			return $query->num_rows();
 	  }
 	
 	  function count_all_room() {
-		$this->db->from($this->room_table);
-		return $this->db->count_all_results();
+			$this->db->from($this->room_table);
+			return $this->db->count_all_results();
 	  }
 	  // End of server-side processing datatables
 

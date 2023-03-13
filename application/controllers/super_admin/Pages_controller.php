@@ -94,6 +94,13 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
+	function view_all_room_types() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('super_admin_panel/setup/room_types');
+		$this->load->view('templates/footer');
+	}
+
 	function view_request_loa_form() {
 		$this->load->model('super_admin/setup_model');
 		$data['user_role'] = $this->session->userdata('user_role');

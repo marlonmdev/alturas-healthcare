@@ -97,10 +97,16 @@
                       ><span class="hide-menu ls-1">Company Doctors</span>
                     </a>
                   </li>
-                   <li class="sidebar-item">
+                  <li class="sidebar-item">
                     <a href="<?php echo base_url(); ?>super-admin/setup/cost-types" class="sidebar-link"
                       ><i class="mdi mdi-code-string"></i
                       ><span class="hide-menu ls-1">Cost Types</span>
+                    </a>
+                  </li>
+                  <li class="sidebar-item">
+                    <a href="<?php echo base_url(); ?>super-admin/setup/room-types" class="sidebar-link"
+                      ><i class="mdi mdi-houzz-box"></i
+                      ><span class="hide-menu ls-1">Room Types</span>
                     </a>
                   </li>
                 </ul>

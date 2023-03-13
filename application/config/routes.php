@@ -442,6 +442,7 @@ $route['super-admin/accounts/register'] = 'super_admin/pages_controller/register
 $route['super-admin/setup/healthcare-providers'] = 'super_admin/pages_controller/view_all_healthcare_providers';
 $route['super-admin/setup/company-doctors'] = 'super_admin/pages_controller/view_all_company_doctors';
 $route['super-admin/setup/cost-types'] = 'super_admin/pages_controller/view_all_cost_types';
+$route['super-admin/setup/room-types'] = 'super_admin/pages_controller/view_all_room_types';
 $route['super-admin/loa/request-loa'] = 'super_admin/pages_controller/view_request_loa_form';
 $route['super-admin/loa/requests-list'] = 'super_admin/pages_controller/view_pending_loa_list';
 $route['super-admin/loa/requests-list/approved'] = 'super_admin/pages_controller/view_approved_loa_list';
@@ -542,6 +543,9 @@ $route['super-admin/setup/cost-types/register/submit'] = 'super_admin/setup_cont
 $route['super-admin/setup/cost-types/delete/(:any)'] = 'super_admin/setup_controller/delete_cost_type';
 $route['super-admin/setup/cost-types/edit/(:any)'] = 'super_admin/setup_controller/get_cost_type_info';
 $route['super-admin/setup/cost-types/update'] = 'super_admin/setup_controller/update_cost_type';
+// * setup for room types
+$route['super-admin/setup/room-types/fetch'] = 'super_admin/setup_controller/fetch_room_types';
+$route['super-admin/setup/room-types/register/submit'] = 'super_admin/setup_controller/register_room_type';
 
 $route['super-admin/database-backup'] ='super_admin/backup_controller/database_backup';
 

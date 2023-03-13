@@ -409,7 +409,7 @@ class Setup_controller extends CI_Controller {
 
       $result['data'][] = [
         $value['ctype_id'],
-        $value['cost_type'],
+        $value['item_description'],
         date("m/d/Y", strtotime($value['date_added'])),
         date("m/d/Y", strtotime($value['date_updated'])),
         $actions
@@ -520,4 +520,79 @@ class Setup_controller extends CI_Controller {
     ];
     echo json_encode($response);
   }
+
+  function fetch_room_types() {
+    $result = $this->setup_model->get_room_datatables();
+    $data = [];
+
+    foreach($result as $room){
+      $row = [];
+      if($room['date_added'] == "" ){
+        $date_added = '03/08/2023';
+      }else{
+        $date_added = date('m/d/Y', strtotime($room['date_added']));
+      }
+
+      $row[] = $room['room_type'];
+      $row[] = $room['room_typ_hmo_req'];
+      $row[] = $room['room_number'];
+      $row[] = number_format($room['room_rate']);
+      $row[] = $date_added;
+      $data[] =$row;
+      
+      $response = [
+        "draw" => $_POST['draw'],
+        "recordsTotal" => $this->setup_model->count_all_room(),
+        "recordsFiltered" => $this->setup_model->count_room_filtered(),
+        "data" => $data,
+      ];
+    }
+    echo json_encode($response);
+  }
+
+  function register_room_type() {
+    $this->security->get_csrf_hash();
+    $room_group = ucwords(strip_tags($this->input->post('room-group')));
+    $room_type = ucwords(strip_tags($this->input->post('room-type')));
+    $room_hmo_req = strip_tags($this->input->post('room-hmo-req'));
+    $room_number = strip_tags($this->input->post('room-num'));
+    $room_rate = strip_tags($this->input->post('room-rate'));
+    
+    $this->form_validation->set_rules('room-type', 'Room Type', 'trim|required');    
+    $this->form_validation->set_rules('room-num', 'Room Number', 'trim|required');
+    $this->form_validation->set_rules('room-rate', 'Room Rate', 'trim|required');
+
+    if ($this->form_validation->run() == FALSE) {
+      $response = [
+        'status' => 'error',
+        'room_type_error' => form_error('room-type'),
+        'room_num_error' => form_error('room-num'),
+        'room_rate_error' => form_error('room-rate'),
+      ];
+    } else {
+      $post_data = [
+        'room_group' => $room_group,
+        'room_type' => $room_type,
+        'room_typ_hmo_req' => $room_hmo_req,
+        'room_number' => $room_number,
+        'room_rate' => $room_rate,
+        'date_added' => date("Y-m-d"),
+      ];
+      $saved = $this->setup_model->db_insert_room_type($post_data);
+      if (!$saved) {
+        $response = [
+          'status' => 'save-error', 
+          'message' => 'Cost Type Saved Failed'
+        ];
+      }
+      $response = [
+        'status' => 'success', 
+        'message' => 'Cost Type Saved Successfully'
+      ];
+    }
+    echo json_encode($response);
+  }
+
+
+
 }

@@ -240,7 +240,7 @@
 
   function showAddCostTypeModal() {
     $("#registerCostTypeModal").modal("show");
-    $("#registerCostTypeForm")[0].reset();
+    // $("#registerCostTypeForm")[0].reset();
     $('#cost-type-error').html('');
     $('#cost-type').removeClass('is-invalid');
   }

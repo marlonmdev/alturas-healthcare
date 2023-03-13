@@ -528,9 +528,9 @@ class Main_controller extends CI_Controller {
 
 			$custom_payment_no = 	'<mark class="bg-primary text-white">'.$payment['payment_no'].'</mark>';
 
-			$custom_actions = '<a class="text-info fw-bold ls-1" href="JavaScript:void(0)" onclick="viewPaymentInfo(\'' . $payment_id . '\')"  data-bs-toggle="tooltip"><u><i class="mdi mdi-view-list fs-3" title="View Payment Details"></i></u></a>';
+			$custom_actions = '<a class="text-info fw-bold ls-1 fs-4" href="JavaScript:void(0)" onclick="viewPaymentInfo(\'' . $payment_id . '\')"  data-bs-toggle="tooltip"><u><i class="mdi mdi-view-list fs-3" title="View Payment Details"></i></u></a>';
 
-			$custom_actions .= '<a class="text-info fw-bold ls-1 ps-2" href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'assets/paymentDetails/' . $payment['supporting_file'] . '\')" data-bs-toggle="tooltip"><u><i class="mdi mdi-file-image fs-3" title="View Proof"></i></u></a>';
+			$custom_actions .= '<a class="text-info fw-bold ls-1 ps-2 fs-4" href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'assets/paymentDetails/' . $payment['supporting_file'] . '\')" data-bs-toggle="tooltip"><u><i class="mdi mdi-file-image fs-3" title="View Proof"></i></u></a>';
 
 			$row[] = $custom_payment_no;
 			$row[] = $payment['acc_number'];
@@ -554,7 +554,25 @@ class Main_controller extends CI_Controller {
 	function view_payment_details() {
 		$payment_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
 		$payment = $this->List_model->get_payment_details($payment_id);
+		
+		$payment_no = $payment['payment_no'];
+		$loa_no = $this->List_model->get_loa($payment_no);
+		$noa_no = $this->List_model->get_noa($payment_no);
+		$noa_loa_array = [];
+		foreach($loa_no as $covered_loa){
+			if($covered_loa['loa_id'] != '' ){
+				array_push($noa_loa_array, $covered_loa['loa_no']);
+			}
+		}
 
+		foreach($noa_no as $covered_noa){
+			if($covered_noa['noa_id'] != ''){
+				array_push($noa_loa_array, $covered_noa['noa_no']);
+			}
+		}
+
+		$loa_noa_no = implode(',    ', $noa_loa_array);
+		
 			$response = [
 				'status' => 'success',
 				'token' => $this->security->get_csrf_hash(),
@@ -567,7 +585,9 @@ class Main_controller extends CI_Controller {
 				'check_num' => $payment['check_num'],
 				'check_date' => $payment['check_date'],
 				'bank' => $payment['bank'],
-				'amount_paid' => $payment['amount_paid']
+				'amount_paid' => $payment['amount_paid'],
+				'covered_loa_no' => $loa_noa_no
+				
 			]; 
 		echo json_encode($response);
 	}

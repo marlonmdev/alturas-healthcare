@@ -87,6 +87,13 @@
                             <input type="number" class="form-control text-dark fs-5" name="amount-paid" id="amount-paid" readonly>
                         </div>
 
+                        <div class="row col-lg-4 pb-3 pt-2">
+                            <label class=" text-dark fw-bold ms-2 fs-5">Covered LOA & NOA Number: </label>
+                        </div>
+                        <div class="col-lg-8">
+                            <textarea class="form-control text-dark fs-5" id="textbox" value="" readonly></textarea>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -95,4 +102,14 @@
             </div>   
         </div>
     </div>
+    <style type="text/css">
+		#textbox {
+			width: 500px;
+			height: 100px;
+			overflow-y: scroll;
+			resize: none;
+			border: 1px solid #ccc;
+			padding: 5px;
+		}
+	</style>
 </div>

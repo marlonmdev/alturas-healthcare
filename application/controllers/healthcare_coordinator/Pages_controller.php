@@ -91,6 +91,7 @@ class Pages_controller extends CI_Controller {
 		$this->load->model('healthcare_coordinator/setup_model');
 		$data['price_group'] = $this->setup_model->get_price_group();
 		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hospital'] = $this->setup_model->db_get_healthcare_providers();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/setup/cost_types');
 		$this->load->view('templates/footer');

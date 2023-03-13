@@ -412,17 +412,11 @@ class Setup_controller extends CI_Controller {
 
       // $actions = '<a href="Javascript:void(0)" onclick="deleteCostType(' . $value['ctype_id'] . ')" data-toggle="tooltip" data-placement="top" title="Delete"><i class="mdi mdi-delete-circle fs-2 text-danger"></i></a>';
 
-      if($value['date_added'] == '' ){
-          $added_on = '03/08/2023';
-      }else{
-        $added_on = date("m/d/Y", strtotime($value['date_added']));
-      }
-  
       $row[] = $value['item_id'];
       $row[] = $value['item_description'];
       $row[] = number_format($value['op_price']);
       $row[] = number_format($value['ip_price']);
-      $row[] =  $added_on;
+      $row[] =  date("m/d/Y", strtotime($value['date_added']));
       $data[] = $row;
 
       $output = [
@@ -567,17 +561,12 @@ class Setup_controller extends CI_Controller {
 
     foreach($result as $room){
       $row = [];
-      if($room['date_added'] == "" ){
-        $date_added = '03/08/2023';
-      }else{
-        $date_added = date('m/d/Y', strtotime($room['date_added']));
-      }
 
       $row[] = $room['room_type'];
       $row[] = $room['room_typ_hmo_req'];
       $row[] = $room['room_number'];
       $row[] = number_format($room['room_rate']);
-      $row[] = $date_added;
+      $row[] = date("m/d/Y", strtotime($room['date_added']));
       $data[] =$row;
       
       $response = [

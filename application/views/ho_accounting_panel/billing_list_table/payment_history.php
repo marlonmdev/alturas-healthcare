@@ -115,7 +115,8 @@
                         check_num,
                         check_date,
                         bank,
-                        amount_paid
+                        amount_paid,
+                        covered_loa_no
                     } = res;
                     
                     $('#viewPaymentModal').modal('show');
@@ -130,6 +131,7 @@
                     $('#check-date').val(check_date);
                     $('#bank').val(bank);
                     $('#amount-paid').val(parseFloat(amount_paid).toFixed(2));
+                    $('#textbox').html(covered_loa_no);
                 }
             });
         }

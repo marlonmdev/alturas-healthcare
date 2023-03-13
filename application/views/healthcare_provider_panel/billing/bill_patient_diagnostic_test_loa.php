@@ -107,7 +107,7 @@
                             <div class="row mt-2">
                                 <div class="col-md-7">
                                     <label class="form-label ls-1">Cost Type</label>
-                                    <input type="text" class="form-control text-info fw-bold ls-1" name="ct-name[]" value="<?php echo $cost_type['cost_type']; ?>" readonly>
+                                    <input type="text" class="form-control text-info fw-bold ls-1" name="ct-name[]" value="<?php echo $cost_type['item_description']; ?>" readonly>
                                 </div>
 
                                 <div class="col-md-2">
@@ -124,7 +124,7 @@
                                     <div class="input-group mb-3">
                                         <span class="input-group-text bg-dark text-white">&#8369;</span>
 
-                                        <input type="number" class="ct-fee form-control fw-bold ls-1" name="ct-fee[]" placeholder="Enter Amount" oninput="calculateDiagnosticTestBilling(`<?= $remaining_balance ?>`)" min="0" required>
+                                        <input type="number" class="ct-fee form-control fw-bold ls-1" name="ct-fee[]" value="<?php echo $cost_type['op_price']; ?>" placeholder="Enter Amount" oninput="calculateDiagnosticTestBilling(`<?= $remaining_balance ?>`)" min="0" required readonly>
 
                                         <div class="invalid-feedback">
                                             Service Cost is required.
@@ -281,6 +281,12 @@
 </div>
 <script>
     const baseUrl = `<?php echo base_url(); ?>`;
+    const rmg_bal = `<?php echo $remaining_balance; ?>`;
+
+    // window.onload =  calculateDiagnosticTestBilling(rmg_bal);
+
+    // document.addEventListener('DOMContentLoaded', calculateDiagnosticTestBilling(rmg_bal));
+
 
     // function to be called if LOA Request Type is Diagnostic Test
     const calculateDiagnosticTestBilling = (remaining_balance) => {
@@ -610,6 +616,8 @@
         });
     });
     // end of loa diagnostic test form submission
+
+    document.addEventListener('DOMContentLoaded', calculateDiagnosticTestBilling(rmg_bal));
 
 
 

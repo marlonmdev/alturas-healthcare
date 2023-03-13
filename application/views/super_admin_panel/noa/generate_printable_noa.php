@@ -161,15 +161,18 @@
     window.onload = function generateCodes() {
       $('#qrcode').html('');
       $('#barcode').html('');
-      const emp_id = '<?= $row['emp_id'] ?>';
+
+      const healthcard_no = `<?php echo $row['health_card_no']; ?>`;
+      
       new QRCode(document.getElementById("qrcode"), {
-        text: emp_id,
-        width: 130,
-        height: 130,
+        text: healthcard_no,
+        width: 100,
+        height: 100,
       });
-      JsBarcode("#barcode", emp_id, {
+
+      JsBarcode("#barcode", healthcard_no, {
         displayValue: false,
-        width: 2,
+        width: 1.5,
         height: 80,
       });
     }

@@ -12,7 +12,7 @@
     <script src="<?php echo base_url(); ?>assets/vendors/dropify/js/dropify.js"></script>
     <script src="<?php echo base_url(); ?>assets/vendors/sweetalert2/sweetalert2.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/vendors/jquery-confirm/dist/jquery-confirm.min.js"></script>
-    <!-- <script src="< echo base_url(); ?>assets/vendors/easy-select/easySelect.js"></script> -->
+    <script src="<?php echo base_url(); ?>assets/vendors/easy-select/easySelect.js"></script>
     <script src="<?php echo base_url(); ?>assets/vendors/select2/js/select2.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/vendors/tagify/tagify.js"></script>
     <script src="<?php echo base_url(); ?>assets/vendors/tagify/tagify.polyfills.min.js"></script>

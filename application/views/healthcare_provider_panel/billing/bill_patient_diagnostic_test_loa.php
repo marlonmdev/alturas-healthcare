@@ -78,7 +78,7 @@
                     <hr class="mt-4">
 
                     <div class="row">
-                        <h4 class="text-center ls-2">
+                        <h4 class="text-left ls-2">
                             AVAILED SERVICES
                         </h4>
                     </div>
@@ -94,6 +94,8 @@
                         <input type="hidden" name="emp-id" value="<?= $member['emp_id'] ?>">
                         <input type="hidden" name="remaining-balance" value="<?= $remaining_balance ?>">
                         <input type="hidden" name="work-related" value="<?= $work_related ?>">
+                        <input type="hidden" name="medication-count" value="0" min="0" id="medication-count">
+                        <input type="hidden" name="profee-count" value="0" min="0" id="profee-count">
                         <input type="hidden" name="deduction-count" value="0" min="0" id="deduction-count">
 
                         <?php 
@@ -124,8 +126,7 @@
                                     <div class="input-group mb-3">
                                         <span class="input-group-text bg-dark text-white">&#8369;</span>
 
-                                        <input type="number" class="ct-fee form-control fw-bold ls-1" name="ct-fee[]" value="<?php echo $cost_type['op_price']; ?>" placeholder="Enter Amount" oninput="calculateDiagnosticTestBilling(`<?= $remaining_balance ?>`)" min="0" required readonly>
-
+                                        <input type="number" class="ct-fee form-control fw-bold ls-1" name="ct-fee[]" value="<?php echo $cost_type['op_price']; ?>" placeholder="Enter Amount" oninput="calculateDiagnosticTestBilling(`<?= $remaining_balance ?>`)" min="0" required>
                                         <div class="invalid-feedback">
                                             Service Cost is required.
                                         </div>
@@ -141,9 +142,49 @@
                         <hr class="mt-4">
 
                         <div class="row">
-                            <h4 class="text-center ls-2">
-                                BILLING DEDUCTIONS
-                            </h4>
+                            <div class="col-3">
+                                <h4 class="text-left ls-2 mt-2">
+                                    MEDICATIONS
+                                </h4>
+                            </div>
+                            <div class="col-4">
+                                <button type="button" class="btn btn-info" onclick="addMedication(`<?= $remaining_balance ?>`)">
+                                <i class="mdi mdi-plus-circle"></i> Add New</button>
+                            </div>
+                        </div>
+                        
+                         <!-- dynamic inputs will append on this div -->
+                        <div id="dynamic-medication"></div>
+
+                        <hr class="mt-4">
+
+                        <div class="row">
+                            <div class="col-3">
+                                <h4 class="text-left ls-2 mt-2">
+                                    PROFESSIONAL FEES
+                                </h4>
+                            </div>
+                            <div class="col-4">
+                                <button type="button" class="btn btn-info" onclick="addProfessionalFee(`<?= $remaining_balance ?>`)">
+                                <i class="mdi mdi-plus-circle"></i> Add New</button>
+                            </div>
+                        </div>
+                        
+                        <!-- dynamic inputs will append on this div -->
+                        <div id="dynamic-profee"></div>
+
+                        <hr class="mt-4">
+
+                        <div class="row">
+                            <div class="col-3">
+                                <h4 class="text-left ls-2 mt-2">
+                                    BILLING DEDUCTIONS
+                                </h4>
+                            </div>
+                            <div class="col-4">
+                                <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addOtherDeductionInputs(`<?= $remaining_balance ?>`)" disabled> <i class="mdi mdi-plus-circle"></i> Add New</button>
+                            </div>
+                          
                         </div>
                         <div class="row my-2">
 
@@ -169,14 +210,15 @@
                                 </div>
                             </div>
                             
-                            <div class="col-md-3" style="margin-top:28px;">
-                                <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addOtherDeductionInputs(`<?= $remaining_balance ?>`)" disabled>
+                            <!-- <div class="col-md-3" style="margin-top:28px;">
+                                <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addOtherDeductionInputs(`< $remaining_balance ?>`)" disabled>
                                     <i class="mdi mdi-plus-circle"></i> Add Deduction
                                 </button>
-                            </div>
+                            </div> -->
                             
                         </div>
-
+                        
+                        <!-- dynamic inputs will append on this div -->
                         <div id="dynamic-deduction"></div>
                         
                         <hr class="my-4">
@@ -274,7 +316,6 @@
                     <!-- End of form Diagnostic Test -->
                 </div>
                 <!-- End of Diagnostic LOA Request Billing -->
-                
             </div>
         </div>        
     </div>
@@ -282,11 +323,6 @@
 <script>
     const baseUrl = `<?php echo base_url(); ?>`;
     const rmg_bal = `<?php echo $remaining_balance; ?>`;
-
-    // window.onload =  calculateDiagnosticTestBilling(rmg_bal);
-
-    // document.addEventListener('DOMContentLoaded', calculateDiagnosticTestBilling(rmg_bal));
-
 
     // function to be called if LOA Request Type is Diagnostic Test
     const calculateDiagnosticTestBilling = (remaining_balance) => {
@@ -547,6 +583,141 @@
         calculateDiagnosticTestBilling(remaining_balance);
     }
 
+
+    /**
+    * It adds a row of inputs to the form
+    */
+    let med_count = 0; // declaring the count variable outside the function will persist its value even after the function is called, allowing it to increment by one each time the function is called.
+
+     // this is for Diagnostic Test LOA Requests
+    const addMedication  = (remaining_balance) => {
+        const container = document.querySelector('#dynamic-deduction');
+        const deduction_count = document.querySelector('#deduction-count');
+        count++;
+        deduction_count.value = med_count;
+
+        let html_code  = `<div class="row my-3 row-deduction" id="row${med_count}">`;
+
+           /* Creating a new input field with the name deduction_name[] */
+            html_code += `<div class="col-md-5">
+                            <input type="text" name="medication-name[]" class="form-control fw-bold ls-1" placeholder="*Enter Medication Name" required/>
+                            <div class="invalid-feedback">
+                                Medication name, quantity and amount is required
+                            </div>
+                         </div>`;
+            
+            html_code += `<div class="col-md-2">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-success text-white">Qty</span>
+
+                                    <input type="number" name="medication-qty[]" class="medication-qty form-control fw-bold ls-1" placeholder="*Medication Quantity" oninput="calculateDiagnosticTestBilling(${remaining_balance})" value="1" min="1" required/>
+
+                                    <span class="other-deduction-msg text-danger fw-bold"></span>
+                                </div>
+                          </div>`;
+
+            /* Creating a form input field with a name of deduction_amount[] and a class of
+            deduction-amount. */
+            html_code += `<div class="col-md-3">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-success text-white">&#8369;</span>
+
+                                    <input type="number" name="medication-amount[]" class="medication-amount form-control fw-bold ls-1" placeholder="*Medication Amount" oninput="calculateDiagnosticTestBilling(${remaining_balance})" required/>
+
+                                    <span class="other-deduction-msg text-danger fw-bold"></span>
+                                </div>
+                          </div>`;
+            
+           /* Adding a remove button to the html code. */
+            html_code += `<div class="col-md-2">
+                            <button type="button" data-id="${med_count}" class="btn btn-danger btn-md btn-remove" onclick="removeMedication(this, ${remaining_balance})" data-bs-toggle="tooltip" title="Click to remove Medication">
+                                <i class="mdi mdi-close"></i>
+                            </button>
+                         </div>`;
+
+            html_code += `</div>`;
+        // // $('#dynamic-deduction').append(html_code); => this is a jquery syntax, below is vanilla js way. You can either use this one or the one below
+        document.querySelector("#dynamic-medication").insertAdjacentHTML("beforeend", html_code);
+    }
+
+    /**
+    * It removes a row and then calls a function to recalculate the total.
+    */
+    // this one is for the dynamic deductions
+    const removeMedication = (remove_btn, remaining_balance) => {
+        med_count--;
+        const btn_id = remove_btn.getAttribute('data-id');
+        const medication_count = document.querySelector('#medication-count');
+        // update deduction count hidden input value for reference
+        medication_count.value = med_count;
+
+        document.querySelector(`#row${btn_id}`).remove();
+        calculateDiagnosticTestBilling(remaining_balance);
+    }
+
+
+     /**
+    * It adds a row of inputs to the form
+    */
+    let prof_count = 0; // declaring the count variable outside the function will persist its value even after the function is called, allowing it to increment by one each time the function is called.
+
+     // this is for Diagnostic Test LOA Requests
+    const addProfessionalFee  = (remaining_balance) => {
+        const container = document.querySelector('#dynamic-profee');
+        const profee_count = document.querySelector('#profee-count');
+        prof_count++;
+        profee_count.value = prof_count;
+
+        let html_code  = `<div class="row my-3 row-deduction" id="row${prof_count}">`;
+
+           /* Creating a new input field with the name deduction_name[] */
+            html_code += `<div class="col-md-5">
+                            <input type="text" name="profdoc-name[]" class="form-control fw-bold ls-1" placeholder="*Enter Doctor Name" required/>
+                            <div class="invalid-feedback">
+                                Doctor name, and Professional Fee is required
+                            </div>
+                         </div>`;
+
+            /* Creating a form input field with a name of deduction_amount[] and a class of
+            deduction-amount. */
+            html_code += `<div class="col-md-3">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-success text-white">&#8369;</span>
+
+                                    <input type="number" name="profee-amount[]" class="profee-amount form-control fw-bold ls-1" placeholder="*Professional Fee" oninput="calculateDiagnosticTestBilling(${remaining_balance})" required/>
+
+                                    <span class="other-deduction-msg text-danger fw-bold"></span>
+                                </div>
+                          </div>`;
+            
+           /* Adding a remove button to the html code. */
+            html_code += `<div class="col-md-2">
+                            <button type="button" data-id="${prof_count}" class="btn btn-danger btn-md btn-remove" onclick="removeProFee(this, ${remaining_balance})" data-bs-toggle="tooltip" title="Click to remove Professional Fee">
+                                <i class="mdi mdi-close"></i>
+                            </button>
+                         </div>`;
+
+            html_code += `</div>`;
+        // $('#dynamic-deduction').append(html_code); => this is a jquery syntax, below is vanilla js way. You can either use this one or the one below
+        document.querySelector("#dynamic-profee").insertAdjacentHTML("beforeend", html_code);
+    }
+
+    /**
+    * It removes a row and then calls a function to recalculate the total.
+    */
+    // this one is for the dynamic deductions
+    const removeProFee = (remove_btn, remaining_balance) => {
+        prof_count--;
+        const btn_id = remove_btn.getAttribute('data-id');
+        const profee_count = document.querySelector('#profee-count');
+        // update deduction count hidden input value for reference
+        profee_count.value = prof_count;
+
+        document.querySelector(`#row${btn_id}`).remove();
+        calculateDiagnosticTestBilling(remaining_balance);
+    }
+
+
     const loa_id = `<?php echo $loa_id; ?>`;
     const form = document.querySelector('#formDiagnosticBilling');
 
@@ -617,8 +788,7 @@
     });
     // end of loa diagnostic test form submission
 
+    // run a function
     document.addEventListener('DOMContentLoaded', calculateDiagnosticTestBilling(rmg_bal));
-
-
 
 </script>

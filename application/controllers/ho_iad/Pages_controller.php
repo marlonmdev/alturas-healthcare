@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Pages_controller extends CI_Controller {
     
-    public function __construct() {
+    public function __construct() {git
         parent::__construct();
         // $this->load->model('ho_accounting/List_model');
         $user_role = $this->session->userdata('user_role');

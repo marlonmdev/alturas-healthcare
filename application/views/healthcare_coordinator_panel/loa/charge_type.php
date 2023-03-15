@@ -19,18 +19,6 @@
                         <option value="No">Non-work related</option>
                       </select>
 
-		                  <!-- <div class="form-group row pt-4">
-		                    <div class="wr" id="percentage">
-		                      <div id="med-services-wrapper">
-		                        <div class="mb-2 fs-5">
-		                          <label class="colored-label">Enter Percentage (work-related)</label>
-		                          <input type="number" class="form-control" name="wr_percentage">
-		                        </div>
-		                      </div>
-		                      <em id="wpercentage-error" class="text-danger"></em>
-		                    </div>
-		                  </div> -->
-
 	                    <div class="form-group row pt-4">
 	                      <div class="nwr" id="percentage">
 	                        <div id="med-services-wrapper">
@@ -44,7 +32,6 @@
 	                    </div>
                     </div>
                     
-
                     <div class="row mb-2">
                       <div class="col-12 text-center">
                         <button type="submit" class="btn btn-info ls-1 me-2">SUBMIT</button>
@@ -59,23 +46,3 @@
           </div>
         </div>
         <!-- End of View LOA -->
-<script>
-  $(document).ready(function(){
-
-    // $('.chargetype').on('change',function(){
-    //   var value = $(this).val();
-    //   if(value == "Yes"){
-    //     $( ".wr" ).show();
-    //     $( ".nwr" ).hide();
-
-    //   }else if(value == "No"){
-    //     $( ".wr" ).hide();
-    //     $( ".nwr" ).show();
-    //   }else if(value == ""){
-    //     $( ".wr" ).hide();
-    //     $( ".nwr" ).hide();
-    //   }
-    // });
-  });
-
-</script>

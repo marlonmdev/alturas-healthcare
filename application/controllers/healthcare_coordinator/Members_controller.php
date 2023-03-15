@@ -73,6 +73,8 @@ class Members_controller extends CI_Controller {
 
 			$custom_actions = '<a href="' . $view_url . '" data-bs-toggle="tooltip" title="View Member Profile"><i class="mdi mdi-account-card-details fs-2 text-info"></i></a>';
 
+			$custom_actions .= '<a href="JavaScript:void(0)" onclick="addEmployeeHcId(\''. $member['emp_id'].'\')" data-bs-toggle="tooltip" title="Upload Healthcard ID"><i class="mdi mdi-note-plus ps-2 fs-2 text-info"></i></a>';
+
 			// this data will be rendered to the datatable
 			$row[] = $member['member_id'];
 			$row[] = $full_name;
@@ -229,4 +231,150 @@ class Members_controller extends CI_Controller {
 		$this->load->view('healthcare_coordinator_panel/members/member_profile');
 		$this->load->view('templates/footer');
 	}
+
+	function check_image($str){
+		if(isset($_FILES['scanned-id']['name']) && !empty($_FILES['scanned-id']['name'])){
+			return true;
+		}else{
+			$this->form_validation->set_message('check_image', 'Scanned ID is Required!');
+			return false;
+		}
+	}
+
+	function insert_scanned_hc_id() {
+		$token = $this->security->get_csrf_hash();
+		$emp_id = $this->input->post('emp-id');
+		$status = 'Done';
+		$date_added = date('Y-m-d');
+		$added_by = $this->session->userdata('fullname');
+
+		$this->form_validation->set_rules('scanned-id', '', 'callback_check_image');
+
+		if(!$this->form_validation->run()){
+			echo json_encode([
+				'status' => 'error',
+				'scanned_id_error' => form_error('scanned-id'),
+			]);
+		}else{
+			
+			$data = [];
+			$existing_files = [];
+			$filename = [];
+			$count = count($_FILES['scanned-id']['name']);
+		  
+			for($i=0;$i<$count;$i++){
+		  
+			  if(!empty($_FILES['scanned-id']['name'][$i])){
+		  
+				$_FILES['file']['name'] = $_FILES['scanned-id']['name'][$i];
+				$_FILES['file']['type'] = $_FILES['scanned-id']['type'][$i];
+				$_FILES['file']['tmp_name'] = $_FILES['scanned-id']['tmp_name'][$i];
+				$_FILES['file']['error'] = $_FILES['scanned-id']['error'][$i];
+				$_FILES['file']['size'] = $_FILES['scanned-id']['size'][$i];
+		
+				$config['upload_path'] = 'uploads/scanned_healthcard_id'; 
+				$config['allowed_types'] = 'jpg|jpeg|png|gif';
+				$config['max_size'] = '5000';
+				$config['file_name'] = $_FILES['scanned-id']['name'][$i];
+		 
+				$this->load->library('upload',$config); 
+				$this->upload->initialize($config); 
+		  
+				if($this->upload->do_upload('file')){
+				  $uploadData = $this->upload->data();
+
+					// $filename[$i] = [
+					// 	'healthcard_id' => $uploadData['file_name']
+					// ];
+					
+					// foreach($filename as $image){
+					// 	$existing = $this->members_model->check_id_if_existed($image, $emp_id);
+					// 	if($existing) {
+					// 		$existing_files = $uploadData['file_name'];
+					// 	}
+					// }
+					// if(!empty($existing_files)){
+					// 	echo json_encode([
+					// 	  'status' => 'exist',
+					// 	  'message' => 'One or more images already exist!',
+					// 	  'existing_files' => $existing_files
+					// 	]);
+					//   }else{
+						$data[$i] = [
+						  'emp_id' => $emp_id,
+						  'healthcard_id' =>  $uploadData['file_name'],
+						  'date_added' => $date_added,
+						  'added_by' => $added_by
+						];
+					//   }
+				 
+				}
+			  }else{
+				echo json_encode([
+					'status' => 'error',
+					'message' => 'Error in Uploading Images!'
+				]);
+			  }
+		 
+			}
+			$this->members_model->set_approval_status($status, $emp_id);
+			foreach($data as $info){
+				$inserted = $this->members_model->insert_scanned_emp_id($info);
+				if($inserted){
+					echo json_encode([
+						'status' => 'success',
+						'message' => 'Image Uploaded Successfully!'
+					]);
+				}else{
+					echo json_encode([
+						'status' => 'failed',
+						'message' => 'Image Failed to Upload!'
+					]);
+				}
+			}
+			
+		}
+	}
+
+	function fetch_uploaded_hc_id() {
+		$this->security->get_csrf_hash();
+		$approval_status = 'Done';
+		$list = $this->members_model->get_done_datatables($approval_status);
+		$data = [];
+		foreach ($list as $member) {
+			$row = [];
+			$member_id = $this->myhash->hasher($member['member_id'], 'encrypt');
+			$full_name = $member['first_name'] . ' ' . $member['middle_name'] . ' ' . $member['last_name'] . ' ' . $member['suffix'];
+			$view_url = base_url() . 'healthcare-coordinator/members/view/' . $member_id;
+			$path = base_url(). 'uploads/scanned_healthcard_id/';
+
+			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $member['approval_status'] . '</span></div>';
+
+			$custom_actions = '<a href="' . $view_url . '" data-bs-toggle="tooltip" title="View Member Profile"><i class="mdi mdi-account-card-details fs-2 text-info"></i></a>';
+
+			$custom_actions .= '<a href="JavaScript:void(0)" onclick="viewImage(\''. $path . $member['healthcard_id'].','. $path. $member['healthcard_id'].'\')"><strong><i class="mdi mdi-image-album fs-2 ps-2 text-danger" title="View Healthcard ID"></i></strong></a>';
+
+			// this data will be rendered to the datatable
+			$row[] = $member['member_id'];
+			$row[] = $full_name;
+			$row[] = $member['emp_type'];
+			$row[] = $member['current_status'];
+			$row[] = $member['business_unit'];
+			$row[] = $member['dept_name'];
+			$row[] = $custom_status;
+			$row[] = $custom_actions;
+			$data[] = $row;
+		}
+
+		$output = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->members_model->count_all_done($approval_status),
+			"recordsFiltered" => $this->members_model->count_done_filtered($approval_status),
+			"data" => $data,
+		];
+		echo json_encode($output);
+
+	}
+
+
 }

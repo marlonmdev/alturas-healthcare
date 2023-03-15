@@ -1,4 +1,3 @@
-
   <!-- Start of Page Wrapper -->
   <div class="page-wrapper">
     <!-- Bread crumb and right sidebar toggle -->
@@ -36,7 +35,7 @@
                     </li>
                     <li class="nav-item">
                     <a
-                        class="nav-link active"
+                        class="nav-link"
                         href="<?php echo base_url(); ?>healthcare-coordinator/members/approved"
                         role="tab"
                         ><span class="hidden-sm-up"></span>
@@ -45,7 +44,7 @@
                     </li>
                     <li class="nav-item">
                     <a
-                        class="nav-link"
+                        class="nav-link active"
                         href="<?php echo base_url(); ?>healthcare-coordinator/members/approved/uploaded-scanned-id-form"
                         role="tab"
                         ><span class="hidden-sm-up"></span>
@@ -57,7 +56,7 @@
                 <div class="card shadow">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover table-responsive" id="membersApprovedTable">
+                            <table class="table table-hover table-responsive" id="doneHcIdMembersTable">
                                 <thead>
                                     <tr>
                                         <th class="fw-bold">#</th>
@@ -66,7 +65,8 @@
                                         <th class="fw-bold">Status</th>
                                         <th class="fw-bold">Business Unit</th>
                                         <th class="fw-bold">Department</th>
-                                        <th class="fw-bold">Approval Status</th>
+                                        <th class="fw-bold">Healthcard ID Status</th>
+                                        <!-- <th class="fw-bold">Scanned ID</th> -->
                                         <th class="fw-bold">Actions</th>
                                     </tr>
                                 </thead>
@@ -85,35 +85,23 @@
     </div>
   <!-- End Page wrapper  -->
   </div>
-  <?php include 'insert_healthcard_id.php' ?>
+  <?php include 'view_healthcard_id.php' ?>
 <!-- End Wrapper -->
 </div>
 <script>
-    const redirectPage = (route, seconds) => {
-                setTimeout(() => {
-                window.location.href = route;
-                }, seconds);
-        }
-
     const baseUrl = '<?php echo base_url(); ?>';
-    $(document).ready(function() {
-
-        $('#membersApprovedTable').DataTable({
-            processing: true, //Feature control the processing indicator.
-            serverSide: true, //Feature control DataTables' server-side processing mode.
-            order: [], //Initial no order.
-
-            // Load data for the table's content from an Ajax source
-            ajax: {
-                url: `${baseUrl}healthcare-coordinator/members/approved/fetch`,
-                type: "POST",
-                // passing the token as data so that requests will be allowed
+    $(document).ready(function(){
+        $('#doneHcIdMembersTable').DataTable({
+            processing: true,
+            serverSide: true,
+            order: [],
+            ajax:{
+                url: `${baseUrl}healthcare-coordinator/members/approved/uploaded-scanned-id`,
+                type: 'POST',
                 data: {
                     'token': '<?php echo $this->security->get_csrf_hash(); ?>'
                 }
             },
-
-            //Set column definition initialisation properties.
             columnDefs: [{
                 "targets": [6, 7], // 6th and 7th column / numbering column
                 "orderable": false, //set not orderable
@@ -121,72 +109,24 @@
             responsive: true,
             fixedHeader: true,
         });
-
     })
 
-    const addEmployeeHcId = (emp_id) => {
-      $('#insertHcIdModal').modal('show');
-
-      $('#emp-id').val(emp_id);
+    const viewImage = (path1, path2) => {
+        let item = [
+            {
+                src: path1, // path to image
+                title: 'Attached Scanned Healthcard ID' // If you skip it, there will display the original image name
+            },
+            {
+                src: path2, // path to image
+                title: 'Attached Scanned Healthcard ID'
+            }
+        ];
+        // define options (if needed)
+        let options = {
+            index: 0 // this option means you will start at first image
+        };
+        // Initialize the plugin
+        let photoviewer = new PhotoViewer(item, options);
     }
-
-    $('#insertScannedIdForm').submit(function(event){
-      event.preventDefault();
-      var formData = new FormData(this);
-      $.ajax({
-        type:'POST',
-        url: $(this).attr('action'),
-        data: formData,
-        dataType: 'json',
-        processData: false,
-        contentType: false,
-        success:function(response){
-          const {
-            token,
-            status,
-            message,
-            scanned_id_error
-          } = response;
-          if(status == 'failed'){
-            swal({
-                title: 'Failed',
-                text: message,
-                timer: 3000,
-                showConfirmButton: true,
-                type: 'error'
-            });
-          }
-          if(status == 'error'){
-            swal({
-                title: 'Failed',
-                text: message,
-                timer: 3000,
-                showConfirmButton: true,
-                type: 'error'
-            });
-          }
-          if(status == 'success'){
-            $('#scanned-id').removeClass('is-invalid');
-            swal({
-                title: 'Success',
-                text: message,
-                timer: 3000,
-                showConfirmButton: false,
-                type: 'success'
-            });
-            let page = '<?php echo base_url(); ?>healthcare-coordinator/members/approved/uploaded-scanned-id-form';
-            $('#insertScannedIdForm')[0].reset();
-            $('#insertHcIdModal').hide();
-            redirectPage(page, 200);
-          }
-          if(scanned_id_error !== ''){
-            $('#scanned-id-error').html(scanned_id_error);
-            $('#scanned-id').addClass('is-invalid');
-          }else{
-            $('#scanned-id-error').html('');
-            $('#scanned-id').removeClass('is-invalid');
-          }
-        }
-      });
-    });
 </script>

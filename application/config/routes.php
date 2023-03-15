@@ -267,6 +267,7 @@ $route['healthcare-coordinator/dashboard'] = 'healthcare_coordinator/pages_contr
 $route['healthcare-coordinator/healthcare-providers'] = 'healthcare_coordinator/pages_controller/view_healthcare_providers';
 $route['healthcare-coordinator/members'] = 'healthcare_coordinator/pages_controller/view_all_pending_members';
 $route['healthcare-coordinator/members/approved'] = 'healthcare_coordinator/pages_controller/view_all_approved_members';
+$route['healthcare-coordinator/members/approved/uploaded-scanned-id-form'] = 'healthcare_coordinator/pages_controller/healthcard_monitoring';
 $route['healthcare-coordinator/accounts'] = 'healthcare_coordinator/pages_controller/view_all_accounts';
 $route['healthcare-coordinator/accounts/register'] = 'healthcare_coordinator/pages_controller/register_account_form';
 $route['healthcare-coordinator/setup/healthcare-providers'] = 'healthcare_coordinator/pages_controller/view_all_healthcare_providers';
@@ -299,6 +300,8 @@ $route['healthcare-coordinator/members/approved/fetch'] = 'healthcare_coordinato
 $route['healthcare-coordinator/members/view/(:any)'] = 'healthcare_coordinator/members_controller/view_member_info';
 // $route['healthcare-coordinator/members/user-account/create'] = 'healthcare_coordinator/members_controller/create_member_user_account';
 $route['healthcare-coordinator/member/search'] = 'healthcare_coordinator/search_controller/search_autocomplete';
+$route['healthcare-coordinator/members/approved/insert-hc-id'] = 'healthcare_coordinator/members_controller/insert_scanned_hc_id';
+$route['healthcare-coordinator/members/approved/uploaded-scanned-id'] = 'healthcare_coordinator/members_controller/fetch_uploaded_hc_id';
 
 // HealthCare Coordinator Accounts Routes
 $route['healthcare-coordinator/accounts/register/submit'] = 'healthcare_coordinator/accounts_controller/register_user_account_validation';

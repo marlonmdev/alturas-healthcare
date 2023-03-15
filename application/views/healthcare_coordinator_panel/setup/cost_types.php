@@ -120,26 +120,42 @@
             token,
             status,
             message,
+            hp_id_error,
             price_list_error,
+            other_list_error,
             cost_type_error,
             op_price_error,
             ip_price_error
           } = response;
           switch (status) {
             case 'error':
+              if(hp_id_error != ''){
+                $('#hp-filter-error').html(hp_id_error);
+                $('#hospital-filter').addClass('is-invalid');
+              }else{
+                $('#hp-filter-error').html('');
+                $('#hospital-filter').removeClass('is-invalid');
+              }
+              if (price_list_error !== '') {
+                $('#price-filter-error').html(price_list_error);
+                $('#price-filter').addClass('is-invalid');
+              } else {
+                $('#price-filter-error').html('');
+                $('#price-filter').removeClass('is-invalid');
+              }
+              if (other_list_error !== '') {
+                $('#other-price-error').html(other_list_error);
+                $('#other-price-filter').addClass('is-invalid');
+              } else {
+                $('#other-price-error').html('');
+                $('#other-price-filter').removeClass('is-invalid');
+              }
               if (cost_type_error !== '') {
                 $('#cost-type-error').html(cost_type_error);
                 $('#cost-type').addClass('is-invalid');
               } else {
                 $('#cost-type-error').html('');
                 $('#cost-type').removeClass('is-invalid');
-              }
-              if (price_list_error !== '') {
-                $('#price-list-error').html(price_list_error);
-                $('#price-list').addClass('is-invalid');
-              } else {
-                $('#price-list-error').html('');
-                $('#price-list').removeClass('is-invalid');
               }
               if (op_price_error !== '') {
                 $('#op-price-error').html(op_price_error);
@@ -178,67 +194,98 @@
               break;
           }
         }
-
       })
     });
 
-    $('#editCostTypeForm').submit(function(event) {
-      event.preventDefault();
-      $.ajax({
-        type: "post",
-        url: $(this).attr('action'),
-        data: $(this).serialize(),
-        dataType: "json",
-        success: function(response) {
-          const {
-            token,
-            status,
-            message,
-            cost_type_error
-          } = response;
-          switch (status) {
-            case 'error':
-              if (cost_type_error !== '') {
-                $('#edit-cost-type-error').html(cost_type_error);
-                $('#edit-cost-type').addClass('is-invalid');
-              } else {
-                $('#edt-cost-type-error').html('');
-                $('#edit-cost-type').removeClass('is-invalid');
-              }
-              break;
-            case 'save-error':
-              swal({
-                title: 'Failed',
-                text: message,
-                timer: 3000,
-                showConfirmButton: false,
-                type: 'error'
-              });
-              break;
-            case 'success':
-              swal({
-                title: 'Success',
-                text: message,
-                timer: 3000,
-                showConfirmButton: false,
-                type: 'success'
-              });
-              $('#editCostTypeModal').modal('hide');
-              $("#costTypesTable").DataTable().ajax.reload();
-              break;
-          }
-        }
+    // $('#editCostTypeForm').submit(function(event) {
+    //   event.preventDefault();
+    //   $.ajax({
+    //     type: "post",
+    //     url: $(this).attr('action'),
+    //     data: $(this).serialize(),
+    //     dataType: "json",
+    //     success: function(response) {
+    //       const {
+    //         token,
+    //         status,
+    //         message,
+    //         cost_type_error
+    //       } = response;
+    //       switch (status) {
+    //         case 'error':
+    //           if (cost_type_error !== '') {
+    //             $('#edit-cost-type-error').html(cost_type_error);
+    //             $('#edit-cost-type').addClass('is-invalid');
+    //           } else {
+    //             $('#edt-cost-type-error').html('');
+    //             $('#edit-cost-type').removeClass('is-invalid');
+    //           }
+    //           break;
+    //         case 'save-error':
+    //           swal({
+    //             title: 'Failed',
+    //             text: message,
+    //             timer: 3000,
+    //             showConfirmButton: false,
+    //             type: 'error'
+    //           });
+    //           break;
+    //         case 'success':
+    //           swal({
+    //             title: 'Success',
+    //             text: message,
+    //             timer: 3000,
+    //             showConfirmButton: false,
+    //             type: 'success'
+    //           });
+    //           $('#editCostTypeModal').modal('hide');
+    //           $("#costTypesTable").DataTable().ajax.reload();
+    //           break;
+    //       }
+    //     }
 
-      })
-    });
+    //   })
+    // });
   });
 
-  function showAddCostTypeModal() {
-    $("#registerCostTypeModal").modal("show");
-    // $("#registerCostTypeForm")[0].reset();
-    $('#cost-type-error').html('');
-    $('#cost-type').removeClass('is-invalid');
-  }
+    const showAddCostTypeModal = () => {
+      $("#registerCostTypeModal").modal("show");
+      $("#registerCostTypeForm")[0].reset();
+      // $('#cost-type-error').html('');
+      // $('#cost-type').removeClass('is-invalid');
+      $('#other-input-container').hide();
+    }
+
+    const showOtherInputDiv = () => {
+        const otherInputContainer = $('#other-input-container');
+
+        if ($('#price-filter').val() == 'other') {
+          otherInputContainer.show();
+        } else {  
+          otherInputContainer.hide();
+        }
+    }
+
+    const enableInputs = () => {
+      const price_filter = $('#price-filter');
+      const hp_filter = $('#hospital-filter');
+      const item_id = $('#item-id');
+      const cost_type = $('#cost-type');
+      const op_price = $('#op-price');
+      const ip_price = $('#ip-price');
+
+      if(price_filter.val() != '' && hp_filter.val() != ''){
+        item_id.removeAttr('disabled');
+        cost_type.removeAttr('disabled');
+        op_price.removeAttr('disabled');
+        ip_price.removeAttr('disabled');
+      }else{
+        item_id.attr('disabled', true);
+        cost_type.attr('disabled', true);
+        op_price.attr('disabled', true);
+        ip_price.attr('disabled', true);
+      }
+    }
 
   // function editCostType(ctype_id) {
   //   $.ajax({

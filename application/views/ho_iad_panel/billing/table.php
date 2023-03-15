@@ -85,7 +85,7 @@
 
             // Load data for the table's content from an Ajax source
             ajax: {
-                url: `${baseUrl}head-office-iad/loa-requests/billed/fetch`,
+                url: `${baseUrl}head-office-iad/table/billed/fetch`,
                 type: "POST",
                 // passing the token as data so that requests will be allowed
                 data: {

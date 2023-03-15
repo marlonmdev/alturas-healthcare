@@ -554,8 +554,13 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 //========================================================================================================
 //IAD
 $route['head-office-iad/dashboard'] = 'ho_iad/pages_controller';
+$route['head-office-iad/table/billed'] = 'ho_iad/pages_controller/view_table';
+$route['head-office-iad/table/billed/fetch'] = 'ho_iad/table_controller/fetch_data';
+// $route['head-office-iad/loa-requests/billed'] = 'ho_iad/pages_controller/view_billed_loa';
+// $route['head-office-iad/loa-requests/billed/fetch'] = 'ho_iad/loa_controller/fetch_billed_loa_requests';
 $route['head-office-iad/loa-requests/billed'] = 'ho_iad/pages_controller/view_billed_loa';
 $route['head-office-iad/loa-requests/billed/fetch'] = 'ho_iad/loa_controller/fetch_billed_loa_requests';
+
 
 // QR Code Routes
 // $route['qrcode'] = 'home';

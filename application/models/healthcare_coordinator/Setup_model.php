@@ -33,6 +33,12 @@ class Setup_model extends CI_Model {
 		return $this->db->get()->result_array();
 	}
 
+	function rt_get_healthcare_providers() {
+		$this->db->select('*')
+						 ->from('healthcare_providers');
+		return $this->db->get()->result_array();
+	}
+
 	function db_get_all_healthcare_providers() {
 		$this->db->select('*')
 						 ->from('healthcare_providers')
@@ -246,7 +252,7 @@ class Setup_model extends CI_Model {
 	}
 
 	function db_insert_room_type($post_data) {
-		return $this->db->insert('room_price', $post_data);
+		return $this->db->insert('room_types', $post_data);
 	}
 
 	function db_get_all_cost_types() {

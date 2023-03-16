@@ -134,7 +134,7 @@ class Main_controller extends CI_Controller {
 				'image_error' => form_error('supporting-docu')
 			]);
 		}else{
-			$config['upload_path'] = './assets/paymentDetails/';
+			$config['upload_path'] = './uploads/paymentDetails/';
 			$config['allowed_types'] = 'jpg|jpeg|png';
 			$config['encrypt_name'] = TRUE;
 			$this->load->library('upload', $config);
@@ -146,7 +146,7 @@ class Main_controller extends CI_Controller {
 			}else{
 				$uploadData = $this->upload->data();
 				$payment_no = "PMD-" . strtotime(date('Y-m-d h:i:s'));
-				//$added_by = $this->session->userdata('full_name');
+				$added_by = $this->session->userdata('fullname');
 
 				$data = array(
 					"payment_no" => $payment_no,
@@ -162,6 +162,7 @@ class Main_controller extends CI_Controller {
 					"amount_paid" => $this->input->post('amount-paid'),
 					"supporting_file" => $uploadData['file_name'],
 					"date_added" => date('Y-m-d h:i:s'),
+					"added_by" => $added_by
 					
 				);
 				$this->List_model->add_payment_details($data);
@@ -213,7 +214,7 @@ class Main_controller extends CI_Controller {
 			$charge = $value['company_charge'] == '' ? 0 : number_format($value['company_charge'], 2);
 
 			$fullname = $value['first_name']. ' ' .$value['middle_name']. ' ' .$value['last_name'];
-			$custom_bill_no = '<mark class="bg-primary text-white">'. $value['billing_no'] .'</mark>';
+			$custom_payment_no = '<mark class="bg-primary text-white">'. $value['payment_no'] .'</mark>';
 
 			$cost_type = $value['loa_id'] != '' ? 'LOA' : 'NOA'; 
 
@@ -221,7 +222,7 @@ class Main_controller extends CI_Controller {
 
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewEmployeePaymentD(\'' . $billing_id . '\')" data-bs-toggle="tooltip" title="View Payment Details"><i class="mdi mdi-view-list fs-3 text-info"></i></a>';
 			
-			$row[] = $custom_bill_no;
+			$row[] = $custom_payment_no;
 			$row[] = $fullname;
 			$row[] = $cost_type;
 			$row[] = $value['billed_on'];

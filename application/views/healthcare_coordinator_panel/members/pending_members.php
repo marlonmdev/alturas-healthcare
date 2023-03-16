@@ -43,6 +43,15 @@
                         <span class="hidden-xs-down fs-5 font-bold">Approved</span></a
                     >
                     </li>
+                    <li class="nav-item">
+                    <a
+                        class="nav-link"
+                        href="<?php echo base_url(); ?>healthcare-coordinator/members/approved/uploaded-scanned-id-form"
+                        role="tab"
+                        ><span class="hidden-sm-up"></span>
+                        <span class="hidden-xs-down fs-5 font-bold">Healthcard ID Monitoring</span></a
+                    >
+                    </li>
                 </ul>
 
                 <div class="card shadow">

@@ -318,7 +318,7 @@ class Billing_controller extends CI_Controller {
         $noa = $this->billing_model->get_noa_to_bill($noa_id);
 
         $data['user_role'] = $this->session->userdata('user_role');
-        $data['cost_types'] = $this->billing_model->get_all_cost_types();
+        $data['cost_types'] = $this->billing_model->get_hospital_cost_types($noa['hospital_id']);
         $data['noa'] = $noa;
         $data['member'] = $this->session->userdata('b_member_info');
         $data['member_mbl'] = $this->session->userdata('b_member_mbl');
@@ -330,6 +330,7 @@ class Billing_controller extends CI_Controller {
         $data['noa_no'] = $noa['noa_no'];
         $data['billed_by'] = $this->session->userdata('fullname');
         $data['hcare_provider'] = $hcare_provider['hp_name'];
+        $data['rooms'] = $this->billing_model->get_hospital_room_types($noa['hospital_id']);
 
         $this->load->view('templates/header', $data);
         $this->load->view('healthcare_provider_panel/billing/bill_patient_noa');

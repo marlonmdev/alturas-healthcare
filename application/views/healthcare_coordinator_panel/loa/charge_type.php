@@ -13,7 +13,7 @@
                     <div class="row mb-3">
                       <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
                       <input type="hidden" name="loa-id" id="loa-id">
-                      <select class="chargetype fs-5" name="charge-type">
+                      <select class="form-control chargetype fs-5" name="charge-type">
                         <option value="">Please Select...</option>
                         <option value="Yes">Work related</option>
                         <option value="No">Non-work related</option>
@@ -34,7 +34,7 @@
 	                    <div class="form-group row pt-4">
 	                      <div class="nwr" id="percentage">
 	                        <div id="med-services-wrapper">
-	                          <div class="mb-2 fs-5">
+	                          <div class="mb-2 fs-5 ls-1">
 	                            <label class="colored-label">Enter Percentage</label>
 	                            <input type="number" class="form-control" name="percentage">
 	                          </div>

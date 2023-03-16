@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 14, 2023 at 06:27 AM
+-- Generation Time: Mar 15, 2023 at 10:53 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -7081,6 +7081,36 @@ INSERT INTO `cost_types` (`ctype_id`, `hp_id`, `price_list_group`, `item_id`, `i
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `healthcards`
+--
+
+CREATE TABLE `healthcards` (
+  `hc_id` int(20) NOT NULL,
+  `emp_id` varchar(50) NOT NULL,
+  `healthcard_id` varchar(200) NOT NULL,
+  `date_added` date NOT NULL,
+  `added_by` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `healthcards`
+--
+
+INSERT INTO `healthcards` (`hc_id`, `emp_id`, `healthcard_id`, `date_added`, `added_by`) VALUES
+(31, '23764-2022', '404_computer_desktop_1920x1080.jpg', '2023-03-15', 'Marlon H. Muring'),
+(32, '23764-2022', '10412_1920x12003.jpg', '2023-03-15', 'Marlon H. Muring'),
+(34, '01204-2017', 'Processor_CPU_Motherboard_Blue_Circuits_Circuit_Board_computer_1920x1080.jpg', '2023-03-15', 'Marlon H. Muring'),
+(35, '01204-2017', 'winter_snow_flakes_1920x1200.jpg', '2023-03-15', 'Marlon H. Muring'),
+(36, '01700-2016', 'water_fire_Earth_elements_air_panels_1600x1200.jpg', '2023-03-15', 'Marlon H. Muring'),
+(37, '01700-2016', 'Windows_7_matrix_1920x1200.jpg', '2023-03-15', 'Marlon H. Muring'),
+(38, '00016-2022', 'Android_1920x12002.jpg', '2023-03-15', 'Marlon H. Muring'),
+(39, '00016-2022', 'Apple_inc_2560x14402.jpg', '2023-03-15', 'Marlon H. Muring'),
+(41, '23456-2023', 'Android_1920x12003.jpg', '2023-03-15', 'Marlon H. Muring'),
+(42, '23456-2023', 'winter_snow_flakes_1920x12001.jpg', '2023-03-15', 'Marlon H. Muring');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `healthcare_providers`
 --
 
@@ -7461,7 +7491,7 @@ INSERT INTO `user_accounts` (`user_id`, `emp_id`, `full_name`, `user_role`, `dsg
 (1, '', 'IT SysDev', 'super-admin', '', '', 'itsysdev', '$2y$10$XFb5b/ZPEfOKX.cozy410exlcMOh6z7SBq8P/XljjCrHEYi07sppy', 'Active', 0, '', '2022-09-29', '2023-01-13', 'IT SysDev'),
 (2, '', 'Marlon H. Muring', 'healthcare-coordinator', '', '', 'coordinator', '$2y$10$uFMFd4RnlQFLQcGjie9vjuV6xbhb4urONDvcfM3vyjD7NZZcg57H.', 'Active', 0, '', '2022-09-29', '2022-10-21', 'Default HealthCare Coordinator '),
 (9, '56313-2022', 'Marlon H. Muring', 'member', '', '', 'marlonm', '$2y$10$AZ7Px2zYdPm7SwKEvXRINeUGhnXmnh0DtMsOScF79PxwGyibUuvsm', 'Active', 0, '', '2022-09-29', '2022-10-28', 'Marlon H. Muring'),
-(10, '23278-2022', 'George Curay', 'healthcare-provider', '5', '', 'Ayuban17', '$2y$10$oFmxPMZWyEIKkFz/T3BwyezXI3aVO7XviWqzhudhyPGVGj8CQfjJO', 'Active', 1, '', '2022-10-03', '2022-10-21', 'Default HealthCare Coordinator '),
+(10, '23278-2022', 'George Curay', 'healthcare-provider', '5', '', 'Ayuban17', '$2y$10$oFmxPMZWyEIKkFz/T3BwyezXI3aVO7XviWqzhudhyPGVGj8CQfjJO', 'Active', 0, '', '2022-10-03', '2022-10-21', 'Default HealthCare Coordinator '),
 (13, '23278-2022', 'George Curay', 'member', '', '', '23278-2022', '$2y$10$90/6gxZrfUZL7bEufvGHTuwhoyigRmk53HNyrr98iBFybiAlASpiq', 'Active', 0, '', '2022-10-05', '2022-10-14', 'Default HealthCare Coordinator '),
 (17, '56313-2022', 'Ramiro Hospital Coordinator', 'healthcare-provider', '1', '', 'ramiro', '$2y$10$o8BBCELJf6LqSI4wRp0nMe0bf2B4t4cri8nDgLbNqGHE.QwjVpryK', 'Active', 0, '', '2022-10-25', '2023-02-02', 'IT SysDev'),
 (18, '32544-2022', 'Lorlie Ochavillo', 'member', '', '', '32544-2022', '$2y$10$.uIaDmmPCIl2SugOYj0LPuPCXkLVKjGtflgB3J8fUu26jkJ5zkySi', 'Active', 0, '', '2022-10-26', '2023-02-10', 'Marlon H. Muring'),
@@ -7651,6 +7681,16 @@ ALTER TABLE `cost_types`
   ADD KEY `date_updated` (`date_updated`),
   ADD KEY `added_by` (`added_by`),
   ADD KEY `updated_by` (`updated_by`);
+
+--
+-- Indexes for table `healthcards`
+--
+ALTER TABLE `healthcards`
+  ADD PRIMARY KEY (`hc_id`),
+  ADD KEY `emp_id` (`emp_id`),
+  ADD KEY `healthcard_id` (`healthcard_id`),
+  ADD KEY `date_added` (`date_added`),
+  ADD KEY `added_by` (`added_by`);
 
 --
 -- Indexes for table `healthcare_providers`
@@ -7934,6 +7974,12 @@ ALTER TABLE `company_doctors`
 --
 ALTER TABLE `cost_types`
   MODIFY `ctype_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=104565;
+
+--
+-- AUTO_INCREMENT for table `healthcards`
+--
+ALTER TABLE `healthcards`
+  MODIFY `hc_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `healthcare_providers`

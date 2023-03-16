@@ -184,10 +184,9 @@
                             <div class="col-4">
                                 <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addOtherDeductionInputs(`<?= $remaining_balance ?>`)" disabled> <i class="mdi mdi-plus-circle"></i> Add New</button>
                             </div>
-                          
                         </div>
-                        <div class="row my-2">
 
+                        <div class="row my-2">
                             <div class="col-md-3">
                                 <label class="form-label ls-1">PhilHealth</label> <span class="text-muted">(optional)</span>
                                 <div class="input-group mb-3">

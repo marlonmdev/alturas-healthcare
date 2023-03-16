@@ -38,7 +38,7 @@ $config['def_hcc_username'] = 'ahchrd';
 $config['def_hcc_password'] = 'ahchrd2022';
 
 // default password for user accounts
-$config['def_user_password'] = 'Ahc-2022';
+$config['def_user_password'] = 'Ahcr-2022';
 
 // custom salt for Hashids Encryption
 $config['hashid_salt'] = '$Ahc2022';

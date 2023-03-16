@@ -12,8 +12,26 @@
     href="<?php echo base_url(); ?>head-office-iad/table/billed"
     aria-expanded="false">
     <i class="mdi mdi-receipt"></i>
-    <span class="hide-menu ls-1">Billing</span>
+    <span class="hide-menu ls-1">Transaction Record(to delete)</span>
   </a>
+</li>
+
+<li class="sidebar-item <?php echo $this->uri->segment(2) == "billing" ? "selected" : ""; ?>">
+  <a
+    class="sidebar-link has-arrow"
+    href="javascript:void(0)"
+    aria-expanded="false">
+    <i class="mdi mdi-file-chart"></i>
+    <span class="hide-menu ls-1">Transaction Record</span>
+  </a>
+  <ul aria-expanded="false" class="collapse first-level">
+    <li class="sidebar-item">
+      <a href="<?php echo base_url(); ?>head-office-iad/transaction/search" class="sidebar-link">
+        <i class="mdi mdi-receipt"></i>
+        <span class="hide-menu ls-1">Summary of Billing</span>
+      </a>
+    </li>
+  </ul>
 </li>
               
 <li class="sidebar-item">

@@ -552,14 +552,17 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 
 // End of Super Admin Routes
 //========================================================================================================
-//IAD
+//IAD=================================================================================
 $route['head-office-iad/dashboard'] = 'ho_iad/pages_controller';
+//to delete
 $route['head-office-iad/table/billed'] = 'ho_iad/pages_controller/view_table';
 $route['head-office-iad/table/billed/fetch'] = 'ho_iad/table_controller/fetch_data';
-// $route['head-office-iad/loa-requests/billed'] = 'ho_iad/pages_controller/view_billed_loa';
-// $route['head-office-iad/loa-requests/billed/fetch'] = 'ho_iad/loa_controller/fetch_billed_loa_requests';
-$route['head-office-iad/loa-requests/billed'] = 'ho_iad/pages_controller/view_billed_loa';
-$route['head-office-iad/loa-requests/billed/fetch'] = 'ho_iad/loa_controller/fetch_billed_loa_requests';
+$route['head-office-iad/record/(:any)'] = 'ho_iad/table_controller/view_record';
+//end
+$route['head-office-iad/transaction/search'] = 'ho_iad/transaction_controller/search';
+$route['head-office-iad/transaction/search_by_healthcard']  = 'ho_iad/transaction_controller/search_by_healthcard';
+$route['head-office-iad/transaction/search_by_name'] = 'healthcare_provider/billing_controller/search_by_name';
+//IAD=================================================================================
 
 
 // QR Code Routes

@@ -108,6 +108,13 @@ class Members_model extends CI_Model {
     return $this->db->update('members');
   }
 
+  function get_healthcard($emp_id) {
+   $this->db->select('*')
+            ->from('healthcards')
+            ->where('emp_id', $emp_id);
+    return $this->db->get()->row_array();
+  }
+
    // Start of server-side processing datatables
    var $table_1 = 'members';
    var $table_2 = 'healthcards';

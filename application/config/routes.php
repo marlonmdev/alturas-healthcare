@@ -302,7 +302,7 @@ $route['healthcare-coordinator/members/view/(:any)'] = 'healthcare_coordinator/m
 $route['healthcare-coordinator/member/search'] = 'healthcare_coordinator/search_controller/search_autocomplete';
 $route['healthcare-coordinator/members/approved/insert-hc-id'] = 'healthcare_coordinator/members_controller/insert_scanned_hc_id';
 $route['healthcare-coordinator/members/approved/uploaded-scanned-id'] = 'healthcare_coordinator/members_controller/fetch_uploaded_hc_id';
-
+$route['healthcare-coordinator/members/helthcard/view-id/(:any)'] = 'healthcare_coordinator/members_controller/get_hc_id';
 // HealthCare Coordinator Accounts Routes
 $route['healthcare-coordinator/accounts/register/submit'] = 'healthcare_coordinator/accounts_controller/register_user_account_validation';
 $route['healthcare-coordinator/accounts/fetch'] = 'healthcare_coordinator/accounts_controller/fetch_all_accounts';

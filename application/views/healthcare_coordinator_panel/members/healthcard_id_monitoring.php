@@ -65,8 +65,8 @@
                                         <th class="fw-bold">Status</th>
                                         <th class="fw-bold">Business Unit</th>
                                         <th class="fw-bold">Department</th>
-                                        <th class="fw-bold">Healthcard ID Status</th>
-                                        <!-- <th class="fw-bold">Scanned ID</th> -->
+                                        <th class="fw-bold">ID Status</th>
+                                        <th class="fw-bold">Scanned ID</th>
                                         <th class="fw-bold">Actions</th>
                                     </tr>
                                 </thead>
@@ -111,22 +111,22 @@
         });
     })
 
-    const viewImage = (path1, path2) => {
-        let item = [
-            {
-                src: path1, // path to image
-                title: 'Attached Scanned Healthcard ID' // If you skip it, there will display the original image name
-            },
-            {
-                src: path2, // path to image
-                title: 'Attached Scanned Healthcard ID'
-            }
-        ];
-        // define options (if needed)
-        let options = {
-            index: 0 // this option means you will start at first image
-        };
-        // Initialize the plugin
-        let photoviewer = new PhotoViewer(item, options);
+    function viewImage(emp_id) {
+        $.ajax({
+            type: "GET",
+            url: `${baseUrl}healthcare-coordinator/members/helthcard/view-id/${emp_id}`,
+            dataType: 'json',
+            data: {
+                    'token': '<?php echo $this->security->get_csrf_hash(); ?>'
+                },
+            success: function(response){
+                const { token,front_id, back_id }= response;
+
+                $('#viewHcIdModal').modal('show');
+                $('#front-id').attr('src', front_id);
+                $('#back-id').attr('src', back_id);
+            }  
+        });
+        
     }
 </script>

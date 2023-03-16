@@ -124,9 +124,9 @@
 
     })
 
-    const addEmployeeHcId = (emp_id) => {
+    const addEmployeeHcId = (emp_id, full_name) => {
       $('#insertHcIdModal').modal('show');
-
+      $('#emp-name').val(full_name);
       $('#emp-id').val(emp_id);
     }
 
@@ -145,8 +145,28 @@
             token,
             status,
             message,
-            scanned_id_error
+            front_id_error,
+            back_id_error
           } = response;
+          
+          if(status == 'front-error'){
+            swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: true,
+                type: 'error'
+            });
+          }
+          if(status == 'back-error'){
+            swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: true,
+                type: 'error'
+            });
+          }
           if(status == 'failed'){
             swal({
                 title: 'Failed',
@@ -156,17 +176,21 @@
                 type: 'error'
             });
           }
-          if(status == 'error'){
-            swal({
-                title: 'Failed',
-                text: message,
-                timer: 3000,
-                showConfirmButton: true,
-                type: 'error'
-            });
+          if(front_id_error !== ''){
+            $('#front-id-error').html(front_id_error);
+            $('#front-id').addClass('is-invalid');
+          }else{
+            $('#front-id-error').html('');
+            $('#front-id').removeClass('is-invalid');
+          }
+          if(back_id_error !== ''){
+            $('#back-id-error').html(back_id_error);
+            $('#back-id').addClass('is-invalid');
+          }else{
+            $('#back-id-error').html('');
+            $('#back-id').removeClass('is-invalid');
           }
           if(status == 'success'){
-            $('#scanned-id').removeClass('is-invalid');
             swal({
                 title: 'Success',
                 text: message,
@@ -177,14 +201,7 @@
             let page = '<?php echo base_url(); ?>healthcare-coordinator/members/approved/uploaded-scanned-id-form';
             $('#insertScannedIdForm')[0].reset();
             $('#insertHcIdModal').hide();
-            redirectPage(page, 200);
-          }
-          if(scanned_id_error !== ''){
-            $('#scanned-id-error').html(scanned_id_error);
-            $('#scanned-id').addClass('is-invalid');
-          }else{
-            $('#scanned-id-error').html('');
-            $('#scanned-id').removeClass('is-invalid');
+            redirectPage(page, 2600);
           }
         }
       });

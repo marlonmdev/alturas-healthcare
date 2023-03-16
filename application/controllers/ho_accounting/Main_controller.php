@@ -146,7 +146,7 @@ class Main_controller extends CI_Controller {
 			}else{
 				$uploadData = $this->upload->data();
 				$payment_no = "PMD-" . strtotime(date('Y-m-d h:i:s'));
-				//$added_by = $this->session->userdata('full_name');
+				$added_by = $this->session->userdata('fullname');
 
 				$data = array(
 					"payment_no" => $payment_no,
@@ -162,6 +162,7 @@ class Main_controller extends CI_Controller {
 					"amount_paid" => $this->input->post('amount-paid'),
 					"supporting_file" => $uploadData['file_name'],
 					"date_added" => date('Y-m-d h:i:s'),
+					"added_by" => $added_by
 					
 				);
 				$this->List_model->add_payment_details($data);

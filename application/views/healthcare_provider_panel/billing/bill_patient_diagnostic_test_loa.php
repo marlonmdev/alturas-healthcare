@@ -126,7 +126,7 @@
                                     <div class="input-group mb-3">
                                         <span class="input-group-text bg-dark text-white">&#8369;</span>
 
-                                        <input type="number" class="ct-fee form-control fw-bold ls-1" name="ct-fee[]" value="<?php echo $cost_type['op_price']; ?>" placeholder="Enter Amount" oninput="calculateDiagnosticTestBilling(`<?= $remaining_balance ?>`)" min="0" required>
+                                        <input type="text" class="ct-fee form-control fw-bold ls-1" name="ct-fee[]" value="<?php echo $cost_type['op_price']; ?>" placeholder="Enter Amount" oninput="calculateDiagnosticTestBilling(`<?= $remaining_balance ?>`)" min="0" required>
                                         <div class="invalid-feedback">
                                             Service Cost is required.
                                         </div>
@@ -142,9 +142,9 @@
                         <hr class="mt-4">
 
                         <div class="row">
-                            <div class="col-3">
+                            <div class="col-5">
                                 <h4 class="text-left ls-2 mt-2">
-                                    MEDICATIONS
+                                    MEDICAL SUPPLIES AND MEDICATIONS
                                 </h4>
                             </div>
                             <div class="col-4">
@@ -184,10 +184,9 @@
                             <div class="col-4">
                                 <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addOtherDeductionInputs(`<?= $remaining_balance ?>`)" disabled> <i class="mdi mdi-plus-circle"></i> Add New</button>
                             </div>
-                          
                         </div>
-                        <div class="row my-2">
 
+                        <div class="row my-2">
                             <div class="col-md-3">
                                 <label class="form-label ls-1">PhilHealth</label> <span class="text-muted">(optional)</span>
                                 <div class="input-group mb-3">
@@ -208,14 +207,7 @@
 
                                     <span class="text-danger fw-bold deduction-msg"></span>
                                 </div>
-                            </div>
-                            
-                            <!-- <div class="col-md-3" style="margin-top:28px;">
-                                <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addOtherDeductionInputs(`< $remaining_balance ?>`)" disabled>
-                                    <i class="mdi mdi-plus-circle"></i> Add Deduction
-                                </button>
-                            </div> -->
-                            
+                            </div>    
                         </div>
                         
                         <!-- dynamic inputs will append on this div -->
@@ -327,17 +319,14 @@
     // function to be called if LOA Request Type is Diagnostic Test
     const calculateDiagnosticTestBilling = (remaining_balance) => {
 
-        let total_bill = 0;
+        let philhealth_deduction = 0;
+        let sss_deduction = 0;
         let total_deduction = 0;
+        let total_bill = 0;
         let company_charge_amount = 0;
         let personal_charge_amount = 0;
         let net_total = 0;
-        let philhealth_deduction = 0;
-        let sss_deduction = 0;
-        let other_deduction = 0;
 
-        const cost_inputs = document.querySelectorAll(".ct-fee");
-        const quantity_inputs = document.querySelectorAll(".ct-qty");
         const total_input = document.querySelector("#total-bill");
         const net_bill = document.querySelector("#net-bill");
         const company_charge = document.querySelector('#company-charge');
@@ -347,30 +336,30 @@
         const input_deduction = document.querySelectorAll('.input-deduction');
         const deduction_msg = document.querySelectorAll('.deduction-msg');
         const other_deduction_msg = document.querySelectorAll('.other-deduction-msg');
+        const work_related = document.querySelector('#work-related');
         const row_deduction = document.querySelectorAll('.row-deduction');
         const deduction_amount = document.querySelectorAll('.deduction-amount');
-        const work_related = document.querySelector('#work-related');
 
         // calling this function to prevent negative inputs
         validateNumberInputs();
 
-        /* Calculating the total bill and the charge amount. */
-        for (let i = 0; i < cost_inputs.length; i++) {
-            total_bill += cost_inputs[i].value * quantity_inputs[i].value;
-            personal_charge_amount = total_bill - remaining_balance;
-            company_charge_amount = total_bill > remaining_balance ? remaining_balance : total_bill;
-        }
+        // call other functions and store their return value
+        total_services = calculateServices();
+        total_medications = calculateMedications();
+        total_pro_fees = calculateProfessionalFees();
+
+        // total bill calculation
+        total_bill = (total_services + total_medications + total_pro_fees) * 1;
+
+        // charges calculation based on total_bill
+        personal_charge_amount = total_bill - remaining_balance;
+        company_charge_amount = total_bill > remaining_balance ? remaining_balance : 
 
         // Compute Deductions
         philhealth_deduction = deduct_philhealth.value > 0 ? deduct_philhealth.value : 0;
         sss_deduction = deduct_sss.value > 0 ? deduct_sss.value : 0;
 
-        // Calculate other deduction total
-        if(row_deduction.length > 0){
-            for (let i = 0; i < row_deduction.length; i++) {
-                other_deduction += deduction_amount[i].value * 1;
-            }
-        }               
+        other_deduction = calculateOtherDeductions();
 
         /* Calculating the total deduction, net total and charge amount. */
         total_deduction = parseFloat(philhealth_deduction) + parseFloat(sss_deduction) + parseFloat(other_deduction);
@@ -449,6 +438,7 @@
             net_bill.classList.remove('is-invalid', 'text-danger');
             net_bill.value = 0;
             company_charge.value = 0;
+
         }else{
             // set the net total as the value of total bill input
             total_input.value = parseFloat(total_bill).toFixed(2);
@@ -460,6 +450,57 @@
         // Calling other functions
         enableButtonsAndDeductions(total_bill);
         showPersonalChargeAlert(personal_charge_amount);
+    }
+
+    // function to calculate the total of all the selected services price/fee
+    const calculateServices = () => {
+        let total_services = 0;
+        const cost_inputs = document.querySelectorAll(".ct-fee");
+        const quantity_inputs = document.querySelectorAll(".ct-qty");
+
+        for (let i = 0; i < cost_inputs.length; i++) {
+            total_services += cost_inputs[i].value * quantity_inputs[i].value;
+        }
+
+        return total_services;
+    }
+
+    // function to calculate the total of all the medications price/fee
+    const calculateMedications = () => {
+        let total_medications = 0;
+        const med_qtys = document.querySelectorAll(".medication-qty");
+        const med_costs = document.querySelectorAll(".medication-amount");
+
+        for(let i = 0; i < med_costs.length; i++) {
+            total_medications += med_costs[i].value * med_qtys[i].value;
+        }
+
+        return total_medications;
+    }
+
+    // function to calculate the total of all the professional fees
+    const calculateProfessionalFees = () => {
+        let total_prof_fees = 0;
+        const profee_inputs = document.querySelectorAll(".profee-amount");
+
+        for(let i = 0; i < profee_inputs.length; i++) {
+            total_prof_fees += profee_inputs[i].value * 1;
+        }
+
+        return total_prof_fees;
+    }
+
+    // function to calculate the total of other deductions
+    const calculateOtherDeductions = () => {
+        let other_deduction = 0;
+        const row_deduction = document.querySelectorAll('.row-deduction');
+        const deduction_amount = document.querySelectorAll('.deduction-amount');
+
+        for (let i = 0; i < row_deduction.length; i++) {
+            other_deduction += deduction_amount[i].value * 1;
+        }  
+
+        return other_deduction;
     }
 
     const validateNumberInputs = () => {
@@ -496,7 +537,7 @@
         }
     }
 
-     // function to be called to show patient's Personal Charge Alert if it Net Bill exceeds patient's remaining MBL balance
+    // function to be called to show patient's Personal Charge Alert if it Net Bill exceeds patient's remaining MBL balance
     const showPersonalChargeAlert = (personal_charge_amount) => {
         const personalCharge = document.querySelector('#personal-charge');
         // the ids of the html elements below are found in personal-charge_alert.php
@@ -591,12 +632,12 @@
 
      // this is for Diagnostic Test LOA Requests
     const addMedication  = (remaining_balance) => {
-        const container = document.querySelector('#dynamic-deduction');
-        const deduction_count = document.querySelector('#deduction-count');
-        count++;
-        deduction_count.value = med_count;
+        const container = document.querySelector('#dynamic-medication');
+        const medication_count = document.querySelector('#medication-count');
+        med_count++;
+        medication_count.value = med_count;
 
-        let html_code  = `<div class="row my-3 row-deduction" id="row${med_count}">`;
+        let html_code  = `<div class="row my-3 row-medication" id="row${med_count}">`;
 
            /* Creating a new input field with the name deduction_name[] */
             html_code += `<div class="col-md-5">
@@ -608,11 +649,11 @@
             
             html_code += `<div class="col-md-2">
                                 <div class="input-group mb-3">
-                                    <span class="input-group-text bg-success text-white">Qty</span>
+                                    <span class="input-group-text bg-dark text-white">Qty</span>
 
                                     <input type="number" name="medication-qty[]" class="medication-qty form-control fw-bold ls-1" placeholder="*Medication Quantity" oninput="calculateDiagnosticTestBilling(${remaining_balance})" value="1" min="1" required/>
 
-                                    <span class="other-deduction-msg text-danger fw-bold"></span>
+                                    <span class="medication-msg text-danger fw-bold"></span>
                                 </div>
                           </div>`;
 
@@ -620,11 +661,11 @@
             deduction-amount. */
             html_code += `<div class="col-md-3">
                                 <div class="input-group mb-3">
-                                    <span class="input-group-text bg-success text-white">&#8369;</span>
+                                    <span class="input-group-text bg-dark text-white">&#8369;</span>
 
-                                    <input type="number" name="medication-amount[]" class="medication-amount form-control fw-bold ls-1" placeholder="*Medication Amount" oninput="calculateDiagnosticTestBilling(${remaining_balance})" required/>
+                                    <input type="text" name="medication-amount[]" class="medication-amount form-control fw-bold ls-1" placeholder="*Medication Amount" oninput="calculateDiagnosticTestBilling(${remaining_balance})" required/>
 
-                                    <span class="other-deduction-msg text-danger fw-bold"></span>
+                                    <span class="medication-msg text-danger fw-bold"></span>
                                 </div>
                           </div>`;
             
@@ -643,7 +684,7 @@
     /**
     * It removes a row and then calls a function to recalculate the total.
     */
-    // this one is for the dynamic deductions
+    // this one is for the dynamic medications
     const removeMedication = (remove_btn, remaining_balance) => {
         med_count--;
         const btn_id = remove_btn.getAttribute('data-id');
@@ -668,7 +709,7 @@
         prof_count++;
         profee_count.value = prof_count;
 
-        let html_code  = `<div class="row my-3 row-deduction" id="row${prof_count}">`;
+        let html_code  = `<div class="row my-3 row-profee" id="row${prof_count}">`;
 
            /* Creating a new input field with the name deduction_name[] */
             html_code += `<div class="col-md-5">
@@ -682,11 +723,11 @@
             deduction-amount. */
             html_code += `<div class="col-md-3">
                                 <div class="input-group mb-3">
-                                    <span class="input-group-text bg-success text-white">&#8369;</span>
+                                    <span class="input-group-text bg-dark text-white">&#8369;</span>
 
                                     <input type="number" name="profee-amount[]" class="profee-amount form-control fw-bold ls-1" placeholder="*Professional Fee" oninput="calculateDiagnosticTestBilling(${remaining_balance})" required/>
 
-                                    <span class="other-deduction-msg text-danger fw-bold"></span>
+                                    <span class="profee-msg text-danger fw-bold"></span>
                                 </div>
                           </div>`;
             
@@ -705,7 +746,7 @@
     /**
     * It removes a row and then calls a function to recalculate the total.
     */
-    // this one is for the dynamic deductions
+    // this one is for the dynamic professional fees
     const removeProFee = (remove_btn, remaining_balance) => {
         prof_count--;
         const btn_id = remove_btn.getAttribute('data-id');
@@ -738,7 +779,7 @@
         // show confirm dialog if the form has passed the submit validation check
         $.confirm({
             title: '<strong>Confirmation!</strong>',
-            content: '<strong class="fs-4">Are you sure? Please review before you proceed.</strong><br> <p class="fs-5">Once it has been sent, you cannot undo it.</p>',
+            content: 'Are you sure? Please review before you proceed. Once it has been sent, you cannot undo it.',
             type: 'blue',
             buttons: {
                 confirm: {

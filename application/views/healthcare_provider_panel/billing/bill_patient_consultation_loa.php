@@ -77,7 +77,7 @@
                     <hr class="mt-4">
 
                     <div class="row">
-                        <h4 class="text-center ls-2">
+                        <h4 class="text-left ls-2">
                             AVAILED SERVICES
                         </h4>
                     </div>
@@ -127,9 +127,15 @@
                         <hr class="my-4">
                             
                         <div class="row">
-                            <h4 class="text-center ls-2">
-                                BILLING DEDUCTIONS
-                            </h4>
+                            <div class="col-3">
+                                <h4 class="text-left ls-2 mt-2">
+                                    BILLING DEDUCTIONS
+                                </h4>
+                            </div>
+                            <div class="col-4">
+                                <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addOtherDeductionInputs(`<?= $remaining_balance ?>`)" disabled> <i class="mdi mdi-plus-circle"></i> Add New</button>
+                            </div>
+
                         </div>
                         <div class="row my-2">
 
@@ -155,11 +161,11 @@
                                 </div>
                             </div>
                             
-                            <div class="col-md-3" style="margin-top:28px;">
-                                <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addOtherDeductionInputs(`<?= $remaining_balance ?>`)" disabled>
+                            <!-- <div class="col-md-3" style="margin-top:28px;">
+                                <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addOtherDeductionInputs(`< $remaining_balance ?>`)" disabled>
                                     <i class="mdi mdi-plus-circle"></i> Add Deduction
                                 </button>
-                            </div>
+                            </div> -->
                             
                         </div>
 
@@ -484,7 +490,7 @@
                                 <div class="input-group mb-3">
                                     <span class="input-group-text bg-success text-white">&#8369;</span>
 
-                                    <input type="number" name="deduction-amount[]" class="deduction-amount form-control fw-bold ls-1" placeholder="*Deduction Amount" oninput="calculateDiagnosticTestBilling(${remaining_balance})" required/>
+                                    <input type="number" name="deduction-amount[]" class="deduction-amount form-control fw-bold ls-1" placeholder="*Deduction Amount" oninput="calculateConsultationBilling(${remaining_balance})" required/>
 
                                     <span class="other-deduction-msg text-danger fw-bold"></span>
                                 </div>
@@ -515,7 +521,7 @@
         deduction_count.value = count;
 
         document.querySelector(`#row${btn_id}`).remove();
-        calculateDiagnosticTestBilling(remaining_balance);
+        calculateConsultationBilling(remaining_balance);
     }
 
     const loa_id = `<?php echo $loa_id; ?>`;

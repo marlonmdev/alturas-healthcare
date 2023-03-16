@@ -157,9 +157,9 @@
                             <hr class="mt-4">
 
                             <div class="row">
-                                <div class="col-5">
+                                <div class="col-3">
                                     <h4 class="text-left ls-2 mt-2">
-                                        MEDICAL SUPPLIES AND MEDICATIONS
+                                        MEDICATIONS
                                     </h4>
                                 </div>
                                 <div class="col-4">
@@ -181,7 +181,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-4">
-                                        <select name="room_board" id="room-board" class="form-select fw-bold ls-1" onchange="updateRoomPrice(`<?= $remaining_balance ?>`)" required>
+                                        <select name="room_board" id="room-board" class="form-select fw-bold ls-1" onchange="updateRoomPrice()" required>
                                             <option value="" selected>Select Room and Board...</option>
                                             <?php
                                                 if (!empty($rooms)):
@@ -201,7 +201,7 @@
                                     <div class="col-lg-4">
                                         <div class="input-group mb-3">
                                             <span class="input-group-text bg-dark text-white">&#8369;</span>
-                                            <input type="text" class="price-inputs form-control fw-bold ls-1" id="room-price" name="room_price" placeholder="*Room Price" oninput="calculateNoaBilling(`<?= $remaining_balance ?>`)" readonly required>
+                                            <input type="text" class="form-control fw-bold ls-1" id="room-price" name="room_price" placeholder="Room Price" oninput="calculateNoaBilling(`<?= $remaining_balance ?>`)" required>
                                             <span class="text-danger fw-bold room-board-msg ms-3" style="font-size:12px"></span>
                                         </div>
                                     </div>                                   
@@ -461,20 +461,11 @@
         calculateNoaBilling(remaining_balance);
     }
 
-    const updateRoomPrice = (remaining_balance) => {
+    const updateRoomPrice = () => {
         const room_selector = document.querySelector('#room-board').value;
         const room_price = document.querySelector('#room-price');
         let arr = room_selector.split(",");
         room_price.value = arr[1];
-        if(room_selector !== ''){
-            room_price.removeAttribute('readonly');
-            calculateNoaBilling(remaining_balance);
-        }else{
-            room_price.value = '';
-            room_price.setAttribute('readonly', true);
-            calculateNoaBilling(remaining_balance);
-        }
-
     }
 
     const calculateNoaBilling = (remaining_balance) => {
@@ -487,6 +478,10 @@
         let sss_deduction = 0;
         let other_deduction = 0;
 
+        validateNumberInputs();
+
+        // const cost_inputs = document.querySelectorAll('.ct-fees');
+        // const quantity_inputs = document.querySelectorAll('.ct-qtys');
         const total_input = document.querySelector('#total-bill');
         const deduct_philhealth = document.querySelector('#deduct-philhealth');
         const deduct_sss = document.querySelector('#deduct-sss');
@@ -500,27 +495,32 @@
         const other_deduction_msg = document.querySelectorAll('.other-deduction-msg');
         const input_deduction = document.querySelectorAll('.input-deduction');
         const work_related = document.querySelector('#work-related');
-        const room_payment = document.querySelector("#room-price");
+        const room_payment = document.querySelectorAll("#room-price").value;
 
-        validateNumberInputs();
+        // for(i = 0;i < cost_inputs.length;i++ ){
+        //     total_bill += cost_inputs[i].value * quantity_inputs[i].value;
+        // }
 
         // call other functions and store their return value
         total_services = calculateServices();
         total_medications = calculateMedications();
         total_pro_fees = calculateProfessionalFees();
-        total_room_payment = room_payment.value === '' ? 0 : room_payment.value * 1;
 
         // total bill calculation
-        total_bill = (total_services + total_medications + total_room_payment + total_pro_fees) * 1;
+        total_bill = (total_services + total_medications + room_payment + total_pro_fees) * 1;
 
-        total_input.value = total_bill.toFixed(2);
-
-        enableButtonsandDeductions(total_bill);
+        total_input.value = parseFloat(total_bill).toFixed(2);
+        enableButtonandDeduction(total_bill);
+        
+        // Calculate other deductions total
+        if(row_deduction.length > 0){
+            for (let i = 0; i < row_deduction.length; i++) {
+                other_deduction += deduction_amount[i].value * 1;
+            }
+        }
 
         philhealth_deduction = deduct_philhealth.value > 0 ? deduct_philhealth.value : 0;
         sss_deduction = deduct_sss.value > 0 ? deduct_sss.value : 0;
-
-        other_deduction = calculateOtherDeductions();
 
         // total deduction calculation
         total_deduction = parseFloat(philhealth_deduction) + parseFloat(sss_deduction) + parseFloat(other_deduction);
@@ -589,8 +589,6 @@
     /* Adding an event listener to all the number inputs on the page. When the user inputs a value, the
     code checks if the value is a number and if it is greater than 0. If it is not, the value is set
     to an empty string. */
-    
-
     const validateNumberInputs = () => {
         const number_inputs = document.querySelectorAll("input[type='number']");
         for (let i = 0; i < number_inputs.length; i++) {
@@ -602,22 +600,7 @@
         }
     }
 
-    // const preventNotANumber = () => {
-    //     const price_inputs = document.querySelectorAll(".price-inputs");
 
-    //     for (let i = 0; i < price_inputs.length; i++) {
-    //         price_inputs[i].addEventListener('input', function(event) {
-    //             const input = event.target.value;
-    //             const isValidNumber = !isNaN(input);
-    //             if (!isValidNumber) {
-    //                 event.target.value = ''; // Clear the textbox
-    //             }
-    //         });
-    //     }
-    // }
-
-
-    // function to calculate the total of all selected services price/fee
     const calculateServices = () => {
         let total_services = 0;
         const cost_inputs = document.querySelectorAll(".ct-fees");
@@ -668,18 +651,16 @@
         return other_deduction;
     }
 
-
-     let deduct_count = 0;
     /**
     * It adds a row of inputs to the form
     */
     const addOtherDeductionInputs = (remaining_balance) => {
         const container = document.querySelector('#dynamic-deduction');
         const deduction_count = document.querySelector('#deduction-count');
-        deduct_count++;
-        deduction_count.value = deduct_count;
+        count++;
+        deduction_count.value = count;
 
-        let html_code  = `<div class="row my-3 row-deduction pt-1" id="row${deduct_count}">`;
+        let html_code  = `<div class="row my-3 row-deduction pt-1" id="row${count}">`;
 
            /* deduction_name input */
             html_code += `<div class="col-md-3">
@@ -704,7 +685,7 @@
 
            /* Adding a remove button to the html code. */
             html_code += `<div class="col-md-3" style="margin-top:28px;">
-                            <button type="button" data-id="${deduct_count}" class="btn btn-danger btn-md btn-remove" onclick="removeDeduction(this, ${remaining_balance})" data-bs-toggle="tooltip" title="Click to remove Deduction">
+                            <button type="button" data-id="${count}" class="btn btn-danger btn-md btn-remove" onclick="removeDeduction(this, ${remaining_balance})" data-bs-toggle="tooltip" title="Click to remove Deduction">
                                 <i class="mdi mdi-close"></i>
                             </button>
                          </div>`;
@@ -717,12 +698,12 @@
     * It removes a row and then calls a function to recalculate the total.
     */
     const removeDeduction = (remove_btn, remaining_balance) => {
-        deduct_count--;
+        count--;
         const btn_id = remove_btn.getAttribute('data-id');
         const deduction_count = document.querySelector('#deduction-count');
 
         // update deduction count hidden input value for reference
-        deduction_count.value = deduct_count;
+        deduction_count.value = count;
 
         document.querySelector(`#row${btn_id}`).remove();
         calculateNoaBilling(remaining_balance);
@@ -863,7 +844,7 @@
     }
 
 
-    const enableButtonsandDeductions = (total_bill) =>{
+    const enableButtonandDeduction = (total_bill) =>{
         const input_philhealth = document.querySelector('#deduct-philhealth');
         const input_sss = document.querySelector('#deduct-sss');
         const deduct_btn = document.querySelector('#btn-other-deduction');

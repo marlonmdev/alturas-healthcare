@@ -87,70 +87,77 @@
                 });
 
         $('#registerRoomTypeForm').submit(function(event) {
-        event.preventDefault();
-        $.ajax({
-            type: "post",
-            url: $(this).attr('action'),
-            data: $(this).serialize(),
-            dataType: "json",
-            success: function(response) {
-            const {
-                token,
-                status,
-                message,
-                room_type_error,
-                room_num_error,
-                room_rate_error
-            } = response;
-            switch (status) {
-                case 'error':
-                if (room_type_error !== '') {
-                    $('#room-type-error').html(room_type_error);
-                    $('#room-type').addClass('is-invalid');
-                } else {
-                    $('#room-type-error').html('');
-                    $('#room-type').removeClass('is-invalid');
+          event.preventDefault();
+          $.ajax({
+              type: "post",
+              url: $(this).attr('action'),
+              data: $(this).serialize(),
+              dataType: "json",
+              success: function(response) {
+                const {
+                    token,
+                    status,
+                    message,
+                    hospital_error,
+                    room_type_error,
+                    room_num_error,
+                    room_rate_error
+                } = response;
+                switch (status) {
+                    case 'error':
+                    if (hospital_error !== '') {
+                        $('#hp-filter-error').html(hospital_error);
+                        $('#hospital-filter').addClass('is-invalid');
+                    } else {
+                        $('#hp-filter-error').html('');
+                        $('#hospital-filter').removeClass('is-invalid');
+                    }
+                    if (room_type_error !== '') {
+                        $('#room-type-error').html(room_type_error);
+                        $('#room-type').addClass('is-invalid');
+                    } else {
+                        $('#room-type-error').html('');
+                        $('#room-type').removeClass('is-invalid');
+                    }
+                    if (room_num_error !== '') {
+                        $('#room-num-error').html(room_num_error);
+                        $('#room-num').addClass('is-invalid');
+                    } else {
+                        $('#room-num-error').html('');
+                        $('#room-num').removeClass('is-invalid');
+                    }
+                    if (room_rate_error !== '') {
+                        $('#room-rate-error').html(room_rate_error);
+                        $('#room-rate').addClass('is-invalid');
+                    } else {
+                        $('#room-rate-error').html('');
+                        $('#room-rate').removeClass('is-invalid');
+                    }
+                    break;
+                    case 'save-error':
+                      swal({
+                        title: 'Failed',
+                        text: message,
+                        timer: 3000,
+                        showConfirmButton: false,
+                        type: 'error'
+                      });
+                      break;
+                    case 'success':
+                      swal({
+                        title: 'Success',
+                        text: message,
+                        timer: 3000,
+                        showConfirmButton: false,
+                        type: 'success'
+                      });
+                    $('#registerRoomTypeForm')[0].reset();
+                    $('#registerRoomTypeModal').modal('hide');
+                    $("#roomTypesTable").DataTable().ajax.reload();
+                    break;
                 }
-                if (room_num_error !== '') {
-                    $('#room-num-error').html(room_num_error);
-                    $('#room-num').addClass('is-invalid');
-                } else {
-                    $('#room-num-error').html('');
-                    $('#room-num').removeClass('is-invalid');
-                }
-                if (room_rate_error !== '') {
-                    $('#room-rate-error').html(room_rate_error);
-                    $('#room-rate').addClass('is-invalid');
-                } else {
-                    $('#room-rate-error').html('');
-                    $('#room-rate').removeClass('is-invalid');
-                }
-               
-                break;
-                case 'save-error':
-                swal({
-                    title: 'Failed',
-                    text: message,
-                    timer: 3000,
-                    showConfirmButton: false,
-                    type: 'error'
-                });
-                break;
-                case 'success':
-                swal({
-                    title: 'Success',
-                    text: message,
-                    timer: 3000,
-                    showConfirmButton: false,
-                    type: 'success'
-                });
-                $('#registerRoomTypeModal').modal('hide');
-                $("#roomTypesTable").DataTable().ajax.reload();
-                break;
-            }
-            }
-
-        })
+              }
+          })
         });
     });
 

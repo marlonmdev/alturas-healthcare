@@ -61,9 +61,25 @@ class Billing_model extends CI_Model {
         return $query->result_array();
     }
 
+    function get_hospital_cost_types($hospital_id){
+        $this->db->select('*')
+                 ->from('cost_types')
+                 ->where('hp_id', $hospital_id);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
     function get_healthcare_provider_by_id($hp_id){
         $query = $this->db->get_where('healthcare_providers', ['hp_id' => $hp_id]);
         return $query->row_array();
+    }
+
+    function get_hospital_room_types($hospital_id){
+         $this->db->select('*')
+                 ->from('room_types')
+                 ->where('hp_id', $hospital_id);
+        $query = $this->db->get();
+        return $query->result_array();
     }
 
     function close_billing_loa_requests($id) {

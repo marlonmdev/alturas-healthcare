@@ -142,9 +142,9 @@
                         <hr class="mt-4">
 
                         <div class="row">
-                            <div class="col-3">
+                            <div class="col-5">
                                 <h4 class="text-left ls-2 mt-2">
-                                    MEDICATIONS
+                                    MEDICAL SUPPLIES AND MEDICATIONS
                                 </h4>
                             </div>
                             <div class="col-4">

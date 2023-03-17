@@ -13,7 +13,7 @@
                     <div class="form-group row">
                       <div class="col-sm-12 mb-2 mt-2">
                         <label class="colored-label fs-5"><i class="bx bx-health icon-red"></i> Hospital </label>
-                        <select class="form-select fw-bold" name="hospital-filter" id="hospital-filter" onchange="">
+                        <select class="form-select fw-bold" name="hospital-filter" id="hospital-filter" onchange="enableInputs()">
                                 <option value="">Select Hospital</option>
                                 <?php foreach($hospital as $hospitals) : ?>
                                 <option value="<?php echo $hospitals['hp_id']; ?>"><?php echo $hospitals['hp_name']; ?></option>
@@ -24,25 +24,25 @@
 
                       <div class="col-sm-12 mb-2 pt-2">
                         <label class="colored-label fs-5"><i class="bx bx-health icon-red"></i> Room Type</label>
-                        <input type="text" class="form-control" name="room-type" id="room-type">
+                        <input type="text" class="form-control" name="room-type" id="room-type" readonly>
                         <span id="room-type-error" class="text-danger"></span>
                       </div> 
 
                       <div class="col-sm-12 mb-2 pt-2">
                         <label class="colored-label fs-5"><i class="bx bx-health icon-red"></i> Room Type HMO Requirements</label>
-                        <input type="text" class="form-control" name="room-hmo-req" id="room-hmo-req">
+                        <input type="text" class="form-control" name="room-hmo-req" id="room-hmo-req" readonly>
                         <span id="room-hmo-req-error" class="text-danger"></span>
                       </div> 
 
                       <div class="col-sm-12 mb-2 pt-2">
                         <label class="colored-label fs-5"><i class="bx bx-health icon-red"></i> Room Number</label>
-                        <input type="text" class="form-control" name="room-num" id="room-num">
+                        <input type="text" class="form-control" name="room-num" id="room-num" readonly>
                         <span id="room-num-error" class="text-danger"></span>
                       </div> 
                     
                       <div class="col-sm-12 mb-2 pt-2">
                         <label class="colored-label fs-5"><i class="bx bx-health icon-red"></i> Room Rate</label>
-                        <input type="number" class="form-control" name="room-rate" id="room-rate">
+                        <input type="number" class="form-control" name="room-rate" id="room-rate" readonly>
                         <span id="room-rate-error" class="text-danger"></span>
                       </div>
 
@@ -53,7 +53,7 @@
                         <button type="submit" class="btn btn-primary me-2">
                          <i class="mdi mdi-content-save"></i> REGISTER
                         </button>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="close-btn">
                         <i class="mdi mdi-close-box"></i> CANCEL
                         </button>
                       </div>

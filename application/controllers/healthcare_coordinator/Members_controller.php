@@ -73,7 +73,7 @@ class Members_controller extends CI_Controller {
 
 			$custom_actions = '<a href="' . $view_url . '" data-bs-toggle="tooltip" title="View Member Profile"><i class="mdi mdi-account-card-details fs-2 text-info"></i></a>';
 
-			$custom_actions .= '<a href="JavaScript:void(0)" onclick="addEmployeeHcId(\'' . $member['emp_id'] . '\', \'' . $full_name . '\')" data-bs-toggle="tooltip" title="Upload Healthcard ID"><i class="mdi mdi-note-plus ps-2 fs-2 text-info"></i></a>';
+			$custom_actions .= '<a href="JavaScript:void(0)" onclick="addEmployeeHcId(\'' . $member['emp_id'] . '\', \'' . $full_name . '\')" data-bs-toggle="tooltip" title="Upload Healthcard ID"><i class="mdi mdi-note-plus ps-2 fs-2 text-danger"></i></a>';
 
 			// this data will be rendered to the datatable
 			$row[] = $member['member_id'];

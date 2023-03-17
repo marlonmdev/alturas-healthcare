@@ -10,7 +10,7 @@
               <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
               <li class="breadcrumb-item active" aria-current="page">
-                  Completed LOA
+                  Cancelled LOA
               </li>
               </ol>
           </nav>
@@ -53,7 +53,7 @@
           </li>
           <li class="nav-item">
             <a
-              class="nav-link"
+              class="nav-link active"
               href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/cancelled"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -62,7 +62,7 @@
           </li>
           <li class="nav-item">
               <a
-              class="nav-link active"
+              class="nav-link"
               href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -75,7 +75,7 @@
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover table-responsive" id="completedLoaTable">
+              <table class="table table-hover table-responsive" id="cancelledLoaTable">
                 <thead>
                   <tr>
                     <th class="fw-bold">LOA No.</th>
@@ -95,8 +95,7 @@
           </div>
         </div>
 
-        <?php include 'view_completed_loa_details.php'; ?>
-
+       
       </div>
       <!-- End Row  -->  
       </div>
@@ -111,29 +110,29 @@
 
   $(document).ready(function() {
 
-    $('#completedLoaTable').DataTable({
-      processing: true, //Feature control the processing indicator.
-      serverSide: true, //Feature control DataTables' server-side processing mode.
-      order: [], //Initial no order.
+//     $('#cancelledLoaTable').DataTable({
+//       processing: true, //Feature control the processing indicator.
+//       serverSide: true, //Feature control DataTables' server-side processing mode.
+//       order: [], //Initial no order.
 
-      // Load data for the table's content from an Ajax source
-      ajax: {
-        url: `${baseUrl}healthcare-coordinator/loa/requests-list/completed/fetch`,
-        type: "POST",
-        // passing the token as data so that requests will be allowed
-        data: {
-          'token': '<?php echo $this->security->get_csrf_hash(); ?>'
-        }
-      },
+//       // Load data for the table's content from an Ajax source
+//       ajax: {
+//         url: `${baseUrl}healthcare-coordinator/loa/requests-list/cancelled/fetch`,
+//         type: "POST",
+//         // passing the token as data so that requests will be allowed
+//         data: {
+//           'token': '<?php echo $this->security->get_csrf_hash(); ?>'
+//         }
+//       },
 
-      //Set column definition initialisation properties.
-      columnDefs: [{
-        "targets": [4, 6, 7], // numbering column
-        "orderable": false, //set not orderable
-      }, ],
-      responsive: true,
-      fixedHeader: true,
-    });
+//       //Set column definition initialisation properties.
+//       columnDefs: [{
+//         "targets": [4, 6, 7], // numbering column
+//         "orderable": false, //set not orderable
+//       }, ],
+//       responsive: true,
+//       fixedHeader: true,
+//     });
 
   });
 
@@ -168,98 +167,98 @@
       });
   }
 
-  function viewCompletedLoaInfo(req_id) {
-    $.ajax({
-      url: `${baseUrl}healthcare-coordinator/loa/completed/view/${req_id}`,
-      type: "GET",
-      success: function(response) {
-        const res = JSON.parse(response);
-        const base_url = window.location.origin;
-        const {
-          status,
-          token,
-          loa_no,
-          member_mbl,
-          remaining_mbl,
-          work_related,
-          first_name,
-          middle_name,
-          last_name,
-          suffix,
-          date_of_birth,
-          age,
-          gender,
-          philhealth_no,
-          blood_type,
-          contact_no,
-          home_address,
-          city_address,
-          email,
-          contact_person,
-          contact_person_addr,
-          contact_person_no,
-          healthcare_provider,
-          loa_request_type,
-          med_services,
-          health_card_no,
-          requesting_company,
-          request_date,
-          chief_complaint,
-          requesting_physician,
-          attending_physician,
-          rx_file,
-          req_status,
-          approved_by,
-          approved_on
-        } = res;
+//   function viewCompletedLoaInfo(req_id) {
+//     $.ajax({
+//       url: `${baseUrl}healthcare-coordinator/loa/completed/view/${req_id}`,
+//       type: "GET",
+//       success: function(response) {
+//         const res = JSON.parse(response);
+//         const base_url = window.location.origin;
+//         const {
+//           status,
+//           token,
+//           loa_no,
+//           member_mbl,
+//           remaining_mbl,
+//           work_related,
+//           first_name,
+//           middle_name,
+//           last_name,
+//           suffix,
+//           date_of_birth,
+//           age,
+//           gender,
+//           philhealth_no,
+//           blood_type,
+//           contact_no,
+//           home_address,
+//           city_address,
+//           email,
+//           contact_person,
+//           contact_person_addr,
+//           contact_person_no,
+//           healthcare_provider,
+//           loa_request_type,
+//           med_services,
+//           health_card_no,
+//           requesting_company,
+//           request_date,
+//           chief_complaint,
+//           requesting_physician,
+//           attending_physician,
+//           rx_file,
+//           req_status,
+//           approved_by,
+//           approved_on
+//         } = res;
 
-        $("#viewLoaModal").modal("show");
+//         $("#viewLoaModal").modal("show");
 
-        switch (req_status) {
-          case 'Pending':
-            $('#loa-status').html(`<strong class="text-warning">[${req_status}]</strong>`);
-            break;
-          case 'Approved':
-            $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
-            break;
-          case 'Disapproved':
-            $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
-            break;
-          case 'Closed':
-            $('#loa-status').html(`<strong class="text-info">[${req_status}]</strong>`);
-            break;
-        }
-        const med_serv = med_services !== '' ? med_services : 'None';
-        const at_physician = attending_physician !== '' ? attending_physician : 'None';
-        $('#loa-no').html(loa_no);
-        $('#approved-by').html(approved_by);
-        $('#approved-on').html(approved_on);
-        $('#member-mbl').html(member_mbl);
-        $('#remaining-mbl').html(remaining_mbl);
-        $('#work-related').html(work_related);
-        $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
-        $('#date-of-birth').html(date_of_birth);
-        $('#age').html(age);
-        $('#gender').html(gender);
-        $('#philhealth-no').html(philhealth_no);
-        $('#blood-type').html(blood_type);
-        $('#contact-no').html(contact_no);
-        $('#home-address').html(home_address);
-        $('#city-address').html(city_address);
-        $('#email').html(email);
-        $('#contact-person').html(contact_person);
-        $('#contact-person-addr').html(contact_person_addr);
-        $('#contact-person-no').html(contact_person_no);
-        $('#healthcare-provider').html(healthcare_provider);
-        $('#loa-request-type').html(loa_request_type);
-        $('#loa-med-services').html(med_serv);
-        $('#health-card-no').html(health_card_no);
-        $('#requesting-company').html(requesting_company);
-        $('#request-date').html(request_date);
-        $('#chief-complaint').html(chief_complaint);
-        $('#requesting-physician').html(requesting_physician);
-        $('#attending-physician').html(at_physician);
-      }
-    });
-  }
+//         switch (req_status) {
+//           case 'Pending':
+//             $('#loa-status').html(`<strong class="text-warning">[${req_status}]</strong>`);
+//             break;
+//           case 'Approved':
+//             $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
+//             break;
+//           case 'Disapproved':
+//             $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
+//             break;
+//           case 'Closed':
+//             $('#loa-status').html(`<strong class="text-info">[${req_status}]</strong>`);
+//             break;
+//         }
+//         const med_serv = med_services !== '' ? med_services : 'None';
+//         const at_physician = attending_physician !== '' ? attending_physician : 'None';
+//         $('#loa-no').html(loa_no);
+//         $('#approved-by').html(approved_by);
+//         $('#approved-on').html(approved_on);
+//         $('#member-mbl').html(member_mbl);
+//         $('#remaining-mbl').html(remaining_mbl);
+//         $('#work-related').html(work_related);
+//         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
+//         $('#date-of-birth').html(date_of_birth);
+//         $('#age').html(age);
+//         $('#gender').html(gender);
+//         $('#philhealth-no').html(philhealth_no);
+//         $('#blood-type').html(blood_type);
+//         $('#contact-no').html(contact_no);
+//         $('#home-address').html(home_address);
+//         $('#city-address').html(city_address);
+//         $('#email').html(email);
+//         $('#contact-person').html(contact_person);
+//         $('#contact-person-addr').html(contact_person_addr);
+//         $('#contact-person-no').html(contact_person_no);
+//         $('#healthcare-provider').html(healthcare_provider);
+//         $('#loa-request-type').html(loa_request_type);
+//         $('#loa-med-services').html(med_serv);
+//         $('#health-card-no').html(health_card_no);
+//         $('#requesting-company').html(requesting_company);
+//         $('#request-date').html(request_date);
+//         $('#chief-complaint').html(chief_complaint);
+//         $('#requesting-physician').html(requesting_physician);
+//         $('#attending-physician').html(at_physician);
+//       }
+//     });
+//   }
 </script>

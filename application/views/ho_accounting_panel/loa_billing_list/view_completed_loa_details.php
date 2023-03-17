@@ -14,7 +14,7 @@
                   <div class="row">
                     <table class="table table-bordered table-striped table-hover table-responsive table-sm">
                       <tr>
-                        <td class="fw-bold ls-1">Request Date :</td>
+                        <td class="fw-bold ls-1">Requested On :</td>
                         <td class="fw-bold ls-1" id="request-date"></td>
                       </tr>
                       <tr>
@@ -24,10 +24,6 @@
                       <tr>
                         <td class="fw-bold ls-1">Approved On :</td>
                         <td class="fw-bold ls-1" id="approved-on"></td>
-                      </tr>
-                      <tr>
-                        <td class="fw-bold ls-1">Availment Date :</td>
-                        <td class="fw-bold ls-1" id="availment-date"></td>
                       </tr>
                       <tr>
                         <td class="fw-bold ls-1">Member's Maximum Benefit Limit :</td>

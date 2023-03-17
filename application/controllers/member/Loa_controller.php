@@ -41,7 +41,7 @@ class Loa_controller extends CI_Controller {
 		}
 	}
 
-	function loa_number($input, $pad_len = 8, $prefix = null) {
+	function loa_number($input, $pad_len = 7, $prefix = null) {
 		if ($pad_len <= strlen($input))
 			trigger_error('<strong>$pad_len</strong> cannot be less than or equal to the length of <strong>$input</strong> to generate invoice number', E_USER_ERROR);
 
@@ -218,8 +218,9 @@ class Loa_controller extends CI_Controller {
 		$result = $this->loa_model->db_get_max_loa_id();
 		$max_loa_id = !$result ? 0 : $result['loa_id'];
 		$add_loa = $max_loa_id + 1;
+		$current_year = date('Y');
 		// call function loa_number
-		$loa_no = $this->loa_number($add_loa, 8, 'LOA-');
+		$loa_no = $this->loa_number($add_loa, 7, 'LOA-'.$current_year);
 
 		$emp_id = $this->session->userdata('emp_id');
 		$member = $this->loa_model->db_get_member_infos($emp_id);
@@ -483,7 +484,13 @@ class Loa_controller extends CI_Controller {
 
 			$buttons = '<a class="me-2" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
-			$buttons .= '<a class="me-2" href="JavaScript:void(0)" onclick="requestLoaCancellation(\'' . $loa_id . '\', \'' . $value['loa_no'] . '\')" data-bs-toggle="tooltip" title="Request LOA Cancellation"><i class="mdi mdi-close-circle fs-2 text-danger"></i></a>';
+			$for_cancellation = $this->loa_model->db_get_loa_cancellation_request($value['loa_id']);
+
+			if(!$for_cancellation){
+				$buttons .= '<a class="me-2" href="JavaScript:void(0)" onclick="requestLoaCancellation(\'' . $loa_id . '\', \'' . $value['loa_no'] . '\')" data-bs-toggle="tooltip" title="Request LOA Cancellation"><i class="mdi mdi-close-circle fs-2 text-danger"></i></a>';
+			}else{
+				$buttons .= '<a class="me-2" data-bs-toggle="tooltip" title="Requested for Cancellation" disabled><i class="mdi mdi-close-circle fs-2 icon-disabled"></i></a>';
+			}
 
 			// $button .= '<a href="' . base_url() . 'member/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Generate Printable LOA"><i class="mdi mdi-printer fs-2 text-primary"></i></a>';
 
@@ -794,7 +801,8 @@ class Loa_controller extends CI_Controller {
 				'requested_by' 				=> $this->session->userdata('emp_id'),
 				'requested_on' 				=> $current_date,
 				'status'              => 'Pending',
-				'confirm_by' 					=> '',
+				'confirmed_by' 				=> '',
+				'confirmed_on' 				=> '',
 			];
 
 			$inserted = $this->loa_model->db_insert_loa_cancellation_request($post_data);

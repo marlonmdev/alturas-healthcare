@@ -295,6 +295,7 @@
                 type: 'success'
               });
               $('#loaCancellationModal').modal('hide');
+              $("#memberApprovedLoa").DataTable().ajax.reload();
               // setTimeout(function() {
               //   window.location.href = nextPage;
               // }, 3200);

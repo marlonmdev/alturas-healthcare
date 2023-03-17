@@ -415,7 +415,6 @@ class Loa_controller extends CI_Controller {
 				'status' => 'error',
 				'disapprove_reason_error' => form_error('disapprove-reason'),
 			);
-			echo json_encode($response);
 		} else {
 			$this->load->model('company_doctor/loa_model');
 			$disapproved = $this->loa_model->db_disapprove_loa_request($loa_id, $disapproved_by, $disapprove_reason, $disapproved_on);
@@ -423,8 +422,8 @@ class Loa_controller extends CI_Controller {
 				$response = array('token' => $token, 'status' => 'error', 'message' => 'Unable to Disapprove LOA Request');
 			}
 			$response = array('token' => $token, 'status' => 'success', 'message' => 'LOA Request Disapproved Successfully');
-			echo json_encode($response);
 		}
+		echo json_encode($response);
 	}
 
 }

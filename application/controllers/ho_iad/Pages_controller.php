@@ -30,13 +30,7 @@ class Pages_controller extends CI_Controller {
     function view_billed_loa() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
-		$this->load->view('ho_iad_panel/billing/billed_loa');
-		$this->load->view('templates/footer');
-	}
-    function view_billed_noa() {
-		$data['user_role'] = $this->session->userdata('user_role');
-		$this->load->view('templates/header', $data);
-		$this->load->view('ho_iad_panel/billing/billed_noa');
+		$this->load->view('ho_iad_panel/billing/record');
 		$this->load->view('templates/footer');
 	}
 

@@ -189,4 +189,10 @@ class Loa_model extends CI_Model {
     return $query;
   }
 
+  function db_get_loa_cancellation_request($loa_id){
+    $this->db->where('loa_id', $loa_id);
+    $query = $this->db->get('loa_cancellation_requests');
+    return $query->num_rows() > 0 ? true : false;
+  }
+
 }

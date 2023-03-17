@@ -13,7 +13,7 @@ class Noa_controller extends CI_Controller {
 		}
 	}
 
-	function noa_number($input, $pad_len = 8, $prefix = null) {
+	function noa_number($input, $pad_len = 7, $prefix = null) {
 		if ($pad_len <= strlen($input))
 			trigger_error('<strong>$pad_len</strong> cannot be less than or equal to the length of <strong>$input</strong> to generate invoice number', E_USER_ERROR);
 
@@ -61,10 +61,11 @@ class Noa_controller extends CI_Controller {
 			} else {
 				// select the max noa_id from DB
 				$result = $this->noa_model->db_get_max_noa_id();
-				$max_loa_id = !$result ? 0 : $result['noa_id'];
-				$add_loa = $max_loa_id + 1;
+				$max_noa_id = !$result ? 0 : $result['noa_id'];
+				$add_noa = $max_noa_id + 1;
+				$current_year = date('Y');
 				// call function loa_number
-				$noa_no = $this->noa_number($add_loa, 8, 'NOA-');
+				$noa_no = $this->noa_number($add_noa, 7, 'NOA-'.$current_year);
 
 				$post_data = array(
 					'noa_no' => $noa_no,

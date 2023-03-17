@@ -926,5 +926,97 @@ class Loa_controller extends CI_Controller {
 			$this->load->view('templates/footer');
 		}
 	}
+
+	function fetch_cancellation_requests() {
+		$this->security->get_csrf_hash();
+		$status = 'Pending';
+		$info = $this->loa_model->get_cancel_datatables($status);
+		$dataCancellations = [];
+
+		foreach($info as $data){
+			$row = [];
+			$lcancel_id = $this->myhash->hasher($data['lcancel_id'], 'encrypt');
+
+			$fullname = $data['first_name'] . ' ' . $data['middle_name'] . ' ' . $data['last_name'] . ' ' . $data['suffix'];
+
+			$custom_reason = '<a class="text-info fs-6 fw-bold" href="JavaScript:void(0)" onclick="viewReason(\''.$data['cancellation_reason'].'\')"><u>View Reason</u></a>';
+
+			$custom_status = '<span class="rounded-pill bg-warning text-white ps-2 pe-2">'. $data['status'] .'</span>';
+
+			$custom_action = '<a href="JavaScript:void(0)" onclick="confirmRequest(\''. $lcancel_id .'\')"><i class="mdi mdi-checkbox-marked-circle-outline text-info fs-3" title="Confirm"></i></a>';
+
+			$row[] = $data['loa_no'];
+			$row[] = $fullname;
+			$row[] = $data['requested_on'];
+			$row[] = $custom_reason;
+			$row[] = $custom_status;
+			$row[] = $custom_action;
+			$dataCancellations[] = $row;
+		}
+		$response = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->loa_model->count_all_cancell($status),
+			"recordsFiltered" => $this->loa_model->count_cancell_filtered($status),
+			"data" => $dataCancellations,
+		];
+		echo json_encode($response);
+		
+	}
+
+	function set_cancellation_approved() {
+		$token = $this->security->get_csrf_hash();
+		$lcancel_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$confirm_by = $this->session->userdata('fullname');
+		$confirmed_on = date('Y-m-d');
+		$confirmed = $this->loa_model->set_cancel_approved($lcancel_id, $confirm_by, $confirmed_on);
+
+		if($confirmed){
+			echo json_encode([
+				'token' => $token,
+				'status' => 'success',
+				'message' => 'Cancellation Approved!'
+			]);
+		}else{
+			echo json_encode([
+				'token' => $token,
+				'status' => 'error',
+				'message' => 'Cancellation Failed!'
+			]);
+		}
+	}
+
+	function fetch_approved_cancellations() {
+		$this->security->get_csrf_hash();
+		$status = 'Approved';
+		$info = $this->loa_model->get_cancel_datatables($status);
+		$dataCancellations = [];
+
+		foreach($info as $data){
+			$row = [];
+			$lcancel_id = $this->myhash->hasher($data['lcancel_id'], 'encrypt');
+
+			$fullname = $data['first_name'] . ' ' . $data['middle_name'] . ' ' . $data['last_name'] . ' ' . $data['suffix'];
+
+			$custom_reason = '<a class="text-info fs-6 fw-bold" href="JavaScript:void(0)" onclick="viewReason(\''.$data['cancellation_reason'].'\')"><u>View Reason</u></a>';
+
+			$custom_status = '<span class="rounded-pill bg-success text-white ps-2 pe-2">'. $data['status'] .'</span>';
+
+			$row[] = $data['loa_no'];
+			$row[] = $fullname;
+			$row[] = $custom_reason;
+			$row[] = $data['confirmed_on'];
+			$row[] = $data['confirm_by'];
+			$row[] = $custom_status;
+			$dataCancellations[] = $row;
+		}
+		$response = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->loa_model->count_all_cancell($status),
+			"recordsFiltered" => $this->loa_model->count_cancell_filtered($status),
+			"data" => $dataCancellations,
+		];
+		echo json_encode($response);
+		
+	}
 	
 }

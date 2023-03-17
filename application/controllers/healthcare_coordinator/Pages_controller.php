@@ -153,6 +153,20 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
+	function view_loa_cancellation_list() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/loa/loa_cancellations_requests');
+		$this->load->view('templates/footer');
+	}
+
+	function view_loa_approved_cancellation() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/loa/loa_approved_cancellations');
+		$this->load->view('templates/footer');
+	}
+
 	function view_completed_loa_list() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);

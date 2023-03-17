@@ -56,15 +56,6 @@
           <li class="nav-item">
             <a
               class="nav-link"
-              href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/cancelled"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Cancelled</span></a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link"
               href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -170,9 +161,9 @@
       });
   }
 
-  function viewApprovedLoaInfo(req_id) {
+  function viewApprovedLoaInfo(loa_id) {
     $.ajax({
-      url: `${baseUrl}healthcare-coordinator/loa/approved/view/${req_id}`,
+      url: `${baseUrl}healthcare-coordinator/loa/approved/view/${loa_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);

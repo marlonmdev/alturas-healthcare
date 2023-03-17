@@ -40,7 +40,7 @@
               href="<?php echo base_url(); ?>healthcare-coordinator/loa/cancellation-requests/approved"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Approved</span></a
+              <span class="hidden-xs-down fs-5 font-bold">Confirmed</span></a
               >
             </li>
          
@@ -77,6 +77,14 @@
   </div>
 <!-- End Wrapper -->
 <script>
+
+  
+    const redirectPage = (route, seconds) => {
+            setTimeout(() => {
+            window.location.href = route;
+            }, seconds);
+    }
+
   const baseUrl = "<?php echo base_url(); ?>";
 
   $(document).ready(function() {
@@ -112,17 +120,17 @@
     $('#reason').val(reason);
   }
 
-  const confirmRequest = (lcancel_id) => {
+  const confirmRequest = (loa_id) => {
     $.confirm({
             title: '<strong>Confirmation!</strong>',
-            content: 'Are you sure you want to confirm?',
+            content: 'Are you sure you want to confirm LOA Cancellation Request?',
             type: 'blue',
             buttons: {
                 confirm: {
                     text: 'Yes',
                     btnClass: 'btn-blue',
                     action: function() {
-                        let url = `${baseUrl}healthcare-coordinator/loa/cancellation-requests/confirm/${lcancel_id}`;
+                        let url = `${baseUrl}healthcare-coordinator/loa/cancellation-requests/confirm/${loa_id}`;
 
                         $.ajax({
                             type: 'POST',
@@ -142,6 +150,8 @@
                                         showConfirmButton: false,
                                         type: 'success'
                                     });
+                                    let page1 = '<?php echo base_url(); ?>healthcare-coordinator/loa/cancellation-requests/approved';
+                                    redirectPage(page1, 2600);
                                     
                                 } else if(status == 'error') {
 

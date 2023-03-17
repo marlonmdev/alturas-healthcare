@@ -72,7 +72,7 @@
                 <thead>
                   <tr>
                     <th class="fw-bold">LOA No.</th>
-                    <th class="fw-bold">Request Date</th>
+                    <th class="fw-bold">Expiration Date</th>
                     <th class="fw-bold">Healthcare Provider</th>
                     <th class="fw-bold">LOA Type</th>
                     <th class="fw-bold">RX File</th>

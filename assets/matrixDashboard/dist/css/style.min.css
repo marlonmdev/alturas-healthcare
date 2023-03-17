@@ -158,8 +158,14 @@ hr {
   0% {
     opacity: 1;
   }
+	40% {
+    opacity: 0.9;
+  }
   50% {
     opacity: 0;
+  }
+	90% {
+    opacity: 0.9;
   }
   100% {
     opacity: 1;

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 17, 2023 at 04:13 AM
+-- Generation Time: Mar 17, 2023 at 10:33 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -7156,15 +7156,17 @@ CREATE TABLE `loa_cancellation_requests` (
   `requested_by` varchar(30) NOT NULL,
   `requested_on` date NOT NULL,
   `status` varchar(20) NOT NULL,
-  `confirm_by` varchar(100) NOT NULL
+  `confirmed_by` varchar(100) NOT NULL,
+  `confirmed_on` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `loa_cancellation_requests`
 --
 
-INSERT INTO `loa_cancellation_requests` (`lcancel_id`, `loa_id`, `loa_no`, `cancellation_reason`, `requested_by`, `requested_on`, `status`, `confirm_by`) VALUES
-(1, '23', 'LOA-00000023', 'Di mao maong i-cancel', '56313-2022', '2023-03-17', 'Pending', '');
+INSERT INTO `loa_cancellation_requests` (`lcancel_id`, `loa_id`, `loa_no`, `cancellation_reason`, `requested_by`, `requested_on`, `status`, `confirmed_by`, `confirmed_on`) VALUES
+(1, '23', 'LOA-00000023', 'Di mao maong i-cancel', '56313-2022', '2023-03-17', 'Pending', '', '0000-00-00'),
+(2, '1', 'LOA-00000001', 'hello this is a test for cancellation of LOA :)', '56313-2022', '2023-03-17', 'Pending', '', '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -7230,7 +7232,8 @@ INSERT INTO `loa_requests` (`loa_id`, `loa_no`, `emp_id`, `first_name`, `middle_
 (43, 'LOA-00000043', '00718-2018', 'Lea', 'Socorin', 'Vistal', '', '5', 'Diagnostic Test', '2;4;5', 'ACN-1000029825', 'ALTURAS GROUP OF COMPANIES', '2023-03-01', 'asiopid asfasfaoi foafa afifai aioasiofapfas', '1', 'Jsjajkf Jafa, Jkasjfkajkj  Ksajkfja', '19cabb151f3eed513a1abc115ef0a794.png', 'Billed', '00718-2018', 'No', '', '2', '2023-03-01', '', '', '0000-00-00'),
 (44, 'LOA-00000044', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '1', 'Diagnostic Test', '10;24;96;122', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2023-03-13', 'afas sdfsdgsd ds goisdisd', '1', 'Jsd Sdsdjd, Hsajf Ahg Dslk', 'acd27027b1d440532737f923875153eb.png', 'Pending', '56313-2022', '', '', '', '0000-00-00', '', '', '0000-00-00'),
 (45, 'LOA-00000045', '38343-2022', 'Gedym', 'Mae', 'Sab', '', '1', 'Consultation', '', 'ACN-01000044632', 'Alturas Supermarket Corporation', '2023-03-16', 'Pregnancy Consultation', '2', '', '', 'Approved', '38343-2022', 'No', '', '1', '2023-03-16', '', '', '0000-00-00'),
-(46, 'LOA-00000046', '38343-2022', 'Gedym', 'Mae', 'Sab', '', '1', 'Diagnostic Test', '8;74;113;147', 'ACN-01000044632', 'Alturas Supermarket Corporation', '2023-03-16', 'dsgsg sdgosd gsdsdogis sdog osd ogsdsdg', '1', '', '915830113b365977f217152798076c1b.png', 'Approved', '38343-2022', 'No', '', '1', '2023-03-16', '', '', '0000-00-00');
+(46, 'LOA-00000046', '38343-2022', 'Gedym', 'Mae', 'Sab', '', '1', 'Diagnostic Test', '8;74;113;147', 'ACN-01000044632', 'Alturas Supermarket Corporation', '2023-03-16', 'dsgsg sdgosd gsdsdogis sdog osd ogsdsdg', '1', '', '915830113b365977f217152798076c1b.png', 'Approved', '38343-2022', 'No', '', '1', '2023-03-16', '', '', '0000-00-00'),
+(47, 'LOA-20230000047', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '1', 'Consultation', '', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2023-03-17', 'uioua fuaasfa', '1', '', '', 'Pending', '56313-2022', '', '', '', '0000-00-00', '', '', '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -7389,7 +7392,10 @@ INSERT INTO `noa_requests` (`noa_id`, `noa_no`, `emp_id`, `health_card_no`, `req
 (23, 'NOA-00000023', '38343-2022', 'ACN-01000044632', 'Alturas Supermarket Corporation', 'Gedym', 'Mae', 'Sab', '', '1999-08-10', '2023-02-14', '5', 'Pregnancy Test 123', '2023-02-16', 'No', '', 'Approved', '38343-2022', '2', '2023-02-16', '', '', '0000-00-00'),
 (24, 'NOA-00000024', '23456-2023', '01000044731', 'Alturas Supermarket Corporation', 'Jennifer', 'Simbajon', 'Cajegas', '', '1999-08-07', '2022-12-12', '5', 'sample', '2023-02-23', 'Yes', '', 'Completed', '23456-2023', '2', '2023-02-23', '', '', '0000-00-00'),
 (25, 'NOA-00000025', '23764-2022', 'ACN-01000043436', 'Alturas Supermarket Corporation', 'Ruel', 'Budoy', 'Tumale', 'Jr.', '1997-08-23', '2023-02-23', '1', 'jhas faf ka fak fakls fasfas kashfkashflkasj asfasfa', '2023-02-24', 'No', '', 'Approved', '23764-2022', '2', '2023-02-24', '', '', '0000-00-00'),
-(26, 'NOA-00000026', '38343-2022', 'ACN-01000044632', 'Alturas Supermarket Corporation', 'Gedym', 'Mae', 'Sab', '', '1999-08-10', '2023-03-16', '1', 'Child Birth', '2023-03-16', 'No', '', 'Approved', '38343-2022', '1', '2023-03-16', '', '', '0000-00-00');
+(26, 'NOA-00000026', '38343-2022', 'ACN-01000044632', 'Alturas Supermarket Corporation', 'Gedym', 'Mae', 'Sab', '', '1999-08-10', '2023-03-16', '1', 'Child Birth', '2023-03-16', 'No', '', 'Approved', '38343-2022', '1', '2023-03-16', '', '', '0000-00-00'),
+(29, 'NOA-20230000027', '56313-2022', 'ACN-01000044281', 'Alturas Supermarket Corporation', 'Marlon', 'Hinampas', 'Muring', '', '1997-10-22', '2023-03-17', '1', 'This is a test request in 2023 by Marl :)', '2023-03-17', '', '', 'Pending', '56313-2022', '', '0000-00-00', '', '', '0000-00-00'),
+(30, 'NOA-20230000030', '23278-2022', 'ACN-01000038438', 'Alturas Supermarket Corporation', 'George', 'Ayuban', 'Curay', 'Jr.', '1998-04-17', '2023-03-17', '1', 'Hello NOA by George in 2023', '2023-03-17', '', '', 'Pending', '', '', '0000-00-00', '', '', '0000-00-00'),
+(31, 'NOA-20230000031', '32544-2022', 'ACN-01000043827', 'Alturas Supermarket Corporation', 'Lorlie', 'Gwapo', 'Ochavillo', '', '1998-06-10', '2023-03-18', '1', 'Sakit tiil tungod sa Basketball', '2023-03-17', '', '', 'Pending', '', '', '0000-00-00', '', '', '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -7519,7 +7525,7 @@ CREATE TABLE `user_accounts` (
 INSERT INTO `user_accounts` (`user_id`, `emp_id`, `full_name`, `user_role`, `dsg_hcare_prov`, `doctor_id`, `username`, `password`, `status`, `online`, `photo`, `created_on`, `updated_on`, `updated_by`) VALUES
 (1, '', 'IT SysDev', 'super-admin', '', '', 'itsysdev', '$2y$10$XFb5b/ZPEfOKX.cozy410exlcMOh6z7SBq8P/XljjCrHEYi07sppy', 'Active', 0, '', '2022-09-29', '2023-01-13', 'IT SysDev'),
 (2, '', 'Marlon H. Muring', 'healthcare-coordinator', '', '', 'coordinator', '$2y$10$uFMFd4RnlQFLQcGjie9vjuV6xbhb4urONDvcfM3vyjD7NZZcg57H.', 'Active', 0, '', '2022-09-29', '2022-10-21', 'Default HealthCare Coordinator '),
-(9, '56313-2022', 'Marlon H. Muring', 'member', '', '', 'marlonm', '$2y$10$AZ7Px2zYdPm7SwKEvXRINeUGhnXmnh0DtMsOScF79PxwGyibUuvsm', 'Active', 1, '', '2022-09-29', '2022-10-28', 'Marlon H. Muring'),
+(9, '56313-2022', 'Marlon H. Muring', 'member', '', '', 'marlonm', '$2y$10$AZ7Px2zYdPm7SwKEvXRINeUGhnXmnh0DtMsOScF79PxwGyibUuvsm', 'Active', 0, '', '2022-09-29', '2022-10-28', 'Marlon H. Muring'),
 (10, '23278-2022', 'George Curay', 'healthcare-provider', '5', '', 'Ayuban17', '$2y$10$oFmxPMZWyEIKkFz/T3BwyezXI3aVO7XviWqzhudhyPGVGj8CQfjJO', 'Active', 0, '', '2022-10-03', '2022-10-21', 'Default HealthCare Coordinator '),
 (13, '23278-2022', 'George Curay', 'member', '', '', '23278-2022', '$2y$10$90/6gxZrfUZL7bEufvGHTuwhoyigRmk53HNyrr98iBFybiAlASpiq', 'Active', 0, '', '2022-10-05', '2022-10-14', 'Default HealthCare Coordinator '),
 (17, '56313-2022', 'Ramiro Hospital Coordinator', 'healthcare-provider', '1', '', 'ramiro', '$2y$10$E0gRTxtpwm5/DCCdGb9Dv.tyXWoJfiVQoIIqgZ8pFkR1JCqvPxZXi', 'Active', 0, '', '2022-10-25', '2023-03-16', 'Marlon H. Muring'),
@@ -7746,10 +7752,11 @@ ALTER TABLE `loa_cancellation_requests`
   ADD KEY `loa_id` (`loa_id`),
   ADD KEY `loa_no` (`loa_no`),
   ADD KEY `requested_on` (`requested_on`),
-  ADD KEY `confirm_by` (`confirm_by`),
+  ADD KEY `confirm_by` (`confirmed_by`),
   ADD KEY `status` (`status`),
   ADD KEY `cancellation_reason` (`cancellation_reason`(768)),
-  ADD KEY `requested_by` (`requested_by`);
+  ADD KEY `requested_by` (`requested_by`),
+  ADD KEY `confirmed_on` (`confirmed_on`);
 
 --
 -- Indexes for table `loa_requests`
@@ -8035,13 +8042,13 @@ ALTER TABLE `healthcare_providers`
 -- AUTO_INCREMENT for table `loa_cancellation_requests`
 --
 ALTER TABLE `loa_cancellation_requests`
-  MODIFY `lcancel_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `lcancel_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `loa_requests`
 --
 ALTER TABLE `loa_requests`
-  MODIFY `loa_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `loa_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT for table `max_benefit_limits`
@@ -8059,7 +8066,7 @@ ALTER TABLE `members`
 -- AUTO_INCREMENT for table `noa_requests`
 --
 ALTER TABLE `noa_requests`
-  MODIFY `noa_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `noa_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `payment_details`

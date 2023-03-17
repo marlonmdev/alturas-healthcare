@@ -482,6 +482,17 @@ class Loa_controller extends CI_Controller {
 
 			$custom_loa_no = 	'<mark class="bg-primary text-white">'.$value['loa_no'].'</mark>';
 
+			$expires = strtotime('+1 week', strtotime($value['approved_on']));
+      $expiration_date = date('m/d/Y', $expires);
+			// call another function to determined if expired or not
+			$date_result = $this->checkExpiration($value['approved_on']);
+			
+			if($date_result == 'Expired'){
+				$custom_date = '<span class="text-danger">'.$expiration_date.'</span><span class="text-danger fw-bold ls-1"> [Expired]</span>';
+			}else{
+				$custom_date = $expiration_date;
+			}
+
 			$buttons = '<a class="me-2" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
 			$for_cancellation = $this->loa_model->db_get_loa_cancellation_request($value['loa_id']);
@@ -518,7 +529,7 @@ class Loa_controller extends CI_Controller {
 
 			$result['data'][] = array(
 				$custom_loa_no,
-				date("m/d/Y", strtotime($value['request_date'])),
+				$custom_date,
 				$short_hp_name,
 				$value['loa_request_type'],
 				// $short_med_serv,
@@ -528,6 +539,20 @@ class Loa_controller extends CI_Controller {
 			);
 		}
 		echo json_encode($result);
+	}
+
+	function checkExpiration($passed_date){
+		$approved_date = DateTime::createFromFormat("Y-m-d", $passed_date);
+
+		$expiration_date = $approved_date->modify("+7 days");
+
+		$current_date = new DateTime();
+
+		$date_diff = $current_date->diff($expiration_date);
+
+		$result = $date_diff->invert ? "Expired" : "Not Expired";
+
+		return $result;
 	}
 
 	function fetch_disapproved_loa() {

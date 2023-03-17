@@ -408,7 +408,7 @@ class Loa_controller extends CI_Controller {
 		$disapprove_reason = $this->input->post('disapprove-reason');
 		$disapproved_by = $this->session->userdata('doctor_id');
 		$disapproved_on = date("Y-m-d");
-		$this->form_validation->set_rules('disapprove-reason', 'Reason for Disapproval', 'required|max_length[2000]');
+		$this->form_validation->set_rules('disapprove-reason', 'Reason for Disapproval', 'trim|required|max_length[2000]');
 		if ($this->form_validation->run() == FALSE) {
 			$response = array(
 				'token' => $token,

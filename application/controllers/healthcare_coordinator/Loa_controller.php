@@ -425,7 +425,17 @@ class Loa_controller extends CI_Controller {
 
 			$custom_loa_no = '<mark class="bg-primary text-white">'.$loa['loa_no'].'</mark>';
 
-			$custom_date = date("m/d/Y", strtotime($loa['request_date']));
+			$expires = strtotime('+1 week', strtotime($loa['approved_on']));
+      $expiration_date = date('m/d/Y', $expires);
+
+			// call another function to determined if expired or not
+			$date_result = $this->checkExpiration($loa['approved_on']);
+
+      if($date_result == 'Expired'){
+				$custom_date = '<span class="text-danger">'.$expiration_date.'</span><em class="text-danger blink">[Expired]</em>';
+			}else{
+				$custom_date = $expiration_date;
+			}
 
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $loa['status'] . '</span></div>';
 
@@ -472,6 +482,20 @@ class Loa_controller extends CI_Controller {
 			"data" => $data,
 		];
 		echo json_encode($output);
+	}
+
+	function checkExpiration($passed_date){
+		$approved_date = DateTime::createFromFormat("Y-m-d", $passed_date);
+
+		$expiration_date = $approved_date->modify("+7 days");
+
+		$current_date = new DateTime();
+
+		$date_diff = $current_date->diff($expiration_date);
+
+		$result = $date_diff->invert ? "Expired" : "Not Expired";
+
+		return $result;
 	}
 
 	function fetch_all_disapproved_loa() {

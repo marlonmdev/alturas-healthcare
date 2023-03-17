@@ -25,7 +25,7 @@
       <div class="col-lg-">
         <div class="row pt-2 pb-2">
             <div class="col-lg-3">
-                <button type="button" class="btn btn-info btn-sm" onclick="showAddRoomTypeModal()"><i class="mdi mdi-plus-circle fs-4"></i> Add New</button>
+                <button type="button" class="btn btn-success btn-sm" onclick="showAddRoomTypeModal()"><i class="mdi mdi-plus-circle fs-4"></i> Add New</button>
             </div>
             <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
         </div> <br>
@@ -147,7 +147,7 @@
                       swal({
                         title: 'Success',
                         text: message,
-                        timer: 3000,
+                        timer: 2600,
                         showConfirmButton: false,
                         type: 'success'
                       });
@@ -159,9 +159,40 @@
               }
           })
         });
+
     });
 
     const showAddRoomTypeModal = () => {
         $('#registerRoomTypeModal').modal('show');
+
+        $('#registerRoomTypeForm')[0].reset();
+        $('#room-rate-error').html('');
+        $('#room-rate').removeClass('is-invalid');
+        $('#room-num-error').html('');
+        $('#room-num').removeClass('is-invalid');
+        $('#room-type').removeClass('is-invalid');
+        $('#room-type-error').html('');
+        $('#hospital-filter').removeClass('is-invalid');
+        $('#hp-filter-error').html('');
+    }
+
+    const enableInputs = () => {
+      const room_type = document.querySelector('#room-type');
+      const room_hmo_req = document.querySelector('#room-hmo-req');
+      const room_num = document.querySelector('#room-num');
+      const room_rate = document.querySelector('#room-rate');
+      const hospital = document.querySelector('#hospital-filter');
+
+      if(hospital != ''){
+        room_type.removeAttribute('readonly');
+        room_hmo_req.removeAttribute('readonly');
+        room_num.removeAttribute('readonly');
+        room_rate.removeAttribute('readonly');
+      }else{  
+        room_type.setAttribute('readonly', true);
+        room_hmo_req.setAttribute('readonly', true);
+        room_num.setAttribute('readonly', true);
+        room_rate.setAttribute('readonly', true);
+      }
     }
 </script>

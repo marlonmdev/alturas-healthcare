@@ -317,7 +317,7 @@
 
             $('#start-date').change(function(){
                 billingTable.draw();
-                get_total_company_charge();
+                // get_total_company_charge();
             });
 
             $('#end-date').change(function(){

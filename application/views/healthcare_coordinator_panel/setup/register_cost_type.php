@@ -13,7 +13,7 @@
                     <div class="form-group row">
                       <div class="col-sm-12 mb-2 mt-2">
                         <label class="colored-label fs-5"><i class="bx bx-health icon-red"></i> Hospital </label>
-                        <select class="form-select fw-bold" name="hospital-filter" id="hospital-filter" onchange="enableInputs()">
+                        <select class="form-select fw-bold" name="hospital-filter-add" id="hospital-filter-add" onchange="enableInputs()">
                                 <option value="">Select Hospital</option>
                                 <?php foreach($hospital as $hospitals) : ?>
                                 <option value="<?php echo $hospitals['hp_id']; ?>"><?php echo $hospitals['hp_name']; ?></option>
@@ -24,7 +24,7 @@
 
                       <div class="col-sm-12 mb-2 mt-2">
                           <label class="colored-label fs-5"><i class="bx bx-health icon-red"></i> Price List Category</label>
-                          <select class="form-select fw-bold" name="price-filter" id="price-filter" onchange="showOtherInputDiv();enableInputs()">
+                          <select class="form-select fw-bold" name="price-filter-add" id="price-filter-add" onchange="showOtherInputDiv();enableInputs()">
                             <option value="">Select Price Category</option>
                             <?php
                             // Remove duplicates from $price_group array
@@ -37,7 +37,7 @@
                           </select>
                           <span id="price-filter-error" class="text-danger"></span>
                           <div id="other-input-container" class="pt-2"> <!-- Hide the text input by default -->
-                            <input type="text" class="form-control fw-bold" name="other-price-filter" id="other-price-filter" placeholder="Enter other category" required>
+                            <input type="text" class="form-control fw-bold" name="other-price-filter" id="other-price-filter" placeholder="Enter other category">
                             <span id="other-price-error" class="text-danger"></span>
                           </div>
                           
@@ -45,35 +45,35 @@
 
                       <div class="col-sm-12 mb-2 mt-2">
                         <label class="colored-label fs-5"><i class="bx bx-health icon-red"></i> Item ID</label>
-                        <input type="text" class="form-control" name="item-id" id="item-id" disabled>
+                        <input type="text" class="form-control" name="item-id" id="item-id" readonly>
                         <span id="id-type-error" class="text-danger"></span>
                       </div> 
 
                       <div class="col-sm-12 mb-2 mt-2">
                         <label class="colored-label fs-5"><i class="bx bx-health icon-red"></i> Item Description</label>
-                        <input type="text" class="form-control" name="cost-type" id="cost-type" disabled>
+                        <input type="text" class="form-control" name="cost-type" id="cost-type" readonly>
                         <span id="cost-type-error" class="text-danger"></span>
                       </div> 
                     
                       <div class="col-sm-12 mb-2 mt-2">
                         <label class="colored-label fs-5"><i class="bx bx-health icon-red"></i> Outpatient Price</label>
-                        <input type="number" class="form-control" name="op-price" id="op-price" disabled>
+                        <input type="number" class="form-control" name="op-price" id="op-price" readonly>
                         <span id="op-price-error" class="text-danger"></span>
                       </div>
 
                       <div class="col-sm-12 mb-2 mt-2">
                         <label class="colored-label fs-5"><i class="bx bx-health icon-red"></i> Inpatient Price</label>
-                        <input type="number" class="form-control" name="ip-price" id="ip-price" disabled>
+                        <input type="number" class="form-control" name="ip-price" id="ip-price" readonly>
                         <span id="ip-price-error" class="text-danger"></span>
                       </div>
                     </div>
 
                     <div class="row">
                       <div class="col-sm-12 mb-sm-0 d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary me-2">
+                        <button type="submit" class="btn btn-primary me-2 btn-floating">
                          <i class="mdi mdi-content-save"></i> REGISTER
                         </button>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                        <button type="button" class="btn btn-danger btn-floating" data-bs-dismiss="modal">
                         <i class="mdi mdi-close-box"></i> CANCEL
                         </button>
                       </div>

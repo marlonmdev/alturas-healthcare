@@ -97,7 +97,7 @@ class Loa_controller extends CI_Controller {
 				$this->form_validation->set_rules('healthcare-provider', 'HealthCare Provider', 'required');
 				$this->form_validation->set_rules('loa-request-type', 'LOA Request Type', 'required');
 				$this->form_validation->set_rules('med-services', 'Medical Services', 'callback_multiple_select');
-				$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[1000]');
+				$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[2000]');
 				$this->form_validation->set_rules('requesting-physician', 'Requesting Physician', 'trim|required');
 				$this->form_validation->set_rules('rx-file', '', 'callback_update_check_rx_file');
 				if ($this->form_validation->run() == FALSE) {
@@ -779,15 +779,13 @@ class Loa_controller extends CI_Controller {
 		$loa_id = $this->myhash->hasher($this->input->post('loa_id', TRUE), 'decrypt');
 		$current_date = date("Y-m-d");
 
-		$this->form_validation->set_rules('cancellation_reason', 'Reason for Cancellation', 'required');
+		$this->form_validation->set_rules('cancellation_reason', 'Reason for Cancellation', 'required|max_length[2000]');
 		if ($this->form_validation->run() == FALSE) {
 			$response = [
 				'token' => $token,
 				'status' => 'error',
 				'cancellation_reason_error' => form_error('cancellation_reason'),
 			];
-
-			echo json_encode($response);
 		} else {
 			$post_data = [
 				'loa_id'              => $loa_id,
@@ -812,10 +810,10 @@ class Loa_controller extends CI_Controller {
 				'token' => $token,
 				'status' => 'success',
 				'message' => 'Cancellation Request Submitted Successfully'
-			];
-			
-			echo json_encode($response);
+			];	
 		}
+
+		echo json_encode($response);
 	}
 
 }

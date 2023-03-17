@@ -240,13 +240,13 @@
 
   const requestLoaCancellation = (loa_id, loa_no) => {
     $("#loaCancellationModal").modal("show");
-    
+
     $('#cancellation-reason').val('');
     $('#cancellation-reason').removeClass('is-invalid');
     $('#cancellation-reason-error').html('');
 
-    $('#loa-id').val(loa_id);
-    $('#loa-no').val(loa_no);
+    $('#cur-loa-id').val(loa_id);
+    $('#cur-loa-no').val(loa_no);
     $("#loaCancellationForm").attr("action", `${baseUrl}member/requested-loa/approve/cancel-request/${loa_id}`);
   }
 

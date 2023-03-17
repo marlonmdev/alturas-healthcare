@@ -786,7 +786,7 @@ class Loa_controller extends CI_Controller {
 		$loa_id = $this->myhash->hasher($this->input->post('loa_id', TRUE), 'decrypt');
 		$current_date = date("Y-m-d");
 
-		$this->form_validation->set_rules('cancellation_reason', 'Reason for Cancellation', 'required|max_length[2000]');
+		$this->form_validation->set_rules('cancellation_reason', 'Reason for Cancellation', 'trim|required|max_length[2000]');
 		if ($this->form_validation->run() == FALSE) {
 			$response = [
 				'token' => $token,

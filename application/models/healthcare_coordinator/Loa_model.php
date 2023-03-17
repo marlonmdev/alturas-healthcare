@@ -264,12 +264,18 @@ class Loa_model extends CI_Model {
   }
   // End of server-side processing datatables
 
-  function set_cancel_approved($lcancel_id, $confirm_by, $confirmed_on) {
-    $this->db->set('status', 'Approved')
-            ->set('confirm_by', $confirm_by)
+  function set_cancel_approved($loa_id, $confirm_by, $confirmed_on) {
+    $this->db->set('status', 'Confirmed')
+            ->set('confirmed_by', $confirm_by)
             ->set('confirmed_on', $confirmed_on)
-            ->where('lcancel_id' , $lcancel_id);
+            ->where('loa_id' , $loa_id);
     return $this->db->update('loa_cancellation_requests');
+  }
+
+  function set_cloa_request_status($loa_id) {
+    $this->db->set('status', 'Cancelled')
+            ->where('loa_id' , $loa_id);
+return $this->db->update('loa_requests');
   }
 
 

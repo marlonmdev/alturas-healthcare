@@ -178,9 +178,15 @@ class Loa_model extends CI_Model {
     return $this->db->affected_rows() > 0 ? true : false;
   }
 
-  function db_get_member_infos($emp_id) {
+  function db_get_member_infos($emp_id){
     $this->db->where('emp_id', $emp_id);
     $query = $this->db->get('members');
     return $query->num_rows() > 0 ? $query->row_array() : false;
   }
+
+  function db_insert_loa_cancellation_request($post_data){
+    $query = $this->db->insert('loa_cancellation_requests', $post_data);
+    return $query;
+  }
+
 }

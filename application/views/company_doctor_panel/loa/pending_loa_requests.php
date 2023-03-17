@@ -326,7 +326,6 @@
   }
 
   $(document).ready(function() {
-
     $('#loaDisapproveForm').submit(function(event) {
       const nextPage = `${baseUrl}company-doctor/loa/requests-list/disapproved`;
       event.preventDefault();

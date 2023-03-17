@@ -1,23 +1,25 @@
-    <!-- Start of LOA Disapprove Reason Modal  -->
-    <div class="modal fade" id="loaDisapprovedReasonModal" tabindex="-1" data-bs-backdrop="static">
+    <!-- Start of Modal  -->
+    <div class="modal fade" id="loaCancellationModal" tabindex="-1" data-bs-backdrop="static">
       <div class="modal-dialog modal-md">
           <div class="modal-content">
               <div class="modal-header">
-                  <h5 class="modal-title text-secondary ls-1">DISAPPROVE LOA</h5>
+                  <h5 class="modal-title text-secondary ls-1">REQUEST FOR LOA CANCELLATION</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                   </button>
               </div>
               <div class="modal-body">
               
               <!-- Start of Form -->
-              <form method="post" id="loaDisapproveForm">
+              <form method="post" id="loaCancellationForm">
                   <input type="hidden" name="token" id="token" value="<?= $this->security->get_csrf_hash(); ?>">
-                  <input type="hidden" name="loa-id" id="loa-id">
-                  <div class="form-group row">
+                  <input type="hidden" name="loa_id" id="cur-loa-id">
+                  <input type="text" class="form-control fw-bold ls-2" name="loa_no" id="cur-loa-no" readonly>
+
+                  <div class="row form-group mt-2">
                       <div class="col-sm-12 mb-2">
-                          <label class="colored-label ls-1">Reason for Disapproval:</label>
-                          <textarea  class="form-control" name="disapprove-reason" id="disapprove-reason" cols="30" rows="6"></textarea>
-                          <em id="disapprove-reason-error" class="text-danger"></em>
+                          <label class="colored-label ls-1">Reason for Cancellation:</label>
+                          <textarea  class="form-control" name="cancellation_reason" id="cancellation-reason" cols="30" rows="6"></textarea>
+                          <em id="cancellation-reason-error" class="text-danger"></em>
                       </div> 
                   </div>
 
@@ -37,4 +39,4 @@
           </div>
       </div>
   </div>
-  <!-- End of LOA Disapprove Reason Modal -->
+  <!-- End of Modal -->

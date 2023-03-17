@@ -60,6 +60,7 @@ $route['member/requested-loa/pending/cancel/(:any)'] = 'member/loa_controller/ca
 $route['member/requested-loa/edit/(:any)'] = 'member/loa_controller/edit_loa_request';
 $route['member/requested-loa/update/(:any)'] = 'member/loa_controller/update_loa_request';
 $route['member/requested-loa/generate-printable-loa/(:any)'] = 'member/loa_controller/generate_printable_loa';
+$route['member/requested-loa/approve/cancel-request/(:any)'] = 'member/loa_controller/request_loa_cancellation';
 
 // Member NOA Routes
 $route['member/request-noa/submit'] = 'member/noa_controller/submit_noa_request';

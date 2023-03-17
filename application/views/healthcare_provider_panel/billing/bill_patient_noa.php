@@ -383,7 +383,7 @@
     });
 
     let count = 0; // declaring the count variable outside the function will persist its value even after the function is called, allowing it to increment by one each time the function is called.
-
+     
     // this is for Consultation LOA Requests
     const addService = (ctype_id, ctype_name, price, remaining_balance) => {
         const container = document.getElementById('dynamic-services');

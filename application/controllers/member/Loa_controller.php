@@ -97,7 +97,7 @@ class Loa_controller extends CI_Controller {
 				$this->form_validation->set_rules('healthcare-provider', 'HealthCare Provider', 'required');
 				$this->form_validation->set_rules('loa-request-type', 'LOA Request Type', 'required');
 				$this->form_validation->set_rules('med-services', 'Medical Services', 'callback_multiple_select');
-				$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[1000]');
+				$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[2000]');
 				$this->form_validation->set_rules('requesting-physician', 'Requesting Physician', 'trim|required');
 				$this->form_validation->set_rules('rx-file', '', 'callback_update_check_rx_file');
 				if ($this->form_validation->run() == FALSE) {
@@ -481,7 +481,9 @@ class Loa_controller extends CI_Controller {
 
 			$custom_loa_no = 	'<mark class="bg-primary text-white">'.$value['loa_no'].'</mark>';
 
-			$button = '<a class="me-2" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			$buttons = '<a class="me-2" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+
+			$buttons .= '<a class="me-2" href="JavaScript:void(0)" onclick="requestLoaCancellation(\'' . $loa_id . '\', \'' . $value['loa_no'] . '\')" data-bs-toggle="tooltip" title="Request LOA Cancellation"><i class="mdi mdi-close-circle fs-2 text-danger"></i></a>';
 
 			// $button .= '<a href="' . base_url() . 'member/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Generate Printable LOA"><i class="mdi mdi-printer fs-2 text-primary"></i></a>';
 
@@ -515,7 +517,7 @@ class Loa_controller extends CI_Controller {
 				// $short_med_serv,
 				$view_file,
 				'<span class="badge rounded-pill bg-success">' . $value['status'] . '</span>',
-				$button
+				$buttons
 			);
 		}
 		echo json_encode($result);
@@ -771,4 +773,47 @@ class Loa_controller extends CI_Controller {
 			$this->load->view('templates/footer');
 		}
 	}
+
+	function request_loa_cancellation(){
+		$token = $this->security->get_csrf_hash();
+		$loa_id = $this->myhash->hasher($this->input->post('loa_id', TRUE), 'decrypt');
+		$current_date = date("Y-m-d");
+
+		$this->form_validation->set_rules('cancellation_reason', 'Reason for Cancellation', 'required|max_length[2000]');
+		if ($this->form_validation->run() == FALSE) {
+			$response = [
+				'token' => $token,
+				'status' => 'error',
+				'cancellation_reason_error' => form_error('cancellation_reason'),
+			];
+		} else {
+			$post_data = [
+				'loa_id'              => $loa_id,
+				'loa_no'              => $this->input->post('loa_no', TRUE),
+				'cancellation_reason' => $this->input->post('cancellation_reason', TRUE),
+				'requested_by' 				=> $this->session->userdata('emp_id'),
+				'requested_on' 				=> $current_date,
+				'status'              => 'Pending',
+				'confirm_by' 					=> '',
+			];
+
+			$inserted = $this->loa_model->db_insert_loa_cancellation_request($post_data);
+			// if loa cancellation request is not inserted
+			if (!$inserted) {
+				$response = [
+					'token' => $token,
+					'status' => 'save-error',
+					'message' => 'Cancellation Request Submit Failed'
+				];
+			}
+			$response = [
+				'token' => $token,
+				'status' => 'success',
+				'message' => 'Cancellation Request Submitted Successfully'
+			];	
+		}
+
+		echo json_encode($response);
+	}
+
 }

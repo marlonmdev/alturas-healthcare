@@ -33,6 +33,13 @@
     </li>
   </ul>
 </li>
+
+<li class="sidebar-item <?php echo $this->uri->segment(2) == 'billing' ? 'selected' : ''; ?>">
+  <a class="sidebar-link sidebar-link" href="<?php echo base_url(); ?>healthcare-coordinator/members" aria-expanded="false">
+    <i class="mdi mdi-account-multiple"></i>
+    <span class="hide-menu ls-1">Employee Member</span>
+  </a>
+</li>
               
 <li class="sidebar-item">
   <a class="sidebar-link has-arrow"

@@ -29,12 +29,13 @@ class Transaction_controller extends CI_Controller {
 
     function search_by_healthcard() {
         $this->security->get_csrf_hash();
-        $healthcard_no = $this->security->xss_clean($this->input->post('healthcard_no'));
+        $emp_no = $this->security->xss_clean($this->input->post('employee_no'));
         $hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
-        $member = $this->transaction_model->get_member_by_healthcard($healthcard_no);
+        // $member = $this->transaction_model->get_member_by_healthcard($healthcard_no);
+        $member = $this->transaction_model->get_member_by_healthcard($emp_no);
 
         if (!$member) {
-            $arr = ['error' => 'No Members Found!'];
+            $arr = ['error' => 'No Payment History Found!'];
             $this->session->set_flashdata($arr);
             $this->redirectBack();
         } else {
@@ -42,7 +43,8 @@ class Transaction_controller extends CI_Controller {
             $data['user_role'] = $this->session->userdata('user_role');
             $data['member_mbl'] = $member_mbl = $this->transaction_model->get_member_mbl($member['emp_id']);
             $data['hp_name'] = $hp_name = $this->transaction_model->get_healthcare_provider($hcare_provider_id);
-            $data['loa_requests'] = $this->transaction_model->get_member_loa($member['emp_id'], $hcare_provider_id);
+            // $data['loa_requests'] = $this->transaction_model->get_billing_status($member['emp_id'], $hcare_provider_id);
+            $data['billing'] = $this->transaction_model->get_billing_status($member['emp_id'], $hcare_provider_id);
             $data['noa_requests'] = $this->transaction_model->get_member_noa($member['emp_id'], $hcare_provider_id);
 
             /* This is checking if the image file exists in the directory. */
@@ -66,21 +68,23 @@ class Transaction_controller extends CI_Controller {
     function search_by_name() {
         $this->security->get_csrf_hash();
         $first_name = $this->security->xss_clean($this->input->post('first_name'));
+        $middle_name = $this->security->xss_clean($this->input->post('last_name'));
         $last_name = $this->security->xss_clean($this->input->post('last_name'));
-        $date_of_birth = $this->security->xss_clean($this->input->post('date_of_birth'));
+        // $date_of_birth = $this->security->xss_clean($this->input->post('date_of_birth'));
         $hcare_provider_id = $this->session->userdata('dsg_hcare_prov');
-        $member = $this->transaction_model->get_member_by_name($first_name, $last_name, $date_of_birth);
+        $member = $this->transaction_model->get_member_by_name($first_name,$middle_name, $last_name);
 
         if (!$member) {
-            $arr = ['error' => 'No Members Found!'];
+            $arr = ['error' => 'No Payment History Found!'];
             $this->session->set_flashdata($arr);
             $this->redirectBack();
-        } else {
+        }else {
             $data['member'] = $member;
             $data['user_role'] = $this->session->userdata('user_role');
             $data['member_mbl'] = $member_mbl = $this->transaction_model->get_member_mbl($member['emp_id']);
             $data['hp_name'] = $hp_name = $this->transaction_model->get_healthcare_provider($hcare_provider_id);
-            $data['loa_requests'] = $this->transaction_model->get_member_loa($member['emp_id'], $hcare_provider_id);
+            // $data['loa_requests'] = $this->transaction_model->get_billing_status($member['emp_id'], $hcare_provider_id);
+            $data['billing'] = $this->transaction_model->get_billing_status($member['emp_id'], $hcare_provider_id);
             $data['noa_requests'] = $this->transaction_model->get_member_noa($member['emp_id'], $hcare_provider_id);
 
             $this->session->set_userdata([
@@ -95,6 +99,21 @@ class Transaction_controller extends CI_Controller {
             $this->load->view('ho_iad_panel/transaction/summary_of_billing');
             $this->load->view('templates/footer');
         }
+    }
+
+    function view_receipt(){
+        $id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+        $type = $this->uri->segment(3);
+
+        $data['bill'] = $bill = $this->transaction_model->get_billing_info($id);
+
+        $data['user_role'] = $this->session->userdata('user_role');
+        $data['mbl'] = $this->transaction_model->get_member_mbl($bill['emp_id']);
+        $data['services'] = $this->transaction_model->get_billing_services($bill['billing_no']);
+        $data['deductions'] = $this->transaction_model->get_billing_deductions($bill['billing_no']);
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_iad_panel/transaction/billing_receipt');
+		$this->load->view('templates/footer');
     }
 }
 		

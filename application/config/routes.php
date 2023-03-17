@@ -564,9 +564,9 @@ $route['head-office-iad/record/(:any)'] = 'ho_iad/table_controller/view_record';
 //end
 $route['head-office-iad/transaction/search'] = 'ho_iad/transaction_controller/search';
 $route['head-office-iad/transaction/search_by_healthcard']  = 'ho_iad/transaction_controller/search_by_healthcard';
-$route['head-office-iad/transaction/search_by_name'] = 'healthcare_provider/billing_controller/search_by_name';
+$route['head-office-iad/transaction/search_by_name'] = 'ho_iad/transaction_controller/search_by_name';
+$route['head-office-iad/transaction/(:any)/view_receipt/(:any)'] = 'ho_iad/transaction_controller/view_receipt';
 //IAD=================================================================================
-
 
 // QR Code Routes
 // $route['qrcode'] = 'home';

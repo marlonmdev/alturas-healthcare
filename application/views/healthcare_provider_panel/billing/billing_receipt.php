@@ -88,8 +88,8 @@
                         <table class="table">
                           <thead>
                             <tr class="border-secondary border-2 border-0 border-top border-bottom">
-                              <th class="text-center fw-bold ls-2">Quantity</th>
                               <th class="text-center fw-bold ls-2">Service</th>
+                              <th class="text-center fw-bold ls-2">Quantity</th>
                               <th class="text-center fw-bold ls-2">Fee</th>
                               <th class="text-center fw-bold ls-2">Amount</th>
                             </tr>
@@ -98,8 +98,8 @@
                           <tbody>
                             <?php foreach($services as $service): ?>
                               <tr>
-                                <td class="text-center ls-1"><?= $service['service_quantity'] ?></td>
                                 <td class="text-center ls-1"><?= $service['service_name'] ?></td>
+                                <td class="text-center ls-1"><?= $service['service_quantity'] ?></td>
                                 <td class="text-center ls-1">
                                   &#8369;<?= number_format($service['service_fee'], 2) ?>
                                 </td>
@@ -125,7 +125,91 @@
                         endif; 
                       ?>
                       <!-- End of Medical Services Table -->
-                      <div class="mt-3"></div> 
+
+                      <!-- Start of Medications Table -->
+                      <?php 
+                        if(!empty($medications)): 
+                      ?>
+                        <h4 class="text-center ls-1">MEDICAL SUPPLIES AND MEDICATION/S</h4>
+                        <table class="table">
+                          <thead>
+                            <tr class="border-secondary border-2 border-0 border-top border-bottom">
+                              <th class="text-center fw-bold ls-2">Name</th>
+                              <th class="text-center fw-bold ls-2">Quantity</th>
+                              <th class="text-center fw-bold ls-2">Fee</th>
+                              <th class="text-center fw-bold ls-2">Amount</th>
+                            </tr>
+                          </thead>
+
+                          <tbody>
+                            <?php foreach($medications as $medication): ?>
+                              <tr>
+                                <td class="text-center ls-1"><?= $medication['med_name'] ?></td>
+                                <td class="text-center ls-1"><?= $medication['med_qty'] ?></td>
+                                <td class="text-center ls-1">
+                                  &#8369;<?= number_format($medication['med_fee'], 2) ?>
+                                </td>
+                                <td class="text-center ls-1">
+                                  &#8369;<?= number_format($medication['med_qty'] * $medication['med_fee'], 2) ?>
+                                </td>
+                              </tr>
+                            <?php endforeach; ?>
+                              <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-center">
+                                  <span class="text-secondary fs-5 fw-bold ls-1 me-2">Total:</span>
+                                  <span class="text-secondary fw-bold fs-5 ls-1">
+                                    <?= '&#8369;'.number_format($bill['total_bill'], 2) ?>
+                                  </span>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      <?php 
+                        endif; 
+                      ?>
+                      <!-- End of Medications Table -->
+                      
+                      
+                      <!-- Start of Professonal Fees Table -->
+                      <?php 
+                        if(!empty($profees)): 
+                      ?>
+                        <h4 class="text-center ls-1">PROFESSIONAL FEE/S</h4>
+                        <table class="table table-sm">
+                          <thead>
+                            <tr class="border-secondary border-2 border-0 border-top border-bottom">
+                              <th class="text-center fw-bold ls-2">Doctor Name</th>
+                              <th class="text-center fw-bold ls-2">Professional Fee</th>
+                            </tr>
+                          </thead>
+
+                          <tbody>
+                            <?php foreach($profees as $profee): ?>
+                              <tr>
+                                <td class="text-center ls-1"><?= $profee['doctor_name'] ?></td>
+                                <td class="text-center ls-1">&#8369;<?= number_format($profee['pro_fee'], 2) ?></td>
+                              </tr>
+                            <?php endforeach; ?>
+                              <tr>
+                                <td></td>
+                                <td class="text-center">
+                                  <span class="text-secondary fs-5 fw-bold ls-1 me-2">Total:</span>
+                                  <span class="text-secondary fw-bold fs-5 ls-1">
+                                    <?= '&#8369;'.number_format($bill['total_pro_fees'], 2) ?>
+                                  </span>
+                                </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      <?php 
+                        endif; 
+                      ?>
+                      <!-- End of Professional Fees Table -->
+
+
                       <!-- Start of Billing Deductions Table -->
                       <?php 
                         if(!empty($deductions)): 

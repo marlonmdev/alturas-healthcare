@@ -13,6 +13,7 @@
               <form method="post" id="loaCancellationForm">
                   <input type="hidden" name="token" id="token" value="<?= $this->security->get_csrf_hash(); ?>">
                   <input type="hidden" name="loa_id" id="cur-loa-id">
+                  <input type="hidden" name="hp_id" id="cur-hp-id">
                   <input type="text" class="form-control fw-bold ls-2" name="loa_no" id="cur-loa-no" readonly>
 
                   <div class="row form-group mt-2">

@@ -238,7 +238,7 @@
     });
   }
 
-  const requestLoaCancellation = (loa_id, loa_no) => {
+  const requestLoaCancellation = (loa_id, loa_no, hp_id) => {
     $("#loaCancellationModal").modal("show");
 
     $('#cancellation-reason').val('');
@@ -247,6 +247,7 @@
 
     $('#cur-loa-id').val(loa_id);
     $('#cur-loa-no').val(loa_no);
+    $('#cur-hp-id').val(hp_id);
     $("#loaCancellationForm").attr("action", `${baseUrl}member/requested-loa/approve/cancel-request/${loa_id}`);
   }
 

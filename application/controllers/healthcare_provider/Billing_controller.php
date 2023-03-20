@@ -178,10 +178,21 @@ class Billing_controller extends CI_Controller {
             // if patients billing info is saved to DB call insert_billing_services() function
             $this->insert_billing_services($posted_data['ct-name'], $posted_data['ct-qty'], $posted_data['ct-fee'], $posted_data['billing-no']);
 
+            // if there are added medications
+            if($posted_data['medication-count'] > 0){
+                $this->insert_medications($posted_data['medication-name'], $posted_data['medication-qty'], $$posted_data['medication-amount'], $posted_data['billing-no']);
+            }
+
+              // if there are added professional fees
+            if($posted_data['profee-count'] > 0){
+                $this->insert_professional_fees($posted_data['prodoc-name'], $posted_data['profee-amount'], $posted_data['billing-no']);
+            }
+
             // if Philhealth deduction has value
             if($posted_data['philhealth-deduction'] > 0){
                 $this->insert_philhealth_deduction($posted_data['philhealth-deduction'], $posted_data['billing-no']);
             }
+
             // if SSS deduction has value
             if($posted_data['sss-deduction'] > 0){
                 $this->insert_sss_deduction($posted_data['sss-deduction'], $posted_data['billing-no']);
@@ -471,6 +482,7 @@ class Billing_controller extends CI_Controller {
         $this->billing_model->insert_diagnostic_test_billing_services($services);
     }
 
+
     function insert_philhealth_deduction($philhealth_deduction, $billing_no){
         $philhealth = [];
         $philhealth[] = [
@@ -481,6 +493,20 @@ class Billing_controller extends CI_Controller {
         ];
 
         $this->billing_model->insert_billing_deductions($philhealth);
+    }
+
+    function insert_professional_fees($doctor_names, $professional_fees, $billing_no){
+        $prof_fees = []; 
+        for ($i = 0; $i < count($doctor_names); $i++) {
+            $prof_fees[] = [
+                'doctor_name'   => $doctor_names[$i],
+                'prof_fee'      => $professional_fees[$i],
+                'billing_no'    => $billing_no,
+                'added_on'      => date('Y-m-d')
+            ];
+        }
+
+        $this->billing_model->insert_billing_professional_fees($prof_fees);
     }
 
     function insert_sss_deduction($sss_deduction, $billing_no){

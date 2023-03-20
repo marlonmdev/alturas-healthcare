@@ -653,6 +653,7 @@ class Billing_controller extends CI_Controller {
         $data['services'] = $this->billing_model->get_billing_services($bill['billing_no']);
         $data['medications'] = $this->billing_model->get_billing_medications($bill['billing_no']);
         $data['profees'] = $this->billing_model->get_billing_professional_fees($bill['billing_no']);
+        $data['roomboards'] = $this->billing_model->get_billing_room_boards($bill['billing_no']);
         $data['deductions'] = $this->billing_model->get_billing_deductions($bill['billing_no']);
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_provider_panel/billing/billing_receipt');

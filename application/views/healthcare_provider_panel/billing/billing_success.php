@@ -36,22 +36,22 @@
                   </div>
                 </div>
 
-                <div class="mt-1" style="background:#F8F8F8;border:2px dashed #495579;padding:20px;">
-                  <div class="container" id="printableDiv" style="padding:10px 30px;">
+                <div class="mt-1" style="background:#F8F8F8;border:2px dashed #495579;padding:20px;margin:0 30px;">
+                  <div class="container" id="printableDiv" style="padding:10px 50px;">
                     <div class="row text-left">
-                      <h4 class="ls-1"> BILLING #: <?= $bill['billing_no'] ?></h4>
+                      <h5 class="ls-1"> BILLING #: <?= $bill['billing_no'] ?></h5>
                     </div>
                     <div class="row mt-1">
                       <div class="col-6">
                         <ul class="list-unstyled">
                           <li class="text-secondary">
-                            <span class="ls-1 border-secondary border-2 border-bottom pb-1">
+                            <span class="ls-1 fs-6">
                               Issued To: <?= $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'] ?>
                             </span>
                           </li>
 
-                          <li class="text-secondary mt-2">
-                            <span class="ls-1 border-secondary border-2 border-bottom pb-1">
+                          <li class="text-secondary">
+                            <span class="ls-1 fs-6">
                               Issued By: <?= $bill['billed_by'] ?>
                             </span>
                           </li>
@@ -61,13 +61,13 @@
                       <div class="col-6">
                         <ul class="list-unstyled">
                               <li class="text-secondary">
-                            <span class="ls-1 border-secondary border-2 border-bottom pb-1">
+                            <span class="ls-1 fs-6">
                               Issued On: <?= date('m/d/Y', strtotime($bill['billed_on'])) ?>
                             </span>
                           </li>
 
-                          <li class="text-secondary mt-2"> 
-                            <span class="ls-1 border-secondary border-2 border-bottom pt-1 pb-1">
+                          <li class="text-secondary"> 
+                            <span class="ls-1 fs-6">
                               Healthcare Provider: <?= $bill['hp_name'] ?>
                             </span>
                           </li>
@@ -75,12 +75,12 @@
                       </div>
                     </div>
 
-                    <div class="row my-2 mx-1 justify-content-center">
+                    <div class="row mx-1 justify-content-center">
                       <!-- Start of Medical Services Table -->
                       <?php 
                         if(!empty($services)): 
                       ?>
-                        <h4 class="text-center ls-1">MEDICAL SERVICE/S</h4>
+                        <h5 class="text-center ls-1">MEDICAL SERVICE/S</h5>
                         <table class="table table-sm">
                           <thead>
                             <tr class="border-secondary border-2 border-0 border-top border-bottom">
@@ -109,8 +109,8 @@
                                 <td></td>
                                 <td></td>
                                 <td class="text-center">
-                                  <span class="text-secondary fs-5 fw-bold ls-1 me-2">Total:</span>
-                                  <span class="text-secondary fw-bold fs-5 ls-1">
+                                  <span class="text-secondary fs-6 fw-bold ls-1 me-2">Total:</span>
+                                  <span class="text-secondary fw-bold fs-6 ls-1">
                                     <?= '&#8369;'.number_format($bill['total_services'], 2) ?>
                                   </span>
                                 </td>
@@ -126,7 +126,7 @@
                       <?php 
                         if(!empty($medications)): 
                       ?>
-                        <h4 class="text-center ls-1">MEDICAL SUPPLIES AND MEDICATION/S</h4>
+                        <h5 class="text-center ls-1">MEDICAL SUPPLIES AND MEDICATION/S</h5>
                         <table class="table table-sm">
                           <thead>
                             <tr class="border-secondary border-2 border-0 border-top border-bottom">
@@ -155,8 +155,8 @@
                                 <td></td>
                                 <td></td>
                                 <td class="text-center">
-                                  <span class="text-secondary fs-5 fw-bold ls-1 me-2">Total:</span>
-                                  <span class="text-secondary fw-bold fs-5 ls-1">
+                                  <span class="text-secondary fs-6 fw-bold ls-1 me-2">Total:</span>
+                                  <span class="text-secondary fw-bold fs-6 ls-1">
                                     <?= '&#8369;'.number_format($bill['total_medications'], 2) ?>
                                   </span>
                                 </td>
@@ -172,7 +172,7 @@
                       <?php 
                         if(!empty($profees)): 
                       ?>
-                        <h4 class="text-center ls-1">PROFESSIONAL FEE/S</h4>
+                        <h5 class="text-center ls-1">PROFESSIONAL FEE/S</h5>
                         <table class="table table-sm">
                           <thead>
                             <tr class="border-secondary border-2 border-0 border-top border-bottom">
@@ -191,8 +191,8 @@
                               <tr>
                                 <td></td>
                                 <td class="text-center">
-                                  <span class="text-secondary fs-5 fw-bold ls-1 me-2">Total:</span>
-                                  <span class="text-secondary fw-bold fs-5 ls-1">
+                                  <span class="text-secondary fs-6 fw-bold ls-1 me-2">Total:</span>
+                                  <span class="text-secondary fw-bold fs-6 ls-1">
                                     <?= '&#8369;'.number_format($bill['total_pro_fees'], 2) ?>
                                   </span>
                                 </td>
@@ -208,7 +208,7 @@
                       <?php 
                         if(!empty($roomboards)): 
                       ?>
-                        <h4 class="text-center ls-1">ROOM AND BOARDS</h4>
+                        <h5 class="text-center ls-1">ROOM AND BOARDS</h5>
                         <table class="table table-sm">
                           <thead>
                             <tr class="border-secondary border-2 border-0 border-top border-bottom">
@@ -227,8 +227,8 @@
                               <tr>
                                 <td></td>
                                 <td class="text-center">
-                                  <span class="text-secondary fs-5 fw-bold ls-1 me-2">Total:</span>
-                                  <span class="text-secondary fw-bold fs-5 ls-1">
+                                  <span class="text-secondary fs-6 fw-bold ls-1 me-2">Total:</span>
+                                  <span class="text-secondary fw-bold fs-6 ls-1">
                                     <?= '&#8369;'.number_format($bill['total_room_board'], 2) ?>
                                   </span>
                                 </td>
@@ -244,8 +244,8 @@
                       <?php 
                         if(!empty($deductions)): 
                       ?>
-                        <h4 class="text-center ls-1">BILLING DEDUCTION/S</h4>
-                        <table class="table table-sm>
+                        <h5 class="text-center ls-1">BILLING DEDUCTION/S</h5>
+                        <table class="table table-sm">
                           <thead>
                             <tr class="border-secondary border-2 border-0 border-top border-bottom">
                               <th class="text-center fw-bold ls-2">Deduction Name</th>
@@ -265,8 +265,8 @@
                             <tr>
                               <td></td>
                               <td class="text-center">
-                                <span class="text-secondary fs-5 fw-bold ls-1 me-2">Total:</span>
-                                <span class="text-secondary fw-bold fs-5 ls-1">
+                                <span class="text-secondary fs-6 fw-bold ls-1 me-2">Total:</span>
+                                <span class="text-secondary fw-bold fs-6 ls-1">
                                   <?= '&#8369;'.number_format($bill['total_deduction'], 2) ?>
                                 </span>
                               </td>
@@ -278,35 +278,35 @@
                       ?>
                       <!-- End of Billing Deductions Table -->
 
-                       <!-- Start of member MBL Table -->
+                      <!-- Start of member MBL Table -->
                       <table>
                         <tr>
                           <td class="text-center">
-                            <span class="text-secondary me-2">Patient's Max Benefit Limit:</span>
+                            <span class="text-secondary">Patient's Max Benefit Limit:</span>
                             <span class="text-secondary fw-bold fs-4 ls-1">
                               &#8369;<?= number_format($mbl['max_benefit_limit'], 2) ?>
                             </span>
                           </td>
 
                           <td class="text-center">
-                            <span class="text-secondary me-2">Before Remaining Balance:</span>
+                            <span class="text-secondary">Before Remaining Balance:</span>
                             <span class="text-secondary fw-bold fs-4 ls-1">
                               &#8369;<?= number_format($bill['before_remaining_bal'], 2) ?>
                             </span>
                           </td>
 
                           <td class="text-center">
-                            <span class="text-secondary me-2">After Remaining Balance:</span>
-                            <span class="text-cyan fw-bold fs-3 ls-1">
+                            <span class="text-secondary">After Remaining Balance:</span>
+                            <span class="text-cyan fw-bold fs-4 ls-1">
                               &#8369;<?= number_format($bill['after_remaining_bal'], 2) ?>
                             </span>
                           </td>
                         </tr>
                       </table>
                       <!-- End of member MBL Table -->
-                      <div class="mt-3"></div>
+
                       <!-- Start of Billing Summary Table -->
-                      <table class="table table-bordered">
+                      <table class="table table-sm table-bordered mb-1">
                         <tr class="border-2 border-secondary">
                           <td class="text-center">
                             <span class="text-secondary me-2">Total Bill:</span>
@@ -332,54 +332,23 @@
                       </table>
 
                       <table>
-                        <tr class="border-secondary border-2 border-0 border-top border-bottom">
+                        <tr>
                           <td class="text-center">
                             <span class="text-secondary me-2">Company Charge:</span>
-                            <span class="text-danger fw-bold fs-3 ls-1">
+                            <span class="text-danger fw-bold fs-4 ls-1">
                               <?= '&#8369;'.number_format($bill['company_charge'], 2) ?>
                             </span>
                           </td>
 
                           <td>
                             <span class="text-secondary me-2">Personal Charge:</span>
-                            <span class="text-danger fw-bold fs-3 ls-1">
+                            <span class="text-danger fw-bold fs-4 ls-1">
                               <?= '&#8369;'.number_format($bill['personal_charge'], 2) ?>
                             </span>
                           </td>
                         </tr>
-                      </table>
-                      <!-- <table class="table">
-                        <tr>
-                          <td>
-                            <span class="text-secondary me-2">Total Bill:</span>
-                            <span class="text-danger fw-bold fs-4 ls-1">
-                              < '&#8369;'.number_format($bill['total_bill'], 2) ?>
-                            </span>
-                          </td>
+                      </table>       
 
-                          <td>
-                            <span class="text-secondary me-2">Total Deduction:</span>
-                            <span class="text-danger fw-bold fs-4 ls-1">
-                              < '&#8369;'.number_format($bill['total_deduction'], 2) ?>
-                            </span>
-                          </td>
-
-                          <td>
-                            <span class="text-secondary me-2">Net Bill:</span>
-                            <span class="text-info fw-bold fs-4 ls-1">
-                              < '&#8369;'.number_format($bill['net_bill'], 2) ?>
-                            </span>
-                          </td>
-
-                          <td>
-                            <span class="text-secondary me-2">Personal Charge:</span>
-                            <span class="text-info fw-bold fs-4 ls-1">
-                              < '&#8369;'.number_format($bill['personal_charge'], 2) ?>
-                            </span>
-                          </td>
-                        </tr>
-                      </table> -->
-                      <!-- End of Billing Summary Table -->                  
                     </div>
                   </div>
                 </div>
@@ -387,8 +356,12 @@
                 <div class="container mt-4 mb-4">
                   <div class="row">
                     <div class="col-12 d-flex justify-content-end align-items-end">
-                      <button class="btn btn-outline-info btn-lg ls-1 me-3" onclick="saveAsImage()"><i class="mdi mdi-file-image"></i> Save as Image</button>
-                      <button class="btn btn-outline-danger btn-lg ls-1" onclick="printDiv('#printableDiv')"><i class="mdi mdi-printer"></i> Print Receipt</button>
+                      <button class="btn btn-outline-info btn-lg ls-1 me-3" onclick="saveAsImage()">
+                        <i class="mdi mdi-file-image"></i> Save as Image
+                      </button>
+                      <button class="btn btn-outline-danger btn-lg ls-1 me-2" onclick="printDiv('#printableDiv')">
+                        <i class="mdi mdi-printer"></i> Print Receipt
+                      </button>
                     </div>
                   </div>
                 </div>

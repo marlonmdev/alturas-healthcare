@@ -195,4 +195,64 @@ class Loa_model extends CI_Model {
     return $query->num_rows() > 0 ? true : false;
   }
 
+  // Start of cancellation_requests server-side processing datatables
+  var $table1 = 'loa_cancellation_requests';
+  var $columnOrder = ['loa_no', 'requested_on', null, 'confirmed_on', null, null, null]; //set column field database for datatable orderable
+  var $columnSearch = ['loa_no', 'requested_on', 'confirmed_on', 'confirmed_by', 'status']; //set column field database for datatable searchable 
+  var $order1 = ['lcancel_id' => 'desc']; // default order 
+
+  private function _get_cancell_datatables_query($status, $emp_id) {
+    $this->db->from($this->table1);
+    $this->db->where('status', $status);
+    $this->db->where('requested_by', $emp_id);
+    $i = 0;
+    // loop column 
+    foreach ($this->columnSearch as $item) {
+      // if datatable send POST for search
+      if ($_POST['search']['value']) {
+        // first loop
+        if ($i === 0) {
+          $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+          $this->db->like($item, $_POST['search']['value']);
+        } else {
+          $this->db->or_like($item, $_POST['search']['value']);
+        }
+
+        if (count($this->columnSearch) - 1 == $i) //last loop
+          $this->db->group_end(); //close bracket
+      }
+      $i++;
+    }
+
+    // here order processing
+    if (isset($_POST['order'])) {
+      $this->db->order_by($this->columnOrder[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+    } else if (isset($this->order1)) {
+      $order = $this->order1;
+      $this->db->order_by(key($order), $order[key($order)]);
+    }
+  }
+
+  function get_cancel_datatables($status, $emp_id) {
+    $this->_get_cancell_datatables_query($status, $emp_id);
+    if ($_POST['length'] != -1)
+      $this->db->limit($_POST['length'], $_POST['start']);
+    $query = $this->db->get();
+    return $query->result_array();
+  }
+
+  function count_cancell_filtered($status, $emp_id) {
+    $this->_get_cancell_datatables_query($status, $emp_id);
+    $query = $this->db->get();
+    return $query->num_rows();
+  }
+
+  function count_all_cancell($status, $emp_id) {
+    $this->db->from($this->table1)
+             ->where('status', $status)
+             ->where('requested_by', $emp_id);;
+    return $this->db->count_all_results();
+  }
+  // End of server-side processing datatables
+
 }

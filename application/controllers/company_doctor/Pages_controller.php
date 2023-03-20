@@ -74,6 +74,13 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
+	function view_cancelled_loa_list() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('company_doctor_panel/loa/cancelled_loa_requests');
+		$this->load->view('templates/footer');
+	}
+
 	public function view_pending_noa_list() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);

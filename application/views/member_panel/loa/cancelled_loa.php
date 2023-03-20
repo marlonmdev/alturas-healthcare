@@ -1,3 +1,4 @@
+
 <!-- Start of Page Wrapper -->
 <div class="page-wrapper">
   <!-- Bread crumb and right sidebar toggle -->
@@ -10,7 +11,7 @@
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Member</li>
               <li class="breadcrumb-item active" aria-current="page">
-                Disapproved LOA
+                Cancelled LOA
               </li>
             </ol>
           </nav>
@@ -24,7 +25,8 @@
     <div class="row">
 
       <div class="col-lg-12">
-       <ul class="nav nav-tabs mb-4" role="tablist">
+
+          <ul class="nav nav-tabs mb-4" role="tablist">
             <li class="nav-item">
               <a
                 class="nav-link"
@@ -45,7 +47,7 @@
             </li>
             <li class="nav-item">
               <a
-                class="nav-link active"
+                class="nav-link"
                 href="<?php echo base_url(); ?>member/requested-loa/disapproved"
                 role="tab"
                 ><span class="hidden-sm-up"></span>
@@ -63,7 +65,7 @@
             </li>
             <li class="nav-item">
             <a
-              class="nav-link"
+              class="nav-link active"
               href="<?php echo base_url(); ?>member/requested-loa/cancelled"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -75,14 +77,14 @@
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover" id="memberDisapprovedLoa">
+              <table class="table table-hover" id="cancelledLoaTable">
                 <thead>
                   <tr>
                     <th class="fw-bold">LOA No.</th>
-                    <th class="fw-bold">Request Date</th>
-                    <th class="fw-bold">Healthcare Provider</th>
-                    <th class="fw-bold">LOA Type</th>
-                    <th class="fw-bold">RX File</th>
+                    <th class="fw-bold">Requested on</th>
+                    <th class="fw-bold">Reason</th>
+                    <th class="fw-bold">Confirmed on</th>
+                    <th class="fw-bold">Confirmed by</th>
                     <th class="fw-bold">Status</th>
                     <th class="fw-bold">Actions</th>
                   </tr>
@@ -93,14 +95,11 @@
             </div>
           </div>
         </div>
-
-      </div>
-
-      <?php include 'view_disapproved_loa_details.php'; ?>
-      
+        <?php include 'view_loa_details.php'; ?>
       </div>
       <!-- End Row  -->  
       </div>
+      <?php include 'view_cancel_reason.php'; ?>
     <!-- End Container fluid  -->
     </div>
   <!-- End Page wrapper  -->
@@ -110,65 +109,41 @@
 
 <script>
   const baseUrl = `<?php echo base_url(); ?>`;
-  const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
 
   $(document).ready(function() {
-    $("#memberDisapprovedLoa").DataTable({
+    $('#cancelledLoaTable').DataTable({
+      processing: true, //Feature control the processing indicator.
+      serverSide: true, //Feature control DataTables' server-side processing mode.
+      order: [], //Initial no order.
+
+      // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}member/requested-loa/disapproved/fetch`,
-        dataSrc: function(data) {
-          if (data == "") {
-            return [];
-          } else {
-            return data.data;
-          }
+        url: `${baseUrl}member/requested-loa/cancelled/fetch`,
+        type: "POST",
+        // passing the token as data so that requests will be allowed
+        data: {
+          'token': '<?php echo $this->security->get_csrf_hash(); ?>'
         }
       },
-      order: [],
-      responsive: true,
-      fixedHeader: true,
+
+      //Set column definition initialisation properties.
       columnDefs: [{
-        // "targets": [5, 6, 7], // 6th and 7th column / numbering column
-        "targets": [4, 5, 6],
+        "targets": [2, 4, 5, 6], // numbering column
         "orderable": false, //set not orderable
       }, ],
+      responsive: true,
+      fixedHeader: true,
     });
-  });
+  })
 
-  const viewImage = (path) => {
-    let item = [{
-      src: path, // path to image
-      title: 'Attached RX File' // If you skip it, there will display the original image name
-    }];
-    // define options (if needed)
-    let options = {
-      index: 0 // this option means you will start at first image
-    };
-    // Initialize the plugin
-    let photoviewer = new PhotoViewer(item, options);
+  const viewReasonModal = (reason) => {
+        $("#viewCancelReasonModal").modal("show");
+        $("#reason").val(reason);
   }
 
-  const saveAsImage = () => {
-    // Get the div element you want to save as an image
-    const element = document.querySelector("#printableDiv");
-    // Use html2canvas to take a screenshot of the element
-    html2canvas(element)
-      .then(function(canvas) {
-        // Convert the canvas to an image data URL
-        const imgData = canvas.toDataURL("image/png");
-        // Create a temporary link element to download the image
-        const link = document.createElement("a");
-        link.download = `loa_${fileName}.png`;
-        link.href = imgData;
-
-        // Click the link to download the image
-        link.click();
-      });
-  }
-
-  const viewDisapprovedLoaInfo = (req_id) => {
+  const viewLoaInfo = (loa_id) => {
     $.ajax({
-      url: `${baseUrl}member/requested-loa/view/${req_id}`,
+      url: `${baseUrl}member/requested-loa/view/${loa_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);
@@ -177,9 +152,6 @@
           status,
           token,
           loa_no,
-          disapproved_by,
-          disapprove_reason,
-          disapproved_on,
           first_name,
           middle_name,
           last_name,
@@ -211,15 +183,19 @@
         } = res;
 
         $("#viewLoaModal").modal("show");
+        $('#saveImage-btn').hide();
+        let rstat = '';
+        if(req_status == 'Pending'){
+          req_stat = `<strong class="text-warning">[${req_status}]</strong>`;
+        }else{
+          req_stat = `<strong class="text-cyan">[${req_status}]</strong>`;
+        }
 
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
 
         $('#loa-no').html(loa_no);
-        $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
-        $('#disapproved-by').html(disapproved_by);
-        $('#disapproved-on').html(disapproved_on);
-        $('#disapprove-reason').html(disapprove_reason);
+        $('#loa-status').html(req_stat);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
         $('#date-of-birth').html(date_of_birth);
         $('#age').html(age);

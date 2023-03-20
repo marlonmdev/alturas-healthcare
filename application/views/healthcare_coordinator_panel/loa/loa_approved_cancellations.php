@@ -117,7 +117,7 @@
 
     const viewReason = (reason) => {
         $('#viewReasonModal').modal('show');
-        $('#reason').val(reason);
+        $('#reason').val(reason.toString());
     }
 
     function viewLoaInfo(req_id) {

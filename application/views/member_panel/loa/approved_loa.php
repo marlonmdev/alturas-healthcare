@@ -81,7 +81,7 @@
                 <thead>
                   <tr>
                     <th class="fw-bold">LOA No.</th>
-                    <th class="fw-bold">Request Date</th>
+                    <th class="fw-bold">Expiration Date</th>
                     <th class="fw-bold">Healthcare Provider</th>
                     <th class="fw-bold">LOA Type</th>
                     <th class="fw-bold">RX File</th>
@@ -247,7 +247,7 @@
     });
   }
 
-  const requestLoaCancellation = (loa_id, loa_no) => {
+  const requestLoaCancellation = (loa_id, loa_no, hp_id) => {
     $("#loaCancellationModal").modal("show");
 
     $('#cancellation-reason').val('');
@@ -256,6 +256,7 @@
 
     $('#cur-loa-id').val(loa_id);
     $('#cur-loa-no').val(loa_no);
+    $('#cur-hp-id').val(hp_id);
     $("#loaCancellationForm").attr("action", `${baseUrl}member/requested-loa/approve/cancel-request/${loa_id}`);
   }
 

@@ -713,7 +713,7 @@
 
            /* Creating a new input field with the name deduction_name[] */
             html_code += `<div class="col-md-5">
-                            <input type="text" name="profdoc-name[]" class="form-control fw-bold ls-1" placeholder="*Enter Doctor Name" required/>
+                            <input type="text" name="prodoc-name[]" class="form-control fw-bold ls-1" placeholder="*Enter Doctor Name" required/>
                             <div class="invalid-feedback">
                                 Doctor name, and Professional Fee is required
                             </div>

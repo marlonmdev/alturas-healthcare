@@ -425,16 +425,31 @@ class Loa_controller extends CI_Controller {
 
 			$custom_loa_no = '<mark class="bg-primary text-white">'.$loa['loa_no'].'</mark>';
 
-			$custom_date = date("m/d/Y", strtotime($loa['request_date']));
+			$expires = strtotime('+1 week', strtotime($loa['approved_on']));
+      $expiration_date = date('m/d/Y', $expires);
+			// call another function to determined if expired or not
+			$date_result = $this->checkExpiration($loa['approved_on']);
+
+      if($date_result == 'Expired'){
+				$custom_date = '<span class="text-danger">'.$expiration_date.'</span><span class="text-danger fw-bold ls-1"> [Expired]</span>';
+
+				$custom_actions = '<a class="me-2" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+
+				$custom_actions .= '<a class="me-2" data-bs-toggle="tooltip" title="Cannot Print Expired LOA"><i class="mdi mdi-printer fs-2 icon-disabled"></i></a>';
+
+				$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Update LOA"><i class="mdi mdi-playlist-check fs-2 text-success"></i></a>';
+
+			}else{
+				$custom_date = $expiration_date;
+
+				$custom_actions = '<a class="me-2" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+
+				$custom_actions .= '<a class="me-2" href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Print LOA"><i class="mdi mdi-printer fs-2 text-primary"></i></a>';
+
+				$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Update LOA"><i class="mdi mdi-playlist-check fs-2 text-success"></i></a>';
+			}
 
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $loa['status'] . '</span></div>';
-
-			$custom_actions = '<a class="me-2" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
-
-			$custom_actions .= '<a class="me-2" href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Print LOA"><i class="mdi mdi-printer fs-2 text-primary"></i></a>';
-
-			$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Update LOA"><i class="mdi mdi-playlist-check fs-2 text-success"></i></a>';
-
 		
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
@@ -472,6 +487,20 @@ class Loa_controller extends CI_Controller {
 			"data" => $data,
 		];
 		echo json_encode($output);
+	}
+
+	function checkExpiration($passed_date){
+		$approved_date = DateTime::createFromFormat("Y-m-d", $passed_date);
+
+		$expiration_date = $approved_date->modify("+7 days");
+
+		$current_date = new DateTime();
+
+		$date_diff = $current_date->diff($expiration_date);
+
+		$result = $date_diff->invert ? "Expired" : "Not Expired";
+
+		return $result;
 	}
 
 	function fetch_all_disapproved_loa() {

@@ -156,6 +156,14 @@ class Billing_model extends CI_Model {
         return $this->db->insert('billing_services', $services);
     }
 
+    function insert_billing_medications($medications){
+        return $this->db->insert('billing_medications', $medications);
+    }
+
+    function insert_billing_professional_fees($prof_fees){
+        return $this->db->insert('billing_professional_fees', $prof_fees);
+    }
+
     function insert_billing_deductions($deductions) {
         return $this->db->insert_batch('billing_deductions', $deductions);
     }

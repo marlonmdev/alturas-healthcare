@@ -63,6 +63,22 @@
           </li> -->
         </ul>
 
+        <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text bg-dark text-white">
+                    <i class="mdi mdi-filter"></i>
+                    </span>
+                </div>
+                <select class="form-select fw-bold" name="approved-hospital-filter" id="approved-hospital-filter">
+                        <option value="">Select Hospital</option>
+                        <?php foreach($hcproviders as $option) : ?>
+                        <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
+                        <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
+
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
@@ -176,7 +192,7 @@
   const baseUrl = "<?php echo base_url(); ?>";
   $(document).ready(function() {
 
-    $('#approvedNoaTable').DataTable({
+    let approvedtable = $('#approvedNoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
@@ -186,8 +202,9 @@
         url: `${baseUrl}healthcare-coordinator/noa/requests-list/approved/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
-        data: {
-          'token': '<?php echo $this->security->get_csrf_hash(); ?>'
+        data: function(data) {
+          data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
+          data.filter = $('#approved-hospital-filter').val();
         }
       },
 
@@ -198,6 +215,10 @@
       }, ],
       responsive: true,
       fixedHeader: true,
+    });
+
+    $('#approved-hospital-filter').change(function(){
+      approvedtable.draw();
     });
 
   });

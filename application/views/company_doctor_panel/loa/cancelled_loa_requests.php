@@ -1,17 +1,16 @@
-
 <!-- Start of Page Wrapper -->
 <div class="page-wrapper">
   <!-- Bread crumb and right sidebar toggle -->
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">Requested LOA</h4>
+        <h4 class="page-title ls-2">LOA Requests</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-              <li class="breadcrumb-item">Member</li>
+              <li class="breadcrumb-item">Company Doctor</li>
               <li class="breadcrumb-item active" aria-current="page">
-                Approved LOA
+                Cancelled LOA
               </li>
             </ol>
           </nav>
@@ -20,17 +19,16 @@
     </div>
   </div>
   <!-- End Bread crumb and right sidebar toggle -->
-
   <!-- Start of Container fluid  -->
   <div class="container-fluid">
     <div class="row">
-
       <div class="col-lg-12">
+
         <ul class="nav nav-tabs mb-4" role="tablist">
           <li class="nav-item">
             <a
               class="nav-link"
-              href="<?php echo base_url(); ?>member/requested-loa/pending"
+              href="<?php echo base_url(); ?>company-doctor/loa/requests-list"
               role="tab"
               ><span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">Pending</span></a
@@ -38,8 +36,8 @@
           </li>
           <li class="nav-item">
             <a
-              class="nav-link active"
-              href="<?php echo base_url(); ?>member/requested-loa/approved"
+              class="nav-link"
+              href="<?php echo base_url(); ?>company-doctor/loa/requests-list/approved"
               role="tab"
               ><span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">Approved</span></a
@@ -48,7 +46,7 @@
           <li class="nav-item">
             <a
               class="nav-link"
-              href="<?php echo base_url(); ?>member/requested-loa/disapproved"
+              href="<?php echo base_url(); ?>company-doctor/loa/requests-list/disapproved"
               role="tab"
               ><span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
@@ -57,7 +55,7 @@
             <li class="nav-item">
             <a
               class="nav-link"
-              href="<?php echo base_url(); ?>member/requested-loa/completed"
+              href="<?php echo base_url(); ?>company-doctor/loa/requests-list/completed"
               role="tab"
               ><span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
@@ -65,8 +63,8 @@
           </li>
           <li class="nav-item">
             <a
-              class="nav-link"
-              href="<?php echo base_url(); ?>member/requested-loa/cancelled"
+              class="nav-link active"
+              href="<?php echo base_url(); ?>company-doctor/loa/requests-list/cancelled"
               role="tab"
               ><span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">Cancelled</span></a
@@ -77,25 +75,28 @@
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover" id="memberApprovedLoa">
+              <table class="table table-hover table-responsive" id="cancelledLoaTable">
                 <thead>
-                  <tr>
+                <tr>
                     <th class="fw-bold">LOA No.</th>
-                    <th class="fw-bold">Expiration Date</th>
-                    <th class="fw-bold">Healthcare Provider</th>
-                    <th class="fw-bold">LOA Type</th>
-                    <th class="fw-bold">RX File</th>
+                    <th class="fw-bold">Requested by</th>
+                    <th class="fw-bold">Reason</th>
+                    <th class="fw-bold">Confirmed on</th>
+                    <th class="fw-bold">Confirmed by</th>
                     <th class="fw-bold">Status</th>
                     <th class="fw-bold">Actions</th>
-                  </tr>
+                </tr>
                 </thead>
                 <tbody>
                 </tbody>
-              </table>
+              </table>  
             </div>
           </div>
         </div>
 
+        <?php include 'view_approved_loa_details.php'; ?>
+        <?php include 'view_reason_loa_cancellation.php'; ?>
+      </div>
       <!-- End Row  -->  
       </div>
     <!-- End Container fluid  -->
@@ -103,74 +104,47 @@
   <!-- End Page wrapper  -->
   </div>
 <!-- End Wrapper -->
-  <?php include 'request_loa_cancellation.php'; ?>
-
-</div>
-
-  <?php include 'view_approved_loa_details.php'; ?>
-
 <script>
   const baseUrl = `<?php echo base_url(); ?>`;
   const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
 
   $(document).ready(function() {
-    $("#memberApprovedLoa").DataTable({
+
+    $('#cancelledLoaTable').DataTable({
+      processing: true, //Feature control the processing indicator.
+      serverSide: true, //Feature control DataTables' server-side processing mode.
+      order: [], //Initial no order.
+
+      // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}member/requested-loa/approved/fetch`,
-        dataSrc: function(data) {
-          if (data == "") {
-            return [];
-          } else {
-            return data.data;
-          }
+        url: `${baseUrl}company-doctor/loa/requests-list/cancelled/fetch`,
+        type: "POST",
+        // passing the token as data so that requests will be allowed
+        data: {
+          'token': '<?php echo $this->security->get_csrf_hash(); ?>'
         }
       },
-      order: [],
-      responsive: true,
-      fixedHeader: true,
+
+      //Set column definition initialisation properties.
       columnDefs: [{
-        // "targets": [5, 6, 7], // 6th and 7th column / numbering column
-         "targets": [4, 5, 6], 
+        "targets": [], // numbering column
         "orderable": false, //set not orderable
       }, ],
+      responsive: true,
+      fixedHeader: true,
     });
 
   });
 
-  const viewImage = (path) => {
-    let item = [{
-      src: path, // path to image
-      title: 'Attached RX File' // If you skip it, there will display the original image name
-    }];
-    // define options (if needed)
-    let options = {
-      index: 0 // this option means you will start at first image
-    };
-    // Initialize the plugin
-    let photoviewer = new PhotoViewer(item, options);
+  const viewReason = (reason) => {
+    $('#viewReasonModal').modal('show');
+    $('#reason').val(reason.toString());
+    
   }
 
-  const saveAsImage = () => {
-    // Get the div element you want to save as an image
-    const element = document.querySelector("#printableDiv");
-    // Use html2canvas to take a screenshot of the element
-    html2canvas(element)
-      .then(function(canvas) {
-        // Convert the canvas to an image data URL
-        const imgData = canvas.toDataURL("image/png");
-        // Create a temporary link element to download the image
-        const link = document.createElement("a");
-        link.download = `loa_${fileName}.png`;
-        link.href = imgData;
-
-        // Click the link to download the image
-        link.click();
-      });
-  }
-
-  const viewApprovedLoaInfo = (req_id) => {
+  const viewLoaInfo = (loa_id) => {
     $.ajax({
-      url: `${baseUrl}member/requested-loa/view/${req_id}`,
+      url: `${baseUrl}company-doctor/loa/requests-list/view/${loa_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);
@@ -179,8 +153,8 @@
           status,
           token,
           loa_no,
-          approved_by,
-          approved_on,
+          member_mbl,
+          remaining_mbl,
           first_name,
           middle_name,
           last_name,
@@ -208,18 +182,22 @@
           attending_physician,
           rx_file,
           req_status,
-          work_related
+          work_related,
+          approved_by,
+          approved_on
         } = res;
 
         $("#viewLoaModal").modal("show");
-
+        $('#saveImage-btn').hide();
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
-
+        
         $('#loa-no').html(loa_no);
         $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
+        $('#member-mbl').html(member_mbl);
+        $('#remaining-mbl').html(remaining_mbl);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
         $('#date-of-birth').html(date_of_birth);
         $('#age').html(age);
@@ -246,74 +224,4 @@
       }
     });
   }
-
-  const requestLoaCancellation = (loa_id, loa_no, hp_id) => {
-    $("#loaCancellationModal").modal("show");
-
-    $('#cancellation-reason').val('');
-    $('#cancellation-reason').removeClass('is-invalid');
-    $('#cancellation-reason-error').html('');
-
-    $('#cur-loa-id').val(loa_id);
-    $('#cur-loa-no').val(loa_no);
-    $('#cur-hp-id').val(hp_id);
-    $("#loaCancellationForm").attr("action", `${baseUrl}member/requested-loa/approve/cancel-request/${loa_id}`);
-  }
-
-  $(document).ready(function() {
-    $('#loaCancellationForm').submit(function(event) {
-      const nextPage = `${baseUrl}member/requested-loa/cancelled-requests`;
-      event.preventDefault();
-      $.ajax({
-        type: "post",
-        url: $(this).attr('action'),
-        data: $(this).serialize(),
-        dataType: "json",
-        success: function(response) {
-          const {
-            token,
-            status,
-            message,
-            cancellation_reason_error
-          } = response;
-          switch (status) {
-            case 'error':
-              // is-invalid class is a built in classname for errors in bootstrap
-              if (cancellation_reason_error !== '') {
-                $('#cancellation-reason-error').html(cancellation_reason_error);
-                $('#cancellation-reason').addClass('is-invalid');
-              } else {
-                $('#cancellation-reason-error').html('');
-                $('#cancellation-reason').removeClass('is-invalid');
-              }
-              break;
-            case 'save-error':
-              swal({
-                title: 'Failed',
-                text: message,
-                timer: 3000,
-                showConfirmButton: false,
-                type: 'error'
-              });
-              break;
-            case 'success':
-              swal({
-                title: 'Success',
-                text: message,
-                timer: 3000,
-                showConfirmButton: false,
-                type: 'success'
-              });
-              $('#loaCancellationModal').modal('hide');
-              $("#memberApprovedLoa").DataTable().ajax.reload();
-              // setTimeout(function() {
-              //   window.location.href = nextPage;
-              // }, 3200);
-              break;
-          }
-        }
-      });
-    });
-  });
-
 </script>

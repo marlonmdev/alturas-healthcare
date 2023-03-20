@@ -1029,7 +1029,7 @@ class Loa_controller extends CI_Controller {
 
 			$custom_reason = '<a class="text-info fs-6 fw-bold" href="JavaScript:void(0)" onclick="viewReason(\''.$data['cancellation_reason'].'\')"><u>View Reason</u></a>';
 
-			$custom_status = '<span class="rounded-pill bg-success text-white ps-2 pe-2">'. $data['status'] .'</span>';
+			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $data['status'] . '</span></div>';
 
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 

@@ -454,4 +454,40 @@ class Loa_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
+	function fetch_cancelled_loa() {
+		$this->security->get_csrf_hash();
+		$status = 'Confirmed';
+		$info = $this->loa_model->get_cancel_datatables($status);
+		$dataCancellations = [];
+
+		foreach($info as $data){
+			$row = [];
+			$loa_id = $this->myhash->hasher($data['loa_id'], 'encrypt');
+
+			$fullname = $data['first_name'] . ' ' . $data['middle_name'] . ' ' . $data['last_name'] . ' ' . $data['suffix'];
+
+			$custom_reason = '<a class="text-info fs-6 fw-bold" href="JavaScript:void(0)" onclick="viewReason(\''.$data['cancellation_reason'].'\')"><u>View Reason</u></a>';
+
+			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $data['status'] . '</span></div>';
+
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+
+			$row[] = $data['loa_no'];
+			$row[] = $fullname;
+			$row[] = $custom_reason;
+			$row[] = $data['confirmed_on'];
+			$row[] = $data['confirmed_by'];
+			$row[] = $custom_status;
+			$row[] = $custom_actions;
+			$dataCancellations[] = $row;
+		}
+		$response = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->loa_model->count_all_cancell($status),
+			"recordsFiltered" => $this->loa_model->count_cancell_filtered($status),
+			"data" => $dataCancellations,
+		];
+		echo json_encode($response);
+	}
+
 }

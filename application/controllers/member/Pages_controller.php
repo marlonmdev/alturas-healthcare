@@ -167,4 +167,11 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('member_panel/dashboard/user_profile');
 		$this->load->view('templates/footer');
 	}
+
+	function cancelled_loa_requests() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/loa/cancelled_loa');
+		$this->load->view('templates/footer');
+	}
 }

@@ -110,7 +110,7 @@ class Billing_controller extends CI_Controller {
         $loa = $this->billing_model->get_loa_to_bill($loa_id);
 
         $data['user_role'] = $this->session->userdata('user_role');
-        $data['cost_types'] = $this->billing_model->get_all_cost_types();
+        $data['cost_types'] = $this->billing_model->get_cost_types_by_hp($loa['hcare_provider']);
         $data['loa'] = $loa;
         $data['request_type'] = $loa["loa_request_type"];
         $data['work_related'] = $loa["work_related"];

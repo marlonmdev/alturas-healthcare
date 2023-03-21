@@ -424,9 +424,9 @@ class Loa_controller extends CI_Controller {
 			/* Checking if the work_related column is empty. If it is empty, it will display the status column.
 			If it is not empty, it will display the text "for Approval". */
 			if($value['work_related'] == ''){
-				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $value['status'] . '</span></div>';
+				$custom_status = '<span class="badge rounded-pill bg-warning">' . $value['status'] . '</span>';
 			}else{
-				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-cyan">for Approval</span></div>';
+				$custom_status = '<span class="badge rounded-pill bg-cyan">for Approval</span>';
 			}
 
 			$button = '<a class="me-2 align-top" style="top:-20px!important;" href="JavaScript:void(0)" onclick="viewLoaInfoModal(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
@@ -497,7 +497,7 @@ class Loa_controller extends CI_Controller {
 
 			$for_cancellation = $this->loa_model->db_get_loa_cancellation_request($value['loa_id']);
 
-			if(!$for_cancellation){
+			if($for_cancellation['status'] == 'Disapproved'){
 				$buttons .= '<a class="me-2" href="JavaScript:void(0)" onclick="requestLoaCancellation(\'' . $loa_id . '\', \'' . $value['loa_no'] . '\', \'' . $value['hcare_provider'] . '\')" data-bs-toggle="tooltip" title="Request LOA Cancellation"><i class="mdi mdi-close-circle fs-2 text-danger"></i></a>';
 			}else{
 				$buttons .= '<a class="me-2" data-bs-toggle="tooltip" title="Requested for Cancellation" disabled><i class="mdi mdi-close-circle fs-2 icon-disabled"></i></a>';
@@ -620,7 +620,7 @@ class Loa_controller extends CI_Controller {
 
 			$custom_date = date("m/d/Y", strtotime($loa['request_date']));
 
-			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-info">' . $loa['status'] . '</span></div>';
+			$custom_status = '<span class="badge rounded-pill bg-info">' . $loa['status'] . '</span>';
 
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewCompletedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
@@ -852,7 +852,7 @@ class Loa_controller extends CI_Controller {
 
 	function fetch_cancelled_loa() {
 		$this->security->get_csrf_hash();
-		$status = 'Confirmed';
+		$status = 'Approved';
 		$emp_id = $this->session->userdata('emp_id');
 		$info = $this->loa_model->get_cancel_datatables($status, $emp_id);
 		$dataCancellations = [];
@@ -863,8 +863,10 @@ class Loa_controller extends CI_Controller {
 
 			$custom_reason = '<a class="text-info fs-6 fw-bold" href="JavaScript:void(0)" onclick="viewReasonModal(\''.$data['cancellation_reason'].'\')"><u>View Reason</u></a>';
 
-			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $data['status'] . '</span></div>';
-
+			if($data['status'] == 'Approved'){
+				$custom_status = '<span class="badge rounded-pill bg-success">Cancelled</span>';
+			}
+			
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
 			$row[] = $data['loa_no'];

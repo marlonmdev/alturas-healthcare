@@ -38,16 +38,16 @@
             </div>
             <div class="row">
                 <div class="col-lg-4">
-                    <label class="fw-bold fs-5">Member's Name : </label>
-                    <input class="form-control text-danger fw-bold" type="text" name="member-name" id="member-name" value="<?php echo $full_name ?>" readonly>
+                    <label class="fw-bold">Member's Name : </label>
+                    <input class="form-control text-danger fw-bold fs-5" type="text" name="member-name" id="member-name" value="<?php echo $full_name ?>" readonly>
                 </div>
                 <div class="col-lg-3">
-                    <label class="fw-bold fs-5">LOA Number : </label>
-                    <input class="form-control text-danger fw-bold" type="text" name="loa-num" id="loa-num" value="<?php echo $loa_no?>" readonly>
+                    <label class="fw-bold">LOA Number : </label>
+                    <input class="form-control text-danger fw-bold fs-5" type="text" name="loa-num" id="loa-num" value="<?php echo $loa_no?>" readonly>
                 </div>     
                 <div class="col-lg-5">
-                    <label class="fw-bold fs-5">Healthcare Provider : </label>
-                    <input class="form-control text-danger fw-bold" type="text" name="loa-num" id="loa-num" value="<?php echo $hc_provider ?>" readonly>
+                    <label class="fw-bold">Healthcare Provider : </label>
+                    <input class="form-control text-danger fw-bold fs-5" type="text" name="loa-num" id="loa-num" value="<?php echo $hc_provider ?>" readonly>
                 </div>
             </div>
             <hr>
@@ -55,34 +55,31 @@
                 <div class="card-body">
                     <div class="row">
 
-                    <?php 
-                        /* Exploding the string into an array and then checking if the array
-                        contains the value. */
-                        $selectedOptions = explode(';', $med_services);
-                        foreach ($cost_types as $cost_type) :
-                            if (in_array($cost_type['ctype_id'], $selectedOptions)) :
-                              
-                    ?>
+                        <?php 
+                            /* Exploding the string into an array and then checking if the array
+                            contains the value. */
+                            $selectedOptions = explode(';', $med_services);
+                            foreach ($cost_types as $cost_type) :
+                                if (in_array($cost_type['ctype_id'], $selectedOptions)) :
+                        ?>
+                            <input type="hidden" name="ctype_id" value="<?php echo $cost_type['ctype_id']; ?>">
+                            <div class="col-lg-3">
+                                <label class="fw-bold">Medical Services : </label>
+                                <input type="text" class="form-control fw-bold ls-1" name="ct-name[]" value="<?php echo $cost_type['item_description']; ?>" readonly>
+                            </div>
 
-                        <div class="col-lg-3">
-                            <label class="fw-bold">Medical Services : </label>
-                            <input type="hidden" name="ctype-id" id="ctype-id" value="<?php echo $cost_type['ctype_id']; ?>">
-                            <input class="form-control" name="services[]" id="services" value="<?php echo $cost_type['item_description']; ?>" readonly>
-                        </div>
-
-                        <div class="col-lg-1">
-                            <label class="fw-bold">Service Fee: </label>
-                            <input class="form-control" name="cost[]" id="cost" value="<?php echo $cost_type['op_price']; ?>" readonly>
-                        </div>
-
-                    <?php 
-                        endif;
-                        endforeach;
-                    ?>
-
+                            <div class="col-lg-1">
+                                <label class="fw-bold">Service Fee: </label>
+                                <input type="text" class="ct-fee form-control fw-bold ls-1" name="ct-fee[]" value="<?php echo $cost_type['op_price']; ?>" min="0" required>
+                            </div>
+                        <?php 
+                                endif;
+                            endforeach;
+                        ?>
+                   
                         <div class="col-lg-1">
                             <label class="fw-bold">Quantity : </label>
-                            <input class="form-control" name="quantity" id="quantity" type="number">
+                            <input class="form-control" name="quantity" id="quantity" type="number" min="1" value="1">
                         </div>
                         <div class="col-lg-2">
                             <label class="fw-bold">Status: </label>

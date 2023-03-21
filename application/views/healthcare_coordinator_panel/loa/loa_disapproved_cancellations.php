@@ -36,7 +36,7 @@
             </li>
             <li class="nav-item">
               <a
-              class="nav-link active"
+              class="nav-link"
               href="<?php echo base_url(); ?>healthcare-coordinator/loa/cancellation-requests/approved"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -45,7 +45,7 @@
             </li>
             <li class="nav-item">
               <a
-              class="nav-link"
+              class="nav-link active"
               href="<?php echo base_url(); ?>healthcare-coordinator/loa/cancellation-requests/disapproved"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -79,8 +79,8 @@
                     <th class="fw-bold">LOA No.</th>
                     <th class="fw-bold">Requested by</th>
                     <th class="fw-bold">Reason</th>
-                    <th class="fw-bold">Approved on</th>
-                    <th class="fw-bold">Approved by</th>
+                    <th class="fw-bold">Disapproved on</th>
+                    <th class="fw-bold">Disapproved by</th>
                     <th class="fw-bold">Status</th>
                     <th class="fw-bold">Actions</th>
                   </tr>
@@ -93,9 +93,9 @@
         </div>
       </div>
       <?php include 'view_reason_cancellation_modal.php' ?>
-      <?php include 'view_approved_loa_details.php' ?>
       <!-- End Row  -->  
       </div>
+      <?php include 'view_approved_loa_details.php' ?>
     <!-- End Container fluid  -->
     </div>
   <!-- End Page wrapper  -->
@@ -120,7 +120,7 @@
 
             // Load data for the table's content from an Ajax source
             ajax: {
-                url: `${baseUrl}healthcare-coordinator/loa/approved-cancellation/fetch`,
+                url: `${baseUrl}healthcare-coordinator/loa/disapproved-cancellation/fetch`,
                 type: "POST",
                 // passing the token as data so that requests will be allowed
                 data: function(data) {

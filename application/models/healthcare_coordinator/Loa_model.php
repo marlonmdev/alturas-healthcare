@@ -93,12 +93,13 @@ class Loa_model extends CI_Model {
     return $query->result_array();
   }
 
-  function db_get_cost_types_by_hpID($hp_id) {
-    $this->db->select('item_description, op_price, hp_id')
-            ->from('cost_types')
-            ->where('hp_id', $hp_id);
-    return $this->db->get()->result_array();
-  }
+  function db_get_cost_types_by_hpID($hp_id){
+    $this->db->select('*')
+             ->from('cost_types')
+             ->where('hp_id', $hp_id);
+    $query = $this->db->get();
+    return $query->result_array();
+}
 
   function db_get_healthcare_providers() {
     $query = $this->db->get('healthcare_providers');
@@ -147,7 +148,7 @@ class Loa_model extends CI_Model {
             ->where('tbl_1.status', 'Approved')
             ->where('tbl_1.loa_id', $loa_id)
             ->order_by('loa_id', 'DESC');
-    return $this->db->get()->result_array();
+    return $this->db->get()->row_array();
   }
 
   function db_get_all_disapproved_loa() {
@@ -290,15 +291,23 @@ class Loa_model extends CI_Model {
   // End of server-side processing datatables
 
   function set_cancel_approved($loa_id, $confirm_by, $confirmed_on) {
-    $this->db->set('status', 'Confirmed')
+    $this->db->set('status', 'Approved')
             ->set('confirmed_by', $confirm_by)
             ->set('confirmed_on', $confirmed_on)
             ->where('loa_id' , $loa_id);
     return $this->db->update('loa_cancellation_requests');
   }
 
-  function set_cloa_request_status($loa_id) {
-    $this->db->set('status', 'Cancelled')
+  function set_cancel_disapproved($loa_id, $disapproved_by, $disapproved_on) {
+    $this->db->set('status', 'Disapproved')
+            ->set('disapproved_by', $disapproved_by)
+            ->set('disapproved_on', $disapproved_on)
+            ->where('loa_id' , $loa_id);
+    return $this->db->update('loa_cancellation_requests');
+  }
+
+  function set_cloa_request_status($loa_id, $status) {
+    $this->db->set('status', $status)
             ->where('loa_id' , $loa_id);
     return $this->db->update('loa_requests');
   }

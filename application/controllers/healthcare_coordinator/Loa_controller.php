@@ -342,9 +342,9 @@ class Loa_controller extends CI_Controller {
 			/* Checking if the work_related column is empty. If it is empty, it will display the status column.
 			If it is not empty, it will display the text "for Approval". */
 			if($loa['work_related'] == ''){
-				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $loa['status'] . '</span></div>';
+				$custom_status = '<span class="badge rounded-pill bg-warning">' . $loa['status'] . '</span>';
 			}else{
-				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-cyan">for Approval</span></div>';
+				$custom_status = '<span class="badge rounded-pill bg-cyan">for Approval</span>';
 			}
 
 			$custom_actions = '<a href="JavaScript:void(0)" class="me-2" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
@@ -449,7 +449,7 @@ class Loa_controller extends CI_Controller {
 				$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Update LOA"><i class="mdi mdi-playlist-check fs-2 text-success"></i></a>';
 			}
 
-			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $loa['status'] . '</span></div>';
+			$custom_status = '<span class="badge rounded-pill bg-success">' . $loa['status'] . '</span>';
 		
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
@@ -519,7 +519,7 @@ class Loa_controller extends CI_Controller {
 
 			$custom_date = date("m/d/Y", strtotime($loa['request_date']));
 
-			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-danger">' . $loa['status'] . '</span></div>';
+			$custom_status = '<span class="badge rounded-pill bg-danger">' . $loa['status'] . '</span>';
 
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewDisapprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
@@ -576,7 +576,7 @@ class Loa_controller extends CI_Controller {
 
 			$custom_date = date("m/d/Y", strtotime($loa['request_date']));
 
-			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-info">' . $loa['status'] . '</span></div>';
+			$custom_status = '<span class="badge rounded-pill bg-info">' . $loa['status'] . '</span>';
 
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewCompletedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
@@ -970,9 +970,11 @@ class Loa_controller extends CI_Controller {
 
 			$custom_reason = '<a class="text-info fs-6 fw-bold" href="JavaScript:void(0)" onclick="viewReason(\''.$data['cancellation_reason'].'\')"><u>View Reason</u></a>';
 
-			$custom_status = '<span class="rounded-pill bg-warning text-white ps-2 pe-2">'. $data['status'] .'</span>';
+			$custom_status = '<span class="badge rounded-pill bg-warning text-white ps-2 pe-2">'. $data['status'] .'</span>';
 
-			$custom_action = '<a href="JavaScript:void(0)" onclick="confirmRequest(\''. $loa_id .'\')"><i class="mdi mdi-thumb-up text-info fs-3" title="Confirm"></i></a>';
+			$custom_action = '<a href="JavaScript:void(0)" onclick="confirmRequest(\''. $loa_id .'\')"><i class="mdi mdi-thumb-up text-info fs-3" title="Approve"></i></a>';
+
+			$custom_action .= '<a href="JavaScript:void(0)" onclick="disapproveRequest(\''. $loa_id .'\')"><i class="mdi mdi-thumb-down-outline text-danger fs-3 ps-2" title="Disapprove"></i></a>';
 
 			$row[] = $data['loa_no'];
 			$row[] = $fullname;
@@ -984,8 +986,8 @@ class Loa_controller extends CI_Controller {
 		}
 		$response = [
 			"draw" => $_POST['draw'],
-			"recordsTotal" => $this->loa_model->count_all_cancell($status),
-			"recordsFiltered" => $this->loa_model->count_cancell_filtered($status),
+			"recordsTotal" => $this->loa_model->count_all_cancel($status),
+			"recordsFiltered" => $this->loa_model->count_cancel_filtered($status),
 			"data" => $dataCancellations,
 		];
 		echo json_encode($response);
@@ -1000,7 +1002,8 @@ class Loa_controller extends CI_Controller {
 		$confirmed = $this->loa_model->set_cancel_approved($loa_id, $confirm_by, $confirmed_on);
 		
 		if($confirmed){
-			$this->loa_model->set_cloa_request_status($loa_id);
+			$status = 'Cancelled';
+			$this->loa_model->set_cloa_request_status($loa_id, $status);
 			echo json_encode([
 				'token' => $token,
 				'status' => 'success',
@@ -1010,14 +1013,38 @@ class Loa_controller extends CI_Controller {
 			echo json_encode([
 				'token' => $token,
 				'status' => 'error',
-				'message' => 'Cancellation Failed!'
+				'message' => 'Cancellation Failed to Approved!'
+			]);
+		}
+	}
+
+	function set_cancellation_disapproved() {
+		$token = $this->security->get_csrf_hash();
+		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$disapproved_by = $this->session->userdata('fullname');
+		$disapproved_on = date('Y-m-d');
+		$confirmed = $this->loa_model->set_cancel_disapproved($loa_id, $disapproved_by, $disapproved_on);
+		
+		if($confirmed){
+			$status = 'Approved';
+			$this->loa_model->set_cloa_request_status($loa_id, $status);
+			echo json_encode([
+				'token' => $token,
+				'status' => 'success',
+				'message' => 'Cancellation Disapproved!'
+			]);
+		}else{
+			echo json_encode([
+				'token' => $token,
+				'status' => 'error',
+				'message' => 'Cancellation Failed to Disapproved!'
 			]);
 		}
 	}
 
 	function fetch_approved_cancellations() {
 		$this->security->get_csrf_hash();
-		$status = 'Confirmed';
+		$status = 'Approved';
 		$info = $this->loa_model->get_cancel_datatables($status);
 		$dataCancellations = [];
 
@@ -1029,7 +1056,7 @@ class Loa_controller extends CI_Controller {
 
 			$custom_reason = '<a class="text-info fs-6 fw-bold" href="JavaScript:void(0)" onclick="viewReason(\''.$data['cancellation_reason'].'\')"><u>View Reason</u></a>';
 
-			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $data['status'] . '</span></div>';
+			$custom_status = '<span class="badge rounded-pill bg-success text-white ps-2 pe-2">'. $data['status'] .'</span>';
 
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
@@ -1052,26 +1079,57 @@ class Loa_controller extends CI_Controller {
 		
 	}
 
+	function fetch_disapproved_cancellations() {
+		$this->security->get_csrf_hash();
+		$status = 'Disapproved';
+		$info = $this->loa_model->get_cancel_datatables($status);
+		$dataCancellations = [];
+
+		foreach($info as $data){
+			$row = [];
+			$loa_id = $this->myhash->hasher($data['loa_id'], 'encrypt');
+
+			$fullname = $data['first_name'] . ' ' . $data['middle_name'] . ' ' . $data['last_name'] . ' ' . $data['suffix'];
+
+			$custom_reason = '<a class="text-info fs-6 fw-bold" href="JavaScript:void(0)" onclick="viewReason(\''.$data['cancellation_reason'].'\')"><u>View Reason</u></a>';
+
+			$custom_status = '<span class="badge rounded-pill bg-danger text-white ps-2 pe-2">'. $data['status'] .'</span>';
+
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+
+			$row[] = $data['loa_no'];
+			$row[] = $fullname;
+			$row[] = $custom_reason;
+			$row[] = $data['disapproved_on'];
+			$row[] = $data['disapproved_by'];
+			$row[] = $custom_status;
+			$row[] = $custom_actions;
+			$dataCancellations[] = $row;
+		}
+		$response = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->loa_model->count_all_cancel($status),
+			"recordsFiltered" => $this->loa_model->count_cancel_filtered($status),
+			"data" => $dataCancellations,
+		];
+		echo json_encode($response);
+	}
+
 	function view_tag_loa_completed() {
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$data['user_role'] = $this->session->userdata('user_role');
-		$loaInfo = $this->loa_model->get_all_approved_loa($loa_id);
+		$loa = $this->loa_model->get_all_approved_loa($loa_id);
 
-		foreach($loaInfo as $loa){
-			$loa_info['full_name'] = $loa['first_name'] .' '. $loa['middle_name'] .' '. $loa['last_name'] .' '. $loa['suffix'];
-			$loa_info['loa_no'] = $loa['loa_no'];
-			$loa_info['hc_provider'] = $loa['hp_name'];
-			$loa_info['hp_id'] = $loa['hp_id'];
-			$loa_info['loa_id'] = $loa['loa_id'];
-			$loa_info['med_services'] = $loa['med_services'];
-
-			$hp_id = $loa['hcare_provider'];
-		}
-		$loa_info['cost_types'] = $this->loa_model->db_get_cost_types_by_hpID($hp_id);
+		$data['cost_types'] = $this->loa_model->db_get_cost_types_by_hpID($loa['hcare_provider']);
+		$data['full_name'] = $loa['first_name'] .' '. $loa['middle_name'] .' '. $loa['last_name'] .' '. $loa['suffix'];
+		$data['loa_no'] = $loa['loa_no'];
+		$data['hc_provider'] = $loa['hp_name'];
+		$data['hp_id'] = $loa['hp_id'];
+		$data['loa_id'] = $loa['loa_id'];
+		$data['med_services'] = $loa['med_services'];
 		
-			
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_coordinator_panel/loa/tag_loa_to_complete', $loa_info);
+		$this->load->view('healthcare_coordinator_panel/loa/tag_loa_to_complete');
 		$this->load->view('templates/footer');
 	}
 	

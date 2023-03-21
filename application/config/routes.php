@@ -285,6 +285,7 @@ $route['healthcare-coordinator/loa/requests-list/completed'] = 'healthcare_coord
 $route['healthcare-coordinator/loa/requests-list/cancelled'] = 'healthcare_coordinator/pages_controller/view_cancelled_loa_list';
 $route['healthcare-coordinator/loa/cancellation-requests'] = 'healthcare_coordinator/pages_controller/view_loa_cancellation_list';
 $route['healthcare-coordinator/loa/cancellation-requests/approved'] = 'healthcare_coordinator/pages_controller/view_loa_approved_cancellation';
+$route['healthcare-coordinator/loa/cancellation-requests/disapproved'] = 'healthcare_coordinator/pages_controller/view_loa_disapproved_cancellation';
 $route['healthcare-coordinator/noa/requests-list'] = 'healthcare_coordinator/pages_controller/view_pending_noa_list';
 $route['healthcare-coordinator/noa/requests-list/approved'] = 'healthcare_coordinator/pages_controller/view_approved_noa_list';
 $route['healthcare-coordinator/noa/requests-list/disapproved'] = 'healthcare_coordinator/pages_controller/view_disapproved_noa_list';
@@ -346,6 +347,8 @@ $route['healthcare-coordinator/loa/cancellation-requests/fetch'] = 'healthcare_c
 $route['healthcare-coordinator/loa/cancellation-requests/confirm/(:any)'] = 'healthcare_coordinator/loa_controller/set_cancellation_approved';
 $route['healthcare-coordinator/loa/approved-cancellation/fetch'] = 'healthcare_coordinator/loa_controller/fetch_approved_cancellations';
 $route['healthcare-coordinator/loa/requested-loa/update-loa/(:any)'] = 'healthcare_coordinator/loa_controller/view_tag_loa_completed';
+$route['healthcare-coordinator/loa/cancellation-requests/disapprove/(:any)'] = 'healthcare_coordinator/loa_controller/set_cancellation_disapproved';
+$route['healthcare-coordinator/loa/disapproved-cancellation/fetch'] = 'healthcare_coordinator/loa_controller/fetch_disapproved_cancellations';
 
 
 // HealthCare Coordinator NOA Routes

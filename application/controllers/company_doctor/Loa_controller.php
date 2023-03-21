@@ -456,7 +456,7 @@ class Loa_controller extends CI_Controller {
 
 	function fetch_cancelled_loa() {
 		$this->security->get_csrf_hash();
-		$status = 'Confirmed';
+		$status = 'Approved';
 		$info = $this->loa_model->get_cancel_datatables($status);
 		$dataCancellations = [];
 
@@ -468,7 +468,9 @@ class Loa_controller extends CI_Controller {
 
 			$custom_reason = '<a class="text-info fs-6 fw-bold" href="JavaScript:void(0)" onclick="viewReason(\''.$data['cancellation_reason'].'\')"><u>View Reason</u></a>';
 
-			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $data['status'] . '</span></div>';
+			if($data['status'] == 'Approved'){
+				$custom_status = '<span class="badge rounded-pill bg-success">Cancelled</span>';
+			}
 
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 

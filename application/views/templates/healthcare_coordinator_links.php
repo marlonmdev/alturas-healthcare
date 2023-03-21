@@ -37,13 +37,27 @@
               <?php echo $this->uri->segment(2) == 'loa' ? 'selected' : ''; ?>
               ">
                 <a
-                  class="sidebar-link sidebar-link"
-                  href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list"
+                  class="sidebar-link has-arrow"
+                  href="javascript:void(0)"
                   aria-expanded="false"
-                  >
+                >
                   <i class="mdi mdi-file-document"></i>
                   <span class="hide-menu ls-1">LOA</span>
                 </a>
+                <ul aria-expanded="false" class="collapse first-level">
+                  <li class="sidebar-item">
+                    <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list" class="sidebar-link"
+                      ><i class="mdi mdi-file-document-box"></i
+                      ><span class="hide-menu ls-1">LOA Request List</span>
+                    </a>
+                  </li>
+                  <li class="sidebar-item">
+                    <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/cancellation-requests" class="sidebar-link"
+                      ><i class="mdi mdi-note-outline"></i
+                      ><span class="hide-menu ls-1">Cancellation Requests</span>
+                    </a>
+                  </li>
+                </ul>
               </li>
 
               <li class="sidebar-item 

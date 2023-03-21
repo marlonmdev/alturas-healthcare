@@ -43,7 +43,7 @@
                   href="javascript:void(0)"
                   aria-expanded="false"
                   >
-                  <i class="mdi mdi-file-chart"></i>
+                  <i class="mdi mdi-file-check"></i>
                   <span class="hide-menu ls-1">Billing</span>
                 </a>
                 <ul aria-expanded="false" class="collapse first-level">

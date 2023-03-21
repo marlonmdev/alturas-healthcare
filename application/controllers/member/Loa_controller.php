@@ -41,7 +41,7 @@ class Loa_controller extends CI_Controller {
 		}
 	}
 
-	function loa_number($input, $pad_len = 8, $prefix = null) {
+	function loa_number($input, $pad_len = 7, $prefix = null) {
 		if ($pad_len <= strlen($input))
 			trigger_error('<strong>$pad_len</strong> cannot be less than or equal to the length of <strong>$input</strong> to generate invoice number', E_USER_ERROR);
 
@@ -97,7 +97,7 @@ class Loa_controller extends CI_Controller {
 				$this->form_validation->set_rules('healthcare-provider', 'HealthCare Provider', 'required');
 				$this->form_validation->set_rules('loa-request-type', 'LOA Request Type', 'required');
 				$this->form_validation->set_rules('med-services', 'Medical Services', 'callback_multiple_select');
-				$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[1000]');
+				$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[2000]');
 				$this->form_validation->set_rules('requesting-physician', 'Requesting Physician', 'trim|required');
 				$this->form_validation->set_rules('rx-file', '', 'callback_update_check_rx_file');
 				if ($this->form_validation->run() == FALSE) {
@@ -218,8 +218,9 @@ class Loa_controller extends CI_Controller {
 		$result = $this->loa_model->db_get_max_loa_id();
 		$max_loa_id = !$result ? 0 : $result['loa_id'];
 		$add_loa = $max_loa_id + 1;
+		$current_year = date('Y');
 		// call function loa_number
-		$loa_no = $this->loa_number($add_loa, 8, 'LOA-');
+		$loa_no = $this->loa_number($add_loa, 7, 'LOA-'.$current_year);
 
 		$emp_id = $this->session->userdata('emp_id');
 		$member = $this->loa_model->db_get_member_infos($emp_id);
@@ -481,7 +482,26 @@ class Loa_controller extends CI_Controller {
 
 			$custom_loa_no = 	'<mark class="bg-primary text-white">'.$value['loa_no'].'</mark>';
 
-			$button = '<a class="me-2" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			$expires = strtotime('+1 week', strtotime($value['approved_on']));
+      $expiration_date = date('m/d/Y', $expires);
+			// call another function to determined if expired or not
+			$date_result = $this->checkExpiration($value['approved_on']);
+			
+			if($date_result == 'Expired'){
+				$custom_date = '<span class="text-danger">'.$expiration_date.'</span><span class="text-danger fw-bold ls-1"> [Expired]</span>';
+			}else{
+				$custom_date = $expiration_date;
+			}
+
+			$buttons = '<a class="me-2" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+
+			$for_cancellation = $this->loa_model->db_get_loa_cancellation_request($value['loa_id']);
+
+			if(!$for_cancellation){
+				$buttons .= '<a class="me-2" href="JavaScript:void(0)" onclick="requestLoaCancellation(\'' . $loa_id . '\', \'' . $value['loa_no'] . '\', \'' . $value['hcare_provider'] . '\')" data-bs-toggle="tooltip" title="Request LOA Cancellation"><i class="mdi mdi-close-circle fs-2 text-danger"></i></a>';
+			}else{
+				$buttons .= '<a class="me-2" data-bs-toggle="tooltip" title="Requested for Cancellation" disabled><i class="mdi mdi-close-circle fs-2 icon-disabled"></i></a>';
+			}
 
 			// $button .= '<a href="' . base_url() . 'member/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Generate Printable LOA"><i class="mdi mdi-printer fs-2 text-primary"></i></a>';
 
@@ -509,16 +529,30 @@ class Loa_controller extends CI_Controller {
 
 			$result['data'][] = array(
 				$custom_loa_no,
-				date("m/d/Y", strtotime($value['request_date'])),
+				$custom_date,
 				$short_hp_name,
 				$value['loa_request_type'],
 				// $short_med_serv,
 				$view_file,
 				'<span class="badge rounded-pill bg-success">' . $value['status'] . '</span>',
-				$button
+				$buttons
 			);
 		}
 		echo json_encode($result);
+	}
+
+	function checkExpiration($passed_date){
+		$approved_date = DateTime::createFromFormat("Y-m-d", $passed_date);
+
+		$expiration_date = $approved_date->modify("+7 days");
+
+		$current_date = new DateTime();
+
+		$date_diff = $current_date->diff($expiration_date);
+
+		$result = $date_diff->invert ? "Expired" : "Not Expired";
+
+		return $result;
 	}
 
 	function fetch_disapproved_loa() {
@@ -771,4 +805,84 @@ class Loa_controller extends CI_Controller {
 			$this->load->view('templates/footer');
 		}
 	}
+
+	function request_loa_cancellation(){
+		$token = $this->security->get_csrf_hash();
+		$loa_id = $this->myhash->hasher($this->input->post('loa_id', TRUE), 'decrypt');
+		$current_date = date("Y-m-d");
+
+		$this->form_validation->set_rules('cancellation_reason', 'Reason for Cancellation', 'trim|required|max_length[2000]');
+		if ($this->form_validation->run() == FALSE) {
+			$response = [
+				'token' => $token,
+				'status' => 'error',
+				'cancellation_reason_error' => form_error('cancellation_reason'),
+			];
+		} else {
+			$post_data = [
+				'loa_id'              => $loa_id,
+				'loa_no'              => $this->input->post('loa_no', TRUE),
+				'cancellation_reason' => $this->input->post('cancellation_reason', TRUE),
+				'hp_id'               => $this->input->post('hp_id', TRUE),
+				'requested_by' 				=> $this->session->userdata('emp_id'),
+				'requested_on' 				=> $current_date,
+				'status'              => 'Pending',
+				'confirmed_by' 				=> '',
+				'confirmed_on' 				=> '',
+			];
+
+			$inserted = $this->loa_model->db_insert_loa_cancellation_request($post_data);
+			// if loa cancellation request is not inserted
+			if (!$inserted) {
+				$response = [
+					'token' => $token,
+					'status' => 'save-error',
+					'message' => 'Cancellation Request Submit Failed'
+				];
+			}
+			$response = [
+				'token' => $token,
+				'status' => 'success',
+				'message' => 'Cancellation Request Submitted Successfully'
+			];	
+		}
+
+		echo json_encode($response);
+	}
+
+	function fetch_cancelled_loa() {
+		$this->security->get_csrf_hash();
+		$status = 'Confirmed';
+		$emp_id = $this->session->userdata('emp_id');
+		$info = $this->loa_model->get_cancel_datatables($status, $emp_id);
+		$dataCancellations = [];
+
+		foreach($info as $data){
+			$row = [];
+			$loa_id = $this->myhash->hasher($data['loa_id'], 'encrypt');
+
+			$custom_reason = '<a class="text-info fs-6 fw-bold" href="JavaScript:void(0)" onclick="viewReasonModal(\''.$data['cancellation_reason'].'\')"><u>View Reason</u></a>';
+
+			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $data['status'] . '</span></div>';
+
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+
+			$row[] = $data['loa_no'];
+			$row[] = $data['requested_on'];
+			$row[] = $custom_reason;
+			$row[] = $data['confirmed_on'];
+			$row[] = $data['confirmed_by'];
+			$row[] = $custom_status;
+			$row[] = $custom_actions;
+			$dataCancellations[] = $row;
+		}
+		$response = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->loa_model->count_all_cancell($status, $emp_id),
+			"recordsFiltered" => $this->loa_model->count_cancell_filtered($status, $emp_id),
+			"data" => $dataCancellations,
+		];
+		echo json_encode($response);
+	}
+
 }

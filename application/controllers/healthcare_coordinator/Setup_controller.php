@@ -432,23 +432,20 @@ class Setup_controller extends CI_Controller {
 
   function register_cost_type() {
     $this->security->get_csrf_hash();
-    $hospital_id = $this->input->post('hospital-filter');
-    $price_list = $this->input->post('price-filter');
+    $hospital_id = $this->input->post('hospital-filter-add');
+    $price_list = $this->input->post('price-filter-add');
     if($price_list == 'other'){
       $price_category = strtoupper(strip_tags($this->input->post('other-price-filter')));
     }else{
-      $price_category = strtoupper($this->input->post('price-filter'));
+      $price_category = strtoupper($this->input->post('price-filter-add'));
     }
     $item_id = (strip_tags($this->input->post('item-id')));
     $cost_type = strtoupper(strip_tags($this->input->post('cost-type')));
     $op_price = (strip_tags($this->input->post('op-price')));
     $ip_price = (strip_tags($this->input->post('ip-price')));
     
-    $this->form_validation->set_rules('hospital-filter', 'Hospital', 'required');
-    $this->form_validation->set_rules('price-filter', 'Price List Category', 'required');
-    if($price_list == 'other'){
-      $this->form_validation->set_rules('other-price-filter', 'Other Price List Category', 'required');
-    }
+    $this->form_validation->set_rules('hospital-filter-add', 'Hospital', 'required');
+    $this->form_validation->set_rules('price-filter-add', 'Price List Category', 'required');
     $this->form_validation->set_rules('cost-type', 'Item Description', 'trim|required|callback_check_cost_type_exist');    
     $this->form_validation->set_rules('op-price', 'Outpatient Price', 'trim|required');
     $this->form_validation->set_rules('ip-price', 'Inpatient Price', 'trim|required');
@@ -456,9 +453,8 @@ class Setup_controller extends CI_Controller {
     if ($this->form_validation->run() == FALSE) {
       $response = [
         'status' => 'error',
-        'hp_id_error' => form_error('hospital-filter'),
-        'price_list_error' => form_error('price-filter'),
-        'other_list_error' => form_error('other-price-filter'),
+        'hp_id_error' => form_error('hospital-filter-add'),
+        'price_list_error' => form_error('price-filter-add'),
         'cost_type_error' => form_error('cost-type'),
         'op_price_error' => form_error('op-price'),
         'ip_price_error' => form_error('ip-price'),

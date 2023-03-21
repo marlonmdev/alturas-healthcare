@@ -13,7 +13,7 @@ class Noa_controller extends CI_Controller {
 		}
 	}
 
-	function noa_number($input, $pad_len = 8, $prefix = null) {
+	function noa_number($input, $pad_len = 7, $prefix = null) {
 		if ($pad_len <= strlen($input))
 			trigger_error('<strong>$pad_len</strong> cannot be less than or equal to the length of <strong>$input</strong> to generate invoice number', E_USER_ERROR);
 
@@ -63,10 +63,11 @@ class Noa_controller extends CI_Controller {
 			} else {
 				// select the max noa_id from DB
 				$result = $this->noa_model->db_get_max_noa_id();
-				$max_loa_id = !$result ? 0 : $result['noa_id'];
-				$add_loa = $max_loa_id + 1;
+				$max_noa_id = !$result ? 0 : $result['noa_id'];
+				$add_noa = $max_noa_id + 1;
+				$current_year = date('Y');
 				// call function loa_number
-				$noa_no = $this->noa_number($add_loa, 8, 'NOA-');
+				$noa_no = $this->noa_number($add_noa, 7, 'NOA-'.$current_year);
 
 				$member_id = $this->myhash->hasher($this->input->post('member-id'), 'decrypt');
 				$member = $this->noa_model->db_get_member_details($member_id);
@@ -108,9 +109,9 @@ class Noa_controller extends CI_Controller {
 	function fetch_all_pending_noa() {
 		$this->security->get_csrf_hash();
 		$status = 'Pending';
-		$hcc_emp_id = $this->session->userdata('emp_id');
 		$list = $this->noa_model->get_datatables($status);
 		$data = [];
+
 		foreach ($list as $noa) {
 			$row = [];
 			$noa_id = $this->myhash->hasher($noa['noa_id'], 'encrypt');
@@ -133,19 +134,11 @@ class Noa_controller extends CI_Controller {
 
 			$custom_actions = '<a class="me-2" href="JavaScript:void(0)" onclick="viewNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
-			if ($noa['requested_by'] !== $hcc_emp_id) {
-				$custom_actions .= '<a class="me-2" disabled><i class="mdi mdi-pencil-circle fs-2 text-success icon-disabled"></i></a>';
+			$custom_actions .= '<a class="me-2" href="' . $view_url . '" data-bs-toggle="tooltip" title="Edit NOA" readonly><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a>';
 
-				$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Tag LOA Charge Type"><i class="mdi mdi-tag-plus fs-2 text-primary"></i></a>';
+			$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Tag NOA Charge Type"><i class="mdi mdi-tag-plus fs-2 text-primary"></i></a>';
 
-				$custom_actions .= '<a disabled><i class="mdi mdi-delete-circle fs-2 icon-disabled"></i></a>';
-			} else {
-				$custom_actions .= '<a class="me-2" href="' . $view_url . '" data-bs-toggle="tooltip" title="Edit NOA" readonly><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a>';
-
-				$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Tag NOA Charge Type"><i class="mdi mdi-tag-plus fs-2 text-primary"></i></a>';
-
-				$custom_actions .= '<a href="Javascript:void(0)" onclick="cancelNoaRequest(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Delete NOA"><i class="mdi mdi-delete-circle fs-2 text-danger"></i></a>';
-			}
+			$custom_actions .= '<a href="Javascript:void(0)" onclick="cancelNoaRequest(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Delete NOA"><i class="mdi mdi-delete-circle fs-2 text-danger"></i></a>';
 
 			// shorten name of values from db if its too long for viewing and add ...
 			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];

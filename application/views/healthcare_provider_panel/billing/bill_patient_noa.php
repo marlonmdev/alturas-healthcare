@@ -89,6 +89,10 @@
                             <input type="hidden" name="profee-count" value="0" min="0" id="profee-count">
                             <input type="hidden" name="deduction-count" id="deduction-count" value="0" min="0">
                             <input type="hidden" name="services-count" id="services-count" value="0" min="0">
+                            <input type="hidden" name="total-services" value="0" min="0" id="total-services">
+                            <input type="hidden" name="total-medications" value="0" min="0" id="total-medications">
+                            <input type="hidden" name="total-profees" value="0" min="0" id="total-profees">   
+                            <input type="hidden" name="total-roomboard" value="0" min="0" id="total-roomboard">   
                             <!-- end of hidden inputs -->
 
                             <h4 class="text-center text-secondary ls-2">MEDICAL SERVICES</h4>
@@ -383,7 +387,7 @@
     });
 
     let count = 0; // declaring the count variable outside the function will persist its value even after the function is called, allowing it to increment by one each time the function is called.
-
+     
     // this is for Consultation LOA Requests
     const addService = (ctype_id, ctype_name, price, remaining_balance) => {
         const container = document.getElementById('dynamic-services');
@@ -487,6 +491,10 @@
         let sss_deduction = 0;
         let other_deduction = 0;
 
+        const total_services_input = document.querySelector("#total-services");
+        const total_meds_input = document.querySelector("#total-medications");
+        const total_profees_input = document.querySelector("#total-profees");
+        const total_roomboard_input = document.querySelector("#total-roomboard");
         const total_input = document.querySelector('#total-bill');
         const deduct_philhealth = document.querySelector('#deduct-philhealth');
         const deduct_sss = document.querySelector('#deduct-sss');
@@ -634,7 +642,7 @@
     const calculateMedications = () => {
         let total_medications = 0;
         const med_qtys = document.querySelectorAll(".medication-qty");
-        const med_costs = document.querySelectorAll(".medication-amount");
+        const med_costs = document.querySelectorAll(".medication-fee");
 
         for(let i = 0; i < med_costs.length; i++) {
             total_medications += med_costs[i].value * med_qtys[i].value;
@@ -767,7 +775,7 @@
                                 <div class="input-group mb-3">
                                     <span class="input-group-text bg-dark text-white">&#8369;</span>
 
-                                    <input type="text" name="medication-amount[]" class="medication-amount form-control fw-bold ls-1" placeholder="*Medication Amount" oninput="calculateNoaBilling(${remaining_balance})" required/>
+                                    <input type="text" name="medication-fee[]" class="medication-fee form-control fw-bold ls-1" placeholder="*Medication Amount" oninput="calculateNoaBilling(${remaining_balance})" required/>
 
                                     <span class="medication-msg text-danger fw-bold"></span>
                                 </div>
@@ -817,7 +825,7 @@
 
            /* Creating a new input field with the name deduction_name[] */
             html_code += `<div class="col-md-5">
-                            <input type="text" name="profdoc-name[]" class="form-control fw-bold ls-1" placeholder="*Enter Doctor Name" required/>
+                            <input type="text" name="prodoc-name[]" class="form-control fw-bold ls-1" placeholder="*Enter Doctor Name" required/>
                             <div class="invalid-feedback">
                                 Doctor name, and Professional Fee is required
                             </div>

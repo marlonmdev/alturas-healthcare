@@ -150,6 +150,28 @@ hr {
 	mask: linear-gradient(-90deg, black, transparent);
 }
 
+.blink {
+  animation: blink 1s steps(1, end) infinite;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+	40% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0;
+  }
+	90% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 hr:not([size]) {
 	height: 1px;
 }

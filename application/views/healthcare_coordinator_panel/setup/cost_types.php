@@ -26,7 +26,7 @@
       <div class="col-lg-">
         <div class="row pt-2 pb-2">
             <div class="col-lg-3">
-                <button type="button" class="btn btn-info btn-sm" onclick="showAddCostTypeModal()"><i class="mdi mdi-plus-circle fs-4"></i> Add New</button>
+                <button type="button" class="btn btn-success btn-sm btn-floating" onclick="showAddCostTypeModal()"><i class="mdi mdi-plus-circle fs-4"></i> Add New</button>
             </div>
             <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
             <div class="col-lg-5 offset-4">
@@ -122,7 +122,6 @@
             message,
             hp_id_error,
             price_list_error,
-            other_list_error,
             cost_type_error,
             op_price_error,
             ip_price_error
@@ -131,24 +130,17 @@
             case 'error':
               if(hp_id_error != ''){
                 $('#hp-filter-error').html(hp_id_error);
-                $('#hospital-filter').addClass('is-invalid');
+                $('#hospital-filter-add').addClass('is-invalid');
               }else{
                 $('#hp-filter-error').html('');
-                $('#hospital-filter').removeClass('is-invalid');
+                $('#hospital-filter-add').removeClass('is-invalid');
               }
               if (price_list_error !== '') {
                 $('#price-filter-error').html(price_list_error);
-                $('#price-filter').addClass('is-invalid');
+                $('#price-filter-add').addClass('is-invalid');
               } else {
                 $('#price-filter-error').html('');
-                $('#price-filter').removeClass('is-invalid');
-              }
-              if (other_list_error !== '') {
-                $('#other-price-error').html(other_list_error);
-                $('#other-price-filter').addClass('is-invalid');
-              } else {
-                $('#other-price-error').html('');
-                $('#other-price-filter').removeClass('is-invalid');
+                $('#price-filter-add').removeClass('is-invalid');
               }
               if (cost_type_error !== '') {
                 $('#cost-type-error').html(cost_type_error);
@@ -197,120 +189,56 @@
       })
     });
 
-    // $('#editCostTypeForm').submit(function(event) {
-    //   event.preventDefault();
-    //   $.ajax({
-    //     type: "post",
-    //     url: $(this).attr('action'),
-    //     data: $(this).serialize(),
-    //     dataType: "json",
-    //     success: function(response) {
-    //       const {
-    //         token,
-    //         status,
-    //         message,
-    //         cost_type_error
-    //       } = response;
-    //       switch (status) {
-    //         case 'error':
-    //           if (cost_type_error !== '') {
-    //             $('#edit-cost-type-error').html(cost_type_error);
-    //             $('#edit-cost-type').addClass('is-invalid');
-    //           } else {
-    //             $('#edt-cost-type-error').html('');
-    //             $('#edit-cost-type').removeClass('is-invalid');
-    //           }
-    //           break;
-    //         case 'save-error':
-    //           swal({
-    //             title: 'Failed',
-    //             text: message,
-    //             timer: 3000,
-    //             showConfirmButton: false,
-    //             type: 'error'
-    //           });
-    //           break;
-    //         case 'success':
-    //           swal({
-    //             title: 'Success',
-    //             text: message,
-    //             timer: 3000,
-    //             showConfirmButton: false,
-    //             type: 'success'
-    //           });
-    //           $('#editCostTypeModal').modal('hide');
-    //           $("#costTypesTable").DataTable().ajax.reload();
-    //           break;
-    //       }
-    //     }
-
-    //   })
-    // });
   });
 
     const showAddCostTypeModal = () => {
       $("#registerCostTypeModal").modal("show");
       $("#registerCostTypeForm")[0].reset();
-      // $('#cost-type-error').html('');
-      // $('#cost-type').removeClass('is-invalid');
+      $('#ip-price-error').html('');
+      $('#ip-price').removeClass('is-invalid');
+      $('#op-price-error').html('');
+      $('#op-price').removeClass('is-invalid');
+      $('#cost-type-error').html('');
+      $('#cost-type').removeClass('is-invalid');
+      $('#price-filter-error').html('');
+      $('#price-filter-add').removeClass('is-invalid');
+      $('#hp-filter-error').html('');
+      $('#hospital-filter-add').removeClass('is-invalid');
       $('#other-input-container').hide();
     }
 
     const showOtherInputDiv = () => {
         const otherInputContainer = $('#other-input-container');
 
-        if ($('#price-filter').val() == 'other') {
+        if ($('#price-filter-add').val() == 'other') {
           otherInputContainer.show();
+          $('#other-price-filter').attr('required', true);
         } else {  
           otherInputContainer.hide();
+          $('#other-price-filter').removeAttr('required');
         }
     }
 
     const enableInputs = () => {
-      const price_filter = $('#price-filter');
-      const hp_filter = $('#hospital-filter');
+      const price_filter = $('#price-filter-add');
+      const hp_filter = $('#hospital-filter-add');
       const item_id = $('#item-id');
       const cost_type = $('#cost-type');
       const op_price = $('#op-price');
       const ip_price = $('#ip-price');
 
       if(price_filter.val() != '' && hp_filter.val() != ''){
-        item_id.removeAttr('disabled');
-        cost_type.removeAttr('disabled');
-        op_price.removeAttr('disabled');
-        ip_price.removeAttr('disabled');
+        item_id.removeAttr('readonly');
+        cost_type.removeAttr('readonly');
+        op_price.removeAttr('readonly');
+        ip_price.removeAttr('readonly');
       }else{
-        item_id.attr('disabled', true);
-        cost_type.attr('disabled', true);
-        op_price.attr('disabled', true);
-        ip_price.attr('disabled', true);
+        item_id.attr('readonly', true);
+        cost_type.attr('readonly', true);
+        op_price.attr('readonly', true);
+        ip_price.attr('readonly', true);
       }
     }
-
-  // function editCostType(ctype_id) {
-  //   $.ajax({
-  //     url: `${baseUrl}healthcare-coordinator/setup/cost-types/edit/${ctype_id}`,
-  //     type: "GET",
-  //     success: function(response) {
-  //       const res = JSON.parse(response);
-  //       const {
-  //         status,
-  //         token,
-  //         price_group,
-  //         item_id,
-  //         item_description,
-  //         op_price,
-  //         ip_price,
-  //       } = res;
-  //       $('#editCostTypeForm')[0].reset();
-  //       $("#editCostTypeModal").modal("show");
-  //       $('#ctype-id').val(ctype_id);
-  //       $('#edit-item-id').val(item_id);
-  //       $('#edit-cost-type').val(cost_type);
-  //       $('#edit-price-cost').val(price_cost);
-  //     }
-  //   });
-  // }
 
   function deleteCostType(ctype_id) {
     $.confirm({

@@ -3,7 +3,7 @@
       <div class="modal-dialog modal-md">
           <div class="modal-content">
               <div class="modal-header">
-                  <h5 class="modal-title text-secondar ls-1">DISAPPROVE LOA</h5>
+                  <h5 class="modal-title text-secondary ls-1">DISAPPROVE LOA</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                   </button>
               </div>
@@ -15,7 +15,7 @@
                   <input type="hidden" name="loa-id" id="loa-id">
                   <div class="form-group row">
                       <div class="col-sm-12 mb-2">
-                          <label class="colored-label">Reason for Disapproval:</label>
+                          <label class="colored-label ls-1">Reason for Disapproval:</label>
                           <textarea  class="form-control" name="disapprove-reason" id="disapprove-reason" cols="30" rows="6"></textarea>
                           <em id="disapprove-reason-error" class="text-danger"></em>
                       </div> 

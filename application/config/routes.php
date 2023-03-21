@@ -35,6 +35,7 @@ $route['member/requested-loa/pending'] = 'member/pages_controller/pending_reques
 $route['member/requested-loa/approved'] = 'member/pages_controller/approved_requested_loa';
 $route['member/requested-loa/disapproved'] = 'member/pages_controller/disapproved_requested_loa';
 $route['member/requested-loa/completed'] = 'member/pages_controller/completed_requested_loa';
+$route['member/requested-loa/cancelled'] = 'member/pages_controller/cancelled_loa_requests';
 $route['member/requested-noa/pending'] = 'member/pages_controller/pending_requested_noa';
 $route['member/requested-noa/approved'] = 'member/pages_controller/approved_requested_noa';
 $route['member/requested-noa/disapproved'] = 'member/pages_controller/disapproved_requested_noa';
@@ -60,6 +61,8 @@ $route['member/requested-loa/pending/cancel/(:any)'] = 'member/loa_controller/ca
 $route['member/requested-loa/edit/(:any)'] = 'member/loa_controller/edit_loa_request';
 $route['member/requested-loa/update/(:any)'] = 'member/loa_controller/update_loa_request';
 $route['member/requested-loa/generate-printable-loa/(:any)'] = 'member/loa_controller/generate_printable_loa';
+$route['member/requested-loa/approve/cancel-request/(:any)'] = 'member/loa_controller/request_loa_cancellation';
+$route['member/requested-loa/cancelled/fetch'] = 'member/loa_controller/fetch_cancelled_loa';
 
 // Member NOA Routes
 $route['member/request-noa/submit'] = 'member/noa_controller/submit_noa_request';
@@ -279,6 +282,9 @@ $route['healthcare-coordinator/loa/requests-list'] = 'healthcare_coordinator/pag
 $route['healthcare-coordinator/loa/requests-list/approved'] = 'healthcare_coordinator/pages_controller/view_approved_loa_list';
 $route['healthcare-coordinator/loa/requests-list/disapproved'] = 'healthcare_coordinator/pages_controller/view_disapproved_loa_list';
 $route['healthcare-coordinator/loa/requests-list/completed'] = 'healthcare_coordinator/pages_controller/view_completed_loa_list';
+$route['healthcare-coordinator/loa/requests-list/cancelled'] = 'healthcare_coordinator/pages_controller/view_cancelled_loa_list';
+$route['healthcare-coordinator/loa/cancellation-requests'] = 'healthcare_coordinator/pages_controller/view_loa_cancellation_list';
+$route['healthcare-coordinator/loa/cancellation-requests/approved'] = 'healthcare_coordinator/pages_controller/view_loa_approved_cancellation';
 $route['healthcare-coordinator/noa/requests-list'] = 'healthcare_coordinator/pages_controller/view_pending_noa_list';
 $route['healthcare-coordinator/noa/requests-list/approved'] = 'healthcare_coordinator/pages_controller/view_approved_noa_list';
 $route['healthcare-coordinator/noa/requests-list/disapproved'] = 'healthcare_coordinator/pages_controller/view_disapproved_noa_list';
@@ -336,6 +342,9 @@ $route['healthcare-coordinator/loa/requests-list/set-charge-type'] = 'healthcare
 $route['healthcare-coordinator/loa/member/search/(:any)'] = 'healthcare_coordinator/search_controller/get_searched_member_details';
 $route['healthcare-coordinator/loa/requested-loa/cancel/(:any)'] = 'healthcare_coordinator/loa_controller/cancel_loa_request';
 $route['healthcare-coordinator/loa/requested-loa/generate-printable-loa/(:any)'] = 'healthcare_coordinator/loa_controller/generate_printable_loa';
+$route['healthcare-coordinator/loa/cancellation-requests/fetch'] = 'healthcare_coordinator/loa_controller/fetch_cancellation_requests';
+$route['healthcare-coordinator/loa/cancellation-requests/confirm/(:any)'] = 'healthcare_coordinator/loa_controller/set_cancellation_approved';
+$route['healthcare-coordinator/loa/approved-cancellation/fetch'] = 'healthcare_coordinator/loa_controller/fetch_approved_cancellations';
 
 
 // HealthCare Coordinator NOA Routes
@@ -398,6 +407,7 @@ $route['company-doctor/noa/requests-list'] = 'company_doctor/pages_controller/vi
 $route['company-doctor/noa/requests-list/approved'] = 'company_doctor/pages_controller/view_approved_noa_list';
 $route['company-doctor/noa/requests-list/disapproved'] = 'company_doctor/pages_controller/view_disapproved_noa_list';
 $route['company-doctor/noa/requests-list/completed'] = 'company_doctor/pages_controller/view_completed_noa_list';
+$route['company-doctor/loa/requests-list/cancelled'] = 'company_doctor/pages_controller/view_cancelled_loa_list';
 
 
 // Company Doctor User Account Routes
@@ -420,6 +430,7 @@ $route['company-doctor/loa/requests-list/view/(:any)'] = 'company_doctor/loa_con
 $route['company-doctor/loa/requests-list/approve/(:any)'] = 'company_doctor/loa_controller/approve_loa_request';
 $route['company-doctor/loa/requests-list/disapprove/(:any)'] = 'company_doctor/loa_controller/disapprove_loa_request';
 $route['company-doctor/loa/requested-loa/generate-printable-loa/(:any)'] = 'company_doctor/loa_controller/generate_printable_loa';
+$route['company-doctor/loa/requests-list/cancelled/fetch'] = 'company_doctor/loa_controller/fetch_cancelled_loa';
 
 // Company Doctor NOA Routes
 $route['company-doctor/noa/requests-list/fetch'] = 'company_doctor/noa_controller/fetch_all_pending_noa';

@@ -110,7 +110,7 @@ class Billing_controller extends CI_Controller {
         $loa = $this->billing_model->get_loa_to_bill($loa_id);
 
         $data['user_role'] = $this->session->userdata('user_role');
-        $data['cost_types'] = $this->billing_model->get_all_cost_types();
+        $data['cost_types'] = $this->billing_model->get_cost_types_by_hp($loa['hcare_provider']);
         $data['loa'] = $loa;
         $data['request_type'] = $loa["loa_request_type"];
         $data['work_related'] = $loa["work_related"];
@@ -178,10 +178,21 @@ class Billing_controller extends CI_Controller {
             // if patients billing info is saved to DB call insert_billing_services() function
             $this->insert_billing_services($posted_data['ct-name'], $posted_data['ct-qty'], $posted_data['ct-fee'], $posted_data['billing-no']);
 
+            // if there are added medications
+            if($posted_data['medication-count'] > 0){
+                $this->insert_medications($posted_data['medication-name'], $posted_data['medication-qty'], $posted_data['medication-fee'], $posted_data['billing-no']);
+            }
+
+            // if there are added professional fees
+            if($posted_data['profee-count'] > 0){
+                $this->insert_professional_fees($posted_data['prodoc-name'], $posted_data['profee-amount'], $posted_data['billing-no']);
+            }
+
             // if Philhealth deduction has value
             if($posted_data['philhealth-deduction'] > 0){
                 $this->insert_philhealth_deduction($posted_data['philhealth-deduction'], $posted_data['billing-no']);
             }
+
             // if SSS deduction has value
             if($posted_data['sss-deduction'] > 0){
                 $this->insert_sss_deduction($posted_data['sss-deduction'], $posted_data['billing-no']);
@@ -302,6 +313,9 @@ class Billing_controller extends CI_Controller {
         $data['bill'] = $bill = $this->billing_model->get_billing_info($billing_id);
         $data['mbl'] = $this->billing_model->get_member_mbl($bill['emp_id']);
         $data['services'] = $this->billing_model->get_billing_services($bill['billing_no']);
+        $data['medications'] = $this->billing_model->get_billing_medications($bill['billing_no']);
+        $data['profees'] = $this->billing_model->get_billing_professional_fees($bill['billing_no']);
+        $data['roomboards'] = $this->billing_model->get_billing_room_boards($bill['billing_no']);
         $data['deductions'] = $this->billing_model->get_billing_deductions($bill['billing_no']);
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_provider_panel/billing/billing_success');
@@ -351,6 +365,14 @@ class Billing_controller extends CI_Controller {
         if($inserted){
             // if patients billing info is saved to DB call insert_billing_services() function
             $this->insert_billing_services($posted_data['ct-names'], $posted_data['ct-qtys'], $posted_data['ct-fees'], $posted_data['billing-no']);
+            // if there are added medications
+            if($posted_data['medication-count'] > 0){
+                $this->insert_medications($posted_data['medication-name'], $posted_data['medication-qty'], $posted_data['medication-fee'], $posted_data['billing-no']);
+            }
+            // if there are added professional fees
+            if($posted_data['profee-count'] > 0){
+                $this->insert_professional_fees($posted_data['prodoc-name'], $posted_data['profee-amount'], $posted_data['billing-no']);
+            }
             // if Philhealth deduction has value
             if($posted_data['philhealth-deduction'] > 0){
                 $this->insert_philhealth_deduction($posted_data['philhealth-deduction'], $posted_data['billing-no']);
@@ -398,6 +420,9 @@ class Billing_controller extends CI_Controller {
         $data['bill'] = $bill = $this->billing_model->get_billing_info($billing_id);
         $data['mbl'] = $this->billing_model->get_member_mbl($bill['emp_id']);
         $data['services'] = $this->billing_model->get_billing_services($bill['billing_no']);
+        $data['profees'] = $this->billing_model->get_billing_professional_fees($bill['billing_no']);
+        $data['medications'] = $this->billing_model->get_billing_medications($bill['billing_no']);
+        $data['roomboards'] = $this->billing_model->get_billing_room_boards($bill['billing_no']);
         $data['deductions'] = $this->billing_model->get_billing_deductions($bill['billing_no']);
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_provider_panel/billing/billing_success');
@@ -422,6 +447,10 @@ class Billing_controller extends CI_Controller {
                 'loa_id'                => $id,
                 'hp_id'                 => $this->session->userdata('dsg_hcare_prov'),
                 'work_related'          => $posted_data['work-related'],
+                'total_services'        => $posted_data['total-services'],
+                'total_medications'     => $posted_data['total-medications'],
+                'total_pro_fees'        => $posted_data['total-profees'],
+                'total_room_board'      => $posted_data['total-roomboard'],
                 'total_bill'            => $posted_data['total-bill'],
                 'total_deduction'       => $posted_data['total-deduction'],
                 'net_bill'              => $posted_data['net-bill'],
@@ -440,6 +469,10 @@ class Billing_controller extends CI_Controller {
                 'noa_id'                => $id,
                 'hp_id'                 => $this->session->userdata('dsg_hcare_prov'),
                 'work_related'          => $posted_data['work-related'],
+                'total_services'        => $posted_data['total-services'],
+                'total_medications'     => $posted_data['total-medications'],
+                'total_pro_fees'        => $posted_data['total-profees'],
+                'total_room_board'      => $posted_data['total-roomboard'],
                 'total_bill'            => $posted_data['total-bill'],
                 'total_deduction'       => $posted_data['total-deduction'],
                 'net_bill'              => $posted_data['net-bill'],
@@ -469,6 +502,35 @@ class Billing_controller extends CI_Controller {
         }
 
         $this->billing_model->insert_diagnostic_test_billing_services($services);
+    }
+
+    function insert_medications($medication_names, $medication_qtys, $medication_fees, $billing_no){
+        $medications = []; 
+        for ($i = 0; $i < count($medication_names); $i++) {
+            $medications[] = [
+                'med_name'     => $medication_names[$i],
+                'med_qty'      => $medication_qtys[$i],
+                'med_fee'   => $medication_fees[$i],
+                'billing_no'   => $billing_no,
+                'added_on'     => date('Y-m-d')
+            ];
+        }
+
+        $this->billing_model->insert_billing_medications($medications);
+    }
+
+    function insert_professional_fees($doctor_names, $professional_fees, $billing_no){
+        $prof_fees = []; 
+        for ($i = 0; $i < count($doctor_names); $i++) {
+            $prof_fees[] = [
+                'doctor_name'   => $doctor_names[$i],
+                'pro_fee'      => $professional_fees[$i],
+                'billing_no'    => $billing_no,
+                'added_on'      => date('Y-m-d')
+            ];
+        }
+
+        $this->billing_model->insert_billing_professional_fees($prof_fees);
     }
 
     function insert_philhealth_deduction($philhealth_deduction, $billing_no){
@@ -589,6 +651,9 @@ class Billing_controller extends CI_Controller {
         $data['user_role'] = $this->session->userdata('user_role');
         $data['mbl'] = $this->billing_model->get_member_mbl($bill['emp_id']);
         $data['services'] = $this->billing_model->get_billing_services($bill['billing_no']);
+        $data['medications'] = $this->billing_model->get_billing_medications($bill['billing_no']);
+        $data['profees'] = $this->billing_model->get_billing_professional_fees($bill['billing_no']);
+        $data['roomboards'] = $this->billing_model->get_billing_room_boards($bill['billing_no']);
         $data['deductions'] = $this->billing_model->get_billing_deductions($bill['billing_no']);
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_provider_panel/billing/billing_receipt');

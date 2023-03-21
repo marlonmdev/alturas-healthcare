@@ -20,12 +20,12 @@
     </div>
   </div>
   <!-- End Bread crumb and right sidebar toggle -->
+
   <!-- Start of Container fluid  -->
   <div class="container-fluid">
     <div class="row">
 
       <div class="col-lg-12">
-        
         <ul class="nav nav-tabs mb-4" role="tablist">
           <li class="nav-item">
             <a
@@ -63,6 +63,15 @@
               <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
             >
           </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="<?php echo base_url(); ?>member/requested-loa/cancelled"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Cancelled</span></a
+            >
+          </li>
         </ul>
 
         <div class="card shadow">
@@ -72,7 +81,7 @@
                 <thead>
                   <tr>
                     <th class="fw-bold">LOA No.</th>
-                    <th class="fw-bold">Request Date</th>
+                    <th class="fw-bold">Expiration Date</th>
                     <th class="fw-bold">Healthcare Provider</th>
                     <th class="fw-bold">LOA Type</th>
                     <th class="fw-bold">RX File</th>
@@ -94,6 +103,8 @@
   <!-- End Page wrapper  -->
   </div>
 <!-- End Wrapper -->
+  <?php include 'request_loa_cancellation.php'; ?>
+
 </div>
 
   <?php include 'view_approved_loa_details.php'; ?>
@@ -235,4 +246,74 @@
       }
     });
   }
+
+  const requestLoaCancellation = (loa_id, loa_no, hp_id) => {
+    $("#loaCancellationModal").modal("show");
+
+    $('#cancellation-reason').val('');
+    $('#cancellation-reason').removeClass('is-invalid');
+    $('#cancellation-reason-error').html('');
+
+    $('#cur-loa-id').val(loa_id);
+    $('#cur-loa-no').val(loa_no);
+    $('#cur-hp-id').val(hp_id);
+    $("#loaCancellationForm").attr("action", `${baseUrl}member/requested-loa/approve/cancel-request/${loa_id}`);
+  }
+
+  $(document).ready(function() {
+    $('#loaCancellationForm').submit(function(event) {
+      const nextPage = `${baseUrl}member/requested-loa/cancelled-requests`;
+      event.preventDefault();
+      $.ajax({
+        type: "post",
+        url: $(this).attr('action'),
+        data: $(this).serialize(),
+        dataType: "json",
+        success: function(response) {
+          const {
+            token,
+            status,
+            message,
+            cancellation_reason_error
+          } = response;
+          switch (status) {
+            case 'error':
+              // is-invalid class is a built in classname for errors in bootstrap
+              if (cancellation_reason_error !== '') {
+                $('#cancellation-reason-error').html(cancellation_reason_error);
+                $('#cancellation-reason').addClass('is-invalid');
+              } else {
+                $('#cancellation-reason-error').html('');
+                $('#cancellation-reason').removeClass('is-invalid');
+              }
+              break;
+            case 'save-error':
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
+              break;
+            case 'success':
+              swal({
+                title: 'Success',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'success'
+              });
+              $('#loaCancellationModal').modal('hide');
+              $("#memberApprovedLoa").DataTable().ajax.reload();
+              // setTimeout(function() {
+              //   window.location.href = nextPage;
+              // }, 3200);
+              break;
+          }
+        }
+      });
+    });
+  });
+
 </script>

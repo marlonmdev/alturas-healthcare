@@ -97,6 +97,10 @@
                         <input type="hidden" name="medication-count" value="0" min="0" id="medication-count">
                         <input type="hidden" name="profee-count" value="0" min="0" id="profee-count">
                         <input type="hidden" name="deduction-count" value="0" min="0" id="deduction-count">
+                        <input type="hidden" name="total-services" value="0" min="0" id="total-services">
+                        <input type="hidden" name="total-medications" value="0" min="0" id="total-medications">
+                        <input type="hidden" name="total-profees" value="0" min="0" id="total-profees">
+                        <input type="hidden" name="total-roomboard" value="0" min="0" id="total-roomboard">   
 
                         <?php 
                             /* Exploding the string into an array and then checking if the array
@@ -327,6 +331,9 @@
         let personal_charge_amount = 0;
         let net_total = 0;
 
+        const total_services_input = document.querySelector("#total-services");
+        const total_meds_input = document.querySelector("#total-medications");
+        const total_profees_input = document.querySelector("#total-profees");
         const total_input = document.querySelector("#total-bill");
         const net_bill = document.querySelector("#net-bill");
         const company_charge = document.querySelector('#company-charge');
@@ -433,6 +440,9 @@
                 row_deduction[i].remove();
             }
 
+            total_services_input.value = 0;
+            total_meds_input.value = 0;
+            total_profees_input.value = 0;
             total_input.value = 0;
             deduction_input.value = 0;
             net_bill.classList.remove('is-invalid', 'text-danger');
@@ -441,6 +451,9 @@
 
         }else{
             // set the net total as the value of total bill input
+            total_services_input.value = parseFloat(total_services).toFixed(2);
+            total_meds_input.value = parseFloat(total_medications).toFixed(2);
+            total_profees_input.value = parseFloat(total_pro_fees).toFixed(2);
             total_input.value = parseFloat(total_bill).toFixed(2);
             deduction_input.value = parseFloat(total_deduction).toFixed(2);
             net_bill.value = parseFloat(net_total).toFixed(2);
@@ -469,7 +482,7 @@
     const calculateMedications = () => {
         let total_medications = 0;
         const med_qtys = document.querySelectorAll(".medication-qty");
-        const med_costs = document.querySelectorAll(".medication-amount");
+        const med_costs = document.querySelectorAll(".medication-fee");
 
         for(let i = 0; i < med_costs.length; i++) {
             total_medications += med_costs[i].value * med_qtys[i].value;
@@ -663,7 +676,7 @@
                                 <div class="input-group mb-3">
                                     <span class="input-group-text bg-dark text-white">&#8369;</span>
 
-                                    <input type="text" name="medication-amount[]" class="medication-amount form-control fw-bold ls-1" placeholder="*Medication Amount" oninput="calculateDiagnosticTestBilling(${remaining_balance})" required/>
+                                    <input type="text" name="medication-fee[]" class="medication-fee form-control fw-bold ls-1" placeholder="*Medication Amount" oninput="calculateDiagnosticTestBilling(${remaining_balance})" required/>
 
                                     <span class="medication-msg text-danger fw-bold"></span>
                                 </div>

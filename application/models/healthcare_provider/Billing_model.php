@@ -46,6 +46,13 @@ class Billing_model extends CI_Model {
         $query = $this->db->get_where('cost_types', ['ctype_id' => $ctype_id]);
         return $query->row_array();
     }
+    
+    function db_get_cost_types_by_hpID($hp_id) {
+        $this->db->select('*')
+                ->from('cost_types')
+                ->where('hp_id', $hp_id);
+        return $this->db->get()->result_array();
+    }
 
     function get_member_noa($emp_id, $hcare_provider_id) {
          $this->db->select('noa_id, noa_no, emp_id, request_date, status, hospital_id')

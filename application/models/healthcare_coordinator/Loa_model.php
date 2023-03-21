@@ -93,6 +93,13 @@ class Loa_model extends CI_Model {
     return $query->result_array();
   }
 
+  function db_get_cost_types_by_hpID($hp_id) {
+    $this->db->select('item_description, op_price, hp_id')
+            ->from('cost_types')
+            ->where('hp_id', $hp_id);
+    return $this->db->get()->result_array();
+  }
+
   function db_get_healthcare_providers() {
     $query = $this->db->get('healthcare_providers');
     return $query->result_array();
@@ -130,6 +137,16 @@ class Loa_model extends CI_Model {
              ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
              ->where('tbl_1.status', 'Approved')
              ->order_by('loa_id', 'DESC');
+    return $this->db->get()->result_array();
+  }
+
+  function get_all_approved_loa($loa_id){
+    $this->db->select('*')
+            ->from('loa_requests as tbl_1')
+            ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
+            ->where('tbl_1.status', 'Approved')
+            ->where('tbl_1.loa_id', $loa_id)
+            ->order_by('loa_id', 'DESC');
     return $this->db->get()->result_array();
   }
 
@@ -215,14 +232,14 @@ class Loa_model extends CI_Model {
   var $columnSearch = ['loa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'requested_on', 'status']; //set column field database for datatable searchable 
   var $order1 = ['loa_id' => 'desc']; // default order 
 
-  private function _get_cancell_datatables_query($status) {
+  private function _get_cancel_datatables_query($status) {
     $this->db->from($this->table1 . ' as tbl_1');
     $this->db->join($this->table2 . ' as tbl_2', 'tbl_1.requested_by = tbl_2.emp_id');
     $this->db->where('tbl_1.status', $status);
     $i = 0;
 
     if($this->input->post('filter')){
-      $this->db->like('tbl_1.hcare_provider', $this->input->post('filter'));
+      $this->db->like('tbl_1.hp_id', $this->input->post('filter'));
     }
     // loop column 
     foreach ($this->columnSearch as $item) {
@@ -252,20 +269,20 @@ class Loa_model extends CI_Model {
   }
 
   function get_cancel_datatables($status) {
-    $this->_get_cancell_datatables_query($status);
+    $this->_get_cancel_datatables_query($status);
     if ($_POST['length'] != -1)
       $this->db->limit($_POST['length'], $_POST['start']);
     $query = $this->db->get();
     return $query->result_array();
   }
 
-  function count_cancell_filtered($status) {
-    $this->_get_cancell_datatables_query($status);
+  function count_cancel_filtered($status) {
+    $this->_get_cancel_datatables_query($status);
     $query = $this->db->get();
     return $query->num_rows();
   }
 
-  function count_all_cancell($status) {
+  function count_all_cancel($status) {
     $this->db->from($this->table1)
              ->where('status', $status);
     return $this->db->count_all_results();

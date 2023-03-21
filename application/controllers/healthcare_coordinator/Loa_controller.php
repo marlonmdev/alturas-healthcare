@@ -1044,12 +1044,35 @@ class Loa_controller extends CI_Controller {
 		}
 		$response = [
 			"draw" => $_POST['draw'],
-			"recordsTotal" => $this->loa_model->count_all_cancell($status),
-			"recordsFiltered" => $this->loa_model->count_cancell_filtered($status),
+			"recordsTotal" => $this->loa_model->count_all_cancel($status),
+			"recordsFiltered" => $this->loa_model->count_cancel_filtered($status),
 			"data" => $dataCancellations,
 		];
 		echo json_encode($response);
 		
+	}
+
+	function view_tag_loa_completed() {
+		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$loaInfo = $this->loa_model->get_all_approved_loa($loa_id);
+
+		foreach($loaInfo as $loa){
+			$loa_info['full_name'] = $loa['first_name'] .' '. $loa['middle_name'] .' '. $loa['last_name'] .' '. $loa['suffix'];
+			$loa_info['loa_no'] = $loa['loa_no'];
+			$loa_info['hc_provider'] = $loa['hp_name'];
+			$loa_info['hp_id'] = $loa['hp_id'];
+			$loa_info['loa_id'] = $loa['loa_id'];
+			$loa_info['med_services'] = $loa['med_services'];
+
+			$hp_id = $loa['hcare_provider'];
+		}
+		$loa_info['cost_types'] = $this->loa_model->db_get_cost_types_by_hpID($hp_id);
+		
+			
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/loa/tag_loa_to_complete', $loa_info);
+		$this->load->view('templates/footer');
 	}
 	
 }

@@ -345,6 +345,7 @@ $route['healthcare-coordinator/loa/requested-loa/generate-printable-loa/(:any)']
 $route['healthcare-coordinator/loa/cancellation-requests/fetch'] = 'healthcare_coordinator/loa_controller/fetch_cancellation_requests';
 $route['healthcare-coordinator/loa/cancellation-requests/confirm/(:any)'] = 'healthcare_coordinator/loa_controller/set_cancellation_approved';
 $route['healthcare-coordinator/loa/approved-cancellation/fetch'] = 'healthcare_coordinator/loa_controller/fetch_approved_cancellations';
+$route['healthcare-coordinator/loa/requested-loa/update-loa/(:any)'] = 'healthcare_coordinator/loa_controller/view_tag_loa_completed';
 
 
 // HealthCare Coordinator NOA Routes

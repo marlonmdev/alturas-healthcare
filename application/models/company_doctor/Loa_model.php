@@ -15,6 +15,10 @@ class Loa_model extends CI_Model {
     $this->db->join($this->table_2 . ' as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id');
     $this->db->where('status', $status);
     $i = 0;
+
+    if($this->input->post('filter')){
+      $this->db->like('tbl_1.hcare_provider', $this->input->post('filter'));
+    } 
     // loop column 
     foreach ($this->column_search as $item) {
       // if datatable send POST for search
@@ -182,6 +186,10 @@ class Loa_model extends CI_Model {
       $this->db->join($this->table2 . ' as tbl_2', 'tbl_1.requested_by = tbl_2.emp_id');
       $this->db->where('tbl_1.status', $status);
       $i = 0;
+
+      if($this->input->post('filter')){
+        $this->db->like('tbl_1.hp_id', $this->input->post('filter'));
+      } 
       // loop column 
       foreach ($this->columnSearch as $item) {
         // if datatable send POST for search
@@ -229,4 +237,8 @@ class Loa_model extends CI_Model {
       return $this->db->count_all_results();
     }
     // End of server-side processing datatables
+
+    function db_get_healthcare_providers() {
+      return $this->db->get('healthcare_providers')->result_array();
+    }
 }

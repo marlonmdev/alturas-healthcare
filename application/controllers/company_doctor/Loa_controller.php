@@ -420,8 +420,21 @@ class Loa_controller extends CI_Controller {
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$approved_by = $this->session->userdata('doctor_id');
 		$approved_on = date("Y-m-d");
+
+		$expires = strtotime('+1 week', strtotime($approved_on));
+		$expiration_date = date('Y-m-d', $expires);
+
+
 		$this->load->model('healthcare_coordinator/loa_model');
-		$approved = $this->loa_model->db_approve_loa_request($loa_id, $approved_by, $approved_on);
+
+		$data = [
+      'status' => 'Approved',
+      'approved_by' => $approved_by,
+      'approved_on' => $approved_on,
+			'expiration_date' => $expiration_date
+    ];
+
+		$approved = $this->loa_model->db_approve_loa_request($loa_id, $data);
 		if ($approved) {
 			$response = array('token' => $token, 'status' => 'success', 'message' => 'LOA Request Approved Successfully');
 		} else {
@@ -445,6 +458,13 @@ class Loa_controller extends CI_Controller {
 			);
 		} else {
 			$this->load->model('company_doctor/loa_model');
+			$data = [
+				'status' => 'Disapproved',
+				'disapproved_by' => $disapproved_by,
+				'disapprove_reason' => $disapprove_reason,
+				'disapproved_on' => $disapproved_on
+			];
+
 			$disapproved = $this->loa_model->db_disapprove_loa_request($loa_id, $disapproved_by, $disapprove_reason, $disapproved_on);
 			if (!$disapproved) {
 				$response = array('token' => $token, 'status' => 'error', 'message' => 'Unable to Disapprove LOA Request');
@@ -477,7 +497,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $data['loa_no'];
 			$row[] = $fullname;
 			$row[] = $custom_reason;
-			$row[] = $data['confirmed_on'];
+			$row[] = date('m/d/Y', strtotime($data['confirmed_on']));
 			$row[] = $data['confirmed_by'];
 			$row[] = $custom_status;
 			$row[] = $custom_actions;

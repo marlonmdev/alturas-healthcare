@@ -154,6 +154,7 @@
         }
 
         const baseUrl = "<?php echo base_url(); ?>";
+        
         $(document).ready(function(){
 
             let billingTable = $('#billedTable').DataTable({
@@ -202,132 +203,132 @@
 
             });
 
-        const form = document.querySelector('#payment_details_form');
-        $("#payment_details_form").submit(function(event){
-                event.preventDefault();
+            const form = document.querySelector('#payment_details_form');
+            $("#payment_details_form").submit(function(event){
+                    event.preventDefault();
 
-            if (!form.checkValidity()) {
-                form.classList.add('was-validated');
-                return;
-            }
-
-            $.confirm({
-                title: '<strong>Confirmation!</strong>',
-                content: 'Are you sure? Please review before you proceed.',
-                type: 'blue',
-                buttons: {
-                    confirm: {
-                        text: 'Yes',
-                        btnClass: 'btn-blue',
-                        action: function(){
-                            const paymentDetailsForm = $('#payment_details_form')[0];
-                            const formdata = new FormData(paymentDetailsForm);
-
-                            $.ajax({
-                                url: "<?php echo base_url();?>head-office-accounting/billing-list/billed/payment-details",
-                                method: "POST",
-                                data: formdata,
-                                dataType: "json",
-                                processData: false,
-                                contentType: false,
-                                success: function(response){
-                                    const {
-                                        token, status, message, acc_num_error, acc_name_error, check_num_error, check_date_error, bank_error,paid_error,image_error
-                                    } = response;
-
-                                    if(status == 'validation-error'){
-                                        if(acc_num_error != ''){
-                                            $("#acc-number-error").html(acc_num_error);
-                                            $("#acc-number").addClass('is-invalid');
-                                        }else{
-                                            $("#acc-number-error").html("");
-                                            $("#acc-number").removeClass('is-invalid');
-                                        }
-
-                                        if(acc_name_error != ''){
-                                            $("#acc-name-error").html(acc_name_error);
-                                            $("#acc-name").addClass('is-invalid');
-                                        }else{
-                                            $("#acc-name-error").html("");
-                                            $("#acc-name").removeClass('is-invalid');
-                                        }
-
-                                        if(check_num_error != ''){
-                                            $("#check-number-error").html(check_num_error);
-                                            $("#check-number").addClass('is-invalid');
-                                        }else{
-                                            $("#check-number-error").html("");
-                                            $("#check-number").removeClass('is-invalid');
-                                        }
-
-                                        if(check_date_error != ''){
-                                            $("#check-date-error").html(check_date_error);
-                                            $("#check-date").addClass('is-invalid');
-                                        }else{
-                                            $("#check-date-error").html("");
-                                            $("#check-date").removeClass('is-invalid');
-                                        }
-
-                                        if(bank_error != ''){
-                                            $("#bank-error").html(bank_error);
-                                            $("#bank").addClass('is-invalid');
-                                        }else{
-                                            $("#bank-error").html("");
-                                            $("#bank").removeClass('is-invalid');
-                                        }
-
-                                        if(paid_error != ''){
-                                            $("#paid-error").html(paid_error);
-                                            $("#amount-paid").addClass('is-invalid');
-                                        }else{
-                                            $("#paid-error").html("");
-                                            $("#amount-paid").removeClass('is-invalid');
-                                        }
-
-                                        if(image_error != ''){
-                                            $("#file-error").html(image_error);
-                                            $("#supporting-docu").addClass('is-invalid');
-                                        }else{
-                                            $("#file-error").html("");
-                                            $("#supporting-docu").removeClass('is-invalid');
-                                        }
-
-                                    }
-                                    if(status == 'success'){
-                                        let page = '<?php echo base_url()?>head-office-accounting/billing-list/closed';
-                                        $("#payment_details_form")[0].reset();
-                                        swal({
-                                            title: 'Success',
-                                            text: message,
-                                            timer: 3000,
-                                            showConfirmButton: false,
-                                            type: 'success'
-                                        });
-                                            redirectPage(page, 200);
-                                    }
-                                     if(status == 'error'){
-                                        swal({
-                                            title: 'Error',
-                                            text: message,
-                                            timer: 3000,
-                                            showConfirmButton: true,
-                                            type: 'error'
-                                        });
-                                    }
-                                }
-                            }); 
-                        },
-                    },
-                    cancel: {
-                        btnClass: 'btn-dark',
-                        action: function() {
-                            // close dialog
-                        }
-                    },
+                if (!form.checkValidity()) {
+                    form.classList.add('was-validated');
+                    return;
                 }
+
+                $.confirm({
+                    title: '<strong>Confirmation!</strong>',
+                    content: 'Are you sure? Please review before you proceed.',
+                    type: 'blue',
+                    buttons: {
+                        confirm: {
+                            text: 'Yes',
+                            btnClass: 'btn-blue',
+                            action: function(){
+                                const paymentDetailsForm = $('#payment_details_form')[0];
+                                const formdata = new FormData(paymentDetailsForm);
+
+                                $.ajax({
+                                    url: "<?php echo base_url();?>head-office-accounting/billing-list/billed/payment-details",
+                                    method: "POST",
+                                    data: formdata,
+                                    dataType: "json",
+                                    processData: false,
+                                    contentType: false,
+                                    success: function(response){
+                                        const {
+                                            token, status, message, acc_num_error, acc_name_error, check_num_error, check_date_error, bank_error,paid_error,image_error
+                                        } = response;
+
+                                        if(status == 'validation-error'){
+                                            if(acc_num_error != ''){
+                                                $("#acc-number-error").html(acc_num_error);
+                                                $("#acc-number").addClass('is-invalid');
+                                            }else{
+                                                $("#acc-number-error").html("");
+                                                $("#acc-number").removeClass('is-invalid');
+                                            }
+
+                                            if(acc_name_error != ''){
+                                                $("#acc-name-error").html(acc_name_error);
+                                                $("#acc-name").addClass('is-invalid');
+                                            }else{
+                                                $("#acc-name-error").html("");
+                                                $("#acc-name").removeClass('is-invalid');
+                                            }
+
+                                            if(check_num_error != ''){
+                                                $("#check-number-error").html(check_num_error);
+                                                $("#check-number").addClass('is-invalid');
+                                            }else{
+                                                $("#check-number-error").html("");
+                                                $("#check-number").removeClass('is-invalid');
+                                            }
+
+                                            if(check_date_error != ''){
+                                                $("#check-date-error").html(check_date_error);
+                                                $("#check-date").addClass('is-invalid');
+                                            }else{
+                                                $("#check-date-error").html("");
+                                                $("#check-date").removeClass('is-invalid');
+                                            }
+
+                                            if(bank_error != ''){
+                                                $("#bank-error").html(bank_error);
+                                                $("#bank").addClass('is-invalid');
+                                            }else{
+                                                $("#bank-error").html("");
+                                                $("#bank").removeClass('is-invalid');
+                                            }
+
+                                            if(paid_error != ''){
+                                                $("#paid-error").html(paid_error);
+                                                $("#amount-paid").addClass('is-invalid');
+                                            }else{
+                                                $("#paid-error").html("");
+                                                $("#amount-paid").removeClass('is-invalid');
+                                            }
+
+                                            if(image_error != ''){
+                                                $("#file-error").html(image_error);
+                                                $("#supporting-docu").addClass('is-invalid');
+                                            }else{
+                                                $("#file-error").html("");
+                                                $("#supporting-docu").removeClass('is-invalid');
+                                            }
+
+                                        }
+                                        if(status == 'success'){
+                                            let page = '<?php echo base_url()?>head-office-accounting/billing-list/closed';
+                                            $("#payment_details_form")[0].reset();
+                                            swal({
+                                                title: 'Success',
+                                                text: message,
+                                                timer: 3000,
+                                                showConfirmButton: false,
+                                                type: 'success'
+                                            });
+                                                redirectPage(page, 200);
+                                        }
+                                        if(status == 'error'){
+                                            swal({
+                                                title: 'Error',
+                                                text: message,
+                                                timer: 3000,
+                                                showConfirmButton: true,
+                                                type: 'error'
+                                            });
+                                        }
+                                    }
+                                }); 
+                            },
+                        },
+                        cancel: {
+                            btnClass: 'btn-dark',
+                            action: function() {
+                                // close dialog
+                            }
+                        },
+                    }
+                });
+                        
             });
-                      
-        });
 
             $('#start-date').change(function(){
                 billingTable.draw();

@@ -407,6 +407,7 @@ $route['company-doctor/loa/requests-list'] = 'company_doctor/pages_controller/vi
 $route['company-doctor/loa/requests-list/approved'] = 'company_doctor/pages_controller/view_approved_loa_list';
 $route['company-doctor/loa/requests-list/disapproved'] = 'company_doctor/pages_controller/view_disapproved_loa_list';
 $route['company-doctor/loa/requests-list/completed'] = 'company_doctor/pages_controller/view_completed_loa_list';
+$route['company-doctor/loa/requests-list/expired'] = 'company_doctor/pages_controller/view_expired_loa_list';
 $route['company-doctor/noa/requests-list'] = 'company_doctor/pages_controller/view_pending_noa_list';
 $route['company-doctor/noa/requests-list/approved'] = 'company_doctor/pages_controller/view_approved_noa_list';
 $route['company-doctor/noa/requests-list/disapproved'] = 'company_doctor/pages_controller/view_disapproved_noa_list';

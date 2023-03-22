@@ -15,8 +15,7 @@ class Members_controller extends CI_Controller {
 
 	function fetch_all_members() {
 		$this->security->get_csrf_hash();
-		$approval_status = 'Approved';
-		$list = $this->members_model->get_datatables($approval_status);
+		$list = $this->members_model->get_datatables();
 		$data = array();
 		foreach ($list as $member) {
 			$row = array();
@@ -25,7 +24,11 @@ class Members_controller extends CI_Controller {
 			$full_name = $member['first_name'] . ' ' . $member['middle_name'] . ' ' . $member['last_name'] . ' ' . $member['suffix'];
 			$view_url = base_url() . 'company-doctor/member/view/' . $member_id;
 
-			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $member['approval_status'] . '</span></div>';
+			if($member['approval_status'] == 'Done'){
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">Approved</span></div>';
+			}else{
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $member['approval_status'] . '</span></div>';
+			}
 
 			$custom_actions = '<a href="' . $view_url . '"  data-bs-toggle="tooltip" title="View Member Profile"><i class="mdi mdi-account-card-details fs-2 text-info"></i></a>';
 
@@ -43,8 +46,8 @@ class Members_controller extends CI_Controller {
 
 		$output = array(
 			"draw" => $_POST['draw'],
-			"recordsTotal" => $this->members_model->count_all($approval_status),
-			"recordsFiltered" => $this->members_model->count_filtered($approval_status),
+			"recordsTotal" => $this->members_model->count_all(),
+			"recordsFiltered" => $this->members_model->count_filtered(),
 			"data" => $data,
 		);
 		echo json_encode($output);

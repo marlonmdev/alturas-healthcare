@@ -39,15 +39,15 @@
             <div class="row">
                 <div class="col-lg-4">
                     <label class="fw-bold">Member's Name : </label>
-                    <input class="form-control text-danger fw-bold fs-5" type="text" name="member-name" id="member-name" value="<?php echo $full_name ?>" readonly>
+                    <input class="form-control text-danger fw-bold" type="text" name="member-name" id="member-name" value="<?php echo $full_name ?>" readonly>
                 </div>
                 <div class="col-lg-3">
                     <label class="fw-bold">LOA Number : </label>
-                    <input class="form-control text-danger fw-bold fs-5" type="text" name="loa-num" id="loa-num" value="<?php echo $loa_no?>" readonly>
+                    <input class="form-control text-danger fw-bold" type="text" name="loa-num" id="loa-num" value="<?php echo $loa_no?>" readonly>
                 </div>     
                 <div class="col-lg-5">
                     <label class="fw-bold">Healthcare Provider : </label>
-                    <input class="form-control text-danger fw-bold fs-5" type="text" name="loa-num" id="loa-num" value="<?php echo $hc_provider ?>" readonly>
+                    <input class="form-control text-danger fw-bold" type="text" name="loa-num" id="loa-num" value="<?php echo $hc_provider ?>" readonly>
                 </div>
             </div>
             <hr>
@@ -79,11 +79,11 @@
                    
                         <div class="col-lg-1">
                             <label class="fw-bold">Quantity : </label>
-                            <input class="form-control" name="quantity" id="quantity" type="number" min="1" value="1">
+                            <input class="form-control" name="quantity[]" id="quantity" type="number" min="1" value="1">
                         </div>
                         <div class="col-lg-2">
                             <label class="fw-bold">Status: </label>
-                            <select class="form-control fw-bold" name="status" id="status">
+                            <select class="form-control fw-bold" name="status[]" id="status">
                                 <option valu="">Select...</option>
                                 <option value="performed">Performed</option>
                                 <option value="not yet">Not yet performed</option>
@@ -91,15 +91,15 @@
                         </div>
                         <div class="col-lg-2">
                             <label class="fw-bold">Date : </label>
-                            <input class="form-control" name="date" id="date" type="date">
+                            <input class="form-control" name="date[]" id="date" type="date">
                         </div>
                         <div class="col-lg-3">
                             <label class="fw-bold">Physician : </label>
-                            <input class="form-control" name="physician" id="physician">
+                            <input class="form-control" name="physician[]" id="physician">
                         </div>
                     </div>
                     <div class="offset-10 pt-4">
-                        <button class="btn btn-success fw-bold fs-4" type="button" name="submit" id="submit"><i class="mdi mdi-near-me"></i> Submit</button>
+                        <button class="btn btn-success fw-bold fs-4 badge" type="button" name="submit" id="submit"><i class="mdi mdi-near-me"></i> Submit</button>
                     </div>
                 </div>
 

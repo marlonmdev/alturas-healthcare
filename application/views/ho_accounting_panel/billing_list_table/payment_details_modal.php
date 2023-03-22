@@ -53,7 +53,7 @@
                             <label class=" text-dark fw-bold ms-2 fs-5">Account Number: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="text" class="form-control text-dark fs-5" name="acc-number" id="acc-number" required>
+                            <input type="text" class="form-control text-dark fs-5" name="acc-number" id="acc-number">
                             <span id="acc-number-error" class="text-danger"></span>
                         </div>
 
@@ -61,7 +61,7 @@
                             <label class=" text-dark fw-bold ms-2 fs-5">Account Name: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="text" class="form-control text-dark fs-5" name="acc-name" id="acc-name" required>
+                            <input type="text" class="form-control text-dark fs-5" name="acc-name" id="acc-name">
                             <span id="acc-name-error" class="text-danger"></span>
                         </div>
 
@@ -69,7 +69,7 @@
                             <label class=" text-dark fw-bold ms-2 fs-5">Check Number: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="text" class="form-control text-dark fs-5" name="check-number" id="check-number" required>
+                            <input type="text" class="form-control text-dark fs-5" name="check-number" id="check-number">
                             <span id="check-number-error" class="text-danger"></span>
                         </div>
                         
@@ -77,7 +77,7 @@
                             <label class=" text-dark fw-bold ms-2 fs-5">Check Date: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="date" class="form-control text-dark fs-5" name="check-date" id="check-date" placeholder="Enter Date"  required>
+                            <input type="date" class="form-control text-dark fs-5" name="check-date" id="check-date" placeholder="Enter Date" >
                             <span id="check-date-error" class="text-danger"></span>
                         </div>
                        
@@ -85,7 +85,7 @@
                             <label class=" text-dark fw-bold ms-2 fs-5">Bank: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="text" class="form-control text-dark fs-5" name="bank" id="bank" required>
+                            <input type="text" class="form-control text-dark fs-5" name="bank" id="bank">
                             <span id="bank-error" class="text-danger"></span>
                         </div>
 
@@ -93,7 +93,7 @@
                             <label class=" text-dark fw-bold ms-2 fs-5">Amount Paid: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="number" class="form-control text-dark fs-5" name="amount-paid" id="amount-paid" required>
+                            <input type="number" class="form-control text-dark fs-5" name="amount-paid" id="amount-paid">
                             <span id="paid-error" class="text-danger"></span>
                         </div>
                         
@@ -101,7 +101,7 @@
                             <label class=" text-dark fw-bold ms-2 fs-5">Supporting Document: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="file" class="form-control text-dark fs-5" name="supporting-docu" id="supporting-docu" required>
+                            <input type="file" class="form-control text-dark fs-5" name="supporting-docu" id="supporting-docu">
                             <span id="file-error" class="text-danger"></span>
                         </div>
 

@@ -231,76 +231,90 @@
                                 processData: false,
                                 contentType: false,
                                 success: function(response){
-                                    if(response.status == 'error'){
-                                        if(response.acc_num_error != ''){
-                                            $("#acc-number-error").html(response.acc_num_error);
+                                    const {
+                                        token, status, message, acc_num_error, acc_name_error, check_num_error, check_date_error, bank_error,paid_error,image_error
+                                    } = response;
+
+                                    if(status == 'validation-error'){
+                                        if(acc_num_error != ''){
+                                            $("#acc-number-error").html(acc_num_error);
                                             $("#acc-number").addClass('is-invalid');
                                         }else{
                                             $("#acc-number-error").html("");
                                             $("#acc-number").removeClass('is-invalid');
                                         }
 
-                                        if(response.acc_name_error != ''){
-                                            $("#acc-name-error").html(response.acc_name_error);
+                                        if(acc_name_error != ''){
+                                            $("#acc-name-error").html(acc_name_error);
                                             $("#acc-name").addClass('is-invalid');
                                         }else{
                                             $("#acc-name-error").html("");
                                             $("#acc-name").removeClass('is-invalid');
                                         }
 
-                                        if(response.check_num_error != ''){
-                                            $("#check-number-error").html(response.check_num_error);
+                                        if(check_num_error != ''){
+                                            $("#check-number-error").html(check_num_error);
                                             $("#check-number").addClass('is-invalid');
                                         }else{
                                             $("#check-number-error").html("");
                                             $("#check-number").removeClass('is-invalid');
                                         }
 
-                                        if(response.check_date_error != ''){
-                                            $("#check-date-error").html(response.check_date_error);
+                                        if(check_date_error != ''){
+                                            $("#check-date-error").html(check_date_error);
                                             $("#check-date").addClass('is-invalid');
                                         }else{
                                             $("#check-date-error").html("");
                                             $("#check-date").removeClass('is-invalid');
                                         }
 
-                                        if(response.bank_error != ''){
-                                            $("#bank-error").html(response.bank_error);
+                                        if(bank_error != ''){
+                                            $("#bank-error").html(bank_error);
                                             $("#bank").addClass('is-invalid');
                                         }else{
                                             $("#bank-error").html("");
                                             $("#bank").removeClass('is-invalid');
                                         }
 
-                                        if(response.paid_error != ''){
-                                            $("#paid-error").html(response.paid_error);
+                                        if(paid_error != ''){
+                                            $("#paid-error").html(paid_error);
                                             $("#amount-paid").addClass('is-invalid');
                                         }else{
                                             $("#paid-error").html("");
                                             $("#amount-paid").removeClass('is-invalid');
                                         }
 
-                                        if(response.image_error != ''){
-                                            $("#file-error").html(response.image_error);
+                                        if(image_error != ''){
+                                            $("#file-error").html(image_error);
                                             $("#supporting-docu").addClass('is-invalid');
                                         }else{
                                             $("#file-error").html("");
                                             $("#supporting-docu").removeClass('is-invalid');
                                         }
 
-                                    }else if(response.status == 'success'){
+                                    }
+                                    if(status == 'success'){
                                         let page = '<?php echo base_url()?>head-office-accounting/billing-list/closed';
                                         $("#payment_details_form")[0].reset();
                                         swal({
                                             title: 'Success',
-                                            text: 'Payment Details Added Successfully!',
+                                            text: message,
                                             timer: 3000,
                                             showConfirmButton: false,
                                             type: 'success'
                                         });
                                             redirectPage(page, 200);
                                     }
-                                },
+                                     if(status == 'error'){
+                                        swal({
+                                            title: 'Error',
+                                            text: message,
+                                            timer: 3000,
+                                            showConfirmButton: true,
+                                            type: 'error'
+                                        });
+                                    }
+                                }
                             }); 
                         },
                     },

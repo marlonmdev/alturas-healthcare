@@ -497,7 +497,7 @@ class Loa_controller extends CI_Controller {
 
 			$for_cancellation = $this->loa_model->db_get_loa_cancellation_request($value['loa_id']);
 
-			if($for_cancellation['status'] == 'Disapproved'){
+			if(empty($for_cancellation['status']) || $for_cancellation['status'] == 'Disapproved'){
 				$buttons .= '<a class="me-2" href="JavaScript:void(0)" onclick="requestLoaCancellation(\'' . $loa_id . '\', \'' . $value['loa_no'] . '\', \'' . $value['hcare_provider'] . '\')" data-bs-toggle="tooltip" title="Request LOA Cancellation"><i class="mdi mdi-close-circle fs-2 text-danger"></i></a>';
 			}else{
 				$buttons .= '<a class="me-2" data-bs-toggle="tooltip" title="Requested for Cancellation" disabled><i class="mdi mdi-close-circle fs-2 icon-disabled"></i></a>';

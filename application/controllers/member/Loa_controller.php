@@ -117,6 +117,61 @@ class Loa_controller extends CI_Controller {
 		}
 	}
 
+	function get_hp_services(){
+		$token = $this->security->get_csrf_hash();
+		$hp_id = $this->uri->segment(3);
+		$cost_types = $this->loa_model->db_get_cost_types_by_hp($hp_id);
+		$response = '';
+
+		if(empty($cost_types)){
+			$response .= '<select class="chosen-select" id="med-services" name="med-services[]" multiple="multiple">';
+			
+			$response .= '<option value="" disabled>No Available Services</option>';
+
+			$response .= '</select>';
+		}else{
+			$response .= '<select class="chosen-select" id="med-services" name="med-services[]" data-placeholder="Choose services..." multiple="multiple">';
+                    
+			foreach ($cost_types as $cost_type) {
+				$response .= '<option value="'.$cost_type['ctype_id'].'">'.$cost_type['item_description'].'</option>';
+			}
+
+			$response .= '</select>';
+		}
+
+		echo json_encode($response);
+	}
+
+	function get_hp_services_on_edit(){
+		$token = $this->security->get_csrf_hash();
+		$hp_id = $this->uri->segment(4);
+		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$row = $this->loa_model->db_get_loa_services($loa_id);
+		$cost_types = $this->loa_model->db_get_cost_types_by_hp($hp_id);
+		$selectedOptions = explode(';', $row['med_services']);
+		$response = '';
+
+		if(empty($cost_types)){
+			$response .= '<select class="chosen-select" id="med-services" name="med-services[]" multiple="multiple">';
+			
+			$response .= '<option value="" disabled>No Available Services</option>';
+
+			$response .= '</select>';
+		}else{
+			$response .= '<select class="chosen-select" id="med-services" name="med-services[]" data-placeholder="Choose services..." multiple="multiple">';
+                    
+			foreach ($cost_types as $cost_type) {
+				$select = in_array($cost_type['ctype_id'], $selectedOptions) ? 'selected' : '';
+
+				$response .= '<option value="'.$cost_type['ctype_id'].'" '.$select.'>'.$cost_type['item_description'].'</option>';
+			}
+
+			$response .= '</select>';
+		}
+
+		echo json_encode($response);
+	}
+
 	function submit_loa_request() {
 		$token = $this->security->get_csrf_hash();
 		$input_post = $this->input->post(NULL, TRUE);
@@ -758,7 +813,7 @@ class Loa_controller extends CI_Controller {
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'disapproved_by' => $doctor_name,
 			'disapprove_reason' => $row['disapprove_reason'],
-			'disapproved_on' => date("F d, Y", strtotime($row['disapproved_on'])),
+			'disapproved_on' => $row['disapproved_on'] ? date("F d, Y", strtotime($row['disapproved_on'])) : '',
 		];
 		echo json_encode($response);
 	}

@@ -72,7 +72,7 @@
                 </div>
                 <div class="col-lg-4 col-sm-12 mb-2">
                   <label class="colored-label"><i class="bx bx-health icon-red"></i> Admission Date</label>
-                  <input type="date" class="form-control" name="admission-date" id="admission-date">
+                  <input type="text" class="form-control" name="admission-date" id="admission-date" placeholder="Select Date" style="background-color:#ffff">
                   <em id="admission-date-error" class="text-danger"></em>
                 </div>
               </div>
@@ -115,6 +115,11 @@
   const baseUrl = `<?php echo base_url(); ?>`;
 
   $(document).ready(function() {
+
+    $('#admission-date').flatpickr({
+      dateFormat: "Y-m-d"
+    });
+
     $('#memberNoaRequestForm').submit(function(event) {
       event.preventDefault();
       let $data = new FormData($(this)[0]);

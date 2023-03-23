@@ -10,7 +10,7 @@
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Company Doctor</li>
               <li class="breadcrumb-item active" aria-current="page">
-                Approved LOA
+                Expired LOA
               </li>
             </ol>
           </nav>
@@ -36,7 +36,7 @@
           </li>
           <li class="nav-item">
             <a
-              class="nav-link active"
+              class="nav-link"
               href="<?php echo base_url(); ?>company-doctor/loa/requests-list/approved"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -64,7 +64,7 @@
           </li>
             <li class="nav-item">
             <a
-              class="nav-link"
+              class="nav-link active"
               href="<?php echo base_url(); ?>company-doctor/loa/requests-list/expired"
               role="tab"
               ><span class="hidden-sm-up"></span>

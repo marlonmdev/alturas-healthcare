@@ -117,7 +117,7 @@
               <div class="form-group row">
                 <div class="col-lg-7 col-sm-12 col-lg-offset-3 mb-2">
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Healthcare Provider</label>
-                  <select class="form-select" name="healthcare-provider" id="healthcare-provider" oninput="enableMedService()">
+                  <select class="form-select" name="healthcare-provider" id="healthcare-provider" oninput="enableRequestType()">
                     <option value="" selected>Select Healthcare Provider</option>
                     <?php
                     if (!empty($hcproviders)) :
@@ -133,7 +133,7 @@
                 </div>
                 <div class="col-lg-5 col-sm-12 mb-2">
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Type of LOA Request</label>
-                  <select class="form-select" name="loa-request-type" id="loa-request-type" onchange="showMedServices()">
+                  <select class="form-select" name="loa-request-type" id="loa-request-type" onchange="showMedServices()" disabled>
                     <option value="" selected>Select LOA Request Type</option>
                     <option value="Consultation">Consultation</option>
                     <option value="Diagnostic Test">Diagnostic Test</option>
@@ -146,17 +146,7 @@
                 <div class="col-lg-12 col-sm-12 mb-2 d-none" id="med-services-div">
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Select Medical Service/s</label><br>
                   <div id="med-services-wrapper">
-                    <select class="form-select chosen-select" data-placeholder="Choose services..." id="med-services" name="med-services[]" multiple>
-                      <?php
-                      if (!empty($costtypes)) :
-                        foreach ($costtypes as $ct) :
-                      ?>
-                          <option value="<?= $ct['ctype_id']; ?>"><?= $ct['item_description']; ?></option>
-                      <?php
-                        endforeach;
-                      endif;
-                      ?>
-                    </select>
+                    <!-- med-services select box will be appended here... -->
                   </div>
                   <em id="med-services-error" class="text-danger"></em>
                 </div>
@@ -164,7 +154,7 @@
 
               <div class="form-group row">
                 <div class="col-sm-3 mb-2">
-                  <label class="colored-label">Health Card Number</label>
+                  <label class="colored-label">Healthcard Number</label>
                   <input type="text" class="form-control" name="health-card-no" value="<?= $member['health_card_no'] ?>" disabled>
                 </div>
                 <div class="col-sm-5 mb-2">
@@ -173,10 +163,10 @@
                 </div>
                 <div class="col-lg-4 col-sm-12 col-lg-offset-4 mb-2">
                   <?php
-                  $month = date('m');
-                  $day = date('d');
-                  $year = date('Y');
-                  $today = $year . '-' . $month . '-' . $day;
+                    $month = date('m');
+                    $day = date('d');
+                    $year = date('Y');
+                    $today = $year . '-' . $month . '-' . $day;
                   ?>
                   <label class="colored-label">Request Date</label>
                   <input type="text" class="form-control" name="request-date" value="<?= $today; ?>" disabled>
@@ -265,6 +255,31 @@
   const baseUrl = "<?= base_url() ?>";
 
   $(document).ready(function() {
+
+      $('#healthcare-provider').on('change', function(){
+        const hp_id = $(this).val();
+        const token = `<?php echo $this->security->get_csrf_hash(); ?>`;
+
+        if(hp_id != ''){
+          $.ajax({
+              url: `${baseUrl}member/get-services/${hp_id}`,
+              type: "GET",
+              dataType: "json",
+              success:function(response){
+
+                $('#med-services-wrapper').empty();                
+
+                $('#med-services-wrapper').append(response);
+
+                $(".chosen-select").chosen({
+                  width: "100%",
+                  no_results_text: "Oops, nothing found!"
+                }); 
+              }
+          });
+        }
+      });
+
 
     $('#memberLoaRequestForm').submit(function(event) {
       event.preventDefault();
@@ -369,16 +384,17 @@
 
   });
 
-    const enableMedService = () => {
+  const enableRequestType = () => {
     const hc_provider = document.querySelector('#healthcare-provider').value;
-    const med_services = document.querySelector('#med-services');
 
-        if( hc_provider != '' ){
-          med_services.disabled = false;
-        }else{
-          med_services.disabled = true;
-        }
-    } 
+    const request_type = document.querySelector('#loa-request-type');
+      if( hc_provider != '' ){
+        request_type.disabled = false;
+      }else{
+        request_type.disabled = true;
+        request_type.value = '';
+      }
+  } 
   
   const showMedServices = () => {
     const loaType = document.querySelector('#loa-request-type').value;

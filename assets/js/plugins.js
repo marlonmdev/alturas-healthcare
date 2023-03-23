@@ -14,10 +14,10 @@ $(document).ready(function () {
 	// 	showEachItem: true,
 	// });
 
-	$(".chosen-select").chosen({
-		width: "100%",
-		no_results_text: "Oops, nothing found!"
-	}); 
+	// $(".chosen-select").chosen({
+	// 	width: "100%",
+	// 	no_results_text: "Oops, nothing found!"
+	// }); 
    
 
 	// initialize Tagify plugin on the above input node reference

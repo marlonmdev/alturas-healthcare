@@ -126,7 +126,7 @@
               <div class="form-group row">
                 <div class="col-lg-7 col-sm-12 col-lg-offset-3 mb-2">
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> HealthCare Provider</label>
-                  <select class="form-select" name="healthcare-provider" id="healthcare-provider" oninput="enableRequestType()">
+                  <select class="form-select" name="healthcare-provider" id="healthcare-provider">
                     <option value="" selected>Select HealthCare Provider</option>
                     <?php
                     if (!empty($hcproviders)) {
@@ -163,6 +163,7 @@
                     <?php
                     endif;
                     ?>
+                    <!-- <option value="Dummy">Dummy</option> -->
                   </select>
                   <em id="loa-request-type-error" class="text-danger"></em>
                 </div>
@@ -172,7 +173,18 @@
                 <div class="col-lg-7 col-sm-12 mb-2 <?= $row['loa_request_type'] === 'Consultation' ? 'd-none' : ''; ?>" id="med-services-div">
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Select Medical Service/s</label><br>
                   <div id="med-services-wrapper">
-   
+                    <select class="form-select chosen-select" data-placeholder="Choose services..." id="med-services" name="med-services[]" multiple>
+                      <?php
+                      $selectedOptions = explode(';', $row['med_services']);
+                      foreach ($costtypes as $costtype) :
+                      ?>
+                        <option value="<?= $costtype['ctype_id']; ?>" <?= in_array($costtype['ctype_id'], $selectedOptions) ? 'selected' : ''; ?>>
+                          <?= $costtype['item_description']; ?>
+                        </option>
+                      <?php
+                      endforeach;
+                      ?>
+                    </select>
                   </div>
                   <em id="med-services-error" class="text-danger"></em>
                 </div>
@@ -318,12 +330,11 @@
   $(document).ready(function() {
 
     $('#healthcare-provider').on('change', function(){
-      const hp_id = $('#healthcare-provider').val();
-      const loa_id = $('#loa-id').val();
+      const hp_id = $(this).val();
 
       if(hp_id != ''){
         $.ajax({
-            url: `${baseUrl}member/edit-loa/get-services/${hp_id}/${loa_id}`,
+            url: `${baseUrl}member/get-services/${hp_id}`,
             type: "GET",
             dataType: "json",
             success:function(response){
@@ -444,24 +455,14 @@
 
   const enableRequestType = () => {
     const hc_provider = document.querySelector('#healthcare-provider').value;
+
     const request_type = document.querySelector('#loa-request-type');
-    const med_services = document.querySelector('#med-services-div');
-
-    if(hc_provider != '' && request_type.value == 'Diagnostic Test'){
-      request_type.disabled = false;
-      med_services.className = 'd-block';
-    }else if(hc_provider != '' && request_type.value == 'Consultation' || hc_provider != '' && request_type.value == ''){
-      request_type.disabled = false;
-      med_services.className = 'd-none';
-    }else if(hc_provider != ''){
-      request_type.disabled = false;
-      med_services.className = 'd-block';
-    }else{
-      request_type.disabled = true;
-      request_type.value = '';
-      med_services.className = 'd-none';
-    }
-
+      if( hc_provider != '' ){
+        request_type.disabled = false;
+      }else{
+        request_type.disabled = true;
+        request_type.value = '';
+      }
   } 
 
 

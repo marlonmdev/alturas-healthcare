@@ -351,39 +351,14 @@ class Loa_controller extends CI_Controller {
 
 			$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="Tag LOA Charge Type"><i class="mdi mdi-tag-plus fs-2 text-primary"></i></a>';
 
-
-			// if ($loa['requested_by'] !== $hcc_emp_id) {
-			// 	$custom_actions .= '<a readonly><i class="bi bi-pencil-square icon-disabled"></i></a>';
-			// 	$custom_actions .= '<a readonly><i class="bi bi-trash icon-disabled"></i></a>';
-			// } else {
-			// 	$custom_actions .= '<a href="' . $view_url . '" data-bs-toggle="tooltip" title="Edit LOA"><i class="bi bi-pencil-square icon-success"></i></a>';
-			// 	$custom_actions .= '<a href="Javascript:void(0)" onclick="cancelLoaRequest(' . $loa['loa_id'] . ')" data-bs-toggle="tooltip" title="Cancel LOA"><i class="bi bi-trash icon-danger"></i></a>';
-			// }
-
-			// $short_med_services = '';
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
 			if ($loa['loa_request_type'] === 'Consultation') {
-				// if request is consultation set the view file to None
-				// $short_med_services = 'None'
 				$view_file = 'None';
 				// if Healthcare Provider name is too long for displaying to the table, shorten it and add the ... characters at the end 
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
 
 			} else {
-				// convert into array members selected cost types/med_services using PHP explode
-				// $selected_cost_types = explode(';', $loa['med_services']);
-				// loop through all the cost types from DB
-				// foreach ($cost_types as $cost_type) :
-				// 	if (in_array($cost_type['ctype_id'], $selected_cost_types)) :
-				// 		array_push($ct_array, $cost_type['cost_type']);
-				// 	endif;
-				// endforeach;
-				// convert array to string and add comma as a separator using PHP implode
-				// $med_services = implode(', ', $ct_array);
-				// if medical services are too long for displaying to the table shorten it and add the ... characters at the end 
-				// $short_med_services = strlen($med_services) > 35 ? substr($med_services, 0, 35) . "..." : $med_services;
-
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
 
 				// link to the file attached during loa request
@@ -433,22 +408,33 @@ class Loa_controller extends CI_Controller {
       if($date_result == 'Expired'){
 				$custom_date = '<span class="text-danger">'.$expiration_date.'</span><span class="text-danger fw-bold ls-1"> [Expired]</span>';
 
-				$custom_actions = '<a class="me-2" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+				$custom_actions = '<a class="me-1" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
-				$custom_actions .= '<a class="me-2" data-bs-toggle="tooltip" title="Cannot Print Expired LOA"><i class="mdi mdi-printer fs-2 icon-disabled"></i></a>';
-
-				$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Update LOA"><i class="mdi mdi-playlist-check fs-2 text-success"></i></a>';
+				$custom_actions .= '<a class="me-1" data-bs-toggle="tooltip" title="Cannot Print Expired LOA"><i class="mdi mdi-printer fs-2 icon-disabled"></i></a>';
 
 			}else{
 				$custom_date = $expiration_date;
 
-				$custom_actions = '<a class="me-2" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+				$custom_actions = '<a class="me-1" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
-				$custom_actions .= '<a class="me-2" href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Print LOA"><i class="mdi mdi-printer fs-2 text-primary"></i></a>';
+				$custom_actions .= '<a class="me-1" href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Print LOA"><i class="mdi mdi-printer fs-2 text-primary"></i></a>';
 
 				$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Update LOA"><i class="mdi mdi-playlist-check fs-2 text-success"></i></a>';
+
+				$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-information-outline fs-2 ps-1 text-danger"></i></a>';
+			}
+			
+		if($loa['loa_request_type'] == 'Consultation'){
+
+			$custom_actions = '<a class="me-1" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+
+			if($date_result == 'Expired'){
+				$custom_actions .= '<a class="me-1" data-bs-toggle="tooltip" title="Cannot Print Expired LOA"><i class="mdi mdi-printer fs-2 icon-disabled"></i></a>';
+			}else{
+				$custom_actions .= '<a class="me-1" href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Print LOA"><i class="mdi mdi-printer fs-2 text-primary"></i></a>';
 			}
 
+		}
 			$custom_status = '<span class="badge rounded-pill bg-success">' . $loa['status'] . '</span>';
 		
 			// initialize multiple varibles at once
@@ -1117,20 +1103,139 @@ class Loa_controller extends CI_Controller {
 
 	function view_tag_loa_completed() {
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
-		$data['user_role'] = $this->session->userdata('user_role');
 		$loa = $this->loa_model->get_all_approved_loa($loa_id);
 
-		$data['cost_types'] = $this->loa_model->db_get_cost_types_by_hpID($loa['hcare_provider']);
-		$data['full_name'] = $loa['first_name'] .' '. $loa['middle_name'] .' '. $loa['last_name'] .' '. $loa['suffix'];
-		$data['loa_no'] = $loa['loa_no'];
-		$data['hc_provider'] = $loa['hp_name'];
-		$data['hp_id'] = $loa['hp_id'];
-		$data['loa_id'] = $loa['loa_id'];
-		$data['med_services'] = $loa['med_services'];
+		$existing = $this->loa_model->check_loa_no($loa_id);
 		
-		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_coordinator_panel/loa/tag_loa_to_complete');
-		$this->load->view('templates/footer');
+		if(!$existing){
+			$data['user_role'] = $this->session->userdata('user_role');
+			$data['cost_types'] = $this->loa_model->db_get_cost_types_by_hpID($loa['hcare_provider']);
+			$data['emp_id'] = $loa['emp_id'];
+			$data['full_name'] = $loa['first_name'] .' '. $loa['middle_name'] .' '. $loa['last_name'] .' '. $loa['suffix'];
+			$data['loa_no'] = $loa['loa_no'];
+			$data['hc_provider'] = $loa['hp_name'];
+			$data['hp_id'] = $loa['hp_id'];
+			$data['loa_id'] = $loa['loa_id'];
+			$data['med_services'] = $loa['med_services'];
+			
+			$this->load->view('templates/header', $data);
+			$this->load->view('healthcare_coordinator_panel/loa/tag_loa_to_complete');
+			$this->load->view('templates/footer');
+
+		}else{
+			$loa_info['user_role'] = $this->session->userdata('user_role');
+			$loa_info['loa_info'] = $this->loa_model->get_performed_loa_data($loa_id);
+			$loa_info['hc_provider'] = $loa['hp_name'];
+			$loa_info['full_name'] = $loa['first_name'] .' '. $loa['middle_name'] .' '. $loa['last_name'] .' '. $loa['suffix'];
+			$loa_info['hp_id'] = $loa['hp_id'];
+			$loa_info['loa_id'] = $loa['loa_id'];
+			$loa_info['emp_id'] = $loa['emp_id'];
+			$loa_info['loa_no'] = $loa['loa_no'];
+
+			$this->load->view('templates/header', $loa_info);
+			$this->load->view('healthcare_coordinator_panel/loa/edit_tagged_loa_to_complete');
+			$this->load->view('templates/footer');
+		}
+
+		
+	}
+
+	function submit_performed_loa_info() {
+		$token = $this->security->get_csrf_hash();
+		$emp_id = $this->input->post('emp-id', TRUE);
+		$hp_id = $this->input->post('hp-id', TRUE);
+		$loa_id = $this->input->post('loa-id', TRUE);
+		$loa_no = $this->input->post('loa-num', TRUE);
+		$med_service = $this->input->post('ct-name', TRUE);
+		$status = $this->input->post('status', TRUE);
+		$date_time_performed = $this->input->post('date', TRUE);
+		$physician = $this->input->post('physician', TRUE);
+		$added_by = $this->session->userdata('fullname');
+		$added_on = date('Y-m-d');	
+
+			$post_data = [];
+			for($x = 0; $x < count($med_service); $x++ ){
+				$post_data[] = [
+					'emp_id' => $emp_id,
+					'hp_id' => $hp_id,
+					'loa_id' => $loa_id,
+					'loa_no' => $loa_no,
+					'med_services' =>$med_service[$x],
+					'status' => $status[$x],
+					'date_time_performed' => $date_time_performed[$x],
+					'physician' => $physician[$x],
+					'added_by' => $added_by,
+					'added_on' => $added_on
+				];
+			}
+			
+
+			$inserted = $this->loa_model->insert_performed_loa_info($post_data);
+			if($inserted){
+				echo json_encode([
+					'token' => $token,
+					'status' => 'success',
+					'message' => 'Data Uploaded Successfully!'
+				]);
+			}else{
+				echo json_encode([
+					'token' => $token,
+					'status' => 'failed',
+					'message' => 'Data Failed to Upload!'
+				]);
+			}
+		
+	}
+	
+	function submit_edited_loa_info() {
+		$token = $this->security->get_csrf_hash();
+		$loa_id = $this->input->post('loa-id', TRUE);
+		$med_service = $this->input->post('ct-name', TRUE);
+		$status = $this->input->post('status', TRUE);
+		$date_time_performed = $this->input->post('date', TRUE);
+		$physician = $this->input->post('physician', TRUE);
+		$edited_by = $this->session->userdata('fullname');
+		$edited_on = date('Y-m-d');	
+
+			$post_data = [];
+			for($x = 0; $x < count($med_service); $x++ ){
+				$post_data[] = [
+					'med_services' =>$med_service[$x],
+					'status' => $status[$x],
+					'date_time_performed' => $date_time_performed[$x],
+					'physician' => $physician[$x],
+					'edited_by' => $edited_by,
+					'edited_on' => $edited_on
+				];
+
+				$updated = $this->loa_model->insert_edited_performed_loa_info($post_data, $loa_id);
+			}
+				echo json_encode([
+					'token' => $token,
+					'status' => 'success',
+					'message' => 'Data Uploaded Successfully!'
+				]);	
+		
+	}
+
+	function fetch_performed_loa_info() {
+		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$loa_info = $this->loa_model->fetch_per_loa_info($loa_id);
+
+		if(!empty($loa_info)){
+			foreach($loa_info as $loa){
+				$data = [
+					'token' => $this->security->get_csrf_hash(),
+					'loa_no' =>$loa['loa_no'],
+					'med_services' => $loa['med_services'],
+					'status' => $loa['status'],
+					'date_time_performed' => $loa['date_time_performed'],
+					'physician' => $loa['physician']
+				];
+	
+				echo json_encode($data);
+			}
+		}	
 	}
 	
 }

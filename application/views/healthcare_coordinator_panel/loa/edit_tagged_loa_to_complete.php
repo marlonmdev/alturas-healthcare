@@ -32,7 +32,7 @@
                         </div>
                 </div>
                 
-            <form id="performedLoaInfo" method="post" action="<?php echo base_url();?>healthcare-coordinator/loa-requests/approved/performed-loa-info/submit" class="needs-validation" novalidate>
+            <form id="performedLoaInfo" method="post" action="<?php echo base_url();?>healthcare-coordinator/loa-requests/approved/performed-loa-info/edit">
                 <div class="row">
                     <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
                     <input type="hidden" name="hp-id" value="<?php echo $hp_id ?>">
@@ -58,42 +58,45 @@
                         <div class="row">
 
                         <?php 
-                            /* Exploding the string into an array and then checking if the array
-                            contains the value. */
-                            $selectedOptions = explode(';', $med_services);
-                            foreach ($cost_types as $cost_type) :
-                                if (in_array($cost_type['ctype_id'], $selectedOptions)) :
+                            foreach ($loa_info as $loa) :
+                                
                         ?>
-                            <input type="hidden" name="ctype_id" value="<?php echo $cost_type['ctype_id']; ?>">
-                            <div class="col-lg-4 pb-3">
+                            <div class="col-lg-4 pb-2 pe-1">
                                 <label class="fw-bold">Medical Services : </label>
-                                <input type="text" class="form-control fw-bold ls-1" name="ct-name[]" value="<?php echo $cost_type['item_description']; ?>" readonly>
+                                <input type="text" class="form-control fw-bold ls-1" name="ct-name[]" value="<?php echo $loa['med_services']; ?>" readonly>
                             </div>
 
-                            <div class="col-lg-2 pb-3">
+                            <div class="col-lg-2 pb-2 pe-1">
                                 <label class="fw-bold">Status : </label>
-                                <select class="form-control fw-bold" name="status[]" id="status" onchange="" required>
-                                    <option value="">Select...</option>
-                                    <option value="Performed">Performed</option>
-                                    <option value="Not yet performed">Not yet performed</option>
+                                <select class="form-control fw-bold" name="status[]" id="status" required>
+                                    <?php if($loa['status'] == 'Performed') : ?>
+                                            <option value="Performed" selected>Performed</option>
+                                        <?php else : ?>
+                                            <option value="Performed">Performed</option>
+                                    <?php endif; ?>
+                                    <?php if($loa['status'] == 'Not yet performed') : ?>
+                                        <option value="Not yet performed" selected>Not yet performed</option>
+                                        <?php else : ?>
+                                            <option value="Not yet performed">Not yet performed</option>
+                                    <?php endif; ?>
                                 </select>
                                 <span class="text-danger" id="status-error"></span>
                             </div>
 
-                            <div class="col-lg-3 pb-3">
+                            <div class="col-lg-3 pb-2 pe-1">
                                 <label class="fw-bold">Date & Time Performed : </label>
-                                <input class="form-control input-date fw-bold" name="date[]" id="date" type="text" placeholder="Select Date" style="background-color:#ffff">
+                                <input class="form-control input-date fw-bold" name="date[]" id="date" type="text" value="<?php echo $loa['date_time_performed'] ?>" placeholder="Select Date" style="background-color:#ffff">
                                 <span class="text-danger" id="date-error"></span>
                             </div>
 
-                            <div class="col-lg-3 pb-3">
+                            <div class="col-lg-3 pb-2 pe-1">
                                 <label class="fw-bold">Physician : </label>
-                                <input class="form-control fw-bold" name="physician[]" id="physician">
+                                <input class="form-control fw-bold" name="physician[]" id="physician" value="<?php echo $loa['physician']?>">
                                 <span class="text-danger" id="physician-error"></span>
                             </div>
 
                         <?php 
-                                endif;
+                              
                             endforeach;
                         ?>
                         
@@ -116,10 +119,10 @@
         $('#performedLoaInfo').submit(function(event){
             event.preventDefault();
 
-            if(!form.checkValidity()){
-                form.classLIst.add('was-validated');
-                return;
-            }
+            // if(!form.checkValidity()){
+            //     form.classLIst.add('was-validated');
+            //     return;
+            // }
 
             let url = $(this).attr('action');
             let data = $(this).serialize();
@@ -134,7 +137,6 @@
                     } = response;
 
                     switch(status){
-                       
                         case 'failed':
                             swal({
                                 title: 'Error',
@@ -144,7 +146,6 @@
                                 type: 'error'
                             });
                         break;
-
                         case 'success':
                             swal({
                                 title: 'Success',
@@ -153,7 +154,7 @@
                                 showConfirmButton: true,
                                 type: 'success'
                             });
-
+                           
                             setTimeout(function () {
                                 window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved';
                             }, 2600);
@@ -177,7 +178,7 @@
         const physician = document.querySelector('#physician');
         const status = document.querySelector('#status');
 
-        if(status.value == 'Performed') {
+        if(status.value == 'performed'){
             date.removeAttribute('readonly');
             physician.removeAttribute('readonly');
         }else{

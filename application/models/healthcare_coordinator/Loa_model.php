@@ -312,5 +312,39 @@ class Loa_model extends CI_Model {
     return $this->db->update('loa_requests');
   }
 
+  function insert_performed_loa_info($post_data) {
+    return $this->db->insert_batch('performed_loa_info', $post_data);
+  }
+
+  function insert_edited_performed_loa_info($post_data, $loa_id) {
+    $this->db->where('loa_id', $loa_id);
+
+    if (!empty($post_data)) {
+        return $this->db->update_batch('performed_loa_info', $post_data, 'med_services');
+    } else {
+        // If $post_data is empty, return true to indicate that the update succeeded.
+        return true;
+    }
+  }
+
+  function check_loa_no($loa_id) {
+    $query = $this->db->get_where('performed_loa_info', ['loa_id' => $loa_id]);
+    return $query->num_rows() > 0 ? true : false;
+  }
+
+  function get_performed_loa_data($loa_id) {
+    $this->db->select('*')
+            ->from('performed_loa_info')
+            ->where('loa_id', $loa_id);
+    return $this->db->get()->result_array();
+  }
+
+  function fetch_per_loa_info($loa_id) {
+    $this->db->select('*')
+            ->from('performed_loa_info')
+            ->where('loa_id', $loa_id);
+    return $this->db->get()->result_array();
+  }
+
 
 }

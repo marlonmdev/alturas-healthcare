@@ -492,17 +492,12 @@ class Loa_controller extends CI_Controller {
 			}else{
 				$custom_date = $expiration_date;
 			}
-
+			
 			$buttons = '<a class="me-2" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
 			$for_cancellation = $this->loa_model->db_get_loa_cancellation_request($value['loa_id']);
-<<<<<<< HEAD
-			
-			if($for_cancellation['status'] == 'Disapproved'){
-=======
 
 			if(empty($for_cancellation['status']) || $for_cancellation['status'] == 'Disapproved'){
->>>>>>> f38fe9930abae89c47121a6125fcff65977c8064
 				$buttons .= '<a class="me-2" href="JavaScript:void(0)" onclick="requestLoaCancellation(\'' . $loa_id . '\', \'' . $value['loa_no'] . '\', \'' . $value['hcare_provider'] . '\')" data-bs-toggle="tooltip" title="Request LOA Cancellation"><i class="mdi mdi-close-circle fs-2 text-danger"></i></a>';
 			}else{
 				$buttons .= '<a class="me-2" data-bs-toggle="tooltip" title="Requested for Cancellation" disabled><i class="mdi mdi-close-circle fs-2 icon-disabled"></i></a>';

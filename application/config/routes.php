@@ -51,6 +51,8 @@ $route['member/account-settings/password/update'] = 'member/account_controller/u
 $route['member/account-settings/username/update'] = 'member/account_controller/update_account_username';
 
 // Member LOA Routes
+$route['member/get-services/(:any)'] = 'member/loa_controller/get_hp_services';
+$route['member/edit-loa/get-services/(:any)/(:any)'] = 'member/loa_controller/get_hp_services_on_edit';
 $route['member/request-loa/submit'] = 'member/loa_controller/submit_loa_request';
 $route['member/requested-loa/pending/fetch'] = 'member/loa_controller/fetch_pending_loa';
 $route['member/requested-loa/approved/fetch'] = 'member/loa_controller/fetch_approved_loa';

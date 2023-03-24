@@ -320,7 +320,7 @@ class Loa_model extends CI_Model {
     $this->db->where('loa_id', $loa_id);
 
     if (!empty($post_data)) {
-        return $this->db->update_batch('performed_loa_info', $post_data, 'med_services');
+        return $this->db->update_batch('performed_loa_info', $post_data, 'ctype_id');
     } else {
         // If $post_data is empty, return true to indicate that the update succeeded.
         return true;
@@ -334,16 +334,39 @@ class Loa_model extends CI_Model {
 
   function get_performed_loa_data($loa_id) {
     $this->db->select('*')
-            ->from('performed_loa_info')
+            ->from('performed_loa_info as tbl_1')
+            ->join('cost_types as tbl_2', 'tbl_1.ctype_id = tbl_2.ctype_id')
             ->where('loa_id', $loa_id);
     return $this->db->get()->result_array();
   }
 
   function fetch_per_loa_info($loa_id) {
     $this->db->select('*')
-            ->from('performed_loa_info')
+            ->from('performed_loa_info as tbl_1')
+            ->join('cost_types as tbl_2', 'tbl_1.ctype_id = tbl_2.ctype_id')
             ->where('loa_id', $loa_id);
     return $this->db->get()->result_array();
+  }
+
+  function check_if_all_status_performed($loa_id) {
+    $field_name = 'status';
+    $this->db->distinct()
+            ->select($field_name)
+            ->from('performed_loa_info')
+            ->where('loa_id', $loa_id);
+    $query = $this->db->get();
+
+    $results = $query->result();
+
+    if (count($results) === 1 && $results[0]->$field_name === 'Performed') {
+      return true;
+    }
+  }
+
+  function set_loa_status_completed($loa_id, $status) {
+    $this->db->set('status', $status)
+            ->where('loa_id', $loa_id);
+    return $this->db->update('loa_requests');
   }
 
 

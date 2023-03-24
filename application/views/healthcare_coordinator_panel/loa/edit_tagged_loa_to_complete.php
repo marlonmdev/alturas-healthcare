@@ -62,8 +62,9 @@
                                 
                         ?>
                             <div class="col-lg-4 pb-2 pe-1">
+                                <input type="hidden" name="ctype_id[]" value="<?php echo $loa['ctype_id']; ?>">
                                 <label class="fw-bold">Medical Services : </label>
-                                <input type="text" class="form-control fw-bold ls-1" name="ct-name[]" value="<?php echo $loa['med_services']; ?>" readonly>
+                                <input type="text" class="form-control fw-bold ls-1" name="ct-name[]" value="<?php echo $loa['item_description']; ?>" readonly>
                             </div>
 
                             <div class="col-lg-2 pb-2 pe-1">
@@ -151,7 +152,7 @@
                                 title: 'Success',
                                 text: message,
                                 timer: 3000,
-                                showConfirmButton: true,
+                                showConfirmButton: false,
                                 type: 'success'
                             });
                            
@@ -166,7 +167,6 @@
         });
 
         $(".input-date").flatpickr({
-            altInput: true,
             enableTime: true,
             dateFormat: 'm-d-Y H:i',
         });

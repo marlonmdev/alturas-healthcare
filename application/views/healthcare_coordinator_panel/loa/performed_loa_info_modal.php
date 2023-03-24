@@ -2,12 +2,12 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title ls-2"><span class="fs-4 fw-bold">[<span class="fw-bold fs-4" id="pf-loa-no"></span>]</span></h4>
+                <h4 class="modal-title ls-2"><span class="fs-4 fw-bold">[<span class="fw-bold fs-4 text-danger" id="pf-loa-no"></span>]</span></h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
             <div class="modal-body">
-                <div class="container">
+                <div class="container" id="pf-table">
                     <table class="table table-bordered table-striped table-hover table-responsive">
                         <thead class="fw-bold fs-6">
                             <tr>
@@ -16,14 +16,9 @@
                                 <th class="fw-bold">Date & Time Performed</th>
                                 <th class="fw-bold">Physician</th>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="fw-bold">
-                                <td id="pf-med-services"></td>
-                                <td id="pf-status"></td>
-                                <td id="pf-date-time"></td>
-                                <td id="pf-physician"></td>
-                            </tr>
+                        </thead>    
+                        <tbody id="pf-tbody">
+                           
                         </tbody>
                     </table>
                     

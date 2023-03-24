@@ -64,7 +64,7 @@
                             foreach ($cost_types as $cost_type) :
                                 if (in_array($cost_type['ctype_id'], $selectedOptions)) :
                         ?>
-                            <input type="hidden" name="ctype_id" value="<?php echo $cost_type['ctype_id']; ?>">
+                            <input type="hidden" name="ctype_id[]" value="<?php echo $cost_type['ctype_id']; ?>">
                             <div class="col-lg-4 pb-3">
                                 <label class="fw-bold">Medical Services : </label>
                                 <input type="text" class="form-control fw-bold ls-1" name="ct-name[]" value="<?php echo $cost_type['item_description']; ?>" readonly>
@@ -150,7 +150,7 @@
                                 title: 'Success',
                                 text: message,
                                 timer: 3000,
-                                showConfirmButton: true,
+                                showConfirmButton: false,
                                 type: 'success'
                             });
 
@@ -165,7 +165,6 @@
         });
 
         $(".input-date").flatpickr({
-            altInput: true,
             enableTime: true,
             dateFormat: 'm-d-Y H:i',
         });

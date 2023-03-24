@@ -411,7 +411,7 @@ class Setup_controller extends CI_Controller {
         $value['ctype_id'],
         $value['item_description'],
         date("m/d/Y", strtotime($value['date_added'])),
-        $value['date_updated'] ? date("m/d/Y", strtotime($value['date_updated'])) : '',
+        $value['date_updated'] ? date("m/d/Y", strtotime($value['date_updated'])) : 'No Data Available',
         $actions
       ];
     }
@@ -523,7 +523,7 @@ class Setup_controller extends CI_Controller {
     $response = [
       'status' => 'success',
       'token' => $this->security->get_csrf_hash(),
-      'cost_type' => $row['cost_type'],
+      'cost_type' => $row['item_description'],
     ];
     echo json_encode($response);
   }
@@ -582,20 +582,24 @@ class Setup_controller extends CI_Controller {
   function fetch_room_types() {
     $result = $this->setup_model->get_room_datatables();
     $data = [];
+    $response = [];
 
     foreach($result as $room){
-      $row = [];
-      if($room['date_added'] == "" ){
-        $date_added = '03/08/2023';
-      }else{
-        $date_added = date('m/d/Y', strtotime($room['date_added']));
-      }
+      $room_id = $this->myhash->hasher($room['room_id'], 'encrypt');
 
+      $actions = '<a class="me-2" href="Javascript:void(0)" onclick="editRoomType(\'' . $room_id . '\')" data-toggle="tooltip" data-placement="top" title="Edit"><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a> ';
+
+      $actions .= '<a href="Javascript:void(0)" onclick="deleteRoomType(\'' . $room_id . '\')" data-toggle="tooltip" data-placement="top" title="Delete"><i class="mdi mdi-delete-circle fs-2 text-danger"></i></a>';
+
+
+      $row = [];
+      $row[] = $room['room_id'];
+      $row[] = $room['hp_name'];
       $row[] = $room['room_type'];
-      $row[] = $room['room_typ_hmo_req'];
       $row[] = $room['room_number'];
       $row[] = number_format($room['room_rate']);
-      $row[] = $date_added;
+      $row[] = date('m/d/Y', strtotime($room['date_added']));
+      $row[] = $actions;
       $data[] =$row;
       
       $response = [
@@ -608,14 +612,18 @@ class Setup_controller extends CI_Controller {
     echo json_encode($response);
   }
 
+
   function register_room_type() {
     $this->security->get_csrf_hash();
-    $room_group = ucwords(strip_tags($this->input->post('room-group')));
+    $hospital_id = $this->input->post('hospital-filter');
+    $room_type = ucwords(strip_tags($this->input->post('room-group')));
     $room_type = ucwords(strip_tags($this->input->post('room-type')));
-    $room_hmo_req = strip_tags($this->input->post('room-hmo-req'));
-    $room_number = strip_tags($this->input->post('room-num'));
+    $room_hmo_req = ucwords(strip_tags($this->input->post('room-hmo-req')));
+    $room_number = ucwords(strip_tags($this->input->post('room-num')));
     $room_rate = strip_tags($this->input->post('room-rate'));
     
+    $this->form_validation->set_rules('hospital-filter', 'Hospital', 'trim|required');
+    $this->form_validation->set_rules('room-group', 'Room Group', 'trim|required');    
     $this->form_validation->set_rules('room-type', 'Room Type', 'trim|required');    
     $this->form_validation->set_rules('room-num', 'Room Number', 'trim|required');
     $this->form_validation->set_rules('room-rate', 'Room Rate', 'trim|required');
@@ -623,32 +631,165 @@ class Setup_controller extends CI_Controller {
     if ($this->form_validation->run() == FALSE) {
       $response = [
         'status' => 'error',
-        'room_type_error' => form_error('room-type'),
-        'room_num_error' => form_error('room-num'),
-        'room_rate_error' => form_error('room-rate'),
+        'hospital_error'   => form_error('hospital-filter'),
+        'room_group_error' => form_error('room-group'),
+        'room_type_error'  => form_error('room-type'),
+        'room_num_error'   => form_error('room-num'),
+        'room_rate_error'  => form_error('room-rate'),
       ];
     } else {
       $post_data = [
-        'room_group' => $room_group,
-        'room_type' => $room_type,
+        'hp_id'            => $hospital_id,
+        'room_group'       => $room_group,
+        'room_type'        => $room_type,
         'room_typ_hmo_req' => $room_hmo_req,
-        'room_number' => $room_number,
-        'room_rate' => $room_rate,
-        'date_added' => date("Y-m-d"),
+        'room_number'      => $room_number,
+        'room_rate'        => $room_rate,
+        'date_added'       => date("Y-m-d"),
       ];
+
       $saved = $this->setup_model->db_insert_room_type($post_data);
       if (!$saved) {
         $response = [
+          'status'  => 'save-error', 
+          'message' => 'Room Type Saved Failed'
+        ];
+      }else{
+        $response = [
+          'status'  => 'success', 
+          'message' => 'Room Type Saved Successfully'
+        ];
+      }
+    }
+    echo json_encode($response);
+  }
+
+  function get_room_type_info() {
+    $room_id = $this->myhash->hasher( $this->uri->segment(5), 'decrypt');
+
+    $row = $this->setup_model->db_get_room_type_info($room_id);
+
+    $response = [
+      'status'      => 'success',
+      'token'       => $this->security->get_csrf_hash(),
+      'hp_id'       => $row['hp_id'],
+      'room_group'  => $row['room_group'],
+      'room_type'   => $row['room_type'],
+      'rt_hmo_req'  => $row['room_typ_hmo_req'],
+      'room_number' => $row['room_number'],
+      'room_rate'   => $row['room_rate'],
+    ];
+
+    echo json_encode($response);
+  }
+
+  function update_room_type() {
+    $token = $this->security->get_csrf_hash();
+    $room_id = $this->myhash->hasher($this->input->post('room-id'), 'decrypt');
+    $input_post = $this->input->post(NULL, TRUE);
+
+    $this->form_validation->set_rules('hospital-filter', 'Healthcare Provider', 'trim|required');
+    $this->form_validation->set_rules('room-group', 'Room Group', 'trim|required');
+    $this->form_validation->set_rules('room-type', 'Room Type', 'trim|required');
+    $this->form_validation->set_rules('room-num', 'Room Number/s', 'trim|required');
+    $this->form_validation->set_rules('room-rate', 'Room Rate', 'trim|required');
+    if ($this->form_validation->run() == FALSE) {
+      $response = [
+        'status'               => 'error',
+        'hcare_provider_error' => form_error('hospital-filter'),
+        'room_group_error'     => form_error('room-group'),
+        'room_type_error'      => form_error('room-type'),
+        'room_num_error'       => form_error('room-num'),
+        'room_rate_error'      => form_error('room-rate'),
+      ];
+    } else {
+      $post_data = [
+        'hp_id'            => $input_post('hospital-filter'),
+        'room_group'       => $input_post('room-group'),
+        'room_type'        => $input_post('room-type'),
+        'room_typ_hmo_req' => $input_post('room-hmo-req'),
+        'room_number'      => $input_post('room-num'),
+        'room_rate'        => $input_post('room-rate'),
+        'date_updated'     => date("Y-m-d"),
+      ];
+
+      $updated = $this->setup_model->db_update_room_type($room_id, $post_data);
+      if (!$updated) {
+        $response = [
+          'token' => $token, 
           'status' => 'save-error', 
-          'message' => 'Cost Type Saved Failed'
+          'message' => 'Room Update Failed'
         ];
       }
       $response = [
+        'token' => $token, 
         'status' => 'success', 
-        'message' => 'Cost Type Saved Successfully'
+        'message' => 'Room Updated Successfully'
       ];
     }
     echo json_encode($response);
   }
+
+  function delete_room_type() {
+    $token = $this->security->get_csrf_hash();
+    $room_id = $this->myhash->hasher( $this->uri->segment(5), 'decrypt');
+    $deleted = $this->setup_model->db_delete_room_type($room_id);
+    if (!$deleted) {
+      $response = [
+        'token' => $token, 
+        'status' => 'error', 
+        'message' => 'Room Delete Failed'
+      ];
+    }
+    $response = [
+      'token' => $token, 
+      'status' => 'success', 
+      'message' => 'Room Deleted Successfully'
+    ];
+    echo json_encode($response);
+  }
+
+  // function register_room_type_old() {
+  //   $this->security->get_csrf_hash();
+  //   $room_group = ucwords(strip_tags($this->input->post('room-group')));
+  //   $room_type = ucwords(strip_tags($this->input->post('room-type')));
+  //   $room_hmo_req = strip_tags($this->input->post('room-hmo-req'));
+  //   $room_number = strip_tags($this->input->post('room-num'));
+  //   $room_rate = strip_tags($this->input->post('room-rate'));
+    
+  //   $this->form_validation->set_rules('room-type', 'Room Type', 'trim|required');    
+  //   $this->form_validation->set_rules('room-num', 'Room Number', 'trim|required');
+  //   $this->form_validation->set_rules('room-rate', 'Room Rate', 'trim|required');
+
+  //   if ($this->form_validation->run() == FALSE) {
+  //     $response = [
+  //       'status' => 'error',
+  //       'room_type_error' => form_error('room-type'),
+  //       'room_num_error' => form_error('room-num'),
+  //       'room_rate_error' => form_error('room-rate'),
+  //     ];
+  //   } else {
+  //     $post_data = [
+  //       'room_group' => $room_group,
+  //       'room_type' => $room_type,
+  //       'room_typ_hmo_req' => $room_hmo_req,
+  //       'room_number' => $room_number,
+  //       'room_rate' => $room_rate,
+  //       'date_added' => date("Y-m-d"),
+  //     ];
+  //     $saved = $this->setup_model->db_insert_room_type($post_data);
+  //     if (!$saved) {
+  //       $response = [
+  //         'status' => 'save-error', 
+  //         'message' => 'Cost Type Saved Failed'
+  //       ];
+  //     }
+  //     $response = [
+  //       'status' => 'success', 
+  //       'message' => 'Cost Type Saved Successfully'
+  //     ];
+  //   }
+  //   echo json_encode($response);
+  // }
 
 }

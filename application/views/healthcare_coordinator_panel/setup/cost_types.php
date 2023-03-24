@@ -26,7 +26,7 @@
       <div class="col-lg-">
         <div class="row pt-2 pb-2">
             <div class="col-lg-3">
-                <button type="button" class="btn btn-success btn-sm btn-floating" onclick="showAddCostTypeModal()"><i class="mdi mdi-plus-circle fs-4"></i> Add New</button>
+                <button type="button" class="btn btn-info btn-sm btn-floating" onclick="showAddCostTypeModal()"><i class="mdi mdi-plus-circle fs-4"></i> Add New</button>
             </div>
             <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
             <div class="col-lg-5 offset-4">

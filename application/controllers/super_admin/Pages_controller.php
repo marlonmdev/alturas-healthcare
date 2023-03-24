@@ -98,7 +98,9 @@ class Pages_controller extends CI_Controller {
 	}
 
 	function view_all_room_types() {
+		$this->load->model('super_admin/setup_model');
 		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hospital'] = $this->setup_model->rt_get_healthcare_providers();
 		$this->load->view('templates/header', $data);
 		$this->load->view('super_admin_panel/setup/room_types');
 		$this->load->view('templates/footer');

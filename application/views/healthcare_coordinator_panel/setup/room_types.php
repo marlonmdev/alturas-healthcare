@@ -25,7 +25,7 @@
       <div class="col-lg-">
         <div class="row pt-2 pb-2">
             <div class="col-lg-3">
-                <button type="button" class="btn btn-success btn-sm" onclick="showAddRoomTypeModal()"><i class="mdi mdi-plus-circle fs-4"></i> Add New</button>
+                <button type="button" class="btn btn-info btn-sm" onclick="showAddRoomTypeModal()"><i class="mdi mdi-plus-circle fs-4"></i> Add New</button>
             </div>
             <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
         </div> <br>
@@ -36,11 +36,12 @@
               <table class="table table-hover table-fit" id="roomTypesTable">
                 <thead>
                   <tr>
-                    <th class="fw-bold">ROOM TYPE</th>
-                    <th class="fw-bold">ROOM TYPE HMO REQ.</th>
-                    <th class="fw-bold">ROOM NUMBER</th>
-                    <th class="fw-bold">ROOM RATE</th>
-                    <th class="fw-bold">DATE ADDED</th>
+                    <th class="fw-bold">#</th>
+                    <th class="fw-bold">Healthcare Provider</th>
+                    <th class="fw-bold">Room Type</th>
+                    <th class="fw-bold">Room No.</th>
+                    <th class="fw-bold">Room Rate</th>
+                    <th class="fw-bold">Date Added</th>
                   </tr>
                 </thead>
                 <tbody>

@@ -14,10 +14,10 @@
                       <div class="col-sm-12 mb-2 mt-2">
                         <label class="colored-label fs-5"><i class="mdi mdi-asterisk text-danger"></i> Hospital </label>
                         <select class="form-select fw-bold" name="hospital-filter-add" id="hospital-filter-add" onchange="enableInputs()">
-                                <option value="">Select Hospital</option>
-                                <?php foreach($hospital as $hospitals) : ?>
-                                <option value="<?php echo $hospitals['hp_id']; ?>"><?php echo $hospitals['hp_name']; ?></option>
-                                <?php endforeach; ?>
+                          <option value="">Select Hospital</option>
+                          <?php foreach($hospital as $hospitals) : ?>
+                            <option value="<?php echo $hospitals['hp_id']; ?>"><?php echo $hospitals['hp_name']; ?></option>
+                          <?php endforeach; ?>
                         </select>
                         <span id="hp-filter-error" class="text-danger"></span>
                       </div>

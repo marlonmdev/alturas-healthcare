@@ -148,41 +148,74 @@ class Setup_model extends CI_Model {
 		return $this->db->affected_rows() > 0 ? true : false;
 	}
 
+	function rt_get_healthcare_providers() {
+		$this->db->select('*')
+						 ->from('healthcare_providers');
+		return $this->db->get()->result_array();
+	}
+	
+	function db_insert_room_type($post_data) {
+		return $this->db->insert('room_types', $post_data);
+	}
+
+	function db_get_room_type_info($room_id){
+		 $this->db->select('*')
+             ->from('room_types as tbl_1')
+             ->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
+             ->where('tbl_1.room_id', $room_id);
+    return $this->db->get()->row_array();
+	}
+
+	function db_update_room_type($room_id, $post_data){
+		$this->db->where('room_id', $room_id);
+		return $this->db->update('room_types', $post_data);
+	}
+
+	function db_delete_room_type($room_id) {
+		$this->db->where('room_id', $room_id)
+		         ->delete('room_types');
+		return $this->db->affected_rows() > 0 ? true : false;
+	}
+
+
 	// Start of room_types server-side processing datatables
 	var $room_table = 'room_types';
-	var $room_column_order = ['room_type', 'room_typ_hmo_req', 'room_number', 'room_rate', 'date_added']; //set column field database for datatable orderable
-	var $room_column_search = ['room_type', 'room_typ_hmo_req', 'room_number', 'room_rate']; //set column field database for datatable searchable 
+	var $hp_table = 'healthcare_providers';
+	var $room_column_order = ['room_id', 'hp_name', 'room_type', 'room_number', 'room_rate', 'tbl_1.date_added']; //set column field database for datatable orderable
+	var $room_column_search = ['room_id', 'room_group', 'room_type', 'room_typ_hmo_req', 'room_number', 'room_rate', 'hp_name']; //set column field database for datatable searchable 
 	var $room_order = ['room_id' => 'asc']; // default order 
 
 	private function _get_room_datatables_query() {
-	$this->db->from($this->room_table);
-	$i = 0;
-	// loop column 
-	foreach ($this->room_column_search as $item) {
-		// if datatable send POST for search
-		if ($_POST['search']['value']) {
-			// first loop
-			if ($i === 0) {
-				$this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
-				$this->db->like($item, $_POST['search']['value']);
-			} else {
-				$this->db->or_like($item, $_POST['search']['value']);
+		$this->db->from($this->room_table . ' as tbl_1');
+		$this->db->join($this->hp_table . ' as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id');
+		$i = 0;
+		// loop column 
+		foreach ($this->room_column_search as $item) {
+			// if datatable send POST for search
+			if ($_POST['search']['value']) {
+				// first loop
+				if ($i === 0) {
+					$this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+					$this->db->like($item, $_POST['search']['value']);
+				} else {
+					$this->db->or_like($item, $_POST['search']['value']);
+				}
+		
+				if (count($this->room_column_search) - 1 == $i) //last loop
+					$this->db->group_end(); //close bracket
 			}
-	
-			if (count($this->room_column_search) - 1 == $i) //last loop
-				$this->db->group_end(); //close bracket
-			}
-			$i++;
+				$i++;
 		}
 
-		// here order processing
-		if (isset($_POST['order'])) {
-			$this->db->order_by($this->room_column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
-		} else if (isset($this->room_order)) {
-			$order = $this->room_order;
-			$this->db->order_by(key($order), $order[key($order)]);
-		}
+			// here order processing
+			if (isset($_POST['order'])) {
+				$this->db->order_by($this->room_column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+			} else if (isset($this->room_order)) {
+				$order = $this->room_order;
+				$this->db->order_by(key($order), $order[key($order)]);
+			}
 	}
+	
 
 	function get_room_datatables() {
 		$this->_get_room_datatables_query();

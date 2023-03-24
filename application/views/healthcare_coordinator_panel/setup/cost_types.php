@@ -240,7 +240,7 @@
       }
     }
 
-  function deleteCostType(ctype_id) {
+  const deleteCostType = (ctype_id) => {
     $.confirm({
       title: '<strong>Confirm!</strong>',
       content: 'Are you sure to delete Cost Type?',

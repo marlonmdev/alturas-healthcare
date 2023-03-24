@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/sweetalert2/sweetalert2.min.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/jquery-confirm/dist/jquery-confirm.min.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/Toastr/build/toastr.min.css">
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/chosen/chosen.min.css" />
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/chosen/chosen.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/tagify/tagify.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/photoviewer/dist/photoviewer.min.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/flatpickr/flatpickr.min.css" />

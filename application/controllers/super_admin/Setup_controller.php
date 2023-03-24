@@ -411,14 +411,14 @@ class Setup_controller extends CI_Controller {
         $value['ctype_id'],
         $value['item_description'],
         date("m/d/Y", strtotime($value['date_added'])),
-        date("m/d/Y", strtotime($value['date_updated'])),
+        $value['date_updated'] ? date("m/d/Y", strtotime($value['date_updated'])) : '',
         $actions
       ];
     }
     echo json_encode($result);
   }
 
-  function register_cost_type() {
+  function register_cost_type_old() {
     $this->security->get_csrf_hash();
     $cost_type = ucfirst(strip_tags($this->input->post('cost-type')));
     $this->form_validation->set_rules('cost-type', 'Cost Type', 'trim|required|callback_check_cost_type_exist');
@@ -445,6 +445,64 @@ class Setup_controller extends CI_Controller {
         'status' => 'success', 
         'message' => 'Cost Type Saved Successfully'
       ];
+    }
+    echo json_encode($response);
+  }
+
+
+  function register_cost_type(){
+     $this->security->get_csrf_hash();
+    $hospital_id = $this->input->post('hospital-filter-add');
+    $price_list = $this->input->post('price-filter-add');
+    if($price_list == 'other'){
+      $price_category = strtoupper(strip_tags($this->input->post('other-price-filter')));
+    }else{
+      $price_category = strtoupper($this->input->post('price-filter-add'));
+    }
+    $item_id = (strip_tags($this->input->post('item-id')));
+    $cost_type = strtoupper(strip_tags($this->input->post('cost-type')));
+    $op_price = (strip_tags($this->input->post('op-price')));
+    $ip_price = (strip_tags($this->input->post('ip-price')));
+    
+    $this->form_validation->set_rules('hospital-filter-add', 'Hospital', 'required');
+    $this->form_validation->set_rules('price-filter-add', 'Price List Category', 'required');
+    $this->form_validation->set_rules('cost-type', 'Item Description', 'trim|required|callback_check_cost_type_exist');    
+    $this->form_validation->set_rules('op-price', 'Outpatient Price', 'trim|required');
+    $this->form_validation->set_rules('ip-price', 'Inpatient Price', 'trim|required');
+
+    if ($this->form_validation->run() == FALSE) {
+      $response = [
+        'status' => 'error',
+        'hp_id_error' => form_error('hospital-filter-add'),
+        'price_list_error' => form_error('price-filter-add'),
+        'cost_type_error' => form_error('cost-type'),
+        'op_price_error' => form_error('op-price'),
+        'ip_price_error' => form_error('ip-price'),
+      ];
+    } else {
+      $post_data = [
+        'hp_id'            => $hospital_id,
+        'price_list_group' => $price_category,
+        'item_id'          => $item_id,
+        'item_description' => $cost_type,
+        'op_price'         => $op_price,
+        'ip_price'         => $ip_price,
+        'date_added'       => date("Y-m-d"),
+        'date_updated'     => '',
+        'added_by'         => $this->session->userdata('fullname')
+      ];
+      $saved = $this->setup_model->db_insert_cost_type($post_data);
+      if (!$saved) {
+        $response = [
+          'status' => 'save-error', 
+          'message' => 'Cost Type Saved Failed'
+        ];
+      }else{
+        $response = [
+          'status' => 'success', 
+          'message' => 'Cost Type Saved Successfully'
+        ];
+      }
     }
     echo json_encode($response);
   }
@@ -592,7 +650,5 @@ class Setup_controller extends CI_Controller {
     }
     echo json_encode($response);
   }
-
-
 
 }

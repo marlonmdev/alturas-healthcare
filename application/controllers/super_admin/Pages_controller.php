@@ -88,7 +88,10 @@ class Pages_controller extends CI_Controller {
 	}
 
 	function view_all_cost_types() {
+		$this->load->model('super_admin/setup_model');
 		$data['user_role'] = $this->session->userdata('user_role');
+		$data['price_group'] = $this->setup_model->get_price_group();
+		$data['hospital'] = $this->setup_model->db_get_healthcare_providers();
 		$this->load->view('templates/header', $data);
 		$this->load->view('super_admin_panel/setup/cost_types');
 		$this->load->view('templates/footer');

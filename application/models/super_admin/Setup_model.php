@@ -18,6 +18,7 @@ class Setup_model extends CI_Model {
 		return $query->result_array();
 	}
 
+
 	function db_insert_healthcare_provider($post_data) {
 		return $this->db->insert('healthcare_providers', $post_data);
 	}
@@ -128,13 +129,17 @@ class Setup_model extends CI_Model {
 	}
 
 	function db_check_cost_type($cost_type) {
-		$query = $this->db->get_where('cost_types', ['cost_type' => $cost_type]);
+		$query = $this->db->get_where('cost_types', ['item_description' => $cost_type]);
 		return $query->num_rows() > 0 ? true : false;
 	}
 
 	function db_update_cost_type($ctype_id, $post_data) {
 		$this->db->where('ctype_id', $ctype_id);
 		return $this->db->update('cost_types', $post_data);
+	}
+
+	function get_price_group() {
+		return $this->db->get('cost_types')->result_array();
 	}
 
 	function db_delete_cost_type($ctype_id) {

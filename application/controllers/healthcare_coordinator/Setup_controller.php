@@ -418,7 +418,7 @@ class Setup_controller extends CI_Controller {
       $row[] = $value['item_description'];
       $row[] = number_format($value['op_price']);
       $row[] = number_format($value['ip_price']);
-      $row[] =  date("m/d/Y", strtotime($value['date_added']));
+      $row[] =  $value['date_added'] ? date("m/d/Y", strtotime($value['date_added'])) : '';
       $data[] = $row;
     }
     $output = [
@@ -461,14 +461,15 @@ class Setup_controller extends CI_Controller {
       ];
     } else {
       $post_data = [
-        'hp_id' => $hospital_id,
+        'hp_id'            => $hospital_id,
         'price_list_group' => $price_category,
-        'item_id' => $item_id,
+        'item_id'          => $item_id,
         'item_description' => $cost_type,
-        'op_price' => $op_price,
-        'ip_price' => $ip_price,
-        'date_added' => date("Y-m-d"),
-        'added_by'=> $this->session->userdata('fullname')
+        'op_price'         => $op_price,
+        'ip_price'         => $ip_price,
+        'date_added'       => date("Y-m-d"),
+        'date_updated'     => '',
+        'added_by'         => $this->session->userdata('fullname')
       ];
       $saved = $this->setup_model->db_insert_cost_type($post_data);
       if (!$saved) {

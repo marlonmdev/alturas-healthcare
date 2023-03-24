@@ -269,28 +269,21 @@
     $.ajax({
       url: `${baseUrl}healthcare-coordinator/loa/performed-loa-info/view/${loa_id}`,
       type: 'GET',
-      success: function(data){
-        var jsonString = JSON.stringify(data);
-        jsonString = jsonString.replace(/]}/, "],}");
-        var myData = JSON.parse(jsonString);
-
-          const {
-            token,
-            loa_no,
-            med_services,
-            status,
-            date_time_performed,  
-            physician
-          } = myData;
-
+      dataType: 'json',
+      success: function(response){
+        
         $('#pfLoaInfoModal').modal('show');
 
-        $('#pf-loa-no').val(loa_no);
-        $('#pf-med-services').val(med_services);
-        $('#pf-status').val(status);
-        $('#pf-date-time').val(date_time_performed);
-        $('#pf-physician').val(physician);
+        let tbody = '';
+        
+        $.each(response, function(index, item){
+          
+          tbody += '<tr><td>'+ item.item_description +'</td><td>'+ item.status + '</td><td>' + item.date_time_performed +'</td><td>'+ item.physician +'</td></tr>';
 
+        });
+        $('#pf-tbody').html(tbody);
+        $('#pf-loa-no').html(response[0].loa_no);
+      
       }
     });
   }

@@ -1132,6 +1132,7 @@ class Loa_controller extends CI_Controller {
 			$loa_info['emp_id'] = $loa['emp_id'];
 			$loa_info['loa_no'] = $loa['loa_no'];
 
+			
 			$this->load->view('templates/header', $loa_info);
 			$this->load->view('healthcare_coordinator_panel/loa/edit_tagged_loa_to_complete');
 			$this->load->view('templates/footer');
@@ -1146,21 +1147,22 @@ class Loa_controller extends CI_Controller {
 		$hp_id = $this->input->post('hp-id', TRUE);
 		$loa_id = $this->input->post('loa-id', TRUE);
 		$loa_no = $this->input->post('loa-num', TRUE);
-		$med_service = $this->input->post('ct-name', TRUE);
+		$ctype_id = $this->input->post('ctype_id', TRUE);
 		$status = $this->input->post('status', TRUE);
 		$date_time_performed = $this->input->post('date', TRUE);
 		$physician = $this->input->post('physician', TRUE);
 		$added_by = $this->session->userdata('fullname');
 		$added_on = date('Y-m-d');	
+		
 
 			$post_data = [];
-			for($x = 0; $x < count($med_service); $x++ ){
+			for($x = 0; $x < count($ctype_id); $x++ ){
 				$post_data[] = [
 					'emp_id' => $emp_id,
 					'hp_id' => $hp_id,
 					'loa_id' => $loa_id,
 					'loa_no' => $loa_no,
-					'med_services' =>$med_service[$x],
+					'ctype_id' =>$ctype_id[$x],
 					'status' => $status[$x],
 					'date_time_performed' => $date_time_performed[$x],
 					'physician' => $physician[$x],
@@ -1169,8 +1171,17 @@ class Loa_controller extends CI_Controller {
 				];
 			}
 			
-
 			$inserted = $this->loa_model->insert_performed_loa_info($post_data);
+			
+			$performed = $this->loa_model->check_if_all_status_performed($loa_id);
+			if($performed){
+				$status = 'Completed';
+				$this->loa_model->set_loa_status_completed($loa_id, $status);
+			}else{
+				$status = 'Approved';
+				$this->loa_model->set_loa_status_completed($loa_id, $status);
+			}
+
 			if($inserted){
 				echo json_encode([
 					'token' => $token,
@@ -1190,7 +1201,7 @@ class Loa_controller extends CI_Controller {
 	function submit_edited_loa_info() {
 		$token = $this->security->get_csrf_hash();
 		$loa_id = $this->input->post('loa-id', TRUE);
-		$med_service = $this->input->post('ct-name', TRUE);
+		$ctype_id = $this->input->post('ctype_id', TRUE);
 		$status = $this->input->post('status', TRUE);
 		$date_time_performed = $this->input->post('date', TRUE);
 		$physician = $this->input->post('physician', TRUE);
@@ -1198,9 +1209,9 @@ class Loa_controller extends CI_Controller {
 		$edited_on = date('Y-m-d');	
 
 			$post_data = [];
-			for($x = 0; $x < count($med_service); $x++ ){
+			for($x = 0; $x < count($ctype_id); $x++ ){
 				$post_data[] = [
-					'med_services' =>$med_service[$x],
+					'ctype_id' =>$ctype_id[$x],
 					'status' => $status[$x],
 					'date_time_performed' => $date_time_performed[$x],
 					'physician' => $physician[$x],
@@ -1210,32 +1221,31 @@ class Loa_controller extends CI_Controller {
 
 				$updated = $this->loa_model->insert_edited_performed_loa_info($post_data, $loa_id);
 			}
-				echo json_encode([
-					'token' => $token,
-					'status' => 'success',
-					'message' => 'Data Uploaded Successfully!'
-				]);	
-		
+
+			echo json_encode([
+				'token' => $token,
+				'status' => 'success',
+				'message' => 'Data Uploaded Successfully!'
+			]);	
+
+			$performed = $this->loa_model->check_if_all_status_performed($loa_id);
+			
+			if($performed){
+				$status = 'Completed';
+				$this->loa_model->set_loa_status_completed($loa_id, $status);
+			}else{
+				$status = 'Approved';
+				$this->loa_model->set_loa_status_completed($loa_id, $status);
+			}
+
+				
 	}
 
 	function fetch_performed_loa_info() {
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$loa_info = $this->loa_model->fetch_per_loa_info($loa_id);
 
-		if(!empty($loa_info)){
-			foreach($loa_info as $loa){
-				$data = [
-					'token' => $this->security->get_csrf_hash(),
-					'loa_no' =>$loa['loa_no'],
-					'med_services' => $loa['med_services'],
-					'status' => $loa['status'],
-					'date_time_performed' => $loa['date_time_performed'],
-					'physician' => $loa['physician']
-				];
-	
-				echo json_encode($data);
-			}
-		}	
+		 echo json_encode($loa_info);
 	}
 	
 }

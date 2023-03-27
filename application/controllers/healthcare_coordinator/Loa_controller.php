@@ -970,10 +970,12 @@ class Loa_controller extends CI_Controller {
 
 			$custom_action .= '<a href="JavaScript:void(0)" onclick="disapproveRequest(\''. $loa_id .'\')"><i class="mdi mdi-thumb-down-outline text-danger fs-3 ps-2" title="Disapprove"></i></a>';
 
+			$short_hp_name = strlen($data['hp_name']) > 24 ? substr($data['hp_name'], 0, 24) . "..." : $data['hp_name'];
+
 			$row[] = $data['loa_no'];
 			$row[] = $fullname;
-			$row[] = $data['requested_on'];
-			$row[] = $data['hp_name'];
+			$row[] = date('m/d/Y', strtotime($data['requested_on']));
+			$row[] = $short_hp_name;
 			$row[] = $custom_reason;
 			$row[] = $custom_status;
 			$row[] = $custom_action;
@@ -1055,8 +1057,11 @@ class Loa_controller extends CI_Controller {
 
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
+			$short_hp_name = strlen($data['hp_name']) > 24 ? substr($data['hp_name'], 0, 24) . "..." : $data['hp_name'];
+
 			$row[] = $data['loa_no'];
 			$row[] = $fullname;
+			$row[] = $short_hp_name;
 			$row[] = $custom_reason;
 			$row[] = $data['confirmed_on'];
 			$row[] = $data['confirmed_by'];
@@ -1092,8 +1097,11 @@ class Loa_controller extends CI_Controller {
 
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
+			$short_hp_name = strlen($data['hp_name']) > 24 ? substr($data['hp_name'], 0, 24) . "..." : $data['hp_name'];
+
 			$row[] = $data['loa_no'];
 			$row[] = $fullname;
+			$row[] = $short_hp_name;
 			$row[] = $custom_reason;
 			$row[] = $data['disapproved_on'];
 			$row[] = $data['disapproved_by'];

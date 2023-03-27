@@ -704,12 +704,12 @@ class Setup_controller extends CI_Controller {
       ];
     } else {
       $post_data = [
-        'hp_id'            => $input_post('hospital-filter'),
-        'room_group'       => $input_post('room-group'),
-        'room_type'        => $input_post('room-type'),
-        'room_typ_hmo_req' => $input_post('room-hmo-req'),
-        'room_number'      => $input_post('room-num'),
-        'room_rate'        => $input_post('room-rate'),
+        'hp_id'            => $input_post['hospital-filter'],
+        'room_group'       => $input_post['room-group'],
+        'room_type'        => $input_post['room-type'],
+        'room_typ_hmo_req' => $input_post['room-hmo-req'],
+        'room_number'      => $input_post['room-num'],
+        'room_rate'        => $input_post['room-rate'],
         'date_updated'     => date("Y-m-d"),
       ];
 

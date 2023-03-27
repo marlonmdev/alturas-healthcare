@@ -46,7 +46,7 @@
 
                     <div class="row">
                       <div class="col-8 mb-1 pt-2">
-                        <label class="colored-label fs-5"><i class="mdi mdi-asterisk text-danger"></i> Room Number/s </label><em> *Separated by comma (ex. Rm. 12, 13, 14)</em>
+                        <label class="colored-label fs-5"><i class="mdi mdi-asterisk text-danger"></i> Room Number/s </label><em> *Separated by comma (ex. Rm. 12, Rm. 13)</em>
                         <textarea class="form-control" name="room-num" id="edit-room-num" rows="3"></textarea>
                         <span id="edit-room-num-error" class="text-danger"></span>
                       </div> 
@@ -60,8 +60,8 @@
 
                     <div class="row">
                       <div class="col-sm-12 mb-sm-0 d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary me-2">
-                         <i class="mdi mdi-content-save"></i> REGISTER
+                        <button type="submit" class="btn btn-success me-2">
+                         <i class="mdi mdi-content-save"></i> UPDATE
                         </button>
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="close-btn">
                         <i class="mdi mdi-close-box"></i> CANCEL

@@ -38,6 +38,7 @@
                     <input type="hidden" name="hp-id" value="<?php echo $hp_id ?>">
                     <input type="hidden" name="loa-id" value="<?php echo $loa_id ?>">
                     <input type="hidden" name="emp-id" value="<?php echo $emp_id ?>">
+                    <input type="hidden" name="request-type" value="<?php echo $request_type ?>">
                     
                     <div class="col-lg-4">
                         <label class="fw-bold">Member's Name : </label>
@@ -153,9 +154,24 @@
                                 showConfirmButton: false,
                                 type: 'success'
                             });
-
+                            $('#performedLoaInfo')[0].reset();
                             setTimeout(function () {
                                 window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved';
+                            }, 2600);
+                            
+                        break;
+
+                        case 'complete-success':
+                            swal({
+                                title: 'Success',
+                                text: message,
+                                timer: 3000,
+                                showConfirmButton: false,
+                                type: 'success'
+                            });
+                            $('#performedLoaConsultInfo')[0].reset();
+                            setTimeout(function () {
+                                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed';
                             }, 2600);
                             
                         break;

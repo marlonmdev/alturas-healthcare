@@ -565,10 +565,10 @@ class Loa_controller extends CI_Controller {
 			
 			if($loa['loa_request_type'] == 'Consultation'){
 
-				$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaConsult(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-information-outline fs-2 ps-1 text-danger"></i></a>';
+				$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaConsult(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-danger"></i></a>';
 			}else{
 
-				$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-information-outline fs-2 ps-1 text-danger"></i></a>';
+				$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-danger"></i></a>';
 			}
 
 			$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/add-loa-fees/' . $loa_id . '" data-bs-toggle="tooltip" title="Add LOA fees"><i class="mdi mdi-playlist-check fs-2 text-success"></i></a>';
@@ -973,6 +973,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $data['loa_no'];
 			$row[] = $fullname;
 			$row[] = $data['requested_on'];
+			$row[] = $data['hp_name'];
 			$row[] = $custom_reason;
 			$row[] = $custom_status;
 			$row[] = $custom_action;

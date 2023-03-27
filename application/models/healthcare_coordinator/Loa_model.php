@@ -229,13 +229,15 @@ class Loa_model extends CI_Model {
   // Start of cancellation_requests server-side processing datatables
   var $table1 = 'loa_cancellation_requests';
   var $table2 = 'members';
-  var $columnOrder = ['loa_no', 'first_name', 'requested_on', null, 'status', null]; //set column field database for datatable orderable
-  var $columnSearch = ['loa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'requested_on', 'status']; //set column field database for datatable searchable 
+  var $table3 = 'healthcare_providers';
+  var $columnOrder = ['loa_no', 'first_name', 'requested_on', 'hp_name', null, 'status', null]; //set column field database for datatable orderable
+  var $columnSearch = ['loa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'requested_on', 'status', 'tbl_1.hp_id', 'hp_name']; //set column field database for datatable searchable 
   var $order1 = ['loa_id' => 'desc']; // default order 
 
   private function _get_cancel_datatables_query($status) {
     $this->db->from($this->table1 . ' as tbl_1');
     $this->db->join($this->table2 . ' as tbl_2', 'tbl_1.requested_by = tbl_2.emp_id');
+    $this->db->join($this->table3 . ' as tbl_3', 'tbl_1.hp_id = tbl_3.hp_id');
     $this->db->where('tbl_1.status', $status);
     $i = 0;
 

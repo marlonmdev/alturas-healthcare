@@ -418,7 +418,7 @@ class Setup_controller extends CI_Controller {
       $row[] = $value['item_description'];
       $row[] = number_format($value['op_price']);
       $row[] = number_format($value['ip_price']);
-      $row[] =  $value['date_added'] ? date("m/d/Y", strtotime($value['date_added'])) : '';
+      $row[] =  $value['date_added'] ? date("m/d/Y", strtotime($value['date_added'])) : 'No Data Available';
       $data[] = $row;
     }
     $output = [
@@ -571,12 +571,18 @@ class Setup_controller extends CI_Controller {
   function fetch_room_types() {
     $result = $this->setup_model->get_room_datatables();
     $data = [];
+    $response = [];
 
     foreach($result as $room){
       $row = [];
 
+      $actions = '<a class="me-2" href="Javascript:void(0)" onclick="editRoomType(' . $room['room_id'] . ')" data-toggle="tooltip" data-placement="top" title="Edit"><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a> ';
+
+      $actions .= '<a href="Javascript:void(0)" onclick="deleteRoomType(' . $room['room_id'] . ')" data-toggle="tooltip" data-placement="top" title="Delete"><i class="mdi mdi-delete-circle fs-2 text-danger"></i></a>';
+
+      $row[] = $room['room_id'];
+      $row[] = $room['hp_name'];
       $row[] = $room['room_type'];
-      $row[] = $room['room_typ_hmo_req'];
       $row[] = $room['room_number'];
       $row[] = number_format($room['room_rate']);
       $row[] = date("m/d/Y", strtotime($room['date_added']));
@@ -620,7 +626,6 @@ class Setup_controller extends CI_Controller {
         'room_number' => $room_number,
         'room_rate' => $room_rate,
         'date_added' => date("Y-m-d"),
-        'added_by' => $this->session->userdata('fullname')
       ];
       $saved = $this->setup_model->db_insert_room_type($post_data);
       if (!$saved) {
@@ -637,4 +642,5 @@ class Setup_controller extends CI_Controller {
     }
     echo json_encode($response);
   }
+
 }

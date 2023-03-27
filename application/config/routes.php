@@ -574,6 +574,9 @@ $route['super-admin/setup/cost-types/update'] = 'super_admin/setup_controller/up
 // * setup for room types
 $route['super-admin/setup/room-types/fetch'] = 'super_admin/setup_controller/fetch_room_types';
 $route['super-admin/setup/room-types/register/submit'] = 'super_admin/setup_controller/register_room_type';
+$route['super-admin/setup/room-types/edit/(:any)'] = 'super_admin/setup_controller/get_room_type_info';
+$route['super-admin/setup/room-types/update'] = 'super_admin/setup_controller/update_room_type';
+$route['super-admin/setup/room-types/delete/(:any)'] = 'super_admin/setup_controller/delete_room_type';
 
 $route['super-admin/database-backup'] ='super_admin/backup_controller/database_backup';
 

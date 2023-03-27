@@ -327,6 +327,15 @@ class Loa_model extends CI_Model {
     }
   }
 
+  function update_consulation_loa_info($post_data, $loa_id) {
+    $this->db->where('loa_id', $loa_id);
+    return $this->db->update('performed_loa_info', $post_data);
+  }
+
+  function insert_performed_loa_consult($post_data) {
+    return $this->db->insert('performed_loa_info', $post_data);
+  }
+
   function check_loa_no($loa_id) {
     $query = $this->db->get_where('performed_loa_info', ['loa_id' => $loa_id]);
     return $query->num_rows() > 0 ? true : false;
@@ -340,12 +349,26 @@ class Loa_model extends CI_Model {
     return $this->db->get()->result_array();
   }
 
+  function get_consultation_data($loa_id) {
+    $this->db->select('*')
+            ->from('performed_loa_info')
+            ->where('loa_id', $loa_id);
+    return $this->db->get()->result_array();
+  }      
+
   function fetch_per_loa_info($loa_id) {
     $this->db->select('*')
             ->from('performed_loa_info as tbl_1')
             ->join('cost_types as tbl_2', 'tbl_1.ctype_id = tbl_2.ctype_id')
             ->where('loa_id', $loa_id);
     return $this->db->get()->result_array();
+  }
+
+  function fetch_per_consult_loa_info($loa_id) {
+    $this->db->select('*')
+            ->from('performed_loa_info')
+            ->where('loa_id', $loa_id);
+    return $this->db->get()->row_array();
   }
 
   function check_if_all_status_performed($loa_id) {
@@ -367,6 +390,16 @@ class Loa_model extends CI_Model {
     $this->db->set('status', $status)
             ->where('loa_id', $loa_id);
     return $this->db->update('loa_requests');
+  }
+
+  function get_all_completed_loa($loa_id){
+    $this->db->select('*')
+            ->from('loa_requests as tbl_1')
+            ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
+            ->where('tbl_1.status', 'Completed')
+            ->where('tbl_1.loa_id', $loa_id)
+            ->order_by('loa_id', 'DESC');
+    return $this->db->get()->row_array();
   }
 
 

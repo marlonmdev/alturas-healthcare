@@ -1390,5 +1390,30 @@ class Loa_controller extends CI_Controller {
 			$this->load->view('templates/footer');
 		// }
 	}
+
+	function remove_number_from_field($passed_id, $number_to_remove) {
+    $loa_id = $this->myhash->hasher($passed_id, 'decrypt');
+		$row = $this->loa_model->db_get_loa($loa_id);
+    $field_value = $row['med_services'];
+
+    // Split the field value into an array using ";" delimiter
+    $values_array = explode(";", $field_value);
+
+    // Check if the number exists in the array
+    if (in_array($number_to_remove, $values_array)) {
+        // Remove the number from the array
+        unset($values_array[array_search($number_to_remove, $values_array)]);
+
+        // Join the remaining values in the array back into a string using ";" delimiter
+        $new_field_value = implode(";", $values_array);
+
+        // Update the database field with the new value
+				$result = $this->loa_model->db_update_loa_med_services($loa_id, $new_field_value);
+        $this->db->set('my_field', $new_field_value)->update('my_table');
+    }
+
+	}
+
+
 	
 }

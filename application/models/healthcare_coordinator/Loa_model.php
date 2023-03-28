@@ -181,6 +181,10 @@ class Loa_model extends CI_Model {
     return $this->db->get()->row_array();
   }
 
+  function db_get_loa($loa_id) {
+    $query = $this->db->get_where('loa_requests', ['loa_id' => $loa_id]);
+  } 
+
   function db_get_loa_details($loa_id) {
     $this->db->select('*')
              ->from('loa_requests as tbl_1')
@@ -390,6 +394,12 @@ class Loa_model extends CI_Model {
 
   function set_loa_status_completed($loa_id, $status) {
     $this->db->set('status', $status)
+            ->where('loa_id', $loa_id);
+    return $this->db->update('loa_requests');
+  }
+
+  function db_update_loa_med_services($loa_id, $new_field_value){
+    $this->db->set('med_services', $new_field_value)
             ->where('loa_id', $loa_id);
     return $this->db->update('loa_requests');
   }

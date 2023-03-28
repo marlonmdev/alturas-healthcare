@@ -527,22 +527,41 @@ class Loa_controller extends CI_Controller {
 
 	function approve_loa_request() {
 		$token = $this->security->get_csrf_hash();
-		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		// $loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$loa_id = $this->myhash->hasher($this->input->post('loa-id', TRUE), 'decrypt');
+		$expiration_type = $this->input->post('expiration-type', TRUE);
+		$expiration_date = $this->input->post('expiration-date', TRUE);
 		$approved_by = $this->session->userdata('doctor_id');
 		$approved_on = date("Y-m-d");
 
-		$expires = strtotime('+1 week', strtotime($approved_on));
-		$expiration_date = date('Y-m-d', $expires);
+		if($expiration_type == 'custom'){
+			$this->form_validation->set_rules('expiration-date', 'Expiration Date', 'required');
+			if ($this->form_validation->run() == FALSE) {
+				$response = array(
+					'token' => $token,
+					'status' => 'error',
+					'expiration_date_error' => form_error('expiration-date'),
+				);
+			}
+			echo json_encode($response);
+			exit();
+		}
 
+		if($expiration_type == 'default') {
+			$default = strtotime('+1 week', strtotime($approved_on));
+			$expired_on = date('Y-m-d', $default);
+		}else{
+			$expired_on = date('Y-m-d', strtotime($expiration_date));
+		}
 
 		$this->load->model('healthcare_coordinator/loa_model');
 
 		$data = [
-      'status' => 'Approved',
-      'approved_by' => $approved_by,
-      'approved_on' => $approved_on,
-			'expiration_date' => $expiration_date
-    ];
+			'status' => 'Approved',
+			'approved_by' => $approved_by,
+			'approved_on' => $approved_on,
+			'expiration_date' => $expired_on
+		];
 
 		$approved = $this->loa_model->db_approve_loa_request($loa_id, $data);
 		if ($approved) {
@@ -550,6 +569,7 @@ class Loa_controller extends CI_Controller {
 		} else {
 			$response = array('token' => $token, 'status' => 'error', 'message' => 'Unable to Approve LOA Request!');
 		}
+
 		echo json_encode($response);
 	}
 

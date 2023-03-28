@@ -426,10 +426,8 @@ class Loa_controller extends CI_Controller {
 					$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaConsult(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-information-outline fs-2 ps-1 text-danger"></i></a>';
 				}else{
 
-					$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-information-outline fs-2 ps-1 text-danger"></i></a>';
-				}
-
-				
+					$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-danger"></i></a>';
+				}				
 			}
 	
 			$custom_status = '<span class="badge rounded-pill bg-success">' . $loa['status'] . '</span>';
@@ -1191,45 +1189,44 @@ class Loa_controller extends CI_Controller {
 		$added_by = $this->session->userdata('fullname');
 		$added_on = date('Y-m-d');	
 		
+		$post_data = [];
+		for($x = 0; $x < count($ctype_id); $x++ ){
+			$post_data[] = [
+				'emp_id' => $emp_id,
+				'hp_id' => $hp_id,
+				'loa_id' => $loa_id,
+				'loa_no' => $loa_no,
+				'request_type' => $request_type,
+				'ctype_id' =>$ctype_id[$x],
+				'status' => $status[$x],
+				'date_time_performed' => $date_time_performed[$x],
+				'physician' => $physician[$x],
+				'added_by' => $added_by,
+				'added_on' => $added_on
+			];
+		}
+		
+		$inserted = $this->loa_model->insert_performed_loa_info($post_data);
+		
+		$performed = $this->loa_model->check_if_all_status_performed($loa_id);
+		if($performed){
+			$status = 'Completed';
+			$this->loa_model->set_loa_status_completed($loa_id, $status);
+		}
 
-			$post_data = [];
-			for($x = 0; $x < count($ctype_id); $x++ ){
-				$post_data[] = [
-					'emp_id' => $emp_id,
-					'hp_id' => $hp_id,
-					'loa_id' => $loa_id,
-					'loa_no' => $loa_no,
-					'request_type' => $request_type,
-					'ctype_id' =>$ctype_id[$x],
-					'status' => $status[$x],
-					'date_time_performed' => $date_time_performed[$x],
-					'physician' => $physician[$x],
-					'added_by' => $added_by,
-					'added_on' => $added_on
-				];
-			}
-			
-			$inserted = $this->loa_model->insert_performed_loa_info($post_data);
-			
-			$performed = $this->loa_model->check_if_all_status_performed($loa_id);
-			if($performed){
-				$status = 'Completed';
-				$this->loa_model->set_loa_status_completed($loa_id, $status);
-			}
-
-			if($inserted){
-				echo json_encode([
-					'token' => $token,
-					'status' => 'success',
-					'message' => 'Data Uploaded Successfully!'
-				]);
-			}else{
-				echo json_encode([
-					'token' => $token,
-					'status' => 'failed',
-					'message' => 'Data Failed to Upload!'
-				]);
-			}
+		if($inserted){
+			echo json_encode([
+				'token' => $token,
+				'status' => 'success',
+				'message' => 'Data Updated Successfully'
+			]);
+		}else{
+			echo json_encode([
+				'token' => $token,
+				'status' => 'failed',
+				'message' => 'Data Update Failed'
+			]);
+		}
 		
 	}
 
@@ -1261,25 +1258,25 @@ class Loa_controller extends CI_Controller {
 
 		$inserted = $this->loa_model->insert_performed_loa_consult($post_data);
 			
-			$performed = $this->loa_model->check_if_all_status_performed($loa_id);
-			if($performed){
-				$status = 'Completed';
-				$this->loa_model->set_loa_status_completed($loa_id, $status);
-			}
+		$performed = $this->loa_model->check_if_all_status_performed($loa_id);
+		if($performed){
+			$status = 'Completed';
+			$this->loa_model->set_loa_status_completed($loa_id, $status);
+		}
 
-			if($inserted){
-				echo json_encode([
-					'token' => $token,
-					'status' => 'success',
-					'message' => 'Data Uploaded Successfully!'
-				]);
-			}else{
-				echo json_encode([
-					'token' => $token,
-					'status' => 'failed',
-					'message' => 'Data Failed to Upload!'
-				]);
-			}
+		if($inserted){
+			echo json_encode([
+				'token' => $token,
+				'status' => 'success',
+				'message' => 'Data Updated Successfully'
+			]);
+		}else{
+			echo json_encode([
+				'token' => $token,
+				'status' => 'failed',
+				'message' => 'Data Update Failed'
+			]);
+		}
 	}
 	
 	function submit_edited_loa_info() {
@@ -1292,32 +1289,33 @@ class Loa_controller extends CI_Controller {
 		$edited_by = $this->session->userdata('fullname');
 		$edited_on = date('Y-m-d');	
 
-			$post_data = [];
-			for($x = 0; $x < count($ctype_id); $x++ ){
-				$post_data[] = [
-					'ctype_id' =>$ctype_id[$x],
-					'status' => $status[$x],
-					'date_time_performed' => $date_time_performed[$x],
-					'physician' => $physician[$x],
-					'edited_by' => $edited_by,
-					'edited_on' => $edited_on
-				];
+		$post_data = [];
+		
+		for($x = 0; $x < count($ctype_id); $x++ ){
+			$post_data[] = [
+				'ctype_id' =>$ctype_id[$x],
+				'status' => $status[$x],
+				'date_time_performed' => $date_time_performed[$x],
+				'physician' => $physician[$x],
+				'edited_by' => $edited_by,
+				'edited_on' => $edited_on
+			];
 
-				$updated = $this->loa_model->insert_edited_performed_loa_info($post_data, $loa_id);
-			}
+			$updated = $this->loa_model->insert_edited_performed_loa_info($post_data, $loa_id);
+		}
 
-			echo json_encode([
-				'token' => $token,
-				'status' => 'success',
-				'message' => 'Data Uploaded Successfully!'
-			]);	
+		echo json_encode([
+			'token' => $token,
+			'status' => 'success',
+			'message' => 'Data Uploaded Successfully!'
+		]);	
 
-			$performed = $this->loa_model->check_if_all_status_performed($loa_id);
-			
-			if($performed){
-				$status = 'Completed';
-				$this->loa_model->set_loa_status_completed($loa_id, $status);
-			}
+		$performed = $this->loa_model->check_if_all_status_performed($loa_id);
+		
+		if($performed){
+			$status = 'Completed';
+			$this->loa_model->set_loa_status_completed($loa_id, $status);
+		}
 		
 	}
 
@@ -1359,14 +1357,14 @@ class Loa_controller extends CI_Controller {
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$loa_info = $this->loa_model->fetch_per_loa_info($loa_id);
 
-		 echo json_encode($loa_info);
+		echo json_encode($loa_info);
 	}
 
 	function fetch_performed_consult_loa() {
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$loa_info = $this->loa_model->fetch_per_consult_loa_info($loa_id);
 
-		 echo json_encode($loa_info);
+		echo json_encode($loa_info);
 	}
 
 	function add_performed_loa_fees() {

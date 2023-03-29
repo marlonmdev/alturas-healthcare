@@ -303,7 +303,7 @@
 
   const showExpDateInput = () => {
     const exp_type = $('#expiration-type').val();
-    if(exp_type != 'default'){
+    if(exp_type === 'custom'){
       $('#exp-date-div').removeClass('d-none');
     }else{
       $('#exp-date-div').addClass('d-none');

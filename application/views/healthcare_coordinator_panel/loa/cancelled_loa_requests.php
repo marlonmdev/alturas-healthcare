@@ -10,7 +10,7 @@
                 <ol class="breadcrumb">
                 <li class="breadcrumb-item">Healthcare Coordinator</li>
                 <li class="breadcrumb-item active" aria-current="page">
-                    Disapproved LOA
+                    Cancelled LOA
                 </li>
                 </ol>
             </nav>
@@ -44,7 +44,7 @@
                     </li>
                     <li class="nav-item">
                         <a
-                        class="nav-link active"
+                        class="nav-link"
                         href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/disapproved"
                         role="tab"
                         ><span class="hidden-sm-up"></span>
@@ -71,7 +71,7 @@
                     </li>
                     <li class="nav-item">
                         <a
-                        class="nav-link"
+                        class="nav-link active"
                         href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/cancelled"
                         role="tab"
                         ><span class="hidden-sm-up"></span>
@@ -87,7 +87,7 @@
                             <i class="mdi mdi-filter"></i>
                             </span>
                         </div>
-                        <select class="form-select fw-bold" name="disapproved-hospital-filter" id="disapproved-hospital-filter">
+                        <select class="form-select fw-bold" name="cancelled-hospital-filter" id="cancelled-hospital-filter">
                                 <option value="">Select Hospital</option>
                                 <?php foreach($hcproviders as $option) : ?>
                                 <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
@@ -99,7 +99,7 @@
                 <div class="card shadow">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover table-responsive" id="disapprovedLoaTable">
+                            <table class="table table-hover table-responsive" id="cancelledLoaTable">
                                 <thead>
                                     <tr>
                                         <th class="fw-bold">LOA No.</th>
@@ -119,7 +119,7 @@
                     </div>
                 </div>
 
-                <?php include 'view_disapproved_loa_details.php'; ?>
+                <?php include 'view_cancelled_loa_details.php'; ?>
 
             </div>
         <!-- End Row  -->
@@ -135,19 +135,19 @@
 
     $(document).ready(function() {
 
-    let disapprovedTable = $('#disapprovedLoaTable').DataTable({
+    let cancelledTable = $('#cancelledLoaTable').DataTable({
             processing: true, //Feature control the processing indicator.
             serverSide: true, //Feature control DataTables' server-side processing mode.
             order: [], //Initial no order.
 
             // Load data for the table's content from an Ajax source
             ajax: {
-                url: `${baseUrl}healthcare-coordinator/loa/requests-list/disapproved/fetch`,
+                url: `${baseUrl}healthcare-coordinator/loa/requests-list/cancelled/fetch`,
                 type: "POST",
                 // passing the token as data so that requests will be allowed
                 data: function(data) {
                     data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
-                    data.filter = $('#disapproved-hospital-filter').val();
+                    data.filter = $('#cancelled-hospital-filter').val();
                 }
             },
 
@@ -160,8 +160,8 @@
             fixedHeader: true,
         });
 
-        $('#disapproved-hospital-filter').change(function(){
-            disapprovedTable.draw();
+        $('#cancelled-hospital-filter').change(function(){
+            cancelledTable.draw();
         });
 
     });
@@ -197,9 +197,9 @@
         });
     }
 
-    function viewDisapprovedLoaInfo(req_id) {
+    function viewCancelledLoaInfo(req_id) {
         $.ajax({
-            url: `${baseUrl}healthcare-coordinator/loa/disapproved/view/${req_id}`,
+            url: `${baseUrl}healthcare-coordinator/loa/cancelled/view/${req_id}`,
             type: "GET",
             success: function(response) {
                 const res = JSON.parse(response);
@@ -238,9 +238,9 @@
                     rx_file,
                     req_status,
                     work_related,
-                    disapproved_by,
-                    disapprove_reason,
-                    disapproved_on
+                    cancelled_by,
+                    cancellation_reason,
+                    cancelled_on
                 } = res;
 
                 $("#viewLoaModal").modal("show");
@@ -248,9 +248,9 @@
                 const at_physician = attending_physician !== '' ? attending_physician : 'None';
                 $('#loa-no').html(loa_no);
                 $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
-                $('#disapproved-by').html(disapproved_by);
-                $('#disapproved-on').html(disapproved_on);
-                $('#disapprove-reason').html(disapprove_reason);
+                $('#cancelled-by').html(cancelled_by);
+                $('#cancelled-on').html(cancelled_on);
+                $('#cancellation-reason').html(cancellation_reason);
                 $('#member-mbl').html(member_mbl);
                 $('#remaining-mbl').html(remaining_mbl);
                 $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);

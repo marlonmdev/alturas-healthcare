@@ -51,6 +51,8 @@ $route['member/account-settings/password/update'] = 'member/account_controller/u
 $route['member/account-settings/username/update'] = 'member/account_controller/update_account_username';
 
 // Member LOA Routes
+$route['member/get-services/(:any)'] = 'member/loa_controller/get_hp_services';
+$route['member/edit-loa/get-services/(:any)/(:any)'] = 'member/loa_controller/get_hp_services_on_edit';
 $route['member/request-loa/submit'] = 'member/loa_controller/submit_loa_request';
 $route['member/requested-loa/pending/fetch'] = 'member/loa_controller/fetch_pending_loa';
 $route['member/requested-loa/approved/fetch'] = 'member/loa_controller/fetch_approved_loa';
@@ -285,6 +287,7 @@ $route['healthcare-coordinator/loa/requests-list/completed'] = 'healthcare_coord
 $route['healthcare-coordinator/loa/requests-list/cancelled'] = 'healthcare_coordinator/pages_controller/view_cancelled_loa_list';
 $route['healthcare-coordinator/loa/cancellation-requests'] = 'healthcare_coordinator/pages_controller/view_loa_cancellation_list';
 $route['healthcare-coordinator/loa/cancellation-requests/approved'] = 'healthcare_coordinator/pages_controller/view_loa_approved_cancellation';
+$route['healthcare-coordinator/loa/cancellation-requests/disapproved'] = 'healthcare_coordinator/pages_controller/view_loa_disapproved_cancellation';
 $route['healthcare-coordinator/noa/requests-list'] = 'healthcare_coordinator/pages_controller/view_pending_noa_list';
 $route['healthcare-coordinator/noa/requests-list/approved'] = 'healthcare_coordinator/pages_controller/view_approved_noa_list';
 $route['healthcare-coordinator/noa/requests-list/disapproved'] = 'healthcare_coordinator/pages_controller/view_disapproved_noa_list';
@@ -345,6 +348,16 @@ $route['healthcare-coordinator/loa/requested-loa/generate-printable-loa/(:any)']
 $route['healthcare-coordinator/loa/cancellation-requests/fetch'] = 'healthcare_coordinator/loa_controller/fetch_cancellation_requests';
 $route['healthcare-coordinator/loa/cancellation-requests/confirm/(:any)'] = 'healthcare_coordinator/loa_controller/set_cancellation_approved';
 $route['healthcare-coordinator/loa/approved-cancellation/fetch'] = 'healthcare_coordinator/loa_controller/fetch_approved_cancellations';
+$route['healthcare-coordinator/loa/requested-loa/update-loa/(:any)'] = 'healthcare_coordinator/loa_controller/view_tag_loa_completed';
+$route['healthcare-coordinator/loa/cancellation-requests/disapprove/(:any)'] = 'healthcare_coordinator/loa_controller/set_cancellation_disapproved';
+$route['healthcare-coordinator/loa/disapproved-cancellation/fetch'] = 'healthcare_coordinator/loa_controller/fetch_disapproved_cancellations';
+$route['healthcare-coordinator/loa-requests/approved/performed-loa-info/submit'] = 'healthcare_coordinator/loa_controller/submit_performed_loa_info';
+$route['healthcare-coordinator/loa-requests/approved/performed-loa-info/edit'] = 'healthcare_coordinator/loa_controller/submit_edited_loa_info';
+$route['healthcare-coordinator/loa/performed-loa-info/view/(:any)'] = 'healthcare_coordinator/loa_controller/fetch_performed_loa_info';
+$route['healthcare-coordinator/loa-requests/approved/performed-loa-consultation/submit'] = 'healthcare_coordinator/loa_controller/submit_performed_consultation';
+$route['healthcare-coordinator/loa-requests/approved/performed-loa-consultation/submit-edited'] = 'healthcare_coordinator/loa_controller/submit_edited_consultation_loa';
+$route['healthcare-coordinator/loa/performed-consult-loa-info/view/(:any)'] = 'healthcare_coordinator/loa_controller/fetch_performed_consult_loa';
+$route['healthcare-coordinator/loa/requested-loa/add-loa-fees/(:any)'] = 'healthcare_coordinator/loa_controller/add_performed_loa_fees';
 
 
 // HealthCare Coordinator NOA Routes
@@ -403,6 +416,7 @@ $route['company-doctor/loa/requests-list'] = 'company_doctor/pages_controller/vi
 $route['company-doctor/loa/requests-list/approved'] = 'company_doctor/pages_controller/view_approved_loa_list';
 $route['company-doctor/loa/requests-list/disapproved'] = 'company_doctor/pages_controller/view_disapproved_loa_list';
 $route['company-doctor/loa/requests-list/completed'] = 'company_doctor/pages_controller/view_completed_loa_list';
+$route['company-doctor/loa/requests-list/expired'] = 'company_doctor/pages_controller/view_expired_loa_list';
 $route['company-doctor/noa/requests-list'] = 'company_doctor/pages_controller/view_pending_noa_list';
 $route['company-doctor/noa/requests-list/approved'] = 'company_doctor/pages_controller/view_approved_noa_list';
 $route['company-doctor/noa/requests-list/disapproved'] = 'company_doctor/pages_controller/view_disapproved_noa_list';
@@ -427,7 +441,8 @@ $route['company-doctor/loa/requests-list/approved/fetch'] = 'company_doctor/loa_
 $route['company-doctor/loa/requests-list/disapproved/fetch'] = 'company_doctor/loa_controller/fetch_all_disapproved_loa';
 $route['company-doctor/loa/requests-list/completed/fetch'] = 'company_doctor/loa_controller/fetch_all_completed_loa';
 $route['company-doctor/loa/requests-list/view/(:any)'] = 'company_doctor/loa_controller/get_loa_info';
-$route['company-doctor/loa/requests-list/approve/(:any)'] = 'company_doctor/loa_controller/approve_loa_request';
+// $route['company-doctor/loa/requests-list/approve/(:any)'] = 'company_doctor/loa_controller/approve_loa_request';
+$route['company-doctor/loa/requests-list/approve-request'] = 'company_doctor/loa_controller/approve_loa_request';
 $route['company-doctor/loa/requests-list/disapprove/(:any)'] = 'company_doctor/loa_controller/disapprove_loa_request';
 $route['company-doctor/loa/requested-loa/generate-printable-loa/(:any)'] = 'company_doctor/loa_controller/generate_printable_loa';
 $route['company-doctor/loa/requests-list/cancelled/fetch'] = 'company_doctor/loa_controller/fetch_cancelled_loa';
@@ -560,6 +575,9 @@ $route['super-admin/setup/cost-types/update'] = 'super_admin/setup_controller/up
 // * setup for room types
 $route['super-admin/setup/room-types/fetch'] = 'super_admin/setup_controller/fetch_room_types';
 $route['super-admin/setup/room-types/register/submit'] = 'super_admin/setup_controller/register_room_type';
+$route['super-admin/setup/room-types/edit/(:any)'] = 'super_admin/setup_controller/get_room_type_info';
+$route['super-admin/setup/room-types/update'] = 'super_admin/setup_controller/update_room_type';
+$route['super-admin/setup/room-types/delete/(:any)'] = 'super_admin/setup_controller/delete_room_type';
 
 $route['super-admin/database-backup'] ='super_admin/backup_controller/database_backup';
 

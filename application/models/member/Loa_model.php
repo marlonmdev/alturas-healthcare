@@ -95,6 +95,11 @@ class Loa_model extends CI_Model {
     return $query->result_array();
   }
 
+  function db_get_cost_types_by_hp($hp_id) {
+    $query = $this->db->get_where('cost_types', ['hp_id' => $hp_id]);
+    return $query->result_array();
+  }
+
   function db_get_member_mbl($emp_id){
     $query = $this->db->get_where('max_benefit_limits', ['emp_id' => $emp_id]);
     return $query->row_array();
@@ -128,6 +133,13 @@ class Loa_model extends CI_Model {
              ->where('tbl_1.emp_id', $emp_id);
     $this->db->order_by('loa_id', 'DESC');
     return $this->db->get()->result_array();
+  }
+
+  function db_get_loa_services($loa_id){
+    $this->db->select('loa_id, med_services')
+             ->from('loa_requests')
+             ->where('loa_id', $loa_id);
+    return $this->db->get()->row_array();
   }
 
   function db_get_loa_info($loa_id) {
@@ -191,8 +203,7 @@ class Loa_model extends CI_Model {
 
   function db_get_loa_cancellation_request($loa_id){
     $this->db->where('loa_id', $loa_id);
-    $query = $this->db->get('loa_cancellation_requests');
-    return $query->num_rows() > 0 ? true : false;
+    return $this->db->get('loa_cancellation_requests')->row_array();
   }
 
   // Start of cancellation_requests server-side processing datatables
@@ -201,7 +212,7 @@ class Loa_model extends CI_Model {
   var $columnSearch = ['loa_no', 'requested_on', 'confirmed_on', 'confirmed_by', 'status']; //set column field database for datatable searchable 
   var $order1 = ['lcancel_id' => 'desc']; // default order 
 
-  private function _get_cancell_datatables_query($status, $emp_id) {
+  private function _get_cancel_datatables_query($status, $emp_id) {
     $this->db->from($this->table1);
     $this->db->where('status', $status);
     $this->db->where('requested_by', $emp_id);
@@ -234,7 +245,7 @@ class Loa_model extends CI_Model {
   }
 
   function get_cancel_datatables($status, $emp_id) {
-    $this->_get_cancell_datatables_query($status, $emp_id);
+    $this->_get_cancel_datatables_query($status, $emp_id);
     if ($_POST['length'] != -1)
       $this->db->limit($_POST['length'], $_POST['start']);
     $query = $this->db->get();

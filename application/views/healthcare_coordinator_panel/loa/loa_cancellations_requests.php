@@ -40,12 +40,21 @@
               href="<?php echo base_url(); ?>healthcare-coordinator/loa/cancellation-requests/approved"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Confirmed</span></a
+              <span class="hidden-xs-down fs-5 font-bold">Approved</span></a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+              class="nav-link"
+              href="<?php echo base_url(); ?>healthcare-coordinator/loa/cancellation-requests/disapproved"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
               >
             </li>
         </ul>
 
-        <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
+        <!-- <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
             <div class="input-group">
                 <div class="input-group-prepend">
                     <span class="input-group-text bg-dark text-white">
@@ -54,12 +63,12 @@
                 </div>
                 <select class="form-select fw-bold" name="cancel-hospital-filter" id="cancel-hospital-filter">
                         <option value="">Select Hospital</option>
-                        <?php foreach($hcproviders as $option) : ?>
-                        <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
-                        <?php endforeach; ?>
+                        < foreach($hcproviders as $option) : ?>
+                        <option value="< echo $option['hp_id']; ?>">< echo $option['hp_name']; ?></option>
+                        < endforeach; ?>
                 </select>
             </div>
-        </div>
+        </div> -->
 
         <div class="card shadow">
           <div class="card-body">
@@ -70,6 +79,7 @@
                     <th class="fw-bold">LOA No.</th>
                     <th class="fw-bold">Requested by</th>
                     <th class="fw-bold">Requested on</th>
+                    <th class="fw-bold">Healthcare Provider</th>
                     <th class="fw-bold">Reason</th>
                     <th class="fw-bold">Status</th>
                     <th class="fw-bold">Actions</th>
@@ -122,7 +132,7 @@
 
       //Set column definition initialisation properties.
       columnDefs: [{
-        "targets": [3,5], // numbering column
+        "targets": [4, 6], // numbering column
         "orderable": false, //set not orderable
       }, ],
       responsive: true,
@@ -143,7 +153,7 @@
   const confirmRequest = (loa_id) => {
     $.confirm({
             title: '<strong>Confirmation!</strong>',
-            content: 'Are you sure you want to confirm LOA Cancellation Request?',
+            content: 'Are you sure you want to approve LOA Cancellation Request?',
             type: 'blue',
             buttons: {
                 confirm: {
@@ -171,6 +181,64 @@
                                         type: 'success'
                                     });
                                     let page1 = '<?php echo base_url(); ?>healthcare-coordinator/loa/cancellation-requests/approved';
+                                    redirectPage(page1, 2600);
+                                    
+                                } else if(status == 'error') {
+
+                                    swal({
+                                        title: 'Failed',
+                                        text: message,
+                                        timer: 3000,
+                                        showConfirmButton: false,
+                                        type: 'error'
+                                    });
+
+                                }
+                            }
+                        });
+                    }
+                },  
+                cancel: {
+                    btnClass: 'btn-dark',
+                    action: function() {
+                        // close dialog
+                    }
+                },
+            }
+        });
+  }
+
+  const disapproveRequest = (loa_id) => {
+    $.confirm({
+            title: '<strong>Confirmation!</strong>',
+            content: 'Are you sure you want to disapprove LOA Cancellation Request?',
+            type: 'red',
+            buttons: {
+                confirm: {
+                    text: 'Yes',
+                    btnClass: 'btn-red',
+                    action: function() {
+                        let url = `${baseUrl}healthcare-coordinator/loa/cancellation-requests/disapprove/${loa_id}`;
+
+                        $.ajax({
+                            type: 'POST',
+                            url: url,
+                            data: {
+                                    'token': '<?php echo $this->security->get_csrf_hash(); ?>'
+                                  },
+                            dataType: "json",
+                            success: function(response) {
+                                const { token, status, message} = response;
+
+                                if (status == 'success') {
+                                  swal({
+                                        title: 'Success',
+                                        text: message,
+                                        timer: 2600,
+                                        showConfirmButton: false,
+                                        type: 'success'
+                                    });
+                                    let page1 = '<?php echo base_url(); ?>healthcare-coordinator/loa/cancellation-requests/disapproved';
                                     redirectPage(page1, 2600);
                                     
                                 } else if(status == 'error') {

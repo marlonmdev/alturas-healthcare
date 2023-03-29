@@ -15,6 +15,10 @@ class Noa_model extends CI_Model {
     $this->db->join($this->table_2 . ' as tbl_2', 'tbl_1.hospital_id = tbl_2.hp_id');
     $this->db->where('tbl_1.status', $status);
     $i = 0;
+
+    if($this->input->post('filter')){
+      $this->db->like('tbl_1.hospital_id', $this->input->post('filter'));
+    }
     // loop column 
     foreach ($this->column_search as $item) {
       // if datatable send POST for search
@@ -135,5 +139,9 @@ class Noa_model extends CI_Model {
     );
     $this->db->where('noa_id', $noa_id);
     return $this->db->update('noa_requests', $data);
+  }
+
+  function db_get_healthcare_providers() {
+    return $this->db->get('healthcare_providers')->result_array();
   }
 }

@@ -8,7 +8,7 @@ class Loa_model extends CI_Model{
     var $table_2 = 'healthcare_providers';
    // var $column_order = array('loa_no', 'first_name', 'loa_request_type', null, null, 'request_date', null, null); //set column field database for datatable orderable
     var $column_order = array('loa_no', 'first_name', 'loa_request_type', null, null, 'request_date');
-    var $column_search = array('loa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'loa_request_type', 'med_services', 'request_date'); //set column field database for datatable searchable 
+    var $column_search = array('loa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'loa_request_type', 'med_services', 'request_date', 'CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)'); //set column field database for datatable searchable 
     var $order = array('loa_id' => 'desc'); // default order 
 
     private function _get_datatables_query($status, $hp_id) {

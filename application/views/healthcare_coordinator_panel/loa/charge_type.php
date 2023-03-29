@@ -13,11 +13,12 @@
                     <div class="row mb-3">
                       <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
                       <input type="hidden" name="loa-id" id="loa-id">
-                      <select class="form-control chargetype fs-5" name="charge-type">
+                      <select class="form-control chargetype fs-5" name="charge-type" id="charge-type">
                         <option value="">Please Select...</option>
                         <option value="Yes">Work related</option>
                         <option value="No">Non-work related</option>
                       </select>
+                      <span class="text-danger" id="charge-type-error"></span>
 
 	                    <div class="form-group row pt-4">
 	                      <div class="nwr" id="percentage">

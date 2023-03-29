@@ -112,7 +112,7 @@ class Main_controller extends CI_Controller {
 	}
 
 	function add_payment_details() {
-		$this->security->get_csrf_hash();
+		$token = $this->security->get_csrf_hash();
 
 		$this->form_validation->set_rules('acc-number', 'Account Number', 'required');
 		$this->form_validation->set_rules('acc-name', 'Account Name', 'required');
@@ -124,7 +124,8 @@ class Main_controller extends CI_Controller {
 
 		if(!$this->form_validation->run()){
 			echo json_encode([
-				'status' => 'error',
+				'token' => $token,
+				'status' => 'validation-error',
 				'acc_num_error' => form_error('acc-number'),
 				'acc_name_error' => form_error('acc-name'),
 				'check_num_error' => form_error('check-number'),
@@ -140,6 +141,7 @@ class Main_controller extends CI_Controller {
 			$this->load->library('upload', $config);
 			if(!$this->upload->do_upload('supporting-docu')){
 				echo json_encode([
+					'token' => $token,
 					'status' => 'error',
 					'message' => 'Image upload failed!'
 				]);
@@ -191,6 +193,7 @@ class Main_controller extends CI_Controller {
 				}
 
 				echo json_encode([
+					'token' => $token,
 					'status' => 'success',
 					'message' => 'Data Added Successfully!'
 				]);

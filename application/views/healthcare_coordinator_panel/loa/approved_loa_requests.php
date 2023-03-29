@@ -109,8 +109,10 @@
       </div>
      <!-- End Row  -->  
       </div>
+      <?php include 'performed_loa_info_modal.php'; ?>
     <!-- End Container fluid  -->
     </div>
+    <?php include 'view_performed_consult_loa.php'; ?>
   <!-- End Page wrapper  -->
   </div>
 <!-- End Wrapper -->
@@ -261,6 +263,50 @@
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
       }
+    });
+  }
+
+  const viewPerformedLoaInfo = (loa_id) => {
+    $.ajax({
+      url: `${baseUrl}healthcare-coordinator/loa/performed-loa-info/view/${loa_id}`,
+      type: 'GET',
+      dataType: 'json',
+      success: function(response){
+        
+        $('#pfLoaInfoModal').modal('show');
+
+        let tbody = '';
+        
+        $.each(response, function(index, item){
+          
+          tbody += '<tr><td>'+ item.item_description +'</td><td>'+ item.status + '</td><td>' + item.date_time_performed +'</td><td>'+ item.physician +'</td></tr>';
+
+        });
+        $('#pf-tbody').html(tbody);
+        $('#pf-loa-no').html(response[0].loa_no);
+      
+      }
+    });
+  }
+
+  const viewPerformedLoaConsult = (loa_id) => {
+    $.ajax({
+      url: `${baseUrl}healthcare-coordinator/loa/performed-consult-loa-info/view/${loa_id}`,
+      type: 'GET',
+      dataType: 'json',
+      success: function(response){
+      
+        $('#consultLoaInfoModal').modal('show');
+
+        let tbody = '';
+        
+        tbody += '<tr><td>'+ response.request_type +'</td><td>'+ response.status + '</td><td>' + response.date_time_performed +'</td><td>'+ response.physician +'</td></tr>';
+
+        $('#pf-consult-tbody').html(tbody);
+        $('#pf-consult-loa-no').html(response.loa_no);
+
+      }
+
     });
   }
 </script>

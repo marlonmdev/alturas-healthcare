@@ -1,4 +1,4 @@
-<div class="modal fade" id="registerCostTypeModal" tabindex="-1" data-bs-backdrop="static">
+      <div class="modal fade" id="registerCostTypeModal" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header">
@@ -12,18 +12,18 @@
 
                     <div class="form-group row">
                       <div class="col-sm-12 mb-2 mt-2">
-                        <label class="colored-label fs-5"><i class="bx bx-health icon-red"></i> Hospital </label>
+                        <label class="colored-label fs-5"><i class="mdi mdi-asterisk text-danger"></i> Hospital </label>
                         <select class="form-select fw-bold" name="hospital-filter-add" id="hospital-filter-add" onchange="enableInputs()">
-                                <option value="">Select Hospital</option>
-                                <?php foreach($hospital as $hospitals) : ?>
-                                <option value="<?php echo $hospitals['hp_id']; ?>"><?php echo $hospitals['hp_name']; ?></option>
-                                <?php endforeach; ?>
+                          <option value="">Select Hospital</option>
+                          <?php foreach($hospital as $hospitals) : ?>
+                            <option value="<?php echo $hospitals['hp_id']; ?>"><?php echo $hospitals['hp_name']; ?></option>
+                          <?php endforeach; ?>
                         </select>
                         <span id="hp-filter-error" class="text-danger"></span>
                       </div>
 
                       <div class="col-sm-12 mb-2 mt-2">
-                          <label class="colored-label fs-5"><i class="bx bx-health icon-red"></i> Price List Category</label>
+                          <label class="colored-label fs-5"><i class="mdi mdi-asterisk text-danger"></i> Price List Category</label>
                           <select class="form-select fw-bold" name="price-filter-add" id="price-filter-add" onchange="showOtherInputDiv();enableInputs()">
                             <option value="">Select Price Category</option>
                             <?php
@@ -44,25 +44,25 @@
                       </div>
 
                       <div class="col-sm-12 mb-2 mt-2">
-                        <label class="colored-label fs-5"><i class="bx bx-health icon-red"></i> Item ID</label>
+                        <label class="colored-label fs-5"><i class="mdi mdi-asterisk text-danger"></i> Item ID</label>
                         <input type="text" class="form-control" name="item-id" id="item-id" readonly>
                         <span id="id-type-error" class="text-danger"></span>
                       </div> 
 
                       <div class="col-sm-12 mb-2 mt-2">
-                        <label class="colored-label fs-5"><i class="bx bx-health icon-red"></i> Item Description</label>
+                        <label class="colored-label fs-5"><i class="mdi mdi-asterisk text-danger"></i> Item Description</label>
                         <input type="text" class="form-control" name="cost-type" id="cost-type" readonly>
                         <span id="cost-type-error" class="text-danger"></span>
                       </div> 
                     
                       <div class="col-sm-12 mb-2 mt-2">
-                        <label class="colored-label fs-5"><i class="bx bx-health icon-red"></i> Outpatient Price</label>
+                        <label class="colored-label fs-5"><i class="mdi mdi-asterisk text-danger"></i> Outpatient Price</label>
                         <input type="number" class="form-control" name="op-price" id="op-price" readonly>
                         <span id="op-price-error" class="text-danger"></span>
                       </div>
 
                       <div class="col-sm-12 mb-2 mt-2">
-                        <label class="colored-label fs-5"><i class="bx bx-health icon-red"></i> Inpatient Price</label>
+                        <label class="colored-label fs-5"><i class="mdi mdi-asterisk text-danger"></i> Inpatient Price</label>
                         <input type="number" class="form-control" name="ip-price" id="ip-price" readonly>
                         <span id="ip-price-error" class="text-danger"></span>
                       </div>
@@ -82,8 +82,5 @@
                 <br>
             </div>
         </div>
-        <script>
-       
-      </script>
       </div>
      

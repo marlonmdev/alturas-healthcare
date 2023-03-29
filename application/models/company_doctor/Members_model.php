@@ -9,9 +9,8 @@ class Members_model extends CI_Model {
   var $column_search = ['member_id', 'first_name', 'middle_name', 'last_name', 'suffix', 'emp_type', 'current_status', 'business_unit', 'dept_name', 'CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)']; //set column field database for datatable searchable 
   var $order = ['member_id' => 'desc']; // default order 
 
-  private function _get_datatables_query($approval_status) {
+  private function _get_datatables_query() {
     $this->db->from($this->table);
-    $this->db->where('approval_status', $approval_status);
     $i = 0;
     // loop column 
     foreach ($this->column_search as $item) {
@@ -40,23 +39,22 @@ class Members_model extends CI_Model {
     }
   }
 
-  function get_datatables($approval_status) {
-    $this->_get_datatables_query($approval_status);
+  function get_datatables() {
+    $this->_get_datatables_query();
     if ($_POST['length'] != -1)
       $this->db->limit($_POST['length'], $_POST['start']);
     $query = $this->db->get();
     return $query->result_array();
   }
 
-  function count_filtered($approval_status) {
-    $this->_get_datatables_query($approval_status);
+  function count_filtered() {
+    $this->_get_datatables_query();
     $query = $this->db->get();
     return $query->num_rows();
   }
 
-  function count_all($approval_status) {
+  function count_all() {
     $this->db->from($this->table);
-    $this->db->where('approval_status', $approval_status);
     return $this->db->count_all_results();
   }
   // End of server-side processing datatables

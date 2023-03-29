@@ -190,6 +190,8 @@
 <!-- End Wrapper -->
 <script>
   const baseUrl = "<?php echo base_url(); ?>";
+  const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
+  
   $(document).ready(function() {
 
     let approvedtable = $('#approvedNoaTable').DataTable({

@@ -62,6 +62,16 @@
               <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
             >
           </li>
+          <!-- </li>
+            <li class="nav-item">
+            <a
+              class="nav-link"
+              href="< echo base_url(); ?>company-doctor/loa/requests-list/expired"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Expired</span>
+            </a>
+          </li> -->
           <li class="nav-item">
             <a
               class="nav-link"
@@ -72,6 +82,22 @@
             >
           </li>
         </ul>
+
+        <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text bg-dark text-white">
+                    <i class="mdi mdi-filter"></i>
+                    </span>
+                </div>
+                <select class="form-select fw-bold" name="pending-hospital-filter" id="pending-hospital-filter">
+                        <option value="">Select Hospital</option>
+                        <?php foreach($hcproviders as $option) : ?>
+                        <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
+                        <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
 
         <div class="card shadow">
           <div class="card-body">
@@ -101,6 +127,7 @@
        <!-- End Row  -->  
       </div>
     <!-- End Container fluid  -->
+    <?php include 'loa_approval_modal.php'; ?>
     </div>
   <!-- End Page wrapper  -->
   </div>
@@ -111,7 +138,7 @@
 
   $(document).ready(function() {
 
-    $('#pendingLoaTable').DataTable({
+    let pendingTable =  $('#pendingLoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
@@ -121,8 +148,9 @@
         url: `${baseUrl}company-doctor/loa/requests-list/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
-        data: {
-          'token': '<?php echo $this->security->get_csrf_hash(); ?>'
+        data: function(data) {
+          data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
+          data.filter = $('#pending-hospital-filter').val();
         }
       },
 
@@ -133,6 +161,15 @@
       }, ],
       responsive: true,
       fixedHeader: true,
+    });
+
+    $('#pending-hospital-filter').change(function(){
+      pendingTable.draw();
+    });
+
+    $("#expiration-date").flatpickr({
+      // dateFormat: 'm-d-Y',
+      minDate: 'today'
     });
 
   });
@@ -264,66 +301,78 @@
     });
   }
 
+  const showExpDateInput = () => {
+    const exp_type = $('#expiration-type').val();
+    if(exp_type != 'default'){
+      $('#exp-date-div').removeClass('d-none');
+    }else{
+      $('#exp-date-div').addClass('d-none');
+    }
+  }
+
   // $.confirm is a syntax of Jquery Confirm plugin
   const approveLoaRequest = (loa_id) => {
     const nextPage = `${baseUrl}company-doctor/loa/requests-list/approved`;
-    $.confirm({
-      title: '<strong>Confirm!</strong>',
-      content: 'Are you sure to Approve LOA Request?',
-      type: 'green',
-      buttons: {
-        confirm: {
-          text: 'Yes',
-          btnClass: 'btn-green',
-          action: function() {
-            $.ajax({
-              type: 'GET',
-              url: `${baseUrl}company-doctor/loa/requests-list/approve/${loa_id}`,
-              data: {
-                loa_id: loa_id
-              },
-              dataType: "json",
-              success: function(response) {
-                const {
-                  token,
-                  status,
-                  message
-                } = response;
-                if (status === 'success') {
-                  swal({
-                    title: 'Success',
-                    text: message,
-                    timer: 3000,
-                    showConfirmButton: false,
-                    type: 'success'
-                  });
 
-                  setTimeout(function() {
-                    window.location.href = nextPage;
-                  }, 3200);
+    $('#loaApprovalModal').modal('show');
+    $('#appr-loa-id').val(loa_id);
+    // $.confirm({
+    //   title: '<strong>Confirm!</strong>',
+    //   content: 'Are you sure to Approve LOA Request?',
+    //   type: 'green',
+    //   buttons: {
+    //     confirm: {
+    //       text: 'Yes',
+    //       btnClass: 'btn-green',
+    //       action: function() {
+    //         $.ajax({
+    //           type: 'GET',
+    //           url: `${baseUrl}company-doctor/loa/requests-list/approve/${loa_id}`,
+    //           data: {
+    //             loa_id: loa_id
+    //           },
+    //           dataType: "json",
+    //           success: function(response) {
+    //             const {
+    //               token,
+    //               status,
+    //               message
+    //             } = response;
+    //             if (status === 'success') {
+    //               swal({
+    //                 title: 'Success',
+    //                 text: message,
+    //                 timer: 3000,
+    //                 showConfirmButton: false,
+    //                 type: 'success'
+    //               });
 
-                } else {
-                  swal({
-                    title: 'Failed',
-                    text: message,
-                    timer: 3000,
-                    showConfirmButton: false,
-                    type: 'error'
-                  });
-                }
-              }
-            });
-          }
-        },
-        cancel: {
-          btnClass: 'btn-dark',
-          action: function() {
-            // close dialog
-          }
-        },
+    //               setTimeout(function() {
+    //                 window.location.href = nextPage;
+    //               }, 3200);
 
-      }
-    });
+    //             } else {
+    //               swal({
+    //                 title: 'Failed',
+    //                 text: message,
+    //                 timer: 3000,
+    //                 showConfirmButton: false,
+    //                 type: 'error'
+    //               });
+    //             }
+    //           }
+    //         });
+    //       }
+    //     },
+    //     cancel: {
+    //       btnClass: 'btn-dark',
+    //       action: function() {
+    //         // close dialog
+    //       }
+    //     },
+
+    //   }
+    // });
   }
 
   const disapproveLoaRequest = (loa_id) => {
@@ -335,6 +384,63 @@
   }
 
   $(document).ready(function() {
+
+    $('#loaApproveForm').submit(function(event) {
+      const nextPage = `${baseUrl}company-doctor/loa/requests-list/approved`;
+      event.preventDefault();
+
+      $.ajax({
+        type: "post",
+        url: $(this).attr('action'),
+        data: $(this).serialize(),
+        dataType: "json",
+        success: function(response) {
+          const {
+            token,
+            status,
+            message,
+            expiration_date_error
+          } = response;
+          switch (status) {
+            case 'error':
+              // is-invalid class is a built in classname for errors in bootstrap
+              if (expiration_date_error !== '') {
+                $('#expiration-date-error').html(expiration_date_error);
+                $('#expiration-date').addClass('is-invalid');
+              } else {
+                $('#expiration-date-error').html('');
+                $('#expiration-date').removeClass('is-invalid');
+              }
+              break;
+            case 'save-error':
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
+              break;
+            case 'success':
+              swal({
+                title: 'Success',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'success'
+              });
+              
+              $('#loaApprovalModal').modal('hide');
+              setTimeout(function() {
+                window.location.href = nextPage;
+              }, 3200);
+              break;
+          }
+        }
+      });
+    });
+
+
     $('#loaDisapproveForm').submit(function(event) {
       const nextPage = `${baseUrl}company-doctor/loa/requests-list/disapproved`;
       event.preventDefault();
@@ -387,5 +493,6 @@
         }
       });
     });
+
   });
 </script>

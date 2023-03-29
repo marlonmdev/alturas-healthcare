@@ -93,6 +93,14 @@ class Loa_model extends CI_Model {
     return $query->result_array();
   }
 
+  function db_get_cost_types_by_hpID($hp_id){
+    $this->db->select('*')
+             ->from('cost_types')
+             ->where('hp_id', $hp_id);
+    $query = $this->db->get();
+    return $query->result_array();
+}
+
   function db_get_healthcare_providers() {
     $query = $this->db->get('healthcare_providers');
     return $query->result_array();
@@ -133,6 +141,16 @@ class Loa_model extends CI_Model {
     return $this->db->get()->result_array();
   }
 
+  function get_all_approved_loa($loa_id){
+    $this->db->select('*')
+            ->from('loa_requests as tbl_1')
+            ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
+            ->where('tbl_1.status', 'Approved')
+            ->where('tbl_1.loa_id', $loa_id)
+            ->order_by('loa_id', 'DESC');
+    return $this->db->get()->row_array();
+  }
+
   function db_get_all_disapproved_loa() {
     $this->db->select('tbl_1.loa_id, tbl_1.loa_no, tbl_1.first_name, tbl_1.middle_name, tbl_1.last_name, tbl_1.suffix, tbl_2.hp_name, tbl_1.loa_request_type, tbl_1.med_services, tbl_1.request_date, tbl_1.rx_file, tbl_1.status')
              ->from('loa_requests as tbl_1')
@@ -162,6 +180,10 @@ class Loa_model extends CI_Model {
              ->where('tbl_1.loa_id', $loa_id);
     return $this->db->get()->row_array();
   }
+
+  function db_get_loa($loa_id) {
+    $query = $this->db->get_where('loa_requests', ['loa_id' => $loa_id]);
+  } 
 
   function db_get_loa_details($loa_id) {
     $this->db->select('*')
@@ -211,18 +233,20 @@ class Loa_model extends CI_Model {
   // Start of cancellation_requests server-side processing datatables
   var $table1 = 'loa_cancellation_requests';
   var $table2 = 'members';
-  var $columnOrder = ['loa_no', 'first_name', 'requested_on', null, 'status', null]; //set column field database for datatable orderable
-  var $columnSearch = ['loa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'requested_on', 'status']; //set column field database for datatable searchable 
+  var $table3 = 'healthcare_providers';
+  var $columnOrder = ['loa_no', 'first_name', 'requested_on', 'hp_name', null, 'status', null]; //set column field database for datatable orderable
+  var $columnSearch = ['loa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'requested_on', 'status', 'tbl_1.hp_id', 'hp_name']; //set column field database for datatable searchable 
   var $order1 = ['loa_id' => 'desc']; // default order 
 
-  private function _get_cancell_datatables_query($status) {
+  private function _get_cancel_datatables_query($status) {
     $this->db->from($this->table1 . ' as tbl_1');
     $this->db->join($this->table2 . ' as tbl_2', 'tbl_1.requested_by = tbl_2.emp_id');
+    $this->db->join($this->table3 . ' as tbl_3', 'tbl_1.hp_id = tbl_3.hp_id');
     $this->db->where('tbl_1.status', $status);
     $i = 0;
 
     if($this->input->post('filter')){
-      $this->db->like('tbl_1.hcare_provider', $this->input->post('filter'));
+      $this->db->like('tbl_1.hp_id', $this->input->post('filter'));
     }
     // loop column 
     foreach ($this->columnSearch as $item) {
@@ -252,20 +276,20 @@ class Loa_model extends CI_Model {
   }
 
   function get_cancel_datatables($status) {
-    $this->_get_cancell_datatables_query($status);
+    $this->_get_cancel_datatables_query($status);
     if ($_POST['length'] != -1)
       $this->db->limit($_POST['length'], $_POST['start']);
     $query = $this->db->get();
     return $query->result_array();
   }
 
-  function count_cancell_filtered($status) {
-    $this->_get_cancell_datatables_query($status);
+  function count_cancel_filtered($status) {
+    $this->_get_cancel_datatables_query($status);
     $query = $this->db->get();
     return $query->num_rows();
   }
 
-  function count_all_cancell($status) {
+  function count_all_cancel($status) {
     $this->db->from($this->table1)
              ->where('status', $status);
     return $this->db->count_all_results();
@@ -273,17 +297,121 @@ class Loa_model extends CI_Model {
   // End of server-side processing datatables
 
   function set_cancel_approved($loa_id, $confirm_by, $confirmed_on) {
-    $this->db->set('status', 'Confirmed')
+    $this->db->set('status', 'Approved')
             ->set('confirmed_by', $confirm_by)
             ->set('confirmed_on', $confirmed_on)
             ->where('loa_id' , $loa_id);
     return $this->db->update('loa_cancellation_requests');
   }
 
-  function set_cloa_request_status($loa_id) {
-    $this->db->set('status', 'Cancelled')
+  function set_cancel_disapproved($loa_id, $disapproved_by, $disapproved_on) {
+    $this->db->set('status', 'Disapproved')
+            ->set('disapproved_by', $disapproved_by)
+            ->set('disapproved_on', $disapproved_on)
+            ->where('loa_id' , $loa_id);
+    return $this->db->update('loa_cancellation_requests');
+  }
+
+  function set_cloa_request_status($loa_id, $status) {
+    $this->db->set('status', $status)
             ->where('loa_id' , $loa_id);
     return $this->db->update('loa_requests');
+  }
+
+  function insert_performed_loa_info($post_data) {
+    return $this->db->insert_batch('performed_loa_info', $post_data);
+  }
+
+  function insert_edited_performed_loa_info($post_data, $loa_id) {
+    $this->db->where('loa_id', $loa_id);
+
+    if (!empty($post_data)) {
+        return $this->db->update_batch('performed_loa_info', $post_data, 'ctype_id');
+    } else {
+        // If $post_data is empty, return true to indicate that the update succeeded.
+        return true;
+    }
+  }
+
+  function update_consulation_loa_info($post_data, $loa_id) {
+    $this->db->where('loa_id', $loa_id);
+    return $this->db->update('performed_loa_info', $post_data);
+  }
+
+  function insert_performed_loa_consult($post_data) {
+    return $this->db->insert('performed_loa_info', $post_data);
+  }
+
+  function check_loa_no($loa_id) {
+    $query = $this->db->get_where('performed_loa_info', ['loa_id' => $loa_id]);
+    return $query->num_rows() > 0 ? true : false;
+  }
+
+  function get_performed_loa_data($loa_id) {
+    $this->db->select('*')
+            ->from('performed_loa_info as tbl_1')
+            ->join('cost_types as tbl_2', 'tbl_1.ctype_id = tbl_2.ctype_id')
+            ->where('loa_id', $loa_id);
+    return $this->db->get()->result_array();
+  }
+
+  function get_consultation_data($loa_id) {
+    $this->db->select('*')
+            ->from('performed_loa_info')
+            ->where('loa_id', $loa_id);
+    return $this->db->get()->result_array();
+  }      
+
+  function fetch_per_loa_info($loa_id) {
+    $this->db->select('*')
+            ->from('performed_loa_info as tbl_1')
+            ->join('cost_types as tbl_2', 'tbl_1.ctype_id = tbl_2.ctype_id')
+            ->where('loa_id', $loa_id);
+    return $this->db->get()->result_array();
+  }
+
+  function fetch_per_consult_loa_info($loa_id) {
+    $this->db->select('*')
+            ->from('performed_loa_info')
+            ->where('loa_id', $loa_id);
+    return $this->db->get()->row_array();
+  }
+
+  function check_if_all_status_performed($loa_id) {
+    $field_name = 'status';
+    $this->db->distinct()
+            ->select($field_name)
+            ->from('performed_loa_info')
+            ->where('loa_id', $loa_id);
+    $query = $this->db->get();
+
+    $results = $query->result();
+
+    if (count($results) === 1 && $results[0]->$field_name === 'Performed') {
+      return true;
+    }
+  }
+
+  function set_loa_status_completed($loa_id, $status) {
+    $this->db->set('status', $status)
+            ->where('loa_id', $loa_id);
+    return $this->db->update('loa_requests');
+  }
+
+  function db_update_loa_med_services($loa_id, $new_field_value){
+    $this->db->set('med_services', $new_field_value)
+            ->where('loa_id', $loa_id);
+    return $this->db->update('loa_requests');
+  }
+
+  function get_all_completed_loa($loa_id){
+    $this->db->select('*')
+            ->from('loa_requests as tbl_1')
+            ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
+            ->where('tbl_1.status', 'Completed')
+            ->where('tbl_1.loa_id', $loa_id)
+            ->order_by('loa_id', 'DESC');
+    return $this->db->get()->row_array();
   }
 
 

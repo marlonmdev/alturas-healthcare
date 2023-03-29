@@ -38,6 +38,7 @@
             <form method="post" action="<?php echo base_url(); ?>member/requested-loa/update/<?= $this->myhash->hasher($row['loa_id'], 'encrypt') ?>" class="mt-2" id="memberLoaRequestForm" enctype="multipart/form-data">
               <!-- Start of Hidden Inputs -->
               <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
+              <input type="hidden" name="loa-id" id="loa-id" value="<?= $this->myhash->hasher($row['loa_id'], 'encrypt') ?>">
               <!-- End of Hidden Inputs -->
              <span class="text-info fs-3 fw-bold ls-2"><i class="mdi mdi-account-card-details"></i> PATIENT DETAILS</span><br>
               <div class="form-group row">
@@ -125,7 +126,7 @@
               <div class="form-group row">
                 <div class="col-lg-7 col-sm-12 col-lg-offset-3 mb-2">
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> HealthCare Provider</label>
-                  <select class="form-select" name="healthcare-provider" id="healthcare-provider">
+                  <select class="form-select" name="healthcare-provider" id="healthcare-provider" oninput="enableRequestType()">
                     <option value="" selected>Select HealthCare Provider</option>
                     <?php
                     if (!empty($hcproviders)) {
@@ -162,7 +163,6 @@
                     <?php
                     endif;
                     ?>
-                    <!-- <option value="Dummy">Dummy</option> -->
                   </select>
                   <em id="loa-request-type-error" class="text-danger"></em>
                 </div>
@@ -172,18 +172,7 @@
                 <div class="col-lg-7 col-sm-12 mb-2 <?= $row['loa_request_type'] === 'Consultation' ? 'd-none' : ''; ?>" id="med-services-div">
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Select Medical Service/s</label><br>
                   <div id="med-services-wrapper">
-                    <select class="form-select chosen-select" data-placeholder="Choose services..." id="med-services" name="med-services[]" multiple>
-                      <?php
-                      $selectedOptions = explode(';', $row['med_services']);
-                      foreach ($costtypes as $costtype) :
-                      ?>
-                        <option value="<?= $costtype['ctype_id']; ?>" <?= in_array($costtype['ctype_id'], $selectedOptions) ? 'selected' : ''; ?>>
-                          <?= $costtype['item_description']; ?>
-                        </option>
-                      <?php
-                      endforeach;
-                      ?>
-                    </select>
+   
                   </div>
                   <em id="med-services-error" class="text-danger"></em>
                 </div>
@@ -191,7 +180,7 @@
 
               <div class="form-group row">
                 <div class="col-sm-3 mb-2">
-                  <label class="colored-label">Health Card Number</label>
+                  <label class="colored-label">Healthcard Number</label>
                   <input type="text" class="form-control" name="health-card-no" value="<?= $row['health_card_no'] ?>" disabled>
                 </div>
                 <div class="col-sm-5 mb-2">
@@ -299,8 +288,60 @@
 <script>
   const baseUrl = `<?= $this->config->base_url() ?>`;
   const redirectPage = `${baseUrl}member/requested-loa/pending`;
+  const token = `<?php echo $this->security->get_csrf_hash(); ?>`;
+
+  window.addEventListener('load', function() {
+    // code to run on page load
+    const hp_id = $('#healthcare-provider').val();
+    const loa_id = $('#loa-id').val();
+
+    if(hp_id != ''){
+      $.ajax({
+          url: `${baseUrl}member/edit-loa/get-services/${hp_id}/${loa_id}`,
+          type: "GET",
+          dataType: "json",
+          success:function(response){
+
+            $('#med-services-wrapper').empty();                
+
+            $('#med-services-wrapper').append(response);
+
+            $(".chosen-select").chosen({
+              width: "100%",
+              no_results_text: "Oops, nothing found!"
+            }); 
+          }
+      });
+    }
+  });
 
   $(document).ready(function() {
+
+    $('#healthcare-provider').on('change', function(){
+      const hp_id = $('#healthcare-provider').val();
+      const loa_id = $('#loa-id').val();
+
+      if(hp_id != ''){
+        $.ajax({
+            url: `${baseUrl}member/edit-loa/get-services/${hp_id}/${loa_id}`,
+            type: "GET",
+            dataType: "json",
+            success:function(response){
+
+              $('#med-services-wrapper').empty();                
+
+              $('#med-services-wrapper').append(response);
+
+              $(".chosen-select").chosen({
+                width: "100%",
+                no_results_text: "Oops, nothing found!"
+              }); 
+            }
+        });
+      }
+    });
+
+
     $('#memberLoaRequestForm').submit(function(event) {
       event.preventDefault();
       let $data = new FormData($(this)[0]);
@@ -400,6 +441,28 @@
       })
     });
   });
+
+  const enableRequestType = () => {
+    const hc_provider = document.querySelector('#healthcare-provider').value;
+    const request_type = document.querySelector('#loa-request-type');
+    const med_services = document.querySelector('#med-services-div');
+
+    if(hc_provider != '' && request_type.value == 'Diagnostic Test'){
+      request_type.disabled = false;
+      med_services.className = 'd-block';
+    }else if(hc_provider != '' && request_type.value == 'Consultation' || hc_provider != '' && request_type.value == ''){
+      request_type.disabled = false;
+      med_services.className = 'd-none';
+    }else if(hc_provider != ''){
+      request_type.disabled = false;
+      med_services.className = 'd-block';
+    }else{
+      request_type.disabled = true;
+      request_type.value = '';
+      med_services.className = 'd-none';
+    }
+
+  } 
 
 
   const showMedServices = () => {

@@ -574,18 +574,20 @@ class Setup_controller extends CI_Controller {
     $response = [];
 
     foreach($result as $room){
+      $room_id = $this->myhash->hasher($room['room_id'], 'encrypt');
+
+      $actions = '<a class="me-2" href="Javascript:void(0)" onclick="editRoomType(\'' . $room_id . '\')" data-toggle="tooltip" data-placement="top" title="Edit"><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a> ';
+
+      $actions .= '<a href="Javascript:void(0)" onclick="deleteRoomType(\'' . $room_id . '\')" data-toggle="tooltip" data-placement="top" title="Delete"><i class="mdi mdi-delete-circle fs-2 text-danger"></i></a>';
+
       $row = [];
-
-      $actions = '<a class="me-2" href="Javascript:void(0)" onclick="editRoomType(' . $room['room_id'] . ')" data-toggle="tooltip" data-placement="top" title="Edit"><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a> ';
-
-      $actions .= '<a href="Javascript:void(0)" onclick="deleteRoomType(' . $room['room_id'] . ')" data-toggle="tooltip" data-placement="top" title="Delete"><i class="mdi mdi-delete-circle fs-2 text-danger"></i></a>';
-
       $row[] = $room['room_id'];
       $row[] = $room['hp_name'];
       $row[] = $room['room_type'];
       $row[] = $room['room_number'];
       $row[] = number_format($room['room_rate']);
       $row[] = date("m/d/Y", strtotime($room['date_added']));
+      $row[] = $actions;
       $data[] =$row;
     }
     $response = [
@@ -640,6 +642,87 @@ class Setup_controller extends CI_Controller {
         ];
       }
     }
+    echo json_encode($response);
+  }
+
+  function get_room_type_info() {
+    $room_id = $this->myhash->hasher( $this->uri->segment(5), 'decrypt');
+
+    $row = $this->setup_model->db_get_room_type_info($room_id);
+
+    $response = [
+      'status'      => 'success',
+      'token'       => $this->security->get_csrf_hash(),
+      'hp_id'       => $row['hp_id'],
+      'room_type'   => $row['room_type'],
+      'rt_hmo_req'  => $row['room_typ_hmo_req'],
+      'room_number' => $row['room_number'],
+      'room_rate'   => $row['room_rate'],
+    ];
+
+    echo json_encode($response);
+  }
+
+  function update_room_type() {
+    $token = $this->security->get_csrf_hash();
+    $room_id = $this->myhash->hasher($this->input->post('room-id'), 'decrypt');
+    $input_post = $this->input->post(NULL, TRUE);
+
+    $this->form_validation->set_rules('hospital-filter', 'Healthcare Provider', 'trim|required');
+    $this->form_validation->set_rules('room-type', 'Room Type', 'trim|required');
+    $this->form_validation->set_rules('room-num', 'Room Number/s', 'trim|required');
+    $this->form_validation->set_rules('room-rate', 'Room Rate', 'trim|required');
+    if ($this->form_validation->run() == FALSE) {
+      $response = [
+        'status'               => 'error',
+        'hcare_provider_error' => form_error('hospital-filter'),
+        'room_type_error'      => form_error('room-type'),
+        'room_num_error'       => form_error('room-num'),
+        'room_rate_error'      => form_error('room-rate'),
+      ];
+    } else {
+      $post_data = [
+        'hp_id'            => $input_post['hospital-filter'],
+        'room_type'        => $input_post['room-type'],
+        'room_typ_hmo_req' => $input_post['room-hmo-req'],
+        'room_number'      => $input_post['room-num'],
+        'room_rate'        => $input_post['room-rate'],
+        'date_updated'     => date("Y-m-d"),
+      ];
+
+      $updated = $this->setup_model->db_update_room_type($room_id, $post_data);
+      if (!$updated) {
+        $response = [
+          'token' => $token, 
+          'status' => 'save-error', 
+          'message' => 'Room Update Failed'
+        ];
+      }
+      $response = [
+        'token' => $token, 
+        'status' => 'success', 
+        'message' => 'Room Updated Successfully'
+      ];
+    }
+    echo json_encode($response);
+  }
+
+  function delete_room_type() {
+    $token = $this->security->get_csrf_hash();
+    $room_id = $this->myhash->hasher( $this->uri->segment(5), 'decrypt');
+    $deleted = $this->setup_model->db_delete_room_type($room_id);
+    if (!$deleted) {
+      $response = [
+        'token' => $token, 
+        'status' => 'error', 
+        'message' => 'Room Delete Failed'
+      ];
+    }
+    $response = [
+      'token' => $token, 
+      'status' => 'success', 
+      'message' => 'Room Deleted Successfully'
+    ];
     echo json_encode($response);
   }
 

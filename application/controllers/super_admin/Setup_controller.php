@@ -616,14 +616,14 @@ class Setup_controller extends CI_Controller {
   function register_room_type() {
     $this->security->get_csrf_hash();
     $hospital_id = $this->input->post('hospital-filter');
-    $room_type = ucwords(strip_tags($this->input->post('room-group')));
+    // $room_type = ucwords(strip_tags($this->input->post('room-group')));
     $room_type = ucwords(strip_tags($this->input->post('room-type')));
     $room_hmo_req = ucwords(strip_tags($this->input->post('room-hmo-req')));
     $room_number = ucwords(strip_tags($this->input->post('room-num')));
     $room_rate = strip_tags($this->input->post('room-rate'));
     
     $this->form_validation->set_rules('hospital-filter', 'Hospital', 'trim|required');
-    $this->form_validation->set_rules('room-group', 'Room Group', 'trim|required');    
+    // $this->form_validation->set_rules('room-group', 'Room Group', 'trim|required');    
     $this->form_validation->set_rules('room-type', 'Room Type', 'trim|required');    
     $this->form_validation->set_rules('room-num', 'Room Number', 'trim|required');
     $this->form_validation->set_rules('room-rate', 'Room Rate', 'trim|required');
@@ -632,7 +632,7 @@ class Setup_controller extends CI_Controller {
       $response = [
         'status' => 'error',
         'hospital_error'   => form_error('hospital-filter'),
-        'room_group_error' => form_error('room-group'),
+        // 'room_group_error' => form_error('room-group'),
         'room_type_error'  => form_error('room-type'),
         'room_num_error'   => form_error('room-num'),
         'room_rate_error'  => form_error('room-rate'),
@@ -640,7 +640,7 @@ class Setup_controller extends CI_Controller {
     } else {
       $post_data = [
         'hp_id'            => $hospital_id,
-        'room_group'       => $room_group,
+        // 'room_group'       => $room_group,
         'room_type'        => $room_type,
         'room_typ_hmo_req' => $room_hmo_req,
         'room_number'      => $room_number,
@@ -673,7 +673,7 @@ class Setup_controller extends CI_Controller {
       'status'      => 'success',
       'token'       => $this->security->get_csrf_hash(),
       'hp_id'       => $row['hp_id'],
-      'room_group'  => $row['room_group'],
+      // 'room_group'  => $row['room_group'],
       'room_type'   => $row['room_type'],
       'rt_hmo_req'  => $row['room_typ_hmo_req'],
       'room_number' => $row['room_number'],
@@ -689,7 +689,7 @@ class Setup_controller extends CI_Controller {
     $input_post = $this->input->post(NULL, TRUE);
 
     $this->form_validation->set_rules('hospital-filter', 'Healthcare Provider', 'trim|required');
-    $this->form_validation->set_rules('room-group', 'Room Group', 'trim|required');
+    // $this->form_validation->set_rules('room-group', 'Room Group', 'trim|required');
     $this->form_validation->set_rules('room-type', 'Room Type', 'trim|required');
     $this->form_validation->set_rules('room-num', 'Room Number/s', 'trim|required');
     $this->form_validation->set_rules('room-rate', 'Room Rate', 'trim|required');
@@ -697,7 +697,7 @@ class Setup_controller extends CI_Controller {
       $response = [
         'status'               => 'error',
         'hcare_provider_error' => form_error('hospital-filter'),
-        'room_group_error'     => form_error('room-group'),
+        // 'room_group_error'     => form_error('room-group'),
         'room_type_error'      => form_error('room-type'),
         'room_num_error'       => form_error('room-num'),
         'room_rate_error'      => form_error('room-rate'),
@@ -705,7 +705,7 @@ class Setup_controller extends CI_Controller {
     } else {
       $post_data = [
         'hp_id'            => $input_post['hospital-filter'],
-        'room_group'       => $input_post['room-group'],
+        // 'room_group'       => $input_post['room-group'],
         'room_type'        => $input_post['room-type'],
         'room_typ_hmo_req' => $input_post['room-hmo-req'],
         'room_number'      => $input_post['room-num'],

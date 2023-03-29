@@ -261,14 +261,20 @@ class Setup_model extends CI_Model {
 		return $this->db->get('cost_types')->result_array();
 	}
 
-	// function db_update_cost_type($ctype_id, $post_data) {
-	// 	$this->db->where('ctype_id', $ctype_id);
-	// 	return $this->db->update('cost_types', $post_data);
-	// }
-
-	// function db_delete_cost_type($ctype_id) {
-	// 	$this->db->where('ctype_id', $ctype_id)
-	// 					 ->delete('cost_types');
-	// 	return $this->db->affected_rows() > 0 ? true : false;
-	// }
+	function db_get_room_type_info($room_id){
+		$this->db->select('*')
+             ->from('room_types as tbl_1')
+             ->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
+             ->where('tbl_1.room_id', $room_id);
+    return $this->db->get()->row_array();
+	}
+	function db_update_room_type($room_id, $post_data){
+		$this->db->where('room_id', $room_id);
+		return $this->db->update('room_types', $post_data);
+	}
+	function db_delete_room_type($room_id) {
+		$this->db->where('room_id', $room_id)
+		         ->delete('room_types');
+		return $this->db->affected_rows() > 0 ? true : false;
+	}
 }

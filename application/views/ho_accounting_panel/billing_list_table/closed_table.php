@@ -31,7 +31,7 @@
                             href="<?php echo base_url(); ?>head-office-accounting/billing-list/billed"
                             role="tab"
                             ><span class="hidden-sm-up"></span>
-                            <span class="hidden-xs-down fs-5 font-bold">Billed</span></a
+                            <span class="hidden-xs-down fs-5 font-bold">Billed2</span></a
                         >
                     </li>
 
@@ -41,7 +41,7 @@
                             href="<?php echo base_url(); ?>head-office-accounting/billing-list/closed"
                             role="tab"
                             ><span class="hidden-sm-up"></span>
-                            <span class="hidden-xs-down fs-5 font-bold">Closed</span></a
+                            <span class="hidden-xs-down fs-5 font-bold">Closed2</span></a
                         >
                     </li>
 

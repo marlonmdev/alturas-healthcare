@@ -586,17 +586,39 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 
 // End of Super Admin Routes
 //========================================================================================================
-//IAD=================================================================================
+//IAD=====================================================================================================
 $route['head-office-iad/dashboard'] = 'ho_iad/pages_controller';
-//to delete
-$route['head-office-iad/table/billed'] = 'ho_iad/pages_controller/view_table';
-$route['head-office-iad/table/billed/fetch'] = 'ho_iad/table_controller/fetch_data';
-$route['head-office-iad/record/(:any)'] = 'ho_iad/table_controller/view_record';
-//end
+
+//Summary of Billing
 $route['head-office-iad/transaction/search'] = 'ho_iad/transaction_controller/search';
+$route['head-office-iad/transaction/search_by_id']  = 'ho_iad/transaction_controller/search_by_id';
 $route['head-office-iad/transaction/search_by_healthcard']  = 'ho_iad/transaction_controller/search_by_healthcard';
-$route['head-office-iad/transaction/search_by_name'] = 'healthcare_provider/billing_controller/search_by_name';
-//IAD=================================================================================
+$route['head-office-iad/transaction/search_by_name'] = 'ho_iad/transaction_controller/search_by_name';
+$route['head-office-iad/transaction/(:any)/view_receipt/(:any)'] = 'ho_iad/transaction_controller/view_receipt';
+//end
+//Payment Details
+$route['head-office-iad/transaction/payment-details/(:any)'] = 'ho_iad/transaction_controller/view_payment_details';
+// $route['head-office-iad/transaction/view_pd/(:any)'] = 'ho_iad/transaction_controller/view_pd';
+//end
+//Account Setting
+$route['head-office-iad/transaction/account_setting'] = 'ho_iad/transaction_controller/account_settings';
+$route['head-office-iad/transaction/update_password'] = 'ho_iad/transaction_controller/update_password';
+$route['head-office-iad/transaction/update_username'] = 'ho_iad/transaction_controller/update_username';
+//end
+//Members
+$route['head-office-iad/transaction/members'] = 'ho_iad/transaction_controller/members';
+$route['head-office-iad/transaction/fetch_all_members'] = 'ho_iad/transaction_controller/fetch_all_members';
+$route['head-office-iad/transaction/view_information/(:any)'] = 'ho_iad/transaction_controller/view_information';
+//end
+//IAD======================================================================================================
+
+$route['head-office-accounting/billing-list/closed/fetch'] = 'ho_accounting/main_controller/fetch_closed';
+$route['head-office-accounting/billing-list/view-employee-payment/(:any)'] = 'ho_accounting/main_controller/view_employee_payment';
+
+
+
+
+
 
 
 // QR Code Routes

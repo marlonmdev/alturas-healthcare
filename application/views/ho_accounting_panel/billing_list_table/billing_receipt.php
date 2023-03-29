@@ -24,10 +24,10 @@
 
           <!-- Go Back to Previous Page -->
           <div class="col-12 mb-4 mt-0">
-              <form method="POST" action="<?php echo base_url(); ?>healthcare-provider/billing/search-by-healthcard" id="search-form-1" class="needs-validation" novalidate>
+              <form method="POST" action="<?php echo base_url(); ?>head-office-accounting/billing-list/billed" id="search-form-1" class="needs-validation" novalidate>
                   <div class="input-group">
                       <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
-                      <input type="hidden" name="healthcard_no" value="<?= $bill['health_card_no'] ?>">
+                      <!-- <input type="hidden" name="healthcard_no" value="<?= $bill['health_card_no'] ?>"> -->
                       <button type="submit" class="btn btn-outline-dark" data-bs-toggle="tooltip" title="Click to Go Back">
                           <strong class="ls-2" style="vertical-align:middle">
                               <i class="mdi mdi-arrow-left-bold"></i> Go Back
@@ -115,7 +115,7 @@
                                 <td class="text-center">
                                   <span class="text-secondary fs-6 fw-bold ls-1 me-2">Total:</span>
                                   <span class="text-secondary fw-bold fs-6 ls-1">
-                                    <?= '&#8369;'.number_format($bill['total_services'], 2) ?>
+                                    <?= '&#8369;'.$bill['total_services'] ?>
                                   </span>
                                 </td>
                               </tr>

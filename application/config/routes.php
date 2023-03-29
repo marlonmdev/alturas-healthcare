@@ -201,6 +201,7 @@ $route['head-office-accounting/dashboard'] = 'ho_accounting/Pages_controller';
 //Billed
 $route['head-office-accounting/billing-list/billed/fetch'] = 'ho_accounting/main_controller/fetch_billed';
 $route['head-office-accounting/billing-list/billed/view/(:any)'] = 'ho_accounting/main_controller/view_billed_details';
+$route['head-office-accounting/billing-list/noa/view/(:any)'] = 'ho_accounting/main_controller/view_billed_details';
 $route['head-office-accounting/billing-list/billed/hp_name'] = 'ho_accounting/main_controller/get_hp_name';
 $route['head-office-accounting/billing-list/billed/sum'] = 'ho_accounting/main_controller/get_company_charge_total';
 $route['head-office-accounting/billing-list/billed/payment-details'] = 'ho_accounting/main_controller/add_payment_details';

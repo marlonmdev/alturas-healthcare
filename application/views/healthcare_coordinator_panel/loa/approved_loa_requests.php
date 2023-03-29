@@ -217,9 +217,9 @@
               });
               $('#loaCancellationModal').modal('hide');
               $("#memberApprovedLoa").DataTable().ajax.reload();
-              // setTimeout(function() {
-              //   window.location.href = nextPage;
-              // }, 3200);
+              setTimeout(function() {
+                window.location.href = nextPage;
+              }, 3200);
               break;
           }
         }

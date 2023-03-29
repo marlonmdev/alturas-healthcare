@@ -20,15 +20,15 @@
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Cancelled By :</td>
-                          <td class="fw-bold ls-1" id="disapproved-by"></td>
+                          <td class="fw-bold ls-1" id="cancelled-by"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Cancelled On :</td>
-                          <td class="fw-bold ls-1" id="disapproved-on"></td>
+                          <td class="fw-bold ls-1" id="cancelled-on"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Reason for Cancellation :</td>
-                          <td class="fw-bold ls-1" id="disapprove-reason"></td>
+                          <td class="fw-bold ls-1" id="cancellation-reason"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Member's Maximum Benefit Limit :</td>

@@ -110,24 +110,24 @@ class Loa_controller extends CI_Controller {
 
 			$custom_loa_no = '<mark class="bg-primary text-white">'.$loa['loa_no'].'</mark>';
 
-			$expires = strtotime('+1 week', strtotime($loa['approved_on']));
-      $expiration_date = date('m/d/Y', $expires);
+			$expiry_date = $loa['expiration_date'] ? date('m/d/Y', strtotime($loa['expiration_date'])) : 'None'; 
+
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+
+			$custom_actions .= '<a href="' . base_url() . 'company-doctor/loa/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Print LOA"><i class="mdi mdi-printer fs-2 ps-2 text-primary"></i></a>';
+
+			// $expires = strtotime('+1 week', strtotime($loa['approved_on']));
+      // $expiration_date = date('m/d/Y', $expires);
 			// call another function to determined if expired or not
-			$date_result = $this->checkExpiration($loa['approved_on']);
-			
-			if($date_result == 'Expired'){
-				$custom_date = '<span class="text-danger">'.$expiration_date.'</span><span class="text-danger fw-bold ls-1"> [Expired]</span>';
+			// $date_result = $this->checkExpiration($loa['approved_on']);
+			// if($date_result == 'Expired'){
+			// 	$custom_date = '<span class="text-danger">'.$expiration_date.'</span><span class="text-danger fw-bold ls-1"> [Expired]</span>';
 
-				$custom_actions = '<a href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			// 	$custom_actions = '<a href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
-				$custom_actions .= '<a data-bs-toggle="tooltip" title="Cannot Print Expired LOA"><i class="mdi mdi-printer fs-2 ps-2 icon-disabled"></i></a>';
-			}else{
-				$custom_date = $expiration_date;
-
-				$custom_actions = '<a href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
-
-				$custom_actions .= '<a href="' . base_url() . 'company-doctor/loa/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Print LOA"><i class="mdi mdi-printer fs-2 ps-2 text-primary"></i></a>';
-			}
+			// 	$custom_actions .= '<a data-bs-toggle="tooltip" title="Cannot Print Expired LOA"><i class="mdi mdi-printer fs-2 ps-2 icon-disabled"></i></a>';
+			// }
+				
 
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $loa['status'] . '</span></div>';
 
@@ -153,7 +153,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
 			$row[] = $view_file;
-			$row[] = $custom_date;
+			$row[] = $expiry_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;
@@ -547,11 +547,26 @@ class Loa_controller extends CI_Controller {
 			exit();
 		}
 
-		if($expiration_type == 'default') {
-			$default = strtotime('+1 week', strtotime($approved_on));
-			$expired_on = date('Y-m-d', $default);
-		}else{
-			$expired_on = date('Y-m-d', strtotime($expiration_date));
+		switch($expiration_type){
+			case 'default': 
+					$default = strtotime('+1 week', strtotime($approved_on));
+					$expired_on = date('Y-m-d', $default);
+				break;
+			case '2 weeks':
+					$expires = strtotime('+2 weeks', strtotime($approved_on));
+					$expired_on = date('Y-m-d', $expires);
+				break;
+			case '3 weeks':
+					$expires = strtotime('+3 weeks', strtotime($approved_on));
+					$expired_on = date('Y-m-d', $expires);
+				break;
+			case '4 weeks':
+					$expires = strtotime('+4 weeks', strtotime($approved_on));
+					$expired_on = date('Y-m-d', $expires);
+				break;
+			case 'custom':
+					$expired_on = date('Y-m-d', strtotime($expiration_date));
+				break;
 		}
 
 		$this->load->model('healthcare_coordinator/loa_model');

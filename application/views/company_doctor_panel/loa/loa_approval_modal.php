@@ -20,6 +20,9 @@
                         <label class="colored-label ls-1">Set Date of Expiration:</label>
                         <select class="form-select" name="expiration-type" id="expiration-type" onchange="showExpDateInput()" required>
                             <option value="default" selected>Default [1 week]</option>
+                            <option value="2 weeks">2 weeks</option>
+                            <option value="3 weeks">3 weeks</option>
+                            <option value="4 weeks">4 weeks</option>
                             <option value="custom">Custom</option>
                         </select>
                     </div> 

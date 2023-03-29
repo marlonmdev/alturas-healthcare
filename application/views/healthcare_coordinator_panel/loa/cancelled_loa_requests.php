@@ -197,9 +197,9 @@
         });
     }
 
-    function viewDisapprovedLoaInfo(req_id) {
+    function viewCancelledLoaInfo(req_id) {
         $.ajax({
-            url: `${baseUrl}healthcare-coordinator/loa/disapproved/view/${req_id}`,
+            url: `${baseUrl}healthcare-coordinator/loa/cancelled/view/${req_id}`,
             type: "GET",
             success: function(response) {
                 const res = JSON.parse(response);
@@ -238,9 +238,9 @@
                     rx_file,
                     req_status,
                     work_related,
-                    disapproved_by,
-                    disapprove_reason,
-                    disapproved_on
+                    cancelled_by,
+                    cancellation_reason,
+                    cancelled_on
                 } = res;
 
                 $("#viewLoaModal").modal("show");
@@ -248,9 +248,9 @@
                 const at_physician = attending_physician !== '' ? attending_physician : 'None';
                 $('#loa-no').html(loa_no);
                 $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
-                $('#disapproved-by').html(disapproved_by);
-                $('#disapproved-on').html(disapproved_on);
-                $('#disapprove-reason').html(disapprove_reason);
+                $('#cancelled-by').html(cancelled_by);
+                $('#cancelled-on').html(cancelled_on);
+                $('#cancellation-reason').html(cancellation_reason);
                 $('#member-mbl').html(member_mbl);
                 $('#remaining-mbl').html(remaining_mbl);
                 $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);

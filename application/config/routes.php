@@ -334,6 +334,7 @@ $route['healthcare-coordinator/loa/requests-list/fetch'] = 'healthcare_coordinat
 $route['healthcare-coordinator/loa/requests-list/approved/fetch'] = 'healthcare_coordinator/loa_controller/fetch_all_approved_loa';
 $route['healthcare-coordinator/loa/requests-list/disapproved/fetch'] = 'healthcare_coordinator/loa_controller/fetch_all_disapproved_loa';
 $route['healthcare-coordinator/loa/requests-list/completed/fetch'] = 'healthcare_coordinator/loa_controller/fetch_all_completed_loa';
+$route['healthcare-coordinator/loa/requests-list/cancelled/fetch'] = 'healthcare_coordinator/loa_controller/fetch_all_cancelled_loa';
 $route['healthcare-coordinator/loa/pending/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_pending_loa_info';
 $route['healthcare-coordinator/loa/approved/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_approved_loa_info';
 $route['healthcare-coordinator/loa/disapproved/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_disapproved_loa_info';
@@ -358,6 +359,7 @@ $route['healthcare-coordinator/loa-requests/approved/performed-loa-consultation/
 $route['healthcare-coordinator/loa-requests/approved/performed-loa-consultation/submit-edited'] = 'healthcare_coordinator/loa_controller/submit_edited_consultation_loa';
 $route['healthcare-coordinator/loa/performed-consult-loa-info/view/(:any)'] = 'healthcare_coordinator/loa_controller/fetch_performed_consult_loa';
 $route['healthcare-coordinator/loa/requested-loa/add-loa-fees/(:any)'] = 'healthcare_coordinator/loa_controller/add_performed_loa_fees';
+$route['healthcare-coordinator/loa/requests-list/cancel-request/(:any)'] = 'healthcare_coordinator/loa_controller/cancel_approved_loa';
 
 
 // HealthCare Coordinator NOA Routes

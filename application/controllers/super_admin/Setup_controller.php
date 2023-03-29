@@ -512,6 +512,7 @@ class Setup_controller extends CI_Controller {
     if (!$exists) {
       return true;
     } else {
+      
       $this->form_validation->set_message('check_cost_type_exist', 'Cost Type Already Exists!');
       return false;
     }
@@ -646,6 +647,7 @@ class Setup_controller extends CI_Controller {
         'room_number'      => $room_number,
         'room_rate'        => $room_rate,
         'date_added'       => date("Y-m-d"),
+        'added_by'         => $this->session->userdata('fullname'),
       ];
 
       $saved = $this->setup_model->db_insert_room_type($post_data);
@@ -711,6 +713,7 @@ class Setup_controller extends CI_Controller {
         'room_number'      => $input_post['room-num'],
         'room_rate'        => $input_post['room-rate'],
         'date_updated'     => date("Y-m-d"),
+        'updated_by'       => $this->session->userdata('fullname'),
       ];
 
       $updated = $this->setup_model->db_update_room_type($room_id, $post_data);

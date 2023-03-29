@@ -33,7 +33,7 @@
                             href="<?php echo base_url(); ?>head-office-accounting/billing-list/billed"
                             role="tab"
                             ><span class="hidden-sm-up"></span>
-                            <span class="hidden-xs-down fs-5 font-bold">Billed</span></a
+                            <span class="hidden-xs-down fs-5 font-bold">Billed1</span></a
                         >
                     </li>
                     <li class="nav-item">
@@ -42,22 +42,9 @@
                             href="<?php echo base_url(); ?>head-office-accounting/billing-list/closed"
                             role="tab"
                             ><span class="hidden-sm-up"></span>
-                            <span class="hidden-xs-down fs-5 font-bold">Closed</span></a
+                            <span class="hidden-xs-down fs-5 font-bold">Closed1</span></a
                         >
                     </li>
-<!-- 
-                    <div class="dropdown">
-                        <li class="nav-item">
-                            <button class="btn dropdown-toggle active" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span class="hidden-sm-up"></span>
-                                <span class="hidden-xs-down fs-5 font-bold" style="color:#2359fc">Unbilled</span>
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                <li><a class="dropdown-item fw-bold" href="<?php echo base_url(); ?>head-office-accounting/billing-list/unbilled/loa">LOA</a></li>
-                                <li><a class="dropdown-item fw-bold" href="<?php echo base_url(); ?>head-office-accounting/billing-list/unbilled/noa">NOA</a></li>
-                            </ul>
-                        </li>
-                    </div> -->
                 </ul>
             </div>
             <div class="row mb-3 pt-2">

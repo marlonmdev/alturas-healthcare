@@ -9,61 +9,27 @@
 
 <li class="sidebar-item <?php echo $this->uri->segment(2) == 'billing' ? 'selected' : ''; ?>">
   <a class="sidebar-link"
-    href="<?php echo base_url(); ?>head-office-iad/table/billed"
+    href="<?php echo base_url(); ?>head-office-iad/transaction/search"
     aria-expanded="false">
     <i class="mdi mdi-receipt"></i>
-    <span class="hide-menu ls-1">Transaction Record(to delete)</span>
+    <span class="hide-menu ls-1">Payment History</span>
   </a>
-</li>
-
-<li class="sidebar-item <?php echo $this->uri->segment(2) == "billing" ? "selected" : ""; ?>">
-  <a
-    class="sidebar-link has-arrow"
-    href="javascript:void(0)"
-    aria-expanded="false">
-    <i class="mdi mdi-file-chart"></i>
-    <span class="hide-menu ls-1">Transaction Record</span>
-  </a>
-  <ul aria-expanded="false" class="collapse first-level">
-    <li class="sidebar-item">
-      <a href="<?php echo base_url(); ?>head-office-iad/transaction/search" class="sidebar-link">
-        <i class="mdi mdi-receipt"></i>
-        <span class="hide-menu ls-1">Summary of Billing</span>
-      </a>
-    </li>
-  </ul>
 </li>
 
 <li class="sidebar-item <?php echo $this->uri->segment(2) == 'billing' ? 'selected' : ''; ?>">
-  <a class="sidebar-link sidebar-link" href="<?php echo base_url(); ?>healthcare-coordinator/members" aria-expanded="false">
+  <a class="sidebar-link sidebar-link" href="<?php echo base_url(); ?>head-office-iad/transaction/members" aria-expanded="false">
     <i class="mdi mdi-account-multiple"></i>
     <span class="hide-menu ls-1">Employee Member</span>
   </a>
 </li>
-              
-<li class="sidebar-item">
-  <a class="sidebar-link has-arrow"
-    href="javascript:void(0)"
-    aria-expanded="false">
-    <i class="mdi mdi-account-box"></i>
-    <span class="hide-menu ls-1">My Account</span>
+
+<li class="sidebar-item <?php echo $this->uri->segment(2) == 'billing' ? 'selected' : ''; ?>">
+  <a class="sidebar-link sidebar-link" href="<?php echo base_url(); ?>head-office-iad/transaction/account_setting" aria-expanded="false">
+    <i class="mdi mdi-account-settings-variant"></i>
+    <span class="hide-menu ls-1">Account Setting</span>
   </a>
-  <ul aria-expanded="false" class="collapse first-level">
-    <li class="sidebar-item">
-      <a href="<?php echo base_url() . 'member/profile' ?>" class="sidebar-link">
-        <i class="mdi mdi-account"></i>
-        <span class="hide-menu ls-1">Profile</span>
-      </a>
-    </li>
-    <li class="sidebar-item">
-      <a href="<?php echo $account_settings_url; ?>" class="sidebar-link">
-        <i class="mdi mdi-settings"></i>
-        <span class="hide-menu ls-1">Account Settings</span>
-      </a>
-    </li>
-  </ul>
 </li>
-              
+                           
 <li class="sidebar-item">
   <a class="sidebar-link"
     href="javascript:void(0)"

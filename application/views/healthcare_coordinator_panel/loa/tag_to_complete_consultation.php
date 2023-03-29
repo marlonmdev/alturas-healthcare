@@ -23,14 +23,14 @@
     <!-- Start of Container fluid  -->
     <div class="container-fluid">
             <div class="col-12 mb-4 mt-0">
-                        <div class="input-group">
-                            <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved" type="submit" class="btn btn-outline-dark" data-bs-toggle="tooltip" title="Click to Go Back">
-                                <strong class="ls-2" style="vertical-align:middle">
-                                    <i class="mdi mdi-arrow-left-bold"></i> Go Back
-                                </strong>
-                            </a>
-                        </div>
-                </div>
+                    <div class="input-group">
+                        <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved" type="submit" class="btn btn-outline-dark" data-bs-toggle="tooltip" title="Click to Go Back">
+                            <strong class="ls-2" style="vertical-align:middle">
+                                <i class="mdi mdi-arrow-left-bold"></i> Go Back
+                            </strong>
+                        </a>
+                    </div>
+            </div>
                 
             <form id="performedLoaConsultInfo" method="post" action="<?php echo base_url();?>healthcare-coordinator/loa-requests/approved/performed-loa-consultation/submit" class="needs-validation" novalidate>
                 <div class="row">

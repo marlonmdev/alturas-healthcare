@@ -201,6 +201,7 @@ $route['head-office-accounting/dashboard'] = 'ho_accounting/Pages_controller';
 //Billed
 $route['head-office-accounting/billing-list/billed/fetch'] = 'ho_accounting/main_controller/fetch_billed';
 $route['head-office-accounting/billing-list/billed/view/(:any)'] = 'ho_accounting/main_controller/view_billed_details';
+$route['head-office-accounting/billing-list/noa/view/(:any)'] = 'ho_accounting/main_controller/view_billed_details';
 $route['head-office-accounting/billing-list/billed/hp_name'] = 'ho_accounting/main_controller/get_hp_name';
 $route['head-office-accounting/billing-list/billed/sum'] = 'ho_accounting/main_controller/get_company_charge_total';
 $route['head-office-accounting/billing-list/billed/payment-details'] = 'ho_accounting/main_controller/add_payment_details';
@@ -358,7 +359,7 @@ $route['healthcare-coordinator/loa-requests/approved/performed-loa-consultation/
 $route['healthcare-coordinator/loa-requests/approved/performed-loa-consultation/submit-edited'] = 'healthcare_coordinator/loa_controller/submit_edited_consultation_loa';
 $route['healthcare-coordinator/loa/performed-consult-loa-info/view/(:any)'] = 'healthcare_coordinator/loa_controller/fetch_performed_consult_loa';
 $route['healthcare-coordinator/loa/requested-loa/add-loa-fees/(:any)'] = 'healthcare_coordinator/loa_controller/add_performed_loa_fees';
-
+$route['healthcare-coordinator/loa/requests-list/approved/autocomplete'] = 'healthcare_coordinator/loa_controller/get_autocomplete';
 
 // HealthCare Coordinator NOA Routes
 $route['healthcare-coordinator/noa/requests-list/fetch'] = 'healthcare_coordinator/noa_controller/fetch_all_pending_noa';

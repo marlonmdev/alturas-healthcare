@@ -240,7 +240,7 @@ class Loa_model extends CI_Model {
     $i = 0;
 
     if($this->input->post('filter')){
-      $this->db->like('tbl_1.hp_id', $this->input->post('filter'));
+      $this->db->like('hp_id', $this->input->post('filter'));
     }
     // loop column 
     foreach ($this->columnSearch as $item) {
@@ -396,9 +396,9 @@ class Loa_model extends CI_Model {
     $this->db->select('*')
             ->from('loa_requests as tbl_1')
             ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
+            ->join('max_benefit_limits as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id')
             ->where('tbl_1.status', 'Completed')
-            ->where('tbl_1.loa_id', $loa_id)
-            ->order_by('loa_id', 'DESC');
+            ->where('tbl_1.loa_id', $loa_id);
     return $this->db->get()->row_array();
   }
 

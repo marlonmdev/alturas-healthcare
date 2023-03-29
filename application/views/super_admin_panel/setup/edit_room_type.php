@@ -24,9 +24,9 @@
                       </div>
 
                       <div class="col-6 mb-1 mt-1">
-                        <label class="colored-label fs-5"><i class="mdi mdi-asterisk text-danger"></i> Room Group</label>
-                        <input type="text" class="form-control" name="room-group" id="edit-room-group">
-                        <span id="edit-room-group-error" class="text-danger"></span>
+                        <label class="colored-label fs-5"><i class="mdi mdi-asterisk text-danger"></i> Room Type HMO Requirements</label>
+                        <input type="text" class="form-control" name="room-hmo-req" id="edit-room-hmo-req">
+                        <span id="edit-room-hmo-req-error" class="text-danger"></span>
                       </div>
                     </div>
 
@@ -38,9 +38,9 @@
                       </div> 
 
                       <div class="col-6 mb-1 pt-2">
-                        <label class="colored-label fs-5"> Room Type HMO Requirements</label>
-                        <input type="text" class="form-control" name="room-hmo-req" id="edit-room-hmo-req">
-                        <span id="edit-room-hmo-req-error" class="text-danger"></span>
+                        <label class="colored-label fs-5"><i class="mdi mdi-asterisk text-danger"></i> Room Rate</label>
+                        <input type="number" class="form-control" name="room-rate" id="edit-room-rate">
+                        <span id="edit-room-rate-error" class="text-danger"></span>
                       </div> 
                     </div>
 
@@ -51,11 +51,11 @@
                         <span id="edit-room-num-error" class="text-danger"></span>
                       </div> 
                     
-                      <div class="col-4 mb-1 pt-2">
+                      <!-- <div class="col-4 mb-1 pt-2">
                         <label class="colored-label fs-5"><i class="mdi mdi-asterisk text-danger"></i> Room Rate</label>
                         <input type="number" class="form-control" name="room-rate" id="edit-room-rate">
                         <span id="edit-room-rate-error" class="text-danger"></span>
-                      </div>
+                      </div> -->
                     </div>
 
                     <div class="row">

@@ -7,7 +7,7 @@ class Noa_model extends CI_Model {
   var $table_1 = 'noa_requests';
   var $table_2 = 'healthcare_providers';
   var $column_order = ['tbl_1.noa_no', 'tbl_1.first_name', 'tbl_1.admission_date', 'tbl_2.hp_name', 'tbl_1.request_date']; //set column field database for datatable orderable
-  var $column_search = ['tbl_1.noa_no', 'tbl_1.first_name', 'tbl_1.middle_name', 'tbl_1.last_name', 'tbl_1.suffix', 'tbl_1.admission_date', 'tbl_2.hp_name', 'tbl_1.request_date', 'CONCAT(tbl_1.first_name, " ",tbl_1.last_name)',   'CONCAT(tbl_1.first_name, " ",tbl_1.last_name, " ", tbl_1.suffix)', 'CONCAT(tbl_1.first_name, " ",tbl_1.middle_name, " ",tbl_1.last_name)', 'CONCAT(tbl_1.first_name, " ",tbl_1.middle_name, " ",tbl_1.last_name, " ", tbl_1.suffix)']; //set column field database for datatable searchable 
+  var $column_search = ['tbl_1.noa_no', 'tbl_1.emp_id', 'tbl_1.health_card_no', 'tbl_1.first_name', 'tbl_1.middle_name', 'tbl_1.last_name', 'tbl_1.suffix', 'tbl_1.admission_date', 'tbl_2.hp_name', 'tbl_1.request_date', 'CONCAT(tbl_1.first_name, " ",tbl_1.last_name)',   'CONCAT(tbl_1.first_name, " ",tbl_1.last_name, " ", tbl_1.suffix)', 'CONCAT(tbl_1.first_name, " ",tbl_1.middle_name, " ",tbl_1.last_name)', 'CONCAT(tbl_1.first_name, " ",tbl_1.middle_name, " ",tbl_1.last_name, " ", tbl_1.suffix)']; //set column field database for datatable searchable 
   var $order = ['tbl_1.noa_id' => 'desc']; // default order 
 
   private function _get_datatables_query($status) {
@@ -119,13 +119,7 @@ class Noa_model extends CI_Model {
     return $query->row_array();
   }
 
-
-  function db_approve_noa_request($noa_id, $approved_by, $approved_on) {
-    $data = array(
-      'status' => 'Approved',
-      'approved_by' => $approved_by,
-      'approved_on' => $approved_on
-    );
+  function db_approve_noa_request($noa_id, $data) {
     $this->db->where('noa_id', $noa_id);
     return $this->db->update('noa_requests', $data);
   }

@@ -422,14 +422,13 @@ class Loa_controller extends CI_Controller {
 				$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Update LOA"><i class="mdi mdi-playlist-check fs-2 text-success"></i></a>';
 
 				if($loa['loa_request_type'] == 'Consultation'){
-
-					$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaConsult(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-information-outline fs-2 ps-1 text-danger"></i></a>';
+					$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaConsult(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-cyan"></i></a>';
 				}else{
+					$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-cyan"></i></a>';
+				}				
 
-					$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-information-outline fs-2 ps-1 text-danger"></i></a>';
-				}
+				$custom_actions .= '<a class="me-2" href="JavaScript:void(0)" onclick="loaCancellation(\'' . $loa_id . '\', \'' . $loa['loa_no'] . '\')" data-bs-toggle="tooltip" title="Cancel LOA Request"><i class="mdi mdi-close-circle fs-2 text-danger"></i></a>';
 
-				
 			}
 	
 			$custom_status = '<span class="badge rounded-pill bg-success">' . $loa['status'] . '</span>';
@@ -565,10 +564,10 @@ class Loa_controller extends CI_Controller {
 			
 			if($loa['loa_request_type'] == 'Consultation'){
 
-				$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaConsult(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-information-outline fs-2 ps-1 text-danger"></i></a>';
+				$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaConsult(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-danger"></i></a>';
 			}else{
 
-				$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-information-outline fs-2 ps-1 text-danger"></i></a>';
+				$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-danger"></i></a>';
 			}
 
 			// $custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/add-loa-fees/' . $loa_id . '" data-bs-toggle="tooltip" title="Add LOA fees"><i class="mdi mdi-playlist-check fs-2 text-success"></i></a>';
@@ -585,6 +584,63 @@ class Loa_controller extends CI_Controller {
 
 			} else {
 
+				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
+
+				// link to the file attached during loa request
+				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
+			}
+
+			// this data will be rendered to the datatable
+			$row[] = $custom_loa_no;
+			$row[] = $full_name;
+			$row[] = $loa['loa_request_type'];
+			$row[] = $short_hp_name;
+			$row[] = $view_file;
+			$row[] = $custom_date;
+			$row[] = $custom_status;
+			$row[] = $custom_actions;
+			$data[] = $row;
+		}
+
+		$output = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->loa_model->count_all($status),
+			"recordsFiltered" => $this->loa_model->count_filtered($status),
+			"data" => $data,
+		];
+		echo json_encode($output);
+	}
+
+	function fetch_all_cancelled_loa(){
+		$this->security->get_csrf_hash();
+		$status = 'Cancelled';
+		$list = $this->loa_model->get_datatables($status);
+		$data = [];
+		foreach ($list as $loa) {
+			$row = [];
+
+			$loa_id = $this->myhash->hasher($loa['loa_id'], 'encrypt');
+
+			$full_name = $loa['first_name'] . ' ' . $loa['middle_name'] . ' ' . $loa['last_name'] . ' ' . $loa['suffix'];
+
+			$custom_loa_no = '<mark class="bg-primary text-white">'.$loa['loa_no'].'</mark>';
+
+			$custom_date = date("m/d/Y", strtotime($loa['request_date']));
+
+			$custom_status = '<span class="badge rounded-pill bg-danger">' . $loa['status'] . '</span>';
+
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewCancelledLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+
+			// initialize multiple varibles at once
+			$view_file = $short_hp_name = '';
+			if ($loa['loa_request_type'] === 'Consultation') {
+				// if request is consultation set the view file and medical services to None
+				$view_file = 'None';
+
+				// if Healthcare Provider name is too long for displaying to the table, shorten it and add the ... characters at the end 
+				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
+
+			} else {
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
 
 				// link to the file attached during loa request
@@ -810,6 +866,69 @@ class Loa_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
+	function get_cancelled_loa_info() {
+		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$this->load->model('healthcare_coordinator/loa_model');
+		$row = $this->loa_model->db_get_loa_details($loa_id);
+
+		$cost_types = $this->loa_model->db_get_cost_types();
+		// Calculate Age
+		$birth_date = date("d-m-Y", strtotime($row['date_of_birth']));
+		$current_date = date("d-m-Y");
+		$diff = date_diff(date_create($birth_date), date_create($current_date));
+		$age = $diff->format("%y");
+		// get selected medical services
+		$selected_cost_types = explode(';', $row['med_services']);
+		$ct_array = [];
+		foreach ($cost_types as $cost_type) :
+			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
+				array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
+			}
+		endforeach;
+		$med_serv = implode(' ', $ct_array);
+
+		$response = [
+			'status' => 'success',
+			'token' => $this->security->get_csrf_hash(),
+			'loa_id' => $row['loa_id'],
+			'loa_no' => $row['loa_no'],
+			'first_name' => $row['first_name'],
+			'middle_name' => $row['middle_name'],
+			'last_name' => $row['last_name'],
+			'suffix' => $row['suffix'],
+			'date_of_birth' => 	date("F d, Y", strtotime($row['date_of_birth'])),
+			'age' => $age,
+			'gender' => $row['gender'],
+			'blood_type' => $row['blood_type'],
+			'philhealth_no' => $row['philhealth_no'],
+			'contact_no' => $row['contact_no'],
+			'home_address' => $row['home_address'],
+			'city_address' => $row['city_address'],
+			'email' => $row['email'],
+			'contact_person' => $row['contact_person'],
+			'contact_person_addr' => $row['contact_person_addr'],
+			'contact_person_no' => $row['contact_person_no'],
+			'healthcare_provider' => $row['hp_name'],
+			'loa_request_type' => $row['loa_request_type'],
+			'med_services' => $med_serv,
+			'health_card_no' => $row['health_card_no'],
+			'requesting_company' => $row['requesting_company'],
+			'request_date' => date("F d, Y", strtotime($row['request_date'])),
+			'chief_complaint' => $row['chief_complaint'],
+			'requesting_physician' => $row['doctor_name'],
+			'attending_physician' => $row['attending_physician'],
+			'rx_file' => $row['rx_file'],
+			'req_status' => $row['status'],
+			'work_related' => $row['work_related'],
+			'cancelled_on' => $row['cancelled_on'] ? date("F d, Y", strtotime($row['cancelled_on'])) : '',
+			'cancelled_by' => $row['cancelled_by'],
+			'cancellation_reason' => $row['cancellation_reason'],
+			'member_mbl' => number_format($row['max_benefit_limit'], 2),
+			'remaining_mbl' => number_format($row['remaining_balance'], 2),
+		];
+		echo json_encode($response);
+	}
+
 	function get_completed_loa_info() {
 		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$this->load->model('healthcare_coordinator/loa_model');
@@ -970,9 +1089,12 @@ class Loa_controller extends CI_Controller {
 
 			$custom_action .= '<a href="JavaScript:void(0)" onclick="disapproveRequest(\''. $loa_id .'\')"><i class="mdi mdi-thumb-down-outline text-danger fs-3 ps-2" title="Disapprove"></i></a>';
 
+			$short_hp_name = strlen($data['hp_name']) > 24 ? substr($data['hp_name'], 0, 24) . "..." : $data['hp_name'];
+
 			$row[] = $data['loa_no'];
 			$row[] = $fullname;
-			$row[] = $data['requested_on'];
+			$row[] = date('m/d/Y', strtotime($data['requested_on']));
+			$row[] = $short_hp_name;
 			$row[] = $custom_reason;
 			$row[] = $custom_status;
 			$row[] = $custom_action;
@@ -1054,8 +1176,11 @@ class Loa_controller extends CI_Controller {
 
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
+			$short_hp_name = strlen($data['hp_name']) > 24 ? substr($data['hp_name'], 0, 24) . "..." : $data['hp_name'];
+
 			$row[] = $data['loa_no'];
 			$row[] = $fullname;
+			$row[] = $short_hp_name;
 			$row[] = $custom_reason;
 			$row[] = $data['confirmed_on'];
 			$row[] = $data['confirmed_by'];
@@ -1070,7 +1195,43 @@ class Loa_controller extends CI_Controller {
 			"data" => $dataCancellations,
 		];
 		echo json_encode($response);
+	}
+
+
+	function cancel_approved_loa(){
+		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+
+		$this->form_validation->set_rules('cancellation_reason', 'Reason for Cancellation', 'trim|required|max_length[2000]');
 		
+		if ($this->form_validation->run() == FALSE) {
+			$response = [
+				'token' => $token,
+				'status' => 'error',
+				'cancellation_reason_error' => form_error('cancellation_reason'),
+			];
+		} else {
+			$post_data = [
+				'status'              => 'Cancelled',
+				'cancellation_reason' => $this->input->post('cancellation_reason', TRUE),
+				'cancelled_on' 				=> date("Y-m-d"),
+				'cancelled_by' 				=> $this->session->userdata('fullname'),
+			];
+
+
+			$updated = $this->loa_model->db_update_loa_request($loa_id, $post_data);
+			if (!$updated) {
+				$response = [
+					'status' => 'save-error', 
+					'message' => 'LOA Request Cancel Failed'
+				];
+			}
+			$response = [
+				'status' => 'success', 
+				'message' => 'LOA Request Cancelled Successfully'
+			];
+		}
+
+		echo json_encode($response);
 	}
 
 	function fetch_disapproved_cancellations() {
@@ -1091,8 +1252,11 @@ class Loa_controller extends CI_Controller {
 
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
+			$short_hp_name = strlen($data['hp_name']) > 24 ? substr($data['hp_name'], 0, 24) . "..." : $data['hp_name'];
+
 			$row[] = $data['loa_no'];
 			$row[] = $fullname;
+			$row[] = $short_hp_name;
 			$row[] = $custom_reason;
 			$row[] = $data['disapproved_on'];
 			$row[] = $data['disapproved_by'];
@@ -1108,6 +1272,7 @@ class Loa_controller extends CI_Controller {
 		];
 		echo json_encode($response);
 	}
+
 
 	function view_tag_loa_completed() {
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
@@ -1191,6 +1356,30 @@ class Loa_controller extends CI_Controller {
 		$added_by = $this->session->userdata('fullname');
 		$added_on = date('Y-m-d');	
 		
+		$post_data = [];
+		for($x = 0; $x < count($ctype_id); $x++ ){
+			$post_data[] = [
+				'emp_id' => $emp_id,
+				'hp_id' => $hp_id,
+				'loa_id' => $loa_id,
+				'loa_no' => $loa_no,
+				'request_type' => $request_type,
+				'ctype_id' =>$ctype_id[$x],
+				'status' => $status[$x],
+				'date_time_performed' => $date_time_performed[$x],
+				'physician' => $physician[$x],
+				'added_by' => $added_by,
+				'added_on' => $added_on
+			];
+		}
+		
+		$inserted = $this->loa_model->insert_performed_loa_info($post_data);
+		
+		$performed = $this->loa_model->check_if_all_status_performed($loa_id);
+		if($performed){
+			$status = 'Completed';
+			$this->loa_model->set_loa_status_completed($loa_id, $status);
+		}
 
 			$post_data = [];
 			for($x = 0; $x < count($ctype_id); $x++ ){
@@ -1266,25 +1455,25 @@ class Loa_controller extends CI_Controller {
 
 		$inserted = $this->loa_model->insert_performed_loa_consult($post_data);
 			
-			$performed = $this->loa_model->check_if_all_status_performed($loa_id);
-			if($performed){
-				$status = 'Completed';
-				$this->loa_model->set_loa_status_completed($loa_id, $status);
-			}
+		$performed = $this->loa_model->check_if_all_status_performed($loa_id);
+		if($performed){
+			$status = 'Completed';
+			$this->loa_model->set_loa_status_completed($loa_id, $status);
+		}
 
-			if($inserted){
-				echo json_encode([
-					'token' => $token,
-					'status' => 'success',
-					'message' => 'Data Uploaded Successfully!'
-				]);
-			}else{
-				echo json_encode([
-					'token' => $token,
-					'status' => 'failed',
-					'message' => 'Data Failed to Upload!'
-				]);
-			}
+		if($inserted){
+			echo json_encode([
+				'token' => $token,
+				'status' => 'success',
+				'message' => 'Data Updated Successfully'
+			]);
+		}else{
+			echo json_encode([
+				'token' => $token,
+				'status' => 'failed',
+				'message' => 'Data Update Failed'
+			]);
+		}
 	}
 	
 	function submit_edited_loa_info() {
@@ -1297,32 +1486,33 @@ class Loa_controller extends CI_Controller {
 		$edited_by = $this->session->userdata('fullname');
 		$edited_on = date('Y-m-d');	
 
-			$post_data = [];
-			for($x = 0; $x < count($ctype_id); $x++ ){
-				$post_data[] = [
-					'ctype_id' =>$ctype_id[$x],
-					'status' => $status[$x],
-					'date_time_performed' => $date_time_performed[$x],
-					'physician' => $physician[$x],
-					'edited_by' => $edited_by,
-					'edited_on' => $edited_on
-				];
+		$post_data = [];
+		
+		for($x = 0; $x < count($ctype_id); $x++ ){
+			$post_data[] = [
+				'ctype_id' =>$ctype_id[$x],
+				'status' => $status[$x],
+				'date_time_performed' => $date_time_performed[$x],
+				'physician' => $physician[$x],
+				'edited_by' => $edited_by,
+				'edited_on' => $edited_on
+			];
 
-				$updated = $this->loa_model->insert_edited_performed_loa_info($post_data, $loa_id);
-			}
+			$updated = $this->loa_model->insert_edited_performed_loa_info($post_data, $loa_id);
+		}
 
-			echo json_encode([
-				'token' => $token,
-				'status' => 'success',
-				'message' => 'Data Uploaded Successfully!'
-			]);	
+		echo json_encode([
+			'token' => $token,
+			'status' => 'success',
+			'message' => 'Data Uploaded Successfully!'
+		]);	
 
-			$performed = $this->loa_model->check_if_all_status_performed($loa_id);
-			
-			if($performed){
-				$status = 'Completed';
-				$this->loa_model->set_loa_status_completed($loa_id, $status);
-			}
+		$performed = $this->loa_model->check_if_all_status_performed($loa_id);
+		
+		if($performed){
+			$status = 'Completed';
+			$this->loa_model->set_loa_status_completed($loa_id, $status);
+		}
 		
 	}
 
@@ -1364,14 +1554,14 @@ class Loa_controller extends CI_Controller {
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$loa_info = $this->loa_model->fetch_per_loa_info($loa_id);
 
-		 echo json_encode($loa_info);
+		echo json_encode($loa_info);
 	}
 
 	function fetch_performed_consult_loa() {
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$loa_info = $this->loa_model->fetch_per_consult_loa_info($loa_id);
 
-		 echo json_encode($loa_info);
+		echo json_encode($loa_info);
 	}
 
 	function add_performed_loa_fees() {
@@ -1406,5 +1596,29 @@ class Loa_controller extends CI_Controller {
 
 		echo json_encode($suggestions);
 	}
+
+	function remove_number_from_field($passed_id, $number_to_remove) {
+    $loa_id = $this->myhash->hasher($passed_id, 'decrypt');
+		$row = $this->loa_model->db_get_loa($loa_id);
+    $field_value = $row['med_services'];
+
+    // Split the field value into an array using ";" delimiter
+    $values_array = explode(";", $field_value);
+
+    // Check if the number exists in the array
+    if (in_array($number_to_remove, $values_array)) {
+        // Remove the number from the array
+        unset($values_array[array_search($number_to_remove, $values_array)]);
+
+        // Join the remaining values in the array back into a string using ";" delimiter
+        $new_field_value = implode(";", $values_array);
+
+        // Update the database field with the new value
+				$result = $this->loa_model->db_update_loa_med_services($loa_id, $new_field_value);
+        $this->db->set('my_field', $new_field_value)->update('my_table');
+    }
+
+	}
+
 	
 }

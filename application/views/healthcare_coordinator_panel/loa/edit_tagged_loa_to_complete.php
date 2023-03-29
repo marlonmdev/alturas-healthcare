@@ -70,7 +70,7 @@
 
                             <div class="col-lg-2 pb-2 pe-1">
                                 <label class="fw-bold">Status : </label>
-                                <select class="form-control fw-bold" name="status[]" id="status" required>
+                                <select class="form-select fw-bold" name="status[]" id="status" required>
                                     <?php if($loa['status'] == 'Performed') : ?>
                                             <option value="Performed" selected>Performed</option>
                                         <?php else : ?>
@@ -184,7 +184,7 @@
 
         $(".input-date").flatpickr({
             enableTime: true,
-            dateFormat: 'm-d-Y H:i',
+            dateFormat: 'm-d-Y h:i K',
         });
 
     });

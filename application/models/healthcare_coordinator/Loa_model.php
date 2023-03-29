@@ -7,7 +7,7 @@ class Loa_model extends CI_Model {
   var $table_1 = 'loa_requests';
   var $table_2 = 'healthcare_providers';
   var $column_order = ['loa_no', 'first_name', 'loa_request_type', 'hp_name', null, 'request_date']; //set column field database for datatable orderable
-  var $column_search = ['loa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'loa_request_type', 'med_services', 'hp_name', 'request_date', 'CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)']; //set column field database for datatable searchable 
+  var $column_search = ['loa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'loa_request_type', 'med_services', 'emp_id', 'health_card_no', 'hp_name', 'request_date', 'CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)']; //set column field database for datatable searchable 
   var $order = ['loa_id' => 'desc']; // default order 
 
   private function _get_datatables_query($status) {
@@ -181,6 +181,10 @@ class Loa_model extends CI_Model {
     return $this->db->get()->row_array();
   }
 
+  function db_get_loa($loa_id) {
+    $query = $this->db->get_where('loa_requests', ['loa_id' => $loa_id]);
+  } 
+
   function db_get_loa_details($loa_id) {
     $this->db->select('*')
              ->from('loa_requests as tbl_1')
@@ -229,13 +233,15 @@ class Loa_model extends CI_Model {
   // Start of cancellation_requests server-side processing datatables
   var $table1 = 'loa_cancellation_requests';
   var $table2 = 'members';
-  var $columnOrder = ['loa_no', 'first_name', 'requested_on', null, 'status', null]; //set column field database for datatable orderable
-  var $columnSearch = ['loa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'requested_on', 'status']; //set column field database for datatable searchable 
+  var $table3 = 'healthcare_providers';
+  var $columnOrder = ['loa_no', 'first_name', 'requested_on', 'hp_name', null, 'status', null]; //set column field database for datatable orderable
+  var $columnSearch = ['loa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'requested_on', 'status', 'tbl_1.hp_id', 'hp_name']; //set column field database for datatable searchable 
   var $order1 = ['loa_id' => 'desc']; // default order 
 
   private function _get_cancel_datatables_query($status) {
     $this->db->from($this->table1 . ' as tbl_1');
     $this->db->join($this->table2 . ' as tbl_2', 'tbl_1.requested_by = tbl_2.emp_id');
+    $this->db->join($this->table3 . ' as tbl_3', 'tbl_1.hp_id = tbl_3.hp_id');
     $this->db->where('tbl_1.status', $status);
     $i = 0;
 
@@ -388,6 +394,12 @@ class Loa_model extends CI_Model {
 
   function set_loa_status_completed($loa_id, $status) {
     $this->db->set('status', $status)
+            ->where('loa_id', $loa_id);
+    return $this->db->update('loa_requests');
+  }
+
+  function db_update_loa_med_services($loa_id, $new_field_value){
+    $this->db->set('med_services', $new_field_value)
             ->where('loa_id', $loa_id);
     return $this->db->update('loa_requests');
   }

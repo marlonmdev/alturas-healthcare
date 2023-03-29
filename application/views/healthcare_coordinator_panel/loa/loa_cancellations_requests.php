@@ -54,7 +54,7 @@
             </li>
         </ul>
 
-        <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
+        <!-- <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
             <div class="input-group">
                 <div class="input-group-prepend">
                     <span class="input-group-text bg-dark text-white">
@@ -63,12 +63,12 @@
                 </div>
                 <select class="form-select fw-bold" name="cancel-hospital-filter" id="cancel-hospital-filter">
                         <option value="">Select Hospital</option>
-                        <?php foreach($hcproviders as $option) : ?>
-                        <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
-                        <?php endforeach; ?>
+                        < foreach($hcproviders as $option) : ?>
+                        <option value="< echo $option['hp_id']; ?>">< echo $option['hp_name']; ?></option>
+                        < endforeach; ?>
                 </select>
             </div>
-        </div>
+        </div> -->
 
         <div class="card shadow">
           <div class="card-body">
@@ -79,6 +79,7 @@
                     <th class="fw-bold">LOA No.</th>
                     <th class="fw-bold">Requested by</th>
                     <th class="fw-bold">Requested on</th>
+                    <th class="fw-bold">Healthcare Provider</th>
                     <th class="fw-bold">Reason</th>
                     <th class="fw-bold">Status</th>
                     <th class="fw-bold">Actions</th>
@@ -131,7 +132,7 @@
 
       //Set column definition initialisation properties.
       columnDefs: [{
-        "targets": [3,5], // numbering column
+        "targets": [4, 6], // numbering column
         "orderable": false, //set not orderable
       }, ],
       responsive: true,

@@ -153,7 +153,9 @@ class Pages_controller extends CI_Controller {
 	}
 
 	function view_cancelled_loa_list() {
+		$this->load->model('healthcare_coordinator/loa_model');
 		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/loa/cancelled_loa_requests');
 		$this->load->view('templates/footer');

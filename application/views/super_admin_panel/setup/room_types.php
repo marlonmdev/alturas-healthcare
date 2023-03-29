@@ -63,117 +63,109 @@
   </div>
 <!-- End Wrapper -->
 <script>
-     const baseUrl = `<?= base_url() ?>`;
-    $(document).ready(function() {
-        
-      $('#roomTypesTable').DataTable({
-        processing: true, //Feature control the processing indicator.
-        serverSide: true, //Feature control DataTables' server-side processing mode.
-        order: [], //Initial no order.
+  const baseUrl = `<?= base_url() ?>`;
+  $(document).ready(function() {
+    $('#roomTypesTable').DataTable({
+      processing: true,
+      serverSide: true,
+      order: [],
 
-        // Load data for the table's content from an Ajax source
-        ajax: {
-            url: `${baseUrl}super-admin/setup/room-types/fetch`,
-            type: "POST",
-            data: function(data) {
-                data.token  = '<?php echo $this->security->get_csrf_hash(); ?>';
-            },
+      ajax: {
+        url: `${baseUrl}super-admin/setup/room-types/fetch`,
+        type: "POST",
+        data: function(data) {
+          data.token  = '<?php echo $this->security->get_csrf_hash(); ?>';
         },
+      },
 
-        //Set column definition initialisation properties.
-        columnDefs: [{
-            "targets": [], // 5th column / numbering column
-            "orderable": false, //set not orderable
-        }, ],
+      columnDefs: [{
+        "targets": [],
+        "orderable": false,
+      }, ],
         responsive: true,
         fixedHeader: true,
-      });
+    });
 
-      $('#registerRoomTypeForm').submit(function(event) {
-        event.preventDefault();
-        $.ajax({
-          type: "post",
-          url: $(this).attr('action'),
-          data: $(this).serialize(),
-          dataType: "json",
-          success: function(response) {
-            const {
-                token,
-                status,
-                message,
-                hospital_error,
-                room_group_error,
-                room_type_error,
-                room_num_error,
-                room_rate_error
-            } = response;
-            switch (status) {
-                case 'error':
-                if (hospital_error !== '') {
-                    $('#hp-filter-error').html(hospital_error);
-                    $('#hospital-filter').addClass('is-invalid');
-                } else {
-                    $('#hp-filter-error').html('');
-                    $('#hospital-filter').removeClass('is-invalid');
-                }
+    $('#registerRoomTypeForm').submit(function(event) {
+      event.preventDefault();
+      $.ajax({
+        type: "post",
+        url: $(this).attr('action'),
+        data: $(this).serialize(),
+        dataType: "json",
+        success: function(response) {
+          const {
+            token,
+            status,
+            message,
+            hospital_error,
+            room_group_error,
+            room_type_error,
+            room_num_error,
+            room_rate_error
+          } = response;
 
-                if (room_group_error !== '') {
-                    $('#room-group-error').html(room_group_error);
-                    $('#room-group').addClass('is-invalid');
-                } else {
-                    $('#room-group-error').html('');
-                    $('#room-group').removeClass('is-invalid');
-                }
+          switch (status) {
+            case 'error':
+              if (hospital_error !== '') {
+                $('#hp-filter-error').html(hospital_error);
+                $('#hospital-filter').addClass('is-invalid');
+              }else {
+                $('#hp-filter-error').html('');
+                $('#hospital-filter').removeClass('is-invalid');
+              }if (room_group_error !== '') {
+                $('#room-group-error').html(room_group_error);
+                $('#room-group').addClass('is-invalid');
+              }else {
+                $('#room-group-error').html('');
+                $('#room-group').removeClass('is-invalid');
+              }if (room_type_error !== '') {
+                $('#room-type-error').html(room_type_error);
+                $('#room-type').addClass('is-invalid');
+              }else {
+                $('#room-type-error').html('');
+                $('#room-type').removeClass('is-invalid');
+              }if (room_num_error !== '') {
+                $('#room-num-error').html(room_num_error);
+                $('#room-num').addClass('is-invalid');
+              } else {
+                $('#room-num-error').html('');
+                $('#room-num').removeClass('is-invalid');
+              }if (room_rate_error !== '') {
+                $('#room-rate-error').html(room_rate_error);
+                $('#room-rate').addClass('is-invalid');
+              }else {
+                $('#room-rate-error').html('');
+                $('#room-rate').removeClass('is-invalid');
+              }
+            break;
 
-                if (room_type_error !== '') {
-                    $('#room-type-error').html(room_type_error);
-                    $('#room-type').addClass('is-invalid');
-                } else {
-                    $('#room-type-error').html('');
-                    $('#room-type').removeClass('is-invalid');
-                }
+            case 'save-error':
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
+            break;
 
-                if (room_num_error !== '') {
-                    $('#room-num-error').html(room_num_error);
-                    $('#room-num').addClass('is-invalid');
-                } else {
-                    $('#room-num-error').html('');
-                    $('#room-num').removeClass('is-invalid');
-                }
-
-                if (room_rate_error !== '') {
-                    $('#room-rate-error').html(room_rate_error);
-                    $('#room-rate').addClass('is-invalid');
-                } else {
-                    $('#room-rate-error').html('');
-                    $('#room-rate').removeClass('is-invalid');
-                }
-                break;
-                case 'save-error':
-                  swal({
-                    title: 'Failed',
-                    text: message,
-                    timer: 3000,
-                    showConfirmButton: false,
-                    type: 'error'
-                  });
-                  break;
-                case 'success':
-                  swal({
-                    title: 'Success',
-                    text: message,
-                    timer: 2600,
-                    showConfirmButton: false,
-                    type: 'success'
-                  });
-                $('#registerRoomTypeForm')[0].reset();
-                $('#registerRoomTypeModal').modal('hide');
-                $("#roomTypesTable").DataTable().ajax.reload();
-                break;
-            }
+            case 'success':
+              swal({
+                title: 'Success',
+                text: message,
+                timer: 2600,
+                showConfirmButton: false,
+                type: 'success'
+              });
+              $('#registerRoomTypeForm')[0].reset();
+              $('#registerRoomTypeModal').modal('hide');
+              $("#roomTypesTable").DataTable().ajax.reload();
+            break;
           }
-        });
+        }
       });
+    });
 
       $('#editRoomTypeForm').submit(function(event) {
         event.preventDefault();

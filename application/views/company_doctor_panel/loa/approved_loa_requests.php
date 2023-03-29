@@ -61,16 +61,16 @@
               <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
             >
           </li>
-          </li>
+          <!-- </li>
             <li class="nav-item">
             <a
               class="nav-link"
-              href="<?php echo base_url(); ?>company-doctor/loa/requests-list/expired"
+              href="< echo base_url(); ?>company-doctor/loa/requests-list/expired"
               role="tab"
               ><span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">Expired</span>
             </a>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a
               class="nav-link"
@@ -109,7 +109,7 @@
                     <th class="fw-bold">LOA Type</th>
                     <th class="fw-bold">Healthcare Provider</th>
                     <th class="fw-bold">RX File</th>
-                    <th class="fw-bold">Request Date</th>
+                    <th class="fw-bold">Expiry Date</th>
                     <th class="fw-bold">Status</th>
                     <th class="fw-bold">Actions</th>
                   </tr>

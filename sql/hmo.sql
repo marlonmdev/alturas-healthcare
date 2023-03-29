@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 20, 2023 at 11:12 AM
+-- Generation Time: Mar 29, 2023 at 08:14 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -6396,13 +6396,6 @@ CREATE TABLE `billing_deductions` (
   `added_on` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `billing_deductions`
---
-
-INSERT INTO `billing_deductions` (`deduction_id`, `deduction_name`, `deduction_amount`, `billing_no`, `added_on`) VALUES
-(1, 'Philhealth', '2000', 'BLN-1679292672', '2023-03-20');
-
 -- --------------------------------------------------------
 
 --
@@ -6418,13 +6411,6 @@ CREATE TABLE `billing_medications` (
   `added_on` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `billing_medications`
---
-
-INSERT INTO `billing_medications` (`med_id`, `med_name`, `med_qty`, `med_fee`, `billing_no`, `added_on`) VALUES
-(1, 'sample medication', 1, '2000', 'BLN-1679292672', '2023-03-20');
-
 -- --------------------------------------------------------
 
 --
@@ -6439,13 +6425,6 @@ CREATE TABLE `billing_professional_fees` (
   `added_on` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `billing_professional_fees`
---
-
-INSERT INTO `billing_professional_fees` (`prof_id`, `doctor_name`, `pro_fee`, `billing_no`, `added_on`) VALUES
-(1, 'Doc Virus', '3000', 'BLN-1679292672', '2023-03-20');
-
 -- --------------------------------------------------------
 
 --
@@ -6458,7 +6437,7 @@ CREATE TABLE `billing_room_boards` (
   `room_no` varchar(10) NOT NULL,
   `room_price` varchar(10) NOT NULL,
   `billing_no` varchar(50) NOT NULL,
-  `added_on` date NOT NULL DEFAULT current_timestamp()
+  `added_on` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -6522,7 +6501,7 @@ CREATE TABLE `cost_types` (
   `item_description` varchar(200) NOT NULL,
   `op_price` varchar(10) NOT NULL,
   `ip_price` varchar(10) NOT NULL,
-  `date_added` date DEFAULT current_timestamp(),
+  `date_added` date DEFAULT NULL,
   `added_by` varchar(100) DEFAULT NULL,
   `date_updated` date DEFAULT NULL,
   `updated_by` varchar(100) DEFAULT NULL
@@ -7129,7 +7108,8 @@ INSERT INTO `cost_types` (`ctype_id`, `hp_id`, `price_list_group`, `item_id`, `i
 (593, 1, 'CARDIO & NEURO PRICE LIST', '0000301869', 'TREADMILL STRESS TESTING', '2794', '3048', '2023-03-10', NULL, '2023-03-10', NULL),
 (594, 1, 'CARDIO & NEURO PRICE LIST', '0000304010', 'VENOUS DUPLEX SCAN (LOWER EXTREMITIES)', '6325', '6900', '2023-03-10', NULL, '2023-03-10', NULL),
 (595, 1, 'CARDIO & NEURO PRICE LIST', '0000303583', 'ELECTROENCEPHALOGRAM (EEG)', '3410', '3720', '2023-03-10', NULL, '2023-03-10', NULL),
-(596, 1, 'CARDIO & NEURO PRICE LIST', '0000303584', 'ELECTROENCEPHALOGRAM (EEG) MONITORING 2 HOUR', '6050', '6600', '2023-03-10', NULL, '2023-03-10', NULL);
+(596, 1, 'CARDIO & NEURO PRICE LIST', '0000303584', 'ELECTROENCEPHALOGRAM (EEG) MONITORING 2 HOUR', '6050', '6600', '2023-03-10', NULL, '2023-03-10', NULL),
+(104566, 1, 'LABORATORY PRICE LIST', '2643', 'WTWE REGGD', '4235', '2352', '2023-03-24', 'IT SysDev', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -7211,17 +7191,20 @@ CREATE TABLE `loa_cancellation_requests` (
   `requested_on` date NOT NULL,
   `status` varchar(20) NOT NULL,
   `confirmed_by` varchar(100) NOT NULL,
-  `confirmed_on` date NOT NULL
+  `confirmed_on` date NOT NULL,
+  `disapproved_on` date NOT NULL,
+  `disapproved_by` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `loa_cancellation_requests`
 --
 
-INSERT INTO `loa_cancellation_requests` (`lcancel_id`, `loa_id`, `loa_no`, `cancellation_reason`, `hp_id`, `requested_by`, `requested_on`, `status`, `confirmed_by`, `confirmed_on`) VALUES
-(1, '23', 'LOA-00000023', 'Di mao maong i-cancel', 0, '56313-2022', '2023-03-17', 'Pending', '', '0000-00-00'),
-(2, '1', 'LOA-00000001', 'hello this is a test for cancellation of LOA :)', 0, '56313-2022', '2023-03-17', 'Pending', '', '0000-00-00'),
-(3, '5', 'LOA-00000005', 'cancellation testing', 4, '56313-2022', '2023-03-20', 'Pending', '', '0000-00-00');
+INSERT INTO `loa_cancellation_requests` (`lcancel_id`, `loa_id`, `loa_no`, `cancellation_reason`, `hp_id`, `requested_by`, `requested_on`, `status`, `confirmed_by`, `confirmed_on`, `disapproved_on`, `disapproved_by`) VALUES
+(1, '23', 'LOA-00000023', 'Di mao maong i-cancel', 1, '56313-2022', '2023-03-17', 'Pending', '', '0000-00-00', '0000-00-00', ''),
+(2, '1', 'LOA-00000001', 'hello this is a test for cancellation of LOA :)', 5, '56313-2022', '2023-03-17', 'Disapproved', '', '0000-00-00', '2023-03-22', 'Marlon H. Muring'),
+(3, '5', 'LOA-00000005', 'cancellation testing', 4, '56313-2022', '2023-03-20', 'Approved', 'Marlon H. Muring', '2023-03-22', '0000-00-00', ''),
+(4, '22', 'LOA-00000021', 'yeeeeahhh', 5, '56313-2022', '2023-03-22', 'Disapproved', '', '0000-00-00', '2023-03-22', 'Marlon H. Muring');
 
 -- --------------------------------------------------------
 
@@ -7255,40 +7238,45 @@ CREATE TABLE `loa_requests` (
   `approved_on` date NOT NULL,
   `disapproved_by` varchar(70) NOT NULL,
   `disapprove_reason` text NOT NULL,
-  `disapproved_on` date NOT NULL
+  `disapproved_on` date DEFAULT NULL,
+  `expiration_date` date DEFAULT NULL,
+  `cancelled_on` date DEFAULT NULL,
+  `cancelled_by` varchar(100) NOT NULL,
+  `cancellation_reason` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `loa_requests`
 --
 
-INSERT INTO `loa_requests` (`loa_id`, `loa_no`, `emp_id`, `first_name`, `middle_name`, `last_name`, `suffix`, `hcare_provider`, `loa_request_type`, `med_services`, `health_card_no`, `requesting_company`, `request_date`, `chief_complaint`, `requesting_physician`, `attending_physician`, `rx_file`, `status`, `requested_by`, `work_related`, `percentage`, `approved_by`, `approved_on`, `disapproved_by`, `disapprove_reason`, `disapproved_on`) VALUES
-(1, 'LOA-00000001', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '5', 'Consultation', '', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2022-11-23', 'Hello World 2022', '1', 'Dr. No, Dr. Borja', '', 'Approved', '56313-2022', 'No', '', '1', '2023-03-03', '', '', '0000-00-00'),
-(2, 'LOA-00000002', '23278-2022', 'George', 'Ayuban', 'Curay', 'Jr.', '5', 'Diagnostic Test', '2;3', 'ACN-01000038438', 'Alturas Supermarket Corporation', '2022-11-07', 'assafassa asfas asfasgvdagv', '2', 'Asasgaga', '9e32acacfc4f05f1fa2f57c77f9fdd60.jpg', 'Approved', '23278-2022', 'No', '', '2', '2022-11-07', '', '', '0000-00-00'),
-(4, 'LOA-00000004', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '5', 'Diagnostic Test', '1;2', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2022-11-09', 'Diagnostic test requirement for Job application', '1', 'Dr. John Doe', '9b95cc0e5959129b136b21b79c64067d.jpg', 'Approved', '56313-2022', 'Yes', '', '1', '2022-11-08', '', '', '0000-00-00'),
-(5, 'LOA-00000005', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '4', 'Consultation', '', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2022-11-23', 'Testing 123', '1', 'Joseph Santos', '', 'Approved', '56313-2022', 'No', '', '1', '2023-01-24', '', '', '0000-00-00'),
-(8, 'LOA-00000007', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '3', 'Consultation', '', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2022-11-22', 'ahfjkahf asfhaskjhdksja hkj afskkj akjs', '2', 'Helloworld', '', 'Disapproved', '56313-2022', 'No', '', '', '0000-00-00', '1', 'Sample Disapproved\r\n', '2022-11-22'),
-(22, 'LOA-00000021', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '5', 'Diagnostic Test', '3;5', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2022-11-24', 'helloooooooooooooooooooo woooooooooorld', '1', 'Asfafas', 'b24e1cd697484d169601d87f4299e96a.jpg', 'Approved', '56313-2022', 'No', '', '1', '2022-11-25', '', '', '0000-00-00'),
-(23, 'LOA-00000023', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '4', 'Diagnostic Test', '1;5', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2022-11-25', 'myloa ijihh huih uhuhh piiop ipojkjk', '1', 'Jsdjjsd J', '34468c8e6abaefcb2b866b3452e71440.jpg', 'Approved', '56313-2022', 'Yes', '', '1', '2022-12-01', '', '', '0000-00-00'),
-(24, 'LOA-00000024', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '11', 'Consultation', '', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2022-11-25', 'jdkjsakjfkdsj s ksjksjgkds dskjds', '1', 'Kjklkls Lklsdklkl', '', 'Disapproved', '56313-2022', 'No', '', '', '0000-00-00', '1', 'sdafafafaa', '2022-11-25'),
-(25, 'LOA-00000025', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '2', 'Diagnostic Test', '2;3', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2022-11-25', 'hellloooooooooooo diagnostic', '2', 'Safjkjs Kgjsgkskgs', 'd9edb0e324808df7fbe6caee8543e6b4.jpg', 'Approved', '56313-2022', 'No', '', '1', '2022-11-25', '', '', '0000-00-00'),
-(27, 'LOA-00000027', '23278-2022', 'George', 'Ayuban', 'Curay', 'Jr.', '5', 'Diagnostic Test', '6;8', 'ACN-01000038438', 'Alturas Supermarket Corporation', '2022-12-05', 'asfaagasfgasfga', '2', 'Jaksfjkas Faaskfj', 'c5748afbcfc356fa4fa102c1bf104576.png', 'Pending', '23278-2022', '', '', '', '0000-00-00', '', '', '0000-00-00'),
-(28, 'LOA-00000028', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '5', 'Diagnostic Test', '6;7;41', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2023-01-24', 'Hey this is a sample request in 2023', '2', 'Asfha  Ffas, Jsafkjakf', '31cddcca2b2e011f38d9a26199e6b132.png', 'Pending', '56313-2022', 'Yes', '', '', '0000-00-00', '', '', '0000-00-00'),
-(29, 'LOA-00000029', '38343-2022', 'Gedym', 'Mae', 'Sab', '', '5', 'Diagnostic Test', '3;6;7;10;11', 'ACN-01000044632', 'Alturas Supermarket Corporation', '2023-02-01', 'this is a test loa', '2', 'Doctor No', '500e8437904e5c106d7147b6fb7ea58e.jpg', 'Approved', '38343-2022', 'Yes', '', '1', '2023-02-01', '', '', '0000-00-00'),
-(30, 'LOA-00000030', '38343-2022', 'Gedym', 'Mae', 'Sab', '', '5', 'Consultation', '', 'ACN-01000044632', 'Alturas Supermarket Corporation', '2023-02-02', 'Kidney UTI', '2', '', '', 'Pending', '38343-2022', 'No', '', '', '0000-00-00', '', '', '0000-00-00'),
-(31, 'LOA-00000031', '38343-2022', 'Gedym', 'Mae', 'Sab', '', '5', 'Consultation', '', 'ACN-01000044632', 'Alturas Supermarket Corporation', '2023-02-02', 'Kidney UTI', '2', 'Ahjfasjja Ksakfj', '', 'Approved', '38343-2022', 'No', '', '1', '2023-02-02', '', '', '0000-00-00'),
-(32, 'LOA-00000032', '23764-2022', 'Ruel', 'Budoy', 'Tumale', 'Jr.', '5', 'Diagnostic Test', '2;3;10;11;14', 'ACN-01000043436', 'Alturas Supermarket Corporation', '2023-02-02', 'Budix\'s Diagnostic Test in 2023', '1', '', 'ae46b6772030f11f873483ff848efa98.png', 'Pending', '23764-2022', '', '', '', '0000-00-00', '', '', '0000-00-00'),
-(37, 'LOA-00000034', '23764-2022', 'Ruel', 'Budoy', 'Tumale', 'Jr.', '5', 'Consultation', '', 'ACN-01000043436', 'Alturas Supermarket Corporation', '2023-02-02', 'asfgasfa ashfas faoh f aoif a', '2', 'Jasj Fajf, Jkasjf Asd', '', 'Disapproved', '23764-2022', 'No', '', '', '0000-00-00', '1', 'dafas asfasasas asf asasvasv avqwahs ', '2023-02-27'),
-(38, 'LOA-00000038', '23764-2022', 'Ruel', 'Budoy', 'Tumale', 'Jr.', '5', 'Consultation', '', 'ACN-01000043436', 'Alturas Supermarket Corporation', '2023-02-02', 'asfgasf asfasfasfas', '1', '', '', 'Approved', '23764-2022', 'No', '', '1', '2023-03-03', '', '', '0000-00-00'),
-(39, 'LOA-00000039', '23764-2022', 'Ruel', 'Budoy', 'Tumale', 'Jr.', '1', 'Diagnostic Test', '2;3;4;5', 'ACN-01000043436', 'Alturas Supermarket Corporation', '2023-02-02', 'sample diagnostic test of Budix', '2', '', 'b62fec98d0e87ad552cf7ad715b4708e.jpg', 'Pending', '23764-2022', '', '', '', '0000-00-00', '', '', '0000-00-00'),
-(40, 'LOA-00000040', '23456-2023', 'Jennifer', 'Simbajon', 'Cajegas', '', '5', 'Consultation', '', 'ACN-01000044731', 'Alturas Supermarket Corporation', '2023-02-23', 'sample', '1', '', '', 'Approved', '23456-2023', 'No', '', '2', '2023-02-23', '', '', '0000-00-00'),
-(41, 'LOA-00000041', '23456-2023', 'Jennifer', 'Simbajon', 'Cajegas', '', '5', 'Diagnostic Test', '3', 'ACN-01000044731', 'Alturas Supermarket Corporation', '2023-02-23', 'sample', '1', '', '2f06b307bbf494b5741285b5d5124b02.png', 'Pending', '23456-2023', 'Yes', '', '', '0000-00-00', '', '', '0000-00-00'),
-(42, 'LOA-00000042', '23764-2022', 'Ruel', 'Budoy', 'Tumale', 'Jr.', '1', 'Consultation', '', 'ACN-01000043436', 'Alturas Supermarket Corporation', '2023-02-24', 'asfjaf asjfasjfas aisfasfas', '1', 'Ajsfjaksjf Ajfkas Jfkasj, Sakjfkaj Fakk', '', 'Pending', '23764-2022', '', '', '', '0000-00-00', '', '', '0000-00-00'),
-(43, 'LOA-00000043', '00718-2018', 'Lea', 'Socorin', 'Vistal', '', '5', 'Diagnostic Test', '2;4;5', 'ACN-1000029825', 'ALTURAS GROUP OF COMPANIES', '2023-03-01', 'asiopid asfasfaoi foafa afifai aioasiofapfas', '1', 'Jsjajkf Jafa, Jkasjfkajkj  Ksajkfja', '19cabb151f3eed513a1abc115ef0a794.png', 'Approved', '00718-2018', 'No', '', '2', '2023-03-01', '', '', '0000-00-00'),
-(44, 'LOA-00000044', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '1', 'Diagnostic Test', '10;24;96;122', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2023-03-13', 'afas sdfsdgsd ds goisdisd', '1', 'Jsd Sdsdjd, Hsajf Ahg Dslk', 'acd27027b1d440532737f923875153eb.png', 'Pending', '56313-2022', '', '', '', '0000-00-00', '', '', '0000-00-00'),
-(45, 'LOA-00000045', '38343-2022', 'Gedym', 'Mae', 'Sab', '', '1', 'Consultation', '', 'ACN-01000044632', 'Alturas Supermarket Corporation', '2023-03-16', 'Pregnancy Consultation', '2', '', '', 'Approved', '38343-2022', 'No', '', '1', '2023-03-16', '', '', '0000-00-00'),
-(46, 'LOA-00000046', '38343-2022', 'Gedym', 'Mae', 'Sab', '', '1', 'Diagnostic Test', '8;74;113;147', 'ACN-01000044632', 'Alturas Supermarket Corporation', '2023-03-16', 'dsgsg sdgosd gsdsdogis sdog osd ogsdsdg', '1', '', '915830113b365977f217152798076c1b.png', 'Billed', '38343-2022', 'No', '', '1', '2023-03-16', '', '', '0000-00-00'),
-(47, 'LOA-20230000047', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '1', 'Consultation', '', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2023-03-17', 'uioua fuaasfa', '1', '', '', 'Pending', '56313-2022', '', '', '', '0000-00-00', '', '', '0000-00-00');
+INSERT INTO `loa_requests` (`loa_id`, `loa_no`, `emp_id`, `first_name`, `middle_name`, `last_name`, `suffix`, `hcare_provider`, `loa_request_type`, `med_services`, `health_card_no`, `requesting_company`, `request_date`, `chief_complaint`, `requesting_physician`, `attending_physician`, `rx_file`, `status`, `requested_by`, `work_related`, `percentage`, `approved_by`, `approved_on`, `disapproved_by`, `disapprove_reason`, `disapproved_on`, `expiration_date`, `cancelled_on`, `cancelled_by`, `cancellation_reason`) VALUES
+(1, 'LOA-00000001', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '5', 'Consultation', '', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2022-11-23', 'Hello World 2022', '1', 'Dr. No, Dr. Borja', '', 'Approved', '56313-2022', 'No', '', '1', '2023-03-03', '', '', '0000-00-00', NULL, NULL, '', ''),
+(2, 'LOA-00000002', '23278-2022', 'George', 'Ayuban', 'Curay', 'Jr.', '5', 'Diagnostic Test', '2;3', 'ACN-01000038438', 'Alturas Supermarket Corporation', '2022-11-07', 'assafassa asfas asfasgvdagv', '2', 'Asasgaga', '9e32acacfc4f05f1fa2f57c77f9fdd60.jpg', 'Approved', '23278-2022', 'No', '', '2', '2022-11-07', '', '', '0000-00-00', NULL, NULL, '', ''),
+(4, 'LOA-00000004', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '5', 'Diagnostic Test', '1;2', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2022-11-09', 'Diagnostic test requirement for Job application', '1', 'Dr. John Doe', '9b95cc0e5959129b136b21b79c64067d.jpg', 'Approved', '56313-2022', 'Yes', '', '1', '2022-11-08', '', '', '0000-00-00', NULL, NULL, '', ''),
+(5, 'LOA-00000005', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '4', 'Consultation', '', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2022-11-23', 'Testing 123', '1', 'Joseph Santos', '', 'Cancelled', '56313-2022', 'No', '', '1', '2023-01-24', '', '', '0000-00-00', NULL, '2023-03-28', 'Marlon H. Muring', 'sample cancellation'),
+(8, 'LOA-00000007', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '3', 'Consultation', '', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2022-11-22', 'ahfjkahf asfhaskjhdksja hkj afskkj akjs', '2', 'Helloworld', '', 'Disapproved', '56313-2022', 'No', '', '', '0000-00-00', '1', 'Sample Disapproved\r\n', '2022-11-22', NULL, NULL, '', ''),
+(22, 'LOA-00000021', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '5', 'Diagnostic Test', '3;5', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2022-11-24', 'helloooooooooooooooooooo woooooooooorld', '1', 'Asfafas', 'b24e1cd697484d169601d87f4299e96a.jpg', 'Approved', '56313-2022', 'No', '', '1', '2022-11-25', '', '', '0000-00-00', NULL, NULL, '', ''),
+(23, 'LOA-00000023', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '4', 'Diagnostic Test', '1;5', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2022-11-25', 'myloa ijihh huih uhuhh piiop ipojkjk', '1', 'Jsdjjsd J', '34468c8e6abaefcb2b866b3452e71440.jpg', 'Approved', '56313-2022', 'Yes', '', '1', '2022-12-01', '', '', '0000-00-00', NULL, NULL, '', ''),
+(24, 'LOA-00000024', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '11', 'Consultation', '', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2022-11-25', 'jdkjsakjfkdsj s ksjksjgkds dskjds', '1', 'Kjklkls Lklsdklkl', '', 'Disapproved', '56313-2022', 'No', '', '', '0000-00-00', '1', 'sdafafafaa', '2022-11-25', NULL, NULL, '', ''),
+(25, 'LOA-00000025', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '2', 'Diagnostic Test', '2;3', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2022-11-25', 'hellloooooooooooo diagnostic', '2', 'Safjkjs Kgjsgkskgs', 'd9edb0e324808df7fbe6caee8543e6b4.jpg', 'Approved', '56313-2022', 'No', '', '1', '2022-11-25', '', '', '0000-00-00', NULL, NULL, '', ''),
+(27, 'LOA-00000027', '23278-2022', 'George', 'Ayuban', 'Curay', 'Jr.', '5', 'Diagnostic Test', '6;8', 'ACN-01000038438', 'Alturas Supermarket Corporation', '2022-12-05', 'asfaagasfgasfga', '2', 'Jaksfjkas Faaskfj', 'c5748afbcfc356fa4fa102c1bf104576.png', 'Pending', '23278-2022', '', '', '', '0000-00-00', '', '', '0000-00-00', NULL, NULL, '', ''),
+(28, 'LOA-00000028', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '5', 'Diagnostic Test', '6;7;41', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2023-01-24', 'Hey this is a sample request in 2023', '2', 'Asfha  Ffas, Jsafkjakf', '31cddcca2b2e011f38d9a26199e6b132.png', 'Approved', '56313-2022', 'Yes', '', '1', '2023-03-28', '', '', '0000-00-00', '2023-04-04', NULL, '', ''),
+(29, 'LOA-00000029', '38343-2022', 'Gedym', 'Mae', 'Sab', '', '1', 'Diagnostic Test', '3;6;7;10;11', 'ACN-01000044632', 'Alturas Supermarket Corporation', '2023-02-01', 'this is a test loa', '2', 'Doctor No', '500e8437904e5c106d7147b6fb7ea58e.jpg', 'Approved', '38343-2022', 'Yes', '', '1', '2023-03-26', '', '', '0000-00-00', NULL, NULL, '', ''),
+(31, 'LOA-00000031', '38343-2022', 'Gedym', 'Mae', 'Sab', '', '5', 'Consultation', '', 'ACN-01000044632', 'Alturas Supermarket Corporation', '2023-02-02', 'Kidney UTI', '2', 'Ahjfasjja Ksakfj', '', 'Approved', '38343-2022', 'No', '', '1', '2023-02-02', '', '', '0000-00-00', NULL, NULL, '', ''),
+(32, 'LOA-00000032', '23764-2022', 'Ruel', 'Budoy', 'Tumale', 'Jr.', '5', 'Diagnostic Test', '2;3;10;11;14', 'ACN-01000043436', 'Alturas Supermarket Corporation', '2023-02-02', 'Budix\'s Diagnostic Test in 2023', '1', '', 'ae46b6772030f11f873483ff848efa98.png', 'Pending', '23764-2022', 'No', '', '', '0000-00-00', '', '', '0000-00-00', NULL, NULL, '', ''),
+(37, 'LOA-00000034', '23764-2022', 'Ruel', 'Budoy', 'Tumale', 'Jr.', '5', 'Consultation', '', 'ACN-01000043436', 'Alturas Supermarket Corporation', '2023-02-02', 'asfgasfa ashfas faoh f aoif a', '2', 'Jasj Fajf, Jkasjf Asd', '', 'Disapproved', '23764-2022', 'No', '', '', '0000-00-00', '1', 'dafas asfasasas asf asasvasv avqwahs ', '2023-02-27', NULL, NULL, '', ''),
+(38, 'LOA-00000038', '23764-2022', 'Ruel', 'Budoy', 'Tumale', 'Jr.', '5', 'Consultation', '', 'ACN-01000043436', 'Alturas Supermarket Corporation', '2023-02-02', 'asfgasf asfasfasfas', '1', '', '', 'Approved', '23764-2022', 'No', '', '1', '2023-03-03', '', '', '0000-00-00', NULL, NULL, '', ''),
+(39, 'LOA-00000039', '23764-2022', 'Ruel', 'Budoy', 'Tumale', 'Jr.', '1', 'Diagnostic Test', '2;3;4;5', 'ACN-01000043436', 'Alturas Supermarket Corporation', '2023-02-02', 'sample diagnostic test of Budix', '2', '', 'b62fec98d0e87ad552cf7ad715b4708e.jpg', 'Pending', '23764-2022', '', '', '', '0000-00-00', '', '', '0000-00-00', NULL, NULL, '', ''),
+(40, 'LOA-00000040', '23456-2023', 'Jennifer', 'Simbajon', 'Cajegas', '', '5', 'Consultation', '', 'ACN-01000044731', 'Alturas Supermarket Corporation', '2023-02-23', 'sample', '1', '', '', 'Approved', '23456-2023', 'No', '', '2', '2023-02-23', '', '', '0000-00-00', NULL, NULL, '', ''),
+(41, 'LOA-00000041', '23456-2023', 'Jennifer', 'Simbajon', 'Cajegas', '', '1', 'Diagnostic Test', '3', 'ACN-01000044731', 'Alturas Supermarket Corporation', '2023-02-23', 'sample', '1', '', '2f06b307bbf494b5741285b5d5124b02.png', 'Completed', '23456-2023', 'Yes', '', '1', '2023-03-22', '', '', '0000-00-00', '2023-03-29', NULL, '', ''),
+(42, 'LOA-00000042', '23764-2022', 'Ruel', 'Budoy', 'Tumale', 'Jr.', '1', 'Consultation', '', 'ACN-01000043436', 'Alturas Supermarket Corporation', '2023-02-24', 'asfjaf asjfasjfas aisfasfas', '1', 'Ajsfjaksjf Ajfkas Jfkasj, Sakjfkaj Fakk', '', 'Approved', '23764-2022', 'Yes', '', '1', '2023-03-29', '', '', '0000-00-00', '2023-04-12', NULL, '', ''),
+(43, 'LOA-00000043', '00718-2018', 'Lea', 'Socorin', 'Vistal', '', '5', 'Diagnostic Test', '2;4;5', 'ACN-1000029825', 'ALTURAS GROUP OF COMPANIES', '2023-03-01', 'asiopid asfasfaoi foafa afifai aioasiofapfas', '1', 'Jsjajkf Jafa, Jkasjfkajkj  Ksajkfja', '19cabb151f3eed513a1abc115ef0a794.png', 'Approved', '00718-2018', 'No', '', '2', '2023-03-01', '', '', '0000-00-00', NULL, NULL, '', ''),
+(44, 'LOA-00000044', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '1', 'Diagnostic Test', '4;10;24;96;122', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2023-03-13', 'afas sdfsdgsd ds goisdisd', '1', 'Jsd Sdsdjd, Hsajf Ahg Dslk', 'acd27027b1d440532737f923875153eb.png', 'Pending', '56313-2022', '', '', '', '0000-00-00', '', '', '0000-00-00', NULL, NULL, '', ''),
+(45, 'LOA-00000045', '38343-2022', 'Gedym', 'Mae', 'Sab', '', '1', 'Consultation', '', 'ACN-01000044632', 'Alturas Supermarket Corporation', '2023-03-16', 'Pregnancy Consultation', '2', '', '', 'Approved', '38343-2022', 'No', '', '1', '2023-03-16', '', '', '0000-00-00', NULL, NULL, '', ''),
+(46, 'LOA-00000046', '38343-2022', 'Gedym', 'Mae', 'Sab', '', '1', 'Diagnostic Test', '8;74;113;147', 'ACN-01000044632', 'Alturas Supermarket Corporation', '2023-03-16', 'dsgsg sdgosd gsdsdogis sdog osd ogsdsdg', '1', '', '915830113b365977f217152798076c1b.png', 'Approved', '38343-2022', 'No', '', '1', '2023-03-16', '', '', '0000-00-00', NULL, NULL, '', ''),
+(47, 'LOA-20230000047', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '1', 'Consultation', '', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2023-03-17', 'uioua fuaasfa', '1', '', '', 'Approved', '56313-2022', 'Yes', '', '2', '2023-03-29', '', '', '0000-00-00', '2023-04-05', NULL, '', ''),
+(48, 'LOA-20230000048', '56313-2022', 'Marlon', 'Hinampas', 'Muring', '', '1', 'Diagnostic Test', '6;9;75', 'ACN-01000044281', 'Alturas Supermarket Corporation', '2023-03-23', 'hello asfasif afai faf ai fiaia fa fa', '2', 'Asuf Afaj Ifjapo', 'f3ed34d2267d4114b9e6ccb1f944706e.png', 'Cancelled', '56313-2022', 'Yes', '', '1', '2023-03-28', '', '', NULL, '2023-04-04', '2023-03-29', 'Marlon H. Muring', 'asfagfaf asfafga'),
+(49, 'LOA-20230000049', '38343-2022', 'Gedym', 'Mae', 'Sab', '', '1', 'Diagnostic Test', '2;6', 'ACN-01000044632', 'Alturas Supermarket Corporation', '2023-03-28', 'this is a test', '2', '', '47960c7588c0c765b3519182fad33554.png', 'Completed', '38343-2022', 'No', '', '1', '2023-03-28', '', '', NULL, '2023-04-04', NULL, '', '');
 
 -- --------------------------------------------------------
 
@@ -7314,7 +7302,7 @@ INSERT INTO `max_benefit_limits` (`mbl_id`, `emp_id`, `max_benefit_limit`, `used
 (10, '32544-2022', '25000', 0, '25000'),
 (11, '00281-2021', '25000', 0, '25000'),
 (12, '23764-2022', '22500', 0, '22500'),
-(13, '38343-2022', '30000', 4760, '25240'),
+(13, '38343-2022', '30000', 0, '30000'),
 (14, '23456-2023', '30000', 0, '30000'),
 (15, '15797-2018', '30000', 0, '30000'),
 (16, '00718-2018', '50000', 0, '50000');
@@ -7407,35 +7395,39 @@ CREATE TABLE `noa_requests` (
   `approved_on` date NOT NULL,
   `disapproved_by` varchar(70) NOT NULL,
   `disapprove_reason` text NOT NULL,
-  `disapproved_on` date NOT NULL
+  `disapproved_on` date NOT NULL,
+  `expiration_date` date DEFAULT NULL,
+  `cancelled_on` date DEFAULT NULL,
+  `cancelled_by` varchar(100) NOT NULL,
+  `cancellation_reason` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `noa_requests`
 --
 
-INSERT INTO `noa_requests` (`noa_id`, `noa_no`, `emp_id`, `health_card_no`, `requesting_company`, `first_name`, `middle_name`, `last_name`, `suffix`, `date_of_birth`, `admission_date`, `hospital_id`, `chief_complaint`, `request_date`, `work_related`, `percentage`, `status`, `requested_by`, `approved_by`, `approved_on`, `disapproved_by`, `disapprove_reason`, `disapproved_on`) VALUES
-(1, 'NOA-00000001', '56313-2022', 'ACN-01000044281', 'Alturas Supermarket Corporation', 'Marlon', 'Hinampas', 'Muring', '', '1997-10-22', '2022-10-20', '3', 'asfafafa', '2022-10-20', 'No', '', 'Disapproved', '56313-2022', '', '0000-00-00', '1', 'adfasfas', '2022-10-25'),
-(2, 'NOA-00000002', '23278-2022', 'ACN-01000038438', 'Alturas Supermarket Corporation', 'George', 'Ayuban', 'Curay', 'Jr.', '1999-04-17', '2022-10-20', '1', 'fasfasasasfa', '2022-10-20', 'Yes', '', 'Approved', '23278-2022', '1', '2022-10-20', '', '', '0000-00-00'),
-(4, 'NOA-00000004', '23278-2022', 'ACN-01000038438', 'Alturas Supermarket Corporation', 'George', 'Ayuban', 'Curay', 'Jr.', '1999-04-17', '2022-10-25', '5', 'asfaa', '2022-10-25', 'Yes', '', 'Approved', '23278-2022', '2', '2022-12-02', '', '', '0000-00-00'),
-(6, 'NOA-00000006', '56313-2022', 'ACN-01000044281', 'Alturas Supermarket Corporation', 'Marlon', 'Hinampas', 'Muring', '', '1997-10-22', '2022-10-27', '5', 'year 2023 :D\r\n', '2022-10-26', '', '', 'Pending', '56313-2022', '', '2022-10-26', '', '', '0000-00-00'),
-(11, 'NOA-00000007', '32544-2022', 'ACN-01000043827', 'Alturas Supermarket Corporation', 'Lorlie', 'Gwapo', 'Ochavillo', '', '1998-06-10', '2022-10-26', '5', 'asfasfasfasfsa', '2022-10-26', 'No', '', 'Disapproved', '56313-2022', '', '0000-00-00', '1', 'way lingaw', '2022-11-25'),
-(13, 'NOA-00000013', '32544-2022', 'ACN-01000043827', 'Alturas Supermarket Corporation', 'Lorlie', 'Gwapo', 'Ochavillo', '', '1998-06-10', '2022-10-28', '2', 'hello checkup from 2023 :D !!', '2022-10-28', 'Yes', '', 'Pending', '', '', '0000-00-00', '', '', '0000-00-00'),
-(15, 'NOA-00000014', '56313-2022', 'ACN-01000044281', 'Alturas Supermarket Corporation', 'Marlon', 'Hinampas', 'Muring', '', '1997-10-22', '2022-11-24', '2', 'wow yeeeah 3x', '2022-11-23', 'Yes', '', 'Completed', '56313-2022', '2', '2022-12-01', '', '', '0000-00-00'),
-(16, 'NOA-00000016', '56313-2022', 'ACN-01000044281', 'Alturas Supermarket Corporation', 'Marlon', 'Hinampas', 'Muring', '', '1997-10-22', '2022-11-24', '6', 'asfa faifafaiafsasaasfas', '2022-11-25', 'No', '', 'Disapproved', '56313-2022', '', '2022-11-25', '1', 'ilad ra', '2022-11-29'),
-(17, 'NOA-00000017', '23278-2022', 'ACN-01000038438', 'Alturas Supermarket Corporation', 'George', 'Ayuban', 'Curay', 'Jr.', '1998-04-17', '2022-11-28', '5', 'hello sdjfsdj sdj kgsdjsdk sdgjksdgsd', '2022-11-28', 'No', '', 'Approved', '56313-2022', '1', '2022-11-28', '', '', '0000-00-00'),
-(18, 'NOA-00000018', '23278-2022', 'ACN-01000038438', 'Alturas Supermarket Corporation', 'George', 'Ayuban', 'Curay', 'Jr.', '1998-04-17', '2022-11-11', '4', 'asdasfasfasas', '2022-11-29', 'No', '', 'Approved', '56313-2022', '1', '2022-11-29', '', '', '0000-00-00'),
-(19, 'NOA-00000019', '56313-2022', 'ACN-01000044281', 'Alturas Supermarket Corporation', 'Marlon', 'Hinampas', 'Muring', '', '1997-10-22', '2023-01-05', '5', 'hdioasio dashoif aohfoahiassafaafs asfdsads', '2023-01-05', 'Yes', '', 'Approved', '56313-2022', '2', '2023-01-05', '', '', '0000-00-00'),
-(20, 'NOA-00000020', '23764-2022', 'ACN-01000043436', 'Alturas Supermarket Corporation', 'Ruel', 'Budoy', 'Tumale', 'Jr.', '1997-08-23', '2023-01-29', '5', 'sakit ag ulo ug tiyan', '2023-01-30', 'Yes', '', 'Pending', '23764-2022', '', '0000-00-00', '', '', '0000-00-00'),
-(21, 'NOA-00000021', '23764-2022', 'ACN-01000043436', 'Alturas Supermarket Corporation', 'Ruel', 'Budoy', 'Tumale', 'Jr.', '1997-08-23', '2023-01-30', '5', 'Sakit gihapon', '2023-01-30', 'No', '', 'Disapproved', '23764-2022', '', '0000-00-00', '2', 'diagnosis is unclear', '2023-01-30'),
-(22, 'NOA-00000022', '38343-2022', 'ACN-01000044632', 'Alturas Supermarket Corporation', 'Gedym', 'Mae', 'Sab', '', '1999-08-10', '2023-02-16', '5', 'Urinary Tract Infection', '2023-02-16', 'No', '', 'Approved', '38343-2022', '2', '2023-02-16', '', '', '0000-00-00'),
-(23, 'NOA-00000023', '38343-2022', 'ACN-01000044632', 'Alturas Supermarket Corporation', 'Gedym', 'Mae', 'Sab', '', '1999-08-10', '2023-02-14', '5', 'Pregnancy Test 123', '2023-02-16', 'No', '', 'Approved', '38343-2022', '2', '2023-02-16', '', '', '0000-00-00'),
-(24, 'NOA-00000024', '23456-2023', '01000044731', 'Alturas Supermarket Corporation', 'Jennifer', 'Simbajon', 'Cajegas', '', '1999-08-07', '2022-12-12', '5', 'sample', '2023-02-23', 'Yes', '', 'Completed', '23456-2023', '2', '2023-02-23', '', '', '0000-00-00'),
-(25, 'NOA-00000025', '23764-2022', 'ACN-01000043436', 'Alturas Supermarket Corporation', 'Ruel', 'Budoy', 'Tumale', 'Jr.', '1997-08-23', '2023-02-23', '1', 'jhas faf ka fak fakls fasfas kashfkashflkasj asfasfa', '2023-02-24', 'No', '', 'Approved', '23764-2022', '2', '2023-02-24', '', '', '0000-00-00'),
-(26, 'NOA-00000026', '38343-2022', 'ACN-01000044632', 'Alturas Supermarket Corporation', 'Gedym', 'Mae', 'Sab', '', '1999-08-10', '2023-03-16', '1', 'Child Birth', '2023-03-16', 'No', '', 'Approved', '38343-2022', '1', '2023-03-16', '', '', '0000-00-00'),
-(29, 'NOA-20230000027', '56313-2022', 'ACN-01000044281', 'Alturas Supermarket Corporation', 'Marlon', 'Hinampas', 'Muring', '', '1997-10-22', '2023-03-17', '1', 'This is a test request in 2023 by Marl :)', '2023-03-17', '', '', 'Pending', '56313-2022', '', '0000-00-00', '', '', '0000-00-00'),
-(30, 'NOA-20230000030', '23278-2022', 'ACN-01000038438', 'Alturas Supermarket Corporation', 'George', 'Ayuban', 'Curay', 'Jr.', '1998-04-17', '2023-03-17', '1', 'Hello NOA by George in 2023', '2023-03-17', '', '', 'Pending', '', '', '0000-00-00', '', '', '0000-00-00'),
-(31, 'NOA-20230000031', '32544-2022', 'ACN-01000043827', 'Alturas Supermarket Corporation', 'Lorlie', 'Gwapo', 'Ochavillo', '', '1998-06-10', '2023-03-18', '1', 'Sakit tiil tungod sa Basketball', '2023-03-17', '', '', 'Pending', '', '', '0000-00-00', '', '', '0000-00-00');
+INSERT INTO `noa_requests` (`noa_id`, `noa_no`, `emp_id`, `health_card_no`, `requesting_company`, `first_name`, `middle_name`, `last_name`, `suffix`, `date_of_birth`, `admission_date`, `hospital_id`, `chief_complaint`, `request_date`, `work_related`, `percentage`, `status`, `requested_by`, `approved_by`, `approved_on`, `disapproved_by`, `disapprove_reason`, `disapproved_on`, `expiration_date`, `cancelled_on`, `cancelled_by`, `cancellation_reason`) VALUES
+(1, 'NOA-00000001', '56313-2022', 'ACN-01000044281', 'Alturas Supermarket Corporation', 'Marlon', 'Hinampas', 'Muring', '', '1997-10-22', '2022-10-20', '3', 'asfafafa', '2022-10-20', 'No', '', 'Disapproved', '56313-2022', '', '0000-00-00', '1', 'adfasfas', '2022-10-25', NULL, NULL, '', ''),
+(2, 'NOA-00000002', '23278-2022', 'ACN-01000038438', 'Alturas Supermarket Corporation', 'George', 'Ayuban', 'Curay', 'Jr.', '1999-04-17', '2022-10-20', '1', 'fasfasasasfa', '2022-10-20', 'Yes', '', 'Approved', '23278-2022', '1', '2022-10-20', '', '', '0000-00-00', NULL, NULL, '', ''),
+(4, 'NOA-00000004', '23278-2022', 'ACN-01000038438', 'Alturas Supermarket Corporation', 'George', 'Ayuban', 'Curay', 'Jr.', '1999-04-17', '2022-10-25', '5', 'asfaa', '2022-10-25', 'Yes', '', 'Approved', '23278-2022', '2', '2022-12-02', '', '', '0000-00-00', NULL, NULL, '', ''),
+(6, 'NOA-00000006', '56313-2022', 'ACN-01000044281', 'Alturas Supermarket Corporation', 'Marlon', 'Hinampas', 'Muring', '', '1997-10-22', '2022-10-27', '5', 'year 2023 :D\r\n', '2022-10-26', '', '', 'Pending', '56313-2022', '', '2022-10-26', '', '', '0000-00-00', NULL, NULL, '', ''),
+(11, 'NOA-00000007', '32544-2022', 'ACN-01000043827', 'Alturas Supermarket Corporation', 'Lorlie', 'Gwapo', 'Ochavillo', '', '1998-06-10', '2022-10-26', '5', 'asfasfasfasfsa', '2022-10-26', 'No', '', 'Disapproved', '56313-2022', '', '0000-00-00', '1', 'way lingaw', '2022-11-25', NULL, NULL, '', ''),
+(13, 'NOA-00000013', '32544-2022', 'ACN-01000043827', 'Alturas Supermarket Corporation', 'Lorlie', 'Gwapo', 'Ochavillo', '', '1998-06-10', '2022-10-28', '2', 'hello checkup from 2023 :D !!', '2022-10-28', 'Yes', '', 'Approved', '', '1', '2023-03-29', '', '', '0000-00-00', '2023-04-19', NULL, '', ''),
+(15, 'NOA-00000014', '56313-2022', 'ACN-01000044281', 'Alturas Supermarket Corporation', 'Marlon', 'Hinampas', 'Muring', '', '1997-10-22', '2022-11-24', '2', 'wow yeeeah 3x', '2022-11-23', 'Yes', '', 'Completed', '56313-2022', '2', '2022-12-01', '', '', '0000-00-00', NULL, NULL, '', ''),
+(16, 'NOA-00000016', '56313-2022', 'ACN-01000044281', 'Alturas Supermarket Corporation', 'Marlon', 'Hinampas', 'Muring', '', '1997-10-22', '2022-11-24', '6', 'asfa faifafaiafsasaasfas', '2022-11-25', 'No', '', 'Disapproved', '56313-2022', '', '2022-11-25', '1', 'ilad ra', '2022-11-29', NULL, NULL, '', ''),
+(17, 'NOA-00000017', '23278-2022', 'ACN-01000038438', 'Alturas Supermarket Corporation', 'George', 'Ayuban', 'Curay', 'Jr.', '1998-04-17', '2022-11-28', '5', 'hello sdjfsdj sdj kgsdjsdk sdgjksdgsd', '2022-11-28', 'No', '', 'Approved', '56313-2022', '1', '2022-11-28', '', '', '0000-00-00', NULL, NULL, '', ''),
+(18, 'NOA-00000018', '23278-2022', 'ACN-01000038438', 'Alturas Supermarket Corporation', 'George', 'Ayuban', 'Curay', 'Jr.', '1998-04-17', '2022-11-11', '4', 'asdasfasfasas', '2022-11-29', 'No', '', 'Approved', '56313-2022', '1', '2022-11-29', '', '', '0000-00-00', NULL, NULL, '', ''),
+(19, 'NOA-00000019', '56313-2022', 'ACN-01000044281', 'Alturas Supermarket Corporation', 'Marlon', 'Hinampas', 'Muring', '', '1997-10-22', '2023-01-05', '5', 'hdioasio dashoif aohfoahiassafaafs asfdsads', '2023-01-05', 'Yes', '', 'Approved', '56313-2022', '2', '2023-01-05', '', '', '0000-00-00', NULL, NULL, '', ''),
+(20, 'NOA-00000020', '23764-2022', 'ACN-01000043436', 'Alturas Supermarket Corporation', 'Ruel', 'Budoy', 'Tumale', 'Jr.', '1997-08-23', '2023-01-29', '5', 'sakit ag ulo ug tiyan', '2023-01-30', 'Yes', '', 'Approved', '23764-2022', '1', '2023-03-29', '', '', '0000-00-00', '2023-04-05', NULL, '', ''),
+(21, 'NOA-00000021', '23764-2022', 'ACN-01000043436', 'Alturas Supermarket Corporation', 'Ruel', 'Budoy', 'Tumale', 'Jr.', '1997-08-23', '2023-01-30', '5', 'Sakit gihapon', '2023-01-30', 'No', '', 'Disapproved', '23764-2022', '', '0000-00-00', '2', 'diagnosis is unclear', '2023-01-30', NULL, NULL, '', ''),
+(22, 'NOA-00000022', '38343-2022', 'ACN-01000044632', 'Alturas Supermarket Corporation', 'Gedym', 'Mae', 'Sab', '', '1999-08-10', '2023-02-16', '5', 'Urinary Tract Infection', '2023-02-16', 'No', '', 'Approved', '38343-2022', '2', '2023-02-16', '', '', '0000-00-00', NULL, NULL, '', ''),
+(23, 'NOA-00000023', '38343-2022', 'ACN-01000044632', 'Alturas Supermarket Corporation', 'Gedym', 'Mae', 'Sab', '', '1999-08-10', '2023-02-14', '5', 'Pregnancy Test 123', '2023-02-16', 'No', '', 'Approved', '38343-2022', '2', '2023-02-16', '', '', '0000-00-00', NULL, NULL, '', ''),
+(24, 'NOA-00000024', '23456-2023', '01000044731', 'Alturas Supermarket Corporation', 'Jennifer', 'Simbajon', 'Cajegas', '', '1999-08-07', '2022-12-12', '5', 'sample', '2023-02-23', 'Yes', '', 'Completed', '23456-2023', '2', '2023-02-23', '', '', '0000-00-00', NULL, NULL, '', ''),
+(25, 'NOA-00000025', '23764-2022', 'ACN-01000043436', 'Alturas Supermarket Corporation', 'Ruel', 'Budoy', 'Tumale', 'Jr.', '1997-08-23', '2023-02-23', '1', 'jhas faf ka fak fakls fasfas kashfkashflkasj asfasfa', '2023-02-24', 'No', '', 'Approved', '23764-2022', '2', '2023-02-24', '', '', '0000-00-00', NULL, NULL, '', ''),
+(26, 'NOA-00000026', '38343-2022', 'ACN-01000044632', 'Alturas Supermarket Corporation', 'Gedym', 'Mae', 'Sab', '', '1999-08-10', '2023-03-16', '1', 'Child Birth', '2023-03-16', 'No', '', 'Approved', '38343-2022', '1', '2023-03-16', '', '', '0000-00-00', NULL, NULL, '', ''),
+(29, 'NOA-20230000027', '56313-2022', 'ACN-01000044281', 'Alturas Supermarket Corporation', 'Marlon', 'Hinampas', 'Muring', '', '1997-10-22', '2023-03-17', '1', 'This is a test request in 2023 by Marl :)', '2023-03-17', '', '', 'Pending', '56313-2022', '', '0000-00-00', '', '', '0000-00-00', NULL, NULL, '', ''),
+(30, 'NOA-20230000030', '23278-2022', 'ACN-01000038438', 'Alturas Supermarket Corporation', 'George', 'Ayuban', 'Curay', 'Jr.', '1998-04-17', '2023-03-17', '1', 'Hello NOA by George in 2023', '2023-03-17', '', '', 'Pending', '', '', '0000-00-00', '', '', '0000-00-00', NULL, NULL, '', ''),
+(31, 'NOA-20230000031', '32544-2022', 'ACN-01000043827', 'Alturas Supermarket Corporation', 'Lorlie', 'Gwapo', 'Ochavillo', '', '1998-06-10', '2023-03-18', '1', 'Sakit tiil tungod sa Basketball', '2023-03-17', '', '', 'Pending', '', '', '0000-00-00', '', '', '0000-00-00', NULL, NULL, '', '');
 
 -- --------------------------------------------------------
 
@@ -7456,15 +7448,54 @@ CREATE TABLE `payment_details` (
   `check_date` date NOT NULL,
   `bank` varchar(30) NOT NULL,
   `amount_paid` float NOT NULL,
-  `supporting_file` varchar(50) NOT NULL
+  `supporting_file` varchar(50) NOT NULL,
+  `date_added` date DEFAULT NULL,
+  `added_by` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `payment_details`
 --
 
-INSERT INTO `payment_details` (`payment_id`, `payment_no`, `hp_id`, `start_date`, `end_date`, `company_charge`, `acc_number`, `acc_name`, `check_num`, `check_date`, `bank`, `amount_paid`, `supporting_file`) VALUES
-(2, 'PMD-1677826678', '5', '2023-02-22', '2023-02-22', 13, 'w423', 'qrwre', 'qwr24', '2023-03-02', 'werwet', 13000, '9945adfe94f3e6a272c09cdc748229e1.png');
+INSERT INTO `payment_details` (`payment_id`, `payment_no`, `hp_id`, `start_date`, `end_date`, `company_charge`, `acc_number`, `acc_name`, `check_num`, `check_date`, `bank`, `amount_paid`, `supporting_file`, `date_added`, `added_by`) VALUES
+(2, 'PMD-1677826678', '5', '2023-02-22', '2023-02-22', 13, 'w423', 'qrwre', 'qwr24', '2023-03-02', 'werwet', 13000, '9945adfe94f3e6a272c09cdc748229e1.png', NULL, '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `performed_loa_info`
+--
+
+CREATE TABLE `performed_loa_info` (
+  `loa_service_id` int(20) NOT NULL,
+  `emp_id` varchar(100) NOT NULL,
+  `hp_id` varchar(15) NOT NULL,
+  `loa_id` varchar(15) NOT NULL,
+  `loa_no` varchar(100) NOT NULL,
+  `request_type` varchar(200) DEFAULT NULL,
+  `ctype_id` varchar(20) NOT NULL,
+  `status` varchar(100) NOT NULL,
+  `date_time_performed` varchar(100) NOT NULL,
+  `physician` varchar(100) NOT NULL,
+  `added_by` varchar(100) NOT NULL,
+  `added_on` date NOT NULL,
+  `edited_by` varchar(100) DEFAULT NULL,
+  `edited_on` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `performed_loa_info`
+--
+
+INSERT INTO `performed_loa_info` (`loa_service_id`, `emp_id`, `hp_id`, `loa_id`, `loa_no`, `request_type`, `ctype_id`, `status`, `date_time_performed`, `physician`, `added_by`, `added_on`, `edited_by`, `edited_on`) VALUES
+(36, '00016-2022', '1', '49', 'LOA-20230000049', 'Diagnostic Test', '2', 'Performed', '03-21-2023 12:00 PM', 'sample1', 'Marlon H. Muring', '2023-03-24', 'Marlon H. Muring', '2023-03-28'),
+(37, '00016-2022', '1', '49', 'LOA-20230000049', 'Diagnostic Test', '5', 'Performed', '03-23-2023 12:00 PM', 'sample1', 'Marlon H. Muring', '2023-03-24', 'Marlon H. Muring', '2023-03-28'),
+(38, '00016-2022', '1', '49', 'LOA-20230000049', 'Diagnostic Test', '7', 'Performed', '03-23-2023 12:00 PM', 'sample1', 'Marlon H. Muring', '2023-03-24', 'Marlon H. Muring', '2023-03-28'),
+(39, '00016-2022', '1', '50', 'LOA-20230000050', 'Consultation', '', 'Performed', '03-23-2023 12:00', 'sample', 'Marlon H. Muring', '2023-03-24', 'Marlon H. Muring', '2023-03-24'),
+(41, '00016-2022', '1', '48', 'LOA-20230000048', 'Diagnostic Test', '55', 'Performed', '03-23-2023 12:00', 'sample1', 'Marlon H. Muring', '2023-03-24', 'Marlon H. Muring', '2023-03-24'),
+(42, '00016-2022', '1', '48', 'LOA-20230000048', 'Diagnostic Test', '545', 'Performed', '03-23-2023 12:00', 'sample2', 'Marlon H. Muring', '2023-03-24', 'Marlon H. Muring', '2023-03-24'),
+(48, '56313-2022', '5', '46', 'LOA-20230000046', 'Consultation', '', 'Performed', '03-23-2023 12:00', 'sample', 'Marlon H. Muring', '2023-03-24', 'Marlon H. Muring', '2023-03-24'),
+(51, '23456-2023', '1', '41', 'LOA-00000041', 'Diagnostic Test', '3', 'Performed', '03-14-2023 16:00', 'sdaasfas', 'Marlon H. Muring', '2023-03-27', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -7499,28 +7530,195 @@ CREATE TABLE `room_types` (
   `room_number` varchar(100) NOT NULL,
   `room_rate` varchar(8) NOT NULL,
   `date_added` date DEFAULT NULL,
-  `date_updated` date DEFAULT NULL
+  `date_updated` date DEFAULT NULL,
+  `added_by` varchar(100) NOT NULL,
+  `updated_by` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `room_types`
 --
 
-INSERT INTO `room_types` (`room_id`, `hp_id`, `room_group`, `room_type`, `room_typ_hmo_req`, `room_number`, `room_rate`, `date_added`, `date_updated`) VALUES
-(1, 1, 'Room Type Price List', 'Presidential Suite', '', 'Rm. 401', '5500', '2023-03-10', NULL),
-(2, 1, 'Room Type Price List', 'Presidential Suite', '', 'Rm. 402', '5000', '2023-03-10', NULL),
-(3, 1, 'Room Type Price List', 'Presidential Suite', '', 'Rm. 424', '4000', '2023-03-10', NULL),
-(4, 1, 'Room Type Price List', 'Regular Suite 4F', '', 'Rm. 407, 409', '2875', '2023-03-10', NULL),
-(5, 1, 'Room Type Price List', 'Regular Suite 3F', '', 'Rm. 359', '2275', '2023-03-10', NULL),
-(6, 1, 'Room Type Price List', 'Regular Suite 3F', '', 'Rm. 317, 341, 343, 358', '2200', '2023-03-10', NULL),
-(7, 1, 'Room Type Price List', 'Large Private 4F', 'Private', 'Rm. 402', '2275', '2023-03-10', NULL),
-(8, 1, 'Room Type Price List', 'Large Private 3F North', 'Private', 'Rm. 301, 302, 303, 304, 305, 306, 307, 308, 309,310,311, 312, 314, 316, 320, 329', '1300', '2023-03-10', NULL),
-(9, 1, 'Room Type Price List', 'Large Private 3F South', 'Private', 'Rm. 342, 344, 345, 345, 347, 348, 349, 350, 351, 352,353, 356, 359', '1300', '2023-03-10', NULL),
-(10, 1, 'Room Type Price List', 'Semi-Private', 'Semi-Private', 'Rm. 325,327', '1000', '2023-03-10', NULL),
-(11, 1, 'Room Type Price List', 'Ward -Aircon', 'Ward', 'Rm. 321, 323, 324, 331, 340', '800', '2023-03-10', NULL),
-(12, 1, 'Room Type Price List', 'Ward Non-Aircon', 'Ward', 'Rm. 322', '575', '2023-03-10', NULL),
-(13, 1, 'Room Type Price List', 'ICU', '', 'ICU-1, ICU-2, ICU-3, ICU-4, ICU-5, ICU-6', '4500', '2023-03-10', NULL),
-(14, 1, 'Room Type Price List', 'NICU', '', 'NICU-1, NICU-2, NICU-3, NICU-4, NICU-5', '1375', '2023-03-10', NULL);
+INSERT INTO `room_types` (`room_id`, `hp_id`, `room_group`, `room_type`, `room_typ_hmo_req`, `room_number`, `room_rate`, `date_added`, `date_updated`, `added_by`, `updated_by`) VALUES
+(1, 1, 'Room Type Price List', 'Presidential Suite', '', 'Rm. 401', '5500', '2023-03-10', NULL, '', ''),
+(2, 1, 'Room Type Price List', 'Presidential Suite', '', 'Rm. 402', '5000', '2023-03-10', '2023-03-27', '', ''),
+(3, 1, 'Room Type Price List', 'Presidential Suite', '', 'Rm. 424', '4000', '2023-03-10', NULL, '', ''),
+(4, 1, 'Room Type Price List', 'Regular Suite 4F', '', 'Rm. 407, 409', '2875', '2023-03-10', NULL, '', ''),
+(5, 1, 'Room Type Price List', 'Regular Suite 3F', '', 'Rm. 359', '2275', '2023-03-10', NULL, '', ''),
+(6, 1, 'Room Type Price List', 'Regular Suite 3F', '', 'Rm. 317, 341, 343, 358', '2200', '2023-03-10', NULL, '', ''),
+(7, 1, 'Room Type Price List', 'Large Private 4F', 'Private', 'Rm. 402', '2275', '2023-03-10', NULL, '', ''),
+(8, 1, 'Room Type Price List', 'Large Private 3F North', 'Private', 'Rm. 301, 302, 303, 304, 305, 306, 307, 308, 309,310,311, 312, 314, 316, 320, 329', '1300', '2023-03-10', NULL, '', ''),
+(9, 1, 'Room Type Price List', 'Large Private 3F South', 'Private', 'Rm. 342, 344, 345, 345, 347, 348, 349, 350, 351, 352,353, 356, 359', '1300', '2023-03-10', NULL, '', ''),
+(10, 1, 'Room Type Price List', 'Semi-Private', 'Semi-Private', 'Rm. 325,327', '1000', '2023-03-10', NULL, '', ''),
+(11, 1, 'Room Type Price List', 'Ward -Aircon', 'Ward', 'Rm. 321, 323, 324, 331, 340', '800', '2023-03-10', NULL, '', ''),
+(12, 1, 'Room Type Price List', 'Ward Non-Aircon', 'Ward', 'Rm. 322', '575', '2023-03-10', NULL, '', ''),
+(13, 1, 'Room Type Price List', 'ICU', '', 'ICU-1, ICU-2, ICU-3, ICU-4, ICU-5, ICU-6', '4500', '2023-03-10', NULL, '', ''),
+(14, 1, 'Room Type Price List', 'NICU', '', 'NICU-1, NICU-2, NICU-3, NICU-4, NICU-5', '1375', '2023-03-10', NULL, '', '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `soa_textfile`
+--
+
+CREATE TABLE `soa_textfile` (
+  `tf_id` int(100) NOT NULL,
+  `tf_2` varchar(100) NOT NULL,
+  `tf_3` varchar(100) NOT NULL,
+  `tf_4` varchar(100) NOT NULL,
+  `tf_5` varchar(100) NOT NULL,
+  `tf_6` varchar(100) NOT NULL,
+  `tf_7` varchar(100) NOT NULL,
+  `tf_8` varchar(100) NOT NULL,
+  `tf_9` varchar(100) NOT NULL,
+  `date_added` date DEFAULT NULL,
+  `added_by` varchar(100) DEFAULT NULL,
+  `status` varchar(20) DEFAULT NULL,
+  `acknowledged_by` varchar(100) DEFAULT NULL,
+  `acknowledged_on` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `soa_textfile`
+--
+
+INSERT INTO `soa_textfile` (`tf_id`, `tf_2`, `tf_3`, `tf_4`, `tf_5`, `tf_6`, `tf_7`, `tf_8`, `tf_9`, `date_added`, `added_by`, `status`, `acknowledged_by`, `acknowledged_on`) VALUES
+(477, '?FM5878', '01/16/23', '01/31/23', '4699', 'RV ROMAINE LETTUCE', '1.69', '606.96', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(478, 'FM5878', '01/16/23', '01/31/23', '4704', 'RV CELERY', '8.48', '2,714.24', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(479, 'FM5878', '01/16/23', '01/31/23', '4705', 'RV CHINESE CABBAGE', '68.11', '8,173.44', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(480, 'FM5878', '01/16/23', '01/31/23', '4706', 'RV GREEN CABBAGE', '195.3', '23,435.76', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(481, 'FM5878', '01/16/23', '01/31/23', '4707', 'RV GREEN WAVE LETTUCE', '3.21', '1,186.22', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(482, 'FM5878', '01/16/23', '01/31/23', '4708', 'RV LETTUCE', '69.83', '21,737.15', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(483, 'FM5878', '01/16/23', '01/31/23', '4711', 'RV NT. PECHAY', '33.05', '4,515.40', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(484, 'FM5878', '01/16/23', '01/31/23', '4714', 'RV TOMATO SALAD', '0.22', '77.44', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(485, 'FM5878', '01/16/23', '01/31/23', '4717', 'RV TAIWAN PECHAY', '10.85', '1,465.02', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(486, 'FM5878', '01/16/23', '01/31/23', '4720', 'RV BB YOUNG CORN', '3.05', '609.60', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(487, 'FM5878', '01/16/23', '01/31/23', '4722', 'RV BROCOLLI', '53.17', '17,462.78', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(488, 'FM5878', '01/16/23', '01/31/23', '4723', 'RV CAULIFLOWER', '45.46', '14,610.84', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(489, 'FM5878', '01/16/23', '01/31/23', '4725', 'RV EGGPLANT', '19.02', '2,644.78', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(490, 'FM5878', '01/16/23', '01/31/23', '4727', 'RV OKRA', '14.82', '1,791.06', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(491, 'FM5878', '01/16/23', '01/31/23', '4728', 'RV SWEETCORN YELLOW', '108.2', '19,854.92', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(492, 'FM5878', '01/16/23', '01/31/23', '4729', 'RV AMPALAYA', '33.43', '5,850.20', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(493, 'FM5878', '01/16/23', '01/31/23', '4730', 'RV BAGUIO BEANS', '41.43', '5,579.34', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(494, 'FM5878', '01/16/23', '01/31/23', '4731', 'RV CUCUMBER', '114.51', '9,171.99', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(495, 'FM5878', '01/16/23', '01/31/23', '4732', 'RV FRESH PEAS', '2.41', '1,401.90', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(496, 'FM5878', '01/16/23', '01/31/23', '4733', 'RV SEQUA/PATOLA', '2.63', '223.97', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(497, 'FM5878', '01/16/23', '01/31/23', '4734', 'RV STRINGBEANS', '13.45', '2,037.16', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(498, 'FM5878', '01/16/23', '01/31/23', '4736', 'RV JAPANESE CUCUMBER', '32.1', '5,062.98', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(499, 'FM5878', '01/16/23', '01/31/23', '4737', 'RV CARROTS LOCAL', '216.48', '29,018.61', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(500, 'FM5878', '01/16/23', '01/31/23', '4739', 'RV GABI WHITE', '44.23', '3,538.72', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(501, 'FM5878', '01/16/23', '01/31/23', '4740', 'RV POTATO', '174.54', '42,936.76', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(502, 'FM5878', '01/16/23', '01/31/23', '4741', 'RV RADDISH', '8.23', '905.52', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(503, 'FM5878', '01/16/23', '01/31/23', '4742', 'RV SINGKAMAS', '33.19', '2,987.46', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(504, 'FM5878', '01/16/23', '01/31/23', '4747', 'RV PARSLEY', '3.05', '1,066.10', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(505, 'FM5878', '01/16/23', '01/31/23', '4749', 'RV CHILI SPADA', '18.71', '4,894.15', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(506, 'FM5878', '01/16/23', '01/31/23', '4750', 'RV GINGER LOCAL', '119.18', '13,109.58', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(507, 'FM5878', '01/16/23', '01/31/23', '4751', 'RV GREEN BELLPEPPER', '5.16', '2,475.84', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(508, 'FM5878', '01/16/23', '01/31/23', '4752', 'RV HOT PEPPER', '0.59', '343.98', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(509, 'FM5878', '01/16/23', '01/31/23', '4756', 'RV RED ONIONS', '112.98', '73,833.41', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(510, 'FM5878', '01/16/23', '01/31/23', '4757', 'RV SPRING ONIONS', '23.83', '5,972.06', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(511, 'FM5878', '01/16/23', '01/31/23', '4758', 'RV SWEET PEPPER', '81.16', '24,524.00', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(512, 'FM5878', '01/16/23', '01/31/23', '4759', 'RV TAIWAN GARLIC', '208.41', '34,387.32', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(513, 'FM5878', '01/16/23', '01/31/23', '4760', 'RV TOMATO LOCAL', '42.61', '5,514.70', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(514, 'FM5878', '01/16/23', '01/31/23', '4761', 'RV WHITE ONIONS', '23.26', '14,564.09', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(515, 'FM5878', '01/16/23', '01/31/23', '4763', 'RV AMPALAYA SLICE', '7.36', '735.60', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(516, 'FM5878', '01/16/23', '01/31/23', '4767', 'RV MIKI W/ SARI-SARI', '0.94', '113.04', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(517, 'FM5878', '01/16/23', '01/31/23', '4768', 'RV MIX VEGETABLES', '261.68', '30,093.43', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(518, 'FM5878', '01/16/23', '01/31/23', '4771', 'RV SLICE EGGPLANT', '0.79', '90.62', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(519, 'FM5878', '01/16/23', '01/31/23', '4775', 'RV VEG. CHOPSUEY', '246.81', '22,212.72', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(520, 'FM5878', '01/16/23', '01/31/23', '4777', 'RV VEG. SARI-SARI', '147.92', '13,312.44', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(521, 'FM5878', '01/16/23', '01/31/23', '4778', 'RV VEG. MENUDO', '79.78', '7,978.40', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(522, 'FM5878', '01/16/23', '01/31/23', '4780', 'RV AVOCADO', '19.85', '5,415.60', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(523, 'FM5878', '01/16/23', '01/31/23', '4786', 'RV GUAVA', '0.26', '52.80', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(524, 'FM5878', '01/16/23', '01/31/23', '4795', 'RV LEMONSITO', '87.7', '10,523.78', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(525, 'FM5878', '01/16/23', '01/31/23', '4798', 'RV MANGOES RIPE', '66.83', '12,256.86', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(526, 'FM5878', '01/16/23', '01/31/23', '4804', 'RV PINEAPPLE', '24.08', '1,444.92', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(527, 'FM5878', '01/16/23', '01/31/23', '4805', 'RV POMELO', '9.63', '2,047.24', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(528, 'FM5878', '01/16/23', '01/31/23', '4813', 'RV WATERMELON', '56.78', '3,690.57', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(529, 'FM5878', '01/16/23', '01/31/23', '4814', 'RV YELLOW WATERMELON', '13.73', '1,166.71', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(530, 'FM5878', '01/16/23', '01/31/23', '4816', 'RV PEELED DURIAN', '5.6', '2,211.21', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(531, 'FM5878', '01/16/23', '01/31/23', '4819', 'RV PEELED POMELO', '34.73', '10,420.20', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(532, 'FM5878', '01/16/23', '01/31/23', '4821', 'RV SLICE WATERMELON', '90.83', '9,083.20', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(533, 'FM5878', '01/16/23', '01/31/23', '4822', 'RV SAGO', '0.5', '79.68', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(534, 'FM5878', '01/16/23', '01/31/23', '4823', 'RV SLICE PINEAPPLE', '134.55', '14,800.06', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(535, 'FM5878', '01/16/23', '01/31/23', '4824', 'RV SQUASH', '26.49', '1,589.28', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(536, 'FM5878', '01/16/23', '01/31/23', '4825', 'RV FRESH PANCIT MIKI', '232.63', '17,447.10', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(537, 'FM5878', '01/16/23', '01/31/23', '4827', 'RV SAYOTE', '125.49', '7,649.35', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(538, 'FM5878', '01/16/23', '01/31/23', '4833', 'RV MONGOES', '47.18', '5,661.84', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(539, 'FM5878', '01/16/23', '01/31/23', '4834', 'RV VEG. GINILING MIX', '0.68', '68.20', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(540, 'FM5878', '01/16/23', '01/31/23', '4843', 'RV SALE MANGOES RIPE', '134.35', '10,748.16', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(541, 'FM5878', '01/16/23', '01/31/23', '4849', 'RV PEELED YELLOW MELON', '25.27', '2,274.30', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(542, 'FM5878', '01/16/23', '01/31/23', '25258', 'RV LUMPIA WRAPPER BIG', '429', '17,160.00', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(543, 'FM5878', '01/16/23', '01/31/23', '25260', 'RV LUMPIA WRAPPER SML', '151', '4,530.00', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(544, 'FM5878', '01/16/23', '01/31/23', '25260', 'RV LUMPIA WRAPPER SML', '151', '4,530.00', '0.00', '2023-03-09', NULL, 'Posted', NULL, NULL),
+(545, '?FM5878', '01/16/23', '01/31/23', '4699', 'RV ROMAINE LETTUCE', '1.69', '606.96', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(546, 'FM5878', '01/16/23', '01/31/23', '4704', 'RV CELERY', '8.48', '2,714.24', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(547, 'FM5878', '01/16/23', '01/31/23', '4705', 'RV CHINESE CABBAGE', '68.11', '8,173.44', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(548, 'FM5878', '01/16/23', '01/31/23', '4706', 'RV GREEN CABBAGE', '195.3', '23,435.76', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(549, 'FM5878', '01/16/23', '01/31/23', '4707', 'RV GREEN WAVE LETTUCE', '3.21', '1,186.22', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(550, 'FM5878', '01/16/23', '01/31/23', '4708', 'RV LETTUCE', '69.83', '21,737.15', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(551, 'FM5878', '01/16/23', '01/31/23', '4711', 'RV NT. PECHAY', '33.05', '4,515.40', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(552, 'FM5878', '01/16/23', '01/31/23', '4714', 'RV TOMATO SALAD', '0.22', '77.44', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(553, 'FM5878', '01/16/23', '01/31/23', '4717', 'RV TAIWAN PECHAY', '10.85', '1,465.02', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(554, 'FM5878', '01/16/23', '01/31/23', '4720', 'RV BB YOUNG CORN', '3.05', '609.60', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(555, 'FM5878', '01/16/23', '01/31/23', '4722', 'RV BROCOLLI', '53.17', '17,462.78', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(556, 'FM5878', '01/16/23', '01/31/23', '4723', 'RV CAULIFLOWER', '45.46', '14,610.84', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(557, 'FM5878', '01/16/23', '01/31/23', '4725', 'RV EGGPLANT', '19.02', '2,644.78', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(558, 'FM5878', '01/16/23', '01/31/23', '4727', 'RV OKRA', '14.82', '1,791.06', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(559, 'FM5878', '01/16/23', '01/31/23', '4728', 'RV SWEETCORN YELLOW', '108.2', '19,854.92', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(560, 'FM5878', '01/16/23', '01/31/23', '4729', 'RV AMPALAYA', '33.43', '5,850.20', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(561, 'FM5878', '01/16/23', '01/31/23', '4730', 'RV BAGUIO BEANS', '41.43', '5,579.34', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(562, 'FM5878', '01/16/23', '01/31/23', '4731', 'RV CUCUMBER', '114.51', '9,171.99', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(563, 'FM5878', '01/16/23', '01/31/23', '4732', 'RV FRESH PEAS', '2.41', '1,401.90', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(564, 'FM5878', '01/16/23', '01/31/23', '4733', 'RV SEQUA/PATOLA', '2.63', '223.97', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(565, 'FM5878', '01/16/23', '01/31/23', '4734', 'RV STRINGBEANS', '13.45', '2,037.16', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(566, 'FM5878', '01/16/23', '01/31/23', '4736', 'RV JAPANESE CUCUMBER', '32.1', '5,062.98', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(567, 'FM5878', '01/16/23', '01/31/23', '4737', 'RV CARROTS LOCAL', '216.48', '29,018.61', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(568, 'FM5878', '01/16/23', '01/31/23', '4739', 'RV GABI WHITE', '44.23', '3,538.72', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(569, 'FM5878', '01/16/23', '01/31/23', '4740', 'RV POTATO', '174.54', '42,936.76', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(570, 'FM5878', '01/16/23', '01/31/23', '4741', 'RV RADDISH', '8.23', '905.52', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(571, 'FM5878', '01/16/23', '01/31/23', '4742', 'RV SINGKAMAS', '33.19', '2,987.46', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(572, 'FM5878', '01/16/23', '01/31/23', '4747', 'RV PARSLEY', '3.05', '1,066.10', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(573, 'FM5878', '01/16/23', '01/31/23', '4749', 'RV CHILI SPADA', '18.71', '4,894.15', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(574, 'FM5878', '01/16/23', '01/31/23', '4750', 'RV GINGER LOCAL', '119.18', '13,109.58', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(575, 'FM5878', '01/16/23', '01/31/23', '4751', 'RV GREEN BELLPEPPER', '5.16', '2,475.84', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(576, 'FM5878', '01/16/23', '01/31/23', '4752', 'RV HOT PEPPER', '0.59', '343.98', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(577, 'FM5878', '01/16/23', '01/31/23', '4756', 'RV RED ONIONS', '112.98', '73,833.41', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(578, 'FM5878', '01/16/23', '01/31/23', '4757', 'RV SPRING ONIONS', '23.83', '5,972.06', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(579, 'FM5878', '01/16/23', '01/31/23', '4758', 'RV SWEET PEPPER', '81.16', '24,524.00', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(580, 'FM5878', '01/16/23', '01/31/23', '4759', 'RV TAIWAN GARLIC', '208.41', '34,387.32', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(581, 'FM5878', '01/16/23', '01/31/23', '4760', 'RV TOMATO LOCAL', '42.61', '5,514.70', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(582, 'FM5878', '01/16/23', '01/31/23', '4761', 'RV WHITE ONIONS', '23.26', '14,564.09', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(583, 'FM5878', '01/16/23', '01/31/23', '4763', 'RV AMPALAYA SLICE', '7.36', '735.60', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(584, 'FM5878', '01/16/23', '01/31/23', '4767', 'RV MIKI W/ SARI-SARI', '0.94', '113.04', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(585, 'FM5878', '01/16/23', '01/31/23', '4768', 'RV MIX VEGETABLES', '261.68', '30,093.43', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(586, 'FM5878', '01/16/23', '01/31/23', '4771', 'RV SLICE EGGPLANT', '0.79', '90.62', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(587, 'FM5878', '01/16/23', '01/31/23', '4775', 'RV VEG. CHOPSUEY', '246.81', '22,212.72', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(588, 'FM5878', '01/16/23', '01/31/23', '4777', 'RV VEG. SARI-SARI', '147.92', '13,312.44', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(589, 'FM5878', '01/16/23', '01/31/23', '4778', 'RV VEG. MENUDO', '79.78', '7,978.40', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(590, 'FM5878', '01/16/23', '01/31/23', '4780', 'RV AVOCADO', '19.85', '5,415.60', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(591, 'FM5878', '01/16/23', '01/31/23', '4786', 'RV GUAVA', '0.26', '52.80', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(592, 'FM5878', '01/16/23', '01/31/23', '4795', 'RV LEMONSITO', '87.7', '10,523.78', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(593, 'FM5878', '01/16/23', '01/31/23', '4798', 'RV MANGOES RIPE', '66.83', '12,256.86', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(594, 'FM5878', '01/16/23', '01/31/23', '4804', 'RV PINEAPPLE', '24.08', '1,444.92', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(595, 'FM5878', '01/16/23', '01/31/23', '4805', 'RV POMELO', '9.63', '2,047.24', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(596, 'FM5878', '01/16/23', '01/31/23', '4813', 'RV WATERMELON', '56.78', '3,690.57', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(597, 'FM5878', '01/16/23', '01/31/23', '4814', 'RV YELLOW WATERMELON', '13.73', '1,166.71', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(598, 'FM5878', '01/16/23', '01/31/23', '4816', 'RV PEELED DURIAN', '5.6', '2,211.21', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(599, 'FM5878', '01/16/23', '01/31/23', '4819', 'RV PEELED POMELO', '34.73', '10,420.20', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(600, 'FM5878', '01/16/23', '01/31/23', '4821', 'RV SLICE WATERMELON', '90.83', '9,083.20', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(601, 'FM5878', '01/16/23', '01/31/23', '4822', 'RV SAGO', '0.5', '79.68', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(602, 'FM5878', '01/16/23', '01/31/23', '4823', 'RV SLICE PINEAPPLE', '134.55', '14,800.06', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(603, 'FM5878', '01/16/23', '01/31/23', '4824', 'RV SQUASH', '26.49', '1,589.28', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(604, 'FM5878', '01/16/23', '01/31/23', '4825', 'RV FRESH PANCIT MIKI', '232.63', '17,447.10', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(605, 'FM5878', '01/16/23', '01/31/23', '4827', 'RV SAYOTE', '125.49', '7,649.35', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(606, 'FM5878', '01/16/23', '01/31/23', '4833', 'RV MONGOES', '47.18', '5,661.84', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(607, 'FM5878', '01/16/23', '01/31/23', '4834', 'RV VEG. GINILING MIX', '0.68', '68.20', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(608, 'FM5878', '01/16/23', '01/31/23', '4843', 'RV SALE MANGOES RIPE', '134.35', '10,748.16', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(609, 'FM5878', '01/16/23', '01/31/23', '4849', 'RV PEELED YELLOW MELON', '25.27', '2,274.30', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(610, 'FM5878', '01/16/23', '01/31/23', '25258', 'RV LUMPIA WRAPPER BIG', '429', '17,160.00', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(611, 'FM5878', '01/16/23', '01/31/23', '25260', 'RV LUMPIA WRAPPER SML', '151', '4,530.00', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL),
+(612, 'FM5878', '01/16/23', '01/31/23', '25260', 'RV LUMPIA WRAPPER SML', '151', '4,530.00', '0.00', '2023-03-28', 'George Curay', 'Posted', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -7555,15 +7753,15 @@ INSERT INTO `user_accounts` (`user_id`, `emp_id`, `full_name`, `user_role`, `dsg
 (9, '56313-2022', 'Marlon H. Muring', 'member', '', '', 'marlonm', '$2y$10$AZ7Px2zYdPm7SwKEvXRINeUGhnXmnh0DtMsOScF79PxwGyibUuvsm', 'Active', 0, '', '2022-09-29', '2022-10-28', 'Marlon H. Muring'),
 (10, '23278-2022', 'George Curay', 'healthcare-provider', '5', '', 'Ayuban17', '$2y$10$oFmxPMZWyEIKkFz/T3BwyezXI3aVO7XviWqzhudhyPGVGj8CQfjJO', 'Active', 0, '', '2022-10-03', '2022-10-21', 'Default HealthCare Coordinator '),
 (13, '23278-2022', 'George Curay', 'member', '', '', '23278-2022', '$2y$10$90/6gxZrfUZL7bEufvGHTuwhoyigRmk53HNyrr98iBFybiAlASpiq', 'Active', 0, '', '2022-10-05', '2022-10-14', 'Default HealthCare Coordinator '),
-(17, '56313-2022', 'Ramiro Hospital Coordinator', 'healthcare-provider', '1', '', 'ramiro', '$2y$10$E0gRTxtpwm5/DCCdGb9Dv.tyXWoJfiVQoIIqgZ8pFkR1JCqvPxZXi', 'Active', 0, '', '2022-10-25', '2023-03-16', 'Marlon H. Muring'),
+(17, '56313-2022', 'Ramiro Hospital Coordinator', 'healthcare-provider', '1', '', 'ramiro', '$2y$10$E0gRTxtpwm5/DCCdGb9Dv.tyXWoJfiVQoIIqgZ8pFkR1JCqvPxZXi', 'Active', 1, '', '2022-10-25', '2023-03-16', 'Marlon H. Muring'),
 (18, '32544-2022', 'Lorlie Ochavillo', 'member', '', '', '32544-2022', '$2y$10$.uIaDmmPCIl2SugOYj0LPuPCXkLVKjGtflgB3J8fUu26jkJ5zkySi', 'Active', 0, '', '2022-10-26', '2023-02-10', 'Marlon H. Muring'),
 (19, '56313-2022', 'Marlon H. Muring', 'healthcare-coordinator', '', '', 'hcoordinator', '$2y$10$Uy9qfSD2MgiYsik2PabkXugJ/w4EBLWwTu58YAyxE/ClXx1iUMu3i', 'Active', 0, '', '2022-10-26', '0000-00-00', ''),
-(20, '23278-2022', 'George Curay', 'head-office-accounting', '', '', 'accounting', '$2y$10$tp4gJrN/U2YKQqkfWs0fWeB6J6B1CrkX2ALp3qIXscUgELOQs8eW.', 'Active', 1, '', '2022-10-27', '2022-12-07', 'Marlon H. Muring'),
+(20, '23278-2022', 'George Curay', 'head-office-accounting', '', '', 'accounting', '$2y$10$tp4gJrN/U2YKQqkfWs0fWeB6J6B1CrkX2ALp3qIXscUgELOQs8eW.', 'Active', 0, '', '2022-10-27', '2022-12-07', 'Marlon H. Muring'),
 (22, '32544-2022', 'Lorlie Gwapo Ochavillo ', 'healthcare-provider', '4', '', 'lorlie', '$2y$10$oo3b1O3nMEitemFxbaO1ZeemIXHvIoazBiQJIF.zEKaHa45Tow6N2', 'Active', 0, '', '2022-10-27', '2023-01-13', 'IT SysDev'),
 (23, '00281-2021', 'Ramon Ocsin Ortega ', 'member', '', '', '00281-2021', '$2y$10$M6tdItwvtki8x1qu1gnaSuKcYohObptxUVinCwf1I40R150pVX9bC', 'Active', 0, '', '2022-11-03', '2022-12-07', 'Marlon H. Muring'),
 (24, '23764-2022', 'Ruel Budoy Tumale Jr.', 'member', '', '', 'akobudoy', '$2y$10$sKJCl.4D02cjwwPoSYuB1eL4Kqwp5.mjvOtN1eYV4GuxfxH19oJ8y', 'Active', 0, '', '2022-11-28', '2023-02-24', 'IT SysDev'),
-(31, '', 'Dr. Michael D. Uy', 'company-doctor', '', '1', 'doctor', '$2y$10$ESojuDH6f8Eiz99eZtAeVeoHuZY8QI3nb7Wbc1.L5/WVRUEJkAn3K', 'Active', 0, '', '2022-12-02', '2023-01-27', 'Dr. Michael D. Uy'),
-(32, '', 'Dr. Nonaluz Pizarras', 'company-doctor', '', '2', 'drnona', '$2y$10$pLzJ7lOD.bshnFnke3ff/exRajtOknhpR9mqddW4iH2XCx2p0q.Ji', 'Active', 0, '', '2022-12-02', '2022-12-02', ''),
+(31, '', 'Dr. Michael D. Uy', 'company-doctor', '', '1', 'doctor', '$2y$10$ESojuDH6f8Eiz99eZtAeVeoHuZY8QI3nb7Wbc1.L5/WVRUEJkAn3K', 'Active', 1, '', '2022-12-02', '2023-01-27', 'Dr. Michael D. Uy'),
+(32, '', 'Dr. Nonaluz Pizarras', 'company-doctor', '', '2', 'drnona', '$2y$10$pLzJ7lOD.bshnFnke3ff/exRajtOknhpR9mqddW4iH2XCx2p0q.Ji', 'Active', 1, '', '2022-12-02', '2022-12-02', ''),
 (36, '38343-2022', 'Gedym Mae Sab ', 'member', '', '', 'gedymsab', '$2y$10$kvwUtABN/NErJ0MhujENIeNq5gXXYnrQvMdMCZTIm.wg188b50JDC', 'Active', 0, '', '2023-01-05', '2023-03-16', 'IT SysDev'),
 (43, '23456-2023', 'Jennifer Simbajon Cajegas ', 'member', '', '', 'jennifer', '$2y$10$R8X7jdcrObv5w/9Oem18ZOqUq6eBQCpvvpAjoPgKZFozQ.Zjf7cO6', 'Active', 0, '', '2023-02-23', '2023-02-23', 'Jennifer Simbajon Cajegas '),
 (44, '15797-2018', 'Jay Lou Paquibot Torrentira ', 'member', '', '', '15797-2018', '$2y$10$6rreyuNukJCmcMfWpcD2.OYnTQUKKOz49Zem50tX.eB.EChCgJcwm', 'Active', 0, '', '2023-02-27', '2023-02-27', 'Marlon H. Muring'),
@@ -7820,7 +8018,9 @@ ALTER TABLE `loa_cancellation_requests`
   ADD KEY `cancellation_reason` (`cancellation_reason`(768)),
   ADD KEY `requested_by` (`requested_by`),
   ADD KEY `confirmed_on` (`confirmed_on`),
-  ADD KEY `hp_id` (`hp_id`);
+  ADD KEY `hp_id` (`hp_id`),
+  ADD KEY `disapproved_by` (`disapproved_by`),
+  ADD KEY `disapproved_on` (`disapproved_on`);
 
 --
 -- Indexes for table `loa_requests`
@@ -7858,7 +8058,11 @@ ALTER TABLE `loa_requests`
   ADD KEY `submitted_by` (`requested_by`),
   ADD KEY `charge_type` (`work_related`),
   ADD KEY `work_related` (`work_related`),
-  ADD KEY `percentage` (`percentage`);
+  ADD KEY `percentage` (`percentage`),
+  ADD KEY `expiration_date` (`expiration_date`),
+  ADD KEY `cancelled_on` (`cancelled_on`),
+  ADD KEY `cancellation_reason` (`cancellation_reason`(3072)),
+  ADD KEY `cancelled_by` (`cancelled_by`);
 
 --
 -- Indexes for table `max_benefit_limits`
@@ -7951,7 +8155,11 @@ ALTER TABLE `noa_requests`
   ADD KEY `hospital_id_2` (`hospital_id`),
   ADD KEY `requested_by` (`requested_by`),
   ADD KEY `work_related` (`work_related`),
-  ADD KEY `percentage` (`percentage`);
+  ADD KEY `percentage` (`percentage`),
+  ADD KEY `expiration_date` (`expiration_date`),
+  ADD KEY `cancelled_on` (`cancelled_on`),
+  ADD KEY `cancelled_by` (`cancelled_by`),
+  ADD KEY `cancellation_reason` (`cancellation_reason`(768));
 
 --
 -- Indexes for table `payment_details`
@@ -7969,7 +8177,28 @@ ALTER TABLE `payment_details`
   ADD KEY `check_date` (`check_date`),
   ADD KEY `bank` (`bank`),
   ADD KEY `amount_paid` (`amount_paid`),
-  ADD KEY `supporting_file` (`supporting_file`);
+  ADD KEY `supporting_file` (`supporting_file`),
+  ADD KEY `date_added` (`date_added`),
+  ADD KEY `added_by` (`added_by`);
+
+--
+-- Indexes for table `performed_loa_info`
+--
+ALTER TABLE `performed_loa_info`
+  ADD PRIMARY KEY (`loa_service_id`),
+  ADD KEY `emp_id` (`emp_id`),
+  ADD KEY `hp_id` (`hp_id`),
+  ADD KEY `loa_id` (`loa_id`),
+  ADD KEY `loa_no` (`loa_no`),
+  ADD KEY `med_services` (`ctype_id`),
+  ADD KEY `status` (`status`),
+  ADD KEY `date_time_performed` (`date_time_performed`),
+  ADD KEY `physician` (`physician`),
+  ADD KEY `added_by` (`added_by`),
+  ADD KEY `added_on` (`added_on`),
+  ADD KEY `edited_by` (`edited_by`),
+  ADD KEY `edited_on` (`edited_on`),
+  ADD KEY `request_type` (`request_type`);
 
 --
 -- Indexes for table `personal_charges`
@@ -7997,7 +8226,19 @@ ALTER TABLE `room_types`
   ADD KEY `room_number` (`room_number`),
   ADD KEY `room_rate` (`room_rate`),
   ADD KEY `date_added` (`date_added`),
-  ADD KEY `date_updated` (`date_updated`);
+  ADD KEY `date_updated` (`date_updated`),
+  ADD KEY `added_by` (`added_by`),
+  ADD KEY `updated_by` (`updated_by`);
+
+--
+-- Indexes for table `soa_textfile`
+--
+ALTER TABLE `soa_textfile`
+  ADD PRIMARY KEY (`tf_id`),
+  ADD KEY `tf_2` (`tf_2`,`tf_3`,`tf_4`,`tf_5`),
+  ADD KEY `tf_6` (`tf_6`,`tf_7`,`tf_8`,`tf_9`),
+  ADD KEY `date_added` (`date_added`,`status`,`acknowledged_by`,`acknowledged_on`),
+  ADD KEY `added_by` (`added_by`);
 
 --
 -- Indexes for table `user_accounts`
@@ -8050,19 +8291,19 @@ ALTER TABLE `billing`
 -- AUTO_INCREMENT for table `billing_deductions`
 --
 ALTER TABLE `billing_deductions`
-  MODIFY `deduction_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `deduction_id` int(255) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `billing_medications`
 --
 ALTER TABLE `billing_medications`
-  MODIFY `med_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `med_id` int(50) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `billing_professional_fees`
 --
 ALTER TABLE `billing_professional_fees`
-  MODIFY `prof_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `prof_id` int(50) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `billing_room_boards`
@@ -8086,7 +8327,7 @@ ALTER TABLE `company_doctors`
 -- AUTO_INCREMENT for table `cost_types`
 --
 ALTER TABLE `cost_types`
-  MODIFY `ctype_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=104565;
+  MODIFY `ctype_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=104567;
 
 --
 -- AUTO_INCREMENT for table `healthcards`
@@ -8104,13 +8345,13 @@ ALTER TABLE `healthcare_providers`
 -- AUTO_INCREMENT for table `loa_cancellation_requests`
 --
 ALTER TABLE `loa_cancellation_requests`
-  MODIFY `lcancel_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `lcancel_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `loa_requests`
 --
 ALTER TABLE `loa_requests`
-  MODIFY `loa_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `loa_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT for table `max_benefit_limits`
@@ -8137,6 +8378,12 @@ ALTER TABLE `payment_details`
   MODIFY `payment_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `performed_loa_info`
+--
+ALTER TABLE `performed_loa_info`
+  MODIFY `loa_service_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+
+--
 -- AUTO_INCREMENT for table `personal_charges`
 --
 ALTER TABLE `personal_charges`
@@ -8146,7 +8393,13 @@ ALTER TABLE `personal_charges`
 -- AUTO_INCREMENT for table `room_types`
 --
 ALTER TABLE `room_types`
-  MODIFY `room_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `room_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT for table `soa_textfile`
+--
+ALTER TABLE `soa_textfile`
+  MODIFY `tf_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=613;
 
 --
 -- AUTO_INCREMENT for table `user_accounts`

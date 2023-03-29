@@ -60,6 +60,24 @@
                         <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
                         >
                     </li>
+                    <li class="nav-item">
+                        <a
+                        class="nav-link"
+                        href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/expired"
+                        role="tab"
+                        ><span class="hidden-sm-up"></span>
+                        <span class="hidden-xs-down fs-5 font-bold">Expired</span></a
+                        >
+                    </li>
+                    <li class="nav-item">
+                        <a
+                        class="nav-link"
+                        href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/cancelled"
+                        role="tab"
+                        ><span class="hidden-sm-up"></span>
+                        <span class="hidden-xs-down fs-5 font-bold">Cancelled</span></a
+                        >
+                    </li> 
                 </ul>
 
                 <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">

@@ -24,9 +24,9 @@
                       </div>
 
                       <div class="col-6 mb-1 mt-1">
-                        <label class="colored-label fs-5"><i class="mdi mdi-asterisk text-danger"></i> Room Group</label>
-                        <input type="text" class="form-control" name="room-group" id="edit-room-group">
-                        <span id="edit-room-group-error" class="text-danger"></span>
+                        <label class="colored-label fs-5"><i class="mdi mdi-asterisk text-danger"></i> Room Type HMO Requirements</label>
+                        <input type="text" class="form-control" name="room-hmo-req" id="edit-room-hmo-req">
+                        <span id="edit-room-hmo-req-error" class="text-danger"></span>
                       </div>
                     </div>
 
@@ -38,30 +38,30 @@
                       </div> 
 
                       <div class="col-6 mb-1 pt-2">
-                        <label class="colored-label fs-5"> Room Type HMO Requirements</label>
-                        <input type="text" class="form-control" name="room-hmo-req" id="edit-room-hmo-req">
-                        <span id="edit-room-hmo-req-error" class="text-danger"></span>
+                        <label class="colored-label fs-5"><i class="mdi mdi-asterisk text-danger"></i> Room Rate</label>
+                        <input type="number" class="form-control" name="room-rate" id="edit-room-rate">
+                        <span id="edit-room-rate-error" class="text-danger"></span>
                       </div> 
                     </div>
 
                     <div class="row">
                       <div class="col-8 mb-1 pt-2">
-                        <label class="colored-label fs-5"><i class="mdi mdi-asterisk text-danger"></i> Room Number/s </label><em> *Separated by comma (ex. Rm. 12, 13, 14)</em>
+                        <label class="colored-label fs-5"><i class="mdi mdi-asterisk text-danger"></i> Room Number/s </label><em> *Separated by comma (ex. Rm. 12, Rm. 13)</em>
                         <textarea class="form-control" name="room-num" id="edit-room-num" rows="3"></textarea>
                         <span id="edit-room-num-error" class="text-danger"></span>
                       </div> 
                     
-                      <div class="col-4 mb-1 pt-2">
+                      <!-- <div class="col-4 mb-1 pt-2">
                         <label class="colored-label fs-5"><i class="mdi mdi-asterisk text-danger"></i> Room Rate</label>
                         <input type="number" class="form-control" name="room-rate" id="edit-room-rate">
                         <span id="edit-room-rate-error" class="text-danger"></span>
-                      </div>
+                      </div> -->
                     </div>
 
                     <div class="row">
                       <div class="col-sm-12 mb-sm-0 d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary me-2">
-                         <i class="mdi mdi-content-save"></i> REGISTER
+                        <button type="submit" class="btn btn-success me-2">
+                         <i class="mdi mdi-content-save"></i> UPDATE
                         </button>
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="close-btn">
                         <i class="mdi mdi-close-box"></i> CANCEL

@@ -65,7 +65,7 @@
 
                             <div class="col-lg-3 pb-3">
                                 <label class="fw-bold">Status : </label>
-                                <select class="form-control fw-bold" name="status" id="status" onchange="enableInput()" required>
+                                <select class="form-select fw-bold" name="status" id="status" onchange="enableInput()" required>
                                     <option value="">Select...</option>
                                     <option value="Performed">Performed</option>
                                     <option value="Not yet performed">Not yet performed</option>
@@ -169,7 +169,7 @@
 
         $(".input-date").flatpickr({
             enableTime: true,
-            dateFormat: 'm-d-Y H:i',
+            dateFormat: 'm-d-Y h:i K',
         });
 
     });

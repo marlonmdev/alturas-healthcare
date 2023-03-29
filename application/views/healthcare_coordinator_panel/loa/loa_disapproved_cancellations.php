@@ -78,6 +78,7 @@
                   <tr>
                     <th class="fw-bold">LOA No.</th>
                     <th class="fw-bold">Requested by</th>
+                    <th class="fw-bold">Healthcare Provider</th>
                     <th class="fw-bold">Reason</th>
                     <th class="fw-bold">Disapproved on</th>
                     <th class="fw-bold">Disapproved by</th>

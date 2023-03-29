@@ -247,18 +247,18 @@
     });
   }
 
-  const requestLoaCancellation = (loa_id, loa_no, hp_id) => {
-    $("#loaCancellationModal").modal("show");
+  // const requestLoaCancellation = (loa_id, loa_no, hp_id) => {
+  //   $("#loaCancellationModal").modal("show");
 
-    $('#cancellation-reason').val('');
-    $('#cancellation-reason').removeClass('is-invalid');
-    $('#cancellation-reason-error').html('');
+  //   $('#cancellation-reason').val('');
+  //   $('#cancellation-reason').removeClass('is-invalid');
+  //   $('#cancellation-reason-error').html('');
 
-    $('#cur-loa-id').val(loa_id);
-    $('#cur-loa-no').val(loa_no);
-    $('#cur-hp-id').val(hp_id);
-    $("#loaCancellationForm").attr("action", `${baseUrl}member/requested-loa/approve/cancel-request/${loa_id}`);
-  }
+  //   $('#cur-loa-id').val(loa_id);
+  //   $('#cur-loa-no').val(loa_no);
+  //   $('#cur-hp-id').val(hp_id);
+  //   $("#loaCancellationForm").attr("action", `${baseUrl}member/requested-loa/approve/cancel-request/${loa_id}`);
+  // }
 
   $(document).ready(function() {
     $('#loaCancellationForm').submit(function(event) {

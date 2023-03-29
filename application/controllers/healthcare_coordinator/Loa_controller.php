@@ -1333,7 +1333,6 @@ class Loa_controller extends CI_Controller {
 			$this->load->view('healthcare_coordinator_panel/loa/'.$view_page.'');
 			$this->load->view('templates/footer');
 		}
-
 		
 	}
 
@@ -1354,33 +1353,8 @@ class Loa_controller extends CI_Controller {
 		$physician_mname = $this->input->post('physician-mname', TRUE);
 		$physician_lname = $this->input->post('physician-lname', TRUE);
 		$added_by = $this->session->userdata('fullname');
-		$added_on = date('Y-m-d');	
-		
-		$post_data = [];
-		for($x = 0; $x < count($ctype_id); $x++ ){
-			$post_data[] = [
-				'emp_id' => $emp_id,
-				'hp_id' => $hp_id,
-				'loa_id' => $loa_id,
-				'loa_no' => $loa_no,
-				'request_type' => $request_type,
-				'ctype_id' =>$ctype_id[$x],
-				'status' => $status[$x],
-				'date_time_performed' => $date_time_performed[$x],
-				'physician' => $physician[$x],
-				'added_by' => $added_by,
-				'added_on' => $added_on
-			];
-		}
-		
-		$inserted = $this->loa_model->insert_performed_loa_info($post_data);
-		
-		$performed = $this->loa_model->check_if_all_status_performed($loa_id);
-		if($performed){
-			$status = 'Completed';
-			$this->loa_model->set_loa_status_completed($loa_id, $status);
-		}
-
+		$added_on = date('Y-m-d');
+	
 			$post_data = [];
 			for($x = 0; $x < count($ctype_id); $x++ ){
 				$post_data[] = [
@@ -1391,13 +1365,13 @@ class Loa_controller extends CI_Controller {
 					'request_type' => $request_type,
 					'ctype_id' =>$ctype_id[$x],
 					'status' => $status[$x],
-					'reason_cancellation' => $reason[$x],
+					'reason_cancellation' => ucfirst($reason[$x]),
 					'date_performed' => $date_performed[$x],
 					'time_performed' => $time_performed[$x],
 					'reschedule_on' => $resched_date[$x],
-					'physician_fname' => $physician_fname[$x],
-					'physician_mname' => $physician_mname[$x],
-					'physician_lname' => $physician_lname[$x],
+					'physician_fname' => ucwords($physician_fname[$x]),
+					'physician_mname' => ucwords($physician_mname[$x]),
+					'physician_lname' => ucwords($physician_lname[$x]),
 					'added_by' => $added_by,
 					'added_on' => $added_on
 				];
@@ -1405,11 +1379,11 @@ class Loa_controller extends CI_Controller {
 			
 			$inserted = $this->loa_model->insert_performed_loa_info($post_data);
 			
-			$performed = $this->loa_model->check_if_all_status_performed($loa_id);
-			if($performed){
-				$status = 'Completed';
-				$this->loa_model->set_loa_status_completed($loa_id, $status);
-			}
+			// $performed = $this->loa_model->check_if_all_status_performed($loa_id);
+			// if($performed){
+			// 	$status = 'Completed';
+			// 	$this->loa_model->set_loa_status_completed($loa_id, $status);
+			// }
 
 			if($inserted){
 				echo json_encode([

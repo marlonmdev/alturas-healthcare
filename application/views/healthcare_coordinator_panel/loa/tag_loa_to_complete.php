@@ -39,7 +39,6 @@
                     <input type="hidden" name="loa-id" value="<?php echo $loa_id ?>">
                     <input type="hidden" name="emp-id" value="<?php echo $emp_id ?>">
                     <input type="hidden" name="request-type" value="<?php echo $request_type ?>">
-                
                     
                     <div class="col-lg-4">
                         <label class="fw-bold">Member's Name : </label>
@@ -76,7 +75,7 @@
 
                                 <div class="col-lg-2 pb-3">
                                     <label class="fw-bold">Status : </label>
-                                    <select class="form-select fw-bold status" name="status[]" id="status" onchange="viewReschedDate();enableInput(); enableReason();" required>
+                                    <select class="form-select fw-bold status" name="status[]" id="status" onchange="viewReschedDate();enableInput();enableReason();" required>
                                         <option value="">-- Please Select --</option>
                                         <option value="Performed">Performed</option>
                                         <option value="Reschedule">Reschedule</option>
@@ -122,14 +121,12 @@
                                         <span class="text-danger" id="physician-lname-error"></span>
                                     </div>
                                 </div>
-                              
                             <hr>
                             <?php 
                                     endif;
                                 endforeach;
                             ?>
                         </div>
-                        
                         <div class="offset-10 pt-3">
                             <button class="btn btn-success fw-bold fs-4 badge" type="submit" name="submit-btn" id="submit-btn"><i class="mdi mdi-near-me"></i> Submit</button>
                         </div>
@@ -185,7 +182,7 @@
                                 showConfirmButton: false,
                                 type: 'success'
                             });
-                            $('#performedLoaInfo')[0].reset();
+                            // $('#performedLoaInfo')[0].reset();
                             setTimeout(function () {
                                 window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved';
                             }, 2600);
@@ -200,7 +197,7 @@
                                 showConfirmButton: false,
                                 type: 'success'
                             });
-                            $('#performedLoaConsultInfo')[0].reset();
+                            // $('#performedLoaConsultInfo')[0].reset();
                             setTimeout(function () {
                                 window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed';
                             }, 2600);
@@ -213,12 +210,12 @@
 
         $(".input-date").flatpickr({
             enableTime: false,
-            dateFormat: 'm-d-Y',
+            dateFormat: 'Y-m-d',
         });
 
         $(".input-resched-date").flatpickr({
             enableTime: false,
-            dateFormat: 'm-d-Y',
+            dateFormat: 'Y-m-d',
         });
 
         $( '.input-time' ).flatpickr({
@@ -249,7 +246,7 @@
         const expire_on = document.querySelectorAll('.expired-on'); 
         const date_performed = document.querySelectorAll('.input-date');
         
-        for (let i = 0; date_performed.length; i++){
+        for (let i = 0; i < date_performed.length; i++){
 
             const date_performance = new Date(date_performed[i].value);
             const approved_date = new Date(approved_on[i].value);
@@ -321,11 +318,12 @@
                 physician_fname[i].setAttribute('required', true);
                 physician_mname[i].setAttribute('required', true);
                 physician_lname[i].setAttribute('required', true);
+                reschedDateElements[i].removeAttribute('required');
+                reason[i].removeAttribute('required');
                 reschedDateElements[i].value = '';
                 reason[i].value = '';
             }
         }
-       
     }
 
     const enableReason = () => {
@@ -358,6 +356,12 @@
                 physician_mname[i].value = '';
                 physician_lname[i].value = '';
                 reschedDateElements[i].value = '';
+                input_date[i].removeAttribute('required'); 
+                input_time[i].removeAttribute('required'); 
+                physician_fname[i].removeAttribute('required');
+                physician_mname[i].removeAttribute('required');
+                physician_lname[i].removeAttribute('required');
+                reschedDateElements[i].removeAttribute('required');
             }else{
                 reason[i].style.display = 'none';
             }
@@ -377,7 +381,6 @@
         const input_time = document.querySelectorAll('.input-time');
         const input_reason = document.querySelectorAll('.input-reason');
 
-
         for (let i = 0; i < statusElements.length; i++) {
             const status = statusElements[i].value;
 
@@ -395,6 +398,12 @@
             physician_mname[i].style.display = 'none';
             physician_lname[i].style.display = 'none';
             label_physician[i].style.display = 'none';
+            input_date[i].removeAttribute('required'); 
+            input_time[i].removeAttribute('required'); 
+            physician_fname[i].removeAttribute('required');
+            physician_mname[i].removeAttribute('required');
+            physician_lname[i].removeAttribute('required');
+            input_reason[i].removeAttribute('required');
             }else{
             reschedDateElements[i].style.display = 'none';
             performDateElements[i].style.display = 'block';

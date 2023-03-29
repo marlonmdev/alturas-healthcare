@@ -109,7 +109,7 @@
                     <th class="fw-bold">LOA Type</th>
                     <th class="fw-bold">Healthcare Provider</th>
                     <th class="fw-bold">RX File</th>
-                    <th class="fw-bold">Expiration Date</th>
+                    <th class="fw-bold">Expiry Date</th>
                     <th class="fw-bold">Status</th>
                     <th class="fw-bold">Actions</th>
                   </tr>
@@ -301,7 +301,8 @@
           req_status,
           work_related,
           approved_by,
-          approved_on
+          approved_on,
+          expiry_date,
         } = res;
 
         $("#viewLoaModal").modal("show");
@@ -311,6 +312,7 @@
         $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
+        $('#expiry-date').html(expiry_date);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
         $('#work-related-val').html(work_related);

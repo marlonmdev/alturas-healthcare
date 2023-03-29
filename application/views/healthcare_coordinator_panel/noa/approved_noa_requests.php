@@ -89,7 +89,7 @@
                     <th class="fw-bold">Name</th>
                     <th class="fw-bold">Admission Date</th>
                     <th class="fw-bold">Hospital Name</th>
-                    <th class="fw-bold">Request Date</th>
+                    <th class="fw-bold">Expiry Date</th>
                     <th class="fw-bold">Status</th>
                     <th class="fw-bold">Actions</th>
                   </tr>
@@ -129,6 +129,10 @@
                         <tr>
                           <td class="fw-bold ls-1">Approved On :</td>
                           <td class="fw-bold ls-1" id="approved-on"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Expiry Date :</td>
+                          <td class="fw-bold ls-1" id="expiry-date"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Member's Maximum Benefit Limit :</td>
@@ -257,6 +261,7 @@
           noa_no,
           approved_by,
           approved_on,
+          expiry_date,
           member_mbl,
           remaining_mbl,
           first_name,
@@ -290,6 +295,7 @@
         $('#noa-no').html(noa_no);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
+        $('#expiry-date').html(expiry_date);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);

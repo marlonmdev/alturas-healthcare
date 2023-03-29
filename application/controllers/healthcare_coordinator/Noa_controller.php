@@ -175,6 +175,7 @@ class Noa_controller extends CI_Controller {
 
 			$admission_date = date("m/d/Y", strtotime($noa['admission_date']));
 			$request_date = date("m/d/Y", strtotime($noa['request_date']));
+			$expiry_date = $noa['expiration_date'] ? date("m/d/Y", strtotime($noa['expiration_date'])) : 'None';
 
 			$custom_noa_no = '<mark class="bg-primary text-white">'.$noa['noa_no'].'</mark>';
 
@@ -194,7 +195,7 @@ class Noa_controller extends CI_Controller {
 			$row[] = $full_name;
 			$row[] = $admission_date;
 			$row[] = $short_hosp_name;
-			$row[] = $request_date;
+			$row[] = $expiry_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;
@@ -369,6 +370,7 @@ class Noa_controller extends CI_Controller {
 			'work_related' => $row['work_related'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
+			'expiry_date' => $row['expiration_date'] ? date("F d, Y", strtotime($row['expiration_date'])) : 'None',
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		];

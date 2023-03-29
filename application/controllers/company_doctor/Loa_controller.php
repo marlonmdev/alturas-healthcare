@@ -519,6 +519,7 @@ class Loa_controller extends CI_Controller {
 			'disapproved_by' =>  $doctor_name,
 			'disapprove_reason' => $row['disapprove_reason'],
 			'disapproved_on' => $row['disapproved_on'] ? date("F d, Y", strtotime($row['disapproved_on'])) : '',
+			'expiry_date' => $row['expiration_date'] ? date("F d, Y", strtotime($row['expiration_date'])) : 'None',
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		];

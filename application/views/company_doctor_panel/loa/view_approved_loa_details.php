@@ -27,6 +27,10 @@
                             <td class="fw-bold ls-1" id="approved-on"></td>
                           </tr>
                           <tr>
+                            <td class="fw-bold ls-1">Expiry Date :</td>
+                            <td class="fw-bold ls-1" id="expiry-date"></td>
+                          </tr>
+                          <tr>
                             <td class="fw-bold ls-1">Member's Maximum Benefit Limit :</td>
                             <td class="fw-bold ls-1">&#8369;<span id="member-mbl"></span></td>
                           </tr>

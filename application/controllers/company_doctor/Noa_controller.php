@@ -78,7 +78,7 @@ class Noa_controller extends CI_Controller {
 			$full_name = $noa['first_name'] . ' ' . $noa['middle_name'] . ' ' . $noa['last_name'] . ' ' . $noa['suffix'];
 
 			$admission_date = date("m/d/Y", strtotime($noa['admission_date']));
-			$request_date = date("m/d/Y", strtotime($noa['request_date']));
+			$expiry_date = $noa['expiration_date'] ? date("m/d/Y", strtotime($noa['expiration_date'])) : 'None';
 
 			$custom_noa_no = '<mark class="bg-primary text-white">'.$noa['noa_no'].'</mark>';
 
@@ -97,7 +97,7 @@ class Noa_controller extends CI_Controller {
 			$row[] = $full_name;
 			$row[] = $admission_date;
 			$row[] = $short_hosp_name;
-			$row[] = $request_date;
+			$row[] = $expiry_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;
@@ -266,6 +266,7 @@ class Noa_controller extends CI_Controller {
 			'disapproved_by' => $doctor_name,
 			'disapprove_reason' => $row['disapprove_reason'],
 			'disapproved_on' => date("F d, Y", strtotime($row['disapproved_on'])),
+			'expiry_date' => $row['expiration_date'] ? date("F d, Y", strtotime($row['expiration_date'])) : 'None',
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		);
@@ -273,17 +274,78 @@ class Noa_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	public function approve_noa_request() {
+	// public function approve_noa_request() {
+	// 	$token = $this->security->get_csrf_hash();
+	// 	$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+	// 	$approved_by = $this->session->userdata('doctor_id');
+	// 	$approved_on = date("Y-m-d");
+	// 	$approved = $this->noa_model->db_approve_noa_request($noa_id, $approved_by, $approved_on);
+	// 	if ($approved) {
+	// 		$response = ['token' => $token, 'status' => 'success', 'message' => 'NOA Request Approved Successfully'];
+	// 	} else {
+	// 		$response = ['token' => $token, 'status' => 'error', 'message' => 'Unable to Approve NOA Request!'];
+	// 	}
+	// 	echo json_encode($response);
+	// }
+
+
+	function approve_noa_request() {
 		$token = $this->security->get_csrf_hash();
-		$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$noa_id = $this->myhash->hasher($this->input->post('noa-id', TRUE), 'decrypt');
+		$expiration_type = $this->input->post('expiration-type', TRUE);
+		$expiration_date = $this->input->post('expiration-date', TRUE);
 		$approved_by = $this->session->userdata('doctor_id');
 		$approved_on = date("Y-m-d");
-		$approved = $this->noa_model->db_approve_noa_request($noa_id, $approved_by, $approved_on);
-		if ($approved) {
-			$response = ['token' => $token, 'status' => 'success', 'message' => 'NOA Request Approved Successfully'];
-		} else {
-			$response = ['token' => $token, 'status' => 'error', 'message' => 'Unable to Approve NOA Request!'];
+
+		if($expiration_type == 'custom'){
+			$this->form_validation->set_rules('expiration-date', 'Custom Expiration Date', 'required');
+			if ($this->form_validation->run() == FALSE) {
+				$response = array(
+					'token' => $token,
+					'status' => 'error',
+					'expiration_date_error' => form_error('expiration-date'),
+				);
+			}
+			echo json_encode($response);
+			exit();
 		}
+
+		switch($expiration_type){
+			case 'default': 
+					$default = strtotime('+1 week', strtotime($approved_on));
+					$expired_on = date('Y-m-d', $default);
+				break;
+			case '2 weeks':
+					$expires = strtotime('+2 weeks', strtotime($approved_on));
+					$expired_on = date('Y-m-d', $expires);
+				break;
+			case '3 weeks':
+					$expires = strtotime('+3 weeks', strtotime($approved_on));
+					$expired_on = date('Y-m-d', $expires);
+				break;
+			case '4 weeks':
+					$expires = strtotime('+4 weeks', strtotime($approved_on));
+					$expired_on = date('Y-m-d', $expires);
+				break;
+			case 'custom':
+					$expired_on = date('Y-m-d', strtotime($expiration_date));
+				break;
+		}
+
+		$data = [
+			'status' => 'Approved',
+			'approved_by' => $approved_by,
+			'approved_on' => $approved_on,
+			'expiration_date' => $expired_on
+		];
+
+		$approved = $this->noa_model->db_approve_noa_request($noa_id, $data);
+		if ($approved) {
+			$response = array('token' => $token, 'status' => 'success', 'message' => 'NOA Request Approved Successfully');
+		} else {
+			$response = array('token' => $token, 'status' => 'error', 'message' => 'Unable to Approve NOA Request!');
+		}
+
 		echo json_encode($response);
 	}
 

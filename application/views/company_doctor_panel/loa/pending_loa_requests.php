@@ -316,63 +316,7 @@
 
     $('#loaApprovalModal').modal('show');
     $('#appr-loa-id').val(loa_id);
-    // $.confirm({
-    //   title: '<strong>Confirm!</strong>',
-    //   content: 'Are you sure to Approve LOA Request?',
-    //   type: 'green',
-    //   buttons: {
-    //     confirm: {
-    //       text: 'Yes',
-    //       btnClass: 'btn-green',
-    //       action: function() {
-    //         $.ajax({
-    //           type: 'GET',
-    //           url: `${baseUrl}company-doctor/loa/requests-list/approve/${loa_id}`,
-    //           data: {
-    //             loa_id: loa_id
-    //           },
-    //           dataType: "json",
-    //           success: function(response) {
-    //             const {
-    //               token,
-    //               status,
-    //               message
-    //             } = response;
-    //             if (status === 'success') {
-    //               swal({
-    //                 title: 'Success',
-    //                 text: message,
-    //                 timer: 3000,
-    //                 showConfirmButton: false,
-    //                 type: 'success'
-    //               });
 
-    //               setTimeout(function() {
-    //                 window.location.href = nextPage;
-    //               }, 3200);
-
-    //             } else {
-    //               swal({
-    //                 title: 'Failed',
-    //                 text: message,
-    //                 timer: 3000,
-    //                 showConfirmButton: false,
-    //                 type: 'error'
-    //               });
-    //             }
-    //           }
-    //         });
-    //       }
-    //     },
-    //     cancel: {
-    //       btnClass: 'btn-dark',
-    //       action: function() {
-    //         // close dialog
-    //       }
-    //     },
-
-    //   }
-    // });
   }
 
   const disapproveLoaRequest = (loa_id) => {

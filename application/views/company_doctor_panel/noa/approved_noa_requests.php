@@ -89,7 +89,7 @@
                     <th class="fw-bold">Name</th>
                     <th class="fw-bold">Admission Date</th>
                     <th class="fw-bold">Hospital Name</th>
-                    <th class="fw-bold">Request Date</th>
+                    <th class="fw-bold">Expiry Date</th>
                     <th class="fw-bold">Status</th>
                     <th class="fw-bold">Actions</th>
                   </tr>

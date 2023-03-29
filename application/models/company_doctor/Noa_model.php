@@ -119,13 +119,7 @@ class Noa_model extends CI_Model {
     return $query->row_array();
   }
 
-
-  function db_approve_noa_request($noa_id, $approved_by, $approved_on) {
-    $data = array(
-      'status' => 'Approved',
-      'approved_by' => $approved_by,
-      'approved_on' => $approved_on
-    );
+  function db_approve_noa_request($noa_id, $data) {
     $this->db->where('noa_id', $noa_id);
     return $this->db->update('noa_requests', $data);
   }

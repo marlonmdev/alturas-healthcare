@@ -56,8 +56,7 @@
                         <td class="ls-1" style="padding-left:20px;">
                           <span class="fw-bold fs-3 ls-1">NOTICE OF ADMISSION</span><br>
                           <?php
-                          $expires = strtotime('+1 week', strtotime($row['approved_on']));
-                          $valid_until = date('F d, Y', $expires);
+                            $valid_until = $row['expiration_date'] ? date('F d, Y', strtotime($row['expiration_date'])) : '';
                           ?>
                           NOA Number : <strong><?= $row['noa_no'] ?></strong><br>
                           Approved On : <strong><?= date('F d, Y', strtotime($row['approved_on'])) ?></strong><br>

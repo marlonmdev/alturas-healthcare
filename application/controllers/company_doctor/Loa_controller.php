@@ -527,7 +527,6 @@ class Loa_controller extends CI_Controller {
 
 	function approve_loa_request() {
 		$token = $this->security->get_csrf_hash();
-		// $loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$loa_id = $this->myhash->hasher($this->input->post('loa-id', TRUE), 'decrypt');
 		$expiration_type = $this->input->post('expiration-type', TRUE);
 		$expiration_date = $this->input->post('expiration-date', TRUE);
@@ -535,7 +534,7 @@ class Loa_controller extends CI_Controller {
 		$approved_on = date("Y-m-d");
 
 		if($expiration_type == 'custom'){
-			$this->form_validation->set_rules('expiration-date', 'Expiration Date', 'required');
+			$this->form_validation->set_rules('expiration-date', 'Custom Expiration Date', 'required');
 			if ($this->form_validation->run() == FALSE) {
 				$response = array(
 					'token' => $token,
@@ -568,8 +567,6 @@ class Loa_controller extends CI_Controller {
 					$expired_on = date('Y-m-d', strtotime($expiration_date));
 				break;
 		}
-
-		$this->load->model('healthcare_coordinator/loa_model');
 
 		$data = [
 			'status' => 'Approved',

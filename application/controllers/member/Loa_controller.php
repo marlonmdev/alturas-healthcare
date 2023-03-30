@@ -476,6 +476,8 @@ class Loa_controller extends CI_Controller {
 
 			$custom_loa_no = 	'<mark class="bg-primary text-white">'.$value['loa_no'].'</mark>';
 
+			$request_date = $value['request_date'] ? date("m/d/Y", strtotime($value['request_date'])) : 'None';
+
 			/* Checking if the work_related column is empty. If it is empty, it will display the status column.
 			If it is not empty, it will display the text "for Approval". */
 			if($value['work_related'] == ''){
@@ -514,10 +516,9 @@ class Loa_controller extends CI_Controller {
 
 			$result['data'][] = array(
 				$custom_loa_no,
-				date("m/d/Y", strtotime($value['request_date'])),
 				$short_hp_name,
 				$value['loa_request_type'],
-				// $short_med_serv,
+				$request_date,
 				$view_file,
 				$custom_status,
 				$button
@@ -537,16 +538,18 @@ class Loa_controller extends CI_Controller {
 
 			$custom_loa_no = 	'<mark class="bg-primary text-white">'.$value['loa_no'].'</mark>';
 
-			$expires = strtotime('+1 week', strtotime($value['approved_on']));
-      $expiration_date = date('m/d/Y', $expires);
-			// call another function to determined if expired or not
-			$date_result = $this->checkExpiration($value['approved_on']);
+			$expiry_date = $value['expiration_date'] ? date('m/d/Y', strtotime($value['expiration_date'])) : 'None';
+
+			// $expires = strtotime('+1 week', strtotime($value['approved_on']));
+      // $expiration_date = date('m/d/Y', $expires);
+			// // call another function to determined if expired or not
+			// $date_result = $this->checkExpiration($value['approved_on']);
 			
-			if($date_result == 'Expired'){
-				$custom_date = '<span class="text-danger">'.$expiration_date.'</span><span class="text-danger fw-bold ls-1"> [Expired]</span>';
-			}else{
-				$custom_date = $expiration_date;
-			}
+			// if($date_result == 'Expired'){
+			// 	$custom_date = '<span class="text-danger">'.$expiration_date.'</span><span class="text-danger fw-bold ls-1"> [Expired]</span>';
+			// }else{
+			// 	$custom_date = $expiration_date;
+			// }
 			
 			$buttons = '<a class="me-2" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
@@ -584,10 +587,9 @@ class Loa_controller extends CI_Controller {
 
 			$result['data'][] = array(
 				$custom_loa_no,
-				$custom_date,
 				$short_hp_name,
 				$value['loa_request_type'],
-				// $short_med_serv,
+				$expiry_date,
 				$view_file,
 				'<span class="badge rounded-pill bg-success">' . $value['status'] . '</span>',
 				$buttons

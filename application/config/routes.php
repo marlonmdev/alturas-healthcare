@@ -7,6 +7,7 @@ $route['default_controller'] = 'page_controller';
 $route['check-login'] = 'auth_controller/check_login';
 $route['redirect-to-dashboard'] = 'auth_controller/redirect_to_dashboard';
 $route['logout'] = 'auth_controller/logout';
+
 // $route['import/members'] = 'masterfile_controller';
 
 // Import Members Data Routes
@@ -23,6 +24,9 @@ $route['import/spreadhseet_format_download'] = 'masterfile_controller/spreadhsee
 $route['import/spreadsheet_export'] = 'masterfile_controller/spreadsheet_export';
 //================================================================================================
 
+// route for automatically run functions on page load
+$route['check-all/approved-loa/expired/update'] = 'autorun_controller/update_all_expired_loa';
+$route['check-member/approved-loa/expired/update/(:any)'] = 'autorun_controller/update_member_expired_loa';
 
 //================================================================================================
 // Member Navigation Links Routes
@@ -344,6 +348,7 @@ $route['healthcare-coordinator/loa/approved/view/(:any)'] = 'healthcare_coordina
 $route['healthcare-coordinator/loa/disapproved/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_disapproved_loa_info';
 $route['healthcare-coordinator/loa/cancelled/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_cancelled_loa_info';
 $route['healthcare-coordinator/loa/completed/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_completed_loa_info';
+$route['healthcare-coordinator/loa/expired/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_expired_loa_info';
 $route['healthcare-coordinator/loa/requests-list/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_loa_details';
 $route['healthcare-coordinator/loa/requests-list/approve/(:any)'] = 'healthcare_coordinator/loa_controller/approve_loa_request';
 $route['healthcare-coordinator/loa/requests-list/disapprove/(:any)'] = 'healthcare_coordinator/loa_controller/disapprove_loa_request';

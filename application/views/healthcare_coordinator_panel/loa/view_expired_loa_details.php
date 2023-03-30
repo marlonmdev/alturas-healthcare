@@ -19,16 +19,16 @@
                           <td class="fw-bold ls-1" id="request-date"></td>
                         </tr>
                         <tr>
-                          <td class="fw-bold ls-1">Cancelled By :</td>
-                          <td class="fw-bold ls-1" id="cancelled-by"></td>
+                          <td class="fw-bold ls-1">Approved By :</td>
+                          <td class="fw-bold ls-1" id="approved-by"></td>
                         </tr>
                         <tr>
-                          <td class="fw-bold ls-1">Cancelled On :</td>
-                          <td class="fw-bold ls-1" id="cancelled-on"></td>
+                          <td class="fw-bold ls-1">Approved On :</td>
+                          <td class="fw-bold ls-1" id="approved-on"></td>
                         </tr>
                         <tr>
-                          <td class="fw-bold ls-1">Reason for Cancellation :</td>
-                          <td class="fw-bold ls-1" id="cancellation-reason"></td>
+                          <td class="fw-bold ls-1">Expiry Date :</td>
+                          <td class="fw-bold ls-1" id="expiry-date"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Member's Maximum Benefit Limit :</td>

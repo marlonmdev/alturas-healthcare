@@ -6,7 +6,7 @@ class Loa_model extends CI_Model {
   // Start of server-side processing datatables
   var $table = 'loa_requests';
   var $column_order = ['loa_no', 'request_date', 'hcare_provider', 'loa_request_type']; //set column field database for datatable orderable
-  var $column_search = ['loa_no', 'request_date', 'hp_name', 'loa_request_type', 'med_services']; //set column field database for datatable searchable 
+  var $column_search = ['loa_no', 'request_date', 'expiration_date', 'hp_name', 'loa_request_type', 'med_services']; //set column field database for datatable searchable 
   var $order = ['loa_id' => 'desc']; // default order 
 
   private function _get_datatables_query($status, $emp_id) {
@@ -116,7 +116,7 @@ class Loa_model extends CI_Model {
   }
 
   function db_get_approved_loa($emp_id) {
-    $this->db->select('tbl_1.loa_id, tbl_1.loa_no, tbl_1.hcare_provider, tbl_2.hp_name, tbl_1.loa_request_type, tbl_1.med_services, tbl_1.rx_file, tbl_1.work_related, tbl_1.request_date, tbl_1.approved_on, tbl_1.status')
+    $this->db->select('tbl_1.loa_id, tbl_1.loa_no, tbl_1.hcare_provider, tbl_2.hp_name, tbl_1.loa_request_type, tbl_1.med_services, tbl_1.rx_file, tbl_1.work_related, tbl_1.request_date, tbl_1.approved_on, tbl_1.expiration_date, tbl_1.status')
              ->from('loa_requests as tbl_1')
              ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
              ->where('tbl_1.status', 'Approved')

@@ -27,6 +27,10 @@
                           <td class="fw-bold ls-1" id="approved-on"></td>
                         </tr>
                         <tr>
+                          <td class="fw-bold ls-1">Expiry Date :</td>
+                          <td class="fw-bold ls-1" id="expiry-date"></td>
+                        </tr>
+                        <tr>
                           <td class="fw-bold ls-1">Work Related :</td>
                           <td class="fw-bold ls-1" id="work-related-val"></td>
                         </tr>

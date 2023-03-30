@@ -63,6 +63,24 @@
               <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
             >
           </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="<?php echo base_url(); ?>super-admin/loa/requests-list/cancelled"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Cancelled</span></a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="<?php echo base_url(); ?>super-admin/loa/requests-list/expired"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Expired</span></a
+            >
+          </li>
         </ul>
 
         <div class="card shadow">

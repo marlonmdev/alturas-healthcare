@@ -404,16 +404,6 @@ class Loa_controller extends CI_Controller {
 
 			$custom_actions = '<a class="me-1" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
-			// call another function to determined if expired or not
-			// if($expiry_date !== 'None'){
-			// 	$date_result = $this->checkExpiration($expiry_date);
-			// }
-      // if($date_result == 'Expired'){
-			// 	$custom_actions .= 'Expired';
-			// }else{
-			// 	$custom_actions .= 'Not Expired';
-			// }
-
 			$custom_actions .= '<a class="me-1" href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Print LOA"><i class="mdi mdi-printer fs-2 text-primary"></i></a>';
 
 			$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Update LOA"><i class="mdi mdi-playlist-check fs-2 text-success"></i></a>';
@@ -465,33 +455,6 @@ class Loa_controller extends CI_Controller {
 		];
 		echo json_encode($output);
 	}
-
-	function checkExpiration($expiry_date){
-		// $expiration_date =  DateTime::createFromFormat("Y-m-d", $expiry_date);
-
-		$current_date = date('Y-m-d');
-
-		// $date_diff = $current_date->diff($expiration_date);
-
-		// $result = $date_diff->invert ? "Expired" : "Not Expired";
-		$result = $current_date == $expiry_date ? 'Expired' : 'Not Expired';
-
-		return $result;
-	}
-
-	// function checkExpiration($passed_date){
-	// 	$approved_date = DateTime::createFromFormat("Y-m-d", $passed_date);
-
-	// 	$expiration_date = $approved_date->modify("+7 days");
-
-	// 	$current_date = new DateTime();
-
-	// 	$date_diff = $current_date->diff($expiration_date);
-
-	// 	$result = $date_diff->invert ? "Expired" : "Not Expired";
-
-	// 	return $result;
-	// }
 
 	function fetch_all_disapproved_loa() {
 		$this->security->get_csrf_hash();
@@ -638,6 +601,8 @@ class Loa_controller extends CI_Controller {
 			$custom_status = '<span class="badge rounded-pill bg-danger">' . $loa['status'] . '</span>';
 
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewExpiredLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+
+			$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="Back Date LOA"><i class="mdi mdi-update fs-2 text-cyan"></i></a>';
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
@@ -899,7 +864,7 @@ class Loa_controller extends CI_Controller {
 			'middle_name' => $row['middle_name'],
 			'last_name' => $row['last_name'],
 			'suffix' => $row['suffix'],
-			'date_of_birth' => 	date("F d, Y", strtotime($row['date_of_birth'])),
+			'date_of_birth' => $row['date_of_birth'] ? date("F d, Y", strtotime($row['date_of_birth'])) : '',
 			'age' => $age,
 			'gender' => $row['gender'],
 			'blood_type' => $row['blood_type'],
@@ -916,7 +881,7 @@ class Loa_controller extends CI_Controller {
 			'med_services' => $med_serv,
 			'health_card_no' => $row['health_card_no'],
 			'requesting_company' => $row['requesting_company'],
-			'request_date' => date("F d, Y", strtotime($row['request_date'])),
+			'request_date' => $row['request_date'] ? date("F d, Y", strtotime($row['request_date'])) : '',
 			'chief_complaint' => $row['chief_complaint'],
 			'requesting_physician' => $row['doctor_name'],
 			'attending_physician' => $row['attending_physician'],
@@ -925,7 +890,7 @@ class Loa_controller extends CI_Controller {
 			'work_related' => $row['work_related'],
 			'disapproved_by' => $doctor_name,
 			'disapprove_reason' => $row['disapprove_reason'],
-			'disapproved_on' => date("F d, Y", strtotime($row['approved_on'])),
+			'disapproved_on' => $row['approved_on'] ? date("F d, Y", strtotime($row['approved_on'])) : '',
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		];
@@ -962,7 +927,7 @@ class Loa_controller extends CI_Controller {
 			'middle_name' => $row['middle_name'],
 			'last_name' => $row['last_name'],
 			'suffix' => $row['suffix'],
-			'date_of_birth' => 	date("F d, Y", strtotime($row['date_of_birth'])),
+			'date_of_birth' => $row['date_of_birth'] ? date("F d, Y", strtotime($row['date_of_birth'])) : '',
 			'age' => $age,
 			'gender' => $row['gender'],
 			'blood_type' => $row['blood_type'],
@@ -979,7 +944,7 @@ class Loa_controller extends CI_Controller {
 			'med_services' => $med_serv,
 			'health_card_no' => $row['health_card_no'],
 			'requesting_company' => $row['requesting_company'],
-			'request_date' => date("F d, Y", strtotime($row['request_date'])),
+			'request_date' => $row['request_date'] ? date("F d, Y", strtotime($row['request_date'])) : '',
 			'chief_complaint' => $row['chief_complaint'],
 			'requesting_physician' => $row['doctor_name'],
 			'attending_physician' => $row['attending_physician'],
@@ -1032,7 +997,7 @@ class Loa_controller extends CI_Controller {
 			'middle_name' => $row['middle_name'],
 			'last_name' => $row['last_name'],
 			'suffix' => $row['suffix'],
-			'date_of_birth' => 	date("F d, Y", strtotime($row['date_of_birth'])),
+			'date_of_birth' => $row['date_of_birth'] ?	date("F d, Y", strtotime($row['date_of_birth'])) : '',
 			'age' => $age,
 			'gender' => $row['gender'],
 			'blood_type' => $row['blood_type'],
@@ -1049,7 +1014,7 @@ class Loa_controller extends CI_Controller {
 			'med_services' => $med_serv,
 			'health_card_no' => $row['health_card_no'],
 			'requesting_company' => $row['requesting_company'],
-			'request_date' => date("F d, Y", strtotime($row['request_date'])),
+			'request_date' => $row['request_date'] ? date("F d, Y", strtotime($row['request_date'])) : '',
 			'chief_complaint' => $row['chief_complaint'],
 			'requesting_physician' => $row['doctor_name'],
 			'attending_physician' => $row['attending_physician'],
@@ -1057,12 +1022,84 @@ class Loa_controller extends CI_Controller {
 			'req_status' => $row['status'],
 			'work_related' => $row['work_related'],
 			'approved_by' => $doctor_name,
-			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
+			'approved_on' => $row['approved_on'] ? date("F d, Y", strtotime($row['approved_on'])) : '',
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		];
 		echo json_encode($response);
 	}
+
+
+		function get_expired_loa_info() {
+		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$this->load->model('healthcare_coordinator/loa_model');
+		$row = $this->loa_model->db_get_loa_details($loa_id);
+		$doctor_name = "";
+		if ($row['approved_by']) {
+			$doc = $this->loa_model->db_get_doctor_by_id($row['approved_by']);
+			$doctor_name = $doc['doctor_name'];
+		} else {
+			$doctor_name = "Does not exist from Database";
+		}
+
+		$cost_types = $this->loa_model->db_get_cost_types();
+		// Calculate Age
+		$birthDate = date("d-m-Y", strtotime($row['date_of_birth']));
+		$currentDate = date("d-m-Y");
+		$diff = date_diff(date_create($birthDate), date_create($currentDate));
+		$age = $diff->format("%y");
+		// get selected medical services
+		$selected_cost_types = explode(';', $row['med_services']);
+		$ct_array = [];
+		foreach ($cost_types as $cost_type) :
+			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
+				array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
+			}
+		endforeach;
+		$med_serv = implode(' ', $ct_array);
+
+		$response = [
+			'status' => 'success',
+			'token' => $this->security->get_csrf_hash(),
+			'loa_id' => $row['loa_id'],
+			'loa_no' => $row['loa_no'],
+			'first_name' => $row['first_name'],
+			'middle_name' => $row['middle_name'],
+			'last_name' => $row['last_name'],
+			'suffix' => $row['suffix'],
+			'date_of_birth' => $row['date_of_birth'] ?	date("F d, Y", strtotime($row['date_of_birth'])) : '',
+			'age' => $age,
+			'gender' => $row['gender'],
+			'blood_type' => $row['blood_type'],
+			'philhealth_no' => $row['philhealth_no'],
+			'contact_no' => $row['contact_no'],
+			'home_address' => $row['home_address'],
+			'city_address' => $row['city_address'],
+			'email' => $row['email'],
+			'contact_person' => $row['contact_person'],
+			'contact_person_addr' => $row['contact_person_addr'],
+			'contact_person_no' => $row['contact_person_no'],
+			'healthcare_provider' => $row['hp_name'],
+			'loa_request_type' => $row['loa_request_type'],
+			'med_services' => $med_serv,
+			'health_card_no' => $row['health_card_no'],
+			'requesting_company' => $row['requesting_company'],
+			'request_date' => $row['request_date'] ? date("F d, Y", strtotime($row['request_date'])) : '',
+			'chief_complaint' => $row['chief_complaint'],
+			'requesting_physician' => $row['doctor_name'],
+			'attending_physician' => $row['attending_physician'],
+			'rx_file' => $row['rx_file'],
+			'req_status' => $row['status'],
+			'work_related' => $row['work_related'],
+			'approved_by' => $doctor_name,
+			'approved_on' => $row['approved_on'] ? date("F d, Y", strtotime($row['approved_on'])) : '',
+			'expiry_date' => $row['expiration_date'] ? date("F d, Y", strtotime($row['expiration_date'])) : '',
+			'member_mbl' => number_format($row['max_benefit_limit'], 2),
+			'remaining_mbl' => number_format($row['remaining_balance'], 2),
+		];
+		echo json_encode($response);
+	}
+
 
 	function cancel_loa_request() {
 		$token = $this->security->get_csrf_hash();

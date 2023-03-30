@@ -120,6 +120,7 @@
 
             </div>
           </div>
+           <?php include 'managers_key_modal.php'; ?>
         </div>
 
         <?php include 'view_expired_loa_details.php'; ?>
@@ -165,7 +166,7 @@
 
     
     $('#expired-hospital-filter').change(function(){
-      aprrovedTable.draw();
+      expiredTable.draw();
     });
 
 
@@ -225,7 +226,7 @@
 
   });
 
-  function viewImage(path) {
+  const viewImage = (path) => {
     let item = [{
       src: path, // path to image
       title: 'Attached RX File' // If you skip it, there will display the original image name
@@ -256,7 +257,11 @@
       });
   }
 
-  function viewExpiredLoaInfo(loa_id) {
+  const backDate = (loa_id) => {
+    $("#managersKeyModal").modal("show");
+  }
+
+  const viewExpiredLoaInfo = (loa_id) => {
     $.ajax({
       url: `${baseUrl}healthcare-coordinator/loa/expired/view/${loa_id}`,
       type: "GET",
@@ -306,7 +311,7 @@
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
         $('#loa-no').html(loa_no);
-        $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
+        $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
         $('#expiry-date').html(expiry_date);

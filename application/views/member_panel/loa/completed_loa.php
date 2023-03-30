@@ -165,6 +165,7 @@
           loa_no,
           approved_by,
           approved_on,
+          expiry_date,
           first_name,
           middle_name,
           last_name,

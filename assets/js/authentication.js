@@ -89,6 +89,7 @@ function check_login() {
  * @param next_route - the route where the ajax request will be sent to
  * @param next_page - the page to be redirected to after login
  */
+
 function login_validated(
 	token,
 	user_id,

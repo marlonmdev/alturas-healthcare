@@ -81,9 +81,9 @@
                 <thead>
                   <tr>
                     <th class="fw-bold">LOA No.</th>
-                    <th class="fw-bold">Expiration Date</th>
                     <th class="fw-bold">Healthcare Provider</th>
                     <th class="fw-bold">LOA Type</th>
+                    <th class="fw-bold">Expiry Date</th>
                     <th class="fw-bold">RX File</th>
                     <th class="fw-bold">Status</th>
                     <th class="fw-bold">Actions</th>
@@ -181,6 +181,7 @@
           loa_no,
           approved_by,
           approved_on,
+          expiry_date,
           first_name,
           middle_name,
           last_name,
@@ -220,6 +221,7 @@
         $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
+        $('#expiry-date').html(expiry_date);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
         $('#date-of-birth').html(date_of_birth);
         $('#age').html(age);

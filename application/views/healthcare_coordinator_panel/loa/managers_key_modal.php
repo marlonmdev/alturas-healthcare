@@ -19,12 +19,8 @@
                         <i class="mdi mdi-account"></i>
                         </span>
                     </div>
-
-                    <!-- <div class="col-12 mb-4"> -->
-                      <!-- <label class="colored-label ls-1">Username:</label> -->
-                      <input class="form-control" type="text" name="mgr-username" id="mgr-username" placeholder="Enter Username" style="background-color:#ffff" required>
-                      <em id="mgr-username-error" class="text-danger"></em>
-                    <!-- </div>  -->
+                    <input class="form-control" type="text" name="mgr-username" id="mgr-username" placeholder="Enter Username" style="background-color:#ffff" required>
+                    <em id="mgr-username-error" class="text-danger"></em>
                   </div>
 
                   <div class="input-group mb-2">
@@ -33,12 +29,8 @@
                         <i class="mdi mdi-lock"></i>
                         </span>
                     </div>
-
-                    <!-- <div class="col-12 mb-2"> -->
-                      <!-- <label class="colored-label ls-1">Password:</label> -->
-                      <input class="form-control" type="password" name="mgr-password" id="mgr-password" placeholder="Enter Password" style="background-color:#ffff" required>
-                      <em id="mgr-password-error" class="text-danger"></em>
-                    <!-- </div> -->
+                    <input class="form-control" type="password" name="mgr-password" id="mgr-password" placeholder="Enter Password" style="background-color:#ffff" required>
+                    <em id="mgr-password-error" class="text-danger"></em>
                   </div>
                 </div>
                

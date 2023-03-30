@@ -39,7 +39,8 @@ $route['member/requested-loa/pending'] = 'member/pages_controller/pending_reques
 $route['member/requested-loa/approved'] = 'member/pages_controller/approved_requested_loa';
 $route['member/requested-loa/disapproved'] = 'member/pages_controller/disapproved_requested_loa';
 $route['member/requested-loa/completed'] = 'member/pages_controller/completed_requested_loa';
-$route['member/requested-loa/cancelled'] = 'member/pages_controller/cancelled_loa_requests';
+$route['member/requested-loa/expired'] = 'member/pages_controller/expired_requested_loa';
+$route['member/requested-loa/cancelled'] = 'member/pages_controller/cancelled_requested_loa';
 $route['member/requested-noa/pending'] = 'member/pages_controller/pending_requested_noa';
 $route['member/requested-noa/approved'] = 'member/pages_controller/approved_requested_noa';
 $route['member/requested-noa/disapproved'] = 'member/pages_controller/disapproved_requested_noa';
@@ -68,6 +69,7 @@ $route['member/requested-loa/edit/(:any)'] = 'member/loa_controller/edit_loa_req
 $route['member/requested-loa/update/(:any)'] = 'member/loa_controller/update_loa_request';
 $route['member/requested-loa/generate-printable-loa/(:any)'] = 'member/loa_controller/generate_printable_loa';
 $route['member/requested-loa/approve/cancel-request/(:any)'] = 'member/loa_controller/request_loa_cancellation';
+$route['member/requested-loa/expired/fetch'] = 'member/loa_controller/fetch_expired_loa';
 $route['member/requested-loa/cancelled/fetch'] = 'member/loa_controller/fetch_cancelled_loa';
 
 // Member NOA Routes

@@ -64,14 +64,23 @@
               >
             </li>
             <li class="nav-item">
-            <a
-              class="nav-link active"
-              href="<?php echo base_url(); ?>member/requested-loa/cancelled"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Cancelled</span></a
-            >
-          </li>
+              <a
+                class="nav-link"
+                href="<?php echo base_url(); ?>member/requested-loa/expired"
+                role="tab"
+                ><span class="hidden-sm-up"></span>
+                <span class="hidden-xs-down fs-5 font-bold">Expired</span></a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                href="<?php echo base_url(); ?>member/requested-loa/cancelled"
+                role="tab"
+                ><span class="hidden-sm-up"></span>
+                <span class="hidden-xs-down fs-5 font-bold">Cancelled</span></a
+              >
+            </li>
           </ul>
 
         <div class="card shadow">

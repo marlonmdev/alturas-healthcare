@@ -724,6 +724,72 @@ class Loa_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 
+
+	function fetch_expired_loa() {
+		$token = $this->security->get_csrf_hash();
+		$status = 'Expired';
+		$emp_id = $this->session->userdata('emp_id');
+		$list = $this->loa_model->get_datatables($status, $emp_id);
+		$cost_types = $this->loa_model->db_get_cost_types();
+		$data = [];
+		foreach ($list as $loa) {
+			$ct_array = $row = [];
+			$loa_id = $this->myhash->hasher($loa['loa_id'], 'encrypt');
+
+			$custom_loa_no = 	'<mark class="bg-primary text-white">'.$loa['loa_no'].'</mark>';
+
+			$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
+
+			$custom_date = date("m/d/Y", strtotime($loa['request_date']));
+
+			$custom_status = '<span class="badge rounded-pill bg-danger">' . $loa['status'] . '</span>';
+
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewExpiredLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+
+			// initialize multiple varibles at once
+			$view_file = $short_med_services = '';
+			if ($loa['loa_request_type'] === 'Consultation') {
+				// if request is consultation set the view file and medical services to None
+				$view_file = $short_med_services = 'None';
+			} else {
+				// convert into array members selected cost types/med_services using PHP explode
+				$selected_cost_types = explode(';', $loa['med_services']);
+				// loop through all the cost types from DB
+				foreach ($cost_types as $cost_type) :
+					if (in_array($cost_type['ctype_id'], $selected_cost_types)) :
+						array_push($ct_array, $cost_type['item_description']);
+					endif;
+				endforeach;
+				// convert array to string and add comma as a separator using PHP implode
+				$med_services = implode(', ', $ct_array);
+				// if medical services are too long for displaying to the table shorten it and add the ... characters at the end 
+				$short_med_services = strlen($med_services) > 35 ? substr($med_services, 0, 35) . "..." : $med_services;
+				// link to the file attached during loa request
+				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
+			}
+
+			// this data will be rendered to the datatable
+			$row[] = $custom_loa_no;
+			$row[] = $custom_date;
+			$row[] = $short_hp_name;
+			$row[] = $loa['loa_request_type'];
+			// $row[] = $short_med_services;
+			$row[] = $view_file;
+			$row[] = $custom_status;
+			$row[] = $custom_actions;
+			$data[] = $row;
+		}
+
+		$output = array(
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->loa_model->count_all($status, $emp_id),
+			"recordsFiltered" => $this->loa_model->count_filtered($status, $emp_id),
+			"data" => $data,
+		);
+		echo json_encode($output);
+	}
+	
+
 	function get_loa_info() {
 		$doctor_name = $requesting_physician = "";
 		$loa_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');

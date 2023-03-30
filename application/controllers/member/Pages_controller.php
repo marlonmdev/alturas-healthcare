@@ -106,6 +106,20 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
+	function expired_requested_loa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/loa/expired_loa');
+		$this->load->view('templates/footer');
+	}
+
+	function cancelled_requested_loa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/loa/cancelled_loa');
+		$this->load->view('templates/footer');
+	}
+
 	function pending_requested_noa() {
 		$emp_id = $this->session->userdata('emp_id');
 		$data['user_role'] = $this->session->userdata('user_role');
@@ -168,10 +182,4 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
-	function cancelled_loa_requests() {
-		$data['user_role'] = $this->session->userdata('user_role');
-		$this->load->view('templates/header', $data);
-		$this->load->view('member_panel/loa/cancelled_loa');
-		$this->load->view('templates/footer');
-	}
 }

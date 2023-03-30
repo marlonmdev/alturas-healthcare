@@ -146,6 +146,20 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
+	function view_cancelled_loa_list() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('super_admin_panel/loa/cancelled_loa_requests');
+		$this->load->view('templates/footer');
+	}
+
+	function view_expired_loa_list() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('super_admin_panel/loa/expired_loa_requests');
+		$this->load->view('templates/footer');
+	}
+
 	function request_noa_form() {
 		$this->load->model('super_admin/setup_model');
 		$data['user_role'] = $this->session->userdata('user_role');

@@ -49,7 +49,7 @@
           </li>
           <li class="nav-item">
             <a
-              class="nav-link active"
+              class="nav-link"
               href="<?php echo base_url(); ?>super-admin/loa/requests-list/completed"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -67,7 +67,7 @@
           </li>
           <li class="nav-item">
             <a
-              class="nav-link"
+              class="nav-link active"
               href="<?php echo base_url(); ?>super-admin/loa/requests-list/expired"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -75,6 +75,20 @@
             >
           </li>
         </ul>
+
+        <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text bg-dark text-white"><i class="mdi mdi-filter"></i></span>
+            </div>
+            <select class="form-select fw-bold" name="expired-hospital-filter" id="expired-hospital-filter">
+              <option value="">Select Hospital</option>
+              <?php foreach($hcproviders as $option) : ?>
+                <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+        </div>
 
         <div class="card shadow">
           <div class="card-body">
@@ -110,7 +124,7 @@
   const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
 
   $(document).ready(function() {
-    $('#expiredLoaTable').DataTable({
+    let expiredTable = $('#expiredLoaTable').DataTable({
       processing: true,
       serverSide: true,
       order: [],
@@ -118,8 +132,9 @@
       ajax: {
         url: `${baseUrl}super-admin/loa/requests-list/expired/fetch`,
         type: "POST",
-        data: {
-          'token': '<?php echo $this->security->get_csrf_hash(); ?>'
+        data: function(data) {
+          data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
+          data.filter = $('#expired-hospital-filter').val();
         }
       },
 
@@ -129,6 +144,64 @@
       }, ],
       responsive: true,
       fixedHeader: true,
+    });
+
+    $('#expired-hospital-filter').change(function(){
+      expiredTable.draw();
+    });
+
+    $('#loaCancellationForm').submit(function(event) {
+      const nextPage = `${baseUrl}super-admin/loa/requests-list/cancelled`;
+      event.preventDefault();
+      $.ajax({
+        type: "post",
+        url: $(this).attr('action'),
+        data: $(this).serialize(),
+        dataType: "json",
+        success: function(response) {
+          const {
+            token,
+            status,
+            message,
+            cancellation_reason_error
+          } = response;
+          switch (status) {
+            case 'error':
+              // is-invalid class is a built in classname for errors in bootstrap
+              if (cancellation_reason_error !== '') {
+                $('#cancellation-reason-error').html(cancellation_reason_error);
+                $('#cancellation-reason').addClass('is-invalid');
+              } else {
+                $('#cancellation-reason-error').html('');
+                $('#cancellation-reason').removeClass('is-invalid');
+              }
+              break;
+            case 'save-error':
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
+              break;
+            case 'success':
+              swal({
+                title: 'Success',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'success'
+              });
+              $('#loaCancellationModal').modal('hide');
+              $("#memberApprovedLoa").DataTable().ajax.reload();
+              setTimeout(function() {
+                window.location.href = nextPage;
+              }, 3200);
+              break;
+          }
+        }
+      });
     });
   });
 
@@ -168,6 +241,8 @@
           token,
           loa_no,
           request_date,
+          approved_by,
+          approved_on,
           expiration_date,
           member_mbl,
           remaining_mbl,

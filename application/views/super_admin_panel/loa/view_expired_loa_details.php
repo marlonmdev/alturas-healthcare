@@ -18,6 +18,14 @@
                   <td class="fw-bold ls-1" id="request-on"></td>
                 </tr>
                 <tr>
+                  <td class="fw-bold ls-1">Approved By :</td>
+                  <td class="fw-bold ls-1" id="approved-by"></td>
+                </tr>
+                <tr>
+                  <td class="fw-bold ls-1">Approved On :</td>
+                  <td class="fw-bold ls-1" id="approved-on"></td>
+                </tr>
+                <tr>
                   <td class="fw-bold ls-1">Expiration Date:</td>
                   <td class="fw-bold ls-1" id="expiration-date"></td>
                 </tr>

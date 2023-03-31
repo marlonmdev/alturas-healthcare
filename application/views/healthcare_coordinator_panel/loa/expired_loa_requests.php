@@ -168,62 +168,6 @@
     $('#expired-hospital-filter').change(function(){
       expiredTable.draw();
     });
-
-
-    $('#loaCancellationForm').submit(function(event) {
-      const nextPage = `${baseUrl}healthcare-coordinator/loa/requests-list/cancelled`;
-      event.preventDefault();
-      $.ajax({
-        type: "post",
-        url: $(this).attr('action'),
-        data: $(this).serialize(),
-        dataType: "json",
-        success: function(response) {
-          const {
-            token,
-            status,
-            message,
-            cancellation_reason_error
-          } = response;
-          switch (status) {
-            case 'error':
-              // is-invalid class is a built in classname for errors in bootstrap
-              if (cancellation_reason_error !== '') {
-                $('#cancellation-reason-error').html(cancellation_reason_error);
-                $('#cancellation-reason').addClass('is-invalid');
-              } else {
-                $('#cancellation-reason-error').html('');
-                $('#cancellation-reason').removeClass('is-invalid');
-              }
-              break;
-            case 'save-error':
-              swal({
-                title: 'Failed',
-                text: message,
-                timer: 3000,
-                showConfirmButton: false,
-                type: 'error'
-              });
-              break;
-            case 'success':
-              swal({
-                title: 'Success',
-                text: message,
-                timer: 3000,
-                showConfirmButton: false,
-                type: 'success'
-              });
-              $('#loaCancellationModal').modal('hide');
-              $("#memberApprovedLoa").DataTable().ajax.reload();
-              setTimeout(function() {
-                window.location.href = nextPage;
-              }, 3200);
-              break;
-          }
-        }
-      });
-    });
-
   });
 
   const viewImage = (path) => {

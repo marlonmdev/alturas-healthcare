@@ -106,19 +106,4 @@
       </div>
     <!-- End Wrapper -->
     </div>
-    <script>
-      const baseUrl = `<?php echo base_url(); ?>`;
-      const empId = `<?php echo $this->session->userdata('emp_id'); ?>`;
 
-      window.onload = function() {
-        checkExpiredLoa();
-      }
-      
-      const checkExpiredLoa = () => {
-        $.ajax({
-          url: `${baseUrl}check-member/approved-loa/expired/update/${empId}`,
-          method: "GET",
-          success: function(res) {}
-        });
-      }
-    </script>

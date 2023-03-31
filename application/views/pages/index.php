@@ -58,6 +58,123 @@
     <script src="<?= base_url() ?>assets/vendors/jquery/jquery.min.js"></script>
     <script src="<?= base_url() ?>assets/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="<?= base_url() ?>assets/vendors/Toastr/build/toastr.min.js"></script>
-    <script src="<?= base_url() ?>assets/js/authentication.js"></script>
+    <script>
+        $(document).ready(() => {
+            // runs on Enter key keypress
+            $("#login-form").keypress((event) => {
+                // 13 - key code for Enter
+                if (event.which === 13) {
+                    check_login();
+                }
+            });
+        });
+
+        const show_password = () => {
+            let input_password = document.querySelector("#input-password");
+            if (input_password.type === "password") {
+                input_password.type = "text";
+            } else {
+                input_password.type = "password";
+            }
+        }
+
+        /**
+         * It sends the data from the login form to the server, and if the server responds with a status of
+         * "error", it displays the error message. Otherwise, it calls the login_validated function
+         */
+        const check_login = () => {
+            $.ajax({
+                url: "check-login",
+                data: $("#login-form").serialize(),
+                type: "post",
+                dataType: "json",
+                beforeSend: function () {
+                    $("#btnLoginText").html("CHECKING...");
+                },
+                success: function (res) {
+                    const { status, message, username, password } = res;
+                    const input_username = document.querySelector("#input-username");
+                    const input_password = document.querySelector("#input-password");
+                    if (status == "error") {
+                        toastr.options = {
+                            closeButton: true,
+                            preventDuplicates: true,
+                            positionClass: "toast-top-right",
+                        };
+                        input_username.value = username;
+                        input_password.value = password;
+                        input_username.classList.add("invalid-input", "text-danger");
+                        input_password.classList.add("invalid-input", "text-danger");
+                        toastr["error"](message);
+                        $("#btnLoginText").html("LOG IN");
+                    } else {
+                          login_validated(res.token, res.user_id, res.emp_id, res.fullname, res.user_role, res.dsg_hcare_prov, res.doctor_id, res.logged_in, res.next_route, res.next_page);
+                    }
+                },
+            });
+        }
+
+        const login_validated = (token, user_id, emp_id, fullname, user_role, dsg_hcare_prov, doctor_id, logged_in,
+        next_route, next_page) => {
+            $.ajax({
+                url: next_route,
+                data: {token, user_id, emp_id, fullname, user_role, dsg_hcare_prov, doctor_id, logged_in},
+                type: "post",
+                dataType: "json",
+                success: function (response) {
+                    const { status, message } = response;
+
+                    if (status == "success") {
+                        $("#loaderGif").removeClass("d-none");
+                        $("#loaderGif").show();
+                        $("#btnLoginText").html("LOGGING IN...");
+                        updateExpiredLoa(user_role, emp_id, next_page);
+                    } else {
+                        toastr.options = {
+                            closeButton: true,
+                            preventDuplicates: true,
+                        };
+
+                        toastr["error"](message);
+                        $("#btnLoginText").html("LOG IN");
+                    }
+                },
+            });
+        }
+
+        const baseUrl = `<?php echo base_url(); ?>`;
+
+        const updateExpiredLoa = (user_role, emp_id, next_page) => {
+            switch(user_role){
+                case 'member':
+                    $.ajax({
+                        url: `${baseUrl}check-member/approved-loa/expired/update/${emp_id}`,
+                        method: "GET",
+                        success: function(res) {
+                            setTimeout(function () {
+                                window.location.href = next_page;
+                            }, 500);
+                        }
+                    });
+                    break;
+                case 'healthcare-provider':
+                    setTimeout(function () {
+                        window.location.href = next_page;
+                    }, 500);   
+                    break;
+                default:
+                    $.ajax({
+                        url: `${baseUrl}check-all/approved-loa/expired/update`,
+                        method: "GET",
+                        success: function(res) {
+                            setTimeout(function () {
+                                window.location.href = next_page;
+                            }, 500);
+                        }
+                    });
+            }
+        }
+
+    </script>
 </body>
 </html>

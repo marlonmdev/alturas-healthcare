@@ -109,18 +109,3 @@
       </div>
     <!-- End Wrapper -->
     </div>
-    <script>
-      const baseUrl = `<?php echo base_url(); ?>`;
-
-      window.onload = function() {
-        checkExpiredLoa();
-      }
-      
-      const checkExpiredLoa = () => {
-        $.ajax({
-          url: `${baseUrl}check-all/approved-loa/expired/update`,
-          method: "GET",
-          success: function(res) {}
-        });
-      }
-    </script>

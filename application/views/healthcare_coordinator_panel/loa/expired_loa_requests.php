@@ -119,12 +119,11 @@
               </table>
 
             </div>
+              <?php include 'managers_key_modal.php'; ?>
           </div>
-           <?php include 'managers_key_modal.php'; ?>
+           <?php include 'back_date_modal.php'; ?>
         </div>
-
         <?php include 'view_expired_loa_details.php'; ?>
-
       </div>
      <!-- End Row  -->  
       </div>
@@ -164,11 +163,85 @@
       fixedHeader: true,
     });
 
+    $("#back-date").flatpickr({
+      enableTime: false,
+      dateFormat: 'Y-m-d',
+      minDate: 'today'
+    });
+
+
     
     $('#expired-hospital-filter').change(function(){
       expiredTable.draw();
     });
+
+     /* Changing the type of the input field from password to text and vice versa. */
+    $('.main-password').find('.input-password').each(function(index, input) {
+      var $input = $(input);
+      $input.parent().find('.icon-view').click(function() {
+        var change = "";
+        if ($(this).find('i').hasClass('mdi mdi-eye')) {
+          $(this).find('i').removeClass('mdi mdi-eye')
+          $(this).find('i').addClass('mdi mdi-eye-off')
+          change = "text";
+        } else {
+          $(this).find('i').removeClass('mdi mdi-eye-off')
+          $(this).find('i').addClass('mdi mdi-eye')
+          change = "password";
+        }
+        var rep = $("<input type='" + change + "' />")
+          .attr('id', $input.attr('id'))
+          .attr('name', $input.attr('name'))
+          .attr('class', $input.attr('class'))
+          .val($input.val())
+          .insertBefore($input);
+        $input.remove();
+        $input = rep;
+      }).insertAfter($input);
+    });
+
+
+    $('#managersKeyForm').submit(function(event){
+      event.preventDefault();
+      $.ajax({
+        type: "post",
+        url: `${baseUrl}healthcare-coordinator/managers-key/check`,
+        data: $(this).serialize(),
+        dataType: "json",
+        success: function (res) {
+            const { status, message, loa_id, mgr_username_error, mgr_password_error } = res;
+
+            if (status == "error") {
+              if (mgr_username_error !== '') {
+                $('#mgr-username-error').html(mgr_username_error);
+                $('#mgr-username').addClass('is-invalid');
+              } else {
+                $('#mgr-username-error').html('');
+                $('#mgr-username').removeClass('is-invalid');
+                $('#mgr-username').addClass('is-valid');
+              }
+
+              if (mgr_password_error !== '') {
+                $('#mgr-password-error').html(mgr_password_error);
+                $('#mgr-password').addClass('is-invalid');
+              } else {
+                $('#mgr-password-error').html('');
+                $('#mgr-password').removeClass('is-invalid');
+                $('#mgr-password').addClass('is-valid');
+              }
+            } else {
+              $("#managersKeyModal").modal("hide");
+              showBackDateForm(loa_id);
+            }
+        },
+      });
+    });
+              
   });
+
+  const showBackDateForm = (loa_id) => {
+    $("#backDateModal").modal("show");
+  }
 
   const viewImage = (path) => {
     let item = [{
@@ -203,6 +276,7 @@
 
   const backDate = (loa_id) => {
     $("#managersKeyModal").modal("show");
+    $("#expired-loa-id").val(loa_id);
   }
 
   const viewExpiredLoaInfo = (loa_id) => {

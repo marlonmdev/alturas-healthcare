@@ -417,6 +417,9 @@ $route['healthcare-coordinator/setup/room-types/register/submit'] = 'healthcare_
 $route['healthcare-coordinator/setup/room-types/edit/(:any)'] = 'healthcare_coordinator/setup_controller/get_room_type_info';
 $route['healthcare-coordinator/setup/room-types/update'] = 'healthcare_coordinator/setup_controller/update_room_type';
 $route['healthcare-coordinator/setup/room-types/delete/(:any)'] = 'healthcare_coordinator/setup_controller/delete_room_type';
+
+// managers key
+$route['healthcare-coordinator/managers-key/check'] = 'healthcare_coordinator/account_controller/check_manager_username';
 // End of HealthCare Coordinator Routes
 //========================================================================================================
 

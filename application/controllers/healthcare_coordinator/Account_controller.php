@@ -170,4 +170,51 @@ class Account_controller extends CI_Controller {
 			return false;
 		}
 	}
+
+	function check_manager_username() {
+		$this->security->get_csrf_hash();
+		$mgr_username = $this->input->post('mgr-username', TRUE);
+		$mgr_password = $this->input->post('mgr-password', TRUE);
+		$expire_loa_id = $this->input->post('expired-loa-id', TRUE);
+
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('mgr-username', 'Username', 'trim|required');
+		$this->form_validation->set_rules('mgr-password', 'Password', 'trim|required');
+		if ($this->form_validation->run() == FALSE) {
+			$response = [
+				'status' => 'error',
+				'mgr_username_error' => form_error('mgr-username'),
+				'mgr_password_error' => form_error('mgr-password'),
+			];
+			echo json_encode($response);
+			exit();
+		} else {
+			$result = $this->account_model->get_manager_info($mgr_username);
+			if (!$result) {
+				$response = [
+					'status' => 'error',
+					'message' => 'Incorrect Username or Password',
+					'loa_id'  => $expire_loa_id
+				];
+			} else {
+				$verified = $this->_verify_hash($mgr_password, $result['password']);
+				if (!$verified) {
+					$response = [
+						'status' => 'error',
+						'message' => 'Incorrect Username or Password',
+						'loa_id'  => $expire_loa_id
+					];
+				} else {
+					$response = [
+						'status'  => 'success',
+						'message' => 'Access Granted',
+						'loa_id'  => $expire_loa_id
+					];
+				}
+			}
+		}
+
+		echo json_encode($response);
+	}
+
 }

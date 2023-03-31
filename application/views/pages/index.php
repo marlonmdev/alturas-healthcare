@@ -153,7 +153,7 @@
                         success: function(res) {
                             setTimeout(function () {
                                 window.location.href = next_page;
-                            }, 500);
+                            }, 200);
                         }
                     });
                     break;
@@ -169,7 +169,7 @@
                         success: function(res) {
                             setTimeout(function () {
                                 window.location.href = next_page;
-                            }, 500);
+                            }, 200);
                         }
                     });
             }

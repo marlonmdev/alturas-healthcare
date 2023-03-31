@@ -321,6 +321,7 @@ class Loa_controller extends CI_Controller {
 	function fetch_all_pending_loa() {
 		$this->security->get_csrf_hash();
 		$status = 'Pending';
+		$hcc_emp_id = $this->session->userdata('emp_id');
 		$list = $this->loa_model->get_datatables($status);
 		// $cost_types = $this->loa_model->db_get_cost_types();
 		$data = [];
@@ -1055,9 +1056,16 @@ class Loa_controller extends CI_Controller {
 	}
 
 	function get_expired_loa_info() {
-		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
-		$this->load->model('super_admin/loa_model');
+		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$this->load->model('healthcare_coordinator/loa_model');
 		$row = $this->loa_model->db_get_loa_details($loa_id);
+		$doctor_name = "";
+		if ($row['approved_by']) {
+			$doc = $this->loa_model->db_get_doctor_by_id($row['approved_by']);
+			$doctor_name = $doc['doctor_name'];
+		} else {
+			$doctor_name = "Does not exist from Database";
+		}
 
 		$cost_types = $this->loa_model->db_get_cost_types();
 		// Calculate Age
@@ -1065,7 +1073,7 @@ class Loa_controller extends CI_Controller {
 		$currentDate = date("d-m-Y");
 		$diff = date_diff(date_create($birthDate), date_create($currentDate));
 		$age = $diff->format("%y");
-		//get selected medical services
+		// get selected medical services
 		$selected_cost_types = explode(';', $row['med_services']);
 		$ct_array = [];
 		foreach ($cost_types as $cost_type) :
@@ -1078,23 +1086,20 @@ class Loa_controller extends CI_Controller {
 		$response = [
 			'status' => 'success',
 			'token' => $this->security->get_csrf_hash(),
+			'loa_id' => $row['loa_id'],
 			'loa_no' => $row['loa_no'],
-			'request_date' => date("F d, Y", strtotime($row['request_date'])),
-			'expiration_date' => date("F d, Y", strtotime($row['expiration_date'])),
-			'member_mbl' => number_format($row['max_benefit_limit'], 2),
-			'remaining_mbl' => number_format($row['remaining_balance'], 2),
-			'health_card_no' => $row['health_card_no'],
 			'first_name' => $row['first_name'],
 			'middle_name' => $row['middle_name'],
 			'last_name' => $row['last_name'],
-			'date_of_birth' => 	date("F d, Y", strtotime($row['date_of_birth'])),
+			'suffix' => $row['suffix'],
+			'date_of_birth' => $row['date_of_birth'] ?	date("F d, Y", strtotime($row['date_of_birth'])) : '',
 			'age' => $age,
 			'gender' => $row['gender'],
 			'blood_type' => $row['blood_type'],
 			'philhealth_no' => $row['philhealth_no'],
+			'contact_no' => $row['contact_no'],
 			'home_address' => $row['home_address'],
 			'city_address' => $row['city_address'],
-			'contact_no' => $row['contact_no'],
 			'email' => $row['email'],
 			'contact_person' => $row['contact_person'],
 			'contact_person_addr' => $row['contact_person_addr'],
@@ -1102,22 +1107,20 @@ class Loa_controller extends CI_Controller {
 			'healthcare_provider' => $row['hp_name'],
 			'loa_request_type' => $row['loa_request_type'],
 			'med_services' => $med_serv,
+			'health_card_no' => $row['health_card_no'],
 			'requesting_company' => $row['requesting_company'],
+			'request_date' => $row['request_date'] ? date("F d, Y", strtotime($row['request_date'])) : '',
 			'chief_complaint' => $row['chief_complaint'],
 			'requesting_physician' => $row['doctor_name'],
 			'attending_physician' => $row['attending_physician'],
-
-
-
-			// 'loa_id' => $row['loa_id'],
-			// 'loa_no' => $row['loa_no'],
-			// 'suffix' => $row['suffix'],			
-			// 'rx_file' => $row['rx_file'],
-			// 'req_status' => $row['status'],
-			// 'work_related' => $row['work_related'],
-			// 'cancelled_by' => $row['cancelled_by'],
-			// 'cancelled_on' => date("F d, Y", strtotime($row['cancelled_on'])),
-			// 'reason' => $row['cancellation_reason'],
+			'rx_file' => $row['rx_file'],
+			'req_status' => $row['status'],
+			'work_related' => $row['work_related'],
+			'approved_by' => $doctor_name,
+			'approved_on' => $row['approved_on'] ? date("F d, Y", strtotime($row['approved_on'])) : '',
+			'expiry_date' => $row['expiration_date'] ? date("F d, Y", strtotime($row['expiration_date'])) : '',
+			'member_mbl' => number_format($row['max_benefit_limit'], 2),
+			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		];
 		echo json_encode($response);
 	}

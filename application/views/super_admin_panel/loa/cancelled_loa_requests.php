@@ -49,7 +49,7 @@
           </li>
           <li class="nav-item">
             <a
-              class="nav-link active"
+              class="nav-link"
               href="<?php echo base_url(); ?>super-admin/loa/requests-list/completed"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -58,7 +58,7 @@
           </li>
           <li class="nav-item">
             <a
-              class="nav-link"
+              class="nav-link active"
               href="<?php echo base_url(); ?>super-admin/loa/requests-list/cancelled"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -75,6 +75,20 @@
             >
           </li>
         </ul>
+
+        <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text bg-dark text-white"><i class="mdi mdi-filter"></i></span>
+            </div>
+            <select class="form-select fw-bold" name="cancelled-hospital-filter" id="cancelled-hospital-filter">
+              <option value="">Select Hospital</option>
+              <?php foreach($hcproviders as $option): ?>
+                <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+        </div>
 
         <div class="card shadow">
           <div class="card-body">
@@ -110,7 +124,7 @@
   const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
 
   $(document).ready(function() {
-    $('#cancelledLoaTable').DataTable({
+    let cancelledTable = $('#cancelledLoaTable').DataTable({
       processing: true,
       serverSide: true,
       order: [],
@@ -118,8 +132,9 @@
       ajax: {
         url: `${baseUrl}super-admin/loa/requests-list/cancelled/fetch`,
         type: "POST",
-        data: {
-          'token': '<?php echo $this->security->get_csrf_hash(); ?>'
+        data: function(data) {
+          data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
+          data.filter = $('#cancelled-hospital-filter').val();
         }
       },
 
@@ -129,6 +144,9 @@
       }, ],
       responsive: true,
       fixedHeader: true,
+    });
+    $('#cancelled-hospital-filter').change(function(){
+      cancelledTable.draw();
     });
   });
 
@@ -167,8 +185,14 @@
           status,
           token,
           loa_no,
+          request_date,
+          cancelled_by,
+          cancelled_on,
+          reason,
           member_mbl,
           remaining_mbl,
+          work_related,
+          health_card_no,
           first_name,
           middle_name,
           last_name,
@@ -176,11 +200,11 @@
           date_of_birth,
           age,
           gender,
-          philhealth_no,
           blood_type,
-          contact_no,
+          philhealth_no,
           home_address,
           city_address,
+          contact_no,
           email,
           contact_person,
           contact_person_addr,
@@ -188,32 +212,21 @@
           healthcare_provider,
           loa_request_type,
           med_services,
-          health_card_no,
           requesting_company,
-          request_date,
           chief_complaint,
           requesting_physician,
           attending_physician,
           rx_file,
-          req_status,
-          work_related,
-          cancelled_by,
-          cancelled_on,
-          reason
+          req_status
         } = res;
 
         $("#viewLoaModal").modal("show");
-        
-        let rstat = '';
-        if(req_status == 'Cancelled'){
-          req_stat = `<strong class="text-warning">[${req_status}]</strong>`;
-        }else{
-          req_stat = `<strong class="text-cyan">[${req_status}]</strong>`;
-        }
 
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
+
         $('#loa-no').html(loa_no);
+        $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
         $('#cancelled-by').html(cancelled_by);
         $('#cancelled-on').html(cancelled_on);
         $('#reason').html(reason);
@@ -241,6 +254,13 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
+        if(work_related != ''){
+          $('#work-related-info').removeClass('d-none');
+          $('#work-related-val').html(work_related);
+        }else{
+          $('#work-related-info').addClass('d-none');
+          $('#work-related-val').html('');
+        }
       }
     });
   }

@@ -15,6 +15,10 @@ class Loa_model extends CI_Model {
     $this->db->join($this->table_2 . ' as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id');
     $this->db->where('status', $status);
     $i = 0;
+
+    if($this->input->post('filter')){
+      $this->db->like('tbl_2.hp_id', $this->input->post('filter'));
+    }
     // loop column 
     foreach ($this->column_search as $item) {
       // if datatable send POST for search

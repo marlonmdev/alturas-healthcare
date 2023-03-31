@@ -344,6 +344,7 @@ $route['healthcare-coordinator/loa/requests-list/approved/fetch'] = 'healthcare_
 $route['healthcare-coordinator/loa/requests-list/disapproved/fetch'] = 'healthcare_coordinator/loa_controller/fetch_all_disapproved_loa';
 $route['healthcare-coordinator/loa/requests-list/completed/fetch'] = 'healthcare_coordinator/loa_controller/fetch_all_completed_loa';
 $route['healthcare-coordinator/loa/requests-list/expired/fetch'] = 'healthcare_coordinator/loa_controller/fetch_all_expired_loa';
+$route['healthcare-coordinator/loa/requests-list/expired/backdate'] = 'healthcare_coordinator/loa_controller/backdate_expired_loa';
 $route['healthcare-coordinator/loa/requests-list/cancelled/fetch'] = 'healthcare_coordinator/loa_controller/fetch_all_cancelled_loa';
 $route['healthcare-coordinator/loa/pending/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_pending_loa_info';
 $route['healthcare-coordinator/loa/approved/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_approved_loa_info';

@@ -175,7 +175,8 @@ class Account_controller extends CI_Controller {
 		$this->security->get_csrf_hash();
 		$mgr_username = $this->input->post('mgr-username', TRUE);
 		$mgr_password = $this->input->post('mgr-password', TRUE);
-		$expire_loa_id = $this->input->post('expired-loa-id', TRUE);
+		$expired_loa_id = $this->input->post('expired-loa-id', TRUE);
+		$expired_loa_no = $this->input->post('expired-loa-no', TRUE);
 
 		$this->load->library('form_validation');
 		$this->form_validation->set_rules('mgr-username', 'Username', 'trim|required');
@@ -186,15 +187,16 @@ class Account_controller extends CI_Controller {
 				'mgr_username_error' => form_error('mgr-username'),
 				'mgr_password_error' => form_error('mgr-password'),
 			];
-			echo json_encode($response);
-			exit();
 		} else {
 			$result = $this->account_model->get_manager_info($mgr_username);
 			if (!$result) {
 				$response = [
 					'status' => 'error',
 					'message' => 'Incorrect Username or Password',
-					'loa_id'  => $expire_loa_id
+					'mgr_username_error' => '',
+					'mgr_password_error' => '',
+					'loa_id'  => $expire_loa_id,
+					'loa_no'  => $expired_loa_no
 				];
 			} else {
 				$verified = $this->_verify_hash($mgr_password, $result['password']);
@@ -202,13 +204,17 @@ class Account_controller extends CI_Controller {
 					$response = [
 						'status' => 'error',
 						'message' => 'Incorrect Username or Password',
-						'loa_id'  => $expire_loa_id
+						'mgr_username_error' => '',
+						'mgr_password_error' => '',
+						'loa_id'  => $expired_loa_id,
+						'loa_no'  => $expired_loa_no
 					];
 				} else {
 					$response = [
 						'status'  => 'success',
 						'message' => 'Access Granted',
-						'loa_id'  => $expire_loa_id
+						'loa_id'  => $expired_loa_id,
+						'loa_no'  => $expired_loa_no
 					];
 				}
 			}

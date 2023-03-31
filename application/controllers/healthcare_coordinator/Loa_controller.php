@@ -602,7 +602,7 @@ class Loa_controller extends CI_Controller {
 
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewExpiredLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
-			$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="Back Date LOA"><i class="mdi mdi-update fs-2 text-cyan"></i></a>';
+			$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $loa_id . '\', \'' . $loa['loa_no'] . '\')" data-bs-toggle="tooltip" title="Back Date LOA"><i class="mdi mdi-update fs-2 text-cyan"></i></a>';
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
@@ -1695,6 +1695,39 @@ class Loa_controller extends CI_Controller {
         $this->db->set('my_field', $new_field_value)->update('my_table');
     }
 
+	}
+
+	function backdate_expired_loa(){
+		$loa_id = $this->myhash->hasher($this->input->post('loa-id', TRUE), 'decrypt');
+		$expiry_date = $this->input->post('expiry-date', TRUE);
+
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('expiry-date', 'Expiry Date', 'required');
+		if ($this->form_validation->run() == FALSE) {
+			$response = [
+				'status' 				    => 'error',
+				'expiry_date_error' => form_error('expiry-date'),
+			];
+		} else {
+			$post_data = [
+				'status'          => 'Approved',
+				'expiration_date' => date('Y-m-d', strtotime($expiry_date)),
+			];
+
+			$updated = $this->loa_model->db_update_loa_request($loa_id, $post_data);
+
+			if (!$updated) {
+				$response = [
+					'status'  => 'save-error', 
+					'message' => 'LOA Request BackDate Failed'
+				];
+			}
+			$response = [
+				'status'  => 'success', 
+				'message' => 'LOA Request BackDated Successfully'
+			];
+		}		
+		echo json_encode($response);
 	}
 
 	

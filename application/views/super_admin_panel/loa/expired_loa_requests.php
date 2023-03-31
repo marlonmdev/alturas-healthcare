@@ -243,7 +243,7 @@
           request_date,
           approved_by,
           approved_on,
-          expiration_date,
+          expiry_date,
           member_mbl,
           remaining_mbl,
           health_card_no,
@@ -278,7 +278,9 @@
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
         $('#loa-no').html(loa_no);
         $('#request-on').html(request_date);
-        $('#expiration-date').html(expiration_date);
+        $('#approved-by').html(approved_by);
+        $('#approved-on').html(approved_on);
+        $('#expiration-date').html(expiry_date);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
         $('#health-card-no').html(health_card_no);

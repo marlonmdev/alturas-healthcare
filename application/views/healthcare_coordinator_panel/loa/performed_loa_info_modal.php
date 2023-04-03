@@ -1,5 +1,5 @@
 <div class="modal fade" id="pfLoaInfoModal" tabindex="-1" data-bs-backdrop="static">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title ls-2"><span class="fs-4 fw-bold">[<span class="fw-bold fs-4 text-danger" id="pf-loa-no"></span>]</span></h4>
@@ -15,6 +15,8 @@
                                 <th class="fw-bold">Status</th>
                                 <th class="fw-bold">Date & Time Performed</th>
                                 <th class="fw-bold">Physician</th>
+                                <th class="fw-bold">Reschedule on</th>
+                                <th class="fw-bold">Reason for Cancellation</th>
                             </tr>
                         </thead>    
                         <tbody id="pf-tbody">
@@ -24,7 +26,7 @@
                     
                     <div class="row mb-2">
                         <div class="col-12">
-                        <button type="button" class="btn btn-danger ls-1 offset-10" data-bs-dismiss="modal">CANCEL</button>
+                        <button type="button" class="btn btn-danger ls-1 offset-11" data-bs-dismiss="modal">CANCEL</button>
                         </div>
                     </div>
                 </div>

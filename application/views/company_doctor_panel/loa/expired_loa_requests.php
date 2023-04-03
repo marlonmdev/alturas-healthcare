@@ -89,7 +89,7 @@
                     <i class="mdi mdi-filter"></i>
                     </span>
                 </div>
-                <select class="form-select fw-bold" name="approved-hospital-filter" id="approved-hospital-filter">
+                <select class="form-select fw-bold" name="expired-hospital-filter" id="expired-hospital-filter">
                         <option value="">Select Hospital</option>
                         <?php foreach($hcproviders as $option) : ?>
                         <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
@@ -101,7 +101,7 @@
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover table-responsive" id="approvedLoaTable">
+              <table class="table table-hover table-responsive" id="expiredLoaTable">
                 <thead>
                   <tr>
                     <th class="fw-bold">LOA No.</th>
@@ -121,7 +121,7 @@
           </div>
         </div>
 
-        <?php include 'view_approved_loa_details.php'; ?>
+        <?php include 'view_expired_loa_details.php'; ?>
 
       </div>
       <!-- End Row  -->  
@@ -137,19 +137,19 @@
 
   $(document).ready(function() {
 
-    let approvedTable = $('#approvedLoaTable').DataTable({
+    let expiredTable = $('#expiredLoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
 
       // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}company-doctor/loa/requests-list/approved/fetch`,
+        url: `${baseUrl}company-doctor/loa/requests-list/expired/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: function(data) {
           data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
-          data.filter = $('#approved-hospital-filter').val();
+          data.filter = $('#expired-hospital-filter').val();
         }
       },
 
@@ -162,8 +162,8 @@
       fixedHeader: true,
     });
 
-    $('#approved-hospital-filter').change(function(){
-      approvedTable.draw();
+    $('#expired-hospital-filter').change(function(){
+      expiredTable.draw();
     });
 
 
@@ -202,7 +202,7 @@
   }
 
 
-  const viewApprovedLoaInfo = (req_id) => {
+  const viewExpiredLoaInfo = (req_id) => {
     $.ajax({
       url: `${baseUrl}company-doctor/loa/requests-list/view/${req_id}`,
       type: "GET",
@@ -244,7 +244,8 @@
           req_status,
           work_related,
           approved_by,
-          approved_on
+          approved_on,
+          expiry_date
         } = res;
 
         $("#viewLoaModal").modal("show");
@@ -253,9 +254,10 @@
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
         
         $('#loa-no').html(loa_no);
-        $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
+        $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
+        $('#expiry-date').html(expiry_date);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);

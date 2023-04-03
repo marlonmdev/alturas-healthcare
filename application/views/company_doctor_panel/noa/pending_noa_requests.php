@@ -148,9 +148,15 @@
         pendingTable.draw();
     });
 
+    // Get today's date
+    const today = new Date();
+    // Create a new Date object representing tomorrow's date
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
     $("#expiration-date").flatpickr({
       // dateFormat: 'm-d-Y',
-      minDate: 'today'
+      minDate: tomorrow
     });
 
 

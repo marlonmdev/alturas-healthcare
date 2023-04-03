@@ -537,14 +537,15 @@ class Loa_controller extends CI_Controller {
 		if($expiration_type == 'custom'){
 			$this->form_validation->set_rules('expiration-date', 'Custom Expiration Date', 'required');
 			if ($this->form_validation->run() == FALSE) {
-				$response = array(
-					'token' => $token,
-					'status' => 'error',
+				$response = [
+					'token'                 => $token,
+					'status'                => 'error',
 					'expiration_date_error' => form_error('expiration-date'),
-				);
+				];
+
+				echo json_encode($response);
+				exit();
 			}
-			echo json_encode($response);
-			exit();
 		}
 
 		switch($expiration_type){
@@ -570,19 +571,19 @@ class Loa_controller extends CI_Controller {
 		}
 
 		$data = [
-			'status' => 'Approved',
-			'approved_by' => $approved_by,
-			'approved_on' => $approved_on,
+			'status'          => 'Approved',
+			'approved_by'     => $approved_by,
+			'approved_on'     => $approved_on,
 			'expiration_date' => $expired_on
 		];
 
 		$approved = $this->loa_model->db_approve_loa_request($loa_id, $data);
-		if ($approved) {
-			$response = array('token' => $token, 'status' => 'success', 'message' => 'LOA Request Approved Successfully');
-		} else {
-			$response = array('token' => $token, 'status' => 'error', 'message' => 'Unable to Approve LOA Request!');
-		}
 
+		if ($approved) {
+			$response = ['token' => $token, 'status' => 'success', 'message' => 'LOA Request Approved Successfully'];
+		} else {
+			$response = ['token' => $token, 'status' => 'save-error', 'message' => 'Unable to Approve LOA Request'];
+		}
 		echo json_encode($response);
 	}
 

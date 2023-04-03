@@ -400,36 +400,21 @@ class Loa_controller extends CI_Controller {
 
 			$custom_loa_no = '<mark class="bg-primary text-white">'.$loa['loa_no'].'</mark>';
 
-			$expires = strtotime('+1 week', strtotime($loa['approved_on']));
-      $expiration_date = date('m/d/Y', $expires);
-			// call another function to determined if expired or not
-			$date_result = $this->checkExpiration($loa['approved_on']);
+			$expiry_date = $loa['expiration_date'] ? date('m/d/Y', strtotime($loa['expiration_date'])): 'None';
 
-      if($date_result == 'Expired'){
-				$custom_date = '<span class="text-danger">'.$expiration_date.'</span><span class="text-danger fw-bold ls-1"> [Expired]</span>';
+			$custom_actions = '<a class="me-1" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
-				$custom_actions = '<a class="me-1" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			$custom_actions .= '<a class="me-1" href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Print LOA"><i class="mdi mdi-printer fs-2 text-primary"></i></a>';
 
-				$custom_actions .= '<a class="me-1" data-bs-toggle="tooltip" title="Cannot Print Expired LOA"><i class="mdi mdi-printer fs-2 icon-disabled"></i></a>';
+			$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Update LOA"><i class="mdi mdi-playlist-check fs-2 text-success"></i></a>';
 
+			if($loa['loa_request_type'] == 'Consultation'){
+				$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaConsult(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-cyan"></i></a>';
 			}else{
-				$custom_date = $expiration_date;
+				$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-cyan"></i></a>';
+			}				
 
-				$custom_actions = '<a class="me-1" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
-
-				$custom_actions .= '<a class="me-1" href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Print LOA"><i class="mdi mdi-printer fs-2 text-primary"></i></a>';
-
-				$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Update LOA"><i class="mdi mdi-playlist-check fs-2 text-success"></i></a>';
-
-				if($loa['loa_request_type'] == 'Consultation'){
-					$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaConsult(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-cyan"></i></a>';
-				}else{
-					$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-cyan"></i></a>';
-				}				
-
-				$custom_actions .= '<a class="me-2" href="JavaScript:void(0)" onclick="loaCancellation(\'' . $loa_id . '\', \'' . $loa['loa_no'] . '\')" data-bs-toggle="tooltip" title="Cancel LOA Request"><i class="mdi mdi-close-circle fs-2 text-danger"></i></a>';
-
-			}
+			$custom_actions .= '<a class="me-2" href="JavaScript:void(0)" onclick="loaCancellation(\'' . $loa_id . '\', \'' . $loa['loa_no'] . '\')" data-bs-toggle="tooltip" title="Cancel LOA Request"><i class="mdi mdi-close-circle fs-2 text-danger"></i></a>';
 	
 			$custom_status = '<span class="badge rounded-pill bg-success">' . $loa['status'] . '</span>';
 		
@@ -456,7 +441,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
 			$row[] = $view_file;
-			$row[] = $custom_date;
+			$row[] = $expiry_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;
@@ -469,20 +454,6 @@ class Loa_controller extends CI_Controller {
 			"data" => $data,
 		];
 		echo json_encode($output);
-	}
-
-	function checkExpiration($passed_date){
-		$approved_date = DateTime::createFromFormat("Y-m-d", $passed_date);
-
-		$expiration_date = $approved_date->modify("+7 days");
-
-		$current_date = new DateTime();
-
-		$date_diff = $current_date->diff($expiration_date);
-
-		$result = $date_diff->invert ? "Expired" : "Not Expired";
-
-		return $result;
 	}
 
 	function fetch_all_disapproved_loa() {
@@ -691,6 +662,65 @@ class Loa_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 
+	function fetch_all_expired_loa(){
+		$this->security->get_csrf_hash();
+		$status = 'Expired';
+		$list = $this->loa_model->get_datatables($status);
+		$data = [];
+		foreach ($list as $loa) {
+			$row = [];
+
+			$loa_id = $this->myhash->hasher($loa['loa_id'], 'encrypt');
+
+			$full_name = $loa['first_name'] . ' ' . $loa['middle_name'] . ' ' . $loa['last_name'] . ' ' . $loa['suffix'];
+
+			$custom_loa_no = '<mark class="bg-primary text-white">'.$loa['loa_no'].'</mark>';
+
+			$expiry_date = $loa['expiration_date'] ? date("m/d/Y", strtotime($loa['expiration_date'])) : 'None';
+
+			$custom_status = '<span class="badge rounded-pill bg-danger">' . $loa['status'] . '</span>';
+
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewExpiredLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+
+			$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $loa_id . '\', \'' . $loa['loa_no'] . '\')" data-bs-toggle="tooltip" title="Back Date LOA"><i class="mdi mdi-update fs-2 text-cyan"></i></a>';
+
+			// initialize multiple varibles at once
+			$view_file = $short_hp_name = '';
+			if ($loa['loa_request_type'] === 'Consultation') {
+				// if request is consultation set the view file and medical services to None
+				$view_file = 'None';
+
+				// if Healthcare Provider name is too long for displaying to the table, shorten it and add the ... characters at the end 
+				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
+
+			} else {
+				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
+
+				// link to the file attached during loa request
+				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
+			}
+
+			// this data will be rendered to the datatable
+			$row[] = $custom_loa_no;
+			$row[] = $full_name;
+			$row[] = $loa['loa_request_type'];
+			$row[] = $short_hp_name;
+			$row[] = $view_file;
+			$row[] = $expiry_date;
+			$row[] = $custom_status;
+			$row[] = $custom_actions;
+			$data[] = $row;
+		}
+
+		$output = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->loa_model->count_all($status),
+			"recordsFiltered" => $this->loa_model->count_filtered($status),
+			"data" => $data,
+		];
+		echo json_encode($output);
+	}
+
 	function fetch_all_cancelled_loa(){
 		$this->security->get_csrf_hash();
 		$status = 'Cancelled';
@@ -870,6 +900,7 @@ class Loa_controller extends CI_Controller {
 			'work_related' => $row['work_related'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
+			'expiry_date' => $row['expiration_date'] ? date("F d, Y", strtotime($row['expiration_date'])) : 'None',
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		];
@@ -913,7 +944,7 @@ class Loa_controller extends CI_Controller {
 			'middle_name' => $row['middle_name'],
 			'last_name' => $row['last_name'],
 			'suffix' => $row['suffix'],
-			'date_of_birth' => 	date("F d, Y", strtotime($row['date_of_birth'])),
+			'date_of_birth' => $row['date_of_birth'] ? date("F d, Y", strtotime($row['date_of_birth'])) : '',
 			'age' => $age,
 			'gender' => $row['gender'],
 			'blood_type' => $row['blood_type'],
@@ -930,7 +961,7 @@ class Loa_controller extends CI_Controller {
 			'med_services' => $med_serv,
 			'health_card_no' => $row['health_card_no'],
 			'requesting_company' => $row['requesting_company'],
-			'request_date' => date("F d, Y", strtotime($row['request_date'])),
+			'request_date' => $row['request_date'] ? date("F d, Y", strtotime($row['request_date'])) : '',
 			'chief_complaint' => $row['chief_complaint'],
 			'requesting_physician' => $row['doctor_name'],
 			'attending_physician' => $row['attending_physician'],
@@ -939,7 +970,7 @@ class Loa_controller extends CI_Controller {
 			'work_related' => $row['work_related'],
 			'disapproved_by' => $doctor_name,
 			'disapprove_reason' => $row['disapprove_reason'],
-			'disapproved_on' => date("F d, Y", strtotime($row['approved_on'])),
+			'disapproved_on' => $row['approved_on'] ? date("F d, Y", strtotime($row['approved_on'])) : '',
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		];
@@ -972,18 +1003,26 @@ class Loa_controller extends CI_Controller {
 			'token' => $this->security->get_csrf_hash(),
 			'loa_id' => $row['loa_id'],
 			'loa_no' => $row['loa_no'],
+			'request_date' => $row['request_date'] ? date("F d, Y", strtotime($row['request_date'])) : '',
+			'cancelled_by' => $row['cancelled_by'],
+			'cancelled_on' => $row['cancelled_on'] ? date("F d, Y", strtotime($row['cancelled_on'])) : '',
+			'cancellation_reason' => $row['cancellation_reason'],
+			'member_mbl' => number_format($row['max_benefit_limit'], 2),
+			'remaining_mbl' => number_format($row['remaining_balance'], 2),
+			'work_related' => $row['work_related'],
+			'health_card_no' => $row['health_card_no'],
 			'first_name' => $row['first_name'],
 			'middle_name' => $row['middle_name'],
 			'last_name' => $row['last_name'],
 			'suffix' => $row['suffix'],
-			'date_of_birth' => 	date("F d, Y", strtotime($row['date_of_birth'])),
+			'date_of_birth' => $row['date_of_birth'] ? date("F d, Y", strtotime($row['date_of_birth'])) : '',
 			'age' => $age,
 			'gender' => $row['gender'],
 			'blood_type' => $row['blood_type'],
 			'philhealth_no' => $row['philhealth_no'],
-			'contact_no' => $row['contact_no'],
 			'home_address' => $row['home_address'],
 			'city_address' => $row['city_address'],
+			'contact_no' => $row['contact_no'],
 			'email' => $row['email'],
 			'contact_person' => $row['contact_person'],
 			'contact_person_addr' => $row['contact_person_addr'],
@@ -991,20 +1030,12 @@ class Loa_controller extends CI_Controller {
 			'healthcare_provider' => $row['hp_name'],
 			'loa_request_type' => $row['loa_request_type'],
 			'med_services' => $med_serv,
-			'health_card_no' => $row['health_card_no'],
 			'requesting_company' => $row['requesting_company'],
-			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'chief_complaint' => $row['chief_complaint'],
 			'requesting_physician' => $row['doctor_name'],
 			'attending_physician' => $row['attending_physician'],
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
-			'work_related' => $row['work_related'],
-			'cancelled_on' => $row['cancelled_on'] ? date("F d, Y", strtotime($row['cancelled_on'])) : '',
-			'cancelled_by' => $row['cancelled_by'],
-			'cancellation_reason' => $row['cancellation_reason'],
-			'member_mbl' => number_format($row['max_benefit_limit'], 2),
-			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		];
 		echo json_encode($response);
 	}
@@ -1046,7 +1077,7 @@ class Loa_controller extends CI_Controller {
 			'middle_name' => $row['middle_name'],
 			'last_name' => $row['last_name'],
 			'suffix' => $row['suffix'],
-			'date_of_birth' => 	date("F d, Y", strtotime($row['date_of_birth'])),
+			'date_of_birth' => $row['date_of_birth'] ?	date("F d, Y", strtotime($row['date_of_birth'])) : '',
 			'age' => $age,
 			'gender' => $row['gender'],
 			'blood_type' => $row['blood_type'],
@@ -1063,7 +1094,7 @@ class Loa_controller extends CI_Controller {
 			'med_services' => $med_serv,
 			'health_card_no' => $row['health_card_no'],
 			'requesting_company' => $row['requesting_company'],
-			'request_date' => date("F d, Y", strtotime($row['request_date'])),
+			'request_date' => $row['request_date'] ? date("F d, Y", strtotime($row['request_date'])) : '',
 			'chief_complaint' => $row['chief_complaint'],
 			'requesting_physician' => $row['doctor_name'],
 			'attending_physician' => $row['attending_physician'],
@@ -1071,7 +1102,7 @@ class Loa_controller extends CI_Controller {
 			'req_status' => $row['status'],
 			'work_related' => $row['work_related'],
 			'approved_by' => $doctor_name,
-			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
+			'approved_on' => $row['approved_on'] ? date("F d, Y", strtotime($row['approved_on'])) : '',
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		];
@@ -1362,7 +1393,7 @@ class Loa_controller extends CI_Controller {
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 
 		$this->form_validation->set_rules('cancellation_reason', 'Reason for Cancellation', 'trim|required|max_length[2000]');
-		
+
 		if ($this->form_validation->run() == FALSE) {
 			$response = [
 				'token' => $token,
@@ -1893,6 +1924,39 @@ class Loa_controller extends CI_Controller {
 			$this->load->view('healthcare_coordinator_panel/loa/tag_to_complete_resched');
 			$this->load->view('templates/footer');
 
+	}
+
+	function backdate_expired_loa(){
+		$loa_id = $this->myhash->hasher($this->input->post('loa-id', TRUE), 'decrypt');
+		$expiry_date = $this->input->post('expiry-date', TRUE);
+
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('expiry-date', 'Expiry Date', 'required');
+		if ($this->form_validation->run() == FALSE) {
+			$response = [
+				'status' 				    => 'error',
+				'expiry_date_error' => form_error('expiry-date'),
+			];
+		} else {
+			$post_data = [
+				'status'          => 'Approved',
+				'expiration_date' => date('Y-m-d', strtotime($expiry_date)),
+			];
+
+			$updated = $this->loa_model->db_update_loa_request($loa_id, $post_data);
+
+			if (!$updated) {
+				$response = [
+					'status'  => 'save-error', 
+					'message' => 'LOA Request BackDate Failed'
+				];
+			}
+			$response = [
+				'status'  => 'success', 
+				'message' => 'LOA Request BackDated Successfully'
+			];
+		}		
+		echo json_encode($response);
 	}
 
 	

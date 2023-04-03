@@ -120,6 +120,8 @@ class Pages_controller extends CI_Controller {
 
 	function view_pending_loa_list() {
 		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->model('super_admin/setup_model');
+		$data['hcproviders'] = $this->setup_model->db_get_healthcare_providers();
 		$this->load->view('templates/header', $data);
 		$this->load->view('super_admin_panel/loa/pending_loa_requests');
 		$this->load->view('templates/footer');
@@ -127,6 +129,8 @@ class Pages_controller extends CI_Controller {
 
 	function view_approved_loa_list() {
 		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->model('super_admin/setup_model');
+		$data['hcproviders'] = $this->setup_model->db_get_healthcare_providers();
 		$this->load->view('templates/header', $data);
 		$this->load->view('super_admin_panel/loa/approved_loa_requests');
 		$this->load->view('templates/footer');
@@ -134,6 +138,8 @@ class Pages_controller extends CI_Controller {
 
 	function view_disapproved_loa_list() {
 		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->model('super_admin/setup_model');
+		$data['hcproviders'] = $this->setup_model->db_get_healthcare_providers();
 		$this->load->view('templates/header', $data);
 		$this->load->view('super_admin_panel/loa/disapproved_loa_requests');
 		$this->load->view('templates/footer');
@@ -141,8 +147,28 @@ class Pages_controller extends CI_Controller {
 
 	function view_completed_loa_list() {
 		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->model('super_admin/setup_model');
+		$data['hcproviders'] = $this->setup_model->db_get_healthcare_providers();
 		$this->load->view('templates/header', $data);
 		$this->load->view('super_admin_panel/loa/completed_loa_requests');
+		$this->load->view('templates/footer');
+	}
+
+	function view_cancelled_loa_list() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->model('super_admin/setup_model');
+		$data['hcproviders'] = $this->setup_model->db_get_healthcare_providers();
+		$this->load->view('templates/header', $data);
+		$this->load->view('super_admin_panel/loa/cancelled_loa_requests');
+		$this->load->view('templates/footer');
+	}
+
+	function view_expired_loa_list() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->model('super_admin/setup_model');
+		$data['hcproviders'] = $this->setup_model->db_get_healthcare_providers();
+		$this->load->view('templates/header', $data);
+		$this->load->view('super_admin_panel/loa/expired_loa_requests');
 		$this->load->view('templates/footer');
 	}
 

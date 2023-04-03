@@ -11,7 +11,7 @@
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
               <li class="breadcrumb-item active" aria-current="page">
-                Approved LOA
+                Expired LOA
               </li>
             </ol>
           </nav>
@@ -37,7 +37,7 @@
           </li>
           <li class="nav-item">
             <a
-              class="nav-link active"
+              class="nav-link"
               href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -63,17 +63,8 @@
             >
           </li>
           <li class="nav-item">
-              <a
-              class="nav-link"
-              href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/rescheduled"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Rescheduled</span></a
-              >
-          </li>
-          <li class="nav-item">
             <a
-              class="nav-link"
+              class="nav-link active"
               href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/expired"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -98,7 +89,7 @@
                     <i class="mdi mdi-filter"></i>
                     </span>
                 </div>
-                <select class="form-select fw-bold" name="approved-hospital-filter" id="approved-hospital-filter">
+                <select class="form-select fw-bold" name="expired-hospital-filter" id="expired-hospital-filter">
                         <option value="">Select Hospital</option>
                         <?php foreach($hcproviders as $option) : ?>
                         <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
@@ -110,7 +101,7 @@
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover table-responsive" id="approvedLoaTable">
+              <table class="table table-hover table-responsive" id="expiredLoaTable">
                 <thead>
                   <tr>
                     <th class="fw-bold">LOA No.</th>
@@ -128,19 +119,16 @@
               </table>
 
             </div>
+              <?php include 'managers_key_modal.php'; ?>
           </div>
-          <?php include 'loa_cancellation_modal.php'; ?>
+           <?php include 'back_date_modal.php'; ?>
         </div>
-
-        <?php include 'view_approved_loa_details.php'; ?>
-
+        <?php include 'view_expired_loa_details.php'; ?>
       </div>
      <!-- End Row  -->  
       </div>
-      <?php include 'performed_loa_info_modal.php'; ?>
     <!-- End Container fluid  -->
     </div>
-    <?php include 'view_performed_consult_loa.php'; ?>
   <!-- End Page wrapper  -->
   </div>
 <!-- End Wrapper -->
@@ -150,19 +138,19 @@
 
   $(document).ready(function() {
 
-    let aprrovedTable = $('#approvedLoaTable').DataTable({
+    let expiredTable = $('#expiredLoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
 
       // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}healthcare-coordinator/loa/requests-list/approved/fetch`,
+        url: `${baseUrl}healthcare-coordinator/loa/requests-list/expired/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: function(data) {
           data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
-          data.filter = $('#approved-hospital-filter').val();
+          data.filter = $('#expired-hospital-filter').val();
         }
       },
 
@@ -175,36 +163,87 @@
       fixedHeader: true,
     });
 
-    
-    $('#approved-hospital-filter').change(function(){
-      aprrovedTable.draw();
+    // Get today's date
+    const today = new Date();
+    // Create a new Date object representing tomorrow's date
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    $("#expiry-date").flatpickr({
+      enableTime: false,
+      dateFormat: 'Y-m-d',
+      minDate: tomorrow
+    });
+
+    $('#expired-hospital-filter').change(function(){
+      expiredTable.draw();
     });
 
 
-    $('#loaCancellationForm').submit(function(event) {
-      const nextPage = `${baseUrl}healthcare-coordinator/loa/requests-list/cancelled`;
+    $('#managersKeyForm').submit(function(event){
       event.preventDefault();
       $.ajax({
         type: "post",
-        url: $(this).attr('action'),
+        url: `${baseUrl}healthcare-coordinator/managers-key/check`,
         data: $(this).serialize(),
         dataType: "json",
-        success: function(response) {
-          const {
-            token,
-            status,
-            message,
-            cancellation_reason_error
-          } = response;
+        success: function (res) {
+            const { status, message, mgr_username_error, mgr_password_error, loa_id, loa_no } = res;
+
+            if (status == "error") {
+              if (mgr_username_error !== '') {
+                $('#mgr-username-error').html(mgr_username_error);
+                $('#mgr-username').addClass('is-invalid');
+              } else {
+                $('#mgr-username-error').html('');
+                $('#mgr-username').removeClass('is-invalid');
+              }
+
+              if (mgr_password_error !== '') {
+                $('#mgr-password-error').html(mgr_password_error);
+                $('#mgr-password').addClass('is-invalid');
+              } else {
+                $('#mgr-password-error').html('');
+                $('#mgr-password').removeClass('is-invalid');
+              }
+
+              if (message !== '') {
+                $('#msg-error').html(message);
+                $('#mgr-username').addClass('is-invalid');
+                $('#mgr-password').addClass('is-invalid');
+              } else {
+                $('#msg-error').html('');
+                $('#mgr-username').removeClass('is-invalid');
+                $('#mgr-password').removeClass('is-invalid');
+              }
+
+            } else {
+              $("#managersKeyModal").modal("hide");
+              showBackDateForm(loa_id, loa_no);
+            }
+        },
+      });
+    });
+
+    $('#backDateForm').submit(function(event){
+      event.preventDefault();
+      $.ajax({
+        type: "post",
+        url: `${baseUrl}healthcare-coordinator/loa/requests-list/expired/backdate`,
+        data: $(this).serialize(),
+        dataType: "json",
+        success: function (res) {
+          const { status, message } = res;
+
           switch (status) {
             case 'error':
               // is-invalid class is a built in classname for errors in bootstrap
-              if (cancellation_reason_error !== '') {
-                $('#cancellation-reason-error').html(cancellation_reason_error);
-                $('#cancellation-reason').addClass('is-invalid');
+              if (expiry_date_error !== '') {
+                $('#expiry-date-error').html(expiry_date_error);
+                $('#expiry-date').addClass('is-invalid');
               } else {
-                $('#cancellation-reason-error').html('');
-                $('#cancellation-reason').removeClass('is-invalid');
+                $('#expiry-date-error').html('');
+                $('#expiry-date').removeClass('is-invalid');
               }
               break;
             case 'save-error':
@@ -224,20 +263,24 @@
                 showConfirmButton: false,
                 type: 'success'
               });
-              $('#loaCancellationModal').modal('hide');
-              $("#memberApprovedLoa").DataTable().ajax.reload();
-              setTimeout(function() {
-                window.location.href = nextPage;
-              }, 3200);
+              
+              $("#backDateModal").modal("hide");
+              $("#expiredLoaTable").DataTable().ajax.reload();
               break;
           }
-        }
+        },
       });
     });
-
+              
   });
 
-  function viewImage(path) {
+  const showBackDateForm = (loa_id, loa_no) => {
+    $("#backDateModal").modal("show");
+    $('#bd-loa-id').val(loa_id);
+    $('#bd-loa-no').val(loa_no);
+  }
+
+  const viewImage = (path) => {
     let item = [{
       src: path, // path to image
       title: 'Attached RX File' // If you skip it, there will display the original image name
@@ -268,9 +311,21 @@
       });
   }
 
-  function viewApprovedLoaInfo(loa_id) {
+  const backDate = (loa_id, loa_no) => {
+    $('#managersKeyModal').modal('show');
+    $('#expired-loa-id').val(loa_id);
+    $('#expired-loa-no').val(loa_no);
+    $('#mgr-username').val('');
+    $('#mgr-username').removeClass('is-invalid');
+    $('#mgr-username-error').html('');
+    $('#mgr-password').val('');
+    $('#mgr-password').removeClass('is-invalid');
+    $('#mgr-password-error').html('');
+  }
+
+  const viewExpiredLoaInfo = (loa_id) => {
     $.ajax({
-      url: `${baseUrl}healthcare-coordinator/loa/approved/view/${loa_id}`,
+      url: `${baseUrl}healthcare-coordinator/loa/expired/view/${loa_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);
@@ -318,7 +373,7 @@
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
         $('#loa-no').html(loa_no);
-        $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
+        $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
         $('#expiry-date').html(expiry_date);
@@ -349,62 +404,6 @@
         $('#attending-physician').html(at_physician);
       }
     });
-  }
-
-  const viewPerformedLoaInfo = (loa_id) => {
-    $.ajax({
-      url: `${baseUrl}healthcare-coordinator/loa/performed-loa-info/view/${loa_id}`,
-      type: 'GET',
-      dataType: 'json',
-      success: function(response){
-        
-        $('#pfLoaInfoModal').modal('show');
-
-        let tbody = '';
-        
-        $.each(response, function(index, item){
-          
-          tbody += '<tr><td>'+ item.item_description +'</td><td>'+ item.status + '</td><td>' + item.date_performed +' '+ item.time_performed +'</td><td>'+ item.physician_fname +' '+ item.physician_mname + ' ' + item.physician_lname +'</td><td>'+ item.reschedule_on +'</td><td>'+ item.reason_cancellation +'</td></tr>';
-
-          $('#pf-loa-no').html(item.loa_no);
-        });
-        $('#pf-tbody').html(tbody);
-       
-      }
-    });
-  }
-
-  const viewPerformedLoaConsult = (loa_id) => {
-    $.ajax({
-      url: `${baseUrl}healthcare-coordinator/loa/performed-consult-loa-info/view/${loa_id}`,
-      type: 'GET',
-      dataType: 'json',
-      success: function(response){
-      
-        $('#consultLoaInfoModal').modal('show');
-
-        let tbody = '';
-        
-        tbody += '<tr><td>'+ response.request_type +'</td><td>'+ response.status + '</td><td>' + response.date_time_performed +'</td><td>'+ response.physician +'</td></tr>';
-
-        $('#pf-consult-tbody').html(tbody);
-        $('#pf-consult-loa-no').html(response.loa_no);
-
-      }
-
-    });
-  }
-
-  const loaCancellation = (loa_id, loa_no) => {
-    $("#loaCancellationModal").modal("show");
-
-    $('#cancellation-reason').val('');
-    $('#cancellation-reason').removeClass('is-invalid');
-    $('#cancellation-reason-error').html('');
-
-    $('#cur-loa-id').val(loa_id);
-    $('#cur-loa-no').val(loa_no);
-    $("#loaCancellationForm").attr("action", `${baseUrl}healthcare-coordinator/loa/requests-list/cancel-request/${loa_id}`);
   }
 
 </script>

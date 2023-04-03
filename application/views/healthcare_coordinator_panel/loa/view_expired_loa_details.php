@@ -38,7 +38,7 @@
                           <td class="fw-bold ls-1">Member's Remaining MBL :</td>
                           <td class="fw-bold ls-1">&#8369;<span id="remaining-mbl"></span></td>
                         </tr>
-                        <tr>
+                        <tr class="d-none" id="work-related-info">
                           <td class="fw-bold ls-1">Work Related :</td>
                           <td class="fw-bold ls-1" id="work-related-val"></td>
                         </tr>
@@ -132,7 +132,7 @@
                 </div>
               </section>
               <div class="modal-footer">
-                <button class="btn btn-dark ls-1 me-2" id="saveImage-btn" onclick="saveAsImage()"><i class="mdi mdi-file-image"></i> Save as Image</button>
+                <button class="btn btn-dark ls-1 me-2" onclick="saveAsImage()"><i class="mdi mdi-file-image"></i> Save as Image</button>
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
               </div>
             </div>

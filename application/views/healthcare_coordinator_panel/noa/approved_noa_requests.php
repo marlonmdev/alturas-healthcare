@@ -52,7 +52,16 @@
               <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
             >
           </li>
-            <!-- <li class="nav-item">
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/expired"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Expired</span></a
+            >
+          </li>
+          <!-- <li class="nav-item">
             <a
               class="nav-link"
               href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/completed"
@@ -89,7 +98,7 @@
                     <th class="fw-bold">Name</th>
                     <th class="fw-bold">Admission Date</th>
                     <th class="fw-bold">Hospital Name</th>
-                    <th class="fw-bold">Request Date</th>
+                    <th class="fw-bold">Expiry Date</th>
                     <th class="fw-bold">Status</th>
                     <th class="fw-bold">Actions</th>
                   </tr>
@@ -129,6 +138,10 @@
                         <tr>
                           <td class="fw-bold ls-1">Approved On :</td>
                           <td class="fw-bold ls-1" id="approved-on"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Expiry Date :</td>
+                          <td class="fw-bold ls-1" id="expiry-date"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Member's Maximum Benefit Limit :</td>
@@ -189,12 +202,12 @@
   </div>
 <!-- End Wrapper -->
 <script>
-  const baseUrl = "<?php echo base_url(); ?>";
+  const baseUrl = `<?php echo base_url(); ?>`;
   const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
   
   $(document).ready(function() {
 
-    let approvedtable = $('#approvedNoaTable').DataTable({
+    let approvedTable = $('#approvedNoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
@@ -220,7 +233,7 @@
     });
 
     $('#approved-hospital-filter').change(function(){
-      approvedtable.draw();
+      approvedTable.draw();
     });
 
   });
@@ -257,6 +270,7 @@
           noa_no,
           approved_by,
           approved_on,
+          expiry_date,
           member_mbl,
           remaining_mbl,
           first_name,
@@ -290,6 +304,7 @@
         $('#noa-no').html(noa_no);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
+        $('#expiry-date').html(expiry_date);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);

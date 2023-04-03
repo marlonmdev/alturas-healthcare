@@ -195,7 +195,8 @@
           work_related,
           req_status,
           approved_by,
-          approved_on
+          approved_on,
+          expiry_date
         } = res;
 
         $("#viewNoaModal").modal("show");
@@ -225,6 +226,7 @@
         $('#chief-complaint').html(chief_complaint);
         $('#work-related').html(work_related);
         $('#request-date').html(request_date);
+        $('#expiry-date').html(expiry_date);
       }
     });
   }

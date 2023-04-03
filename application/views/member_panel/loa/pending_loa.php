@@ -64,14 +64,23 @@
               >
             </li>
             <li class="nav-item">
-            <a
-              class="nav-link"
-              href="<?php echo base_url(); ?>member/requested-loa/cancelled"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Cancelled</span></a
-            >
-          </li>
+              <a
+                class="nav-link"
+                href="<?php echo base_url(); ?>member/requested-loa/expired"
+                role="tab"
+                ><span class="hidden-sm-up"></span>
+                <span class="hidden-xs-down fs-5 font-bold">Expired</span></a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="<?php echo base_url(); ?>member/requested-loa/cancelled"
+                role="tab"
+                ><span class="hidden-sm-up"></span>
+                <span class="hidden-xs-down fs-5 font-bold">Cancelled</span></a
+              >
+            </li>
           </ul>
 
         <div class="card shadow">
@@ -81,9 +90,9 @@
                 <thead>
                   <tr>
                     <th class="fw-bold">LOA No.</th>
-                    <th class="fw-bold">Request Date</th>
                     <th class="fw-bold">Healthcare Provider</th>
                     <th class="fw-bold">LOA Type</th>
+                    <th class="fw-bold">Request Date</th>
                     <th class="fw-bold">RX File</th>
                     <th class="fw-bold">Status</th>
                     <th class="fw-bold">Actions</th>

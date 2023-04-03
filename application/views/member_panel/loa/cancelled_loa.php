@@ -64,14 +64,23 @@
               >
             </li>
             <li class="nav-item">
-            <a
-              class="nav-link active"
-              href="<?php echo base_url(); ?>member/requested-loa/cancelled"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Cancelled</span></a
-            >
-          </li>
+              <a
+                class="nav-link"
+                href="<?php echo base_url(); ?>member/requested-loa/expired"
+                role="tab"
+                ><span class="hidden-sm-up"></span>
+                <span class="hidden-xs-down fs-5 font-bold">Expired</span></a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                href="<?php echo base_url(); ?>member/requested-loa/cancelled"
+                role="tab"
+                ><span class="hidden-sm-up"></span>
+                <span class="hidden-xs-down fs-5 font-bold">Cancelled</span></a
+              >
+            </li>
           </ul>
 
         <div class="card shadow">
@@ -81,10 +90,10 @@
                 <thead>
                   <tr>
                     <th class="fw-bold">LOA No.</th>
-                    <th class="fw-bold">Requested on</th>
-                    <th class="fw-bold">Reason</th>
-                    <th class="fw-bold">Confirmed on</th>
-                    <th class="fw-bold">Confirmed by</th>
+                    <th class="fw-bold">Request Date</th>
+                    <th class="fw-bold">Healthcare Provider</th>
+                    <th class="fw-bold">LOA Type</th>
+                    <th class="fw-bold">RX File</th>
                     <th class="fw-bold">Status</th>
                     <th class="fw-bold">Actions</th>
                   </tr>
@@ -95,11 +104,10 @@
             </div>
           </div>
         </div>
-        <?php include 'view_loa_details.php'; ?>
+        <?php include 'view_cancelled_loa_details.php'; ?>
       </div>
       <!-- End Row  -->  
       </div>
-      <?php include 'view_cancel_reason.php'; ?>
     <!-- End Container fluid  -->
     </div>
   <!-- End Page wrapper  -->
@@ -136,14 +144,22 @@
     });
   })
 
-  const viewReasonModal = (reason) => {
-        $("#viewCancelReasonModal").modal("show");
-        $("#reason").val(reason);
+  const viewImage = (path) => {
+    let item = [{
+      src: path, // path to image
+      title: 'Attached RX File' // If you skip it, there will display the original image name
+    }];
+    // define options (if needed)
+    let options = {
+      index: 0 // this option means you will start at first image
+    };
+    // Initialize the plugin
+    let photoviewer = new PhotoViewer(item, options);
   }
 
-  const viewLoaInfo = (loa_id) => {
+  const viewCancelledLoaInfo = (req_id) => {
     $.ajax({
-      url: `${baseUrl}member/requested-loa/view/${loa_id}`,
+      url: `${baseUrl}member/requested-loa/view/${req_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);
@@ -152,6 +168,10 @@
           status,
           token,
           loa_no,
+          cancelled_by,
+          cancelled_on,
+          cancellation_reason,
+          approved_on,
           first_name,
           middle_name,
           last_name,
@@ -183,19 +203,16 @@
         } = res;
 
         $("#viewLoaModal").modal("show");
-        $('#saveImage-btn').hide();
-        let rstat = '';
-        if(req_status == 'Pending'){
-          req_stat = `<strong class="text-warning">[${req_status}]</strong>`;
-        }else{
-          req_stat = `<strong class="text-cyan">[${req_status}]</strong>`;
-        }
 
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
 
         $('#loa-no').html(loa_no);
-        $('#loa-status').html(req_stat);
+        $('#loa-status').html(`<strong class="text-info">[${req_status}]</strong>`);
+        $('#cancelled-by').html(cancelled_by);
+        $('#cancelled-on').html(cancelled_on);
+        $('#cancellation-reason').html(cancellation_reason);
+        $('#work-related').html(work_related);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
         $('#date-of-birth').html(date_of_birth);
         $('#age').html(age);
@@ -218,13 +235,6 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
-        if(work_related != ''){
-          $('#work-related-info').removeClass('d-none');
-          $('#work-related-val').html(work_related);
-        }else{
-          $('#work-related-info').addClass('d-none');
-          $('#work-related-val').html('');
-        }
       }
     });
   }

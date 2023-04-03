@@ -8,7 +8,7 @@ $(document).ready(() => {
 	});
 });
 
-function show_password() {
+const show_password = () => {
 	let input_password = document.querySelector("#input-password");
 	if (input_password.type === "password") {
 		input_password.type = "text";
@@ -21,7 +21,7 @@ function show_password() {
  * It sends the data from the login form to the server, and if the server responds with a status of
  * "error", it displays the error message. Otherwise, it calls the login_validated function
  */
-function check_login() {
+const check_login = () => {
 	$.ajax({
 		url: "check-login",
 		data: $("#login-form").serialize(),
@@ -47,31 +47,9 @@ function check_login() {
 				toastr["error"](message);
 				$("#btnLoginText").html("LOG IN");
 			} else {
-				const {
-					token,
-					user_id,
-					emp_id,
-					fullname,
-					dsg_hcare_prov,
-					doctor_id,
-					user_role,
-					logged_in,
-					next_route,
-					next_page,
-				} = response;
+				const {token, user_id, emp_id, fullname, dsg_hcare_prov, doctor_id, user_role, logged_in, next_route, next_page} = response;
 
-				login_validated(
-					token,
-					user_id,
-					emp_id,
-					fullname,
-					user_role,
-					dsg_hcare_prov,
-					doctor_id,
-					logged_in,
-					next_route,
-					next_page
-				);
+				login_validated(token, user_id, emp_id, fullname, user_role, dsg_hcare_prov, doctor_id, logged_in,next_route, next_page);
 			}
 		},
 	});
@@ -89,51 +67,51 @@ function check_login() {
  * @param next_route - the route where the ajax request will be sent to
  * @param next_page - the page to be redirected to after login
  */
-function login_validated(
-	token,
-	user_id,
-	emp_id,
-	fullname,
-	user_role,
-	dsg_hcare_prov,
-	doctor_id,
-	logged_in,
-	next_route,
-	next_page
-) {
-	const loader = "<?php echo base_url(); ?>assets/images/loader.gif";
+
+const login_validated = (token, user_id, emp_id, fullname, user_role, dsg_hcare_prov, doctor_id, logged_in,
+next_route, next_page) => {
 	$.ajax({
 		url: next_route,
-		data: {
-			token,
-			user_id,
-			emp_id,
-			fullname,
-			user_role,
-			dsg_hcare_prov,
-			doctor_id,
-			logged_in,
-		},
+		data: {token, user_id, emp_id, fullname, user_role, dsg_hcare_prov, doctor_id, logged_in},
 		type: "post",
 		dataType: "json",
 		success: function (response) {
-			console.log(response);
 			const { status, message } = response;
+
 			if (status == "success") {
 				$("#loaderGif").removeClass("d-none");
 				$("#loaderGif").show();
 				$("#btnLoginText").html("LOGGING IN...");
-				setTimeout(function () {
-					window.location.href = next_page;
-				}, 2500);
+				updateExpiredLoa(next_page);
+				// setTimeout(function () {
+				// 	window.location.href = next_page;
+				// }, 2500);
+
 			} else {
+
 				toastr.options = {
 					closeButton: true,
 					preventDuplicates: true,
 				};
+
 				toastr["error"](message);
 				$("#btnLoginText").html("LOG IN");
+
 			}
 		},
+	});
+}
+
+const baseUrl = `<?php echo base_url(); ?>`;
+
+const updateExpiredLoa = (next_page) => {
+	$.ajax({
+		url: `${baseUrl}check-all/approved-loa/expired/update`,
+		method: "GET",
+		success: function(res) {
+			setTimeout(function () {
+				window.location.href = next_page;
+			}, 500);
+		}
 	});
 }

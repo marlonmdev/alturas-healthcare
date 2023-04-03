@@ -51,7 +51,16 @@
               <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
             >
           </li>
-            <!-- <li class="nav-item">
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/expired"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Expired</span></a
+            >
+          </li>
+          <!-- <li class="nav-item">
             <a
               class="nav-link"
               href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/completed"
@@ -197,7 +206,7 @@
 
   $(document).ready(function() {
 
-    let disapprovedtable = $('#disapprovedNoaTable').DataTable({
+    let disapprovedTable = $('#disapprovedNoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
@@ -223,7 +232,7 @@
     });
 
     $('#disapproved-hospital-filter').change(function(){
-      disapprovedtable.draw();
+      disapprovedTable.draw();
     });
 
 

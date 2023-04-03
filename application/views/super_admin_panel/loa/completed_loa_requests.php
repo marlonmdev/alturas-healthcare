@@ -63,7 +63,39 @@
               <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
             >
           </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="<?php echo base_url(); ?>super-admin/loa/requests-list/cancelled"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Cancelled</span></a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="<?php echo base_url(); ?>super-admin/loa/requests-list/expired"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Expired</span></a
+            >
+          </li>
         </ul>
+
+        <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text bg-dark text-white"><i class="mdi mdi-filter"></i></span>
+            </div>
+            <select class="form-select fw-bold" name="completed-hospital-filter" id="completed-hospital-filter">
+              <option value="">Select Hospital</option>
+              <?php foreach($hcproviders as $option) : ?>
+                <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+        </div>
 
         <div class="card shadow">
           <div class="card-body">
@@ -100,7 +132,7 @@
 
   $(document).ready(function() {
 
-    $('#completedLoaTable').DataTable({
+    let completedTable = $('#completedLoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
@@ -110,8 +142,9 @@
         url: `${baseUrl}super-admin/loa/requests-list/completed/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
-        data: {
-          'token': '<?php echo $this->security->get_csrf_hash(); ?>'
+        data: function(data) {
+          data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
+          data.filter = $('#completed-hospital-filter').val();
         }
       },
 
@@ -122,6 +155,9 @@
       }, ],
       responsive: true,
       fixedHeader: true,
+    });
+    $('#completed-hospital-filter').change(function(){
+      completedTable.draw();
     });
 
   });

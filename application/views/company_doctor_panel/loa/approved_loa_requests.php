@@ -244,7 +244,8 @@
           req_status,
           work_related,
           approved_by,
-          approved_on
+          approved_on,
+          expiry_date
         } = res;
 
         $("#viewLoaModal").modal("show");
@@ -256,6 +257,7 @@
         $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
+        $('#expiry-date').html(expiry_date);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);

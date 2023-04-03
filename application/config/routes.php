@@ -7,6 +7,7 @@ $route['default_controller'] = 'page_controller';
 $route['check-login'] = 'auth_controller/check_login';
 $route['redirect-to-dashboard'] = 'auth_controller/redirect_to_dashboard';
 $route['logout'] = 'auth_controller/logout';
+
 // $route['import/members'] = 'masterfile_controller';
 
 // Import Members Data Routes
@@ -23,6 +24,9 @@ $route['import/spreadhseet_format_download'] = 'masterfile_controller/spreadhsee
 $route['import/spreadsheet_export'] = 'masterfile_controller/spreadsheet_export';
 //================================================================================================
 
+// route for automatically run functions on page load
+$route['check-all/approved-loa/expired/update'] = 'autorun_controller/update_all_expired_loa';
+$route['check-member/approved-loa/expired/update/(:any)'] = 'autorun_controller/update_member_expired_loa';
 
 //================================================================================================
 // Member Navigation Links Routes
@@ -35,7 +39,8 @@ $route['member/requested-loa/pending'] = 'member/pages_controller/pending_reques
 $route['member/requested-loa/approved'] = 'member/pages_controller/approved_requested_loa';
 $route['member/requested-loa/disapproved'] = 'member/pages_controller/disapproved_requested_loa';
 $route['member/requested-loa/completed'] = 'member/pages_controller/completed_requested_loa';
-$route['member/requested-loa/cancelled'] = 'member/pages_controller/cancelled_loa_requests';
+$route['member/requested-loa/expired'] = 'member/pages_controller/expired_requested_loa';
+$route['member/requested-loa/cancelled'] = 'member/pages_controller/cancelled_requested_loa';
 $route['member/requested-noa/pending'] = 'member/pages_controller/pending_requested_noa';
 $route['member/requested-noa/approved'] = 'member/pages_controller/approved_requested_noa';
 $route['member/requested-noa/disapproved'] = 'member/pages_controller/disapproved_requested_noa';
@@ -64,6 +69,7 @@ $route['member/requested-loa/edit/(:any)'] = 'member/loa_controller/edit_loa_req
 $route['member/requested-loa/update/(:any)'] = 'member/loa_controller/update_loa_request';
 $route['member/requested-loa/generate-printable-loa/(:any)'] = 'member/loa_controller/generate_printable_loa';
 $route['member/requested-loa/approve/cancel-request/(:any)'] = 'member/loa_controller/request_loa_cancellation';
+$route['member/requested-loa/expired/fetch'] = 'member/loa_controller/fetch_expired_loa';
 $route['member/requested-loa/cancelled/fetch'] = 'member/loa_controller/fetch_cancelled_loa';
 
 // Member NOA Routes
@@ -285,7 +291,9 @@ $route['healthcare-coordinator/loa/requests-list'] = 'healthcare_coordinator/pag
 $route['healthcare-coordinator/loa/requests-list/approved'] = 'healthcare_coordinator/pages_controller/view_approved_loa_list';
 $route['healthcare-coordinator/loa/requests-list/disapproved'] = 'healthcare_coordinator/pages_controller/view_disapproved_loa_list';
 $route['healthcare-coordinator/loa/requests-list/completed'] = 'healthcare_coordinator/pages_controller/view_completed_loa_list';
+$route['healthcare-coordinator/loa/requests-list/expired'] = 'healthcare_coordinator/pages_controller/view_expired_loa_list';
 $route['healthcare-coordinator/loa/requests-list/cancelled'] = 'healthcare_coordinator/pages_controller/view_cancelled_loa_list';
+
 $route['healthcare-coordinator/loa/cancellation-requests'] = 'healthcare_coordinator/pages_controller/view_loa_cancellation_list';
 $route['healthcare-coordinator/loa/cancellation-requests/approved'] = 'healthcare_coordinator/pages_controller/view_loa_approved_cancellation';
 $route['healthcare-coordinator/loa/cancellation-requests/disapproved'] = 'healthcare_coordinator/pages_controller/view_loa_disapproved_cancellation';
@@ -293,6 +301,7 @@ $route['healthcare-coordinator/loa/requests-list/rescheduled'] = 'healthcare_coo
 $route['healthcare-coordinator/noa/requests-list'] = 'healthcare_coordinator/pages_controller/view_pending_noa_list';
 $route['healthcare-coordinator/noa/requests-list/approved'] = 'healthcare_coordinator/pages_controller/view_approved_noa_list';
 $route['healthcare-coordinator/noa/requests-list/disapproved'] = 'healthcare_coordinator/pages_controller/view_disapproved_noa_list';
+$route['healthcare-coordinator/noa/requests-list/expired'] = 'healthcare_coordinator/pages_controller/view_expired_noa_list';
 $route['healthcare-coordinator/noa/requests-list/completed'] = 'healthcare_coordinator/pages_controller/view_completed_noa_list';
 $route['healthcare-coordinator/noa/request-noa'] = 'healthcare_coordinator/pages_controller/request_noa_form';
 
@@ -336,6 +345,8 @@ $route['healthcare-coordinator/loa/requests-list/fetch'] = 'healthcare_coordinat
 $route['healthcare-coordinator/loa/requests-list/approved/fetch'] = 'healthcare_coordinator/loa_controller/fetch_all_approved_loa';
 $route['healthcare-coordinator/loa/requests-list/disapproved/fetch'] = 'healthcare_coordinator/loa_controller/fetch_all_disapproved_loa';
 $route['healthcare-coordinator/loa/requests-list/completed/fetch'] = 'healthcare_coordinator/loa_controller/fetch_all_completed_loa';
+$route['healthcare-coordinator/loa/requests-list/expired/fetch'] = 'healthcare_coordinator/loa_controller/fetch_all_expired_loa';
+$route['healthcare-coordinator/loa/requests-list/expired/backdate'] = 'healthcare_coordinator/loa_controller/backdate_expired_loa';
 $route['healthcare-coordinator/loa/requests-list/cancelled/fetch'] = 'healthcare_coordinator/loa_controller/fetch_all_cancelled_loa';
 $route['healthcare-coordinator/loa/requests-list/resched/fetch'] = 'healthcare_coordinator/loa_controller/fetch_all_rescheduled_loa';
 $route['healthcare-coordinator/loa/pending/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_pending_loa_info';
@@ -376,10 +387,13 @@ $route['healthcare-coordinator/loa/rescheduled-loa/update-loa/(:any)'] = 'health
 $route['healthcare-coordinator/noa/requests-list/fetch'] = 'healthcare_coordinator/noa_controller/fetch_all_pending_noa';
 $route['healthcare-coordinator/noa/requests-list/approved/fetch'] = 'healthcare_coordinator/noa_controller/fetch_all_approved_noa';
 $route['healthcare-coordinator/noa/requests-list/disapproved/fetch'] = 'healthcare_coordinator/noa_controller/fetch_all_disapproved_noa';
+$route['healthcare-coordinator/noa/requests-list/expired/fetch'] = 'healthcare_coordinator/noa_controller/fetch_all_expired_noa';
+$route['healthcare-coordinator/noa/requests-list/expired/backdate'] = 'healthcare_coordinator/noa_controller/backdate_expired_noa';
 $route['healthcare-coordinator/noa/requests-list/completed/fetch'] = 'healthcare_coordinator/noa_controller/fetch_all_completed_noa';
 $route['healthcare-coordinator/noa/pending/view/(:any)'] = 'healthcare_coordinator/noa_controller/get_pending_noa_info';
 $route['healthcare-coordinator/noa/approved/view/(:any)'] = 'healthcare_coordinator/noa_controller/get_approved_noa_info';
 $route['healthcare-coordinator/noa/disapproved/view/(:any)'] = 'healthcare_coordinator/noa_controller/get_disapproved_noa_info';
+$route['healthcare-coordinator/noa/expired/view/(:any)'] = 'healthcare_coordinator/noa_controller/get_expired_noa_info';
 $route['healthcare-coordinator/noa/completed/view/(:any)'] = 'healthcare_coordinator/noa_controller/get_completed_noa_info';
 $route['healthcare-coordinator/noa/request-noa/submit'] = 'healthcare_coordinator/noa_controller/submit_noa_request';
 $route['healthcare-coordinator/noa/requested-loa/edit/(:any)'] = 'healthcare_coordinator/noa_controller/edit_noa_request';
@@ -415,6 +429,9 @@ $route['healthcare-coordinator/setup/room-types/register/submit'] = 'healthcare_
 $route['healthcare-coordinator/setup/room-types/edit/(:any)'] = 'healthcare_coordinator/setup_controller/get_room_type_info';
 $route['healthcare-coordinator/setup/room-types/update'] = 'healthcare_coordinator/setup_controller/update_room_type';
 $route['healthcare-coordinator/setup/room-types/delete/(:any)'] = 'healthcare_coordinator/setup_controller/delete_room_type';
+
+// managers key
+$route['healthcare-coordinator/managers-key/check'] = 'healthcare_coordinator/account_controller/check_manager_username';
 // End of HealthCare Coordinator Routes
 //========================================================================================================
 
@@ -460,7 +477,7 @@ $route['company-doctor/loa/requests-list/view/(:any)'] = 'company_doctor/loa_con
 $route['company-doctor/loa/requests-list/approve-request'] = 'company_doctor/loa_controller/approve_loa_request';
 $route['company-doctor/loa/requests-list/disapprove/(:any)'] = 'company_doctor/loa_controller/disapprove_loa_request';
 $route['company-doctor/loa/requested-loa/generate-printable-loa/(:any)'] = 'company_doctor/loa_controller/generate_printable_loa';
-$route['company-doctor/loa/requests-list/cancelled/fetch'] = 'company_doctor/loa_controller/fetch_cancelled_loa';
+$route['company-doctor/loa/requests-list/cancelled/fetch'] = 'company_doctor/loa_controller/fetch_all_cancelled_loa';
 
 // Company Doctor NOA Routes
 $route['company-doctor/noa/requests-list/fetch'] = 'company_doctor/noa_controller/fetch_all_pending_noa';
@@ -493,6 +510,8 @@ $route['super-admin/loa/requests-list'] = 'super_admin/pages_controller/view_pen
 $route['super-admin/loa/requests-list/approved'] = 'super_admin/pages_controller/view_approved_loa_list';
 $route['super-admin/loa/requests-list/disapproved'] = 'super_admin/pages_controller/view_disapproved_loa_list';
 $route['super-admin/loa/requests-list/completed'] = 'super_admin/pages_controller/view_completed_loa_list';
+$route['super-admin/loa/requests-list/cancelled'] = 'super_admin/pages_controller/view_cancelled_loa_list';
+$route['super-admin/loa/requests-list/expired'] = 'super_admin/pages_controller/view_expired_loa_list';
 $route['super-admin/noa/requests-list'] = 'super_admin/pages_controller/view_pending_noa_list';
 $route['super-admin/noa/requests-list/approved'] = 'super_admin/pages_controller/view_approved_noa_list';
 $route['super-admin/noa/requests-list/disapproved'] = 'super_admin/pages_controller/view_disapproved_noa_list';
@@ -539,10 +558,14 @@ $route['super-admin/loa/requests-list/fetch'] = 'super_admin/loa_controller/fetc
 $route['super-admin/loa/requests-list/approved/fetch'] = 'super_admin/loa_controller/fetch_all_approved_loa';
 $route['super-admin/loa/requests-list/disapproved/fetch'] = 'super_admin/loa_controller/fetch_all_disapproved_loa';
 $route['super-admin/loa/requests-list/completed/fetch'] = 'super_admin/loa_controller/fetch_all_completed_loa';
+$route['super-admin/loa/requests-list/cancelled/fetch'] = 'super_admin/loa_controller/fetch_all_cancelled_loa';
+$route['super-admin/loa/requests-list/expired/fetch'] = 'super_admin/loa_controller/fetch_all_expired_loa';
 $route['super-admin/loa/pending/view/(:any)'] = 'super_admin/loa_controller/get_pending_loa_info';
 $route['super-admin/loa/approved/view/(:any)'] = 'super_admin/loa_controller/get_approved_loa_info';
 $route['super-admin/loa/disapproved/view/(:any)'] = 'super_admin/loa_controller/get_disapproved_loa_info';
 $route['super-admin/loa/completed/view/(:any)'] = 'super_admin/loa_controller/get_completed_loa_info';
+$route['super-admin/loa/cancelled/view/(:any)'] = 'super_admin/loa_controller/get_cancelled_loa_info';
+$route['super-admin/loa/expired/view/(:any)'] = 'super_admin/loa_controller/get_expired_loa_info';
 $route['super-admin/loa/requests-list/approve/(:any)'] = 'super_admin/loa_controller/approve_loa_request';
 $route['super-admin/loa/requests-list/disapprove/(:any)'] = 'super_admin/loa_controller/disapprove_loa_request';
 $route['super-admin/loa/member/search/(:any)'] = 'super_admin/search_controller/get_searched_member_details';

@@ -11,7 +11,7 @@
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
               <li class="breadcrumb-item active" aria-current="page">
-                Pending NOA
+                Expired NOA
               </li>
             </ol>
           </nav>
@@ -24,10 +24,10 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
-         <ul class="nav nav-tabs mb-4" role="tablist">
+        <ul class="nav nav-tabs mb-4" role="tablist">
           <li class="nav-item">
             <a
-              class="nav-link active"
+              class="nav-link"
               href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -51,17 +51,17 @@
               ><span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
             >
+          </li>
           <li class="nav-item">
             <a
-              class="nav-link"
+              class="nav-link active"
               href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/expired"
               role="tab"
               ><span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">Expired</span></a
             >
           </li>
-          <!-- </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
             <a
               class="nav-link"
               href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/completed"
@@ -72,8 +72,6 @@
           </li> -->
         </ul>
 
-        <?php include 'charge_type.php'; ?>
-
         <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
             <div class="input-group">
                 <div class="input-group-prepend">
@@ -81,7 +79,7 @@
                     <i class="mdi mdi-filter"></i>
                     </span>
                 </div>
-                <select class="form-select fw-bold" name="pending-hospital-filter" id="pending-hospital-filter">
+                <select class="form-select fw-bold" name="expired-hospital-filter" id="approved-hospital-filter">
                         <option value="">Select Hospital</option>
                         <?php foreach($hcproviders as $option) : ?>
                         <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
@@ -93,14 +91,14 @@
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover" id="pendingNoaTable">
+              <table class="table table-hover" id="expiredNoaTable">
                 <thead>
                   <tr>
                     <th class="fw-bold">NOA No.</th>
                     <th class="fw-bold">Name</th>
                     <th class="fw-bold">Admission Date</th>
                     <th class="fw-bold">Hospital Name</th>
-                    <th class="fw-bold">Request Date</th>
+                    <th class="fw-bold">Expiry Date</th>
                     <th class="fw-bold">Status</th>
                     <th class="fw-bold">Actions</th>
                   </tr>
@@ -112,7 +110,7 @@
           </div>
         </div>
 
-        <!-- View NOA Details -->
+        <!-- View NOA Details Modal -->
         <div class="modal fade" id="viewNoaModal" tabindex="-1" data-bs-backdrop="static">
           <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -134,6 +132,18 @@
                           <td class="fw-bold ls-1" id="request-date"></td>
                         </tr>
                         <tr>
+                          <td class="fw-bold ls-1">Approved By :</td>
+                          <td class="fw-bold ls-1" id="approved-by"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Approved On :</td>
+                          <td class="fw-bold ls-1" id="approved-on"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Expiry Date :</td>
+                          <td class="fw-bold ls-1" id="expiry-date"></td>
+                        </tr>
+                        <tr>
                           <td class="fw-bold ls-1">Member's Maximum Benefit Limit :</td>
                           <td class="fw-bold ls-1">&#8369;<span id="member-mbl"></span></td>
                         </tr>
@@ -141,9 +151,9 @@
                           <td class="fw-bold ls-1">Member's Remaining MBL :</td>
                           <td class="fw-bold ls-1">&#8369;<span id="remaining-mbl"></span></td>
                         </tr>
-                        <tr class="d-none" id="work-related-info">
-                          <td class="fw-bold ls-1">Work Related :</td>
-                          <td class="fw-bold ls-1" id="work-related-val"></td>
+                        <tr>
+                          <td class="fw-bold ls-1">Work-Related :</td>
+                          <td class="fw-bold ls-1" id="work-related"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Full Name :</td>
@@ -184,9 +194,11 @@
         <!-- End of View NOA -->
 
       </div>
+        <?php include 'managers_key_modal.php'; ?>
       <!-- End Row  -->  
       </div>
     <!-- End Container fluid  -->
+      <?php include 'back_date_modal.php'; ?>
     </div>
   <!-- End Page wrapper  -->
   </div>
@@ -194,22 +206,22 @@
 <script>
   const baseUrl = `<?php echo base_url(); ?>`;
   const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
-
+  
   $(document).ready(function() {
 
-    let pendingTable = $('#pendingNoaTable').DataTable({
+    let expiredTable = $('#expiredNoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
 
       // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}healthcare-coordinator/noa/requests-list/fetch`,
+        url: `${baseUrl}healthcare-coordinator/noa/requests-list/expired/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: function(data) {
           data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
-          data.filter = $('#pending-hospital-filter').val();
+          data.filter = $('#expired-hospital-filter').val();
         }
       },
 
@@ -222,51 +234,89 @@
       fixedHeader: true,
     });
 
-    $('#pending-hospital-filter').change(function(){
-      pendingTable.draw();
+    // Get today's date
+    const today = new Date();
+    // Create a new Date object representing tomorrow's date
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    $("#expiration-date").flatpickr({
+      enableTime: false,
+      dateFormat: 'Y-m-d',
+      minDate: tomorrow
     });
 
+    $('#expired-hospital-filter').change(function(){
+      expiredTable.draw();
+    });
 
-    // $("#pendingNoaTable").DataTable({
-    //   ajax: {
-    //     url: `${baseUrl}healthcare-coordinator/noa/requests-list/fetch`,
-    //     dataSrc: function(data) {
-    //       if (data == "") {
-    //         return [];
-    //       } else {
-    //         return data.data;
-    //       }
-    //     }
-    //   },
-    //   order: [],
-    //   responsive: true,
-    //   fixedHeader: true,
-    // });
-    
+  });
 
-    $('#formUpdateChargeType').submit(function(event) {
+
+  $('#managersKeyForm').submit(function(event){
+    event.preventDefault();
+    $.ajax({
+      type: "post",
+      url: `${baseUrl}healthcare-coordinator/managers-key/check`,
+      data: $(this).serialize(),
+      dataType: "json",
+      success: function (res) {
+          const { status, message, mgr_username_error, mgr_password_error, noa_id, noa_no } = res;
+
+          if (status == "error") {
+            if (mgr_username_error !== '') {
+              $('#mgr-username-error').html(mgr_username_error);
+              $('#mgr-username').addClass('is-invalid');
+            } else {
+              $('#mgr-username-error').html('');
+              $('#mgr-username').removeClass('is-invalid');
+            }
+
+            if (mgr_password_error !== '') {
+              $('#mgr-password-error').html(mgr_password_error);
+              $('#mgr-password').addClass('is-invalid');
+            } else {
+              $('#mgr-password-error').html('');
+              $('#mgr-password').removeClass('is-invalid');
+            }
+
+            if (message !== '') {
+              $('#msg-error').html(message);
+              $('#mgr-username').addClass('is-invalid');
+              $('#mgr-password').addClass('is-invalid');
+            } else {
+              $('#msg-error').html('');
+              $('#mgr-username').removeClass('is-invalid');
+              $('#mgr-password').removeClass('is-invalid');
+            }
+
+          } else {
+            $("#managersKeyModal").modal("hide");
+            showBackDateForm(noa_id, noa_no);
+          }
+      },
+    });
+  });
+
+  $('#backDateForm').submit(function(event){
       event.preventDefault();
       $.ajax({
         type: "post",
-        url: $(this).attr('action'),
+        url: `${baseUrl}healthcare-coordinator/noa/requests-list/expired/backdate`,
         data: $(this).serialize(),
         dataType: "json",
-        success: function(response) {
-          const {
-            token,
-            status,
-            message,
-            charge_type_error,
-          } = response;
+        success: function (res) {
+          const { status, message } = res;
+
           switch (status) {
             case 'error':
               // is-invalid class is a built in classname for errors in bootstrap
-              if (charge_type_error !== '') {
-                $('#charge-type-error').html(charge_type_error);
-                $('#charge-type').addClass('is-invalid');
+              if (expiry_date_error !== '') {
+                $('#expiry-date-error').html(expiry_date_error);
+                $('#expiry-date').addClass('is-invalid');
               } else {
-                $('#charge-type-error').html('');
-                $('#charge-type').removeClass('is-invalid');
+                $('#expiry-date-error').html('');
+                $('#expiry-date').removeClass('is-invalid');
               }
               break;
             case 'save-error':
@@ -277,7 +327,6 @@
                 showConfirmButton: false,
                 type: 'error'
               });
-              $("#pendingNoaTable").DataTable().ajax.reload();
               break;
             case 'success':
               swal({
@@ -288,15 +337,31 @@
                 type: 'success'
               });
               
-              $('#viewChargeTypeModal').modal('hide');
-              $("#pendingNoaTable").DataTable().ajax.reload();
+              $("#backDateModal").modal("hide");
+              $("#expiredNoaTable").DataTable().ajax.reload();
               break;
           }
         },
-      })
-    });
-
+      });              
   });
+
+  const showBackDateForm = (noa_id, noa_no) => {
+    $("#backDateModal").modal("show");
+    $('#bd-noa-id').val(noa_id);
+    $('#bd-noa-no').val(noa_no);
+  }
+
+  const backDate = (noa_id, noa_no) => {
+    $('#managersKeyModal').modal('show');
+    $('#expired-noa-id').val(noa_id);
+    $('#expired-noa-no').val(noa_no);
+    $('#mgr-username').val('');
+    $('#mgr-username').removeClass('is-invalid');
+    $('#mgr-username-error').html('');
+    $('#mgr-password').val('');
+    $('#mgr-password').removeClass('is-invalid');
+    $('#mgr-password-error').html('');
+  }
 
   const saveAsImage = () => {
     // Get the div element you want to save as an image
@@ -316,27 +381,23 @@
       });
   }
 
-  const showTagChargeType = (noa_id) => {
-    $("#viewChargeTypeModal").modal("show");
-    $('#noa-id').val(noa_id);
-    $('#charge-type').val('');
-    // $( ".wr" ).hide();
-    // $( ".nwr" ).hide();
-  }
 
-  function viewNoaInfo(noa_id) {
+  const viewExpiredNoaInfo = (req_id) => {
     $.ajax({
-      url: `${baseUrl}healthcare-coordinator/noa/pending/view/${noa_id}`,
+      url: `${baseUrl}healthcare-coordinator/noa/expired/view/${req_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);
+        const base_url = window.location.origin;
         const {
           status,
           token,
           noa_no,
+          approved_by,
+          approved_on,
+          expiry_date,
           member_mbl,
           remaining_mbl,
-          work_related,
           first_name,
           middle_name,
           last_name,
@@ -348,20 +409,30 @@
           requesting_company,
           admission_date,
           chief_complaint,
+          work_related,
           request_date,
-          req_status
+          req_status,
         } = res;
 
         $("#viewNoaModal").modal("show");
-        let rstat = '';
-        if(req_status == 'Pending'){
-          req_stat = `<strong class="text-warning">[${req_status}]</strong>`;
-        }else{
-          req_stat = `<strong class="text-cyan">[${req_status}]</strong>`;
+        switch (req_status) {
+          case 'Pending':
+            $('#noa-status').html('<strong class="text-warning">[' + req_status + ']</strong>');
+            break;
+          case 'Approved':
+            $('#noa-status').html('<strong class="text-success">[' + req_status + ']</strong>');
+            break;
+          case 'Disapproved':
+            $('#noa-status').html('<strong class="text-danger">[' + req_status + ']</strong>');
+            break;
+          case 'Expired':
+            $('#noa-status').html('<strong class="text-danger">[' + req_status + ']</strong>');
+            break;
         }
-
         $('#noa-no').html(noa_no);
-        $('#noa-status').html(req_stat);
+        $('#approved-by').html(approved_by);
+        $('#approved-on').html(approved_on);
+        $('#expiry-date').html(expiry_date);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
@@ -370,70 +441,8 @@
         $('#hospital-name').html(hospital_name);
         $('#admission-date').html(admission_date);
         $('#chief-complaint').html(chief_complaint);
+        $('#work-related').html(work_related);
         $('#request-date').html(request_date);
-        if(work_related != ''){
-          $('#work-related-info').removeClass('d-none');
-          $('#work-related-val').html(work_related);
-        }else{
-          $('#work-related-info').addClass('d-none');
-          $('#work-related-val').html('');
-        }
-      }
-    });
-  }
-
-  function cancelNoaRequest(noa_id) {
-    $.confirm({
-      title: '<strong>Confirm!</strong>',
-      content: 'Are you sure to delete NOA Request?',
-      type: 'red',
-      buttons: {
-        confirm: {
-          text: 'Yes',
-          btnClass: 'btn-red',
-          action: function() {
-            $.ajax({
-              type: 'GET',
-              url: `${baseUrl}healthcare-coordinator/noa/requested-noa/cancel/${noa_id}`,
-              data: {
-                noa_id
-              },
-              dataType: "json",
-              success: function(response) {
-                const {
-                  token,
-                  status,
-                  message
-                } = response;
-                if (status === 'success') {
-                  swal({
-                    title: 'Success',
-                    text: message,
-                    timer: 3000,
-                    showConfirmButton: false,
-                    type: 'success'
-                  });
-                  $("#pendingNoaTable").DataTable().ajax.reload();
-                } else {
-                  swal({
-                    title: 'Failed',
-                    text: message,
-                    timer: 3000,
-                    showConfirmButton: false,
-                    type: 'error'
-                  });
-                  $("#pendingNoaTable").DataTable().ajax.reload();
-                }
-              }
-            });
-          }
-        },
-        cancel: {
-          btnClass: 'btn-dark',
-          action: function() {
-            // close dialog
-          }
-        },
       }
     });
   }

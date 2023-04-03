@@ -105,7 +105,7 @@
 <!-- End Wrapper -->
 </div>
 <script>
-  const baseUrl = `<?= base_url() ?>`;
+  const baseUrl = `<?php echo base_url(); ?>`;
   $(document).ready(function() {
     /* The below code is a jQuery code that is used to submit a form using ajax. */
     $('#passwordUpdateForm').submit(function(event) {

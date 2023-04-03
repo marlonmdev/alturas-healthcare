@@ -13,34 +13,26 @@
                       <h4><strong>LOA REQUEST DETAILS</strong></h4>
                     </div>
                     <div class="row">
-                      <table class="table table-bordered table-striped table-hover table-responsive table-sm">
+                      <table class="table table-bordered table-hover table-striped table-responsive table-sm">
                         <tr>
                           <td class="fw-bold ls-1">Requested On :</td>
                           <td class="fw-bold ls-1" id="request-date"></td>
                         </tr>
                         <tr>
-                          <td class="fw-bold ls-1">Approved By :</td>
-                          <td class="fw-bold ls-1" id="approved-by"></td>
+                          <td class="fw-bold ls-1">Cancelled By :</td>
+                          <td class="fw-bold ls-1" id="cancelled-by"></td>
                         </tr>
                         <tr>
-                          <td class="fw-bold ls-1">Approved On :</td>
-                          <td class="fw-bold ls-1" id="approved-on"></td>
+                          <td class="fw-bold ls-1">Cancelled On :</td>
+                          <td class="fw-bold ls-1" id="cancelled-on"></td>
                         </tr>
                         <tr>
-                          <td class="fw-bold ls-1">Expiry Date :</td>
-                          <td class="fw-bold ls-1" id="expiry-date"></td>
-                        </tr>
-                        <tr>
-                          <td class="fw-bold ls-1">Member's Maximum Benefit Limit :</td>
-                          <td class="fw-bold ls-1">&#8369;<span id="member-mbl"></span></td>
-                        </tr>
-                        <tr>
-                          <td class="fw-bold ls-1">Member's Remaining MBL :</td>
-                          <td class="fw-bold ls-1">&#8369;<span id="remaining-mbl"></span></td>
+                          <td class="fw-bold ls-1">Cancellation Reason :</td>
+                          <td class="fw-bold ls-1" id="cancellation-reason"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Work Related :</td>
-                          <td class="fw-bold ls-1" id="work-related-val"></td>
+                          <td class="fw-bold ls-1" id="work-related"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Healthcard Number :</td>
@@ -130,9 +122,9 @@
                     </div>
                   </div>
                 </div>
-              </section>
+              <section>
               <div class="modal-footer">
-                <button class="btn btn-dark ls-1 me-2" id="saveImage-btn" onclick="saveAsImage()"><i class="mdi mdi-file-image"></i> Save as Image</button>
+                <button class="btn btn-dark ls-1 me-2" onclick="saveAsImage()"><i class="mdi mdi-file-image"></i> Save as Image</button>
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
               </div>
             </div>

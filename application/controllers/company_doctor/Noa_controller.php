@@ -300,14 +300,15 @@ class Noa_controller extends CI_Controller {
 		if($expiration_type == 'custom'){
 			$this->form_validation->set_rules('expiration-date', 'Custom Expiration Date', 'required');
 			if ($this->form_validation->run() == FALSE) {
-				$response = array(
-					'token' => $token,
-					'status' => 'error',
+				$response = [
+					'token' 							  => $token,
+					'status'                => 'error',
 					'expiration_date_error' => form_error('expiration-date'),
-				);
+				];
+
+				echo json_encode($response);
+				exit();
 			}
-			echo json_encode($response);
-			exit();
 		}
 
 		switch($expiration_type){
@@ -333,19 +334,18 @@ class Noa_controller extends CI_Controller {
 		}
 
 		$data = [
-			'status' => 'Approved',
-			'approved_by' => $approved_by,
-			'approved_on' => $approved_on,
+			'status'          => 'Approved',
+			'approved_by'     => $approved_by,
+			'approved_on'     => $approved_on,
 			'expiration_date' => $expired_on
 		];
 
 		$approved = $this->noa_model->db_approve_noa_request($noa_id, $data);
 		if ($approved) {
-			$response = array('token' => $token, 'status' => 'success', 'message' => 'NOA Request Approved Successfully');
+			$response = ['token' => $token, 'status' => 'success', 'message' => 'NOA Request Approved Successfully'];
 		} else {
-			$response = array('token' => $token, 'status' => 'error', 'message' => 'Unable to Approve NOA Request!');
+			$response = ['token' => $token, 'status' => 'save-error', 'message' => 'Unable to Approve NOA Request'];
 		}
-
 		echo json_encode($response);
 	}
 

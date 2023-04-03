@@ -7,9 +7,7 @@
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Super Admin</li>
-              <li class="breadcrumb-item active" aria-current="page">
-                Pending LOA
-              </li>
+              <li class="breadcrumb-item active" aria-current="page">Expired LOA</li>
             </ol>
           </nav>
         </div>
@@ -19,60 +17,57 @@
 
   <div class="container-fluid">
     <div class="row">
+
       <div class="col-12">
         <ul class="nav nav-tabs mb-4" role="tablist">
           <li class="nav-item">
             <a
-              class="nav-link active"
+              class="nav-link"
               href="<?php echo base_url(); ?>super-admin/loa/requests-list"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Pending</span>
-            </a>
+              <span class="hidden-xs-down fs-5 font-bold">Pending</span></a
+            >
           </li>
-
           <li class="nav-item">
             <a
               class="nav-link"
               href="<?php echo base_url(); ?>super-admin/loa/requests-list/approved"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Approved</span>
-            </a>
+              <span class="hidden-xs-down fs-5 font-bold">Approved</span></a
+            >
           </li>
-
           <li class="nav-item">
             <a
               class="nav-link"
               href="<?php echo base_url(); ?>super-admin/loa/requests-list/disapproved"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Disapproved</span>
-            </a>
+              <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
+            >
           </li>
-
           <li class="nav-item">
             <a
               class="nav-link"
               href="<?php echo base_url(); ?>super-admin/loa/requests-list/completed"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Completed</span>
-            </a>
+              <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
+            >
           </li>
-           <li class="nav-item">
+          <li class="nav-item">
             <a
               class="nav-link"
               href="<?php echo base_url(); ?>super-admin/loa/requests-list/cancelled"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Cancelled</span>
-            </a>
+              <span class="hidden-xs-down fs-5 font-bold">Cancelled</span></a
+            >
           </li>
-
           <li class="nav-item">
             <a
-              class="nav-link"
+              class="nav-link active"
               href="<?php echo base_url(); ?>super-admin/loa/requests-list/expired"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -86,7 +81,7 @@
             <div class="input-group-prepend">
               <span class="input-group-text bg-dark text-white"><i class="mdi mdi-filter"></i></span>
             </div>
-            <select class="form-select fw-bold" name="pending-hospital-filter" id="pending-hospital-filter">
+            <select class="form-select fw-bold" name="expired-hospital-filter" id="expired-hospital-filter">
               <option value="">Select Hospital</option>
               <?php foreach($hcproviders as $option) : ?>
                 <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
@@ -98,7 +93,7 @@
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover table-responsive" id="pendingLoaTable">
+              <table class="table table-hover table-responsive" id="expiredLoaTable">
                 <thead>
                   <tr>
                     <th class="fw-bold">LOA No.</th>
@@ -117,28 +112,29 @@
             </div>
           </div>
         </div>
-        <?php include 'view_loa_details.php'; ?>
+
+        <?php include 'view_expired_loa_details.php'; ?>
+
+      </div>
     </div>
   </div>
 </div>
-
-
 <script>
-  const baseUrl = `<?php echo base_url(); ?>`;
+  const baseUrl = "<?php echo base_url(); ?>";
   const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
 
   $(document).ready(function() {
-    let pendingTable = $('#pendingLoaTable').DataTable({
+    let expiredTable = $('#expiredLoaTable').DataTable({
       processing: true,
       serverSide: true,
       order: [],
 
       ajax: {
-        url: `${baseUrl}super-admin/loa/requests-list/fetch`,
+        url: `${baseUrl}super-admin/loa/requests-list/expired/fetch`,
         type: "POST",
         data: function(data) {
           data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
-          data.filter = $('#pending-hospital-filter').val();
+          data.filter = $('#expired-hospital-filter').val();
         }
       },
 
@@ -150,8 +146,62 @@
       fixedHeader: true,
     });
 
-    $('#pending-hospital-filter').change(function(){
-      pendingTable.draw();
+    $('#expired-hospital-filter').change(function(){
+      expiredTable.draw();
+    });
+
+    $('#loaCancellationForm').submit(function(event) {
+      const nextPage = `${baseUrl}super-admin/loa/requests-list/cancelled`;
+      event.preventDefault();
+      $.ajax({
+        type: "post",
+        url: $(this).attr('action'),
+        data: $(this).serialize(),
+        dataType: "json",
+        success: function(response) {
+          const {
+            token,
+            status,
+            message,
+            cancellation_reason_error
+          } = response;
+          switch (status) {
+            case 'error':
+              // is-invalid class is a built in classname for errors in bootstrap
+              if (cancellation_reason_error !== '') {
+                $('#cancellation-reason-error').html(cancellation_reason_error);
+                $('#cancellation-reason').addClass('is-invalid');
+              } else {
+                $('#cancellation-reason-error').html('');
+                $('#cancellation-reason').removeClass('is-invalid');
+              }
+              break;
+            case 'save-error':
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
+              break;
+            case 'success':
+              swal({
+                title: 'Success',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'success'
+              });
+              $('#loaCancellationModal').modal('hide');
+              $("#memberApprovedLoa").DataTable().ajax.reload();
+              setTimeout(function() {
+                window.location.href = nextPage;
+              }, 3200);
+              break;
+          }
+        }
+      });
     });
   });
 
@@ -167,35 +217,33 @@
   }
 
   const saveAsImage = () => {
-    // Get the div element you want to save as an image
     const element = document.querySelector("#printableDiv");
-    // Use html2canvas to take a screenshot of the element
     html2canvas(element)
     .then(function(canvas) {
-      // Convert the canvas to an image data URL
       const imgData = canvas.toDataURL("image/png");
-      // Create a temporary link element to download the image
       const link = document.createElement("a");
       link.download = `loa_${fileName}.png`;
       link.href = imgData;
-
-      // Click the link to download the image
       link.click();
     });
   }
 
-  const viewLoaInfo = (loa_id) => {
+
+  const viewCancelledLoaInfo = (req_id) => {
     $.ajax({
-      url: `${baseUrl}super-admin/loa/pending/view/${loa_id}`,
+      url: `${baseUrl}super-admin/loa/expired/view/${req_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);
+        const base_url = window.location.origin;
         const {
           status,
           token,
           loa_no,
-          req_status,
           request_date,
+          approved_by,
+          approved_on,
+          expiry_date,
           member_mbl,
           remaining_mbl,
           health_card_no,
@@ -204,8 +252,7 @@
           last_name,
           suffix,
           date_of_birth,
-          age,
-          gender,
+          age,gender,
           blood_type,
           philhealth_no,
           home_address,
@@ -218,7 +265,7 @@
           healthcare_provider,
           loa_request_type,
           med_services,
-          requesting_company, 
+          requesting_company,
           chief_complaint,
           requesting_physician,
           attending_physician
@@ -226,19 +273,14 @@
 
         $("#viewLoaModal").modal("show");
 
-        let rstat = '';
-        if(req_status == 'Pending'){
-          req_stat = `<strong class="text-warning">[${req_status}]</strong>`;
-        }else{
-          req_stat = `<strong class="text-cyan">[${req_status}]</strong>`;
-        }
-
+        
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
-
         $('#loa-no').html(loa_no);
-        $('#loa-status').html(req_stat);
-        $('#request-date').html(request_date);
+        $('#request-on').html(request_date);
+        $('#approved-by').html(approved_by);
+        $('#approved-on').html(approved_on);
+        $('#expiration-date').html(expiry_date);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
         $('#health-card-no').html(health_card_no);
@@ -251,72 +293,17 @@
         $('#home-address').html(home_address);
         $('#city-address').html(city_address);
         $('#contact-no').html(contact_no);
-        $('#email').html(email);       
+        $('#email').html(email);
         $('#contact-person').html(contact_person);
         $('#contact-person-addr').html(contact_person_addr);
         $('#contact-person-no').html(contact_person_no);
         $('#healthcare-provider').html(healthcare_provider);
         $('#loa-request-type').html(loa_request_type);
-        $('#loa-med-services').html(med_serv);
+        $('#loa-med-services').html(med_serv);  
         $('#requesting-company').html(requesting_company);
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
-      }
-    });
-  }
-
-  const cancelLoaRequest = (loa_id) => {
-    $.confirm({
-      title: '<strong>Confirm!</strong>',
-      content: 'Are you sure to delete LOA Request?',
-      type: 'red',
-      buttons: {
-        confirm: {
-          text: 'Yes',
-          btnClass: 'btn-red',
-          action: function() {
-            $.ajax({
-              type: 'GET',
-              url: `${baseUrl}super-admin/loa/requested-loa/cancel/${loa_id}`,
-              data: {
-                loa_id
-              },
-              dataType: "json",
-              success: function(response) {
-                const {
-                  token,
-                  status,
-                  message
-                } = response;
-                if (status === 'success') {
-                  swal({
-                    title: 'Success',
-                    text: message,
-                    timer: 3000,
-                    showConfirmButton: false,
-                    type: 'success'
-                  });
-                  $("#pendingLoaTable").DataTable().ajax.reload();
-                } else {
-                  swal({
-                    title: 'Failed',
-                    text: message,
-                    timer: 3000,
-                    showConfirmButton: false,
-                    type: 'error'
-                  });
-                  $("#pendingLoaTable").DataTable().ajax.reload();
-                }
-              }
-            });
-          }
-        },
-        cancel: {
-          btnClass: 'btn-dark',
-          action: function() {
-          }
-        },
       }
     });
   }

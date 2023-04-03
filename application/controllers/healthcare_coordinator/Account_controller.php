@@ -195,7 +195,7 @@ class Account_controller extends CI_Controller {
 					'message' => 'Incorrect Username or Password',
 					'mgr_username_error' => '',
 					'mgr_password_error' => '',
-					'loa_id'  => $expire_loa_id,
+					'loa_id'  => $expired_loa_id,
 					'loa_no'  => $expired_loa_no
 				];
 			} else {

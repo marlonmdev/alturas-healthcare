@@ -1030,7 +1030,7 @@ class Loa_controller extends CI_Controller {
 	}
 
 
-		function get_expired_loa_info() {
+	function get_expired_loa_info() {
 		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$this->load->model('healthcare_coordinator/loa_model');
 		$row = $this->loa_model->db_get_loa_details($loa_id);

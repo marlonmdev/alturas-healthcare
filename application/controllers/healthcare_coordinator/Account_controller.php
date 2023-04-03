@@ -177,6 +177,8 @@ class Account_controller extends CI_Controller {
 		$mgr_password = $this->input->post('mgr-password', TRUE);
 		$expired_loa_id = $this->input->post('expired-loa-id', TRUE);
 		$expired_loa_no = $this->input->post('expired-loa-no', TRUE);
+		$expired_noa_id = $this->input->post('expired-noa-id', TRUE);
+		$expired_noa_no = $this->input->post('expired-noa-no', TRUE);
 
 		$this->load->library('form_validation');
 		$this->form_validation->set_rules('mgr-username', 'Username', 'trim|required');
@@ -196,7 +198,9 @@ class Account_controller extends CI_Controller {
 					'mgr_username_error' => '',
 					'mgr_password_error' => '',
 					'loa_id'  => $expired_loa_id,
-					'loa_no'  => $expired_loa_no
+					'loa_no'  => $expired_loa_no,
+					'noa_id'  => $expired_noa_id,
+					'noa_no'  => $expired_noa_no
 				];
 			} else {
 				$verified = $this->_verify_hash($mgr_password, $result['password']);
@@ -207,14 +211,18 @@ class Account_controller extends CI_Controller {
 						'mgr_username_error' => '',
 						'mgr_password_error' => '',
 						'loa_id'  => $expired_loa_id,
-						'loa_no'  => $expired_loa_no
+						'loa_no'  => $expired_loa_no,
+						'noa_id'  => $expired_noa_id,
+						'noa_no'  => $expired_noa_no
 					];
 				} else {
 					$response = [
 						'status'  => 'success',
 						'message' => 'Access Granted',
 						'loa_id'  => $expired_loa_id,
-						'loa_no'  => $expired_loa_no
+						'loa_no'  => $expired_loa_no,
+						'noa_id'  => $expired_noa_id,
+						'noa_no'  => $expired_noa_no
 					];
 				}
 			}

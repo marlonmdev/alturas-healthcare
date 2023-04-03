@@ -12,8 +12,8 @@
             <!-- Start of Form -->
             <form id="managersKeyForm" autocomplete="off">
                 <input type="hidden" name="token" id="token" value="<?= $this->security->get_csrf_hash(); ?>">
-                <input type="hidden" name="expired-loa-id" id="expired-loa-id">
-                <input type="hidden" name="expired-loa-no" id="expired-loa-no">
+                <input type="hidden" name="expired-noa-id" id="expired-noa-id">
+                <input type="hidden" name="expired-noa-no" id="expired-noa-no">
 
                 <div class="text-center">
                   <strong id="msg-error" class="text-danger ls-1 mx-1"></strong>

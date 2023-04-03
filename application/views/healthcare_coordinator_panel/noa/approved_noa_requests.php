@@ -52,7 +52,16 @@
               <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
             >
           </li>
-            <!-- <li class="nav-item">
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/expired"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Expired</span></a
+            >
+          </li>
+          <!-- <li class="nav-item">
             <a
               class="nav-link"
               href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/completed"
@@ -193,12 +202,12 @@
   </div>
 <!-- End Wrapper -->
 <script>
-  const baseUrl = "<?php echo base_url(); ?>";
+  const baseUrl = `<?php echo base_url(); ?>`;
   const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
   
   $(document).ready(function() {
 
-    let approvedtable = $('#approvedNoaTable').DataTable({
+    let approvedTable = $('#approvedNoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
@@ -224,7 +233,7 @@
     });
 
     $('#approved-hospital-filter').change(function(){
-      approvedtable.draw();
+      approvedTable.draw();
     });
 
   });

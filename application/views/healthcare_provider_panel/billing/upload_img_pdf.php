@@ -10,7 +10,7 @@
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item">Healthcare Provider</li>
                             <li class="breadcrumb-item active" aria-current="page">
-                            Upload Textfile
+                            Upload Image/PDF
                             </li>
                         </ol>
                     </nav>
@@ -25,11 +25,23 @@
         <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
             <div class="card">
                 <div class="card-body shadow">
-                    <div class="col-lg-6 pb-4 ps-3" id="file-form">
-                        <label class="fw-bold pt-3 pb-3 fs-5 ls-1"><i class="mdi mdi-asterisk text-danger ms-1"></i> Upload SOA Textfile : </label>
-                        <input class="form-control fs-5 mb-2" type="file" name="textfile" id="textfile" accept=".csv, .txt">
-                        <em class="text-info fw-bold ls-1">Allowed file format (.txt | .csv)</em>
+                    <div class="row">
+                        <div class="col-lg-8 pb-2">
+                            <label class="fw-bold fs-5 ls-1"><i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Image/PDF</label>
+                            <input  type="file" class="dropify" name="img-pdf" id="img-pdf" data-height="400" data-max-file-size="5M" accept=".jpg, .jpeg, .png, .pdf">
+                            <br>
+                            <em class="text-info fw-bold ls-1">Allowed file format (.jpg | .png | .jpeg | .pdf)</em>
+                        </div>
+                        <div class="col-lg-4 pt-5 pb-2">
+                           <label class="form-label fs-5 ls-1"><i class="mdi mdi-asterisk text-danger ms-1"></i> Net Bill</label>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text bg-cyan text-white">&#8369;</span>
+                                <input type="number" class="form-control fw-bold ls-1" id="total-bill" name="total-bill">
+                            </div>
+                            <em class="text-danger ls-1" id="net-bill-error"></em>
+                        </div>
                     </div>
+                  
 
                     <div class="row mt-4">
                         <div class="col-md-6 offset-3">

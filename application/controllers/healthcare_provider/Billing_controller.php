@@ -102,9 +102,9 @@ class Billing_controller extends CI_Controller {
 
     function bill_patient_loa() {
         $this->security->get_csrf_hash();
-        $url_id = $this->uri->segment(4); // encrypted id
+        $url_id = $this->uri->segment(5); // encrypted id
         $loa_id = $this->myhash->hasher($url_id, 'decrypt');
-        $emp_id = $this->input->post('emp_id', TRUE);
+        // $emp_id = $this->input->post('emp_id', TRUE);
 
         $hcare_provider = $this->billing_model->get_healthcare_provider_by_id($this->session->userdata('dsg_hcare_prov'));
         $loa = $this->billing_model->get_loa_to_bill($loa_id);
@@ -326,7 +326,7 @@ class Billing_controller extends CI_Controller {
         $this->security->get_csrf_hash();
         $url_id = $this->uri->segment(5); // encrypted id
         $noa_id = $this->myhash->hasher($url_id, 'decrypt');
-        $emp_id = $this->input->post('emp_id', TRUE);
+        // $emp_id = $this->input->post('emp_id', TRUE);
 
         $hcare_provider = $this->billing_model->get_healthcare_provider_by_id($this->session->userdata('dsg_hcare_prov'));
         $noa = $this->billing_model->get_noa_to_bill($noa_id);

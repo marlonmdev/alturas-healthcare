@@ -86,13 +86,6 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
-	function upload_img_pdf_form() {
-		$data['user_role'] = $this->session->userdata('user_role');
-		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_provider_panel/billing/upload_img_pdf');
-		$this->load->view('templates/footer');
-	}
-
 	function upload_textfile_form() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);

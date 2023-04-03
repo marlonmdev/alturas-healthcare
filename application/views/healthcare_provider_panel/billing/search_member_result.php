@@ -82,7 +82,7 @@
                                                             <td class="fw-bold">
                                                                 <?php $loa_id = $this->myhash->hasher($loa['loa_id'], 'encrypt'); ?>
 
-                                                                <a href="<?php echo base_url(); ?>healthcare-provider/billing/bill-loa/upload-img-pdf/<?= $loa_id ?>" class="text-danger" data-bs-toggle="tooltip" title="Upload Image/PDF"><i class="mdi mdi-upload fs-2"></i></a>
+                                                                <a href="<?php echo base_url(); ?>healthcare-provider/billing/bill-loa/upload-pdf/<?= $loa_id ?>" class="text-danger" data-bs-toggle="tooltip" title="Upload Image/PDF"><i class="mdi mdi-upload fs-2"></i></a>
 
                                                                 <a href="<?php echo base_url(); ?>healthcare-provider/billing/bill-loa/manual/<?= $loa_id ?>" class="text-info" data-bs-toggle="tooltip" title="Manual Billing"><i class="mdi mdi-keyboard-close fs-2"></i></a>
                                                             </td>
@@ -160,20 +160,9 @@
                                                             <td class="fw-bold">
                                                                 <?php $noa_id = $this->myhash->hasher($noa['noa_id'], 'encrypt'); ?>
 
-                                                                <a href="<?php echo base_url(); ?>healthcare-provider/billing/bill-noa/upload-img-pdf/<?= $noa_id ?>" class="text-danger" data-bs-toggle="tooltip" title="Upload Image/PDF"><i class="mdi mdi-upload fs-2"></i></a>
+                                                                <a href="<?php echo base_url(); ?>healthcare-provider/billing/bill-noa/upload-pdf/<?= $noa_id ?>" class="text-danger" data-bs-toggle="tooltip" title="Upload Image/PDF"><i class="mdi mdi-upload fs-2"></i></a>
 
                                                                 <a href="<?php echo base_url(); ?>healthcare-provider/billing/bill-noa/manual/<?= $noa_id ?>" class="text-info" data-bs-toggle="tooltip" title="Manual Billing"><i class="mdi mdi-keyboard-close fs-2"></i></a>
-
-                                                                <!-- <form method="POST" action="<?= base_url() ?>healthcare-provider/billing/bill-noa/request/<?= $this->myhash->hasher($noa['noa_id'], 'encrypt') ?>">
-
-                                                                    <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
-
-                                                                    <input type="hidden" name="emp_id" value="<?= $noa['emp_id'] ?>">
-
-                                                                    <button type="submit" class="fw-bold ls-1 text-danger border-0" data-bs-toggle="tooltip" title="Click to proceed to Billing" style="background-color: transparent;">
-                                                                    Bill Now<i class="mdi mdi-chevron-double-right fs-2" style="vertical-align:middle;"></i>
-                                                                    </button>
-                                                                </form> -->
                                                             </td>
                                                         </tr>
                                                         <?php } else if($noa['status'] == 'Billed') { ?>

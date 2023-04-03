@@ -660,6 +660,22 @@ class Billing_controller extends CI_Controller {
 		$this->load->view('templates/footer');
     }
 
+    function upload_loa_bill_form() {
+        $data['loa_id'] = $this->uri->segment(5);
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_provider_panel/billing/upload_loa_bill');
+		$this->load->view('templates/footer');
+	}
+
+	function upload_noa_bill_form() {
+        $data['noa_id'] = $this->uri->segment(5);
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_provider_panel/billing/upload_noa_bill');
+		$this->load->view('templates/footer');
+	}
+
     
     function db_upload_textfile(){
         $token = $this->security->get_csrf_hash();

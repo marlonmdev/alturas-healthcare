@@ -54,12 +54,6 @@
                     </a>
                   </li>
                   <li class="sidebar-item">
-                    <a href="<?php echo base_url(); ?>healthcare-provider/billing/upload-img-pdf" class="sidebar-link"
-                      ><i class="mdi mdi-receipt"></i
-                      ><span class="hide-menu ls-1">Upload Image/PDF</span>
-                    </a>
-                  </li>
-                  <li class="sidebar-item">
                     <a href="<?php echo base_url(); ?>healthcare-provider/billing/upload-texfile" class="sidebar-link"
                       ><i class="mdi mdi-upload"></i
                       ><span class="hide-menu ls-1">Upload Textfile</span>

@@ -93,8 +93,19 @@ class Loa_model extends CI_Model {
     return $query->result_array();
   }
 
-  function db_get_cost_types_by_hpID($hp_id){
+  function db_get_cost_types_by_hpID($hp_id, $loa_id){
     $this->db->select('*')
+             ->from('performed_loa_info as tbl_1')
+             ->join('cost_types as tbl_2', 'tbl_1.ctype_id = tbl_2.ctype_id')
+             ->where('tbl_1.status', 'Performed')
+             ->where('tbl_1.loa_id', $loa_id)
+             ->where('tbl_2.hp_id', $hp_id);
+    $query = $this->db->get();
+    return $query->result_array();
+}
+
+function db_get_cost_types_by_hp_ID($hp_id) {
+  $this->db->select('*')
              ->from('cost_types')
              ->where('hp_id', $hp_id);
     $query = $this->db->get();
@@ -151,6 +162,16 @@ class Loa_model extends CI_Model {
     return $this->db->get()->row_array();
   }
 
+  function get_all_resched_loa($loa_id) {
+    $this->db->select('*')
+            ->from('loa_requests as tbl_1')
+            ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
+            ->where('tbl_1.status', 'Rescheduled')
+            ->where('tbl_1.loa_id', $loa_id)
+            ->order_by('loa_id', 'DESC');
+    return $this->db->get()->row_array();
+  }
+
   function db_get_all_disapproved_loa() {
     $this->db->select('tbl_1.loa_id, tbl_1.loa_no, tbl_1.first_name, tbl_1.middle_name, tbl_1.last_name, tbl_1.suffix, tbl_2.hp_name, tbl_1.loa_request_type, tbl_1.med_services, tbl_1.request_date, tbl_1.rx_file, tbl_1.status')
              ->from('loa_requests as tbl_1')
@@ -182,7 +203,10 @@ class Loa_model extends CI_Model {
   }
 
   function db_get_loa($loa_id) {
-    $query = $this->db->get_where('loa_requests', ['loa_id' => $loa_id]);
+    $this->db->select('med_services')
+            ->from('loa_requests')
+            ->where('loa_id', $loa_id);
+    return $this->db->get()->row_array();
   } 
 
   function db_get_loa_details($loa_id) {
@@ -193,6 +217,17 @@ class Loa_model extends CI_Model {
              ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id')
              ->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id= tbl_5.emp_id')
              ->where('tbl_1.loa_id', $loa_id);
+    return $this->db->get()->row_array();
+  }
+
+  function db_get_resched_loa_details($loa_id) {
+    $this->db->select('*')
+            ->from('loa_requests as tbl_1')
+            ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+            ->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id')
+            ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id')
+            ->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id= tbl_5.emp_id')
+            ->where('tbl_1.loa_id', $loa_id);
     return $this->db->get()->row_array();
   }
 
@@ -392,6 +427,20 @@ class Loa_model extends CI_Model {
     }
   }
 
+  function check_if_status_empty($loa_id) {
+    $this->db->select('status')
+            ->where('status', '')
+            ->where('loa_id', $loa_id)
+            ->group_by('loa_id');
+    $query = $this->db->get('performed_loa_info');
+
+    if ($query->num_rows() > 0) {
+      return true;
+    }else{
+      return false;
+    }
+  }
+
   function set_loa_status_completed($loa_id, $status) {
     $this->db->set('status', $status)
             ->where('loa_id', $loa_id);
@@ -413,6 +462,47 @@ class Loa_model extends CI_Model {
             ->where('tbl_1.loa_id', $loa_id);
     return $this->db->get()->row_array();
   }
+
+  function check_if_status_cancelled($loa_id) {
+    $this->db->select('status')
+            ->where('status', 'Rescheduled')
+            ->where('loa_id', $loa_id)
+            ->group_by('loa_id');
+    $query = $this->db->get('performed_loa_info');
+
+    if ($query->num_rows() > 0) {
+    return true;
+    }else{
+    return false;
+    }
+  }
+
+  function get_rescheduled_services($loa_id, $hp_id) {
+    $this->db->select('*')
+            ->from('performed_loa_info as tbl_1')
+            ->join('cost_types as tbl_2', 'tbl_1.ctype_id = tbl_2.ctype_id')
+            ->where('tbl_1.loa_id', $loa_id)
+            ->where('tbl_2.hp_id', $hp_id)
+            ->where('tbl_1.status', 'Rescheduled');
+    return $this->db->get()->result_array();
+  }
+
+  function get_rescheduled_loa_info($loa_id) {
+    $this->db->select('*')
+            ->from('loa_requests as tbl_1')
+            ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
+            ->where('tbl_1.loa_id', $loa_id);
+    return $this->db->get()->row_array();
+  }
+
+  function get_loa_request_info($loa_id) {
+    $this->db->select('*')
+            ->from('loa_requests as tbl_1')
+            ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+            ->where('loa_id', $loa_id);
+    return $this->db->get()->row_array();
+  }
+
 
 
 }

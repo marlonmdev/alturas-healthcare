@@ -53,41 +53,26 @@
                             <input type="hidden" name="hp-id" value="<?php echo $hp_id ?>">
                         </div>
                         <div class="col-lg-4 pt-3">
-                            <label class="fw-bold">LOA Request Type : </label>
-                            <input class="form-control fw-bold text-danger" name="request-type" value="<?php echo $request_type ?>" readonly>
-                        </div>
-                        <div class="col-lg-4 pt-3">
                             <label class="fw-bold">Work-Related : </label>
                             <input class="form-control fw-bold text-danger" name="work-related" value="<?php echo $work_related ?>" readonly>
                        </div>
                        
                 </div>
                 <hr>
-                <div class="row">
-                    <?php 
-                        foreach($cost_types as $cost_type) : 
-                                
-                    ?>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <input type="hidden" name="emp-id" value="<?php echo $cost_type['ctype_id'] ?>">
-                                    <label class="fw-bold pt-2">Medical Services : </label>
-                                    <input class="form-control fw-bold" name="med-services[]" value="<?php echo $cost_type['item_description'] ?>" readonly>
-                                </div>
-                                <div class="col-lg-2">
-                                    <label class="fw-bold pt-2">Service Fee : </label>
-                                    <input class="form-control fw-bold ct-fee" name="service-fee[]" value="<?php echo $cost_type['op_price'] ?>" readonly>
-                                </div>
-                                <div class="col-lg-2">
-                                    <label class="fw-bold pt-2">Quantity : </label>
-                                    <input class="form-control fw-bold ct-qty" type="number" name="quantity[]" value="1" min="1" oninput="calculateDiagnosticTestBilling(`<?php echo $remaining_balance ?>`)">
-                                </div>
-                            </div>
-                    <?php 
-                        endforeach;
-                    ?>
-                        
-                </div>
+                    <div class="row pb-2">
+                        <div class="col-lg-4 pt-3">
+                            <label class="fw-bold">LOA Request Type : </label>
+                            <input class="form-control fw-bold" name="request-type" value="<?php echo $request_type ?>" readonly>
+                        </div>
+                        <div class="col-lg-2 pt-3">
+                            <label class="fw-bold">Quantity : </label>
+                            <input class="form-control fw-bold" type="number" name="quantity" value="1" min="1">
+                        </div>
+                        <div class="col-lg-2 pt-3">
+                            <label class="fw-bold">Service Fee : </label>
+                            <input class="form-control fw-bold" name="service-fee" type="number">
+                        </div>
+                    </div>
                 <hr>
                 <input type="hidden" name="deduction-count" id="deduction-count">
                 <div class="row">

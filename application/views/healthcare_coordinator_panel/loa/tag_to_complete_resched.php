@@ -24,7 +24,7 @@
     <div class="container-fluid">
             <div class="col-12 mb-4 mt-0">
                     <div class="input-group">
-                        <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved" type="submit" class="btn btn-outline-dark" data-bs-toggle="tooltip" title="Click to Go Back">
+                        <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/rescheduled" type="submit" class="btn btn-outline-dark" data-bs-toggle="tooltip" title="Click to Go Back">
                             <strong class="ls-2" style="vertical-align:middle">
                                 <i class="mdi mdi-arrow-left-bold"></i> Go Back
                             </strong>
@@ -32,7 +32,7 @@
                     </div>
             </div>
                 
-            <form id="performedLoaInfo" method="post" action="<?php echo base_url();?>healthcare-coordinator/loa-requests/approved/performed-loa-info/edit" class="needs-validation" novalidate>
+            <form id="performedLoaInfo" method="post" action="<?php echo base_url();?>healthcare-coordinator/loa-requests/approved/performed-loa-info/submit" class="needs-validation" novalidate>
                 <div class="row">
                     <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
                     <input type="hidden" name="hp-id" value="<?php echo $hp_id ?>">
@@ -59,78 +59,71 @@
                         <div class="row">
 
                             <?php 
-                               foreach($loaInfo as $loa) :
+                                /* Exploding the string into an array and then checking if the array
+                                contains the value. */
+                                $selectedOptions = explode(';', $med_services);
+                                foreach ($cost_types as $cost_type) :
+                                    if (in_array($cost_type['ctype_id'], $selectedOptions)) :
                             ?>
-                                <input type="hidden" class="approved-on" name="approved-on[]" value="<?php echo $approved_on ?>">
+                                <input type="hidden" class="approved-on" name="approved-on[]" value="<?php echo $request_date ?>">
                                 <input type="hidden" class="expired-on" name="expired-on[]" value="<?php echo $expired_on ?>">
-                                <input type="hidden" name="ctype_id[]" value="<?php echo $loa['ctype_id']; ?>">
+                                <input type="hidden" name="ctype_id[]" value="<?php echo $cost_type['ctype_id']; ?>">
                                 <div class="col-lg-4 pb-3">
                                     <label class="fw-bold">Medical Services : </label>
-                                    <input type="text" class="form-control fw-bold ls-1" name="ct-name[]" value="<?php echo $loa['item_description']; ?>" readonly>
+                                    <input type="text" class="form-control fw-bold ls-1" name="ct-name[]" value="<?php echo $cost_type['item_description']; ?>" readonly>
                                 </div>
 
                                 <div class="col-lg-2 pb-3">
                                     <label class="fw-bold">Status : </label>
                                     <select class="form-select fw-bold status" name="status[]" id="status" onchange="viewReschedDate();enableInput();enableReason();emptyStatus();">
                                         <option value="">-- Please Select --</option>
-                                    <?php if($loa['status'] == 'Performed') : ?>
-                                        <option value="Performed" selected>Performed</option>
-                                    <?php else : ?>
                                         <option value="Performed">Performed</option>
-                                    <?php endif; ?>
-                                    <?php if($loa['status'] == 'Rescheduled') : ?>
-                                        <option value="Rescheduled" selected>Reschedule</option>
-                                    <?php else :?>
                                         <option value="Rescheduled">Reschedule</option>
-                                    <?php endif; ?>
-                                    <?php if($loa['status'] == 'Cancelled') : ?>
-                                        <option value="Cancelled" selected>Cancelled</option>
-                                    <?php else :?>
                                         <option value="Cancelled">Cancelled</option>
-                                    <?php endif; ?>
                                     </select>
                                     <span class="text-danger" id="status-error"></span>
                                 </div>
 
                                 <div class="col-lg-2 pb-3 performed-date">
                                     <label class="fw-bold">Date Performed : </label>
-                                    <input class="form-control input-date fw-bold text-danger" name="date[]" id="date" type="text" onchange="dateValidity();" placeholder="Select Date" style="background-color:#ffff" value="<?php echo $loa['date_performed'] ?>" required>
+                                    <input class="form-control input-date fw-bold" name="date[]" id="date" type="text" onchange="dateValidity();" placeholder="Select Date" style="background-color:#ffff" required>
                                     <span class="text-danger" id="date-error"></span>
                                 </div>
                                 <div class="col-lg-2 pb-3 performed-time">
                                     <label class="fw-bold">Time Performed : </label>
-                                    <input class="form-control input-time fw-bold text-danger" name="time[]" id="time" type="text" placeholder="Select Time" style="background-color:#ffff" value="<?php echo $loa['time_performed'] ?>" required>
+                                    <input class="form-control input-time fw-bold" name="time[]" id="time" type="text" placeholder="Select Time" style="background-color:#ffff" required>
                                     <span class="text-danger" id="time-error"></span>
                                 </div>
                                 <!-- <div class="col-lg-2 pb-3 resched-date" style="display:none">
                                     <label class="fw-bold">Reschedule on : </label>
-                                    <input class="form-control input-resched-date fw-bold text-danger" name="resched-date[]" id="resched-date" onchange="reachedDateValidity();" type="text" placeholder="Select Date" style="background-color:#ffff" value="<?php echo $loa['reschedule_on'] ?>" required>
+                                    <input class="form-control input-resched-date fw-bold" name="resched-date[]" id="resched-date" onchange="reachedDateValidity();" type="text" placeholder="Select Date" style="background-color:#ffff" required>
                                     <span class="text-danger" id="resched-date-error"></span>
                                 </div> -->
                                 <div class="col-lg-3 pb-3 reason" style="display:none">
                                     <label class="fw-bold">Reason : </label> 
-                                    <input class="form-control fw-bold input-reason text-danger" name="reason[]" id="reason" type="text" placeholder="Enter reason" value="<?php echo $loa['reason_cancellation'] ?>" required>
+                                    <input class="form-control fw-bold input-reason" name="reason[]" id="reason" type="text" placeholder="Enter reason" required>
                                     <span class="text-danger" id="reason-error"></span>
                                 </div>
                                 <div class="row offset-4">
                                     <div class="col-lg-2 pb-3">
                                         <label class="fw-bold label-physician">Physician : </label>
-                                        <input class="form-control fw-bold text-danger fname" name="physician-fname[]" placeholder="First Name"  autocomplete="on" value="<?php echo $loa['physician_fname'] ?>" required>
+                                        <input class="form-control fw-bold fname" name="physician-fname[]" placeholder="First Name"  autocomplete="on" required>
                                         <span class="text-danger" id="physician-fname-error"></span>
                                     </div>
                                     <div class="col-lg-2 pb-3 pt-2">
                                         <label class="fw-bold"> </label>
-                                        <input class="form-control fw-bold mname text-danger" name="physician-mname[]" placeholder="Middle Name"  autocomplete="on" value="<?php echo $loa['physician_mname'] ?>" required>
+                                        <input class="form-control fw-bold mname" name="physician-mname[]" placeholder="Middle Name"  autocomplete="on" required>
                                         <span class="text-danger" id="physician-mname-error"></span>
                                     </div>
                                     <div class="col-lg-2 pb-3 pt-2">
                                         <label class="fw-bold"> </label>
-                                        <input class="form-control fw-bold lname text-danger" name="physician-lname[]" placeholder="Last Name"  autocomplete="on" value="<?php echo $loa['physician_lname'] ?>" required> 
+                                        <input class="form-control fw-bold lname" name="physician-lname[]" placeholder="Last Name"  autocomplete="on" required> 
                                         <span class="text-danger" id="physician-lname-error"></span>
                                     </div>
                                 </div>
                             <hr>
                             <?php 
+                                    endif;
                                 endforeach;
                             ?>
                         </div>
@@ -191,7 +184,7 @@
                             });
                             // $('#performedLoaInfo')[0].reset();
                             setTimeout(function () {
-                                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved';
+                                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed';
                             }, 2600);
                             
                         break;
@@ -218,6 +211,7 @@
         $(".input-date").flatpickr({
             enableTime: false,
             dateFormat: 'Y-m-d',
+          
         });
 
         // $(".input-resched-date").flatpickr({
@@ -230,30 +224,7 @@
             enableTime: true,
             dateFormat: 'h:i K'
         });
-
-        // $('.fname').autocomplete({
-        //     source: function(request, response) {
-        //     $.ajax({
-        //         url: '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved/autocomplete',
-        //         data: {
-        //         term: request.term
-        //         },
-        //         dataType: "json",
-        //         success: function(data) {
-        //         response(data);
-        //         }
-        //     });
-        //     }
-        // });
-
     });
-
-    window.onload = function() {
-        emptyStatus();
-        enableInput();
-        enableReason();
-        viewReschedDate();
-    };
 
     const dateValidity = () => {
         const approved_on = document.querySelectorAll('.approved-on');

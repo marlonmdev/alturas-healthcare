@@ -197,6 +197,15 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
+	function view_all_rescheduled_loa() {
+		$this->load->model('healthcare_coordinator/loa_model');
+		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/loa/rescheduled_loa_requests');
+		$this->load->view('templates/footer');
+	}
+
 	function request_noa_form() {
 		$this->load->model('healthcare_coordinator/setup_model');
 		$data['user_role'] = $this->session->userdata('user_role');

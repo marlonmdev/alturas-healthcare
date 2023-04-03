@@ -53,7 +53,7 @@
           </li>
           <li class="nav-item">
               <a
-              class="nav-link active"
+              class="nav-link"
               href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -62,7 +62,7 @@
           </li>
           <li class="nav-item">
               <a
-              class="nav-link"
+              class="nav-link active"
               href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/rescheduled"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -96,7 +96,7 @@
                     <i class="mdi mdi-filter"></i>
                     </span>
                 </div>
-                <select class="form-select fw-bold" name="completed-hospital-filter" id="completed-hospital-filter">
+                <select class="form-select fw-bold" name="resched-hospital-filter" id="resched-hospital-filter">
                         <option value="">Select Hospital</option>
                         <?php foreach($hcproviders as $option) : ?>
                         <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
@@ -108,7 +108,7 @@
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover table-responsive" id="completedLoaTable">
+              <table class="table table-hover table-responsive" id="reschedLoaTable">
                 <thead>
                   <tr>
                     <th class="fw-bold">LOA No.</th>
@@ -128,7 +128,7 @@
           </div>
         </div>
 
-        <?php include 'view_completed_loa_details.php'; ?>
+        <?php include 'view_resched_loa_details.php'; ?>
 
       </div>
       <!-- End Row  -->  
@@ -146,19 +146,19 @@
 
   $(document).ready(function() {
 
-    let completedTable = $('#completedLoaTable').DataTable({
+    let reschedTable = $('#reschedLoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
 
       // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}healthcare-coordinator/loa/requests-list/completed/fetch`,
+        url: `${baseUrl}healthcare-coordinator/loa/requests-list/resched/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: function(data) {
             data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
-            data.filter = $('#completed-hospital-filter').val();
+            data.filter = $('#resched-hospital-filter').val();
         }
       },
 
@@ -171,8 +171,8 @@
       fixedHeader: true,
     });
 
-    $('#completed-hospital-filter').change(function(){
-      completedTable.draw();
+    $('#resched-hospital-filter').change(function(){
+      reschedTable.draw();
     });
 
 
@@ -209,9 +209,9 @@
       });
   }
 
-  function viewCompletedLoaInfo(req_id) {
+  function viewReschedLoaInfo(req_id) {
     $.ajax({
-      url: `${baseUrl}healthcare-coordinator/loa/completed/view/${req_id}`,
+      url: `${baseUrl}healthcare-coordinator/loa/resched/view/${req_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);
@@ -247,11 +247,10 @@
           request_date,
           chief_complaint,
           requesting_physician,
-          attending_physician,
           rx_file,
           req_status,
-          approved_by,
-          approved_on
+          requested_by,
+          approved_by
         } = res;
 
         $("#viewLoaModal").modal("show");
@@ -269,12 +268,14 @@
           case 'Closed':
             $('#loa-status').html(`<strong class="text-info">[${req_status}]</strong>`);
             break;
+          case 'Rescheduled':
+          $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
+          break;
         }
         const med_serv = med_services !== '' ? med_services : 'None';
-        const at_physician = attending_physician !== '' ? attending_physician : 'None';
+
         $('#loa-no').html(loa_no);
-        $('#approved-by').html(approved_by);
-        $('#approved-on').html(approved_on);
+        $('#requested-by').html(requested_by);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
         $('#work-related').html(work_related);
@@ -299,7 +300,7 @@
         $('#request-date').html(request_date);
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
-        $('#attending-physician').html(at_physician);
+        $('#approved-by').html(approved_by);
       }
     });
   }

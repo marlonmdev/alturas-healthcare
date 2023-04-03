@@ -75,10 +75,10 @@
 
                                 <div class="col-lg-2 pb-3">
                                     <label class="fw-bold">Status : </label>
-                                    <select class="form-select fw-bold status" name="status[]" id="status" onchange="viewReschedDate();enableInput();enableReason();" required>
+                                    <select class="form-select fw-bold status" name="status[]" id="status" onchange="viewReschedDate();enableInput();enableReason();emptyStatus();">
                                         <option value="">-- Please Select --</option>
                                         <option value="Performed">Performed</option>
-                                        <option value="Reschedule">Reschedule</option>
+                                        <option value="Rescheduled">Reschedule</option>
                                         <option value="Cancelled">Cancelled</option>
                                     </select>
                                     <span class="text-danger" id="status-error"></span>
@@ -94,11 +94,11 @@
                                     <input class="form-control input-time fw-bold" name="time[]" id="time" type="text" placeholder="Select Time" style="background-color:#ffff" required>
                                     <span class="text-danger" id="time-error"></span>
                                 </div>
-                                <div class="col-lg-2 pb-3 resched-date" style="display:none">
+                                <!-- <div class="col-lg-2 pb-3 resched-date" style="display:none">
                                     <label class="fw-bold">Reschedule on : </label>
                                     <input class="form-control input-resched-date fw-bold" name="resched-date[]" id="resched-date" onchange="reachedDateValidity();" type="text" placeholder="Select Date" style="background-color:#ffff" required>
                                     <span class="text-danger" id="resched-date-error"></span>
-                                </div>
+                                </div> -->
                                 <div class="col-lg-3 pb-3 reason" style="display:none">
                                     <label class="fw-bold">Reason : </label> 
                                     <input class="form-control fw-bold input-reason" name="reason[]" id="reason" type="text" placeholder="Enter reason" required>
@@ -107,17 +107,17 @@
                                 <div class="row offset-4">
                                     <div class="col-lg-2 pb-3">
                                         <label class="fw-bold label-physician">Physician : </label>
-                                        <input class="form-control fw-bold fname" name="physician-fname[]" placeholder="First Name"  autocomplete="off" required>
+                                        <input class="form-control fw-bold fname" name="physician-fname[]" placeholder="First Name"  autocomplete="on" required>
                                         <span class="text-danger" id="physician-fname-error"></span>
                                     </div>
                                     <div class="col-lg-2 pb-3 pt-2">
                                         <label class="fw-bold"> </label>
-                                        <input class="form-control fw-bold mname" name="physician-mname[]" placeholder="Middle Name"  autocomplete="off" required>
+                                        <input class="form-control fw-bold mname" name="physician-mname[]" placeholder="Middle Name"  autocomplete="on" required>
                                         <span class="text-danger" id="physician-mname-error"></span>
                                     </div>
                                     <div class="col-lg-2 pb-3 pt-2">
                                         <label class="fw-bold"> </label>
-                                        <input class="form-control fw-bold lname" name="physician-lname[]" placeholder="Last Name"  autocomplete="off" required> 
+                                        <input class="form-control fw-bold lname" name="physician-lname[]" placeholder="Last Name"  autocomplete="on" required> 
                                         <span class="text-danger" id="physician-lname-error"></span>
                                     </div>
                                 </div>
@@ -211,34 +211,19 @@
         $(".input-date").flatpickr({
             enableTime: false,
             dateFormat: 'Y-m-d',
+          
         });
 
-        $(".input-resched-date").flatpickr({
-            enableTime: false,
-            dateFormat: 'Y-m-d',
-        });
+        // $(".input-resched-date").flatpickr({
+        //     enableTime: false,
+        //     dateFormat: 'Y-m-d',
+        // });
 
         $( '.input-time' ).flatpickr({
             noCalendar: true,
             enableTime: true,
             dateFormat: 'h:i K'
         });
-
-        // $('.fname').autocomplete({
-        //     source: function(request, response) {
-        //     $.ajax({
-        //         url: '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved/autocomplete',
-        //         data: {
-        //         term: request.term
-        //         },
-        //         dataType: "json",
-        //         success: function(data) {
-        //         response(data);
-        //         }
-        //     });
-        //     }
-        // });
-
     });
 
     const dateValidity = () => {
@@ -277,28 +262,52 @@
             }
     }
 
-    const reachedDateValidity = () => {
-        const approved_on = document.querySelectorAll('.approved-on');
-        const expire_on = document.querySelectorAll('.expired-on'); 
-        const date_resched = document.querySelectorAll('.input-resched-date');
+    // const reachedDateValidity = () => {
+    //     const approved_on = document.querySelectorAll('.approved-on');
+    //     const expire_on = document.querySelectorAll('.expired-on'); 
+    //     const date_resched = document.querySelectorAll('.input-resched-date');
 
-        for(let i = 0; i < date_resched.length; i++){
-            const date_reschedule = new Date(date_resched[i].value);
-            const approved_date = new Date(approved_on[i].value);
-            const expired_date = new Date(expire_on[i].value);
+    //     for(let i = 0; i < date_resched.length; i++){
+    //         const date_reschedule = new Date(date_resched[i].value);
+    //         const approved_date = new Date(approved_on[i].value);
+    //         const expired_date = new Date(expire_on[i].value);
 
-            if(date_reschedule <= expired_date){
-                swal({
-                    title: 'Invalid Date',
-                    text: 'Reschedule Date must not be less than or equal to Expiration Date [ '+ expire_on[i].value +' ]',
-                    showConfirmButton: true,
-                    type: 'error'
-                });
-                date_resched[i].value = '';
-                flatpickr(date_resched[i]).close();
-                return;
+    //         if(date_reschedule <= expired_date){
+    //             swal({
+    //                 title: 'Invalid Date',
+    //                 text: 'Reschedule Date must not be less than or equal to Expiration Date [ '+ expire_on[i].value +' ]',
+    //                 showConfirmButton: true,
+    //                 type: 'error'
+    //             });
+    //             date_resched[i].value = '';
+    //             flatpickr(date_resched[i]).close();
+    //             return;
+    //         }
+    //     }
+    // }
+
+    const emptyStatus =  () => {
+        const statusElements = document.querySelectorAll('.status');
+        const physician_fname = document.querySelectorAll('.fname');
+        const physician_mname = document.querySelectorAll('.mname');
+        const physician_lname = document.querySelectorAll('.lname');
+        const date = document.querySelectorAll('.input-date');
+        // const reschedDateElements = document.querySelectorAll('.input-resched-date');
+        const input_reason = document.querySelectorAll('.input-reason');
+
+        for(let i = 0; i < statusElements.length; i++){
+            const status = statusElements[i].value;
+
+            if(status == ''){
+                date[i].removeAttribute('required'); 
+                physician_fname[i].removeAttribute('required');
+                physician_mname[i].removeAttribute('required');
+                physician_lname[i].removeAttribute('required');
+                // reschedDateElements[i].removeAttribute('required');
+                input_reason[i].removeAttribute('required');
             }
         }
+
     }
 
     const enableInput = () => {
@@ -307,7 +316,7 @@
         const physician_mname = document.querySelectorAll('.mname');
         const physician_lname = document.querySelectorAll('.lname');
         const statusElements = document.querySelectorAll('.status');
-        const reschedDateElements = document.querySelectorAll('.input-resched-date');
+        // const reschedDateElements = document.querySelectorAll('.input-resched-date');
         const reason = document.querySelectorAll('.input-reason');
 
         for(let i = 0; i < statusElements.length; i++){
@@ -318,10 +327,13 @@
                 physician_fname[i].setAttribute('required', true);
                 physician_mname[i].setAttribute('required', true);
                 physician_lname[i].setAttribute('required', true);
-                reschedDateElements[i].removeAttribute('required');
+                // reschedDateElements[i].removeAttribute('required');
                 reason[i].removeAttribute('required');
-                reschedDateElements[i].value = '';
+                // reschedDateElements[i].value = '';
                 reason[i].value = '';
+                flatpickr(date, {
+                    maxDate: 'today'
+                });
             }
         }
     }
@@ -337,7 +349,7 @@
         const performTimeElements = document.querySelectorAll('.performed-time');
         const input_date = document.querySelectorAll('.input-date');
         const input_time = document.querySelectorAll('.input-time');
-        const reschedDateElements = document.querySelectorAll('.input-resched-date');
+        // const reschedDateElements = document.querySelectorAll('.input-resched-date');
 
         for(let i = 0; i < statusElements.length; i++){
             const status = statusElements[i].value;
@@ -355,13 +367,13 @@
                 physician_fname[i].value = '';
                 physician_mname[i].value = '';
                 physician_lname[i].value = '';
-                reschedDateElements[i].value = '';
+                // reschedDateElements[i].value = '';
                 input_date[i].removeAttribute('required'); 
                 input_time[i].removeAttribute('required'); 
                 physician_fname[i].removeAttribute('required');
                 physician_mname[i].removeAttribute('required');
                 physician_lname[i].removeAttribute('required');
-                reschedDateElements[i].removeAttribute('required');
+                // reschedDateElements[i].removeAttribute('required');
             }else{
                 reason[i].style.display = 'none';
             }
@@ -372,7 +384,7 @@
         const statusElements = document.querySelectorAll('.status');
         const performDateElements = document.querySelectorAll('.performed-date');
         const performTimeElements = document.querySelectorAll('.performed-time');
-        const reschedDateElements = document.querySelectorAll('.resched-date');
+        // const reschedDateElements = document.querySelectorAll('.resched-date');
         const physician_fname = document.querySelectorAll('.fname');
         const physician_mname = document.querySelectorAll('.mname');
         const physician_lname = document.querySelectorAll('.lname');
@@ -384,7 +396,7 @@
         for (let i = 0; i < statusElements.length; i++) {
             const status = statusElements[i].value;
 
-            if (status === 'Reschedule') {
+            if (status === 'Rescheduled') {
             input_date[i].value = '';
             input_time[i].value = '';
             physician_fname[i].value = '';
@@ -393,7 +405,7 @@
             input_reason[i].value = '';
             performDateElements[i].style.display = 'none';
             performTimeElements[i].style.display = 'none';
-            reschedDateElements[i].style.display = 'block';
+            // reschedDateElements[i].style.display = 'block';
             physician_fname[i].style.display = 'none';
             physician_mname[i].style.display = 'none';
             physician_lname[i].style.display = 'none';
@@ -405,7 +417,7 @@
             physician_lname[i].removeAttribute('required');
             input_reason[i].removeAttribute('required');
             }else{
-            reschedDateElements[i].style.display = 'none';
+            // reschedDateElements[i].style.display = 'none';
             performDateElements[i].style.display = 'block';
             performTimeElements[i].style.display = 'block';
             physician_fname[i].style.display = 'block';

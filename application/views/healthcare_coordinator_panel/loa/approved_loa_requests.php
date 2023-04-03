@@ -63,6 +63,15 @@
             >
           </li>
           <li class="nav-item">
+              <a
+              class="nav-link"
+              href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/rescheduled"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Rescheduled</span></a
+              >
+          </li>
+          <li class="nav-item">
             <a
               class="nav-link"
               href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/expired"
@@ -353,12 +362,12 @@
         
         $.each(response, function(index, item){
           
-          tbody += '<tr><td>'+ item.item_description +'</td><td>'+ item.status + '</td><td>' + item.date_time_performed +'</td><td>'+ item.physician +'</td></tr>';
+          tbody += '<tr><td>'+ item.item_description +'</td><td>'+ item.status + '</td><td>' + item.date_performed +' '+ item.time_performed +'</td><td>'+ item.physician_fname +' '+ item.physician_mname + ' ' + item.physician_lname +'</td><td>'+ item.reschedule_on +'</td><td>'+ item.reason_cancellation +'</td></tr>';
 
+          $('#pf-loa-no').html(item.loa_no);
         });
         $('#pf-tbody').html(tbody);
-        $('#pf-loa-no').html(response[0].loa_no);
-      
+       
       }
     });
   }

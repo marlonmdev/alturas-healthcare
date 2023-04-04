@@ -104,6 +104,7 @@
                                 </td>
                               </tr>
                             <?php endforeach; ?>
+                            <?php if($bill['total_services'] > 0): ?>
                               <tr>
                                 <td></td>
                                 <td></td>
@@ -115,6 +116,7 @@
                                   </span>
                                 </td>
                               </tr>
+                            <?php endif; ?>
                           </tbody>
                         </table>
                       <?php 

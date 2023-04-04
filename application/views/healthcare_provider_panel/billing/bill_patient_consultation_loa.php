@@ -93,6 +93,10 @@
                         <input type="hidden" name="emp-id" value="<?= $member['emp_id'] ?>">
                         <input type="hidden" name="remaining-balance" value="<?= $remaining_balance ?>">
                         <input type="hidden" name="work-related" value="<?= $work_related ?>">
+                        <input type="hidden" name="total-services" value="0" min="0" id="total-services">
+                        <input type="hidden" name="total-medications" value="0" min="0" id="total-medications">
+                        <input type="hidden" name="total-profees" value="0" min="0" id="total-profees">
+                        <input type="hidden" name="total-roomboard" value="0" min="0" id="total-roomboard">   
                         <input type="hidden" name="deduction-count" value="0" min="0" id="deduction-count">
                         
                         <div class="row">

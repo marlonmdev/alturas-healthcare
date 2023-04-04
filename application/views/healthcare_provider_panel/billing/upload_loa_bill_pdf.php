@@ -112,7 +112,6 @@
 </div>
 <script>
     const baseUrl = `<?php echo base_url(); ?>`;
-    const loaId = `<?php echo $loa_id; ?>`;
 
     const previewPdfFile = () => {
         let pdfFileInput = document.getElementById('pdf-file');

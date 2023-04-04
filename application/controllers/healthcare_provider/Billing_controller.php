@@ -660,7 +660,7 @@ class Billing_controller extends CI_Controller {
         $data['roomboards'] = $this->billing_model->get_billing_room_boards($bill['billing_no']);
         $data['deductions'] = $this->billing_model->get_billing_deductions($bill['billing_no']);
 
-        $view_page = $bill['billing_type'] == 'Manual' ? 'billing_receipt' : 'pdf_billing_receipt'; 
+        $view_page = $bill['billing_type'] == 'Manual Billing' ? 'billing_receipt' : 'pdf_billing_receipt'; 
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_provider_panel/billing/'.$view_page);
@@ -739,7 +739,7 @@ class Billing_controller extends CI_Controller {
         echo json_encode($response);
 	}
 
-    function loa_pdf_billing_success(){
+    function pdf_billing_success(){
         $billing_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
         $data['user_role'] = $this->session->userdata('user_role');
         $data['bill'] = $bill = $this->billing_model->get_billing_info($billing_id);
@@ -755,10 +755,69 @@ class Billing_controller extends CI_Controller {
         $data['noa_no'] = $noa['noa_no'];
         $data['healthcard_no'] = $noa['health_card_no'];
         $data['patient_name'] = $noa['first_name'].' '. $noa['middle_name'].' '. $noa['last_name'].' '.$noa['suffix'];
+        $data['billing_no'] = 'BLN-' . strtotime(date('Y-m-d h:i:s'));
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_provider_panel/billing/upload_noa_bill_pdf');
 		$this->load->view('templates/footer');
+	}
+
+    function submit_noa_pdf_bill() {
+        $this->security->get_csrf_hash();
+        $noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+        $billing_no = $this->input->post('billing-no', TRUE);
+        $net_bill = $this->input->post('net-bill', TRUE);
+
+        // PDF File Upload
+        $config['upload_path'] = './uploads/pdf_bills/';
+        $config['allowed_types'] = 'pdf';
+        $config['encrypt_name'] = TRUE;
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload('pdf-file')) {
+            $response = [
+                'status'  => 'save-error',
+                'message' => 'PDF Bill Upload Failed'
+            ];
+
+        } else {
+            $upload_data = $this->upload->data();
+            $pdf_file = $upload_data['file_name'];
+            $noa = $this->billing_model->get_noa_to_bill($noa_id);
+
+            $data = [
+                'billing_no'            => $billing_no,
+                'billing_type'          => 'PDF Billing',
+                'emp_id'                => $noa['emp_id'],
+                'noa_id'                => $noa_id,
+                'hp_id'                 => $this->session->userdata('dsg_hcare_prov'),
+                'work_related'          => $noa['work_related'],
+                'net_bill'              => $net_bill,
+                'pdf_bill'              => $pdf_file,
+                'billed_by'             => $this->session->userdata('fullname'),
+                'billed_on'             => date('Y-m-d'),
+                'status'                => 'Billed'
+            ];    
+
+            $inserted = $this->billing_model->insert_billing($data);
+            if(!$inserted){
+                $response = [
+                   'status'  => 'save-error',
+                   'message' => 'PDF Bill Upload Failed'
+                ];
+            }
+            $type = 'NOA';
+            $this->update_request_status($type, $noa_id);
+            $bill = $this->billing_model->get_billing($billing_no);
+            $encrypted_id = $this->myhash->hasher($bill['billing_id'], 'encrypt');
+            $response = [
+                'status'     => 'success',
+                'message'    => 'PDF Bill Uploaded Successfully',
+                'billing_id' => $encrypted_id,
+            ];   
+        }
+
+        echo json_encode($response);
 	}
 
     

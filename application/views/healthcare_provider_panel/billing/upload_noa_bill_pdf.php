@@ -38,21 +38,40 @@
 
         <form action="<?php echo base_url();?>healthcare-provider/billing/bill-noa/upload-pdf/<?= $noa_id ?>/submit" id="pdfBillingForm" enctype="multipart/form-data" class="needs-validation" novalidate>
             <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
-            <input type="hidden" name="loa-id" id="bill-loa-id" value="<?= $noa_id ?>">
+            <input type="hidden" name="billing-no" value="<?= $billing_no ?>">
             <div class="card">
                 <div class="card-body shadow">
-                    <div class="row my-2">
-                        <label class="fw-bold text-secondary fs-4 ls-1">
-                           NOA Number : <span class="text-info"><?= $noa_no ?></span>
-                        </label>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <td>
+                                        <span class="fw-bold text-secondary fs-5 ls-1">
+                                            Patient's Name: <span class="text-info"><?= $patient_name ?></span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold text-secondary fs-5 ls-1">
+                                            NOA No. : <span class="text-info"><?= $noa_no ?></span>
+                                        </span>  
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold text-secondary fs-5 ls-1">
+                                            Billing No. : <span class="text-info"><?= $billing_no ?></span>
+                                        </span> 
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
+
                     <div class="row">
                         <div class="col-lg-7">
                             <label class="fw-bold fs-5 ls-1">
                                 <i class="mdi mdi-asterisk text-danger ms-1"></i> Select PDF File
                             </label>
                             <input type="file" class="form-control" name="pdf-file" id="pdf-file" accept="application/pdf" onchange="previewPdfFile()" required>
-                            <div class="invalid-feedback fs-5 ls-1">
+                            <div class="invalid-feedback fs-6">
                                 PDF File is required
                             </div>
                         </div>
@@ -64,11 +83,10 @@
                             <div class="input-group mb-3">
                                 <span class="input-group-text bg-cyan text-white">&#8369;</span>
                                 <input type="number" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" placeholder="Enter Net Bill" required>
-                                <div class="invalid-feedback fs-5 ls-1">
+                                <div class="invalid-feedback fs-6">
                                     Net Bill is required
                                 </div>
                             </div>
-                           
                         </div>
                     </div>
 
@@ -83,7 +101,7 @@
 
                     <div class="row">
                         <div class="col-lg-12">
-                           <div class="mt-3" id="pdf_preview"></div>
+                           <div class="mt-3" id="pdf-preview"></div>
                         </div>
                     </div>
                   
@@ -93,7 +111,7 @@
     </div>
 </div>
 <script>
-    const baseUrl = '<?php echo base_url(); ?>';
+    const baseUrl = `<?php echo base_url(); ?>`;
 
     const previewPdfFile = () => {
         let pdfFileInput = document.getElementById('pdf-file');
@@ -113,12 +131,19 @@
         }
     }
 
+    const form = document.querySelector('#pdfBillingForm');
 
     $(document).ready(function(){
 
         $('#pdfBillingForm').submit(function(event){
             event.preventDefault();
-            let formData = new FormData(this);
+
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
+                return;
+            }
+
+            let formData = new FormData($(this)[0]);
             
             $.ajax({
                 type: 'POST',
@@ -128,33 +153,13 @@
                 processData: false,
                 contentType: false,
                 success: function(response){
-                    const { token, status, message, pdf_file_error, net_bill_error } = response;
+                    const { token, status, message, billing_id } = response;
 
-                    if(status == 'error'){
-                        if (pdf_file_error !== '') {
-                            $('#pdf-file-error').html(pdf_file_error);
-                            $('#pdf-file').addClass('is-invalid');
-                        } else {
-                            $('#pdf-file-error').html('');
-                            $('#pdf-file').removeClass('is-invalid');
-                        }
-
-                        if (net_bill_error !== '') {
-                            $('#net-bill-error').html(net_bill_error);
-                            $('#net-bill').addClass('is-invalid');
-                        } else {
-                            $('#net-bill-error').html('');
-                            $('#net-bill').removeClass('is-invalid');
-                        }
-                    } else if(status == 'success'){
-                        swal({
-                            title: 'Success',
-                            text: message,
-                            timer: 3000,
-                            showConfirmButton: false,
-                            type: 'success'
-                        });
-                    }else if(status == 'save-error'){
+                    if(status == 'success'){
+                        setTimeout(function() {
+                            window.location.href = `${baseUrl}healthcare-provider/billing/bill-noa/upload-pdf/${billing_id}/success`;
+                        }, 300);
+                    }else{
                         swal({
                             title: 'Failed',
                             text: message,

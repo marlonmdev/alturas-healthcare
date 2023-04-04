@@ -659,8 +659,11 @@ class Billing_controller extends CI_Controller {
         $data['profees'] = $this->billing_model->get_billing_professional_fees($bill['billing_no']);
         $data['roomboards'] = $this->billing_model->get_billing_room_boards($bill['billing_no']);
         $data['deductions'] = $this->billing_model->get_billing_deductions($bill['billing_no']);
+
+        $view_page = $bill['billing_type'] == 'Manual' ? 'billing_receipt' : 'pdf_billing_receipt'; 
+
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_provider_panel/billing/billing_receipt');
+		$this->load->view('healthcare_provider_panel/billing/'.$view_page);
 		$this->load->view('templates/footer');
     }
 
@@ -671,6 +674,7 @@ class Billing_controller extends CI_Controller {
         $data['loa_no'] = $loa['loa_no'];
         $data['healthcard_no'] = $loa['health_card_no'];
         $data['patient_name'] = $loa['first_name'].' '. $loa['middle_name'].' '. $loa['last_name'].' '.$loa['suffix'];
+        $data['billing_no'] = 'BLN-' . strtotime(date('Y-m-d h:i:s'));
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_provider_panel/billing/upload_loa_bill_pdf');
@@ -680,6 +684,7 @@ class Billing_controller extends CI_Controller {
     function submit_loa_pdf_bill() {
         $this->security->get_csrf_hash();
         $loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+        $billing_no = $this->input->post('billing-no', TRUE);
         $net_bill = $this->input->post('net-bill', TRUE);
 
         // PDF File Upload
@@ -700,7 +705,7 @@ class Billing_controller extends CI_Controller {
             $loa = $this->billing_model->get_loa_to_bill($loa_id);
 
             $data = [
-                'billing_no'            => 'BLN-' . strtotime(date('Y-m-d h:i:s')),
+                'billing_no'            => $billing_no,
                 'billing_type'          => 'PDF Billing',
                 'emp_id'                => $loa['emp_id'],
                 'loa_id'                => $loa_id,
@@ -722,9 +727,12 @@ class Billing_controller extends CI_Controller {
             }
             $type = 'LOA';
             $this->update_request_status($type, $loa_id);
+            $bill = $this->billing_model->get_billing($billing_no);
+            $encrypted_id = $this->myhash->hasher($bill['billing_id'], 'encrypt');
             $response = [
-                'status'  => 'success',
-                'message' => 'PDF Bill Uploaded Successfully'
+                'status'     => 'success',
+                'message'    => 'PDF Bill Uploaded Successfully',
+                'billing_id' => $encrypted_id,
             ];   
         }
 
@@ -735,14 +743,8 @@ class Billing_controller extends CI_Controller {
         $billing_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
         $data['user_role'] = $this->session->userdata('user_role');
         $data['bill'] = $bill = $this->billing_model->get_billing_info($billing_id);
-        $data['mbl'] = $this->billing_model->get_member_mbl($bill['emp_id']);
-        $data['services'] = $this->billing_model->get_billing_services($bill['billing_no']);
-        $data['medications'] = $this->billing_model->get_billing_medications($bill['billing_no']);
-        $data['profees'] = $this->billing_model->get_billing_professional_fees($bill['billing_no']);
-        $data['roomboards'] = $this->billing_model->get_billing_room_boards($bill['billing_no']);
-        $data['deductions'] = $this->billing_model->get_billing_deductions($bill['billing_no']);
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_provider_panel/billing/billing_success');
+		$this->load->view('healthcare_provider_panel/billing/pdf_billing_success');
 		$this->load->view('templates/footer');
     }
 

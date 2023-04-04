@@ -51,7 +51,6 @@ $route['member/personal-charges'] = 'member/pages_controller/unpaid_personal_cha
 $route['member/personal-charges/paid'] = 'member/pages_controller/paid_personal_charges';
 $route['member/profile'] = 'member/pages_controller/user_profile';
 
-
 // Member User Account Routes
 $route['member/account-settings'] = 'member/account_controller/account_settings';
 $route['member/account-settings/password/update'] = 'member/account_controller/update_account_password';

@@ -38,26 +38,40 @@
 
         <form action="<?php echo base_url();?>healthcare-provider/billing/bill-loa/upload-pdf/<?= $loa_id ?>/submit" id="pdfBillingForm" enctype="multipart/form-data" class="needs-validation" novalidate>
             <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
+            <input type="hidden" name="billing-no" value="<?= $billing_no ?>">
             <div class="card">
                 <div class="card-body shadow">
-                    <div class="row my-3">
+                    <div class="row mt-3">
                         <div class="col-12">
-                            <em class="fw-bold text-secondary me-5  fs-4 ls-1">
-                                Patient's Name: <span class="text-info"><?= $patient_name ?></span>
-                            </em>
-
-                            <em class="fw-bold text-secondary fs-4 ls-1">
-                                LOA Number : <span class="text-info"><?= $loa_no ?></span>
-                            </em>                
+                            <table class="table table-bordered">
+                                <tr>
+                                    <td>
+                                        <span class="fw-bold text-secondary fs-5 ls-1">
+                                            Patient's Name: <span class="text-info"><?= $patient_name ?></span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold text-secondary fs-5 ls-1">
+                                            LOA No. : <span class="text-info"><?= $loa_no ?></span>
+                                        </span>  
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold text-secondary fs-5 ls-1">
+                                            Billing No. : <span class="text-info"><?= $billing_no ?></span>
+                                        </span> 
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="col-lg-7">
                             <label class="fw-bold fs-5 ls-1">
                                 <i class="mdi mdi-asterisk text-danger ms-1"></i> Select PDF File
                             </label>
                             <input type="file" class="form-control" name="pdf-file" id="pdf-file" accept="application/pdf" onchange="previewPdfFile()" required>
-                            <div class="invalid-feedback fs-5 ls-1">
+                            <div class="invalid-feedback fs-6">
                                 PDF File is required
                             </div>
                         </div>
@@ -69,7 +83,7 @@
                             <div class="input-group mb-3">
                                 <span class="input-group-text bg-cyan text-white">&#8369;</span>
                                 <input type="number" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" placeholder="Enter Net Bill" required>
-                                <div class="invalid-feedback fs-5 ls-1">
+                                <div class="invalid-feedback fs-6">
                                     Net Bill is required
                                 </div>
                             </div>
@@ -140,20 +154,12 @@
                 processData: false,
                 contentType: false,
                 success: function(response){
-                    const { token, status, message } = response;
+                    const { token, status, message, billing_id } = response;
 
                     if(status == 'success'){
-                        swal({
-                            title: 'Success',
-                            text: message,
-                            timer: 3000,
-                            showConfirmButton: false,
-                            type: 'success'
-                        });
-
-                        // setTimeout(function() {
-                        //     window.location.href = `${baseUrl}healthcare-provider/billing/bill-loa/upload-pdf/${loaId}/success`;
-                        // }, 3200);
+                        setTimeout(function() {
+                            window.location.href = `${baseUrl}healthcare-provider/billing/bill-loa/upload-pdf/${billing_id}/success`;
+                        }, 300);
                     }else{
                         swal({
                             title: 'Failed',

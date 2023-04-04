@@ -957,7 +957,7 @@
                                     
                                     setTimeout(function () {
                                         window.location.href = `${baseUrl}healthcare-provider/billing/bill-noa/success/${billing_id}`;
-                                    }, 500);
+                                    }, 300);
 
                                 } else if(status == 'error') {
 

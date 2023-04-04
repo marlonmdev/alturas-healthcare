@@ -25,8 +25,10 @@ $route['import/spreadsheet_export'] = 'masterfile_controller/spreadsheet_export'
 //================================================================================================
 
 // route for automatically run functions on page load
-$route['check-all/approved-loa/expired/update'] = 'autorun_controller/update_all_expired_loa';
-$route['check-member/approved-loa/expired/update/(:any)'] = 'autorun_controller/update_member_expired_loa';
+// $route['check-all/approved-loa/expired/update'] = 'autorun_controller/update_all_expired_loa';
+// $route['check-member/approved-loa/expired/update/(:any)'] = 'autorun_controller/update_member_expired_loa';
+$route['check-all/approved-requests/expired/update'] = 'autorun_controller/update_all_expired_requests';
+$route['check-member/approved-requests/expired/update/(:any)'] = 'autorun_controller/update_member_expired_requests';
 
 //================================================================================================
 // Member Navigation Links Routes

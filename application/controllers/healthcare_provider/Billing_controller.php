@@ -50,6 +50,10 @@ class Billing_controller extends CI_Controller {
             $data['loa_requests'] = $this->billing_model->get_member_loa($member['emp_id'], $hcare_provider_id);
             $data['noa_requests'] = $this->billing_model->get_member_noa($member['emp_id'], $hcare_provider_id);
 
+            /* This is checking if the image file exists in the directory. */
+            $file_path = './uploads/profile_pics/' . $member['photo'];
+            $data['member_photo_status'] = file_exists($file_path) ? 'Exist' : 'Not Found';
+
             $this->session->set_userdata([
                 'b_member_info'    => $member,
                 'b_member_mbl'     => $member_mbl['max_benefit_limit'],
@@ -443,6 +447,7 @@ class Billing_controller extends CI_Controller {
         if($type === 'LOA'){
             $data = [
                 'billing_no'            => $posted_data['billing-no'],
+                'billing_type'          => 'Manual Billing',
                 'emp_id'                => $posted_data['emp-id'],
                 'loa_id'                => $id,
                 'hp_id'                 => $this->session->userdata('dsg_hcare_prov'),
@@ -465,6 +470,7 @@ class Billing_controller extends CI_Controller {
         }else if($type === 'NOA'){
             $data = [
                 'billing_no'            => $posted_data['billing-no'],
+                'billing_type'          => 'Manual Billing',
                 'emp_id'                => $posted_data['emp-id'],
                 'noa_id'                => $id,
                 'hp_id'                 => $this->session->userdata('dsg_hcare_prov'),
@@ -627,9 +633,7 @@ class Billing_controller extends CI_Controller {
     }
 
     function update_request_status($type, $id){
-        $data = [
-                'status' => 'Billed'
-            ];
+        $data = ['status' => 'Billed'];
 
         if($type == 'LOA'){
             $this->billing_model->update_loa_request($id, $data);
@@ -660,19 +664,98 @@ class Billing_controller extends CI_Controller {
 		$this->load->view('templates/footer');
     }
 
-    function upload_loa_bill_form() {
+    function upload_loa_pdf_bill_form() {
+        $loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+        $loa = $this->billing_model->get_loa_to_bill($loa_id);
         $data['loa_id'] = $this->uri->segment(5);
+        $data['loa_no'] = $loa['loa_no'];
+        $data['healthcard_no'] = $loa['health_card_no'];
+        $data['patient_name'] = $loa['first_name'].' '. $loa['middle_name'].' '. $loa['last_name'].' '.$loa['suffix'];
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_provider_panel/billing/upload_loa_bill');
+		$this->load->view('healthcare_provider_panel/billing/upload_loa_bill_pdf');
 		$this->load->view('templates/footer');
 	}
 
-	function upload_noa_bill_form() {
+    function submit_loa_pdf_bill() {
+        $this->security->get_csrf_hash();
+        $loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+        $net_bill = $this->input->post('net-bill', TRUE);
+
+        // PDF File Upload
+        $config['upload_path'] = './uploads/pdf_bills/';
+        $config['allowed_types'] = 'pdf';
+        $config['encrypt_name'] = TRUE;
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload('pdf-file')) {
+            $response = [
+                'status'  => 'save-error',
+                'message' => 'PDF Bill Upload Failed'
+            ];
+
+        } else {
+            $upload_data = $this->upload->data();
+            $pdf_file = $upload_data['file_name'];
+            $loa = $this->billing_model->get_loa_to_bill($loa_id);
+
+            $data = [
+                'billing_no'            => 'BLN-' . strtotime(date('Y-m-d h:i:s')),
+                'billing_type'          => 'PDF Billing',
+                'emp_id'                => $loa['emp_id'],
+                'loa_id'                => $loa_id,
+                'hp_id'                 => $this->session->userdata('dsg_hcare_prov'),
+                'work_related'          => $loa['work_related'],
+                'net_bill'              => $net_bill,
+                'pdf_bill'              => $pdf_file,
+                'billed_by'             => $this->session->userdata('fullname'),
+                'billed_on'             => date('Y-m-d'),
+                'status'                => 'Billed'
+            ];    
+
+            $inserted = $this->billing_model->insert_billing($data);
+            if(!$inserted){
+                $response = [
+                   'status'  => 'save-error',
+                   'message' => 'PDF Bill Upload Failed'
+                ];
+            }
+            $type = 'LOA';
+            $this->update_request_status($type, $loa_id);
+            $response = [
+                'status'  => 'success',
+                'message' => 'PDF Bill Uploaded Successfully'
+            ];   
+        }
+
+        echo json_encode($response);
+	}
+
+    function loa_pdf_billing_success(){
+        $billing_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+        $data['user_role'] = $this->session->userdata('user_role');
+        $data['bill'] = $bill = $this->billing_model->get_billing_info($billing_id);
+        $data['mbl'] = $this->billing_model->get_member_mbl($bill['emp_id']);
+        $data['services'] = $this->billing_model->get_billing_services($bill['billing_no']);
+        $data['medications'] = $this->billing_model->get_billing_medications($bill['billing_no']);
+        $data['profees'] = $this->billing_model->get_billing_professional_fees($bill['billing_no']);
+        $data['roomboards'] = $this->billing_model->get_billing_room_boards($bill['billing_no']);
+        $data['deductions'] = $this->billing_model->get_billing_deductions($bill['billing_no']);
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_provider_panel/billing/billing_success');
+		$this->load->view('templates/footer');
+    }
+
+	function upload_noa_pdf_bill_form() {
+        $noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+        $noa = $this->billing_model->get_noa_to_bill($noa_id);
         $data['noa_id'] = $this->uri->segment(5);
+        $data['noa_no'] = $noa['noa_no'];
+        $data['healthcard_no'] = $noa['health_card_no'];
+        $data['patient_name'] = $noa['first_name'].' '. $noa['middle_name'].' '. $noa['last_name'].' '.$noa['suffix'];
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_provider_panel/billing/upload_noa_bill');
+		$this->load->view('healthcare_provider_panel/billing/upload_noa_bill_pdf');
 		$this->load->view('templates/footer');
 	}
 

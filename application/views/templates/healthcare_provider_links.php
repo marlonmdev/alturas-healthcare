@@ -50,7 +50,7 @@
                   <li class="sidebar-item">
                     <a href="<?php echo base_url(); ?>healthcare-provider/billing" class="sidebar-link"
                       ><i class="mdi mdi-receipt"></i
-                      ><span class="hide-menu ls-1">Manual Input</span>
+                      ><span class="hide-menu ls-1">Search for Billing</span>
                     </a>
                   </li>
                   <li class="sidebar-item">

@@ -82,7 +82,7 @@
                                                             <td class="fw-bold">
                                                                 <?php $loa_id = $this->myhash->hasher($loa['loa_id'], 'encrypt'); ?>
 
-                                                                <a href="<?php echo base_url(); ?>healthcare-provider/billing/bill-loa/upload-pdf/<?= $loa_id ?>" class="text-danger" data-bs-toggle="tooltip" title="Upload Image/PDF"><i class="mdi mdi-upload fs-2"></i></a>
+                                                                <a href="<?php echo base_url(); ?>healthcare-provider/billing/bill-loa/upload-pdf/<?= $loa_id ?>" class="text-danger" data-bs-toggle="tooltip" title="Upload PDF Billing"><i class="mdi mdi-upload fs-2"></i></a>
 
                                                                 <a href="<?php echo base_url(); ?>healthcare-provider/billing/bill-loa/manual/<?= $loa_id ?>" class="text-info" data-bs-toggle="tooltip" title="Manual Billing"><i class="mdi mdi-keyboard-close fs-2"></i></a>
                                                             </td>
@@ -160,7 +160,7 @@
                                                             <td class="fw-bold">
                                                                 <?php $noa_id = $this->myhash->hasher($noa['noa_id'], 'encrypt'); ?>
 
-                                                                <a href="<?php echo base_url(); ?>healthcare-provider/billing/bill-noa/upload-pdf/<?= $noa_id ?>" class="text-danger" data-bs-toggle="tooltip" title="Upload Image/PDF"><i class="mdi mdi-upload fs-2"></i></a>
+                                                                <a href="<?php echo base_url(); ?>healthcare-provider/billing/bill-noa/upload-pdf/<?= $noa_id ?>" class="text-danger" data-bs-toggle="tooltip" title="Upload PDF Billing"><i class="mdi mdi-upload fs-2"></i></a>
 
                                                                 <a href="<?php echo base_url(); ?>healthcare-provider/billing/bill-noa/manual/<?= $noa_id ?>" class="text-info" data-bs-toggle="tooltip" title="Manual Billing"><i class="mdi mdi-keyboard-close fs-2"></i></a>
                                                             </td>

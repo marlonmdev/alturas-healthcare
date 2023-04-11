@@ -174,9 +174,9 @@
         });
 
         $('#clear-btn').on('click', function(){
-            let pdfPreview = document.getElementById('pdf_preview');
+            let pdfPreview = document.getElementById('pdf-preview');
             $('#pdfBillingForm')[0].reset();
-            pdfPreview.innerHTML = '';
+            pdfPreview.innerHTML = "";
         });
 
        

@@ -118,7 +118,7 @@
                     <th class="fw-bold">RX File</th>
                     <th class="fw-bold">Request Date</th>
                     <th class="fw-bold">Status</th>
-                    <th class="fw-bold" style="width:130px">Actions</th>
+                    <th class="fw-bold" style="width:150px">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -318,7 +318,7 @@
         
         $.each(response, function(index, item){
           
-          tbody += '<tr><td>'+ item.item_description +'</td><td>'+ item.status + '</td><td>' + item.date_performed +' '+ item.time_performed +'</td><td>'+ item.physician_fname +' '+ item.physician_mname + ' ' + item.physician_lname +'</td><td>'+ item.reschedule_on +'</td><td>'+ item.reason_cancellation +'</td></tr>';
+          tbody += '<tr><td>'+ item.item_description +'</td><td>'+ item.status + '</td><td>' + item.date_performed +' '+ item.time_performed +'</td><td>'+ item.physician_fname +' '+ item.physician_mname + ' ' + item.physician_lname +'</td><td>'+ item.reason_cancellation +'</td></tr>';
 
         $('#pf-loa-no').html(item.loa_no);
         });

@@ -441,6 +441,29 @@ function db_get_cost_types_by_hp_ID($hp_id) {
     }
   }
 
+  function check_if_service_cancelled($loa_id) {
+    $this->db->select('status')
+            ->where('status', 'Cancelled')
+            ->where('loa_id', $loa_id)
+            ->group_by('loa_id');
+    $query = $this->db->get('performed_loa_info');
+
+    if ($query->num_rows() > 0) {
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  function get_cancelled_service($loa_id) {
+    $this->db->select('*')
+            ->from('performed_loa_info')
+            ->where('loa_id', $loa_id)
+            ->where('status', 'Cancelled');
+    return $this->db->get()->result_array();
+
+  }
+
   function set_loa_status_completed($loa_id, $status) {
     $this->db->set('status', $status)
             ->where('loa_id', $loa_id);
@@ -458,7 +481,6 @@ function db_get_cost_types_by_hp_ID($hp_id) {
             ->from('loa_requests as tbl_1')
             ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
             ->join('max_benefit_limits as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id')
-            ->where('tbl_1.status', 'Completed')
             ->where('tbl_1.loa_id', $loa_id);
     return $this->db->get()->row_array();
   }
@@ -501,6 +523,47 @@ function db_get_cost_types_by_hp_ID($hp_id) {
             ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
             ->where('loa_id', $loa_id);
     return $this->db->get()->row_array();
+  }
+
+  function insert_added_loa_fees($post_data) {
+    return $this->db->insert('hr_added_loa_fees', $post_data);
+  }
+
+  function check_if_already_added($loa_id) {
+    $query = $this->db->get_where('hr_added_loa_fees', ['loa_id' => $loa_id]);
+    return $query->num_rows() > 0 ? false : true ;
+  }
+
+  function insert_deductions($data) {
+    return $this->db->insert_batch('hr_added_deductions', $data);
+  }
+
+  function insert_philhealth($add_deduct) {
+    return $this->db->insert('hr_added_deductions', $add_deduct);
+  }
+
+  function insert_service_fee($postData) {
+    return $this->db->insert_batch('hr_added_service_fee', $postData);
+  }
+
+  function get_added_loa_fees($loa_id) {
+    $this->db->select('*')
+            ->from('hr_added_loa_fees as tbl_1')
+            ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+            ->where('tbl_1.loa_id', $loa_id);
+    return $this->db->get()->row_array();
+  }
+
+  function get_added_services($loa_id) {
+    $this->db->select('*')
+            ->from('hr_added_service_fee as tbl_1')
+            ->join('cost_types as tbl_2', 'tbl_1.ctype_id = tbl_2.ctype_id')
+            ->where('tbl_1.loa_id', $loa_id);
+    return $this->db->get()->result_array();
+  }
+
+  function get_added_deductions($loa_id) {
+    
   }
 
 

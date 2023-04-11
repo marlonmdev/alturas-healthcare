@@ -31,9 +31,9 @@
                     </div>
             </div>
                 
-            <form id="performedLoaInfo" method="post" action="<?php echo base_url();?>healthcare-coordinator/loa-requests/completed/ performed-loa-info/submit" class="needs-validation" novalidate>
+            <form id="performedLoaInfo" method="post" action="<?php echo base_url();?>healthcare-coordinator/loa/performed-loa-info/submit" class="needs-validation" novalidate>
                 <div class="row">
-                   
+                        <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
                         <div class="col-lg-4">
                             <label class="fw-bold">Member's Name : </label>
                             <input class="form-control fw-bold text-danger" name="member-name" value="<?php echo $full_name ?>" readonly>
@@ -46,6 +46,7 @@
                         <div class="col-lg-4">
                             <label class="fw-bold">LOA Number : </label>
                             <input class="form-control fw-bold text-danger" name="loa-no" value="<?php echo $loa_no ?>" readonly>
+                            <input type="hidden" name="loa-id" value="<?php echo $loa_id ?>">
                        </div>
                         <div class="col-lg-4 pt-3">
                             <label class="fw-bold">Healthcare Provider : </label>
@@ -66,11 +67,11 @@
                         </div>
                         <div class="col-lg-2 pt-3">
                             <label class="fw-bold">Quantity : </label>
-                            <input class="form-control fw-bold" type="number" name="quantity" value="1" min="1">
+                            <input class="form-control fw-bold" type="number" name="quantity" id="quantity" value="1" min="1" oninput="calculateDiagnosticTestBilling()">
                         </div>
                         <div class="col-lg-2 pt-3">
                             <label class="fw-bold">Service Fee : </label>
-                            <input class="form-control fw-bold" name="service-fee" type="number">
+                            <input class="form-control fw-bold" name="service-fee" id="service-fee" type="number" oninput="calculateDiagnosticTestBilling()" required>
                         </div>
                     </div>
                 <hr>
@@ -95,7 +96,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
+                            <!-- <div class="col-md-3">
                                 <label class="form-label ls-1">SSS</label> <span class="text-muted">(optional)</span>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text bg-success text-white">&#8369;</span>
@@ -104,7 +105,7 @@
 
                                     <span class="text-danger fw-bold deduction-msg"></span>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="col-4 pt-4">
                                 <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addNewDeduction()"><i class="mdi mdi-plus-circle"></i> Add New</button>
                             </div>    
@@ -121,7 +122,7 @@
                             </div>
                             <div class="col-4">
                                 <label>Total Deduction</label>
-                                <input class="form-control text-danger fw-bold" name="total-deduction" id="total-deduction" value="&#8369;"  readonly>
+                                <input class="form-control text-danger fw-bold" name="total-deduction" id="total-deduction"  readonly>
                             </div>
                             <div class="col-4">
                                 <label>Net Bill</label>
@@ -138,14 +139,14 @@
                                 <label>Patient's Remaining MBL</label>
                                 <input class="form-control text-danger fw-bold" name="remaining-mbl" id="remaining-mbl" value="&#8369; <?php echo $remaining_balance ?>" readonly>
                             </div>
-                            <div class="col-3">
+                            <!-- <div class="col-3">
                                 <label>Company Charge</label>
                                 <input class="form-control text-danger fw-bold" name="company-charge" id="company-charge" value="&#8369;" readonly>
                             </div>
                             <div class="col-3">
                                 <label>Personal Charge</label>
                                 <input class="form-control text-danger fw-bold" name="personal-charge" id="personal-charge" value="&#8369;"  readonly>
-                            </div>
+                            </div> -->
                         </div>
                         <hr>
                         <div class="offset-10 pt-3">
@@ -201,9 +202,8 @@
                                 showConfirmButton: false,
                                 type: 'success'
                             });
-                            $('#performedLoaInfo')[0].reset();
                             setTimeout(function () {
-                                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved';
+                                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed';
                             }, 2600);
                             
                         break;
@@ -234,18 +234,8 @@
 
     });
 
-    const enableInput = () => {
-        const date = document.querySelector('#date');
-        const physician = document.querySelector('#physician');
-        const status = document.querySelector('#status');
-
-        if(status.value == 'Performed') {
-            date.removeAttribute('readonly');
-            physician.removeAttribute('readonly');
-        }else{
-            date.setAttribute('readonly', true);
-            physician.setAttribute('readonly', true);
-        }
+    window.onload = function() {
+        calculateDiagnosticTestBilling();
     }
 
     let count = 0;
@@ -292,34 +282,22 @@
     const calculateDiagnosticTestBilling = (remaining_balance) => {
         let total_deductions = 0;
         let net_bill_amount = 0;
-        let company_charge = 0;
-        let personal_charge = 0;
         const deduct_philhealth = document.querySelector('#deduct-philhealth');
-        const deduct_sss = document.querySelector('#deduct-sss');
         const total_bill = document.querySelector('#total-bill');
         const net_bill = document.querySelector('#net-bill');
         const input_total_deduction = document.querySelector('#total-deduction');
-        const company_charge_amount = document.querySelector('#company-charge');
-        const personal_charge_amount = document.querySelector('#personal-charge');
 
         total_services = totalServices();
         total_bill.value = parseFloat(total_services).toFixed(2);
         
         philhealth = deduct_philhealth.value > 0 ? deduct_philhealth.value : 0 ;
-        sss = deduct_sss.value > 0 ? deduct_sss.value : 0 ;
         other_deduction = calculateOtherDeductions();
 
-        total_deductions = parseFloat(philhealth) + parseFloat(sss) + parseFloat(other_deduction);
+        total_deductions = parseFloat(philhealth) + parseFloat(other_deduction);
         net_bill_amount = parseFloat(total_services) - parseFloat(total_deductions);
-
-        personal_charge = net_bill_amount - remaining_balance;
-        personalCharge = personal_charge > 0 ? personal_charge : 0;
-        company_charge = net_bill_amount > remaining_balance ? remaining_balance : net_bill_amount ;
 
         input_total_deduction.value = parseFloat(total_deductions).toFixed(2);
         net_bill.value = parseFloat(net_bill_amount).toFixed(2);
-        company_charge_amount.value = parseFloat(company_charge).toFixed(2);
-        personal_charge_amount.value = parseFloat(personalCharge).toFixed(2);
     }
 
     const removeDeduction = (remove_btn) => {
@@ -335,12 +313,11 @@
 
     const totalServices = () => {
         let total_services = 0;
-        const services_fee = document.querySelectorAll('.ct-fee');
-        const quantity = document.querySelectorAll('.ct-qty');
+        const services_fee = document.querySelector('#service-fee');
+        const quantity = document.querySelector('#quantity');
 
-        for(let i = 0; i < services_fee.length; i++) {
-            total_services += services_fee[i].value * quantity[i].value;
-        }
+        total_services += services_fee.value * quantity.value;
+   
         return total_services;
     }
 

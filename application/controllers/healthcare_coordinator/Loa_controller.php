@@ -537,13 +537,30 @@ class Loa_controller extends CI_Controller {
 
 				$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaConsult(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-danger"></i></a>';
 
-				$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/add-consult-fees/' . $loa_id . '" data-bs-toggle="tooltip" title="Add LOA fees"><i class="mdi mdi-playlist-check fs-2 text-success"></i></a>';
-				
+				$existed = $this->loa_model->check_if_already_added($loa['loa_id']);
+
+				if($existed){
+					$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/add-consult-fees/' . $loa_id . '" data-bs-toggle="tooltip" title="Add LOA fees"><i class="mdi mdi-playlist-plus fs-2 text-primary"></i></a>';
+				}else{
+					$custom_actions .= '<i class="mdi mdi-playlist-plus fs-2 text-secondary" title="Done Adding LOA fees"></i>';
+
+					$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/match_with_billing/' . $loa_id . '" data-bs-toggle="tooltip" title="Match with Billing"><i class="mdi mdi-compare fs-2 text-success"></i></a>';
+				}
+
 			}else{
 
 				$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-danger"></i></a>';
 
-				$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/add-loa-fees/' . $loa_id . '" data-bs-toggle="tooltip" title="Add LOA fees"><i class="mdi mdi-playlist-check fs-2 text-success"></i></a>';
+				$existed = $this->loa_model->check_if_already_added($loa['loa_id']);
+
+				if($existed){
+					$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/add-loa-fees/' . $loa_id . '" data-bs-toggle="tooltip" title="Add LOA fees"><i class="mdi mdi-playlist-plus fs-2 text-primary"></i></a>';
+				}else{
+					$custom_actions .= '<i class="mdi mdi-playlist-plus fs-2 text-secondary" title="Done Adding LOA fees"></i>';
+					
+					$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/match_with_billing/' . $loa_id . '" data-bs-toggle="tooltip" title="Match with Billing"><i class="mdi mdi-compare fs-2 text-success"></i></a>';
+				}
+				
 			}
 
 			$rescheduled = $this->loa_model->check_if_status_cancelled($loa['loa_id']);
@@ -551,7 +568,6 @@ class Loa_controller extends CI_Controller {
 				$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/create_new_loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Create New LOA"><i class="mdi mdi-note-plus fs-2 text-cyan"></i></a>';
 			}
 			
-
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
 			if ($loa['loa_request_type'] === 'Consultation') {
@@ -1577,6 +1593,17 @@ class Loa_controller extends CI_Controller {
 				$this->loa_model->set_loa_status_completed($loa_id, $status);
 			}
 
+			$cancelled = $this->loa_model->check_if_service_cancelled($loa_id);
+			if($cancelled){
+				$service = $this->loa_model->get_cancelled_service($loa_id);
+
+				foreach($service as $number){
+					$number_to_remove = $number['ctype_id'];
+
+					$this->remove_service_from_field($loa_id, $number_to_remove);
+				}
+			}
+
 			if($inserted){
 				echo json_encode([
 					'token' => $token,
@@ -1766,6 +1793,7 @@ class Loa_controller extends CI_Controller {
 			$data['request_type'] = $loa['loa_request_type'];
 			$data['max_benefit_limit'] = number_format($loa['max_benefit_limit'],2);
 			$data['remaining_balance'] = number_format($loa['remaining_balance'],2);
+			$data['loa_id'] = $loa_id;
 		
 			$this->load->view('templates/header', $data);
 			$this->load->view('healthcare_coordinator_panel/loa/add_diagnostic_loa_fees.php');
@@ -1797,6 +1825,28 @@ class Loa_controller extends CI_Controller {
 
 	}
 
+	function remove_service_from_field($passed_id, $number_to_remove) {
+		$row = $this->loa_model->db_get_loa($passed_id);
+		$field_value = $row['med_services'];
+
+		// Split the field value into an array using ";" delimiter
+		$values_array = explode(";", $field_value);
+
+		// Check if the number exists in the array
+			if (in_array($number_to_remove, $values_array)) {
+				// Remove the number from the array
+				unset($values_array[array_search($number_to_remove, $values_array)]);
+		
+				// Join the remaining values in the array back into a string using ";" delimiter
+				$new_field_value = implode(";", $values_array);
+		
+				// Update the database field with the new value
+				$result = $this->loa_model->db_update_loa_med_services($passed_id, $new_field_value);
+				// $this->db->set('my_field', $new_field_value)->update('my_table');
+			}
+
+	}
+
 	function remove_number_from_field($passed_id, $number_to_remove) {
 		$row = $this->loa_model->db_get_loa($passed_id);
 		$field_value = $row['med_services'];
@@ -1822,7 +1872,7 @@ class Loa_controller extends CI_Controller {
 		}
 	}
 
-	function create_cancelled_to_new_loa() {
+	function create_rescheduled_to_new_loa() {
 		$data['token'] = $this->security->get_csrf_hash();
 		$data['user_role'] = $this->session->userdata('user_role');
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
@@ -1856,9 +1906,9 @@ class Loa_controller extends CI_Controller {
 			$hp_id = $this->input->post('hp-id', TRUE);
 		}
 
-		$expires = strtotime('+1 week', strtotime(date('Y-m-d')));
-		$valid_until = date('F d, Y', $expires);
-
+		$created_on = date('Y-m-d');
+		$default = strtotime('+1 week', strtotime($created_on));
+		$expired_on = date('Y-m-d', $default);
 
 		$post_data = [
 			'loa_no' => $this->input->post('loa-num', TRUE),
@@ -1881,7 +1931,7 @@ class Loa_controller extends CI_Controller {
 			'approved_on' => $loa['approved_on'],
 			'work_related' => $loa['work_related'],
 			'percentage' => $loa['percentage'],
-			'expiration_date' => $valid_until,
+			'expiration_date' => $expired_on,
 			'status' => 'Rescheduled',
 		];
 
@@ -1957,6 +2007,128 @@ class Loa_controller extends CI_Controller {
 			];
 		}		
 		echo json_encode($response);
+	}
+
+	function submit_added_loa_fees() {
+		$token = $this->security->get_csrf_hash();
+		$data['user_role'] = $this->session->userdata('user_role');
+		$total_deduct =  $this->input->post('total-deduction', TRUE);
+		
+		if($total_deduct != ''){
+			$total_deductions = $this->input->post('total-deduction', TRUE);
+		}else{
+			$total_deductions = 0;
+		}
+		//insert_added_loa_fees
+			$post_data = [
+				'emp_id' => $this->input->post('emp-id', TRUE),
+				'loa_id' => $this->input->post('loa-id', TRUE),
+				'hp_id' => $this->input->post('hp-id', TRUE),
+				'request_type' => $this->input->post('request-type', TRUE),
+				'total_services' => $this->input->post('total-bill', TRUE),
+				'total_deductions' => $total_deductions,
+				'total_net_bill' => $this->input->post('net-bill', TRUE),
+				'added_by' => $this->session->userdata('fullname'),
+				'added_on' => date('Y-m-d')
+			];
+
+		$inserted = $this->loa_model->insert_added_loa_fees($post_data);
+		//insert service fees
+		$req_type = $this->input->post('request-type', TRUE);
+		if($req_type == 'Diagnostic Test'){
+
+			$ctype_id = $this->input->post('ctype-id', TRUE);
+			$service_fee = $this->input->post('service-fee', TRUE);
+			$quantity = $this->input->post('quantity', TRUE);
+			$postData = [];
+			for($i = 0; $i < count($ctype_id); $i++){
+	
+				$postData[] = [
+					'loa_id' => $this->input->post('loa-id', TRUE),
+					'ctype_id' => $ctype_id[$i],
+					'service_fee' => $service_fee[$i],
+					'quantity' => $quantity[$i],
+					'added_on' => date('Y-m-d')
+				];
+	
+			}
+			$this->loa_model->insert_service_fee($postData);
+		}
+		
+		//insert loa deductions
+		$deduct_name = $this->input->post('deduction-name', TRUE);
+		$deduct_amount = $this->input->post('deduction-amount', TRUE);
+		if($deduct_amount > 0){
+			$data = [];
+			for($x = 0; $x < count($deduct_name); $x++){
+				$data[] = [
+					'emp_id' => $this->input->post('emp-id', TRUE),
+					'loa_id' => $this->input->post('loa-id', TRUE),
+					'deduction_name' => $deduct_name[$x],
+					'deduction_amount' => $deduct_amount[$x],
+					'added_on' => date('Y-m-d'),
+					'added_by' => $this->session->userdata('fullname')
+				];
+			}
+			$this->loa_model->insert_deductions($data);
+		}
+		
+		//insert philhealth deduction
+		$philhealth_deduct = $this->input->post('philhealth-deduction', TRUE);
+		if($philhealth_deduct > 0){
+			$add_deduct = [
+				'emp_id' => $this->input->post('emp-id', TRUE),
+				'loa_id' => $this->input->post('loa-id', TRUE),
+				'deduction_name' => 'Philhealth Benefits',
+				'deduction_amount' => $this->input->post('philhealth-deduction', TRUE),
+				'added_on' => date('Y-m-d'),
+				'added_by' => $this->session->userdata('fullname')
+			];
+			$this->loa_model->insert_philhealth($add_deduct);
+	
+		}
+		
+		if($inserted){
+			echo json_encode([
+				'token' => $token,
+				'status' => 'success',
+				'message' => 'Data Added Successfully!'
+			]);
+		}else{
+			echo json_encode([
+				'token' => $token,
+				'status' => 'failed',
+				'message' => 'Data Insertion Failed!'
+			]);
+		}
+	}
+
+	function match_loa_with_billing() {
+		$token = $this->security->get_csrf_hash();
+		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$loa = $this->loa_model->get_added_loa_fees($loa_id);
+		$services = $this->loa_model->get_added_services($loa_id);
+		$this->loa_model->get_added_deductions($loa_id);
+
+		$data['fullname'] = $loa['first_name'].' '.$loa['middle_name'].' '.$loa['last_name'].' '.$loa['suffix'];
+		$data['request_type'] = $loa['request_type'];
+		$data['total_services'] = $loa['total_services'];
+		$data['total_deductions'] = $loa['total_deductions'];
+		$data['total_net_bill'] = $loa['total_net_bill'];
+
+		foreach($services as $service){
+			$data['ctype_id'] = $service['ctype_id'];
+			$data['item_name'] = $service['item_description'];
+			$data['service_fee'] = $service['service_fee'];
+			$data['quantity'] = $service['quantity'];
+		}
+
+
+
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/loa/match_loa_with_billing');
+		$this->load->view('templates/footer');
 	}
 
 	

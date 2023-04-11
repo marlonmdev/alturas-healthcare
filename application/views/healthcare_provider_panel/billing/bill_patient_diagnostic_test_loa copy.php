@@ -249,7 +249,7 @@
                         </div>
 
                         <div class="row my-4">
-                            <!-- <div class="col-md-3">
+                            <div class="col-md-3">
                                 <label class="form-label ls-1">Patient's MBL</label>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text bg-info text-white">&#8369;</span>
@@ -263,8 +263,8 @@
                                     <span class="input-group-text bg-info text-white">&#8369;</span>
                                     <input type="text" class="form-control fw-bold ls-1" id="remaining-mbl" name="remaining-mbl" value="<?= number_format($remaining_balance, 2) ?>" readonly>
                                 </div>
-                            </div> -->
-<!-- 
+                            </div>
+
                             <div class="col-md-3">
                                 <label class="form-label ls-1">Company Charge</label>
                                 <div class="input-group mb-3">
@@ -279,7 +279,7 @@
                                     <span class="input-group-text bg-danger text-white">&#8369;</span>
                                     <input type="text" class="form-control fw-bold ls-1" id="personal-charge" name="personal-charge" value="" readonly>
                                 </div>
-                            </div> -->
+                            </div>
                         </div>
 
                         <hr class="my-4">
@@ -725,7 +725,7 @@
         let html_code  = `<div class="row my-3 row-profee" id="row${prof_count}">`;
 
            /* Creating a new input field with the name deduction_name[] */
-            html_code += `<div class="col-md-6">
+            html_code += `<div class="col-md-5">
                             <input type="text" name="prodoc-name[]" class="form-control fw-bold ls-1" placeholder="*Enter Doctor Name" required/>
                             <div class="invalid-feedback">
                                 Doctor name, and Professional Fee is required

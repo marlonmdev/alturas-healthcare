@@ -128,7 +128,8 @@
                         $("#loaderGif").removeClass("d-none");
                         $("#loaderGif").show();
                         $("#btnLoginText").html("LOGGING IN...");
-                        updateExpiredLoa(user_role, emp_id, next_page);
+                        // calling a function that runs automatic update on expired aprroved loa and noa requests
+                        updateExpiredRequests(user_role, emp_id, next_page);
                     } else {
                         toastr.options = {
                             closeButton: true,
@@ -144,7 +145,7 @@
 
         const baseUrl = `<?php echo base_url(); ?>`;
 
-        const updateExpiredLoa = (user_role, emp_id, next_page) => {
+        const updateExpiredRequests = (user_role, emp_id, next_page) => {
             switch(user_role){
                 case 'member':
                     $.ajax({

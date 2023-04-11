@@ -137,6 +137,10 @@
   const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
 
   window.onload = (event) => {
+    viewAttachPDF();
+  };
+
+  const viewAttachPDF = () => {
     let pdfViewer = document.getElementById('pdf-viewer');
     let pdfFile = `${baseUrl}uploads/pdf_bills/<?php echo $bill['pdf_bill']; ?>`;
     let fileExists = checkFileExists(pdfFile);
@@ -159,11 +163,9 @@
           reader.readAsDataURL(blob);
         }
       };
-
       xhr.send();
-
     }
-  };
+  }
 
   const checkFileExists = (fileUrl) => {
     let xhr = new XMLHttpRequest();
@@ -171,7 +173,6 @@
     xhr.send();
 
     return xhr.status == "200" ? true: false;
-
   }
 
   const saveAsImage = () => {

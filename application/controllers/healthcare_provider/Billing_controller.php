@@ -198,19 +198,19 @@ class Billing_controller extends CI_Controller {
             }
 
             // if SSS deduction has value
-            if($posted_data['sss-deduction'] > 0){
-                $this->insert_sss_deduction($posted_data['sss-deduction'], $posted_data['billing-no']);
-            }
+            // if($posted_data['sss-deduction'] > 0){
+            //     $this->insert_sss_deduction($posted_data['sss-deduction'], $posted_data['billing-no']);
+            // }
             // if the dynamic deductions exists 
             if($posted_data['deduction-count'] > 0){
                 $this->insert_other_deductions($posted_data['deduction-name'], $posted_data['deduction-amount'], $posted_data['billing-no']);
             }
             // if personal charges has amount
-            if($posted_data['personal-charge'] > 0){
-                $this->insert_personal_charge($type, $posted_data['emp-id'], $loa_id, $posted_data['personal-charge'], $posted_data['billing-no']);
-            }
+            // if($posted_data['personal-charge'] > 0){
+            //     $this->insert_personal_charge($type, $posted_data['emp-id'], $loa_id, $posted_data['personal-charge'], $posted_data['billing-no']);
+            // }
             // call to function that updates member's credit limit
-            $this->update_member_mbl($posted_data);       
+            // $this->update_member_mbl($posted_data);       
             // call to function that updates loa request status
             $this->update_request_status($type, $loa_id);
             // call to a private function that deletes the temporary session userdata
@@ -271,20 +271,18 @@ class Billing_controller extends CI_Controller {
             if($posted_data['philhealth-deduction'] > 0){
                 $this->insert_philhealth_deduction($posted_data['philhealth-deduction'], $posted_data['billing-no']);
             }
-            // if SSS deduction has value
-            if($posted_data['sss-deduction'] > 0){
-                $this->insert_sss_deduction($posted_data['sss-deduction'], $posted_data['billing-no']);
-            }
+
             // if the dynamic deductions exists
             if($posted_data['deduction-count'] > 0){
                 $this->insert_other_deductions($posted_data['deduction-name'], $posted_data['deduction-amount'], $posted_data['billing-no']);
             }
             // if personal charges has amount
-            if($posted_data['personal-charge'] > 0){
-                $this->insert_personal_charge($type, $posted_data['emp-id'], $loa_id, $posted_data['personal-charge'], $posted_data['billing-no']);
-            }
+            // if($posted_data['personal-charge'] > 0){
+            //     $this->insert_personal_charge($type, $posted_data['emp-id'], $loa_id, $posted_data['personal-charge'], $posted_data['billing-no']);
+            // }
             // call to function that updates member's credit limit
-            $this->update_member_mbl($posted_data);     
+            // $this->update_member_mbl($posted_data);     
+
             // call to function that updates loa request status
             $this->update_request_status($type, $loa_id);  
             // call to a private function that deletes the temporary session userdata
@@ -459,10 +457,10 @@ class Billing_controller extends CI_Controller {
                 'total_bill'            => $posted_data['total-bill'],
                 'total_deduction'       => $posted_data['total-deduction'],
                 'net_bill'              => $posted_data['net-bill'],
-                'company_charge'        => $posted_data['company-charge'],
-                'personal_charge'       => $posted_data['personal-charge'],
+                // 'company_charge'        => $posted_data['company-charge'],
+                // 'personal_charge'       => $posted_data['personal-charge'],
                 'before_remaining_bal'  => $posted_data['remaining-balance'],
-                'after_remaining_bal'   => $after_billing_balance,
+                // 'after_remaining_bal'   => $after_billing_balance,
                 'billed_by'             => $this->session->userdata('fullname'),
                 'billed_on'             => date('Y-m-d'),
                 'status'                => 'Billed'
@@ -551,18 +549,6 @@ class Billing_controller extends CI_Controller {
         $this->billing_model->insert_billing_deductions($philhealth);
     }
 
-    function insert_sss_deduction($sss_deduction, $billing_no){
-        $sss = [];
-        $sss[] = [
-            'deduction_name'   => 'SSS',
-            'deduction_amount' => $sss_deduction,
-            'billing_no'       => $billing_no,
-            'added_on'         => date('Y-m-d')
-        ];
-
-        $this->billing_model->insert_billing_deductions($sss);
-    }
-
     function insert_other_deductions($deduction_names, $deduction_amounts, $billing_no){
         $deductions = []; 
         for ($y = 0; $y < count($deduction_names); $y++) {
@@ -577,28 +563,28 @@ class Billing_controller extends CI_Controller {
         $this->billing_model->insert_billing_deductions($deductions);
     }
 
-    function insert_personal_charge($type, $emp_id, $id, $personal_charge, $billing_no){
-        if($type === 'LOA'){
-                $charge = [
-                'emp_id'            => $emp_id,
-                'loa_id'            => $id,
-                'amount'            => $personal_charge,
-                'billing_no'        => $billing_no,
-                'status'            => 'Unpaid',
-                'added_on'          => date('Y-m-d')
-            ];
-        }else if($type === 'NOA'){
-            $charge = [
-                'emp_id'            => $emp_id,
-                'noa_id'            => $id,
-                'amount'            => $personal_charge,
-                'billing_no'        => $billing_no,
-                'status'            => 'Unpaid',
-                'added_on'          => date('Y-m-d')
-            ];
-        }
-        $this->billing_model->insert_personal_charge($charge);
-    }
+    // function insert_personal_charge($type, $emp_id, $id, $personal_charge, $billing_no){
+    //     if($type === 'LOA'){
+    //             $charge = [
+    //             'emp_id'            => $emp_id,
+    //             'loa_id'            => $id,
+    //             'amount'            => $personal_charge,
+    //             'billing_no'        => $billing_no,
+    //             'status'            => 'Unpaid',
+    //             'added_on'          => date('Y-m-d')
+    //         ];
+    //     }else if($type === 'NOA'){
+    //         $charge = [
+    //             'emp_id'            => $emp_id,
+    //             'noa_id'            => $id,
+    //             'amount'            => $personal_charge,
+    //             'billing_no'        => $billing_no,
+    //             'status'            => 'Unpaid',
+    //             'added_on'          => date('Y-m-d')
+    //         ];
+    //     }
+    //     $this->billing_model->insert_personal_charge($charge);
+    // }
 
     function update_member_mbl($posted_data){
         $emp_id = $posted_data['emp-id'];

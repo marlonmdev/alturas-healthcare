@@ -10,7 +10,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">Healthcare Provider</li>
                     <li class="breadcrumb-item active" aria-current="page">
-                    Approved NOA
+                    Completed NOA
                     </li>
                 </ol>
                 </nav>
@@ -23,62 +23,61 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
+
                 <ul class="nav nav-tabs mb-4" role="tablist">
                 <li class="nav-item">
                     <a
                     class="nav-link"
                     href="<?php echo base_url(); ?>healthcare-provider/noa-requests/pending"
-                    role="tab">
-                        <span class="hidden-sm-up"></span>
-                        <span class="hidden-xs-down fs-5 font-bold">Pending</span>
-                    </a>
+                    role="tab"
+                    ><span class="hidden-sm-up"></span>
+                    <span class="hidden-xs-down fs-5 font-bold">Pending</span></a
+                    >
                 </li>
                 <li class="nav-item">
                     <a
-                    class="nav-link active"
+                    class="nav-link"
                     href="<?php echo base_url(); ?>healthcare-provider/noa-requests/approved"
-                    role="tab">
-                        <span class="hidden-sm-up"></span>
-                        <span class="hidden-xs-down fs-5 font-bold">Approved</span>
-                    </a>
+                    role="tab"
+                    ><span class="hidden-sm-up"></span>
+                    <span class="hidden-xs-down fs-5 font-bold">Approved</span></a
+                    >
                 </li>
                 <li class="nav-item">
                     <a
                     class="nav-link"
                     href="<?php echo base_url(); ?>healthcare-provider/noa-requests/disapproved"
-                    role="tab">
-                        <span class="hidden-sm-up"></span>
-                        <span class="hidden-xs-down fs-5 font-bold">Disapproved</span>
-                    </a>
+                    role="tab"
+                    ><span class="hidden-sm-up"></span>
+                    <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
+                    >
                 </li>
-
+                <!-- <li class="nav-item">
+                    <a
+                    class="nav-link"
+                    href="< echo base_url(); ?>healthcare-provider/noa-requests/completed"
+                    role="tab"
+                    ><span class="hidden-sm-up"></span>
+                    <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
+                    >
+                </li> -->
                 </li>
                     <li class="nav-item">
                     <a
-                    class="nav-link"
+                    class="nav-link active"
                     href="<?php echo base_url(); ?>healthcare-provider/noa-requests/billed"
                     role="tab"
                     ><span class="hidden-sm-up"></span>
                     <span class="hidden-xs-down fs-5 font-bold">Billed</span></a
                     >
                 </li>
-                    <!-- <li class="nav-item">
-                    <a
-                    class="nav-link"
-                    href="<?php echo base_url(); ?>healthcare-provider/noa-requests/completed"
-                    role="tab">
-                        <span class="hidden-sm-up"></span>
-                        <span class="hidden-xs-down fs-5 font-bold">Completed</span>
-                    </a>
-                </li> -->
             </ul>
-
 
              <div class="card shadow">
                 <div class="card-body">
                     <div class="table-responsive">  
-                        <?php include 'view_approved_noa_details.php'; ?>
-                        <table id="approvedNoaTable" class="table table-striped" style="width:100%">
+                        <?php include 'view_billed_noa_details.php'; ?>
+                        <table id="billedNoaTable" class="table table-striped" style="width:100%">
                             <thead>
                                 <tr>
                                     <th class="fw-bold">NOA No.</th>
@@ -93,26 +92,23 @@
                             <tbody>
                             </tbody>
                         </table>
-                        </div>
                     </div>
                 </div>
-            
             </div>
         </div>
     </div>
-</div>
 <script>
     const baseUrl = "<?php echo base_url(); ?>";
     $(document).ready(function() {
 
-        $('#approvedNoaTable').DataTable({
+        $('#billedNoaTable').DataTable({
         processing: true, //Feature control the processing indicator.
         serverSide: true, //Feature control DataTables' server-side processing mode.
         order: [], //Initial no order.
 
         // Load data for the table's content from an Ajax source
         ajax: {
-            url: `${baseUrl}healthcare-provider/noa-requests/approved/fetch`,
+            url: `${baseUrl}healthcare-provider/noa-requests/billed/fetch`,
             type: "POST",
             // passing the token as data so that requests will be allowed
             data: {
@@ -132,53 +128,53 @@
     });
 
     function viewNoaInfo(req_id) {
-    $.ajax({
-      url: `${baseUrl}healthcare-provider/noa-requests/view/${req_id}`,
-      type: "GET",
-      success: function(response) {
-        const res = JSON.parse(response);
-        const base_url = window.location.origin;
-        const {
-          status,
-          token,
-          noa_no,
-          member_mbl,
-          remaining_mbl,
-          first_name,
-          middle_name,
-          last_name,
-          suffix,
-          date_of_birth,
-          age,
-          hospital_name,
-          health_card_no,
-          requesting_company,
-          admission_date,
-          chief_complaint,
-          request_date,
-          work_related,
-          req_status,
-          approved_by,
-          approved_on
-        } = res;
+        $.ajax({
+            url: `${baseUrl}healthcare-provider/noa-requests/view/${req_id}`,
+            type: "GET",
+            success: function(response) {
+                const res = JSON.parse(response);
+                const base_url = window.location.origin;
+                const {
+                status,
+                token,
+                noa_no,
+                approved_by,
+                approved_on,
+                member_mbl,
+                remaining_mbl,
+                first_name,
+                middle_name,
+                last_name,
+                suffix,
+                date_of_birth,
+                age,
+                hospital_name,
+                health_card_no,
+                requesting_company,
+                admission_date,
+                chief_complaint,
+                work_related,
+                request_date,
+                req_status,
+                } = res;
 
-        $("#viewNoaModal").modal("show");
+                $("#viewNoaModal").modal("show");
 
-        $('#noa-no').html(noa_no);
-        $('#noa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
-        $('#approved-by').html(approved_by);
-        $('#approved-on').html(approved_on);
-        $('#member-mbl').html(member_mbl);
-        $('#remaining-mbl').html(remaining_mbl);
-        $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
-        $('#date-of-birth').html(date_of_birth);
-        $('#age').html(age);
-        $('#hospital-name').html(hospital_name);
-        $('#admission-date').html(admission_date);
-        $('#chief-complaint').html(chief_complaint);
-        $('#request-date').html(request_date);
-        $('#work-related').html(work_related);
-      }
-    });
-  }
+                $('#noa-no').html(noa_no);
+                $('#noa-status').html('<strong class="text-cyan">[' + req_status + ']</strong>');
+                $('#approved-by').html(approved_by);
+                $('#approved-on').html(approved_on);
+                $('#member-mbl').html(member_mbl);
+                $('#remaining-mbl').html(remaining_mbl);
+                $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
+                $('#date-of-birth').html(date_of_birth);
+                $('#age').html(age);
+                $('#hospital-name').html(hospital_name);
+                $('#admission-date').html(admission_date);
+                $('#chief-complaint').html(chief_complaint);
+                $('#work-related').html(work_related);
+                $('#request-date').html(request_date);
+            }
+        });
+    }
 </script>

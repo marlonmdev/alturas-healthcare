@@ -55,6 +55,13 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
+	function billed_loa_requests() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_provider_panel/loa/billed_loa_list');
+		$this->load->view('templates/footer');
+	}
+
 	function pending_noa_requests() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
@@ -83,6 +90,13 @@ class Pages_controller extends CI_Controller {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_provider_panel/noa/completed_noa_list');
+		$this->load->view('templates/footer');
+	}
+
+	function billed_noa_requests() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_provider_panel/noa/billed_noa_list');
 		$this->load->view('templates/footer');
 	}
 

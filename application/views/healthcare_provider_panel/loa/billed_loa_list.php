@@ -10,7 +10,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">Healthcare Provider</li>
                     <li class="breadcrumb-item active" aria-current="page">
-                    Completed LOA
+                    Billed LOA
                     </li>
                 </ol>
                 </nav>
@@ -53,16 +53,17 @@
                     </li>
                         <li class="nav-item">
                         <a
-                        class="nav-link active"
+                        class="nav-link"
                         href="<?php echo base_url(); ?>healthcare-provider/loa-requests/completed"
                         role="tab"
                         ><span class="hidden-sm-up"></span>
                         <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
                         >
                     </li>
-                    <li class="nav-item">
+                    </li>
+                        <li class="nav-item">
                         <a
-                        class="nav-link"
+                        class="nav-link active"
                         href="<?php echo base_url(); ?>healthcare-provider/loa-requests/billed"
                         role="tab"
                         ><span class="hidden-sm-up"></span>
@@ -74,8 +75,8 @@
                 <div class="card shadow">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <?php include 'view_completed_loa_details.php'; ?>
-                            <table id="completedLoaTable" class="table table-striped">
+                            <?php include 'view_billed_loa_details.php'; ?>
+                            <table id="billedLoaTable" class="table table-striped">
                                 <thead>
                                     <tr>
                                         <th class="fw-bold">LOA No.</th>
@@ -102,14 +103,14 @@
     const baseUrl = `<?php echo base_url(); ?>`;
     $(document).ready(function() {
 
-        $('#completedLoaTable').DataTable({
+        $('#billedLoaTable').DataTable({
             processing: true, //Feature control the processing indicator.
             serverSide: true, //Feature control DataTables' server-side processing mode.
             order: [], //Initial no order.
 
             // Load data for the table's content from an Ajax source
             ajax: {
-                url: `${baseUrl}healthcare-provider/loa-requests/completed/fetch`,
+                url: `${baseUrl}healthcare-provider/loa-requests/billed/fetch`,
                 type: "POST",
                 // passing the token as data so that requests will be allowed
                 data: {
@@ -130,7 +131,7 @@
 
      function viewLoaInfo(req_id) {
     $.ajax({
-      url: `${baseUrl}healthcare-provider/loa-requests/completed/view/${req_id}`,
+      url: `${baseUrl}healthcare-provider/loa-requests/billed/view/${req_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);
@@ -150,7 +151,7 @@
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
 
         $('#loa-no').html(loa_no);
-        $('#loa-status').html(`<strong class="text-info">[${req_status}]</strong>`);
+        $('#loa-status').html(`<strong class="text-cyan">[${req_status}]</strong>`);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
         $('#member-mbl').html(member_mbl);

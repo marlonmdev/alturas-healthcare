@@ -344,23 +344,23 @@
                         </tr>
                       </table>
 
-                      <!-- <table>
+                      <table>
                         <tr>
                           <td class="text-center">
                             <span class="text-secondary me-2">Company Charge:</span>
                             <span class="text-danger fw-bold fs-4 ls-1">
-                              < '&#8369;'.number_format($bill['company_charge'], 2) ?>
+                              <?= '&#8369;'.number_format($bill['company_charge'], 2) ?>
                             </span>
                           </td>
 
                           <td>
                             <span class="text-secondary me-2">Personal Charge:</span>
                             <span class="text-danger fw-bold fs-4 ls-1">
-                              < '&#8369;'.number_format($bill['personal_charge'], 2) ?>
+                              <?= '&#8369;'.number_format($bill['personal_charge'], 2) ?>
                             </span>
                           </td>
                         </tr>
-                      </table>        -->
+                      </table>       
 
                     </div>
                   </div>

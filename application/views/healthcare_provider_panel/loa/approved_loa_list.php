@@ -61,6 +61,16 @@
                     <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
                     >
                 </li>
+                </li>
+                    <li class="nav-item">
+                    <a
+                    class="nav-link"
+                    href="<?php echo base_url(); ?>healthcare-provider/loa-requests/billed"
+                    role="tab"
+                    ><span class="hidden-sm-up"></span>
+                    <span class="hidden-xs-down fs-5 font-bold">Billed</span></a
+                    >
+                </li>
             </ul>
 
 

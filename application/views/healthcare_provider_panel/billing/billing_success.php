@@ -281,30 +281,30 @@
                       <!-- End of Billing Deductions Table -->
 
                       <!-- Start of member MBL Table -->
-                      <table>
+                      <!-- <table>
                         <tr>
                           <td class="text-center">
                             <span class="text-secondary">Patient's Max Benefit Limit:</span>
                             <span class="text-secondary fw-bold fs-4 ls-1">
-                              &#8369;<?= number_format($mbl['max_benefit_limit'], 2) ?>
+                              &#8369;< number_format($mbl['max_benefit_limit'], 2) ?>
                             </span>
                           </td>
 
                           <td class="text-center">
                             <span class="text-secondary">Before Remaining Balance:</span>
                             <span class="text-secondary fw-bold fs-4 ls-1">
-                              &#8369;<?= number_format($bill['before_remaining_bal'], 2) ?>
+                              &#8369;< number_format($bill['before_remaining_bal'], 2) ?>
                             </span>
                           </td>
 
                           <td class="text-center">
                             <span class="text-secondary">After Remaining Balance:</span>
                             <span class="text-cyan fw-bold fs-4 ls-1">
-                              &#8369;<?= number_format($bill['after_remaining_bal'], 2) ?>
+                              &#8369;< number_format($bill['after_remaining_bal'], 2) ?>
                             </span>
                           </td>
                         </tr>
-                      </table>
+                      </table> -->
                       <!-- End of member MBL Table -->
 
                       <!-- Start of Billing Summary Table -->
@@ -333,23 +333,23 @@
                         </tr>
                       </table>
 
-                      <table>
+                      <!-- <table>
                         <tr>
                           <td class="text-center">
                             <span class="text-secondary me-2">Company Charge:</span>
                             <span class="text-danger fw-bold fs-4 ls-1">
-                              <?= '&#8369;'.number_format($bill['company_charge'], 2) ?>
+                              < '&#8369;'.number_format($bill['company_charge'], 2) ?>
                             </span>
                           </td>
 
                           <td>
                             <span class="text-secondary me-2">Personal Charge:</span>
                             <span class="text-danger fw-bold fs-4 ls-1">
-                              <?= '&#8369;'.number_format($bill['personal_charge'], 2) ?>
+                              < '&#8369;'.number_format($bill['personal_charge'], 2) ?>
                             </span>
                           </td>
                         </tr>
-                      </table>       
+                      </table>        -->
 
                     </div>
                   </div>

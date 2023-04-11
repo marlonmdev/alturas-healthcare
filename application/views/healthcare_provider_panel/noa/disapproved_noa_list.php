@@ -52,6 +52,15 @@
                     <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
                     >
                 </li>
+                <li class="nav-item">
+                    <a
+                    class="nav-link"
+                    href="<?php echo base_url(); ?>healthcare-provider/noa-requests/billed"
+                    role="tab"
+                    ><span class="hidden-sm-up"></span>
+                    <span class="hidden-xs-down fs-5 font-bold">Billed</span></a
+                    >
+                </li>
                     <!-- <li class="nav-item">
                     <a
                     class="nav-link"

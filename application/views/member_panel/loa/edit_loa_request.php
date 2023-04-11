@@ -252,7 +252,7 @@
                   <div class="col-sm-12 mb-2">
                     <label class="colored-label mb-1"><i class="mdi mdi-asterisk text-danger"></i> RX/Request from Accredited Doctor</label>
                     <div id="rx-file-wrapper">
-                      <input type="file" class="dropify" name="rx-file" id="rx-file" data-height="300" data-max-file-size="3M" data-default-file="<?= base_url() ?>uploads/loa_attachments/<?= $row['rx_file'] ?>" accept=".jpg, .jpeg, .png">
+                      <input type="file" class="dropify" name="rx-file" id="rx-file" data-height="300" data-max-file-size="5M" data-default-file="<?= base_url() ?>uploads/loa_attachments/<?= $row['rx_file'] ?>" accept=".jpg, .jpeg, .png">
                       <input type="hidden" name="file-attachment" value="<?= $row['rx_file'] ?>">
                     </div>
                     <em id="rx-file-error" class="text-danger"></em>

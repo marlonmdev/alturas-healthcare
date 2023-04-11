@@ -25,8 +25,10 @@ $route['import/spreadsheet_export'] = 'masterfile_controller/spreadsheet_export'
 //================================================================================================
 
 // route for automatically run functions on page load
-$route['check-all/approved-loa/expired/update'] = 'autorun_controller/update_all_expired_loa';
-$route['check-member/approved-loa/expired/update/(:any)'] = 'autorun_controller/update_member_expired_loa';
+// $route['check-all/approved-loa/expired/update'] = 'autorun_controller/update_all_expired_loa';
+// $route['check-member/approved-loa/expired/update/(:any)'] = 'autorun_controller/update_member_expired_loa';
+$route['check-all/approved-requests/expired/update'] = 'autorun_controller/update_all_expired_requests';
+$route['check-member/approved-requests/expired/update/(:any)'] = 'autorun_controller/update_member_expired_requests';
 
 //================================================================================================
 // Member Navigation Links Routes
@@ -48,7 +50,6 @@ $route['member/requested-noa/completed'] = 'member/pages_controller/completed_re
 $route['member/personal-charges'] = 'member/pages_controller/unpaid_personal_charges';
 $route['member/personal-charges/paid'] = 'member/pages_controller/paid_personal_charges';
 $route['member/profile'] = 'member/pages_controller/user_profile';
-
 
 // Member User Account Routes
 $route['member/account-settings'] = 'member/account_controller/account_settings';
@@ -110,7 +111,14 @@ $route['healthcare-provider/billing/upload-soa-textfile'] = 'healthcare_provider
 $route['healthcare-provider/billing'] = 'healthcare_provider/billing_controller/billing_search_member';
 $route['healthcare-provider/billing/search-by-healthcard']  = 'healthcare_provider/billing_controller/search_member_by_healthcard';
 $route['healthcare-provider/billing/search-by-name'] = 'healthcare_provider/billing_controller/search_member_by_name';
-$route['healthcare-provider/billing/bill-loa/(:any)'] = 'healthcare_provider/billing_controller/bill_patient_loa';
+$route['healthcare-provider/billing/search']  = 'healthcare_provider/billing_controller/search_member_by_healthcard';
+// $route['healthcare-provider/billing/bill-loa/(:any)'] = 'healthcare_provider/billing_controller/bill_patient_loa';
+// LOA Billing
+$route['healthcare-provider/billing/bill-loa/upload-pdf/(:any)'] = 'healthcare_provider/billing_controller/upload_loa_pdf_bill_form';
+$route['healthcare-provider/billing/bill-loa/upload-pdf/(:any)/submit'] = 'healthcare_provider/billing_controller/submit_loa_pdf_bill';
+$route['healthcare-provider/billing/bill-loa/upload-pdf/(:any)/success'] = 'healthcare_provider/billing_controller/pdf_billing_success';
+$route['healthcare-provider/billing/bill-loa/manual/(:any)'] = 'healthcare_provider/billing_controller/bill_patient_loa';
+
 $route['healthcare-provider/billing/bill-loa/fetch/loa'] = 'healthcare_provider/billing_controller/fetch_loa_to_bill';
 $route['healthcare-provider/billing/bill-loa/diagnostic-test/submit/(:any)'] = 'healthcare_provider/billing_controller/diagnostic_loa_final_billing';
 $route['healthcare-provider/billing/bill-loa/consultation/submit/(:any)'] = 'healthcare_provider/billing_controller/consultation_loa_final_billing';
@@ -119,9 +127,11 @@ $route['healthcare-provider/billing/bill-loa/(:any)/success/(:any)'] = 'healthca
 $route['healthcare-provider/billing/loa/view-receipt/(:any)'] = 'healthcare_provider/billing_controller/view_request_billing';
 $route['healthcare-provider/billing/noa/view-receipt/(:any)'] = 'healthcare_provider/billing_controller/view_request_billing';
 
-
-
-$route['healthcare-provider/billing/bill-noa/request/(:any)']  = 'healthcare_provider/billing_controller/bill_patient_noa';
+// NOA Billing
+$route['healthcare-provider/billing/bill-noa/upload-pdf/(:any)'] = 'healthcare_provider/billing_controller/upload_noa_pdf_bill_form';
+$route['healthcare-provider/billing/bill-noa/upload-pdf/(:any)/submit'] = 'healthcare_provider/billing_controller/submit_noa_pdf_bill';
+$route['healthcare-provider/billing/bill-noa/upload-pdf/(:any)/success'] = 'healthcare_provider/billing_controller/pdf_billing_success';
+$route['healthcare-provider/billing/bill-noa/manual/(:any)']  = 'healthcare_provider/billing_controller/bill_patient_noa';
 $route['healthcare-provider/billing/bill-noa/submit/(:any)'] = 'healthcare_provider/billing_controller/noa_final_billing';
 $route['healthcare-provider/billing/bill-noa/success/(:any)'] = 'healthcare_provider/billing_controller/noa_billing_success';
 
@@ -474,6 +484,7 @@ $route['company-doctor/loa/requests-list/fetch'] = 'company_doctor/loa_controlle
 $route['company-doctor/loa/requests-list/approved/fetch'] = 'company_doctor/loa_controller/fetch_all_approved_loa';
 $route['company-doctor/loa/requests-list/disapproved/fetch'] = 'company_doctor/loa_controller/fetch_all_disapproved_loa';
 $route['company-doctor/loa/requests-list/completed/fetch'] = 'company_doctor/loa_controller/fetch_all_completed_loa';
+$route['company-doctor/loa/requests-list/expired/fetch'] = 'company_doctor/loa_controller/fetch_all_expired_loa';
 $route['company-doctor/loa/requests-list/view/(:any)'] = 'company_doctor/loa_controller/get_loa_info';
 // $route['company-doctor/loa/requests-list/approve/(:any)'] = 'company_doctor/loa_controller/approve_loa_request';
 $route['company-doctor/loa/requests-list/approve-request'] = 'company_doctor/loa_controller/approve_loa_request';

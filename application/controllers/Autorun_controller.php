@@ -8,6 +8,16 @@ class Autorun_controller extends CI_Controller {
 		$this->load->model('autorun_model');
 	}
 
+	function update_all_expired_requests(){
+		$this->update_all_expired_loa();
+		$this->update_all_expired_noa();
+	}
+
+	function update_member_expired_requests(){
+		$this->update_member_expired_loa();
+		$this->update_member_expired_noa();
+	}
+
 	function update_all_expired_loa(){
 		$this->security->get_csrf_hash();
 		$rows = $this->autorun_model->get_all_approved_loa();
@@ -21,6 +31,24 @@ class Autorun_controller extends CI_Controller {
 
 				if($date_result == 'Expired'){
 					$this->autorun_model->update_loa_expired($row['loa_id']);
+				}
+			}
+		}
+	} 
+
+	function update_all_expired_noa(){
+		$this->security->get_csrf_hash();
+		$rows = $this->autorun_model->get_all_approved_noa();
+		if(!empty($rows)){
+			foreach ($rows as $row) {
+				$date_result = '';
+				// call another function to determined if expired or not
+				if(!empty($row['expiration_date'])){
+					$date_result = $this->checkExpiration($row['expiration_date']);
+				}
+
+				if($date_result == 'Expired'){
+					$this->autorun_model->update_noa_expired($row['noa_id']);
 				}
 			}
 		}
@@ -45,6 +73,25 @@ class Autorun_controller extends CI_Controller {
 			}
 		}
 	
+	} 
+
+	function update_member_expired_noa(){
+		$this->security->get_csrf_hash();
+		$emp_id = $this->uri->segment(5);
+		$rows = $this->autorun_model->get_member_approved_noa($emp_id);
+		if(!empty($rows)){
+			foreach ($rows as $row) {
+				$date_result = '';
+				// call another function to determined if expired or not
+				if(!empty($row['expiration_date'])){
+					$date_result = $this->checkExpiration($row['expiration_date']);
+				}
+
+				if($date_result == 'Expired'){
+					$this->autorun_model->update_noa_expired($row['noa_id']);
+				}
+			}
+		}
 	} 
 
 	function checkExpiration($expiry_date){

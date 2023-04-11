@@ -220,7 +220,7 @@
                   <div class="col-sm-12 mb-4">
                     <label class="colored-label mb-1"><i class="mdi mdi-asterisk text-danger"></i> RX/Request from Accredited Doctor</label>
                     <div id="rx-file-wrapper">
-                      <input type="file" class="dropify" name="rx-file" id="rx-file" data-height="300" data-max-file-size="3M" accept=".jpg, .jpeg, .png">
+                      <input type="file" class="dropify" name="rx-file" id="rx-file" data-height="300" data-max-file-size="5M" accept=".jpg, .jpeg, .png">
                     </div>
                     <em id="rx-file-error" class="text-danger"></em>
                   </div>

@@ -24,7 +24,7 @@
 
           <!-- Go Back to Previous Page -->
           <div class="col-12 mb-4 mt-0">
-              <form method="POST" action="<?php echo base_url(); ?>healthcare-provider/billing/search-by-healthcard" id="search-form-1" class="needs-validation" novalidate>
+              <form method="POST" action="<?php echo base_url(); ?>healthcare-provider/billing/search">
                   <div class="input-group">
                       <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
                       <input type="hidden" name="healthcard_no" value="<?= $bill['health_card_no'] ?>">
@@ -108,6 +108,7 @@
                                 </td>
                               </tr>
                             <?php endforeach; ?>
+                            <?php if($bill['total_services'] > 0): ?>
                               <tr>
                                 <td></td>
                                 <td></td>
@@ -119,6 +120,7 @@
                                   </span>
                                 </td>
                               </tr>
+                            <?php endif; ?>
                           </tbody>
                         </table>
                       <?php 
@@ -315,21 +317,28 @@
                           <td class="text-center">
                             <span class="text-secondary me-2">Total Bill:</span>
                             <span class="text-info fw-bold fs-4 ls-1">
-                              <?= '&#8369;'.number_format($bill['total_bill'], 2) ?>
+                              <!-- Ternary Operator to check if a variable is empty or not -->
+                              <?= 
+                                $bill['total_bill'] ? '&#8369;'.number_format($bill['total_bill'], 2) : '&#8369;'.'0.00';
+                              ?>
                             </span>
                           </td>
 
                           <td class="text-center">
                             <span class="text-secondary me-2">Total Deduction:</span>
                             <span class="text-info fw-bold fs-4 ls-1">
-                              <?= '&#8369;'.number_format($bill['total_deduction'], 2) ?>
+                              <?=
+                                $bill['total_deduction'] ? '&#8369;'.number_format($bill['total_deduction'], 2) : '&#8369;'.'0.00'; 
+                              ?>
                             </span>
                           </td>
 
                           <td class="text-center">
                             <span class="text-secondary me-2">Net Bill:</span>
                             <span class="text-info fw-bold fs-4 ls-1">
-                              <?= '&#8369;'.number_format($bill['net_bill'], 2) ?>
+                              <?= 
+                                $bill['net_bill'] ? '&#8369;'.number_format($bill['net_bill'], 2) : '&#8369;'.'0.00';
+                              ?>
                             </span>
                           </td>
                         </tr>

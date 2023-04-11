@@ -24,7 +24,7 @@
 
             <!-- Go Back to Previous Page -->
             <div class="col-12 mb-4 mt-0">
-                <form method="POST" action="<?php echo base_url(); ?>healthcare-provider/billing/search-by-healthcard" id="search-form-1" class="needs-validation" novalidate>
+                <form method="POST" action="<?php echo base_url(); ?>healthcare-provider/billing/search">
                     <div class="input-group">
                         <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
                         <input type="hidden" name="healthcard_no" value="<?= $healthcard_no ?>">
@@ -814,7 +814,7 @@
     
                                     setTimeout(function () {
                                         window.location.href = `${baseUrl}healthcare-provider/billing/bill-loa/diagnostic-test/success/${billing_id}`;
-                                    }, 500);
+                                    }, 300);
 
                                 } else if(status == 'error') {
 

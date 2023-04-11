@@ -148,7 +148,7 @@
             switch(user_role){
                 case 'member':
                     $.ajax({
-                        url: `${baseUrl}check-member/approved-loa/expired/update/${emp_id}`,
+                        url: `${baseUrl}check-member/approved-requests/expired/update/${emp_id}`,
                         method: "GET",
                         success: function(res) {
                             setTimeout(function () {
@@ -164,7 +164,7 @@
                     break;
                 default:
                     $.ajax({
-                        url: `${baseUrl}check-all/approved-loa/expired/update`,
+                        url: `${baseUrl}check-all/approved-requests/expired/update`,
                         method: "GET",
                         success: function(res) {
                             setTimeout(function () {

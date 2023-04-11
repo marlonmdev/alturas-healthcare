@@ -27,16 +27,16 @@
                 <div class="card-body shadow">
                     <div class="col-lg-6 pb-4 ps-3" id="file-form">
                         <label class="fw-bold pt-3 pb-3 fs-5 ls-1"><i class="mdi mdi-asterisk text-danger ms-1"></i> Upload SOA Textfile : </label>
-                        <input class="form-control fs-5" type="file" name="textfile" id="textfile" accept=".csv, .txt">
-                        <em class="text-danger">Allowed file format (.txt & .csv)</em>
+                        <input class="form-control fs-5 mb-2" type="file" name="textfile" id="textfile" accept=".csv, .txt">
+                        <em class="text-info fw-bold ls-1">Allowed file format (.txt | .csv)</em>
                     </div>
 
                     <div class="row mt-4">
                         <div class="col-md-6 offset-3">
-                            <button type="submit" class="btn btn-cyan text-white btn-lg ls-2 me-2" id="upload-btn">
-                                <i class="mdi mdi-file-check me-1"></i>Upload
+                            <button type="submit" class="btn btn-success text-white btn-lg ls-2 me-2" id="upload-btn">
+                                <i class="mdi mdi-upload me-1"></i>UPLOAD
                             </button>
-                            <button type="button" class="btn btn-secondary text-white btn-lg ls-2" id="clear-btn">Clear</button>
+                            <button type="button" class="btn btn-dark text-white btn-lg ls-2" id="clear-btn">CLEAR</button>
                         </div>
                     </div>
                 </div>

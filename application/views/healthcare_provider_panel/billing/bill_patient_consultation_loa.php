@@ -24,7 +24,7 @@
 
             <!-- Go Back to Previous Page -->
             <div class="col-12 mb-4 mt-0">
-                <form method="POST" action="<?php echo base_url(); ?>healthcare-provider/billing/search-by-healthcard" id="search-form-1" class="needs-validation" novalidate>
+                <form method="POST" action="<?php echo base_url(); ?>healthcare-provider/billing/search">
                     <div class="input-group">
                         <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
                         <input type="hidden" name="healthcard_no" value="<?= $healthcard_no ?>">
@@ -93,6 +93,10 @@
                         <input type="hidden" name="emp-id" value="<?= $member['emp_id'] ?>">
                         <input type="hidden" name="remaining-balance" value="<?= $remaining_balance ?>">
                         <input type="hidden" name="work-related" value="<?= $work_related ?>">
+                        <input type="hidden" name="total-services" value="0" min="0" id="total-services">
+                        <input type="hidden" name="total-medications" value="0" min="0" id="total-medications">
+                        <input type="hidden" name="total-profees" value="0" min="0" id="total-profees">
+                        <input type="hidden" name="total-roomboard" value="0" min="0" id="total-roomboard">   
                         <input type="hidden" name="deduction-count" value="0" min="0" id="deduction-count">
                         
                         <div class="row">
@@ -565,7 +569,7 @@
                                     
                                     setTimeout(function () {
                                         window.location.href = `${baseUrl}healthcare-provider/billing/bill-loa/consultation/success/${billing_id}`;
-                                    }, 500);
+                                    }, 300);
 
                                 } else if(status == 'error') {
 

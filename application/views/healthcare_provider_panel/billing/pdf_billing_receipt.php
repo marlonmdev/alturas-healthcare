@@ -141,7 +141,7 @@
   };
 
   const viewAttachPDF = () => {
-    let pdfViewer = document.getElementById('pdf-viewer');
+    let pdfViewer = document.querySelector('#pdf-viewer');
     let pdfFile = `${baseUrl}uploads/pdf_bills/<?php echo $bill['pdf_bill']; ?>`;
     let fileExists = checkFileExists(pdfFile);
 

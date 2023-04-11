@@ -198,6 +198,10 @@ class Billing_model extends CI_Model {
         return $this->db->insert_batch('billing_deductions', $deductions);
     }
 
+    function insert_room_board($room) {
+        return $this->db->insert('billing_room_boards', $room);
+    }
+
     function insert_personal_charge($charge) {
         return $this->db->insert('personal_charges', $charge);
     }

@@ -587,11 +587,14 @@ class Billing_controller extends CI_Controller {
     }
 
     function insert_room_board($posted_data){
+        $data_array = explode(',', $posted_data['room-board']); // Explode the string to create an array
+        $room_id = array_shift($data_array); // Get the first index value
+
         $room = [
-            'room_type'         => $posted_data['room-board'],
-            'room_rate'        => $posted_data['room-rate'],
-            'billing_no'        => $posted_data['billing-no'],
-            'added_on'          => date('Y-m-d')
+            'room_id'        => $room_id,
+            'room_rate'      => $posted_data['room-rate'],
+            'billing_no'     => $posted_data['billing-no'],
+            'added_on'       => date('Y-m-d')
         ];
 
         $this->billing_model->insert_room_board($room);

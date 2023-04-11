@@ -519,8 +519,6 @@
         // total bill calculation
         total_bill = (total_services + total_medications + total_room_payment + total_pro_fees) * 1;
 
-        total_input.value = total_bill.toFixed(2);
-
         enableButtonsandDeductions(total_bill);
 
         philhealth_deduction = deduct_philhealth.value > 0 ? deduct_philhealth.value : 0;
@@ -551,9 +549,19 @@
             // }
         }
 
+        total_input.value = total_bill.toFixed(2);
+
         deduction_input.value = parseFloat(total_deduction).toFixed(2);
 
         net_input.value = parseFloat(net_bill).toFixed(2);
+
+        total_services_input.value = parseFloat(total_services).toFixed(2);
+
+        total_meds_input.value = parseFloat(total_medications).toFixed(2);
+
+        total_profees_input.value = parseFloat(total_pro_fees).toFixed(2);
+
+        total_roomboard_input.value = parseFloat(total_room_payment).toFixed(2);
 
         // company_charge.value = company_charge_amount > 0 ? parseFloat(company_charge_amount).toFixed(2) : 0;
 

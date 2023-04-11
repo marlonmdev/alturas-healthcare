@@ -165,8 +165,11 @@ class Billing_model extends CI_Model {
     }
 
     function get_billing_room_boards($billing_no){
-        $query = $this->db->get_where('billing_room_boards', ['billing_no' => $billing_no]);
-        return $query->result_array();
+        $this->db->select('*, SUM(tbl_1.room_rate) AS total_rb')
+                 ->from('billing_room_boards as tbl_1')
+                 ->join('room_types as tbl_2', 'tbl_1.room_id = tbl_2.room_id')
+                 ->where('tbl_1.billing_no', $billing_no);
+        return $this->db->get()->result_array();
     }
 
     function get_billing_deductions($billing_no){

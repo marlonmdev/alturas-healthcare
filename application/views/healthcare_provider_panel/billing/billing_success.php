@@ -223,7 +223,7 @@
                             <?php foreach($roomboards as $roomboard): ?>
                               <tr>
                                 <td class="text-center ls-1"><?= $roomboard['room_type'] ?></td>
-                                <td class="text-center ls-1">&#8369;<?= number_format($roomboard['room_price'], 2) ?></td>
+                                <td class="text-center ls-1">&#8369;<?= number_format($roomboard['room_rate'], 2) ?></td>
                               </tr>
                             <?php endforeach; ?>
                               <tr>

@@ -22,7 +22,15 @@
   <!-- End Bread crumb and right sidebar toggle -->
   <!-- Start of Container fluid  -->
   <div class="container-fluid">
-   
+    <div class="col-12 mb-4 mt-0">
+            <div class="input-group">
+                <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed" type="submit" class="btn btn-outline-dark" data-bs-toggle="tooltip" title="Click to Go Back">
+                    <strong class="ls-2" style="vertical-align:middle">
+                        <i class="mdi mdi-arrow-left-bold"></i> Go Back
+                    </strong>
+                </a>
+            </div>
+    </div>
     <div class="row">
 
       <div class="col-lg-12">
@@ -105,14 +113,11 @@
 
               <?php endforeach; ?>
 
-              <div class="row mt-2 offset-9">
+              <div class="row mt-2 offset-10">
                 <div class="col-sm-12 mb-2 d-flex justify-content-start">
                   <button type="submit" class="btn btn-primary me-2">
                     <i class="mdi mdi-content-save-settings"></i> SUBMIT
                   </button>
-                  <a href="#" onclick="window.history.back()" class="btn btn-danger">
-                    <i class="mdi mdi-arrow-left-bold"></i> GO BACK
-                  </a>
                 </div>
               </div>
             </form>
@@ -167,7 +172,7 @@
                 type: 'success'
               });
               setTimeout(function() {
-                window.location.href = `${baseUrl}healthcare-coordinator/loa/requests-list/completed`;
+                window.location.href = `${baseUrl}healthcare-coordinator/loa/requests-list/rescheduled`;
               }, 3200);
               break;
           }

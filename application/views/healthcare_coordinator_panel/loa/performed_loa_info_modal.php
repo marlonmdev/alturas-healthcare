@@ -15,7 +15,6 @@
                                 <th class="fw-bold">Status</th>
                                 <th class="fw-bold">Date & Time Performed</th>
                                 <th class="fw-bold">Physician</th>
-                                <th class="fw-bold">Reschedule on</th>
                                 <th class="fw-bold">Reason for Cancellation</th>
                             </tr>
                         </thead>    

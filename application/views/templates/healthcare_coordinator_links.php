@@ -33,7 +33,7 @@
                 </a>
               </li>
 
-              <li class="sidebar-item 
+              <!-- <li class="sidebar-item 
               <?php echo $this->uri->segment(2) == 'loa' ? 'selected' : ''; ?>
               ">
                 <a
@@ -44,10 +44,10 @@
                   <i class="mdi mdi-file-document"></i>
                   <span class="hide-menu ls-1">LOA</span>
                 </a>
-              </li>
+              </li> -->
 
-              <!-- <li class="sidebar-item
-              < echo $this->uri->segment(2) == 'loa' ? 'selected' : ''; ?>
+              <li class="sidebar-item
+              <?php echo $this->uri->segment(2) == 'loa' ? 'selected' : ''; ?>
               ">
                 <a
                   class="sidebar-link has-arrow"
@@ -59,19 +59,19 @@
                 </a>
                 <ul aria-expanded="false" class="collapse first-level">
                   <li class="sidebar-item">
-                    <a href="< echo base_url(); ?>healthcare-coordinator/loa/requests-list" class="sidebar-link"
+                    <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list" class="sidebar-link"
                       ><i class="mdi mdi-file-document-box"></i
                       ><span class="hide-menu ls-1">LOA Request List</span>
                     </a>
                   </li>
                   <li class="sidebar-item">
-                    <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/cancellation-requests" class="sidebar-link"
+                    <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/loa-charging" class="sidebar-link"
                       ><i class="mdi mdi-note-outline"></i
-                      ><span class="hide-menu ls-1">Cancellation Requests</span>
+                      ><span class="hide-menu ls-1">LOA Charging</span>
                     </a>
                   </li>
                 </ul>
-              </li> -->
+              </li>
 
               <li class="sidebar-item 
               <?php echo $this->uri->segment(2) == 'noa' ? 'selected' : ''; ?>

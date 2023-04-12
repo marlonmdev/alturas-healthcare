@@ -10,7 +10,7 @@
               <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
               <li class="breadcrumb-item active" aria-current="page">
-                  Completed LOA
+                  Billed LOA
               </li>
               </ol>
           </nav>
@@ -25,66 +25,12 @@
       <div class="col-lg-12">
         <ul class="nav nav-tabs mb-4" role="tablist">
           <li class="nav-item">
-              <a
-              class="nav-link"
-              href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Pending</span></a
-              >
-          </li>
-          <li class="nav-item">
-              <a
-              class="nav-link"
-              href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Approved</span></a
-              >
-          </li>
-          <li class="nav-item">
-              <a
-              class="nav-link"
-              href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/disapproved"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
-              >
-          </li>
-          <li class="nav-item">
-              <a
+            <a
               class="nav-link active"
-              href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed"
+              href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/billed"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
-              >
-          </li>
-          <li class="nav-item">
-              <a
-              class="nav-link"
-              href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/rescheduled"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Rescheduled</span></a
-              >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link"
-              href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/expired"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Expired</span></a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link"
-              href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/cancelled"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Cancelled</span></a
+              <span class="hidden-xs-down fs-5 font-bold">Billed</span></a
             >
           </li>
         </ul>
@@ -131,7 +77,6 @@
         <?php include 'view_completed_loa_details.php'; ?>
 
       </div>
-      <?php include 'managers_key_modal.php'; ?>
       <!-- End Row  -->  
       </div>
       <?php include 'performed_loa_info_modal.php'; ?>
@@ -152,9 +97,9 @@
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
 
-      // Load data for the table's content from an Ajax source
+      // Load data for the table's content from an Ajax source  
       ajax: {
-        url: `${baseUrl}healthcare-coordinator/loa/requests-list/completed/fetch`,
+        url: `${baseUrl}healthcare-coordinator/loa/requests-list/billed/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: function(data) {
@@ -176,63 +121,8 @@
       completedTable.draw();
     });
 
-    $('#managersKeyForm').submit(function(event){
-      event.preventDefault();
-      $.ajax({
-        type: "post",
-        url: `${baseUrl}healthcare-coordinator/reschedule/managers-key/check`,
-        data: $(this).serialize(),
-        dataType: "json",
-        success: function (res) {
-            const { status, message, mgr_username_error, mgr_password_error, loa_id } = res;
-
-            if (status == "error") {
-              if (mgr_username_error !== '') {
-                $('#mgr-username-error').html(mgr_username_error);
-                $('#mgr-username').addClass('is-invalid');
-              } else {
-                $('#mgr-username-error').html('');
-                $('#mgr-username').removeClass('is-invalid');
-              }
-
-              if (mgr_password_error !== '') {
-                $('#mgr-password-error').html(mgr_password_error);
-                $('#mgr-password').addClass('is-invalid');
-              } else {
-                $('#mgr-password-error').html('');
-                $('#mgr-password').removeClass('is-invalid');
-              }
-
-              if (message !== '') {
-                $('#msg-error').html(message);
-                $('#mgr-username').addClass('is-invalid');
-                $('#mgr-password').addClass('is-invalid');
-              } else {
-                $('#msg-error').html('');
-                $('#mgr-username').removeClass('is-invalid');
-                $('#mgr-password').removeClass('is-invalid');
-              }
-
-            } else {
-              $('#managersKeyModal').modal('hide');
-              window.location.href = `${baseUrl}healthcare-coordinator/loa/requested-loa/create_new_loa/${loa_id}`;
-            }
-        },
-      });
-    });
 
   });
-  
-  const showManagersKeyModal = (loa_id) => {
-    $('#managersKeyModal').modal('show');
-    $('#managersKeyForm')[0].reset();
-    $('#mgr-username').removeClass('is-invalid');
-    $('#mgr-password').removeClass('is-invalid');
-    $('#mgr-username-error').html('');
-    $('#mgr-password-error').html('');
-    $('#msg-error').html('');
-    $('#expired-loa-id').val(loa_id);
-  }
 
   function viewImage(path) {
     let item = [{
@@ -404,8 +294,4 @@
 
     });
   }
-
-
- 
-
 </script>

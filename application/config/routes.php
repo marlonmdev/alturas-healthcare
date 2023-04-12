@@ -313,6 +313,7 @@ $route['healthcare-coordinator/loa/cancellation-requests'] = 'healthcare_coordin
 $route['healthcare-coordinator/loa/cancellation-requests/approved'] = 'healthcare_coordinator/pages_controller/view_loa_approved_cancellation';
 $route['healthcare-coordinator/loa/cancellation-requests/disapproved'] = 'healthcare_coordinator/pages_controller/view_loa_disapproved_cancellation';
 $route['healthcare-coordinator/loa/requests-list/rescheduled'] = 'healthcare_coordinator/pages_controller/view_all_rescheduled_loa';
+$route['healthcare-coordinator/loa/requests-list/billed'] = 'healthcare_coordinator/pages_controller/view_all_billed_loa';
 $route['healthcare-coordinator/noa/requests-list'] = 'healthcare_coordinator/pages_controller/view_pending_noa_list';
 $route['healthcare-coordinator/noa/requests-list/approved'] = 'healthcare_coordinator/pages_controller/view_approved_noa_list';
 $route['healthcare-coordinator/noa/requests-list/disapproved'] = 'healthcare_coordinator/pages_controller/view_disapproved_noa_list';
@@ -398,7 +399,7 @@ $route['healthcare-coordinator/loa/requested-loa/submit'] = 'healthcare_coordina
 $route['healthcare-coordinator/loa/rescheduled-loa/update-loa/(:any)'] = 'healthcare_coordinator/loa_controller/tag_resched_to_complete';
 $route['healthcare-coordinator/loa/performed-loa-info/submit'] = 'healthcare_coordinator/loa_controller/submit_added_loa_fees';
 $route['healthcare-coordinator/loa/requested-loa/match_with_billing/(:any)'] = 'healthcare_coordinator/loa_controller/match_loa_with_billing';
-
+$route['healthcare-coordinator/loa/requests-list/billed/fetch'] = 'healthcare_coordinator/loa_controller/fetch_billed_loa';
 
 // HealthCare Coordinator NOA Routes
 $route['healthcare-coordinator/noa/requests-list/fetch'] = 'healthcare_coordinator/noa_controller/fetch_all_pending_noa';
@@ -449,6 +450,7 @@ $route['healthcare-coordinator/setup/room-types/delete/(:any)'] = 'healthcare_co
 
 // managers key
 $route['healthcare-coordinator/managers-key/check'] = 'healthcare_coordinator/account_controller/check_manager_username';
+$route['healthcare-coordinator/reschedule/managers-key/check'] = 'healthcare_coordinator/account_controller/check_manager_key';
 // End of HealthCare Coordinator Routes
 //========================================================================================================
 

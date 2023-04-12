@@ -525,6 +525,12 @@ function db_get_cost_types_by_hp_ID($hp_id) {
     return $this->db->get()->row_array();
   }
 
+  function set_older_loa_rescheduled($loa_id) {
+    $this->db->set('rescheduled', '1')
+            ->where('loa_id' , $loa_id);
+    return $this->db->update('loa_requests');
+  }
+
   function insert_added_loa_fees($post_data) {
     return $this->db->insert('hr_added_loa_fees', $post_data);
   }
@@ -563,9 +569,22 @@ function db_get_cost_types_by_hp_ID($hp_id) {
   }
 
   function get_added_deductions($loa_id) {
-    
+    return $this->db->get_where('hr_added_deductions', ['loa_id' => $loa_id])->result_array();
   }
 
+  function get_hc_provider_billing($loa_id) {
+    $this->db->select('*')
+            ->from('billing')
+            ->where('loa_id', $loa_id);
+    return $this->db->get()->row_array();
+  }
+
+  function check_if_done_created_new_loa($loa_id) {
+    $this->db->select('rescheduled')
+        ->from('loa_requests')
+        ->where('loa_id', $loa_id);
+    return $this->db->get()->row_array();
+  }
 
 
 }

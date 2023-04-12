@@ -1,5 +1,5 @@
 <div class="page-wrapper">
-  <div class="page-breadcrumb">
+<div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
         <h4 class="page-title ls-2">Letter of Authorization</h4>
@@ -7,12 +7,15 @@
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
-              <li class="breadcrumb-item active" aria-current="page">Cancelled LOA</li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Cancelled LOA
+              </li>
             </ol>
           </nav>
         </div>
-        </div>
+      </div>
     </div>
+  </div>
     <!-- End Bread crumb and right sidebar toggle -->
     <!-- Start of Container fluid  -->
     <div class="container-fluid">
@@ -81,7 +84,7 @@
                         ><span class="hidden-sm-up"></span>
                         <span class="hidden-xs-down fs-5 font-bold">Cancelled</span></a
                         >
-                    </li> 
+                    </li>
                 </ul>
 
                 <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">

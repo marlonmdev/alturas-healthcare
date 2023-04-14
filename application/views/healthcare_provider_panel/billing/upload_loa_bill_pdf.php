@@ -136,7 +136,7 @@
                 pdfObject += "</object>";
                 pdfPreview.innerHTML = pdfObject;
             }
-            reader.readAsDataURL(pdfFile);
+            reader.readAsDataURL(pdfFile);ssssssssss
         } else {
             pdfPreview.innerHTML = "Please select a PDF file.";
         }

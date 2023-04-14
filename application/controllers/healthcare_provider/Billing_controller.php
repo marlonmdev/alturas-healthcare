@@ -670,9 +670,11 @@ class Billing_controller extends CI_Controller {
     function upload_loa_pdf_bill_form() {
         $loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
         $loa = $this->billing_model->get_loa_to_bill($loa_id);
+        $mbl = $this->billing_model->get_member_mbl($loa['emp_id']);
         $data['loa_id'] = $this->uri->segment(5);
         $data['loa_no'] = $loa['loa_no'];
         $data['healthcard_no'] = $loa['health_card_no'];
+        $data['remaining_balance'] = $mbl['remaining_balance'];
         $data['patient_name'] = $loa['first_name'].' '. $loa['middle_name'].' '. $loa['last_name'].' '.$loa['suffix'];
         $data['billing_no'] = 'BLN-' . strtotime(date('Y-m-d h:i:s'));
 		$data['user_role'] = $this->session->userdata('user_role');
@@ -835,6 +837,7 @@ class Billing_controller extends CI_Controller {
             $fname      = $_FILES['textfile']['name'];
             $ext        = explode(".",$fname); 
             $ext        = $ext[1];
+            
 
             if($ext == "csv"){ 
                 $delimeter = ",";

@@ -23,11 +23,12 @@
           <form method="POST" action="<?php echo base_url(); ?>healthcare-provider/search-member/healthcard" id="search-form-1" class="needs-validation" novalidate>
             <div class="input-group">
               <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
-              <input type="text" class="form-control" name="healthcard_no" placeholder="Search Healthcard Number"  aria-describedby="btn-search" required>
+              <input type="text" class="form-control" id="healthcard-no" name="healthcard_no" placeholder="Search Healthcard Number"  aria-describedby="btn-search" required>
               <button type="submit" class="btn btn-info" id="btn-search"><i class="mdi mdi-magnify me-1"></i>Search</button>
             </div>
           </form>
         </div>
+                                      
 
         <div class="col-sm-12 col-md-10 offset-md-1 text-center mb-5 d-none" id="search-by-name">
           <form method="POST" action="<?php echo base_url(); ?>healthcare-provider/search-member/name" id="search-form-2" class="needs-validation" novalidate>

@@ -600,7 +600,6 @@
         calculateDiagnosticTestBilling(remaining_balance);
     }
 
-
     /**
     * It adds a row of inputs to the form
     */
@@ -672,13 +671,12 @@
         calculateDiagnosticTestBilling(remaining_balance);
     }
 
-
-     /**
+    /**
     * It adds a row of inputs to the form
     */
     let prof_count = 0; // declaring the count variable outside the function will persist its value even after the function is called, allowing it to increment by one each time the function is called.
 
-     // this is for Diagnostic Test LOA Requests
+    // this is for Diagnostic Test LOA Requests
     const addProfessionalFee  = (remaining_balance) => {
         const container = document.querySelector('#dynamic-profee');
         const profee_count = document.querySelector('#profee-count');
@@ -707,7 +705,7 @@
                                 </div>
                           </div>`;
             
-           /* Adding a remove button to the html code. */
+            /* Adding a remove button to the html code. */
             html_code += `<div class="col-md-2">
                             <button type="button" data-id="${prof_count}" class="btn btn-danger btn-md btn-remove" onclick="removeProFee(this, ${remaining_balance})" data-bs-toggle="tooltip" title="Click to remove Professional Fee">
                                 <i class="mdi mdi-close"></i>

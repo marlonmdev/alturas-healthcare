@@ -156,9 +156,21 @@
                     const { token, status, message, billing_id } = response;
 
                     if(status == 'success'){
+                        swal({
+                            title: 'Success',
+                            text: message,
+                            timer: 3000,
+                            showConfirmButton: false,
+                            type: 'success'
+                        });
+                        
                         setTimeout(function() {
-                            window.location.href = `${baseUrl}healthcare-provider/billing/bill-noa/upload-pdf/${billing_id}/success`;
-                        }, 300);
+                            window.location.href = `${baseUrl}healthcare-provider/noa-requests/billed`;
+                        }, 3000);
+
+                        // setTimeout(function() {
+                        //     window.location.href = `${baseUrl}healthcare-provider/billing/bill-noa/upload-pdf/${billing_id}/success`;
+                        // }, 300);
                     }else{
                         swal({
                             title: 'Failed',

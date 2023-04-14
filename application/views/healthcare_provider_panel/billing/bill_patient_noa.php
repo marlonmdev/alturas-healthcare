@@ -478,7 +478,6 @@
             room_rate.setAttribute('readonly', true);
             calculateNoaBilling(remaining_balance);
         }
-
     }
 
     const calculateNoaBilling = (remaining_balance) => {
@@ -528,7 +527,7 @@
         // total deduction calculation
         total_deduction = parseFloat(philhealth_deduction) + parseFloat(other_deduction);
 
-       /* Calculating the net bill, personal charge amount and company charge amount. */
+        /* Calculating the net bill, personal charge amount and company charge amount. */
         if(total_deduction > 0){
             net_bill = total_bill - total_deduction;
             // if(work_related.value === 'Yes' || work_related.value === 'yes'){
@@ -602,7 +601,6 @@
     /* Adding an event listener to all the number inputs on the page. When the user inputs a value, the
     code checks if the value is a number and if it is greater than 0. If it is not, the value is set
     to an empty string. */
-    
 
     const validateNumberInputs = () => {
         const number_inputs = document.querySelectorAll("input[type='number']");
@@ -682,7 +680,7 @@
     }
 
 
-     let deduct_count = 0;
+    let deduct_count = 0;
     /**
     * It adds a row of inputs to the form
     */
@@ -726,7 +724,8 @@
         // // $('#dynamic-deduction').append(html_code); => this is a jquery syntax, below is vanilla js way. You can either use this one or the one below
         document.querySelector("#dynamic-deduction").insertAdjacentHTML("beforeend", html_code);
     }
-      /**
+    
+    /**
     * It removes a row and then calls a function to recalculate the total.
     */
     const removeDeduction = (remove_btn, remaining_balance) => {
@@ -741,8 +740,7 @@
         calculateNoaBilling(remaining_balance);
     }
 
-
-        /**
+    /**
     * It adds a row of inputs to the form
     */
     let med_count = 0; // declaring the count variable outside the function will persist its value even after the function is called, allowing it to increment by one each time the function is called.
@@ -756,7 +754,7 @@
 
         let html_code  = `<div class="row my-3 row-medication" id="row${med_count}">`;
 
-           /* Creating a new input field with the name deduction_name[] */
+            /* Creating a new input field with the name deduction_name[] */
             html_code += `<div class="col-md-5">
                             <input type="text" name="medication-name[]" class="form-control fw-bold ls-1" placeholder="*Enter Medication Name" required/>
                             <div class="invalid-feedback">
@@ -874,7 +872,6 @@
         document.querySelector(`#row${btn_id}`).remove();
         calculateNoaBilling(remaining_balance);
     }
-
 
     const enableButtonsandDeductions = (total_bill) =>{
         const input_philhealth = document.querySelector('#deduct-philhealth');

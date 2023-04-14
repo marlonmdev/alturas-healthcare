@@ -165,7 +165,7 @@ class Billing_model extends CI_Model {
     }
 
     function get_billing_room_boards($billing_no){
-        $this->db->select('*, SUM(tbl_1.room_rate) AS total_rb')
+        $this->db->select('*')
                  ->from('billing_room_boards as tbl_1')
                  ->join('room_types as tbl_2', 'tbl_1.room_id = tbl_2.room_id')
                  ->where('tbl_1.billing_no', $billing_no);

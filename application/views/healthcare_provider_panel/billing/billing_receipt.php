@@ -366,7 +366,7 @@
                   </div>
                 </div>
 
-                 <div class="container mt-4 mb-4">
+                <div class="container mt-4 mb-4">
                   <div class="row">
                     <div class="col-12 d-flex justify-content-end align-items-end">
                       <button class="btn btn-outline-info btn-lg ls-1 me-3" onclick="saveAsImage()">

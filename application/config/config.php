@@ -27,12 +27,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 $config['base_url'] = 'http://' . $_SERVER['HTTP_HOST'] . '/alturas_healthcare/';
 
-// default super admin user account
+// default super-admin user account
 $config['def_admin_userrole'] = 'super-admin';
 $config['def_admin_username'] = 'itsysdev';
 $config['def_admin_password'] = 'itsysdev2022';
 
-// default health care coordinator user account
+// default health-care coordinator user account
 $config['def_hcc_userrole'] = 'healthcare-coordinator';
 $config['def_hcc_username'] = 'ahchrd';
 $config['def_hcc_password'] = 'ahchrd2022';

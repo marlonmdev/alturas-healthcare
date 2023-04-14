@@ -16,6 +16,9 @@
     <script src="<?php echo base_url(); ?>assets/vendors/tagify/tagify.js"></script>
     <script src="<?php echo base_url(); ?>assets/vendors/tagify/tagify.polyfills.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/vendors/flatpickr/flatpickr.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/vendors/quaggaJS/dist/quagga.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/vendors/pdfjs/build/pdf.js"></script>
+    <script src="<?php echo base_url(); ?>assets/vendors/pdfjs/build/pdf.worker.js"></script>
 
     <!-- Custom Scripts -->
     <script src="<?php echo base_url(); ?>assets/js/plugins.js"></script>

@@ -60,10 +60,10 @@
                         </div>
 
                         <div class="row pt-2">
-                            <!-- <div class="col-md-2 my-1">
+                            <div class="col-md-2 my-1">
                                 <label class="form-label ls-1">Work-Related</label>
                                 <input type="text" class="form-control text-danger fw-bold ls-1" id="work-related" name="work-related" value="<?= $work_related ?>" readonly>
-                            </div> -->
+                            </div>
 
                             <div class="col-md-6 my-1">
                                 <label class="form-label ls-1">Healthcare Provider</label>
@@ -185,7 +185,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-4">
-                                        <select name="room-board" id="room-board" class="form-select fw-bold ls-1" onchange="updateRoomPrice(`<?= $remaining_balance ?>`)" required>
+                                        <select name="room_board" id="room-board" class="form-select fw-bold ls-1" onchange="updateRoomPrice(`<?= $remaining_balance ?>`)" required>
                                             <option value="" selected>Select Room and Board...</option>
                                             <?php
                                                 if (!empty($rooms)):
@@ -205,7 +205,7 @@
                                     <div class="col-lg-4">
                                         <div class="input-group mb-3">
                                             <span class="input-group-text bg-dark text-white">&#8369;</span>
-                                            <input type="text" class="price-inputs form-control fw-bold ls-1" id="room-rate" name="room-rate" placeholder="*Room Price" oninput="calculateNoaBilling(`<?= $remaining_balance ?>`)" readonly required>
+                                            <input type="text" class="price-inputs form-control fw-bold ls-1" id="room-price" name="room_price" placeholder="*Room Price" oninput="calculateNoaBilling(`<?= $remaining_balance ?>`)" readonly required>
                                             <span class="text-danger fw-bold room-board-msg ms-3" style="font-size:12px"></span>
                                         </div>
                                     </div>                                   
@@ -251,14 +251,14 @@
                                     </div>
                                 </div>
 
-                                <!-- <div class="col-md-3">
+                                <div class="col-md-3">
                                     <label class="form-label ls-1">SSS</label> <span class="text-muted">(Optional)</span>
                                     <div class="input-group mb-3">
                                         <span class="input-group-text bg-success text-white">&#8369;</span>
                                         <input type="number" class="input-deduction form-control fw-bold" id="deduct-sss" name="sss-deduction" placeholder="Enter Amount" oninput="calculateNoaBilling(`<?= $remaining_balance ?>`)" min="0" readonly>
                                         <span class="text-danger fw-bold deduction-msg ms-3" style="font-size:12px"></span>
                                     </div>
-                                </div> -->
+                                </div>
 
                                 <div class="col-md-3" style="margin-top:28px;">
                                     <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addOtherDeductionInputs(`<?= $remaining_balance ?>`)" disabled>
@@ -298,7 +298,7 @@
                                 </div>
                             </div>
 
-                            <!-- <div class="row my-4">
+                            <div class="row my-4">
                                 <div class="col-md-3">
                                     <label class="form-label ls-1">Patient's MBL</label>
                                     <div class="input-group mb-3">
@@ -330,7 +330,7 @@
                                         <input type="text" class="form-control fw-bold ls-1" id="personal-charge" name="personal-charge" value="" readonly>
                                     </div>
                                 </div>
-                            </div> -->
+                            </div>
 
                             <hr class="mt-4">
 
@@ -467,26 +467,28 @@
 
     const updateRoomPrice = (remaining_balance) => {
         const room_selector = document.querySelector('#room-board').value;
-        const room_rate = document.querySelector('#room-rate');
+        const room_price = document.querySelector('#room-price');
         let arr = room_selector.split(",");
-        room_rate.value = arr[1];
+        room_price.value = arr[1];
         if(room_selector !== ''){
-            room_rate.removeAttribute('readonly');
+            room_price.removeAttribute('readonly');
             calculateNoaBilling(remaining_balance);
         }else{
-            room_rate.value = '';
-            room_rate.setAttribute('readonly', true);
+            room_price.value = '';
+            room_price.setAttribute('readonly', true);
             calculateNoaBilling(remaining_balance);
         }
+
     }
 
     const calculateNoaBilling = (remaining_balance) => {
         let total_bill = 0;
         let total_deduction = 0;
         let net_bill = 0;
-        // let company_charge_amount = 0;
-        // let personal_charge_amount = 0;
+        let company_charge_amount = 0;
+        let personal_charge_amount = 0;
         let philhealth_deduction = 0;
+        let sss_deduction = 0;
         let other_deduction = 0;
 
         const total_services_input = document.querySelector("#total-services");
@@ -495,17 +497,18 @@
         const total_roomboard_input = document.querySelector("#total-roomboard");
         const total_input = document.querySelector('#total-bill');
         const deduct_philhealth = document.querySelector('#deduct-philhealth');
+        const deduct_sss = document.querySelector('#deduct-sss');
         const deduction_input = document.querySelector('#total-deduction');
         const net_input = document.querySelector('#net-bill');
-        // const company_charge = document.querySelector('#company-charge');
-        // const personal_charge = document.querySelector('#personal-charge');
+        const company_charge = document.querySelector('#company-charge');
+        const personal_charge = document.querySelector('#personal-charge');
         const row_deduction = document.querySelectorAll('.row-deduction');
         const deduction_amount = document.querySelectorAll('.deduction-amount');
         const deduction_msg = document.querySelectorAll('.deduction-msg');
         const other_deduction_msg = document.querySelectorAll('.other-deduction-msg');
         const input_deduction = document.querySelectorAll('.input-deduction');
-        // const work_related = document.querySelector('#work-related');
-        const room_payment = document.querySelector("#room-rate");
+        const work_related = document.querySelector('#work-related');
+        const room_payment = document.querySelector("#room-price");
 
         validateNumberInputs();
 
@@ -518,53 +521,46 @@
         // total bill calculation
         total_bill = (total_services + total_medications + total_room_payment + total_pro_fees) * 1;
 
+        total_input.value = total_bill.toFixed(2);
+
         enableButtonsandDeductions(total_bill);
 
         philhealth_deduction = deduct_philhealth.value > 0 ? deduct_philhealth.value : 0;
+        sss_deduction = deduct_sss.value > 0 ? deduct_sss.value : 0;
 
         other_deduction = calculateOtherDeductions();
 
         // total deduction calculation
-        total_deduction = parseFloat(philhealth_deduction) + parseFloat(other_deduction);
+        total_deduction = parseFloat(philhealth_deduction) + parseFloat(sss_deduction) + parseFloat(other_deduction);
 
-        /* Calculating the net bill, personal charge amount and company charge amount. */
+       /* Calculating the net bill, personal charge amount and company charge amount. */
         if(total_deduction > 0){
             net_bill = total_bill - total_deduction;
-            // if(work_related.value === 'Yes' || work_related.value === 'yes'){
-            //     personal_charge_amount = 0;
-            //     company_charge_amount = net_bill;
-            // }else{
-            //     personal_charge_amount = net_bill - remaining_balance;
-            //     company_charge_amount = net_bill > remaining_balance ? remaining_balance : net_bill;
-            // }
+            if(work_related.value === 'Yes' || work_related.value === 'yes'){
+                personal_charge_amount = 0;
+                company_charge_amount = net_bill;
+            }else{
+                personal_charge_amount = net_bill - remaining_balance;
+                company_charge_amount = net_bill > remaining_balance ? remaining_balance : net_bill;
+            }
         }else{
             net_bill = total_bill;
-            // if(work_related.value === 'Yes' || work_related.value === 'yes'){
-            //     personal_charge_amount = 0;
-            //     company_charge_amount = net_bill;
-            // }else{
-            //     personal_charge_amount = net_bill - remaining_balance;
-            //     company_charge_amount = net_bill > remaining_balance ? remaining_balance : net_bill;
-            // }
+             if(work_related.value === 'Yes' || work_related.value === 'yes'){
+                personal_charge_amount = 0;
+                company_charge_amount = net_bill;
+            }else{
+                personal_charge_amount = net_bill - remaining_balance;
+                company_charge_amount = net_bill > remaining_balance ? remaining_balance : net_bill;
+            }
         }
-
-        total_input.value = total_bill.toFixed(2);
 
         deduction_input.value = parseFloat(total_deduction).toFixed(2);
 
         net_input.value = parseFloat(net_bill).toFixed(2);
 
-        total_services_input.value = parseFloat(total_services).toFixed(2);
+        company_charge.value = company_charge_amount > 0 ? parseFloat(company_charge_amount).toFixed(2) : 0;
 
-        total_meds_input.value = parseFloat(total_medications).toFixed(2);
-
-        total_profees_input.value = parseFloat(total_pro_fees).toFixed(2);
-
-        total_roomboard_input.value = parseFloat(total_room_payment).toFixed(2);
-
-        // company_charge.value = company_charge_amount > 0 ? parseFloat(company_charge_amount).toFixed(2) : 0;
-
-        // personal_charge.value = personal_charge_amount > 0 ? parseFloat(personal_charge_amount).toFixed(2) : 0;
+        personal_charge.value = personal_charge_amount > 0 ? parseFloat(personal_charge_amount).toFixed(2) : 0;
 
         /* Checking if the net bill is less than 0. If it is, it will add the class is-invalid and
         text-danger to the net bill input, deduction inputs, row deductions. */
@@ -595,12 +591,13 @@
         }
         
         // call to showPersonalChargeAlert function
-        // showPersonalChargeAlert(personal_charge_amount);
+        showPersonalChargeAlert(personal_charge_amount);
     }
 
     /* Adding an event listener to all the number inputs on the page. When the user inputs a value, the
     code checks if the value is a number and if it is greater than 0. If it is not, the value is set
     to an empty string. */
+    
 
     const validateNumberInputs = () => {
         const number_inputs = document.querySelectorAll("input[type='number']");
@@ -680,7 +677,7 @@
     }
 
 
-    let deduct_count = 0;
+     let deduct_count = 0;
     /**
     * It adds a row of inputs to the form
     */
@@ -724,8 +721,7 @@
         // // $('#dynamic-deduction').append(html_code); => this is a jquery syntax, below is vanilla js way. You can either use this one or the one below
         document.querySelector("#dynamic-deduction").insertAdjacentHTML("beforeend", html_code);
     }
-    
-    /**
+      /**
     * It removes a row and then calls a function to recalculate the total.
     */
     const removeDeduction = (remove_btn, remaining_balance) => {
@@ -740,7 +736,8 @@
         calculateNoaBilling(remaining_balance);
     }
 
-    /**
+
+        /**
     * It adds a row of inputs to the form
     */
     let med_count = 0; // declaring the count variable outside the function will persist its value even after the function is called, allowing it to increment by one each time the function is called.
@@ -754,7 +751,7 @@
 
         let html_code  = `<div class="row my-3 row-medication" id="row${med_count}">`;
 
-            /* Creating a new input field with the name deduction_name[] */
+           /* Creating a new input field with the name deduction_name[] */
             html_code += `<div class="col-md-5">
                             <input type="text" name="medication-name[]" class="form-control fw-bold ls-1" placeholder="*Enter Medication Name" required/>
                             <div class="invalid-feedback">
@@ -873,17 +870,21 @@
         calculateNoaBilling(remaining_balance);
     }
 
+
     const enableButtonsandDeductions = (total_bill) =>{
         const input_philhealth = document.querySelector('#deduct-philhealth');
+        const input_sss = document.querySelector('#deduct-sss');
         const deduct_btn = document.querySelector('#btn-other-deduction');
         const bill_btn = document.querySelector('#btn-bill');
 
         if(total_bill > 0){
             input_philhealth.removeAttribute('readonly');
+            input_sss.removeAttribute('readonly');
             deduct_btn.removeAttribute('disabled');
             bill_btn.removeAttribute('disabled');
         }else{
             input_philhealth.setAttribute('readonly', true);
+            input_sss.setAttribute('readonly', true);
             deduct_btn.setAttribute('disabled', true);
             bill_btn.setAttribute('disabled', true);
         }

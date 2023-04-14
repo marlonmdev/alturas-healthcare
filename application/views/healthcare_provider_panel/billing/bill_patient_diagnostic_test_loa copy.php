@@ -63,13 +63,7 @@
                             <input type="text" class="form-control text-danger fw-bold ls-1" id="request-type" name="request-type" value="<?= $request_type ?>" readonly>
                         </div>
 
-                        <div class="col-md-2 my-1">
-                            <label class="form-label ls-1">Work-Related</label>
-                            <input type="text" class="form-control text-danger fw-bold ls-1" id="work-related" name="work-related" value="<?= $work_related ?>" readonly>
-                        </div>
-
-
-                        <div class="col-md-7 my-1">
+                        <div class="col-md-6 my-1">
                             <label class="form-label ls-1">Healthcare Provider</label>
                             <input type="text" class="form-control text-danger fw-bold ls-1" id="hcare-provider" name="hcare-provider" value="<?= $hcare_provider ?>" readonly>
                         </div>
@@ -202,16 +196,6 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
-                                <label class="form-label ls-1">SSS</label> <span class="text-muted">(optional)</span>
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text bg-success text-white">&#8369;</span>
-
-                                    <input type="number" class="input-deduction form-control fw-bold ls-1" id="deduct-sss" name="sss-deduction" placeholder="Deduction Amount" oninput="calculateDiagnosticTestBilling(`<?= $remaining_balance ?>`)" min="0" readonly>
-
-                                    <span class="text-danger fw-bold deduction-msg"></span>
-                                </div>
-                            </div>    
                         </div>
                         
                         <!-- dynamic inputs will append on this div -->
@@ -249,7 +233,7 @@
                         </div>
 
                         <div class="row my-4">
-                            <div class="col-md-3">
+                            <!-- <div class="col-md-3">
                                 <label class="form-label ls-1">Patient's MBL</label>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text bg-info text-white">&#8369;</span>
@@ -263,8 +247,8 @@
                                     <span class="input-group-text bg-info text-white">&#8369;</span>
                                     <input type="text" class="form-control fw-bold ls-1" id="remaining-mbl" name="remaining-mbl" value="<?= number_format($remaining_balance, 2) ?>" readonly>
                                 </div>
-                            </div>
-
+                            </div> -->
+                            <!-- 
                             <div class="col-md-3">
                                 <label class="form-label ls-1">Company Charge</label>
                                 <div class="input-group mb-3">
@@ -279,7 +263,7 @@
                                     <span class="input-group-text bg-danger text-white">&#8369;</span>
                                     <input type="text" class="form-control fw-bold ls-1" id="personal-charge" name="personal-charge" value="" readonly>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
 
                         <hr class="my-4">
@@ -324,11 +308,10 @@
     const calculateDiagnosticTestBilling = (remaining_balance) => {
 
         let philhealth_deduction = 0;
-        let sss_deduction = 0;
         let total_deduction = 0;
         let total_bill = 0;
-        let company_charge_amount = 0;
-        let personal_charge_amount = 0;
+        // let company_charge_amount = 0;
+        // let personal_charge_amount = 0;
         let net_total = 0;
 
         const total_services_input = document.querySelector("#total-services");
@@ -336,14 +319,13 @@
         const total_profees_input = document.querySelector("#total-profees");
         const total_input = document.querySelector("#total-bill");
         const net_bill = document.querySelector("#net-bill");
-        const company_charge = document.querySelector('#company-charge');
+
         const deduct_philhealth = document.querySelector("#deduct-philhealth");
-        const deduct_sss = document.querySelector("#deduct-sss");
         const deduction_input = document.querySelector("#total-deduction");
         const input_deduction = document.querySelectorAll('.input-deduction');
         const deduction_msg = document.querySelectorAll('.deduction-msg');
         const other_deduction_msg = document.querySelectorAll('.other-deduction-msg');
-        const work_related = document.querySelector('#work-related');
+
         const row_deduction = document.querySelectorAll('.row-deduction');
         const deduction_amount = document.querySelectorAll('.deduction-amount');
 
@@ -359,37 +341,22 @@
         total_bill = (total_services + total_medications + total_pro_fees) * 1;
 
         // charges calculation based on total_bill
-        personal_charge_amount = total_bill - remaining_balance;
-        company_charge_amount = total_bill > remaining_balance ? remaining_balance : 
+        // personal_charge_amount = total_bill - remaining_balance;
+        // company_charge_amount = total_bill > remaining_balance ? remaining_balance : 
 
         // Compute Deductions
         philhealth_deduction = deduct_philhealth.value > 0 ? deduct_philhealth.value : 0;
-        sss_deduction = deduct_sss.value > 0 ? deduct_sss.value : 0;
 
         other_deduction = calculateOtherDeductions();
 
         /* Calculating the total deduction, net total and charge amount. */
-        total_deduction = parseFloat(philhealth_deduction) + parseFloat(sss_deduction) + parseFloat(other_deduction);
+        total_deduction = parseFloat(philhealth_deduction) + parseFloat(other_deduction);
 
         // Calculation of Net Bill and Charge amount based on total deduction
         if(total_deduction > 0) {
             net_total = total_bill - total_deduction;
-            if(work_related.value === 'Yes'){
-                personal_charge_amount = 0;
-                company_charge_amount = net_total;
-            }else{
-                personal_charge_amount = net_total - remaining_balance;
-                company_charge_amount = net_total > remaining_balance ? remaining_balance : net_total;
-            }
         }else{
             net_total = total_bill;
-            if(work_related.value === 'Yes'){
-                personal_charge_amount = 0;
-                company_charge_amount = net_total;
-            }else{
-                personal_charge_amount = net_total - remaining_balance;
-                company_charge_amount = net_total > remaining_balance ? remaining_balance : net_total;
-            }
         }
 
        /* Checking if the net total is less than 0. If it is, it will add the class is-invalid and
@@ -447,7 +414,6 @@
             deduction_input.value = 0;
             net_bill.classList.remove('is-invalid', 'text-danger');
             net_bill.value = 0;
-            company_charge.value = 0;
 
         }else{
             // set the net total as the value of total bill input
@@ -457,12 +423,11 @@
             total_input.value = parseFloat(total_bill).toFixed(2);
             deduction_input.value = parseFloat(total_deduction).toFixed(2);
             net_bill.value = parseFloat(net_total).toFixed(2);
-            company_charge.value = parseFloat(company_charge_amount).toFixed(2);
         }
 
         // Calling other functions
         enableButtonsAndDeductions(total_bill);
-        showPersonalChargeAlert(personal_charge_amount);
+        // showPersonalChargeAlert(personal_charge_amount);
     }
 
     // function to calculate the total of all the selected services price/fee
@@ -532,7 +497,6 @@
         const btnBill = document.querySelector('#btn-bill');
         const btnAddDeduction = document.querySelector('#btn-other-deduction');
         const philhealth_deduction = document.querySelector("#deduct-philhealth");
-        const sss_deduction = document.querySelector("#deduct-sss");
 
        /* Checking if the total bill is greater than 0. If it is, it will remove the disabled attribute
        from the buttons and the readonly attribute from the deductions. If it is not, it will add
@@ -541,12 +505,11 @@
             btnBill.removeAttribute('disabled');
             btnAddDeduction.removeAttribute('disabled');
             philhealth_deduction.removeAttribute('readonly');
-            sss_deduction.removeAttribute('readonly');
+            // sss_deduction.removeAttribute('readonly');
         }else{
             btnBill.setAttribute('disabled', true);
             btnAddDeduction.setAttribute('disabled', true);
             philhealth_deduction.setAttribute('readonly', true);
-            sss_deduction.setAttribute('readonly', true);
         }
     }
 
@@ -637,7 +600,6 @@
         calculateDiagnosticTestBilling(remaining_balance);
     }
 
-
     /**
     * It adds a row of inputs to the form
     */
@@ -709,13 +671,12 @@
         calculateDiagnosticTestBilling(remaining_balance);
     }
 
-
-     /**
+    /**
     * It adds a row of inputs to the form
     */
     let prof_count = 0; // declaring the count variable outside the function will persist its value even after the function is called, allowing it to increment by one each time the function is called.
 
-     // this is for Diagnostic Test LOA Requests
+    // this is for Diagnostic Test LOA Requests
     const addProfessionalFee  = (remaining_balance) => {
         const container = document.querySelector('#dynamic-profee');
         const profee_count = document.querySelector('#profee-count');
@@ -725,7 +686,7 @@
         let html_code  = `<div class="row my-3 row-profee" id="row${prof_count}">`;
 
            /* Creating a new input field with the name deduction_name[] */
-            html_code += `<div class="col-md-5">
+            html_code += `<div class="col-md-6">
                             <input type="text" name="prodoc-name[]" class="form-control fw-bold ls-1" placeholder="*Enter Doctor Name" required/>
                             <div class="invalid-feedback">
                                 Doctor name, and Professional Fee is required
@@ -744,7 +705,7 @@
                                 </div>
                           </div>`;
             
-           /* Adding a remove button to the html code. */
+            /* Adding a remove button to the html code. */
             html_code += `<div class="col-md-2">
                             <button type="button" data-id="${prof_count}" class="btn btn-danger btn-md btn-remove" onclick="removeProFee(this, ${remaining_balance})" data-bs-toggle="tooltip" title="Click to remove Professional Fee">
                                 <i class="mdi mdi-close"></i>

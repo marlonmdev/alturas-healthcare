@@ -39,6 +39,7 @@
         <form action="<?php echo base_url();?>healthcare-provider/billing/bill-loa/upload-pdf/<?= $loa_id ?>/submit" id="pdfBillingForm" enctype="multipart/form-data" class="needs-validation" novalidate>
             <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
             <input type="hidden" name="billing-no" value="<?= $billing_no ?>">
+            <input type="hidden" name="net-bill" value="0">
             <div class="card">
                 <div class="card-body shadow">
                     <div class="row mt-3">
@@ -78,16 +79,26 @@
 
                         <div class="col-lg-5">
                             <label class="form-label fs-5 ls-1">
+                                Remaining MBL Balance
+                            </label>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text bg-cyan text-white">&#8369;</span>
+                                <input type="number" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="<?= $remaining_balance ?>" placeholder="Enter Net Bill" disabled>
+                            </div>
+                        </div>
+
+                        <!-- <div class="col-lg-5">
+                            <label class="form-label fs-5 ls-1">
                                 <i class="mdi mdi-asterisk text-danger ms-1"></i> Net Bill
                             </label>
                             <div class="input-group mb-3">
                                 <span class="input-group-text bg-cyan text-white">&#8369;</span>
-                                <input type="number" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" placeholder="Enter Net Bill" required>
+                                <input type="number" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" value="s" placeholder="Enter Net Bill" required>
                                 <div class="invalid-feedback fs-6">
                                     Net Bill is required
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
 
                     <div class="row">
@@ -131,6 +142,38 @@
         }
     }
 
+    async function readPDF(pdfUrl){
+        // Load the PDF file using PDF.js
+        // const pdfUrl = 'path/to/pdf/file.pdf';
+        const pdfDoc = await pdfjsLib.getDocument(pdfUrl).promise;
+
+        // Initialize variables for tracking "total" values and the total sum
+        let totalValues = [];
+        let totalSum = 0;
+
+        // Loop through each page in the PDF and extract the text
+        for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+        const page = await pdfDoc.getPage(pageNum);
+        const content = await page.getTextContent();
+
+        // Loop through each text item on the page and check for "total"
+        for (let i = 0; i < content.items.length; i++) {
+            const text = content.items[i].str;
+            if (text.toLowerCase().includes('total')) {
+            // Extract the number from the "total" text and add it to the total sum
+            const totalNumber = Number(text.match(/\d+(?:,\d+)*(?:\.\d+)?/)[0].replace(',', ''));
+            totalValues.push(totalNumber);
+            totalSum += totalNumber;
+            }
+        }
+        }
+
+        // Print out the "total" values and the total sum
+        console.log(totalValues);
+        console.log(totalSum);
+
+    }
+
     const form = document.querySelector('#pdfBillingForm');
 
     $(document).ready(function(){
@@ -155,10 +198,23 @@
                 success: function(response){
                     const { token, status, message, billing_id } = response;
 
+
                     if(status == 'success'){
+                        swal({
+                            title: 'Success',
+                            text: message,
+                            timer: 3000,
+                            showConfirmButton: false,
+                            type: 'success'
+                        });
+                        
                         setTimeout(function() {
-                            window.location.href = `${baseUrl}healthcare-provider/billing/bill-loa/upload-pdf/${billing_id}/success`;
-                        }, 300);
+                            window.location.href = `${baseUrl}healthcare-provider/loa-requests/billed`;
+                        }, 3000);
+
+                        // setTimeout(function() {
+                        //     window.location.href = `${baseUrl}healthcare-provider/billing/bill-loa/upload-pdf/${billing_id}/success`;
+                        // }, 300);
                     }else{
                         swal({
                             title: 'Failed',

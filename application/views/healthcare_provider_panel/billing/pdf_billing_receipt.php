@@ -92,11 +92,11 @@
                               </td>
                             </tr>
 
-                            <tr>
+                            <!-- <tr>
                               <td class="text-center">
                                 <h4> NET BILL : <span class="text-danger"><?= '&#8369;'. number_format($bill['net_bill'], 2) ?></span></h4>
                               </td>
-                            </tr>
+                            </tr> -->
                           </table>
                         </div>
                       </div>

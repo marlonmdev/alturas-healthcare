@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/photoviewer/dist/photoviewer.min.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/flatpickr/flatpickr.min.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/flatpickr/themes/confetti.css" />
+    <!-- <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/pdfjs/web/viewer.css" /> -->
     <!-- End of Vendors CSS -->
 
     <!-- Script Tags -->

@@ -232,7 +232,30 @@
           });
         });
 
+        Quagga.init({
+          inputStream : {
+              name : "Live",
+              type : "LiveStream",
+              target: document.querySelector('#scanner-container')
+            },
+            decoder : {
+                readers : ["ean_reader"]
+            }
+          }, function(err) {
+              if (err) {
+                  console.log(err);                                         
+                  return;
+              }
+              Quagga.start();
+          });
+
+          Quagga.onDetected(function(data) {
+              var code = data.codeResult.code;
+              document.querySelector('#healthcard-no').value = code;
+              document.querySelector('#search-form-1').submit();
+          });
 
       });
 
+      
     </script>

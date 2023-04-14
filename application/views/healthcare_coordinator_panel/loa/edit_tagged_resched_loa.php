@@ -24,7 +24,7 @@
     <div class="container-fluid">
             <div class="col-12 mb-4 mt-0">
                     <div class="input-group">
-                        <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved" type="submit" class="btn btn-outline-dark" data-bs-toggle="tooltip" title="Click to Go Back">
+                        <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/rescheduled" type="submit" class="btn btn-outline-dark" data-bs-toggle="tooltip" title="Click to Go Back">
                             <strong class="ls-2" style="vertical-align:middle">
                                 <i class="mdi mdi-arrow-left-bold"></i> Go Back
                             </strong>
@@ -191,7 +191,7 @@
                             });
                             // $('#performedLoaInfo')[0].reset();
                             setTimeout(function () {
-                                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved';
+                                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/rescheduled';
                             }, 2600);
                             
                         break;

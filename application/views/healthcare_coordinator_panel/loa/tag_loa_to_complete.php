@@ -78,7 +78,7 @@
                                     <select class="form-select fw-bold status" name="status[]" id="status" onchange="viewReschedDate();enableInput();enableReason();emptyStatus();">
                                         <option value="">-- Please Select --</option>
                                         <option value="Performed">Performed</option>
-                                        <option value="Rescheduled">Reschedule</option>
+                                        <option value="Referred">Referral</option>
                                         <option value="Cancelled">Cancelled</option>
                                     </select>
                                     <span class="text-danger" id="status-error"></span>
@@ -142,72 +142,6 @@
     const form = document.querySelector('#performedLoaInfo');
     $(document).ready(function(){
 
-        // $('#performedLoaInfo').submit(function(event){
-        //     event.preventDefault();
-
-        //     if(!form.checkValidity()){
-        //         form.classList.add('was-validated');
-        //         return;
-        //     }
-
-        //     let url = $(this).attr('action');
-        //     let data = $(this).serialize();
-        //     $.ajax({
-        //         type: 'POST',
-        //         url: url,
-        //         data: data,
-        //         dataType: 'json',
-        //         success: function(response) {
-        //             const {
-        //                 token,status,message
-        //             } = response;
-
-        //             switch(status){
-                       
-        //                 case 'failed':
-        //                     swal({
-        //                         title: 'Error',
-        //                         text: message,
-        //                         timer: 3000,
-        //                         showConfirmButton: true,
-        //                         type: 'error'
-        //                     });
-        //                 break;
-
-        //                 case 'success':
-        //                     swal({
-        //                         title: 'Success',
-        //                         text: message,
-        //                         timer: 3000,
-        //                         showConfirmButton: false,
-        //                         type: 'success'
-        //                     });
-        //                     // $('#performedLoaInfo')[0].reset();
-        //                     setTimeout(function () {
-        //                         window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved';
-        //                     }, 2600);
-                            
-        //                 break;
-
-        //                 case 'complete-success':
-        //                     swal({
-        //                         title: 'Success',
-        //                         text: message,
-        //                         timer: 3000,
-        //                         showConfirmButton: false,
-        //                         type: 'success'
-        //                     });
-        //                     // $('#performedLoaConsultInfo')[0].reset();
-        //                     setTimeout(function () {
-        //                         window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed';
-        //                     }, 2600);
-                            
-        //                 break;
-        //             }
-        //         }
-        //     });
-        // });
-
         $('#performedLoaInfo').submit(function(event){
             event.preventDefault();
 
@@ -216,81 +150,147 @@
                 return;
             }
 
-            $.confirm({
-                    title: '<strong>Confirmation!</strong>',
-                    content: 'Are you sure? Please review before you proceed.',
-                    type: 'blue',
-                    buttons: {
-                        confirm: {
-                            text: 'Yes',
-                            btnClass: 'btn-blue',
-                            action: function(){
-                                let url = $(this).attr('action');
-                                let data = $(this).serialize();
-                                $.ajax({
-                                    type: 'POST',
-                                    url: url,
-                                    data: data,
-                                    dataType: 'json',
-                                    success: function(response) {
-                                        const {
-                                            token,status,message
-                                        } = response;
+            let url = $(this).attr('action');
+            let data = $(this).serialize();
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    const {
+                        token,status,message
+                    } = response;
 
-                                        switch(status){
-                                        
-                                            case 'failed':
-                                                swal({
-                                                    title: 'Error',
-                                                    text: message,
-                                                    timer: 3000,
-                                                    showConfirmButton: true,
-                                                    type: 'error'
-                                                });
-                                            break;
+                    switch(status){
+                       
+                        case 'failed':
+                            swal({
+                                title: 'Error',
+                                text: message,
+                                timer: 3000,
+                                showConfirmButton: true,
+                                type: 'error'
+                            });
+                        break;
 
-                                            case 'success':
-                                                swal({
-                                                    title: 'Success',
-                                                    text: message,
-                                                    timer: 3000,
-                                                    showConfirmButton: false,
-                                                    type: 'success'
-                                                });
-                                                // $('#performedLoaInfo')[0].reset();
-                                                setTimeout(function () {
-                                                    window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved';
-                                                }, 2600);
-                                                
-                                            break;
+                        case 'success':
+                            swal({
+                                title: 'Success',
+                                text: message,
+                                timer: 3000,
+                                showConfirmButton: false,
+                                type: 'success'
+                            });
+                            // $('#performedLoaInfo')[0].reset();
+                            setTimeout(function () {
+                                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved';
+                            }, 2600);
+                            
+                        break;
 
-                                            case 'complete-success':
-                                                swal({
-                                                    title: 'Success',
-                                                    text: message,
-                                                    timer: 3000,
-                                                    showConfirmButton: false,
-                                                    type: 'success'
-                                                });
-                                                // $('#performedLoaConsultInfo')[0].reset();
-                                                setTimeout(function () {
-                                                    window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed';
-                                                }, 2600);
-                                                
-                                            break;
-                                        }
-                                    }
-                                });
-                            },
-                        },
-                        cancel: {
-                            btnClass: 'btn-dark',
-                            action: function() {
-                                // close dialog
-                            }
-                        },
+                        case 'complete-success':
+                            swal({
+                                title: 'Success',
+                                text: message,
+                                timer: 3000,
+                                showConfirmButton: false,
+                                type: 'success'
+                            });
+                            // $('#performedLoaConsultInfo')[0].reset();
+                            setTimeout(function () {
+                                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed';
+                            }, 2600);
+                            
+                        break;
                     }
-                });
+                }
+            });
+        });
+
+        // $('#performedLoaInfo').submit(function(event){
+        //     event.preventDefault();
+
+        //     if(!form.checkValidity()){
+        //         form.classList.add('was-validated');
+        //         return;
+        //     }
+
+        //     $.confirm({
+        //             title: '<strong>Confirmation!</strong>',
+        //             content: 'Are you sure? Please review before you proceed.',
+        //             type: 'blue',
+        //             buttons: {
+        //                 confirm: {
+        //                     text: 'Yes',
+        //                     btnClass: 'btn-blue',
+        //                     action: function(){
+        //                         let url = $(this).attr('action');
+        //                         let data = $(this).serialize();
+        //                         $.ajax({
+        //                             type: 'POST',
+        //                             url: url,
+        //                             data: data,
+        //                             dataType: 'json',
+        //                             success: function(response) {
+        //                                 const {
+        //                                     token,status,message
+        //                                 } = response;
+
+        //                                 switch(status){
+                                        
+        //                                     case 'failed':
+        //                                         swal({
+        //                                             title: 'Error',
+        //                                             text: message,
+        //                                             timer: 3000,
+        //                                             showConfirmButton: true,
+        //                                             type: 'error'
+        //                                         });
+        //                                     break;
+
+        //                                     case 'success':
+        //                                         swal({
+        //                                             title: 'Success',
+        //                                             text: message,
+        //                                             timer: 3000,
+        //                                             showConfirmButton: false,
+        //                                             type: 'success'
+        //                                         });
+        //                                         // $('#performedLoaInfo')[0].reset();
+        //                                         setTimeout(function () {
+        //                                             window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved';
+        //                                         }, 2600);
+                                                
+        //                                     break;
+
+        //                                     case 'complete-success':
+        //                                         swal({
+        //                                             title: 'Success',
+        //                                             text: message,
+        //                                             timer: 3000,
+        //                                             showConfirmButton: false,
+        //                                             type: 'success'
+        //                                         });
+        //                                         // $('#performedLoaConsultInfo')[0].reset();
+        //                                         setTimeout(function () {
+        //                                             window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed';
+        //                                         }, 2600);
+                                                
+        //                                     break;
+        //                                 }
+        //                             }
+        //                         });
+        //                     },
+        //                 },
+        //                 cancel: {
+        //                     btnClass: 'btn-dark',
+        //                     action: function() {
+        //                         // close dialog
+        //                     }
+        //                 },
+        //             }
+        //         });
         
       
 
@@ -482,7 +482,7 @@
         for (let i = 0; i < statusElements.length; i++) {
             const status = statusElements[i].value;
 
-            if (status === 'Rescheduled') {
+            if (status === 'Referred') {
             input_date[i].value = '';
             input_time[i].value = '';
             physician_fname[i].value = '';

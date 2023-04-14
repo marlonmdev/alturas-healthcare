@@ -65,7 +65,7 @@
                                 foreach ($cost_types as $cost_type) :
                                     if (in_array($cost_type['ctype_id'], $selectedOptions)) :
                             ?>
-                                <input type="hidden" class="approved-on" name="approved-on[]" value="<?php echo $request_date ?>">
+                                <input type="hidden" class="approved-on" name="approved-on[]" value="<?php echo $approved_on ?>">
                                 <input type="hidden" class="expired-on" name="expired-on[]" value="<?php echo $expired_on ?>">
                                 <input type="hidden" name="ctype_id[]" value="<?php echo $cost_type['ctype_id']; ?>">
                                 <div class="col-lg-4 pb-3">
@@ -78,7 +78,7 @@
                                     <select class="form-select fw-bold status" name="status[]" id="status" onchange="viewReschedDate();enableInput();enableReason();emptyStatus();">
                                         <option value="">-- Please Select --</option>
                                         <option value="Performed">Performed</option>
-                                        <option value="Rescheduled">Reschedule</option>
+                                        <option value="Referred">Referral</option>
                                         <option value="Cancelled">Cancelled</option>
                                     </select>
                                     <span class="text-danger" id="status-error"></span>
@@ -396,7 +396,7 @@
         for (let i = 0; i < statusElements.length; i++) {
             const status = statusElements[i].value;
 
-            if (status === 'Rescheduled') {
+            if (status === 'Referred') {
             input_date[i].value = '';
             input_time[i].value = '';
             physician_fname[i].value = '';

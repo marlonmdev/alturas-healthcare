@@ -1,70 +1,68 @@
-
 <!-- Start of Page Wrapper -->
 <div class="page-wrapper">
   <!-- Bread crumb and right sidebar toggle -->
   <div class="page-breadcrumb">
-    <div class="row">
+      <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">Letter of Authorization</h4>
-        <div class="ms-auto text-end">
+          <h4 class="page-title ls-2">Letter of Authorization</h4>
+          <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
+              <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
               <li class="breadcrumb-item active" aria-current="page">
-                Expired LOA
+                  Completed LOA
               </li>
-            </ol>
+              </ol>
           </nav>
-        </div>
+          </div>
       </div>
-    </div>
+      </div>
   </div>
   <!-- End Bread crumb and right sidebar toggle -->
   <!-- Start of Container fluid  -->
   <div class="container-fluid">
     <div class="row">
-
       <div class="col-lg-12">
         <ul class="nav nav-tabs mb-4" role="tablist">
           <li class="nav-item">
-            <a
+              <a
               class="nav-link"
               href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list"
               role="tab"
               ><span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">Pending</span></a
-            >
+              >
           </li>
           <li class="nav-item">
-            <a
+              <a
               class="nav-link"
               href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved"
               role="tab"
               ><span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">Approved</span></a
-            >
+              >
           </li>
           <li class="nav-item">
-            <a
+              <a
               class="nav-link"
               href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/disapproved"
               role="tab"
               ><span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
-            >
+              >
           </li>
           <li class="nav-item">
-            <a
+              <a
               class="nav-link"
               href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed"
               role="tab"
               ><span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
-            >
+              >
           </li>
           <li class="nav-item">
               <a
-              class="nav-link"
+              class="nav-link active"
               href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/rescheduled"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -73,7 +71,7 @@
           </li>
           <li class="nav-item">
             <a
-              class="nav-link active"
+              class="nav-link"
               href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/expired"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -98,7 +96,7 @@
                     <i class="mdi mdi-filter"></i>
                     </span>
                 </div>
-                <select class="form-select fw-bold" name="expired-hospital-filter" id="expired-hospital-filter">
+                <select class="form-select fw-bold" name="resched-hospital-filter" id="resched-hospital-filter">
                         <option value="">Select Hospital</option>
                         <?php foreach($hcproviders as $option) : ?>
                         <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
@@ -110,7 +108,7 @@
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover table-responsive" id="expiredLoaTable">
+              <table class="table table-hover table-responsive" id="reschedLoaTable">
                 <thead>
                   <tr>
                     <th class="fw-bold">LOA No.</th>
@@ -118,48 +116,49 @@
                     <th class="fw-bold">LOA Type</th>
                     <th class="fw-bold">Healthcare Provider</th>
                     <th class="fw-bold">RX File</th>
-                    <th class="fw-bold">Expiry Date</th>
+                    <th class="fw-bold">Request Date</th>
                     <th class="fw-bold">Status</th>
-                    <th class="fw-bold">Actions</th>
+                    <th class="fw-bold" style="width:130px">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                 </tbody>
               </table>
-
             </div>
-              <?php include 'managers_key_modal.php'; ?>
           </div>
-           <?php include 'back_date_modal.php'; ?>
         </div>
-        <?php include 'view_expired_loa_details.php'; ?>
+
+        <?php include 'view_resched_loa_details.php'; ?>
+
       </div>
-     <!-- End Row  -->  
+      <!-- End Row  -->  
       </div>
+      <?php include 'performed_loa_info_modal.php'; ?>
     <!-- End Container fluid  -->
     </div>
+    <?php include 'view_performed_consult_loa.php'; ?>
   <!-- End Page wrapper  -->
   </div>
 <!-- End Wrapper -->
 <script>
-  const baseUrl = `<?php echo base_url(); ?>`;
+  const baseUrl = "<?php echo base_url(); ?>";
   const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
 
   $(document).ready(function() {
 
-    let expiredTable = $('#expiredLoaTable').DataTable({
+    let reschedTable = $('#reschedLoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
 
       // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}healthcare-coordinator/loa/requests-list/expired/fetch`,
+        url: `${baseUrl}healthcare-coordinator/loa/requests-list/resched/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: function(data) {
-          data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
-          data.filter = $('#expired-hospital-filter').val();
+            data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
+            data.filter = $('#resched-hospital-filter').val();
         }
       },
 
@@ -172,124 +171,14 @@
       fixedHeader: true,
     });
 
-    // Get today's date
-    const today = new Date();
-    // Create a new Date object representing tomorrow's date
-    const tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() + 1);
-
-    $("#expiry-date").flatpickr({
-      enableTime: false,
-      dateFormat: 'Y-m-d',
-      minDate: tomorrow
-    });
-
-    $('#expired-hospital-filter').change(function(){
-      expiredTable.draw();
+    $('#resched-hospital-filter').change(function(){
+      reschedTable.draw();
     });
 
 
-    $('#managersKeyForm').submit(function(event){
-      event.preventDefault();
-      $.ajax({
-        type: "post",
-        url: `${baseUrl}healthcare-coordinator/managers-key/check`,
-        data: $(this).serialize(),
-        dataType: "json",
-        success: function (res) {
-            const { status, message, mgr_username_error, mgr_password_error, loa_id, loa_no } = res;
-
-            if (status == "error") {
-              if (mgr_username_error !== '') {
-                $('#mgr-username-error').html(mgr_username_error);
-                $('#mgr-username').addClass('is-invalid');
-              } else {
-                $('#mgr-username-error').html('');
-                $('#mgr-username').removeClass('is-invalid');
-              }
-
-              if (mgr_password_error !== '') {
-                $('#mgr-password-error').html(mgr_password_error);
-                $('#mgr-password').addClass('is-invalid');
-              } else {
-                $('#mgr-password-error').html('');
-                $('#mgr-password').removeClass('is-invalid');
-              }
-
-              if (message !== '') {
-                $('#msg-error').html(message);
-                $('#mgr-username').addClass('is-invalid');
-                $('#mgr-password').addClass('is-invalid');
-              } else {
-                $('#msg-error').html('');
-                $('#mgr-username').removeClass('is-invalid');
-                $('#mgr-password').removeClass('is-invalid');
-              }
-
-            } else {
-              $("#managersKeyModal").modal("hide");
-              showBackDateForm(loa_id, loa_no);
-            }
-        },
-      });
-    });
-
-    $('#backDateForm').submit(function(event){
-      event.preventDefault();
-      $.ajax({
-        type: "post",
-        url: `${baseUrl}healthcare-coordinator/loa/requests-list/expired/backdate`,
-        data: $(this).serialize(),
-        dataType: "json",
-        success: function (res) {
-          const { status, message } = res;
-
-          switch (status) {
-            case 'error':
-              // is-invalid class is a built in classname for errors in bootstrap
-              if (expiry_date_error !== '') {
-                $('#expiry-date-error').html(expiry_date_error);
-                $('#expiry-date').addClass('is-invalid');
-              } else {
-                $('#expiry-date-error').html('');
-                $('#expiry-date').removeClass('is-invalid');
-              }
-              break;
-            case 'save-error':
-              swal({
-                title: 'Failed',
-                text: message,
-                timer: 3000,
-                showConfirmButton: false,
-                type: 'error'
-              });
-              break;
-            case 'success':
-              swal({
-                title: 'Success',
-                text: message,
-                timer: 3000,
-                showConfirmButton: false,
-                type: 'success'
-              });
-              
-              $("#backDateModal").modal("hide");
-              $("#expiredLoaTable").DataTable().ajax.reload();
-              break;
-          }
-        },
-      });
-    });
-              
   });
 
-  const showBackDateForm = (loa_id, loa_no) => {
-    $("#backDateModal").modal("show");
-    $('#bd-loa-id').val(loa_id);
-    $('#bd-loa-no').val(loa_no);
-  }
-
-  const viewImage = (path) => {
+  function viewImage(path) {
     let item = [{
       src: path, // path to image
       title: 'Attached RX File' // If you skip it, there will display the original image name
@@ -320,21 +209,9 @@
       });
   }
 
-  const backDate = (loa_id, loa_no) => {
-    $('#managersKeyModal').modal('show');
-    $('#expired-loa-id').val(loa_id);
-    $('#expired-loa-no').val(loa_no);
-    $('#mgr-username').val('');
-    $('#mgr-username').removeClass('is-invalid');
-    $('#mgr-username-error').html('');
-    $('#mgr-password').val('');
-    $('#mgr-password').removeClass('is-invalid');
-    $('#mgr-password-error').html('');
-  }
-
-  const viewExpiredLoaInfo = (loa_id) => {
+  function viewReschedLoaInfo(req_id) {
     $.ajax({
-      url: `${baseUrl}healthcare-coordinator/loa/expired/view/${loa_id}`,
+      url: `${baseUrl}healthcare-coordinator/loa/resched/view/${req_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);
@@ -345,6 +222,7 @@
           loa_no,
           member_mbl,
           remaining_mbl,
+          work_related,
           first_name,
           middle_name,
           last_name,
@@ -369,26 +247,38 @@
           request_date,
           chief_complaint,
           requesting_physician,
-          attending_physician,
           rx_file,
           req_status,
-          work_related,
-          approved_by,
-          approved_on,
-          expiry_date,
+          requested_by,
+          approved_by
         } = res;
 
         $("#viewLoaModal").modal("show");
+
+        switch (req_status) {
+          case 'Pending':
+            $('#loa-status').html(`<strong class="text-warning">[${req_status}]</strong>`);
+            break;
+          case 'Approved':
+            $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
+            break;
+          case 'Disapproved':
+            $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
+            break;
+          case 'Closed':
+            $('#loa-status').html(`<strong class="text-info">[${req_status}]</strong>`);
+            break;
+          case 'Reffered':
+          $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
+          break;
+        }
         const med_serv = med_services !== '' ? med_services : 'None';
-        const at_physician = attending_physician !== '' ? attending_physician : 'None';
+
         $('#loa-no').html(loa_no);
-        $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
-        $('#approved-by').html(approved_by);
-        $('#approved-on').html(approved_on);
-        $('#expiry-date').html(expiry_date);
+        $('#requested-by').html(requested_by);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
-        $('#work-related-val').html(work_related);
+        $('#work-related').html(work_related);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
         $('#date-of-birth').html(date_of_birth);
         $('#age').html(age);
@@ -410,9 +300,53 @@
         $('#request-date').html(request_date);
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
-        $('#attending-physician').html(at_physician);
+        $('#approved-by').html(approved_by);
       }
     });
   }
 
+  
+  const viewPerformedLoaInfo = (loa_id) => {
+    $.ajax({
+      url: `${baseUrl}healthcare-coordinator/loa/performed-loa-info/view/${loa_id}`,
+      type: 'GET',
+      dataType: 'json',
+      success: function(response){
+        
+        $('#pfLoaInfoModal').modal('show');
+
+        let tbody = '';
+        
+        $.each(response, function(index, item){
+          
+          tbody += '<tr><td>'+ item.item_description +'</td><td>'+ item.status + '</td><td>' + item.date_performed +' '+ item.time_performed +'</td><td>'+ item.physician_fname +' '+ item.physician_mname + ' ' + item.physician_lname +'</td><td>'+ item.reschedule_on +'</td><td>'+ item.reason_cancellation +'</td></tr>';
+
+        $('#pf-loa-no').html(item.loa_no);
+        });
+        $('#pf-tbody').html(tbody);
+      
+      }
+    });
+  }
+
+  const viewPerformedLoaConsult = (loa_id) => {
+    $.ajax({
+      url: `${baseUrl}healthcare-coordinator/loa/performed-consult-loa-info/view/${loa_id}`,
+      type: 'GET',
+      dataType: 'json',
+      success: function(response){
+      
+        $('#consultLoaInfoModal').modal('show');
+
+        let tbody = '';
+        
+        tbody += '<tr><td>'+ response.request_type +'</td><td>'+ response.status + '</td><td>' + response.date_performed + ' '+ response.time_performed +'</td><td>'+ response.physician_fname +' ' + response.physician_mname + ' ' + response.physician_lname +'</td></tr>';
+
+        $('#pf-consult-tbody').html(tbody);
+        $('#pf-consult-loa-no').html(response.loa_no);
+
+      }
+
+    });
+  }
 </script>

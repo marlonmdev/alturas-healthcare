@@ -31,7 +31,7 @@
                     </div>
             </div>
                 
-            <form id="performedLoaInfo" method="post" action="<?php echo base_url();?>healthcare-coordinator/loa/performed-loa-info/submit" class="needs-validation" novalidate>
+            <form id="performedLoaInfo" method="post" class="needs-validation" novalidate>
                 <div class="row">
                         <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
                         <div class="col-lg-4">
@@ -184,7 +184,7 @@
                 return;
             }
 
-            let url = $(this).attr('action');
+            let url = '<?php echo base_url();?>healthcare-coordinator/loa/performed-loa-info/submit';
             let data = $(this).serialize();
             $.ajax({
                 type: 'POST',

@@ -255,7 +255,6 @@ class Account_controller extends CI_Controller {
 					'mgr_username_error' => '',
 					'mgr_password_error' => '',
 					'loa_id'  => $loa_id,
-					'company_doctor' => $result['doctor_id']
 				];
 			} else {
 				$verified = $this->_verify_hash($mgr_password, $result['password']);
@@ -266,14 +265,12 @@ class Account_controller extends CI_Controller {
 						'mgr_username_error' => '',
 						'mgr_password_error' => '',
 						'loa_id'  => $loa_id,
-						'company_doctor' => $result['doctor_id']
 					];
 				} else {
 					$response = [
 						'status'  => 'success',
 						'message' => 'Access Granted',
 						'loa_id'  => $loa_id,
-						'company_doctor' => $result['doctor_id']
 					];
 				}
 			}

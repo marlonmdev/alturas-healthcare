@@ -1339,8 +1339,7 @@ class CI_Form_validation {
 	 * @param	string
 	 * @return	bool
 	 */
-	public function alpha_dash($str)
-	{
+	public function alpha_dash($str){
 		return (bool) preg_match('/^[a-z0-9_-]+$/i', $str);
 	}
 

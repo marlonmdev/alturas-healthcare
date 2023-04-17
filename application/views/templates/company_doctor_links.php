@@ -57,7 +57,16 @@
                   <i class="mdi mdi-file-chart"></i>
                   <span class="hide-menu ls-1">NOA Requests</span>
                 </a>
-              </li>   
+              </li>
+
+              <li class="sidebar-item <?php echo $this->uri->segment(2) == 'noa' ? 'selected' : ''; ?>">
+                <a class="sidebar-link" href="<?php echo base_url(); ?>company-doctor/patient/design" aria-expanded="false">
+                  <i class="mdi mdi-file-chart"></i>
+                  <span class="hide-menu ls-1">List of Patient</span>
+                </a>
+              </li>
+
+             
 
               <li class="sidebar-item">
                  <!-- $account_settings_url is defined in the header.php file -->

@@ -13,7 +13,7 @@ class Members_controller extends CI_Controller {
 		}
 	}
 
-	function fetch_all_members() {
+	function fetch_all_patient() {
 		$this->security->get_csrf_hash();
 		$list = $this->members_model->get_datatables();
 		$data = array();

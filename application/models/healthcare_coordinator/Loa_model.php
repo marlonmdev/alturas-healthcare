@@ -166,7 +166,7 @@ function db_get_cost_types_by_hp_ID($hp_id) {
     $this->db->select('*')
             ->from('loa_requests as tbl_1')
             ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
-            ->where('tbl_1.status', 'Rescheduled')
+            ->where('tbl_1.status', 'Reffered')
             ->where('tbl_1.loa_id', $loa_id)
             ->order_by('loa_id', 'DESC');
     return $this->db->get()->row_array();
@@ -227,6 +227,7 @@ function db_get_cost_types_by_hp_ID($hp_id) {
             ->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id')
             ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id')
             ->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id= tbl_5.emp_id')
+            ->join('company_doctors as tbl_6', 'tbl_1.approved_by = tbl_6.doctor_id')
             ->where('tbl_1.loa_id', $loa_id);
     return $this->db->get()->row_array();
   }
@@ -487,7 +488,7 @@ function db_get_cost_types_by_hp_ID($hp_id) {
 
   function check_if_status_cancelled($loa_id) {
     $this->db->select('status')
-            ->where('status', 'Rescheduled')
+            ->where('status', 'Reffered')
             ->where('loa_id', $loa_id)
             ->group_by('loa_id');
     $query = $this->db->get('performed_loa_info');
@@ -505,7 +506,7 @@ function db_get_cost_types_by_hp_ID($hp_id) {
             ->join('cost_types as tbl_2', 'tbl_1.ctype_id = tbl_2.ctype_id')
             ->where('tbl_1.loa_id', $loa_id)
             ->where('tbl_2.hp_id', $hp_id)
-            ->where('tbl_1.status', 'Rescheduled');
+            ->where('tbl_1.status', 'Reffered');
     return $this->db->get()->result_array();
   }
 
@@ -526,7 +527,7 @@ function db_get_cost_types_by_hp_ID($hp_id) {
   }
 
   function set_older_loa_rescheduled($loa_id) {
-    $this->db->set('rescheduled', '1')
+    $this->db->set('reffered', '1')
             ->where('loa_id' , $loa_id);
     return $this->db->update('loa_requests');
   }
@@ -536,8 +537,15 @@ function db_get_cost_types_by_hp_ID($hp_id) {
   }
 
   function check_if_already_added($loa_id) {
+    $this->db->select('*')
+            ->from('loa_requests')
+            ->where('loa_id', $loa_id);
+    return $this->db->get()->row_array();
+  }
+
+  function check_if_loa_already_added($loa_id) {
     $query = $this->db->get_where('hr_added_loa_fees', ['loa_id' => $loa_id]);
-    return $query->num_rows() > 0 ? false : true ;
+    return $query->num_rows() > 0 ? true : false;
   }
 
   function insert_deductions($data) {
@@ -556,6 +564,7 @@ function db_get_cost_types_by_hp_ID($hp_id) {
     $this->db->select('*')
             ->from('hr_added_loa_fees as tbl_1')
             ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+            ->join('loa_requests as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id')
             ->where('tbl_1.loa_id', $loa_id);
     return $this->db->get()->row_array();
   }
@@ -580,11 +589,49 @@ function db_get_cost_types_by_hp_ID($hp_id) {
   }
 
   function check_if_done_created_new_loa($loa_id) {
-    $this->db->select('rescheduled')
+    $this->db->select('reffered')
         ->from('loa_requests')
         ->where('loa_id', $loa_id);
     return $this->db->get()->row_array();
   }
+  
+  function set_bill_for_charging($loa_id) {
+    $this->db->set('for_charging', '1')
+            ->where('loa_id', $loa_id);
+    return $this->db->update('loa_requests');
+  }
+
+    function get_hp_billing() {
+      $this->db->select('*');
+      $this->db->from('billing as tbl_1');
+      $this->db->join('loa_requests as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id');
+      $this->db->where('tbl_1.status', 'Billed');
+   
+      if($this->input->post('filter')){
+        $filterValue = $this->input->post('filter');
+        $this->db->like('tbl_1.hp_id', $filterValue); 
+      }
+
+      if ($this->input->post('start_date')) {
+          $startDate = date('Y-m-d', strtotime($this->input->post('start_date')));
+          $this->db->where('tbl_1.billed_on >=', $startDate);
+      }
+
+      if ($this->input->post('end_date')){
+          $endDate = date('Y-m-d', strtotime($this->input->post('end_date')));
+          $this->db->where('tbl_1.billed_on <=', $endDate);
+      }
+      
+      $this->db->order_by('tbl_1.loa_id', 'ASC');
+      return $this->db->get()->result_array();
+    }
+
+  // function get_hr_billing($hospital, $start_date, $end_date) {
+  //   $this->db->select('*')
+  //           ->from('hr_added_loa_fees')
+  //   return $this->db->get()->result_array();
+  // }
+
 
 
 }

@@ -68,7 +68,7 @@
               href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/rescheduled"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Rescheduled</span></a
+              <span class="hidden-xs-down fs-5 font-bold">Referrals</span></a
               >
           </li>
           <li class="nav-item">

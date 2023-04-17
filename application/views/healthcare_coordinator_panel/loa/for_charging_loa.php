@@ -10,7 +10,7 @@
               <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
               <li class="breadcrumb-item active" aria-current="page">
-                  Billed LOA
+                  Completed LOA
               </li>
               </ol>
           </nav>
@@ -24,9 +24,9 @@
     <div class="row">
       <div class="col-lg-12">
         <ul class="nav nav-tabs mb-4" role="tablist">
-          <li class="nav-item">
+        <li class="nav-item">
             <a
-              class="nav-link active"
+              class="nav-link"
               href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/billed"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -35,7 +35,7 @@
           </li>
           <li class="nav-item">
             <a
-              class="nav-link"
+              class="nav-link active"
               href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/for-charging"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -43,62 +43,40 @@
             >
           </li>
         </ul>
-        <div class="row pt-2 pb-2">
-            <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
-            <div class="col-lg-5 ps-5 pb-3 pt-1 pb-4">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text bg-dark text-white">
-                        <i class="mdi mdi-filter"></i>
-                        </span>
-                    </div>
-                    <select class="form-select fw-bold" name="billed-hospital-filter" id="billed-hospital-filter" oninput="enableDate()">
-                            <option value="">Select Hospital</option>
-                            <?php foreach($hcproviders as $option) : ?>
-                            <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
-                            <?php endforeach; ?>
-                    </select>
-                </div>
-            </div>
 
-            
-            <div class="col-lg-6 offset-1">
-                    <div class="input-group">
-                        <div class="input-group-append">
-                            <span class="input-group-text bg-dark text-white ls-1 ms-2">
-                                <i class="mdi mdi-filter"></i>
-                            </span>
-                        </div>
-                        <input type="date" class="form-control" name="start-date" id="start-date" oninput="validateDateRange()" placeholder="Start Date" disabled>
-
-                        <div class="input-group-append">
-                            <span class="input-group-text bg-dark text-white ls-1 ms-2">
-                                <i class="mdi mdi-filter"></i>
-                            </span>
-                        </div>
-                        <input type="date" class="form-control" name="end-date" id="end-date" oninput="validateDateRange()" placeholder="End Date" disabled>
-                    </div>
+        <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text bg-dark text-white">
+                    <i class="mdi mdi-filter"></i>
+                    </span>
                 </div>
+                <select class="form-select fw-bold" name="completed-hospital-filter" id="completed-hospital-filter">
+                        <option value="">Select Hospital</option>
+                        <?php foreach($hcproviders as $option) : ?>
+                        <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
+                        <?php endforeach; ?>
+                </select>
             </div>
         </div>
-       
-        <div class="card shadow" style="background-color:#f7e9d2">
+
+        <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover table-responsive" id="billedLoaTable">
-                <thead style="background-color:#ded4c3">
+              <table class="table table-hover table-responsive" id="completedLoaTable">
+                <thead>
                   <tr>
                     <th class="fw-bold">LOA No.</th>
                     <th class="fw-bold">Name</th>
                     <th class="fw-bold">LOA Type</th>
-                    <!-- <th class="fw-bold">Healthcare Provider</th> -->
-                    <th class="fw-bold">Coordinator Bill</th>
-                    <th class="fw-bold">Healthcare Bill</th>
-                    <th class="fw-bold">Variance</th>
-                    <!-- <th class="fw-bold" style="width:150px">Actions</th> -->
+                    <th class="fw-bold">Healthcare Provider</th>
+                    <th class="fw-bold">RX File</th>
+                    <th class="fw-bold">Request Date</th>
+                    <th class="fw-bold">Status</th>
+                    <th class="fw-bold" style="width:150px">Actions</th>
                   </tr>
                 </thead>
-                <tbody id="billed-tbody">
+                <tbody>
                 </tbody>
               </table>
             </div>
@@ -123,93 +101,37 @@
 
   $(document).ready(function() {
 
-    $("#start-date").flatpickr({
-        dateFormat: 'Y-m-d',
+    let completedTable = $('#completedLoaTable').DataTable({
+      processing: true, //Feature control the processing indicator.
+      serverSide: true, //Feature control DataTables' server-side processing mode.
+      order: [], //Initial no order.
+
+      // Load data for the table's content from an Ajax source  
+      ajax: {
+        url: `${baseUrl}healthcare-coordinator/loa/requests-list/for-charging/fetch`,
+        type: "POST",
+        // passing the token as data so that requests will be allowed
+        data: function(data) {
+            data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
+            data.filter = $('#completed-hospital-filter').val();
+        }
+      },
+
+      //Set column definition initialisation properties.
+      columnDefs: [{
+        "targets": [4, 6, 7], // numbering column
+        "orderable": false, //set not orderable
+      }, ],
+      responsive: true,
+      fixedHeader: true,
     });
 
-    $('#end-date').flatpickr({
-        dateFormat: 'Y-m-d',
+    $('#completed-hospital-filter').change(function(){
+      completedTable.draw();
     });
 
-    $('#end-date').change(function(){
-        fetchBilledLoa();
-    });
 
   });
-
-    window.onload = (event) => {
-        // fetchBilledLoa();
-    }
-
-    const fetchBilledLoa = () => {
-        $.ajax({
-            url: `${baseUrl}healthcare-coordinator/loa/billed/fetch`,
-            type: "GET",
-            dataType: 'json',
-            data: function(data){
-                data.filter = $('#billed-hospital-filter').val();
-                data.start_date = $('#start-date').val();
-                data.end_date = $('#end-date').val();
-            },
-            success: function(response) {
-                let tbody = '';
-
-                $.each(response, function(index, item){
-                    if(item != ""){
-                        tbody += '<tr><td>'+item.loa_no+'</td><td>'+item.first_name+' '+item.middle_name+' '+item.last_name+' '+item.suffix+'</td><td>'+item.loa_request_type+'</td><td>'+item.request_type+'</td><td>'+item.total_bill+'</td><td>'+item.total_deduction+'</td></tr>';
-                    }else{
-                        tbody += '<em>No Data Found!</em>';
-                    }
-                });
-
-                $('#billed-tbody').html(tbody);
-            }
-        });
-    }
-
-    const enableDate = () => {
-        const hp_filter = document.querySelector('#billed-hospital-filter');
-        const start_date = document.querySelector('#start-date');
-        const end_date = document.querySelector('#end-date');
-
-        if(hp_filter != ''){
-            start_date.removeAttribute('disabled');
-            start_date.style.backgroundColor = '#ffff';
-            end_date.removeAttribute('disabled');
-            end_date.style.backgroundColor = '#ffff';
-        }else{
-            start_date.setAttribute('disabled', true);
-            start_date.value = '';
-            end_date.setAttribute('disabled', true);
-            end_date.value = '';
-        }
-
-    }
-
-    const validateDateRange = () => {
-            const startDateInput = document.querySelector('#start-date');
-            const endDateInput = document.querySelector('#end-date');
-            const startDate = new Date(startDateInput.value);
-            const endDate = new Date(endDateInput.value);
-
-            if (startDateInput.value === '' || endDateInput.value === '') {
-                return; // Don't do anything if either input is empty
-            }
-
-            if (endDate < startDate) {
-                // alert('End date must be greater than or equal to the start date');
-                swal({
-                    title: 'Failed',
-                    text: 'End date must be greater than or equal to the start date',
-                    // timer: 4000,
-                    showConfirmButton: true,
-                    type: 'error'
-                });
-                endDateInput.value = '';
-                return;
-            }          
-        }
-
 
   function viewImage(path) {
     let item = [{

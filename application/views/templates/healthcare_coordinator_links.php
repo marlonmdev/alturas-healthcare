@@ -67,7 +67,7 @@
                   <li class="sidebar-item">
                     <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/billed" class="sidebar-link"
                       ><i class="mdi mdi-note-outline"></i
-                      ><span class="hide-menu ls-1">LOA Charging</span>
+                      ><span class="hide-menu ls-1">Billed LOA</span>
                     </a>
                   </li>
                 </ul>

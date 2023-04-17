@@ -66,7 +66,7 @@
               href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/rescheduled"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Rescheduled</span></a
+              <span class="hidden-xs-down fs-5 font-bold">Referrals</span></a
               >
           </li>
           <li class="nav-item">
@@ -184,7 +184,7 @@
         data: $(this).serialize(),
         dataType: "json",
         success: function (res) {
-            const { status, message, mgr_username_error, mgr_password_error, loa_id } = res;
+            const { status, message, mgr_username_error, mgr_password_error, loa_id, company_doctor } = res;
 
             if (status == "error") {
               if (mgr_username_error !== '') {
@@ -215,7 +215,7 @@
 
             } else {
               $('#managersKeyModal').modal('hide');
-              window.location.href = `${baseUrl}healthcare-coordinator/loa/requested-loa/create_new_loa/${loa_id}`;
+              window.location.href = `${baseUrl}healthcare-coordinator/loa/requested-loa/create_new_loa/${loa_id}/${company_doctor}`;
             }
         },
       });

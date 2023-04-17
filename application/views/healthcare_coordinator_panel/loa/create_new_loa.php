@@ -38,33 +38,58 @@
           <div class="card-body">
 
             <form method="post" action="<?= base_url(); ?>healthcare-coordinator/loa/requested-loa/submit" class="mt-2" id="coordinatorLoaRequestForm">
-              <!-- Start of Hidden Inputs -->
-              <input type="hidden" name="user-role" value="<?php echo $user_role ?>">
-              <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
-              <input type="hidden" name="emp-id" value="<?php echo $emp_id ?>">
-              <input type="hidden" name="loa-id" value="<?php echo $loa_id ?>">
-              <!-- End of Hidden Inputs -->
-              <span class="text-info fs-4 fw-bold ls-2"><i class="mdi mdi-file-document-box"></i> LOA REQUEST DETAILS</span>
+                <!-- Start of Hidden Inputs -->
+                <input type="hidden" name="user-role" value="<?php echo $user_role ?>">
+                <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
+                <input type="hidden" name="emp-id" value="<?php echo $emp_id ?>">
+                <input type="hidden" name="loa-id" value="<?php echo $loa_id ?>">
+                <input type="hidden" name="approved_by" value="<?php echo $approved_by ?>">
+                <!-- End of Hidden Inputs -->
+                <span class="text-info fs-4 fw-bold ls-2"><i class="mdi mdi-file-document-box"></i> LOA REQUEST DETAILS</span>
                 <div class="row pt-2">
                     <div class="col-sm-6 mb-2">
-                    <label class="colored-label fs-5">Full Name</label>
-                    <input type="text" class="form-control fw-bold" name="full-name" value="<?php echo $fullname ?>" disabled>
+                        <label class="colored-label fs-5">Full Name</label>
+                        <input type="text" class="form-control fw-bold" name="full-name" value="<?php echo $fullname ?>" disabled>
                     </div>
-
-                    <div class="col-lg-3">
-                        <label class="fw-bold fs-5">LOA Number : </label>
-                        <input class="form-control fw-bold" type="text" name="loa-num" id="loa-num" value="<?php echo $loa_no ?>" readonly>
-                    </div>  
 
                     <div class="col-lg-3">
                         <label class="fw-bold fs-5">Request Type : </label>
                         <input class="form-control fw-bold" type="text" name="request-type" id="request-type" value="<?php echo $request_type ?>" readonly>
                     </div>  
+
+                    <div class="col-lg-3 col-sm-12 col-lg-offset-4">
+                        <?php
+                          $month = date('m');
+                          $day = date('d');
+                          $year = date('Y');
+                          $today = $year . '-' . $month . '-' . $day;
+                        ?>
+                        <label class="colored-label fs-5">Date Creation</label>
+                        <input type="text" class="form-control fw-bold" name="request-date" value="<?= $today; ?>" disabled>
+                    </div>
                 </div>
-                  
-              
-              <div class="form-group row">
-                    <div class="col-lg-6 col-sm-12 col-lg-offset-3 mb-2 pt-2 change-provider" style="display:none">
+                    
+                <div class="form-group row">
+                    <input type="hidden" name="old-hp-id" id="old-hp-id" value="<?php echo $hp_id ?>">
+                    <div class="col-lg-6 pt-2 provider" style="display:block">
+                        <label class="fw-bold fs-5">Previous Healthcare Provider : </label>
+                        <input class="form-control fw-bold text-danger" type="text" name="old-hp-name" id="old-hp-name" value="<?php echo $hp_name  ?>" readonly>
+                    </div> 
+                  <div class="col-lg-3 pt-2">
+                        <label class="fw-bold fs-5">Previous LOA Number : </label>
+                        <input class="form-control fw-bold text-danger" type="text" name="loa-num" id="loa-num" value="<?php echo $loa_no ?>" readonly>
+                    </div> 
+                </div>
+                <label class="fw-bold fs-5">Previous Medical Service/s : </label>
+                  <?php foreach($resched_services as $med_services) : ?>
+                    <div class="col-lg-6 pb-3 ">
+                        <input type="hidden" name="old-ctype-id[]" value="<?php echo $med_services['ctype_id'] ?>">
+                        <input type="text" class="form-control fw-bold ls-1 text-danger" name="old-ct-name[]" value="<?php echo $med_services['item_description'] ?>" readonly>
+                    </div>
+                  <?php endforeach; ?>
+                <hr>
+                <div class="row">
+                    <div class="col-lg-6 mb-2 pt-2 change-provider">
                         <label class="colored-label fs-5">New Healthcare Provider : </label>
                         <select class="form-select fw-bold" name="healthcare-provider" id="healthcare-provider" oninput="enableRequestType()">
                             <option value="">Select New Healthcare Provider</option>
@@ -79,48 +104,27 @@
                             ?>
                         </select>
                         <em id="healthcare-provider-error" class="text-danger"></em>
-                    </div> <input type="hidden" name="hp-id" id="hp-id" value="<?php echo $hp_id ?>">
-
-                    <div class="col-lg-6 pt-2 provider" style="display:block">
-                        <label class="fw-bold fs-5">Healthcare Provider : </label>
-                       
-                        <input class="form-control fw-bold" type="text" name="hp-name" id="hp-name" value="<?php echo $hp_name  ?>" readonly>
-                    </div> 
-
-                    <div class="col-lg-3 pt-5">
-                        <button class="btn btn-info badge" title="Change HC Provider" id="change-btn" type="button" onclick="showHcSelection()"><i class="mdi mdi-hospital-building"></i> Change</button>
                     </div>
+                    <div class="col-lg-6 form-group row">
+                        <div class="col-lg-12 col-sm-12 mb-2 pt-2" id="med-services-div">
+                            <label class="colored-label fs-5"> Select Medical Service/s : </label><br>
+                            <div id="med-services-wrapper">
+                              <!-- med-services select box will be appended here... -->
+                            </div>
+                            <em id="med-services-error" class="text-danger"></em>
+                        </div>
+                    </div>
+                </div>
                 
-                <div class="col-lg-3 col-sm-12 col-lg-offset-4 pt-2">
-                  <?php
-                    $month = date('m');
-                    $day = date('d');
-                    $year = date('Y');
-                    $today = $year . '-' . $month . '-' . $day;
-                  ?>
-                  <label class="colored-label fs-5">Date Created</label>
-                  <input type="text" class="form-control fw-bold" name="request-date" value="<?= $today; ?>" disabled>
-                </div>
-               
-              </div>
-              <label class="fw-bold fs-5">Medical Service/s : </label>
-              <?php foreach($resched_services as $med_services) : ?>
 
-                <div class="col-lg-6 pb-3 ">
-                    <input type="hidden" name="ctype-id[]" value="<?php echo $med_services['ctype_id'] ?>">
-                    <input type="text" class="form-control fw-bold ls-1 text-danger" name="ct-name[]" value="<?php echo $med_services['item_description'] ?>" readonly>
+                <div class="row mt-2 offset-10">
+                  <div class="col-sm-12 mb-2 d-flex justify-content-start">
+                    <button type="submit" class="btn btn-primary me-2">
+                      <i class="mdi mdi-content-save-settings"></i> SUBMIT
+                    </button>
+                  </div>
                 </div>
-
-              <?php endforeach; ?>
-
-              <div class="row mt-2 offset-10">
-                <div class="col-sm-12 mb-2 d-flex justify-content-start">
-                  <button type="submit" class="btn btn-primary me-2">
-                    <i class="mdi mdi-content-save-settings"></i> SUBMIT
-                  </button>
-                </div>
-              </div>
-            </form>
+              </form>
             <!-- End of Form -->
           </div>
           <!-- End of Card Body -->
@@ -179,6 +183,30 @@
         },
       })
     });
+
+    $('#healthcare-provider').on('change', function(){
+        const hp_id = $(this).val();
+        const token = `<?php echo $this->security->get_csrf_hash(); ?>`;
+
+        if(hp_id != ''){
+          $.ajax({
+              url: `${baseUrl}healthcare-coordinator/get-services/${hp_id}`,
+              type: "GET",
+              dataType: "json",
+              success:function(response){
+
+                $('#med-services-wrapper').empty();                
+
+                $('#med-services-wrapper').append(response);
+
+                $(".chosen-select").chosen({
+                  width: "100%",
+                  no_results_text: "Oops, nothing found!"
+                }); 
+              }
+          });
+        }
+      });
 
 });
 

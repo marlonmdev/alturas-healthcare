@@ -64,6 +64,19 @@
               </div>
             </div>
 
+            <div class="col-lg-3 col-sm-6">
+              <div class="card-box bg-blue">
+                <div class="inner">
+                  <h3><?php echo $total_patient; ?></h3>
+                  <p>Total Patient</p>
+                </div>
+                <div class="icon">
+                  <i class="mdi mdi-file-chart" aria-hidden="true"></i>
+                </div>
+                <a href="<?php echo base_url() ?>healthcare-provider/patient/design" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+
             <?php include "search_member_form.php"; ?>
 
             <?php include "searched_member_profile.php"; ?>

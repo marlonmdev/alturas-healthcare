@@ -22,6 +22,7 @@ class Pages_controller extends CI_Controller {
 		$data['loa_count'] = $this->count_model->hp_approved_loa_count($hp_id);
 		$data['noa_count'] = $this->count_model->hp_approved_noa_count($hp_id);
 		$data['bllled_count'] = $this->count_model->hp_done_billing_count($hp_id);
+		$data['total_patient'] = $this->count_model->total_patient($hp_id);
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_provider_panel/dashboard/index');
 		$this->load->view('templates/footer');

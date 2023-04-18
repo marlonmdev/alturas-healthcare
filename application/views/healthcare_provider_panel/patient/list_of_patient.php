@@ -28,9 +28,9 @@
 										<th class="fw-bold">Business Unit</th>
 										<th class="fw-bold">Name of Department</th>
                     <th class="fw-bold">Hospital Name</th>
-                    <th class="fw-bold">Max Benefit Limit</th>
+                    <!-- <th class="fw-bold">Max Benefit Limit</th>
+                    <th class="fw-bold">Remaining MBL</th> -->
                     <th class="fw-bold">Remaining MBL</th>
-                    <th class="fw-bold">Progress Bar</th>
 										<th class="fw-bold">Action</th>
                   </tr>
                 </thead>
@@ -60,7 +60,7 @@
 			},
 
       columnDefs: [{ 
-				"targets": [8], // 6th and 7th column / numbering column
+				"targets": [6], // 6th and 7th column / numbering column
 				"orderable": false,
       },
       ],

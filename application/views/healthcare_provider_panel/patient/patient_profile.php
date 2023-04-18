@@ -48,14 +48,35 @@
                   <h6 class="mb-0 text-secondary" style="font-weight:600;">Position Level: </h6>
                   <span style="font-weight:600;" class="colored-label"><?= $member['position_level'] ?></span>
                 </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                  <h6 class="mb-0 text-secondary" style="font-weight:600;">Health Card No: </h6>
-                  <span style="font-weight:600;" class="colored-label"><?php echo $member['health_card_no'] ?: 'None'; ?></span>
-                </li>
+                
                 <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
                   <h6 class="mb-0 text-secondary" style="font-weight:600;">Employee No: </h6>
                   <span style="font-weight:600;" class="colored-label"><?php echo $member['emp_id'] ?: 'None'; ?></span>
                 </li>
+
+                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                  <h6 class="mb-0 text-secondary" style="font-weight:600;">Health Card No: </h6>
+                  <span style="font-weight:600;" class="colored-label"><?php echo $member['health_card_no'] ?: 'None'; ?></span>
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                  <h6 class="mb-0 text-secondary" style="font-weight:600;">Max Benefit Limit: </h6>
+                  <span style="font-weight:600;" class="colored-label">
+                    <?php
+                    echo empty($mbl['max_benefit_limit']) ? 'None' : '&#8369;' . number_format($mbl['max_benefit_limit'], 2);
+                    ?>
+                  </span>
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                  <h6 class="mb-0 text-secondary" style="font-weight:600;">Remaining Balance: </h6>
+                  <span style="font-weight:600;" class="colored-label">
+                    <?php
+                    echo empty($mbl['remaining_balance']) ? 'None' : '&#8369;' . number_format($mbl['remaining_balance'], 2);
+                    ?>
+                  </span>
+                </li>
+                
               </ul>
             </div>
           </div>

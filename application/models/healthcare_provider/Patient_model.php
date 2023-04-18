@@ -6,7 +6,7 @@ class Patient_model extends CI_Model {
 	var $table2 = 'members';
 	var $table3 = 'max_benefit_limits';
 	var $table4 = 'healthcare_providers';
-	var $column_order = ['tbl_2.member_id', 'tbl_2.first_name', 'tbl_2.business_unit', 'tbl_2.dept_name', 'tbl_4.hp_name', 'tbl_3.remaining_balance', 'tbl_3.max_benefit_limit']; 
+	var $column_order = ['tbl_2.member_id', 'tbl_2.first_name', 'tbl_2.business_unit', 'tbl_2.dept_name', 'tbl_4.hp_name']; 
 	
 	var $column_search = ['emp_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'business_unit', 'dept_name','hp_name','CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)']; //set column field database for datatable searchable 
   var $order = ['member_id' => 'desc']; // default order 

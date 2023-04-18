@@ -28,7 +28,6 @@ class Patient_controller extends CI_Controller {
 	}
 	function fetch_all_patient(){
 		$this->security->get_csrf_hash();
-		// $approval_status = 'Paid';
 		$hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
 		$list = $this->patient_model->get_datatables($hcare_provider_id);
 		$data = array();
@@ -42,8 +41,6 @@ class Patient_controller extends CI_Controller {
 			$rmbl =  number_format($member['remaining_balance'],2);
 			$view_url = base_url() . 'healthcare-provider/patient/view_information/' . $member_id;
 			$custom_actions = '<a href="' . $view_url . '"  data-bs-toggle="tooltip" title="Patient Profile"><i class="mdi mdi-account-card-details fs-2 text-info me-2"></i></a>';
-			// $view_url2 = base_url() . 'head-office-iad/transaction/search/';
-			// $custom_actions .= '<a href="' . $view_url2 . '"  data-bs-toggle="tooltip" title="Search Payment Record"><i class="mdi mdi-magnify fs-2 text-info"></i></a>';
 
 			$percent=0;
 			$p=null;
@@ -61,7 +58,7 @@ class Patient_controller extends CI_Controller {
 	        $bar = "<div class='progress-container' id='animated-bar' style='border: 1px solid #E6E9ED;'>
                     <div class='progress-bar progress-bar-info progress-bar-striped progress-bar-animated active' data-transitiongoal='$percent' aria-valuenow='$percent' style='width: $percent%;'>
                     </div>
-	                  <b style='color: #ccccc;'><center>".$percent." %</center></b>
+	                  <b style='color: red;'><center>".$percent." %</center></b>
 	                </div>";
 
 	      }else{
@@ -85,8 +82,8 @@ class Patient_controller extends CI_Controller {
 			$row[] = $member['business_unit'];
 			$row[] = $member['dept_name'];
 			$row[] = $short_hosp_name;
-			$row[] = $mbl;
-			$row[] = $rmbl;
+			// $row[] = $mbl;
+			// $row[] = $rmbl;
 			$row[] = $bar;
 			$row[] = $custom_actions;
 			$data[] = $row;

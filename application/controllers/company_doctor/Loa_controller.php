@@ -116,6 +116,8 @@ class Loa_controller extends CI_Controller {
 
 			$custom_actions .= '<a href="' . base_url() . 'company-doctor/loa/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Print LOA"><i class="mdi mdi-printer fs-2 ps-2 text-primary"></i></a>';
 
+			$custom_actions .= '<a href="JavaScript:void(0)" onclick="showBackDateForm(\'' . $loa_id . '\', \'' . $loa['loa_no'] . '\', \''.$loa['expiration_date'].'\')" data-bs-toggle="tooltip" title="Date Extension"><i class="mdi mdi-border-color fs-2 text-cyan"></i></a>';
+
 			// $expires = strtotime('+1 week', strtotime($loa['approved_on']));
       // $expiration_date = date('m/d/Y', $expires);
 			// call another function to determined if expired or not
@@ -180,6 +182,41 @@ class Loa_controller extends CI_Controller {
 		$result = $date_diff->invert ? "Expired" : "Not Expired";
 
 		return $result;
+	}
+
+	function backdate_expired(){
+		$loa_id = $this->myhash->hasher($this->input->post('loa-id', TRUE), 'decrypt');
+		$expiry_date = $this->input->post('expiry-date', TRUE);
+
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('expiry-date', 'Expiry Date', 'required');
+		if ($this->form_validation->run() == FALSE) {
+			$response = [
+				'status' 				    => 'error',
+				'expiry_date_error' => form_error('expiry-date'),
+			];
+		} else {
+			$post_data = [
+				'status'          => 'Approved',
+				'expiration_date' => date('Y-m-d', strtotime($expiry_date)),
+				'extended_when' => date("Y-m-d"),
+				'extended_by' 	=> $this->session->userdata('fullname'),
+			];
+
+			$updated = $this->loa_model->db_update_loa_request($loa_id, $post_data);
+
+			if (!$updated) {
+				$response = [
+					'status'  => 'save-error', 
+					'message' => 'LOA Request BackDate Failed'
+				];
+			}
+			$response = [
+				'status'  => 'success', 
+				'message' => 'LOA Request BackDated Successfully'
+			];
+		}		
+		echo json_encode($response);
 	}
 
 

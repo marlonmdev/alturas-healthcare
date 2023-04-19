@@ -1,6 +1,4 @@
-<!-- Start of Page Wrapper -->
 <div class="page-wrapper">
-  <!-- Bread crumb and right sidebar toggle -->
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
@@ -18,84 +16,69 @@
       </div>
     </div>
   </div>
-  <!-- End Bread crumb and right sidebar toggle -->
-  <!-- Start of Container fluid  -->
+
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
 
         <ul class="nav nav-tabs mb-4" role="tablist">
           <li class="nav-item">
-            <a
-              class="nav-link"
-              href="<?php echo base_url(); ?>company-doctor/loa/requests-list"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Pending</span></a
-            >
+            <a class="nav-link" href="<?php echo base_url(); ?>company-doctor/loa/requests-list" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Pending</span>
+            </a>
           </li>
+
           <li class="nav-item">
-            <a
-              class="nav-link active"
-              href="<?php echo base_url(); ?>company-doctor/loa/requests-list/approved"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Approved</span></a
-            >
+            <a class="nav-link active" href="<?php echo base_url(); ?>company-doctor/loa/requests-list/approved" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Approved</span>
+            </a>
           </li>
+
           <li class="nav-item">
-            <a
-              class="nav-link"
-              href="<?php echo base_url(); ?>company-doctor/loa/requests-list/disapproved"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
-            >
+            <a class="nav-link" href="<?php echo base_url(); ?>company-doctor/loa/requests-list/disapproved" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Disapproved</span>
+            </a>
           </li>
-            <li class="nav-item">
-            <a
-              class="nav-link"
-              href="<?php echo base_url(); ?>company-doctor/loa/requests-list/completed"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
-            >
+
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>company-doctor/loa/requests-list/completed" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Completed</span>
+            </a>
           </li>
-          </li>
-            <li class="nav-item">
-            <a
-              class="nav-link"
-              href="<?php echo base_url(); ?>company-doctor/loa/requests-list/expired"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
+
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>company-doctor/loa/requests-list/expired" role="tab">
+              <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">Expired</span>
             </a>
           </li>
+
           <li class="nav-item">
-            <a
-              class="nav-link"
-              href="<?php echo base_url(); ?>company-doctor/loa/requests-list/cancelled"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Cancelled</span></a
-            >
+            <a class="nav-link" href="<?php echo base_url(); ?>company-doctor/loa/requests-list/cancelled" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Cancelled</span>
+            </a>
           </li>
         </ul>
 
         <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text bg-dark text-white">
-                    <i class="mdi mdi-filter"></i>
-                    </span>
-                </div>
-                <select class="form-select fw-bold" name="approved-hospital-filter" id="approved-hospital-filter">
-                        <option value="">Select Hospital</option>
-                        <?php foreach($hcproviders as $option) : ?>
-                        <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
-                        <?php endforeach; ?>
-                </select>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text bg-dark text-white">
+                <i class="mdi mdi-filter"></i>
+              </span>
             </div>
+            <select class="form-select fw-bold" name="approved-hospital-filter" id="approved-hospital-filter">
+              <option value="">Select Hospital</option>
+              <?php foreach($hcproviders as $option) : ?>
+                <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
         </div>
 
         <div class="card shadow">
@@ -119,24 +102,19 @@
               </table>  
             </div>
           </div>
+          <?php include 'back_date_modal.php'; ?>
         </div>
-
         <?php include 'view_approved_loa_details.php'; ?>
-
       </div>
-      <!-- End Row  -->  
-      </div>
-    <!-- End Container fluid  -->
     </div>
-  <!-- End Page wrapper  -->
   </div>
-<!-- End Wrapper -->
+</div>
+
 <script>
   const baseUrl = `<?php echo base_url(); ?>`;
   const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
 
   $(document).ready(function() {
-
     let approvedTable = $('#approvedLoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
@@ -162,12 +140,80 @@
       fixedHeader: true,
     });
 
+    // Get today's date
+    const today = new Date();
+    // Create a new Date object representing tomorrow's date
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate());
+
+    $("#expiry-date").flatpickr({
+      enableTime: false,
+      dateFormat: 'Y-m-d',
+      minDate: tomorrow
+    });
+
     $('#approved-hospital-filter').change(function(){
       approvedTable.draw();
     });
 
 
+    $('#backDateForm').submit(function(event){
+      event.preventDefault();
+      $.ajax({
+        type: "post",
+        url: `${baseUrl}company-doctor/loa/requests-list/expired/backdate_expired`,
+        data: $(this).serialize(),
+        dataType: "json",
+        success: function (res) {
+          const { status, message } = res;
+
+          switch (status) {
+            case 'error':
+              // is-invalid class is a built in classname for errors in bootstrap
+              if (expiry_date_error !== '') {
+                $('#expiry-date-error').html(expiry_date_error);
+                $('#expiry-date').addClass('is-invalid');
+              } else {
+                $('#expiry-date-error').html('');
+                $('#expiry-date').removeClass('is-invalid');
+              }
+            break;
+
+            case 'save-error':
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
+            break;
+
+            case 'success':
+              swal({
+                title: 'Success',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'success'
+              });
+              $("#backDateModal").modal("hide");
+              $("#expiredLoaTable").DataTable().ajax.reload();
+            break;
+          }
+        },
+      });
+    });
   });
+
+  const showBackDateForm = (loa_id, loa_no,expiry_date) => {
+    $("#backDateModal").modal("show");
+    $('#bd-loa-id').val(loa_id);
+    $('#bd-loa-no').val(loa_no);
+    $('#loa-no').html(loa_no);
+    $('#expired-on').val(expiry_date);
+  }
+
 
   const viewImage = (path) => {
     let item = [{
@@ -188,17 +234,17 @@
     const element = document.querySelector("#printableDiv");
     // Use html2canvas to take a screenshot of the element
     html2canvas(element)
-      .then(function(canvas) {
-        // Convert the canvas to an image data URL
-        const imgData = canvas.toDataURL("image/png");
-        // Create a temporary link element to download the image
-        const link = document.createElement("a");
-        link.download = `loa_${fileName}.png`;
-        link.href = imgData;
+    .then(function(canvas) {
+      // Convert the canvas to an image data URL
+      const imgData = canvas.toDataURL("image/png");
+      // Create a temporary link element to download the image
+      const link = document.createElement("a");
+      link.download = `loa_${fileName}.png`;
+      link.href = imgData;
 
-        // Click the link to download the image
-        link.click();
-      });
+      // Click the link to download the image
+      link.click();
+    });
   }
 
 
@@ -286,4 +332,53 @@
       }
     });
   }
+
+  // const dateValidity = () => {
+  //   const expire_on = document.querySelectorAll('.expired-on'); 
+  //   const date_performed = document.querySelectorAll('.input-date');
+
+  //   for (let i = 0; i < date_performed.length; i++){
+  //     const date_performance = new Date(date_performed[i].value);
+  //     const expired_date = new Date(expire_on[i].value);
+  //     const max_valid_date = new Date(expired_date.getTime() + 14 * 24 * 60 * 60 * 1000); // 14 days after expired_date
+
+  //     if(date_performance < expired_date || date_performance > max_valid_date){
+  //       swal({
+  //         title: 'Invalid Date',
+  //         text: 'It must be within 14 days after Expiration Date ['+ expire_on[i].value +']',
+  //         showConfirmButton: true,
+  //         type: 'error'
+  //       });
+  //       date_performed[i].value = '';
+  //       flatpickr(date_performed[i]).close();
+  //       return;
+  //     }
+  //   }
+  // }
+
+  const dateValidity = () => {
+  const expire_on = document.querySelectorAll('.expired-on'); 
+  const date_performed = document.querySelectorAll('.input-date');
+  const current_date = new Date();
+
+  for (let i = 0; i < date_performed.length; i++){
+    const date_performance = new Date(date_performed[i].value);
+    const expired_date = new Date(expire_on[i].value);
+    const min_valid_date = new Date(current_date.getTime() - 1 * 24 * 60 * 60 * 1000); // 1 day before current_date
+    const max_valid_date = new Date(expired_date.getTime() + 14 * 24 * 60 * 60 * 1000); // 14 days after expired_date
+
+    if(date_performance < min_valid_date || date_performance > max_valid_date){
+      swal({
+        title: 'Invalid Date',
+        // text: 'It must be between '+ min_valid_date.toDateString() +' and '+ max_valid_date.toDateString(),
+        text: 'It must be between '+ current_date.toDateString() +' and '+ max_valid_date.toDateString(),
+        showConfirmButton: true,
+        type: 'error'
+      });
+      date_performed[i].value = '';
+      flatpickr(date_performed[i]).close();
+      return;
+    }
+  }
+}
 </script>

@@ -230,4 +230,20 @@ class Loa_model extends CI_Model {
     function db_get_healthcare_providers() {
       return $this->db->get('healthcare_providers')->result_array();
     }
+
+    function db_update_loa_request($loa_id, $post_data) {
+    $this->db->where('loa_id', $loa_id);
+    return $this->db->update('loa_requests', $post_data);
+  }
+  // function db_get_llr_data() {
+  //   // $this->db->select('tbl_1.loa_id, tbl_1.loa_no, tbl_1.first_name, tbl_1.middle_name, tbl_1.last_name, tbl_1.suffix, tbl_2.hp_name, tbl_1.loa_request_type, tbl_1.med_services, tbl_1.request_date, tbl_1.rx_file, tbl_1.status')
+  //   //          ->from('loa_requests as tbl_1')
+  //   //          ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
+  //   //          ->where('tbl_1.status', 'Approved')
+  //   //          ->order_by('loa_id', 'DESC');
+  //   // return $this->db->get()->result_array();
+  //   $this->db->select('approved_on,expiration_date');
+  //   $query = $this->db->get_where('loa_requests', ['status' => 'Approved']);
+  //   return $query->result_array();
+  // }
 }

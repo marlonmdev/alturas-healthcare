@@ -85,13 +85,13 @@
               <table class="table table-hover" id="approvedNoaTable">
                 <thead>
                   <tr>
-                    <th class="fw-bold">NOA No.</th>
-                    <th class="fw-bold">Name</th>
-                    <th class="fw-bold">Admission Date</th>
-                    <th class="fw-bold">Hospital Name</th>
-                    <th class="fw-bold">Expiry Date</th>
-                    <th class="fw-bold">Status</th>
-                    <th class="fw-bold">Actions</th>
+                    <th class="fw-bold">NOA NO.</th>
+                    <th class="fw-bold">NAME OF PATIENT</th>
+                    <th class="fw-bold">DATE OF ADMISSION</th>
+                    <th class="fw-bold">NAME OF HOSPITAL</th>
+                    <th class="fw-bold">DATE OF EXPIRATION</th>
+                    <th class="fw-bold">STATUS</th>
+                    <th class="fw-bold">ACTION</th>
                   </tr>
                 </thead>
                 <tbody>

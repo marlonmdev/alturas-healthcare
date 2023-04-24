@@ -24,7 +24,7 @@
         <div class="container-fluid">
           <div class="row mb-2">
 
-            <div class="col-lg-4 col-sm-6">
+            <div class="col-lg-3 col-sm-6">
               <div class="card-box bg-blue">
                 <div class="inner">
                   <h3><?= $hcare_prov_count ?></h3>
@@ -37,7 +37,7 @@
               </div>
             </div>
 
-            <div class="col-lg-4 col-sm-6">
+            <div class="col-lg-3 col-sm-6">
               <div class="card-box bg-green">
                 <div class="inner">
                   <h3><?= $members_count; ?></h3>
@@ -50,20 +50,7 @@
               </div>
             </div>
 
-            <div class="col-lg-4 col-sm-6">
-              <div class="card-box bg-blue">
-                <div class="inner">
-                  <h3><?= $members_count; ?></h3>
-                  <p>Total Patient</p>
-                </div>
-                <div class="icon">
-                  <i class="mdi mdi-account-multiple" aria-hidden="true"></i>
-                </div>
-                <a href="<?= base_url() ?>company-doctor/members" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
-              </div>
-            </div>
-
-            <div class="col-lg-4 col-sm-6">
+            <div class="col-lg-3 col-sm-6">
               <div class="card-box bg-orange">
                 <div class="inner">
                   <h3><?= $pending_loa_count ?></h3>
@@ -76,7 +63,7 @@
               </div>
             </div>
             
-            <div class="col-lg-4 col-sm-6">
+            <div class="col-lg-3 col-sm-6">
               <div class="card-box bg-red">
                 <div class="inner">
                   <h3><?= $pending_noa_count ?></h3>

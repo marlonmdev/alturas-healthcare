@@ -1,4 +1,3 @@
-
 <div class="modal fade" id="backDateModal" tabindex="-1" data-bs-backdrop="static">
   <div class="modal-dialog modal-md">
     <div class="modal-content">

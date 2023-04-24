@@ -158,7 +158,18 @@ class Loa_model extends CI_Model {
     return $this->db->update('loa_requests', $data);
   }
 
-  function db_disapprove_loa_request($loa_id, $data) {
+  // function db_disapprove_loa_request($loa_id, $data) {
+  //   $this->db->where('loa_id', $loa_id);
+  //   return $this->db->update('loa_requests', $data);
+  // }
+
+  function db_disapprove_loa_request($loa_id, $disapproved_by, $disapprove_reason, $disapproved_on) {
+    $data = array(
+      'status' => 'Disapproved',
+      'disapproved_by' => $disapproved_by,
+      'disapprove_reason' => $disapprove_reason,
+      'disapproved_on' => $disapproved_on
+    );
     $this->db->where('loa_id', $loa_id);
     return $this->db->update('loa_requests', $data);
   }

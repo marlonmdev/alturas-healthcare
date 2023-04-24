@@ -33,7 +33,7 @@
                 </a>
               </li>
 
-              <!-- <li class="sidebar-item 
+              <li class="sidebar-item 
               <?php echo $this->uri->segment(2) == 'loa' ? 'selected' : ''; ?>
               ">
                 <a
@@ -44,9 +44,9 @@
                   <i class="mdi mdi-file-document"></i>
                   <span class="hide-menu ls-1">LOA</span>
                 </a>
-              </li> -->
+              </li>
 
-              <li class="sidebar-item
+              <!-- <li class="sidebar-item
               <?php echo $this->uri->segment(2) == 'loa' ? 'selected' : ''; ?>
               ">
                 <a
@@ -64,14 +64,8 @@
                       ><span class="hide-menu ls-1">LOA Request List</span>
                     </a>
                   </li>
-                  <li class="sidebar-item">
-                    <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/billed" class="sidebar-link"
-                      ><i class="mdi mdi-note-outline"></i
-                      ><span class="hide-menu ls-1">Billed LOA</span>
-                    </a>
-                  </li>
                 </ul>
-              </li>
+              </li> -->
 
               <li class="sidebar-item 
               <?php echo $this->uri->segment(2) == 'noa' ? 'selected' : ''; ?>
@@ -99,6 +93,33 @@
                   </li>
                 </ul>
               </li>   
+
+              <li class="sidebar-item
+              <?php echo $this->uri->segment(2) == 'bill' ? 'selected' : ''; ?>
+              ">
+                <a
+                  class="sidebar-link has-arrow"
+                  href="javascript:void(0)"
+                  aria-expanded="false"
+                >
+                  <i class="mdi mdi-file-check"></i>
+                  <span class="hide-menu ls-1">Billing</span>
+                </a>
+                <ul aria-expanded="false" class="collapse first-level">
+                  <li class="sidebar-item">
+                    <a href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/billed" class="sidebar-link"
+                      ><i class="mdi mdi-note-outline"></i
+                      ><span class="hide-menu ls-1">Billed LOA</span>
+                    </a>
+                  </li>
+                  <li class="sidebar-item">
+                    <a href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/billed" class="sidebar-link"
+                      ><i class="mdi mdi-file-document-box"></i
+                      ><span class="hide-menu ls-1">Billed NOA</span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
 
               <li class="sidebar-item 
                <?php echo $this->uri->segment(2) == 'setup' ? 'selected' : ''; ?>

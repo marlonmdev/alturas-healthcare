@@ -261,6 +261,7 @@ $route['head-office-accounting/noa-request-list/noa-completed/fetch'] = 'ho_acco
 $route['head-office-accounting/noa-request-list/noa-approved/view/(:any)'] = 'ho_accounting/Noa_ho_controller/get_approved_noa_info';
 $route['head-office-accounting/noa-request-list/noa-completed/view/(:any)'] = 'ho_accounting/Noa_ho_controller/get_completed_noa_info';
 
+
 $route['head-office-accounting/list/hospital/(:any)/(:any)'] = 'ho_accounting/TableList/listByHopital';
 $route['head-office-accounting/list/summary/(:any)'] = 'ho_accounting/TableList/listInfoSummary';
 
@@ -313,8 +314,8 @@ $route['healthcare-coordinator/loa/cancellation-requests'] = 'healthcare_coordin
 $route['healthcare-coordinator/loa/cancellation-requests/approved'] = 'healthcare_coordinator/pages_controller/view_loa_approved_cancellation';
 $route['healthcare-coordinator/loa/cancellation-requests/disapproved'] = 'healthcare_coordinator/pages_controller/view_loa_disapproved_cancellation';
 $route['healthcare-coordinator/loa/requests-list/rescheduled'] = 'healthcare_coordinator/pages_controller/view_all_rescheduled_loa';
-$route['healthcare-coordinator/loa/requests-list/billed'] = 'healthcare_coordinator/pages_controller/view_all_billed_loa';
-$route['healthcare-coordinator/loa/requests-list/for-charging'] = 'healthcare_coordinator/pages_controller/view_for_charging_lo';
+$route['healthcare-coordinator/bill/requests-list/billed'] = 'healthcare_coordinator/pages_controller/view_all_billed_loa';
+$route['healthcare-coordinator/bill/requests-list/for-charging'] = 'healthcare_coordinator/pages_controller/view_for_charging_lo';
 
 $route['healthcare-coordinator/noa/requests-list'] = 'healthcare_coordinator/pages_controller/view_pending_noa_list';
 $route['healthcare-coordinator/noa/requests-list/approved'] = 'healthcare_coordinator/pages_controller/view_approved_noa_list';
@@ -322,6 +323,8 @@ $route['healthcare-coordinator/noa/requests-list/disapproved'] = 'healthcare_coo
 $route['healthcare-coordinator/noa/requests-list/expired'] = 'healthcare_coordinator/pages_controller/view_expired_noa_list';
 $route['healthcare-coordinator/noa/requests-list/completed'] = 'healthcare_coordinator/pages_controller/view_completed_noa_list';
 $route['healthcare-coordinator/noa/request-noa'] = 'healthcare_coordinator/pages_controller/request_noa_form';
+$route['healthcare-coordinator/bill/noa-requests/billed'] = 'healthcare_coordinator/pages_controller/view_billed_no';
+$route['healthcare-coordinator/bill/noa-requests/for-charging'] = 'healthcare_coordinator/pages_controller/view_for_payment_noa';
 
 // HealthCare Coordinator User Account Routes
 $route['healthcare-coordinator/account-settings'] = 'healthcare_coordinator/account_controller/account_settings';
@@ -403,10 +406,18 @@ $route['healthcare-coordinator/loa/performed-loa-info/submit'] = 'healthcare_coo
 $route['healthcare-coordinator/loa/requested-loa/match_with_billing/(:any)'] = 'healthcare_coordinator/loa_controller/match_loa_with_billing';
 $route['healthcare-coordinator/loa/requests-list/billed/fetch'] = 'healthcare_coordinator/loa_controller/fetch_billed_loa';
 $route['healthcare-coordinator/loa/matched-bill/submit'] = 'healthcare_coordinator/loa_controller/submit_matched_bill';
-$route['healthcare-coordinator/loa/requests-list/for-charging/fetch'] = 'healthcare_coordinator/loa_controller/fetch_for_charging_loa';
-$route['healthcare-coordinator/loa/requested-loa/charge_bill/(:any)'] = 'healthcare_coordinator/loa_controller/charge_loa_bill';
+$route['healthcare-coordinator/loa/requests-list/for-charging/fetch'] = 'healthcare_coordinator/loa_controller/fetch_for_payment_loa';
 $route['healthcare-coordinator/get-services/(:any)'] = 'healthcare_coordinator/loa_controller/get_hp_services';
 $route['healthcare-coordinator/loa/billed/fetch'] = 'healthcare_coordinator/loa_controller/fetch_consolidated_billing';
+$route['healthcare-coordinator/loa/total-bill/fetch'] = 'healthcare_coordinator/loa_controller/fetch_total_net_bill';
+$route['healthcare-coordinator/loa/charging/fetch/(:any)'] = 'healthcare_coordinator/loa_controller/get_loa_charging';
+$route['healthcare-coordinator/loa/charging/confirm'] = 'healthcare_coordinator/loa_controller/confirm_loa_charging';
+$route['healthcare-coordinator/loa/billing/fetch/(:any)'] = 'healthcare_coordinator/loa_controller/fetch_coordinator_billing';
+$route['healthcare-coordinator/bill/billed/fetch-payable/(:any)'] = 'healthcare_coordinator/loa_controller/fetch_monthly_payable';
+$route['healthcare-coordinator/loa/monthly-bill/fetch/(:any)'] = 'healthcare_coordinator/loa_controller/fetch_monthly_bill';
+$route['healthcare-coordinator/loa/matched/total-bill/fetch'] = 'healthcare_coordinator/loa_controller/get_matched_total_bill';
+$route['healthcare-coordinator/bill/billed/charging/(:any)'] = 'healthcare_coordinator/loa_controller/get_bill_for_charging';
+$route['healthcare-coordinator/loa/monthly-bill/charging/(:any)'] = 'healthcare_coordinator/loa_controller/fetch_billing_for_charging';
 
 // HealthCare Coordinator NOA Routes
 $route['healthcare-coordinator/noa/requests-list/fetch'] = 'healthcare_coordinator/noa_controller/fetch_all_pending_noa';
@@ -426,7 +437,15 @@ $route['healthcare-coordinator/noa/requested-noa/update/(:any)'] = 'healthcare_c
 $route['healthcare-coordinator/noa/requested-noa/cancel/(:any)'] = 'healthcare_coordinator/noa_controller/cancel_noa_request';
 $route['healthcare-coordinator/noa/requested-noa/generate-printable-noa/(:any)'] = 'healthcare_coordinator/noa_controller/generate_printable_noa';
 $route['healthcare-coordinator/noa/requests-list/set-charge-type'] = 'healthcare_coordinator/noa_controller/set_charge_type';
-
+$route['healthcare-coordinator/noa/billed/fetch'] = 'healthcare_coordinator/noa_controller/fetch_all_billed_noa';
+$route['healthcare-coordinator/noa/total-bill/fetch'] = 'healthcare_coordinator/noa_controller/get_total_hp_bill';
+$route['healthcare-coordinator/noa/matched-bill/submit'] = 'healthcare_coordinator/noa_controller/submit_consolidated_bill';
+$route['healthcare-coordinator/noa/requests-list/payable/fetch'] = 'healthcare_coordinator/noa_controller/fetch_payable_noa';
+$route['healthcare-coordinator/bill/billed-noa/fetch-payable/(:any)'] = 'healthcare_coordinator/noa_controller/fetch_monthly_payable';
+$route['healthcare-coordinator/noa/monthly-bill/fetch/(:any)'] = 'healthcare_coordinator/noa_controller/fetch_monthly_bill';
+$route['healthcare-coordinator/noa/matched/total-bill/fetch'] = 'healthcare_coordinator/noa_controller/fetch_total_hp_bill';
+$route['healthcare-coordinator/bill/billed-noa/charging/(:any)'] = 'healthcare_coordinator/noa_controller/fetch_monthly_charging';
+$route['healthcare-coordinator/noa/monthly-bill/charging/(:any)'] = 'healthcare_coordinator/noa_controller/fetch_billing_for_charging';
 
 // HealthCare Coordinator Setup Routes
 // * setup for healthcare providers

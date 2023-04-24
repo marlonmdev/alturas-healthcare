@@ -65,11 +65,16 @@
                 </div>
                 <hr>
                 <div class="row">
+                    <div class="col-3  pt-2">
+                        <h5 class="text-left text-danger">
+                            HOSPITAL CHARGES
+                        </h5>
+                    </div>
                     <?php 
                         foreach($cost_types as $cost_type) : 
                                 
                     ?>
-                            <div class="row">
+                            <div class="row pb-4">
                                 <div class="col-lg-6">
                                     <input type="hidden" name="ctype-id[]" value="<?php echo $cost_type['ctype_id'] ?>">
                                     <label class="fw-bold pt-2">Medical Services : </label>
@@ -87,18 +92,27 @@
                     <?php 
                         endforeach;
                     ?>
-                        
-                </div>
-                <hr>
-                <input type="hidden" name="deduction-count" id="deduction-count">
-                <div class="row">
-                    <div class="col-3  pt-2">
-                        <h4 class="text-left text-danger">
-                            BILLING DEDUCTIONS
-                        </h4>
+                    <hr>
+                    <div class="col-3 pt-2 pb-2">
+                        <div class="input-group">
+                            <div class="input-group-append">
+                                <span class="input-group-text fw-bold text-dark ls-1 ms-2">
+                                    Medicines
+                                </span>
+                            </div>
+                            <input type="number" class="form-control" name="medicines" id="medicines" value="0" min="0" oninput="calculateDiagnosticTestBilling(`<?php echo $remaining_balance ?>`)">
+                        </div>
                     </div>
-                    
                 </div>
+                    <hr>
+                    <input type="hidden" name="deduction-count" id="deduction-count">
+                    <div class="row">
+                        <div class="col-3  pt-2">
+                            <h5 class="text-left text-danger">
+                                BILLING DEDUCTIONS
+                            </h5>
+                        </div>
+                    </div>
                         <div class="row pt-3">
                             <div class="col-md-3">
                                 <label class="form-label ls-1">PhilHealth</label> <span class="text-muted">(optional)</span>
@@ -297,32 +311,25 @@
         let net_bill_amount = 0;
         let company_charge = 0;
         let personal_charge = 0;
+        let final_services = 0;
         const deduct_philhealth = document.querySelector('#deduct-philhealth');
-        // const deduct_sss = document.querySelector('#deduct-sss');
         const total_bill = document.querySelector('#total-bill');
         const net_bill = document.querySelector('#net-bill');
         const input_total_deduction = document.querySelector('#total-deduction');
-        // const company_charge_amount = document.querySelector('#company-charge');
-        // const personal_charge_amount = document.querySelector('#personal-charge');
+        const medicines = document.querySelector('#medicines');
 
         total_services = totalServices();
-        total_bill.value = parseFloat(total_services).toFixed(2);
+        final_services = total_services + parseFloat(medicines.value);
+        total_bill.value = parseFloat(final_services).toFixed(2);
         
         philhealth = deduct_philhealth.value > 0 ? deduct_philhealth.value : 0 ;
-        // sss = deduct_sss.value > 0 ? deduct_sss.value : 0 ;
         other_deduction = calculateOtherDeductions();
 
         total_deductions = parseFloat(philhealth) + parseFloat(other_deduction);
-        net_bill_amount = parseFloat(total_services) - parseFloat(total_deductions);
-
-        // personal_charge = net_bill_amount - remaining_balance;
-        // personalCharge = personal_charge > 0 ? personal_charge : 0;
-        // company_charge = net_bill_amount > remaining_balance ? remaining_balance : net_bill_amount ;
+        net_bill_amount = parseFloat(final_services) - parseFloat(total_deductions);
 
         input_total_deduction.value = parseFloat(total_deductions).toFixed(2);
         net_bill.value = parseFloat(net_bill_amount).toFixed(2);
-        // company_charge_amount.value = parseFloat(company_charge).toFixed(2);
-        // personal_charge_amount.value = parseFloat(personalCharge).toFixed(2);
     }
 
     const removeDeduction = (remove_btn) => {

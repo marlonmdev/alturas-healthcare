@@ -36,6 +36,38 @@ class Billing_model extends CI_Model {
         $query = $this->db->get_where('loa_requests', ['loa_id' => $loa_id]);
         return $query->row_array();
     }
+    
+    function set_completed_value($loa_id) {
+        $this->db->set('completed','')
+                ->where('loa_id', $loa_id);
+        return $this->db->update('loa_requests');
+    }
+
+    function check_if_loa_already_added($loa_id) {
+        $query = $this->db->get_where('hr_added_loa_fees', ['loa_id' => $loa_id]);
+        return $query->num_rows() > 0 ? true : false;
+    }
+
+    function check_if_done_created_new_loa($loa_id) {
+        $this->db->select('reffered')
+            ->from('loa_requests')
+            ->where('loa_id', $loa_id);
+        return $this->db->get()->row_array();
+    }
+
+    function check_if_status_cancelled($loa_id) {
+        $this->db->select('status')
+                ->where('status', 'Reffered')
+                ->where('loa_id', $loa_id)
+                ->group_by('loa_id');
+        $query = $this->db->get('performed_loa_info');
+    
+        if ($query->num_rows() > 0) {
+        return true;
+        }else{
+        return false;
+        }
+    }
 
     function get_noa_to_bill($noa_id) {
         $query = $this->db->get_where('noa_requests', ['noa_id' => $noa_id]);

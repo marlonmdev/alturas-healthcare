@@ -514,8 +514,7 @@ class Loa_controller extends CI_Controller {
 
 	function fetch_all_completed_loa() {
 		$this->security->get_csrf_hash();
-		$status = 'Completed';
-		$list = $this->loa_model->get_datatables($status);
+		$list = $this->loa_model->get_completed_datatables();
 		$data = [];
 		foreach ($list as $loa) {
 			$row = [];
@@ -528,7 +527,9 @@ class Loa_controller extends CI_Controller {
 
 			$custom_date = date("m/d/Y", strtotime($loa['request_date']));
 
-			$custom_status = '<span class="badge rounded-pill bg-info">' . $loa['status'] . '</span>';
+			if($loa['completed'] == 1){
+				$custom_status = '<span class="badge rounded-pill bg-info">Completed</span>';
+			}
 
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewCompletedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 			
@@ -600,8 +601,8 @@ class Loa_controller extends CI_Controller {
 
 		$output = [
 			"draw" => $_POST['draw'],
-			"recordsTotal" => $this->loa_model->count_all($status),
-			"recordsFiltered" => $this->loa_model->count_filtered($status),
+			"recordsTotal" => $this->loa_model->count_all_c(),
+			"recordsFiltered" => $this->loa_model->count_filtered_c(),
 			"data" => $data,
 		];
 		echo json_encode($output);
@@ -881,80 +882,238 @@ class Loa_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 
-	function fetch_for_charging_loa() {
+	function fetch_for_payment_loa() {
 		$this->security->get_csrf_hash();
 		$status = 'Billed';
-		$list = $this->loa_model->get_datatables($status);
+		$for_payment = $this->loa_model->fetch_for_payment_bill($status);
 		$data = [];
-		foreach ($list as $loa) {
+		foreach($for_payment as $bill){
 			$row = [];
-			if($loa['for_charging'] == 1){
-
-				$loa_id = $this->myhash->hasher($loa['loa_id'], 'encrypt');
-
-				$full_name = $loa['first_name'] . ' ' . $loa['middle_name'] . ' ' . $loa['last_name'] . ' ' . $loa['suffix'];
-
-				$custom_loa_no = '<mark class="bg-primary text-white">'.$loa['loa_no'].'</mark>';
-
-				$custom_date = date("m/d/Y", strtotime($loa['request_date']));
-
-				$custom_status = '<span class="badge rounded-pill bg-info">' . $loa['status'] . '</span>';
-
-				$custom_actions = '<a href="JavaScript:void(0)" onclick="viewCompletedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
-				
-				if($loa['loa_request_type'] == 'Consultation'){
-
-					$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaConsult(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-danger"></i></a>';
-
-						$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/charge_bill/' . $loa_id . '" data-bs-toggle="tooltip" title="Charge"><i class="mdi mdi-file-check fs-2 text-success"></i></a>';
-					
-				}else{
-
-					$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-danger"></i></a>';
-
-						$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/charge_bill/' . $loa_id . '" data-bs-toggle="tooltip" title="Charge"><i class="mdi mdi-file-check fs-2 text-success"></i></a>';
-					
-				}
-
-				// initialize multiple varibles at once
-				$view_file = $short_hp_name = '';
-				if ($loa['loa_request_type'] === 'Consultation') {
-					// if request is consultation set the view file and medical services to None
-					$view_file = 'None';
-
-					// if Healthcare Provider name is too long for displaying to the table, shorten it and add the ... characters at the end 
-					$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
-
-				} else {
-
-					$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
-
-					// link to the file attached during loa request
-					$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
-				}
-
-				// this data will be rendered to the datatable
-				$row[] = $custom_loa_no;
-				$row[] = $full_name;
-				$row[] = $loa['loa_request_type'];
-				$row[] = $short_hp_name;
-				$row[] = $view_file;
-				$row[] = $custom_date;
-				$row[] = $custom_status;
-				$row[] = $custom_actions;
-				$data[] = $row;
+			if($bill['month'] == '01'){
+				$month = 'January';
+			}else if($bill['month'] == '02'){
+				$month = 'February';
+			}else if($bill['month'] == '03'){
+				$month = 'March';
+			}else if($bill['month'] == '04'){
+				$month = 'April';
+			}else if($bill['month'] == '05'){
+				$month = 'May';
+			}else if($bill['month'] == '06'){
+				$row[] = $bill['hp_name'];
+				$month = 'June';
+			}else if($bill['month'] == '07'){
+				$month = 'July';
+			}else if($bill['month'] == '08'){
+				$month = 'August';
+			}else if($bill['month'] == '09'){
+				$month = 'September';
+			}else if($bill['month'] == '10'){
+				$month = 'October';
+			}else if($bill['month'] == '11'){
+				$month = 'November';
+			}else if($bill['month'] == '12'){
+				$month = 'December';
 			}
+
+			$payment_no_custom = '<span class="fw-bold fs-5">'.$bill['payment_no'].'</span>';
+
+			$label_custom = '<span class="fw-bold fs-5">Consolidated Billing for the Month of '.$month.', '.$bill['year'].'</span>';
+			
+			$hospital_custom = '<span class="fw-bold fs-5">'.$bill['hp_name'].'</span>';
+
+			$status_custom = '<span class="badge rounded-pill bg-success text-white">'.$bill['status'].'</span>';
+
+			// $payment_no = $this->myhash->hasher($bill['payment_no'], 'encrypt');
+			// dapat maka encrypt sa payment_no
+
+			$action_customs = '<a href="'.base_url().'healthcare-coordinator/bill/billed/fetch-payable/'.$bill['payment_no'].'" data-bs-toggle="tooltip" title="View Hospital Bill"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
+
+			$action_customs .= '<a href="'.base_url().'healthcare-coordinator/bill/billed/charging/'.$bill['payment_no'].'" data-bs-toggle="tooltip" title="View Charging"><i class="mdi mdi-file-document-box fs-2 text-danger"></i></a>';
+
+			$row[] = $payment_no_custom;
+			$row[] = $label_custom;
+			$row[] = $hospital_custom;
+			$row[] = $status_custom;
+			$row[] = $action_customs;
+			$data[] = $row;
+		}
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
+		echo json_encode($output);
+	}
+
+	function fetch_monthly_bill() {
+		$token = $this->security->get_csrf_hash();
+		$payment_no = $this->uri->segment(5);
+		$billing = $this->loa_model->monthly_bill_datatable($payment_no);
+		$data = [];
+
+		foreach($billing as $bill){
+			$row = [];
+
+			$loa_id = $this->myhash->hasher($bill['loa_id'], 'encrypt');
+
+			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
+
+			$coordinator_bill = '<a href="JavaScript:void(0)" onclick="viewCoordinatorBill(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Coordinator Billing"><i class="mdi mdi-magnify text-dark"></i>View</a>';
+
+			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-dark"></i>View</a>';
+
+			$row[] = $bill['billing_no'];
+			$row[] = $fullname;
+			$row[] = $bill['loa_request_type'];
+			$row[] = number_format($bill['total_net_bill'], 2, '.', ',');
+			$row[] = $coordinator_bill;
+			$row[] = number_format($bill['net_bill'], 2, '.', ',');
+			$row[] = $pdf_bill;
+			$data[] = $row;
+			
 			
 		}
 
 		$output = [
 			"draw" => $_POST['draw'],
-			"recordsTotal" => $this->loa_model->count_all($status),
-			"recordsFiltered" => $this->loa_model->count_filtered($status),
 			"data" => $data,
 		];
+
 		echo json_encode($output);
 	}
+
+	function fetch_billing_for_charging() {
+		$this->security->get_csrf_hash();
+		$payment_no = $this->uri->segment(5);
+		$billing = $this->loa_model->get_billed_for_charging($payment_no);
+		$data = [];
+
+		foreach($billing as $bill){
+			$row = [];
+			$company_charge = '';
+			$personal_charge = '';
+			$remaining_mbl = '';
+
+			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
+
+			if($bill['work_related'] == 'Yes'){
+				if($bill['percentage'] == ''){
+					$label = 'Work Related';
+					$percent = '100';
+				}else{
+					$label = 'Work Related';
+					$percent = $bill['percentage'];
+				}
+			}else{
+				if($bill['percentage'] == ''){
+					$label = 'Non Work-Related';
+					$percent = '100';
+				}else{
+					$label = 'Non Work-Related';
+					$percent = $bill['percentage'];
+				}
+			}
+			
+			$percent_custom = '<span>'.$percent.'% '.$label.'</span>';
+
+			$net_bill = floatval($bill['net_bill']);
+			$previous_mbl = floatval($bill['remaining_balance']);
+			$percentage = floatval($bill['percentage']);
+
+			if($bill['work_related'] == 'Yes'){
+				if($bill['percentage'] == ''){
+					$company_charge = number_format($bill['net_bill'],2, '.',',');
+					$personal_charge = number_format(0,2, '.',',');
+					if($net_bill >= $previous_mbl){
+						$remaining_mbl = number_format(0,2, '.',',');
+					}else if($net_bill < $previous_mbl){
+						$remaining_mbl = number_format($previous_mbl - $net_bill,2, '.',',');
+					}
+				}else if($bill['percentage'] != ''){
+					
+					if($net_bill <= $previous_mbl){
+						$company_charge = number_format($net_bill,2, '.',',');
+						$personal_charge = number_format(0,2, '.',',');
+						$remaining_mbl = number_format($previous_mbl - $net_bill,2, '.',',');
+					}else if($net_bill > $previous_mbl){
+						$converted_percent = $percentage/100;
+						$initial_company_charge = floatval($converted_percent) * $net_bill;
+						$initial_personal_charge = $net_bill - floatval($initial_company_charge);
+
+						if(floatval($initial_company_charge) <= $previous_mbl){
+							$result = $previous_mbl - floatval($initial_company_charge);
+							$int_personal = floatval($initial_personal_charge) - floatval($result);
+							$personal_charge = number_format($int_personal,2, '.',',');
+							$company_charge = number_format($previous_mbl,2, '.',',');
+							$remaining_mbl = number_format(0,2, '.',',');
+					
+						}else if(floatval($initial_company_charge) > $previous_mbl){
+							$personal_charge = number_format($initial_personal_charge,2, '.',',');
+							$company_charge = number_format($initial_company_charge,2, '.',',');
+							$remaining_mbl = number_format(0,2, '.',',');
+						}
+					}
+					
+				}
+			}else if($bill['work_related'] == 'No'){
+				if($bill['percentage'] == ''){
+					if($net_bill <= $previous_mbl){
+						$company_charge = number_format($net_bill,2, '.',',');
+						$personal_charge = number_format(0,2, '.',',');
+						$remaining_mbl = number_format($previous_mbl - floatval($company_charge),2, '.',',');
+					}else if($net_bill > $previous_mbl){
+						$company_charge = number_format($previous_mbl,2, '.',',');
+						$personal_charge = number_format($net_bill - $previous_mbl,2, '.',',');
+						$remaining_mbl = number_format(0,2, '.',',');
+					}
+				}else if($bill['percentage'] != ''){
+					if($net_bill <= $previous_mbl){
+						$company_charge = number_format($net_bill,2, '.',',');
+						$personal_charge = number_format(0,2, '.',',');
+						$remaining_mbl = number_format($previous_mbl - floatval($net_bill),2, '.',',');
+					}else if($net_bill > $previous_mbl){
+						$converted_percent = $percentage/100;
+						$initial_personal_charge = $converted_percent * $net_bill;
+						$initial_company_charge = $net_bill - floatval($initial_personal_charge);
+						if($initial_company_charge <= $previous_mbl){
+							$result = $previous_mbl - $initial_company_charge;
+							$initial_personal = $initial_personal_charge - $result;
+							if($initial_personal < 0 ){
+								$personal_charge = number_format(0,2, '.',',');
+								$company_charge = number_format($initial_company_charge + $initial_personal_charge,2, '.',',');
+								$remaining_mbl = number_format($previous_mbl - floatval($company_charge),2, '.',',');
+							}else if($initial_personal >= 0){
+								$personal_charge = number_format($initial_personal,2, '.',',');
+								$company_charge = number_format($previous_mbl,2, '.',',');
+								$remaining_mbl = number_format(0,2, '.',',');
+							}
+						}else if($initial_company_charge > $previous_mbl){
+							$personal_charge = number_format($initial_personal_charge,2, '.',',');
+							$company_charge = number_format($initial_company_charge,2, '.',',');
+							$remaining_mbl = number_format(0,2, '.',',');
+						}
+					}
+				}
+			}
+			
+			$row[] = $bill['loa_no'];
+			$row[] = $fullname;
+			$row[] = $percent_custom;
+			$row[] = number_format($bill['net_bill'],2, '.',',');
+			$row[] = $company_charge;
+			$row[] = $personal_charge;
+			$row[] = number_format($bill['remaining_balance'],2, '.',',');
+			$row[] = $remaining_mbl;
+			$data[] = $row;
+		}
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
+
+		echo json_encode($output);
+	}
+
 
 	function get_pending_loa_info() {
 		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
@@ -2126,6 +2285,12 @@ class Loa_controller extends CI_Controller {
 		$this->loa_model->set_older_loa_rescheduled($loa_id);
 		$this->remove_number_from_field($loa_id, $med_services);
 
+		$existing = $this->loa_model->check_if_loa_already_added($loa_id);
+		$resched = $this->loa_model->check_if_done_created_new_loa($loa_id);
+		if($existing && $resched['reffered'] == 1){
+			$this->loa_model->_set_loa_status_completed($loa_id);
+		}
+
 		if($inserted){
 			echo json_encode([
 				'status' => 'success',
@@ -2238,13 +2403,14 @@ class Loa_controller extends CI_Controller {
 				'status'  => 'success', 
 				'message' => 'LOA Request BackDated Successfully'
 			];
-		}		
+		}
 		echo json_encode($response);
 	}
 
 	function submit_added_loa_fees() {
 		$token = $this->security->get_csrf_hash();
 		$data['user_role'] = $this->session->userdata('user_role');
+		$loa_id =  $this->input->post('loa-id', TRUE);
 		$total_deduct =  $this->input->post('total-deduction', TRUE);
 		
 		if($total_deduct != ''){
@@ -2258,6 +2424,7 @@ class Loa_controller extends CI_Controller {
 				'loa_id' => $this->input->post('loa-id', TRUE),
 				'hp_id' => $this->input->post('hp-id', TRUE),
 				'request_type' => $this->input->post('request-type', TRUE),
+				'medicines' => $this->input->post('medicines', TRUE),
 				'total_services' => $this->input->post('total-bill', TRUE),
 				'total_deductions' => $total_deductions,
 				'total_net_bill' => $this->input->post('net-bill', TRUE),
@@ -2320,6 +2487,19 @@ class Loa_controller extends CI_Controller {
 			$this->loa_model->insert_philhealth($add_deduct);
 	
 		}
+		$existing = $this->loa_model->check_if_loa_already_added($loa_id);
+		$resched = $this->loa_model->check_if_done_created_new_loa($loa_id);
+		$rescheduled = $this->loa_model->check_if_status_cancelled($loa_id);
+		if($rescheduled){
+			if($existing && $resched['reffered'] == 1){
+				$this->loa_model->_set_loa_status_completed($loa_id);
+			}
+		}else{
+			if($existing){
+				$this->loa_model->_set_loa_status_completed($loa_id);
+			}
+		}
+		
 		
 		if($inserted){
 			echo json_encode([
@@ -2364,10 +2544,28 @@ class Loa_controller extends CI_Controller {
 	function submit_matched_bill() {
 		$token = $this->security->get_csrf_hash();
 		$data['user_role'] = $this->session->userdata('user_role');
-		$loa_id = $this->input->post('loa-id');
-		$matched = $this->loa_model->set_bill_for_charging($loa_id);
+		$hp_id = $this->input->post('billed-hospital-filter', TRUE);
+		$start_date = $this->input->post('start-date', TRUE);
+		$end_date = $this->input->post('end-date', TRUE);
+		$payment_no = "PMT-" . date('His') . mt_rand(1000, 9999);
+		$matched = $this->loa_model->set_bill_for_matched($hp_id, $start_date, $end_date, $payment_no);
 
-		if($matched){
+		$date = strtotime($this->input->post('start-date', TRUE));
+		$month = date('m', $date);
+		$year = date('Y', $date);
+		$data = [
+			'payment_no' => $payment_no,
+			'type' => 'LOA',
+			'hp_id' => $hp_id,
+			'month' => $month,
+			'year' => $year,
+			'status' => 'Billed',
+			'added_on' => date('Y-m-d'),
+			'added_by' => $this->session->userdata('fullname'),
+		];
+		$inserted = $this->loa_model->insert_for_payment_consolidated($data);
+
+		if($inserted){
 			echo json_encode([
 				'token' => $token,
 				'status' => 'success',
@@ -2382,18 +2580,163 @@ class Loa_controller extends CI_Controller {
 		}
 	}
 
-	function charge_loa_bill() {
+	function fetch_consolidated_billing() {
+		$token = $this->security->get_csrf_hash(); 
+		$status = 'Billed';
+		$billing = $this->loa_model->get_billed_datatables($status);
+		$data = [];
+
+		foreach($billing as $bill){
+			$row = [];
+			if($bill['done_matching'] != 1){
+				$loa_id = $this->myhash->hasher($bill['loa_id'], 'encrypt');
+
+				$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
+
+				$coordinator_bill = '<a href="JavaScript:void(0)" onclick="viewCoordinatorBill(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Coordinator Billing"><i class="mdi mdi-magnify text-dark"></i>View</a>';
+
+				$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-dark"></i>View</a>';
+
+				$variance = $bill['net_bill'] - $bill['total_net_bill'];
+				if($variance > 0){
+					$net_variance = '<span class="text-danger">'.number_format($variance, 2, '.', ',').'</span>';
+				}else{
+					$net_variance = number_format($variance, 2, '.', ',');
+				}
+	
+				$row[] = $bill['loa_no'];
+				$row[] = $fullname;
+				$row[] = $bill['loa_request_type'];
+				$row[] = number_format($bill['total_net_bill'], 2, '.', ',');
+				$row[] = $coordinator_bill;
+				$row[] = number_format($bill['net_bill'], 2, '.', ',');
+				$row[] = $pdf_bill;
+				$row[] = $net_variance;
+				$data[] = $row;
+			}
+			
+		}
+
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
+
+		echo json_encode($output);
+	}
+
+	function fetch_total_net_bill() {
+		$token = $this->security->get_csrf_hash();
+		$hp_id = $this->input->post('hp_id');
+		$start_date = $this->input->post('startDate');
+		$end_date = $this->input->post('endDate');
+		$hospital = $this->loa_model->get_total_hp_net_bill($hp_id, $start_date, $end_date);
+		$coordinator = $this->loa_model->get_total_hr_net_bill($hp_id, $start_date, $end_date);
+		$variance = $hospital - $coordinator;
+		$response = [
+			'token' => $token,
+			'total_hospital_bill' => number_format($hospital, 2, '.', ','),
+			'total_coordinator_bill' => number_format($coordinator, 2, '.', ','),
+			'total_variance' => number_format($variance, 2, '.', ','),
+		];
+
+		echo json_encode($response);
 
 	}
 
-	function fetch_consolidated_billing() {
+	function get_loa_charging() {
 		$token = $this->security->get_csrf_hash();
-		$billing = $this->loa_model->get_hp_billing();
-		// $coordinator = $this->loa_model->get_hr_billing($hospital, $start_date, $end_date);
-	
-		echo json_encode($billing);
-
+		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data = $this->loa_model->get_loa_charging($loa_id);
 		
+		echo json_encode($data);
+	}
+
+	function confirm_loa_charging() {
+		$token = $this->security->get_csrf_hash();
+		$loa_id = $this->input->post('matched-loa-id', TRUE);
+		$remaining_balance = $this->input->post('after-remaining-mbl', TRUE);
+		$emp_id = $this->input->post('matched-emp-id', TRUE);
+
+		$data = [
+			'company_charge' => $this->input->post('m-company-charge', TRUE),
+			'personal_charge' => $this->input->post('m-personal-charge', TRUE),
+			'before_remaining_bal' => $this->input->post('before-remaining-mbl', TRUE),
+			'after_remaining_bal' => $this->input->post('after-remaining-mbl', TRUE),
+			'charging_confirmation' => '1'
+		];
+		$confirmed = $this->loa_model->confirm_loa_charging($loa_id, $data);
+		$set = $this->loa_model->set_remaining_balance($emp_id, $remaining_balance);
+
+		if($confirmed){
+			echo json_encode([
+				'token' => $token,
+				'status' => 'success',
+				'message' => 'Charging Confirmed Successfully!'
+			]);
+		}else{
+			echo json_encode([
+				'token' => $token,
+				'status' => 'failed',
+				'message' => 'Failed to Confirmed Charging!'
+			]);
+		}
+	}
+
+	function fetch_coordinator_billing() {
+		$token = $this->security->get_csrf_hash();
+		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$bill = $this->loa_model->get_added_loa_fees($loa_id);
+		$service = $this->loa_model->get_added_services($loa_id);
+		$deduction = $this->loa_model->get_added_deductions($loa_id);
+
+		$data = [
+			'bill' => $bill,
+			'service' => $service,
+			'deduction' => $deduction,
+		];
+
+		echo json_encode($data);
+
+	}
+
+	function fetch_monthly_payable() {
+		$token = $this->security->get_csrf_hash();
+		$data['user_role'] = $this->session->userdata('user_role');
+		// $payment_no =$this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$payment_no = $this->uri->segment(5);
+		$data['payable'] = $this->loa_model->fetch_monthly_billed_loa($payment_no);
+
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/loa/view_monthly_billed_loa');
+		$this->load->view('templates/footer');
+
+	}
+
+	function get_matched_total_bill() {
+		$token = $this->security->get_csrf_hash();
+		$payment_no = $this->input->post('payment_no');;
+		$hospital = $this->loa_model->get_matched_total_hp_bill($payment_no);
+		$coordinator = $this->loa_model->get_matched_total_hr_bill($payment_no);
+		
+		$response = [
+			'token' => $token,
+			'total_hospital_bill' => number_format($hospital, 2, '.', ','),
+			'total_coordinator_bill' => number_format($coordinator, 2, '.', ','),
+		];
+		echo json_encode($response);
+	}
+
+	function get_bill_for_charging() {
+		$token = $this->security->get_csrf_hash();
+		$data['user_role'] = $this->session->userdata('user_role');
+		// $payment_no =$this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$payment_no = $this->uri->segment(5);
+		$data['payable'] = $this->loa_model->fetch_monthly_billed_loa($payment_no);
+
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/loa/view_monthly_billed_charging');
+		$this->load->view('templates/footer');
 
 	}
 

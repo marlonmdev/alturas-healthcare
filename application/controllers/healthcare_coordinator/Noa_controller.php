@@ -341,6 +341,257 @@ class Noa_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 
+	function fetch_all_billed_noa() {
+		$token = $this->security->get_csrf_hash();
+		$status = 'Billed';
+		$noa = $this->noa_model->get_billed_datatables($status);
+		$data = [];
+		foreach($noa as $bill){
+			$row = [];
+
+			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
+
+			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-dark"></i>View</a>';
+
+			$row[] = $bill['noa_no'];
+			$row[] = $fullname;
+			$row[] = number_format($bill['net_bill'],2, '.',',');
+			$row[] = $pdf_bill;
+			$data[] = $row;
+		}
+		$output = [
+			'draw' => $_POST['draw'],
+			'data' => $data
+		];
+		echo json_encode($output);
+	}
+
+	function fetch_payable_noa() {
+		$this->security->get_csrf_hash();
+		$status = 'Billed';
+		$for_payment = $this->noa_model->fetch_for_payment_bill($status);
+		$data = [];
+		foreach($for_payment as $bill){
+			$row = [];
+			if($bill['month'] == '01'){
+				$month = 'January';
+			}else if($bill['month'] == '02'){
+				$month = 'February';
+			}else if($bill['month'] == '03'){
+				$month = 'March';
+			}else if($bill['month'] == '04'){
+				$month = 'April';
+			}else if($bill['month'] == '05'){
+				$month = 'May';
+			}else if($bill['month'] == '06'){
+				$row[] = $bill['hp_name'];
+				$month = 'June';
+			}else if($bill['month'] == '07'){
+				$month = 'July';
+			}else if($bill['month'] == '08'){
+				$month = 'August';
+			}else if($bill['month'] == '09'){
+				$month = 'September';
+			}else if($bill['month'] == '10'){
+				$month = 'October';
+			}else if($bill['month'] == '11'){
+				$month = 'November';
+			}else if($bill['month'] == '12'){
+				$month = 'December';
+			}
+
+			$payment_no_custom = '<span class="fw-bold fs-5">'.$bill['payment_no'].'</span>';
+
+			$label_custom = '<span class="fw-bold fs-5">Consolidated Billing for the Month of '.$month.', '.$bill['year'].'</span>';
+			
+			$hospital_custom = '<span class="fw-bold fs-5">'.$bill['hp_name'].'</span>';
+
+			$status_custom = '<span class="badge rounded-pill bg-success text-white">'.$bill['status'].'</span>';
+
+			// $payment_no = $this->myhash->hasher($bill['payment_no'], 'encrypt');
+			// dapat maka encrypt sa payment_no
+
+			$action_customs = '<a href="'.base_url().'healthcare-coordinator/bill/billed-noa/fetch-payable/'.$bill['payment_no'].'" data-bs-toggle="tooltip" title="View Hospital Bill"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
+
+			$action_customs .= '<a href="'.base_url().'healthcare-coordinator/bill/billed-noa/charging/'.$bill['payment_no'].'" data-bs-toggle="tooltip" title="View Charging"><i class="mdi mdi-file-document-box fs-2 text-danger"></i></a>';
+
+			$row[] = $payment_no_custom;
+			$row[] = $label_custom;
+			$row[] = $hospital_custom;
+			$row[] = $status_custom;
+			$row[] = $action_customs;
+			$data[] = $row;
+		}
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
+		echo json_encode($output);
+	}
+
+	function fetch_monthly_bill() {
+		$token = $this->security->get_csrf_hash();
+		$payment_no = $this->uri->segment(5);
+		$billing = $this->noa_model->monthly_bill_datatable($payment_no);
+		$data = [];
+
+		foreach($billing as $bill){
+			$row = [];
+
+			$noa_id = $this->myhash->hasher($bill['noa_id'], 'encrypt');
+
+			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
+
+			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-dark"></i>View</a>';
+
+			$row[] = $bill['billing_no'];
+			$row[] = $fullname;
+			$row[] = number_format($bill['net_bill'], 2, '.', ',');
+			$row[] = $pdf_bill;
+			$data[] = $row;
+		
+		}
+
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
+
+		echo json_encode($output);
+	}
+
+	function fetch_billing_for_charging() {
+		$this->security->get_csrf_hash();
+		$payment_no = $this->uri->segment(5);
+		$billing = $this->noa_model->get_billed_for_charging($payment_no);
+		$data = [];
+
+		foreach($billing as $bill){
+			$row = [];
+			$company_charge = '';
+			$personal_charge = '';
+			$remaining_mbl = '';
+
+			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
+
+			if($bill['work_related'] == 'Yes'){
+				if($bill['percentage'] == ''){
+					$label = 'Work Related';
+					$percent = '100';
+				}else{
+					$label = 'Work Related';
+					$percent = $bill['percentage'];
+				}
+			}else{
+				if($bill['percentage'] == ''){
+					$label = 'Non Work-Related';
+					$percent = '100';
+				}else{
+					$label = 'Non Work-Related';
+					$percent = $bill['percentage'];
+				}
+			}
+			
+			$percent_custom = '<span>'.$percent.'% '.$label.'</span>';
+
+			$net_bill = floatval($bill['net_bill']);
+			$previous_mbl = floatval($bill['remaining_balance']);
+			$percentage = floatval($bill['percentage']);
+
+			if($bill['work_related'] == 'Yes'){
+				if($bill['percentage'] == ''){
+					$company_charge = number_format($bill['net_bill'],2, '.',',');
+					$personal_charge = number_format(0,2, '.',',');
+					if($net_bill >= $previous_mbl){
+						$remaining_mbl = number_format(0,2, '.',',');
+					}else if($net_bill < $previous_mbl){
+						$remaining_mbl = number_format($previous_mbl - $net_bill,2, '.',',');
+					}
+				}else if($bill['percentage'] != ''){
+					
+					if($net_bill <= $previous_mbl){
+						$company_charge = number_format($net_bill,2, '.',',');
+						$personal_charge = number_format(0,2, '.',',');
+						$remaining_mbl = number_format($previous_mbl - $net_bill,2, '.',',');
+					}else if($net_bill > $previous_mbl){
+						$converted_percent = $percentage/100;
+						$initial_company_charge = floatval($converted_percent) * $net_bill;
+						$initial_personal_charge = $net_bill - floatval($initial_company_charge);
+
+						if(floatval($initial_company_charge) <= $previous_mbl){
+							$result = $previous_mbl - floatval($initial_company_charge);
+							$int_personal = floatval($initial_personal_charge) - floatval($result);
+							$personal_charge = number_format($int_personal,2, '.',',');
+							$company_charge = number_format($previous_mbl,2, '.',',');
+							$remaining_mbl = number_format(0,2, '.',',');
+					
+						}else if(floatval($initial_company_charge) > $previous_mbl){
+							$personal_charge = number_format($initial_personal_charge,2, '.',',');
+							$company_charge = number_format($initial_company_charge,2, '.',',');
+							$remaining_mbl = number_format(0,2, '.',',');
+						}
+					}
+					
+				}
+			}else if($bill['work_related'] == 'No'){
+				if($bill['percentage'] == ''){
+					if($net_bill <= $previous_mbl){
+						$company_charge = number_format($net_bill,2, '.',',');
+						$personal_charge = number_format(0,2, '.',',');
+						$remaining_mbl = number_format($previous_mbl - $net_bill,2, '.',',');
+					}else if($net_bill > $previous_mbl){
+						$company_charge = number_format($previous_mbl,2, '.',',');
+						$personal_charge = number_format($net_bill - $previous_mbl,2, '.',',');
+						$remaining_mbl = number_format(0,2, '.',',');
+					}
+				}else if($bill['percentage'] != ''){
+					if($net_bill <= $previous_mbl){
+						$company_charge = number_format($net_bill,2, '.',',');
+						$personal_charge = number_format(0,2, '.',',');
+						$remaining_mbl = number_format($previous_mbl - $net_bill,2, '.',',');
+					}else if($net_bill > $previous_mbl){
+						$converted_percent = $percentage/100;
+						$initial_personal_charge = $converted_percent * $net_bill;
+						$initial_company_charge = $net_bill - floatval($initial_personal_charge);
+						if($initial_company_charge <= $previous_mbl){
+							$result = $previous_mbl - $initial_company_charge;
+							$initial_personal = $initial_personal_charge - $result;
+							if($initial_personal < 0 ){
+								$personal_charge = number_format(0,2, '.',',');
+								$company_charge = number_format($initial_company_charge + $initial_personal_charge,2, '.',',');
+								$remaining_mbl = number_format($previous_mbl - floatval($company_charge),2, '.',',');
+							}else if($initial_personal >= 0){
+								$personal_charge = number_format($initial_personal,2, '.',',');
+								$company_charge = number_format($previous_mbl,2, '.',',');
+								$remaining_mbl = number_format(0,2, '.',',');
+							}
+						}else if($initial_company_charge > $previous_mbl){
+							$personal_charge = number_format($initial_personal_charge,2, '.',',');
+							$company_charge = number_format($initial_company_charge,2, '.',',');
+							$remaining_mbl = number_format(0,2, '.',',');
+						}
+					}
+				}
+			}
+			
+			$row[] = $bill['noa_no'];
+			$row[] = $fullname;
+			$row[] = $percent_custom;
+			$row[] = number_format($bill['net_bill'],2, '.',',');
+			$row[] = $company_charge;
+			$row[] = $personal_charge;
+			$row[] = number_format($bill['remaining_balance'],2, '.',',');
+			$row[] = $remaining_mbl;
+			$data[] = $row;
+		}
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
+
+		echo json_encode($output);
+	}
+
 	function get_pending_noa_info() {
 		$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$row = $this->noa_model->db_get_noa_info($noa_id);
@@ -711,6 +962,97 @@ class Noa_controller extends CI_Controller {
 			];
 		}		
 		echo json_encode($response);
+	}
+
+	function get_total_hp_bill() {
+		$token = $this->security->get_csrf_hash();
+		$hp_id = $this->input->post('hp_id');
+		$start_date = $this->input->post('startDate');
+		$end_date = $this->input->post('endDate');
+		$hospital = $this->noa_model->get_total_hp_net_bill($hp_id, $start_date, $end_date);
+		$response = [
+			'token' => $token,
+			'total_hospital_bill' => number_format($hospital, 2, '.', ','),
+		];
+
+		echo json_encode($response);
+
+	}
+
+	function submit_consolidated_bill() {
+		$token = $this->security->get_csrf_hash();
+		$data['user_role'] = $this->session->userdata('user_role');
+		$hp_id = $this->input->post('billed-hospital-filter', TRUE);
+		$start_date = $this->input->post('start-date', TRUE);
+		$end_date = $this->input->post('end-date', TRUE);
+		$payment_no = "PMT-" . date('His') . mt_rand(1000, 9999);
+		$matched = $this->noa_model->set_bill_for_matched($hp_id, $start_date, $end_date, $payment_no);
+
+		$date = strtotime($this->input->post('start-date', TRUE));
+		$month = date('m', $date);
+		$year = date('Y', $date);
+		$data = [
+			'payment_no' => $payment_no,
+			'type' => 'NOA',
+			'hp_id' => $hp_id,
+			'month' => $month,
+			'year' => $year,
+			'status' => 'Billed',
+			'added_on' => date('Y-m-d'),
+			'added_by' => $this->session->userdata('fullname'),
+		];
+		$inserted = $this->noa_model->insert_for_payment_consolidated($data);
+
+		if($inserted){
+			echo json_encode([
+				'token' => $token,
+				'status' => 'success',
+				'message' => 'Successfully Submitted!'
+			]);
+		}else{
+			echo json_encode([
+				'token' => $token,
+				'status' => 'failed',
+				'message' => 'Failed to Submit!'
+			]);
+		}
+	}
+
+	function fetch_monthly_payable() {
+		$token = $this->security->get_csrf_hash();
+		$data['user_role'] = $this->session->userdata('user_role');
+		// $payment_no =$this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$payment_no = $this->uri->segment(5);
+		$data['payable'] = $this->noa_model->fetch_monthly_billed_noa($payment_no);
+
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/noa/view_monthly_billed_noa');
+		$this->load->view('templates/footer');
+
+	}
+
+	function fetch_total_hp_bill() {
+		$token = $this->security->get_csrf_hash();
+		$payment_no = $this->input->post('payment_no');;
+		$hospital = $this->noa_model->get_matched_total_hp_bill($payment_no);
+		
+		$response = [
+			'token' => $token,
+			'total_hospital_bill' => number_format($hospital, 2, '.', ','),
+		];
+		echo json_encode($response);
+	}
+
+	function fetch_monthly_charging() {
+		$token = $this->security->get_csrf_hash();
+		$data['user_role'] = $this->session->userdata('user_role');
+		// $payment_no =$this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$payment_no = $this->uri->segment(5);
+		$data['payable'] = $this->noa_model->fetch_monthly_billed_noa($payment_no);
+
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/noa/view_monthly_charging');
+		$this->load->view('templates/footer');
 	}
 
 }

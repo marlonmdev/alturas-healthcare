@@ -229,7 +229,7 @@ class Pages_controller extends CI_Controller {
 		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_coordinator_panel/loa/for_charging_loa');
+		$this->load->view('healthcare_coordinator_panel/loa/for_payment_loa');
 		$this->load->view('templates/footer');
 	}
 
@@ -283,6 +283,24 @@ class Pages_controller extends CI_Controller {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/noa/completed_noa_requests');
+		$this->load->view('templates/footer');
+	}
+
+	function view_billed_no() {
+		$this->load->model('healthcare_coordinator/noa_model');
+		$data['hcproviders'] = $this->noa_model->db_get_healthcare_providers();
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/noa/billed_noa');
+		$this->load->view('templates/footer');
+	}
+
+	function view_for_payment_noa() {
+		$this->load->model('healthcare_coordinator/noa_model');
+		$data['hcproviders'] = $this->noa_model->db_get_healthcare_providers();
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/noa/for_payment_noa');
 		$this->load->view('templates/footer');
 	}
 }

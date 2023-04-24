@@ -85,7 +85,7 @@
                         if(!empty($services)): 
                       ?>
                         <h5 class="text-center ls-1">MEDICAL SERVICE/S</h5>
-                        <table class="table table-sm">
+                        <table class="table table-sm pb-2">
                           <thead>
                             <tr class="border-secondary border-2 border-0 border-top border-bottom">
                               <th class="text-center fw-bold ls-2">Service</th>
@@ -115,7 +115,7 @@
                                 <td></td>
                                 <td class="text-center">
                                   <span class="text-secondary fs-6 fw-bold ls-1 me-2">Total:</span>
-                                  <span class="text-secondary fw-bold fs-6 ls-1">
+                                  <span class="text-dark fw-bold fs-6 ls-1">
                                     <?= '&#8369;'.number_format($bill['total_services'], 2) ?>
                                   </span>
                                 </td>

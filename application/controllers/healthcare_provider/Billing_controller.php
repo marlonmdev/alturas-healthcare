@@ -683,6 +683,34 @@ class Billing_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
+    function _submit_loa_pdf_bill() {
+        $this->security->get_csrf_hash();
+        if(!empty($_FILES["pdf-file"]["name"])){
+
+            $PDFfileName = basename($_FILES["pdf-file"]["name"]); 
+            $PDFfileType = pathinfo($PDFfileName, PATHINFO_EXTENSION); 
+                    
+            include realpath('assets/pdf_extract/vendor/autoload.php'); 
+            
+            $allowTypes = array('pdf'); 
+            if(in_array($PDFfileType,$allowTypes)){
+                
+                $parser   = new \Smalot\PdfParser\Parser(); 
+                // Source file
+                $PDFfile  = $_FILES["pdf-file"]["tmp_name"]; 
+                $PDF      = $parser->parseFile($PDFfile); 
+                $fileText = $PDF->getText();                          
+                // line break 
+                $PDFContent = nl2br($fileText); 
+                
+                var_dump($PDFContent);
+                $number_of_pages = count($PDF->getPages()); 
+
+                $data = $PDF->getPages()[0]->getDataTm(); // checkon ang first page , pangitaon ang SI number para  mag checking sa database if existing naba ning data or wala pa
+            }
+        }
+    }
+
     function submit_loa_pdf_bill() {
         $this->security->get_csrf_hash();
         $loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
@@ -721,6 +749,19 @@ class Billing_controller extends CI_Controller {
             ];    
 
             $inserted = $this->billing_model->insert_billing($data);
+            $existing = $this->billing_model->check_if_loa_already_added($loa_id);
+            $resched = $this->billing_model->check_if_done_created_new_loa($loa_id);
+            $rescheduled = $this->billing_model->check_if_status_cancelled($loa_id);
+            if($rescheduled){
+                if($existing && $resched['reffered'] == 1){
+                    $this->billing_model->set_completed_value($loa_id);
+                }
+            }else{
+                if($existing){
+                    $this->billing_model->set_completed_value($loa_id);
+                }
+            }
+            
             if(!$inserted){
                 $response = [
                    'status'  => 'save-error',
@@ -956,6 +997,7 @@ class Billing_controller extends CI_Controller {
            
         }       
     }  
+
 
 
 }

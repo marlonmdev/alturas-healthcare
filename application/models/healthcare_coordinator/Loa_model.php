@@ -67,6 +67,139 @@ class Loa_model extends CI_Model {
   }
   // End of server-side processing datatables
 
+   // Start of server-side processing completed datatables
+   var $table_1_c = 'loa_requests';
+   var $table_2_c = 'healthcare_providers';
+   var $column_order_c = ['loa_no', 'first_name', 'loa_request_type', 'hp_name', null, 'request_date']; //set column field database for datatable orderable
+   var $column_search_c = ['loa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'loa_request_type', 'med_services', 'emp_id', 'health_card_no', 'hp_name', 'request_date', 'CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)']; //set column field database for datatable searchable 
+   var $order_c = ['loa_id' => 'desc']; // default order 
+ 
+   private function _get_datatables_query_c() {
+     $this->db->from($this->table_1_c . ' as tbl_1');
+     $this->db->join($this->table_2_c . ' as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id');
+     $this->db->where('completed', '1');
+     $i = 0;
+ 
+     if($this->input->post('filter')){
+       $this->db->like('tbl_1.hcare_provider', $this->input->post('filter'));
+     }
+     // loop column 
+     foreach ($this->column_search_c as $item) {
+       // if datatable send POST for search
+       if ($_POST['search']['value']) {
+         // first loop
+         if ($i === 0) {
+           $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+           $this->db->like($item, $_POST['search']['value']);
+         } else {
+           $this->db->or_like($item, $_POST['search']['value']);
+         }
+ 
+         if (count($this->column_search_c) - 1 == $i) //last loop
+           $this->db->group_end(); //close bracket
+       }
+       $i++;
+     }
+ 
+     // here order processing
+     if (isset($_POST['order'])) {
+       $this->db->order_by($this->column_order_c[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+     } else if (isset($this->order_c)) {
+       $order = $this->order_c;
+       $this->db->order_by(key($order), $order[key($order)]);
+     }
+   }
+ 
+   function get_completed_datatables() {
+     $this->_get_datatables_query_c();
+     if ($_POST['length'] != -1)
+       $this->db->limit($_POST['length'], $_POST['start']);
+     $query = $this->db->get();
+     return $query->result_array();
+   }
+ 
+   function count_filtered_c() {
+     $this->_get_datatables_query_c();
+     $query = $this->db->get();
+     return $query->num_rows();
+   }
+ 
+   function count_all_c() {
+     $this->db->from($this->table_1_c)
+              ->where('completed', '1');
+     return $this->db->count_all_results();
+   }
+
+   // Start of server-side processing datatables
+   var $table_1_charged = 'billing';
+   var $table_2_charged = 'loa_requests';
+   var $table_3_charged = 'healthcare_providers';
+   var $table_4_charged = 'members';
+   var $column_order_charged = ['tbl_2.loa_no', 'tbl_4.first_name', 'tbl_2.loa_request_type', 'tbl_3.hp_id', NULL, NULL]; //set column field database for datatable orderable
+   var $column_search_charged = ['tbl_2.loa_no', 'tbl_4.first_name', 'tbl_4.middle_name', 'tbl_4.last_name', 'tbl_4.suffix', 'tbl_2.loa_request_type', 'tbl_2.med_services', 'tbl_1.emp_id', 'tbl_2.health_card_no', 'tbl_3.hp_name', 'CONCAT(tbl_4.first_name, " ",tbl_4.last_name)', 'CONCAT(tbl_4.first_name, " ",tbl_4.last_name, " ", tbl_4.suffix)', 'CONCAT(tbl_4.first_name, " ",tbl_4.middle_name, " ",tbl_4.last_name)', 'CONCAT(tbl_4.first_name, " ",tbl_4.middle_name, " ",tbl_4.last_name, " ", tbl_4.suffix)']; //set column field database for datatable searchable 
+   var $order_charged = ['tbl_1.loa_id' => 'asc']; // default order 
+ 
+   private function _get_charged_datatables_query($status) {
+     $this->db->from($this->table_1_charged . ' as tbl_1');
+     $this->db->join($this->table_2_charged . ' as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id');
+     $this->db->join($this->table_3_charged . ' as tbl_3', 'tbl_1.hp_id = tbl_3.hp_id');
+     $this->db->join($this->table_4_charged . ' as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id');
+     $this->db->where('tbl_1.status', $status);
+     $this->db->where('tbl_1.done_matching', '1');
+     $i = 0;
+     
+     if($this->input->post('filter')){
+       $this->db->like('tbl_1.hp_id', $this->input->post('filter'));
+     }
+
+     // loop column 
+     foreach ($this->column_search_charged as $item) {
+       // if datatable send POST for search
+       if ($_POST['search']['value']) {
+         // first loop
+         if ($i === 0) {
+           $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+           $this->db->like($item, $_POST['search']['value']);
+         } else {
+           $this->db->or_like($item, $_POST['search']['value']);
+         }
+ 
+         if (count($this->column_search_charged) - 1 == $i) //last loop
+           $this->db->group_end(); //close bracket
+       }
+       $i++;
+     }
+ 
+     // here order processing
+     if (isset($_POST['order'])) {
+       $this->db->order_by($this->column_order_charged[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+     } else if (isset($this->order_charged)) {
+       $order = $this->order_charged;
+       $this->db->order_by(key($order), $order[key($order)]);
+     }
+   }
+ 
+   function get_charged_datatables($status) {
+     $this->_get_charged_datatables_query($status);
+     if ($_POST['length'] != -1)
+       $this->db->limit($_POST['length'], $_POST['start']);
+     $query = $this->db->get();
+     return $query->result_array();
+   }
+ 
+   function count_filtered_charged($status) {
+     $this->_get_charged_datatables_query($status);
+     $query = $this->db->get();
+     return $query->num_rows();
+   }
+ 
+   function count_all_charged($status) {
+     $this->db->from($this->table_1_charged)
+              ->where('status', $status);
+     return $this->db->count_all_results();
+   }
+   // End of server-side processing datatables
+
   function db_get_max_loa_id() {
     $this->db->select_max('loa_id');
     $query = $this->db->get('loa_requests');
@@ -467,6 +600,14 @@ function db_get_cost_types_by_hp_ID($hp_id) {
 
   function set_loa_status_completed($loa_id, $status) {
     $this->db->set('status', $status)
+            ->set('completed', '1')
+            ->where('loa_id', $loa_id);
+    return $this->db->update('loa_requests');
+  }
+
+  function _set_loa_status_completed($loa_id) {
+    $this->db->set('completed', '')
+            ->where('status', 'Billed')
             ->where('loa_id', $loa_id);
     return $this->db->update('loa_requests');
   }
@@ -488,7 +629,7 @@ function db_get_cost_types_by_hp_ID($hp_id) {
 
   function check_if_status_cancelled($loa_id) {
     $this->db->select('status')
-            ->where('status', 'Reffered')
+            ->where('status', 'Referred')
             ->where('loa_id', $loa_id)
             ->group_by('loa_id');
     $query = $this->db->get('performed_loa_info');
@@ -565,6 +706,7 @@ function db_get_cost_types_by_hp_ID($hp_id) {
             ->from('hr_added_loa_fees as tbl_1')
             ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
             ->join('loa_requests as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id')
+            ->join('healthcare_providers as tbl_4', 'tbl_1.hp_id = tbl_4.hp_id')
             ->where('tbl_1.loa_id', $loa_id);
     return $this->db->get()->row_array();
   }
@@ -595,43 +737,197 @@ function db_get_cost_types_by_hp_ID($hp_id) {
     return $this->db->get()->row_array();
   }
   
-  function set_bill_for_charging($loa_id) {
-    $this->db->set('for_charging', '1')
-            ->where('loa_id', $loa_id);
-    return $this->db->update('loa_requests');
+  function set_bill_for_matched($hp_id, $start_date, $end_date, $payment_no) {
+    $this->db->set('done_matching', '1')
+            ->set('status', 'Payable')
+            ->set('payment_no', $payment_no)
+            ->where('status', 'Billed')
+            ->where('hp_id', $hp_id)
+            ->where('billed_on >=', $start_date)
+            ->where('billed_on <=', $end_date)
+            ->where('loa_id !=', '');
+    return $this->db->update('billing');
   }
 
-    function get_hp_billing() {
-      $this->db->select('*');
-      $this->db->from('billing as tbl_1');
-      $this->db->join('loa_requests as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id');
-      $this->db->where('tbl_1.status', 'Billed');
-   
-      if($this->input->post('filter')){
-        $filterValue = $this->input->post('filter');
-        $this->db->like('tbl_1.hp_id', $filterValue); 
-      }
+  function insert_for_payment_consolidated($data) {
+    return $this->db->insert('monthly_payable', $data);
+  }
 
-      if ($this->input->post('start_date')) {
-          $startDate = date('Y-m-d', strtotime($this->input->post('start_date')));
-          $this->db->where('tbl_1.billed_on >=', $startDate);
-      }
+  function fetch_for_payment_bill($status) {
+    $this->db->select('*')
+            ->from('monthly_payable as tbl_1')
+            ->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
+            ->where('status', $status)
+            ->where('type', 'LOA');
 
-      if ($this->input->post('end_date')){
-          $endDate = date('Y-m-d', strtotime($this->input->post('end_date')));
-          $this->db->where('tbl_1.billed_on <=', $endDate);
-      }
-      
-      $this->db->order_by('tbl_1.loa_id', 'ASC');
-      return $this->db->get()->result_array();
+    if($this->input->post('filter')){
+      $this->db->like('tbl_1.hp_id', $this->input->post('filter'));
     }
 
-  // function get_hr_billing($hospital, $start_date, $end_date) {
-  //   $this->db->select('*')
-  //           ->from('hr_added_loa_fees')
-  //   return $this->db->get()->result_array();
-  // }
+    return $this->db->get()->result_array();
+  }
 
+   // Start of server-side processing datatables
+   var $table_1_billed = 'billing';
+   var $table_2_billed = 'loa_requests';
+   var $table_3_billed = 'hr_added_loa_fees';
+   var $column_order_billed = ['loa_no', 'first_name', 'loa_request_type', 'hp_name', null, 'request_date']; //set column field database for datatable orderable
+   var $column_search_billed = ['loa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'loa_request_type', 'med_services', 'emp_id', 'health_card_no', 'hp_name', 'request_date', 'CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)']; //set column field database for datatable searchable 
+   var $order_billed = ['loa_id' => 'desc']; // default order 
+ 
+   private function _get_billed_datatables_query($status) {
+     $this->db->from($this->table_1_billed . ' as tbl_1');
+     $this->db->join($this->table_2_billed . ' as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id');
+     $this->db->join($this->table_3_billed . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id', 'left');
+     $this->db->where('tbl_1.status', $status);
+     $i = 0;
+ 
+    if($this->input->post('filter')){
+       $this->db->like('tbl_1.hp_id', $this->input->post('filter'));
+    }
 
+    if ($this->input->post('startDate')) {
+      $startDate = date('Y-m-d', strtotime($this->input->post('startDate')));
+      $this->db->where('tbl_1.billed_on >=', $startDate);
+    }
+
+    if ($this->input->post('endDate')){
+      $endDate = date('Y-m-d', strtotime($this->input->post('endDate')));
+      $this->db->where('tbl_1.billed_on <=', $endDate);
+    }
+  }
+ 
+   function get_billed_datatables($status) {
+     $this->_get_billed_datatables_query($status);
+     if ($_POST['length'] != -1)
+       $this->db->limit($_POST['length'], $_POST['start']);
+     $query = $this->db->get();
+     return $query->result_array();
+   }
+    // End of server-side processing datatables
+
+    function get_total_hp_net_bill($hp_id, $start_date, $end_date) {
+      $this->db->select_sum('net_bill')
+                ->from('billing')
+                ->where('status', 'Billed')
+                ->where('hp_id', $hp_id)
+                ->where('billed_on >=', $start_date)
+                ->where('billed_on <=', $end_date)
+                ->where('loa_id !=', '');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $sum = $result[0]['net_bill'];
+        return $sum;
+    }
+
+    function get_total_hr_net_bill($hp_id, $start_date, $end_date) {
+      $this->db->select_sum('total_net_bill')
+                ->from('billing as tbl_1')
+                ->join('hr_added_loa_fees as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id', 'left')
+                ->where('tbl_1.status', 'Billed')
+                ->where('tbl_1.hp_id', $hp_id)
+                ->where('tbl_1.billed_on >=', $start_date)
+                ->where('tbl_1.billed_on <=', $end_date)
+                ->where('tbl_1.loa_id !=', '');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $sum = $result[0]['total_net_bill'];
+        return $sum;
+    }
+
+    function get_loa_charging($loa_id) {
+      $this->db->select('*')
+              ->from('billing as tbl_1')
+              ->join('loa_requests as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id')
+              ->join('members as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id')
+              ->join('healthcare_providers as tbl_4', 'tbl_1.hp_id = tbl_4.hp_id')
+              ->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
+              ->where('tbl_1.loa_id', $loa_id);
+      return $this->db->get()->row_array();
+    }
+    
+    function confirm_loa_charging($loa_id, $data) {
+      $this->db->where('loa_id', $loa_id);
+      return $this->db->update('billing', $data);
+    }
+
+    function set_remaining_balance($emp_id, $remaining_balance) {
+      $this->db->set('remaining_balance', $remaining_balance)
+              ->where('emp_id', $emp_id);
+      return $this->db->update('max_benefit_limits');
+    }
+
+    function fetch_monthly_billed_loa($payment_no) {
+      $this->db->select('*')
+              ->from('monthly_payable as tbl_1')
+              ->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
+              ->where('payment_no', $payment_no);
+      return $this->db->get()->row_array();
+    }
+
+// Start of server-side processing datatables
+var $table_1_monthly = 'billing';
+var $table_2_monthly = 'loa_requests';
+var $table_3_monthly = 'hr_added_loa_fees';
+
+private function _get_monthly_datatables_query($payment_no) {
+  $this->db->from($this->table_1_monthly . ' as tbl_1');
+  $this->db->join($this->table_2_monthly . ' as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id');
+  $this->db->join($this->table_3_monthly . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id', 'left');
+  $this->db->where('tbl_1.payment_no', $payment_no);
+  
+}
+
+function monthly_bill_datatable($payment_no) {
+  $this->_get_monthly_datatables_query($payment_no);
+  if ($_POST['length'] != -1)
+    $this->db->limit($_POST['length'], $_POST['start']);
+  $query = $this->db->get();
+  return $query->result_array();
+}
+// end datatable
+
+function get_matched_total_hp_bill($payment_no) {
+  $this->db->select_sum('net_bill')
+            ->from('billing')
+            ->where('payment_no', $payment_no);
+    $query = $this->db->get();
+    $result = $query->result_array();
+    $sum = $result[0]['net_bill'];
+    return $sum;
+}
+
+function get_matched_total_hr_bill($payment_no) {
+  $this->db->select_sum('total_net_bill')
+            ->from('billing as tbl_1')
+            ->join('hr_added_loa_fees as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id', 'left')
+            ->where('payment_no', $payment_no);
+    $query = $this->db->get();
+    $result = $query->result_array();
+    $sum = $result[0]['total_net_bill'];
+    return $sum;
+}
+
+//billing for charging datatable
+var $charging_table_1 = 'billing';
+var $charging_table_2 = 'loa_requests';
+var $charging_table_3 = 'hr_added_loa_fees';
+var $charging_table_4 = 'max_benefit_limits';
+private function _get_datatables_charging_query($payment_no) {
+  $this->db->from($this->charging_table_1 . ' as tbl_1')
+          ->join($this->charging_table_2 . ' as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id')
+          ->join($this->charging_table_3 . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id', 'left')
+          ->join($this->charging_table_4 . ' as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id')
+          ->where('tbl_1.payment_no', $payment_no);
+}
+
+function get_billed_for_charging($payment_no) {
+  $this->_get_datatables_charging_query($payment_no);
+  if ($_POST['length'] != -1)
+    $this->db->limit($_POST['length'], $_POST['start']);
+  $query = $this->db->get();
+  return $query->result_array();
+}
+//end billing for charging datatable
 
 }

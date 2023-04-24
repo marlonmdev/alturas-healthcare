@@ -10,7 +10,7 @@
                   <div class="modal-body">
                     <div class="container">
                       <div class="row text-center">
-                        <h4><strong>NOA REQUEST DETAILS</strong></h4>
+                        <h4><strong>PATIENT DETAILS</strong></h4>
                       </div>
                       <div class="row">
                         <table class="table table-bordered table-striped table-hover table-responsive table-sm">

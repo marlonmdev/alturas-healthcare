@@ -17,11 +17,9 @@ class Loa_controller extends CI_Controller {
 		$this->security->get_csrf_hash();
 		$status = 'Pending';
 		$list = $this->loa_model->get_datatables($status);
-		// $cost_types = $this->loa_model->db_get_cost_types();
 		$data = [];
 		foreach ($list as $loa) {
 			$loa_id = $this->myhash->hasher($loa['loa_id'], 'encrypt');
-			// $ct_array = $row = [];
 
 			$row = [];
 
@@ -36,17 +34,14 @@ class Loa_controller extends CI_Controller {
 			// if work_related field is set to either yes or no, show either disabled or not disabled approve button 
 			if($loa['work_related'] == ''){
 				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $loa['status'] . '</span></div>';
-
 				$custom_actions .= '<a class="me-2" data-bs-toggle="tooltip" title="Charge type is not yet set by HRD Coordinator" disabled><i class="mdi mdi-thumb-up fs-2 icon-disabled"></i></a>';
 			}else{
 				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-cyan">for Approval</span></div>';
-
 				$custom_actions .= '<a class="me-2" href="JavaScript:void(0)" onclick="approveLoaRequest(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="Approve LOA"><i class="mdi mdi-thumb-up fs-2 text-success"></i></a>';
 			}
 
 			$custom_actions .= '<a href="JavaScript:void(0)" onclick="disapproveLoaRequest(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="Disapprove LOA"><i class="mdi mdi-thumb-down fs-2 text-danger"></i></a>';
 
-			// $short_med_services = '';
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
 			if ($loa['loa_request_type'] === 'Consultation') {
@@ -54,7 +49,7 @@ class Loa_controller extends CI_Controller {
 				// $short_med_services = 'Npne';
 				$view_file = 'None';
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
-			} else {
+			}else{
 				// convert into array members selected cost types/med_services using PHP explode
 				// $selected_cost_types = explode(';', $loa['med_services']);
 				// loop through all the cost types from DB
@@ -115,6 +110,8 @@ class Loa_controller extends CI_Controller {
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
 			$custom_actions .= '<a href="' . base_url() . 'company-doctor/loa/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Print LOA"><i class="mdi mdi-printer fs-2 ps-2 text-primary"></i></a>';
+
+			$custom_actions .= '<a href="JavaScript:void(0)" onclick="showBackDateForm(\'' . $loa_id . '\', \'' . $loa['loa_no'] . '\', \''.$loa['expiration_date'].'\')" data-bs-toggle="tooltip" title="Date Extension"><i class="mdi mdi-border-color fs-2 text-cyan"></i></a>';
 
 			// $expires = strtotime('+1 week', strtotime($loa['approved_on']));
       // $expiration_date = date('m/d/Y', $expires);
@@ -180,6 +177,41 @@ class Loa_controller extends CI_Controller {
 		$result = $date_diff->invert ? "Expired" : "Not Expired";
 
 		return $result;
+	}
+
+	function backdate_expired(){
+		$loa_id = $this->myhash->hasher($this->input->post('loa-id', TRUE), 'decrypt');
+		$expiry_date = $this->input->post('expiry-date', TRUE);
+
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('expiry-date', 'Expiry Date', 'required');
+		if ($this->form_validation->run() == FALSE) {
+			$response = [
+				'status' 				    => 'error',
+				'expiry_date_error' => form_error('expiry-date'),
+			];
+		} else {
+			$post_data = [
+				'status'          => 'Approved',
+				'expiration_date' => date('Y-m-d', strtotime($expiry_date)),
+				'extended_when' => date("Y-m-d"),
+				'extended_by' 	=> $this->session->userdata('fullname'),
+			];
+
+			$updated = $this->loa_model->db_update_loa_request($loa_id, $post_data);
+
+			if (!$updated) {
+				$response = [
+					'status'  => 'save-error', 
+					'message' => 'LOA Request BackDate Failed'
+				];
+			}
+			$response = [
+				'status'  => 'success', 
+				'message' => 'LOA Request BackDated Successfully'
+			];
+		}		
+		echo json_encode($response);
 	}
 
 
@@ -278,6 +310,7 @@ class Loa_controller extends CI_Controller {
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-danger">' . $loa['status'] . '</span></div>';
 			
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewExpiredLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			$custom_actions .= '<a href="JavaScript:void(0)" onclick="showBackDateForm(\'' . $loa_id . '\', \'' . $loa['loa_no'] . '\', \''.$loa['expiration_date'].'\')" data-bs-toggle="tooltip" title="Date Extension"><i class="mdi mdi-border-color fs-2 text-cyan"></i></a>';
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
@@ -370,6 +403,54 @@ class Loa_controller extends CI_Controller {
 			"recordsFiltered" => $this->loa_model->count_filtered($status),
 			"data" => $data,
 		];
+		echo json_encode($output);
+	}
+
+	function fetch_all_referral_loa() {
+		$this->security->get_csrf_hash();
+		$status = 'Reffered';
+		$list = $this->loa_model->get_datatables($status);
+		$data = [];
+
+		foreach ($list as $loa) {
+			$loa_id = $this->myhash->hasher($loa['loa_id'], 'encrypt');
+			$row = [];
+
+			$full_name = $loa['first_name'] . ' ' . $loa['middle_name'] . ' ' . $loa['last_name'] . ' ' . $loa['suffix'];
+			$custom_loa_no = '<mark class="bg-primary text-white">'.$loa['loa_no'].'</mark>';
+			$expiry_date = $loa['expiration_date'] ? date('m/d/Y', strtotime($loa['expiration_date'])) : 'None'; 
+			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $loa['status'] . '</span></div>';
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewReferralLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			$custom_actions .= '<a href="' . base_url() . 'company-doctor/loa/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Print LOA"><i class="mdi mdi-printer fs-2 ps-2 text-primary"></i></a>';
+			$custom_actions .= '<a href="JavaScript:void(0)" onclick="showBackDateForm(\'' . $loa_id . '\', \'' . $loa['loa_no'] . '\', \''.$loa['expiration_date'].'\')" data-bs-toggle="tooltip" title="Date Extension"><i class="mdi mdi-border-color fs-2 text-cyan"></i></a>';
+			
+			$view_file = $short_hp_name = '';
+			if ($loa['loa_request_type'] === 'Consultation') {
+				$view_file = 'None';
+				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
+			}else{
+				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
+				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
+			}
+
+			// this data will be rendered to the datatable
+			$row[] = $custom_loa_no;
+			$row[] = $full_name;
+			$row[] = $loa['loa_request_type'];
+			$row[] = $short_hp_name;
+			$row[] = $view_file;
+			$row[] = $expiry_date;
+			$row[] = $custom_status;
+			$row[] = $custom_actions;
+			$data[] = $row;
+		}
+
+		$output = array(
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->loa_model->count_all($status),
+			"recordsFiltered" => $this->loa_model->count_filtered($status),
+			"data" => $data,
+		);
 		echo json_encode($output);
 	}
 
@@ -471,23 +552,25 @@ class Loa_controller extends CI_Controller {
 	// 	echo json_encode($response);
 	// }
 
-	function get_loa_info() {
+	function get_loa_info(){
 		$doctor_name = $requesting_physician = "";
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$row = $this->loa_model->db_get_loa_info($loa_id);
+
 		//check if requesting physician exist from DB
 		$exist = $this->loa_model->db_get_requesting_physician($row['requesting_physician']);
-		if (!$exist) {
+		if (!$exist){
 			$requesting_physician = "Does not exist from database";
-		} else {
+		}else{
 			$requesting_physician = $exist['doctor_name'];
 		}
+		//end
 
 		// approved_by and disapproved_by is same value as doctor_id from Database
-		if ($row['approved_by']) {
+		if ($row['approved_by']){
 			$doc = $this->loa_model->db_get_doctor_name_by_id($row['approved_by']);
 			$doctor_name = $doc['doctor_name'];
-		} elseif ($row['disapproved_by']) {
+		}elseif ($row['disapproved_by']){
 			$doc = $this->loa_model->db_get_doctor_name_by_id($row['disapproved_by']);
 			$doctor_name = $doc['doctor_name'];
 		} else {
@@ -568,6 +651,7 @@ class Loa_controller extends CI_Controller {
 			'cancelled_on' => $row['cancelled_on'] ? date("F d, Y", strtotime($row['cancelled_on'])) : '',
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
+			'requested_by' => $row['requested_by'],
 		];
 		echo json_encode($response);
 	}
@@ -588,7 +672,6 @@ class Loa_controller extends CI_Controller {
 					'status'                => 'error',
 					'expiration_date_error' => form_error('expiration-date'),
 				];
-
 				echo json_encode($response);
 				exit();
 			}
@@ -596,24 +679,28 @@ class Loa_controller extends CI_Controller {
 
 		switch($expiration_type){
 			case 'default': 
-					$default = strtotime('+1 week', strtotime($approved_on));
-					$expired_on = date('Y-m-d', $default);
-				break;
+				$default = strtotime('+1 week', strtotime($approved_on));
+				$expired_on = date('Y-m-d', $default);
+			break;
+
 			case '2 weeks':
-					$expires = strtotime('+2 weeks', strtotime($approved_on));
-					$expired_on = date('Y-m-d', $expires);
-				break;
+				$expires = strtotime('+2 weeks', strtotime($approved_on));
+				$expired_on = date('Y-m-d', $expires);
+			break;
+
 			case '3 weeks':
-					$expires = strtotime('+3 weeks', strtotime($approved_on));
-					$expired_on = date('Y-m-d', $expires);
-				break;
+				$expires = strtotime('+3 weeks', strtotime($approved_on));
+				$expired_on = date('Y-m-d', $expires);
+			break;
+
 			case '4 weeks':
-					$expires = strtotime('+4 weeks', strtotime($approved_on));
-					$expired_on = date('Y-m-d', $expires);
-				break;
+				$expires = strtotime('+4 weeks', strtotime($approved_on));
+				$expired_on = date('Y-m-d', $expires);
+			break;
+
 			case 'custom':
-					$expired_on = date('Y-m-d', strtotime($expiration_date));
-				break;
+				$expired_on = date('Y-m-d', strtotime($expiration_date));
+			break;
 		}
 
 		$data = [
@@ -627,7 +714,7 @@ class Loa_controller extends CI_Controller {
 
 		if ($approved) {
 			$response = ['token' => $token, 'status' => 'success', 'message' => 'LOA Request Approved Successfully'];
-		} else {
+		}else{
 			$response = ['token' => $token, 'status' => 'save-error', 'message' => 'Unable to Approve LOA Request'];
 		}
 		echo json_encode($response);
@@ -635,33 +722,29 @@ class Loa_controller extends CI_Controller {
 
 	function disapprove_loa_request() {
 		$token = $this->security->get_csrf_hash();
-		$loa_id = $this->myhash->hasher($this->input->post('loa-id'), 'decrypt');
+		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		// $loa_id = $this->myhash->hasher($this->input->post('loa-id'), 'decrypt');
 		$disapprove_reason = $this->input->post('disapprove-reason');
 		$disapproved_by = $this->session->userdata('doctor_id');
 		$disapproved_on = date("Y-m-d");
-		$this->form_validation->set_rules('disapprove-reason', 'Reason for Disapproval', 'trim|required|max_length[2000]');
+		$this->form_validation->set_rules('disapprove-reason', 'Reason for Disapproval', 'required|max_length[500]');
 		if ($this->form_validation->run() == FALSE) {
 			$response = array(
 				'token' => $token,
 				'status' => 'error',
 				'disapprove_reason_error' => form_error('disapprove-reason'),
 			);
-		} else {
-			$this->load->model('company_doctor/loa_model');
-			$data = [
-				'status' => 'Disapproved',
-				'disapproved_by' => $disapproved_by,
-				'disapprove_reason' => $disapprove_reason,
-				'disapproved_on' => $disapproved_on
-			];
-
+			echo json_encode($response);
+		}else{
 			$disapproved = $this->loa_model->db_disapprove_loa_request($loa_id, $disapproved_by, $disapprove_reason, $disapproved_on);
 			if (!$disapproved) {
 				$response = array('token' => $token, 'status' => 'error', 'message' => 'Unable to Disapprove LOA Request');
 			}
 			$response = array('token' => $token, 'status' => 'success', 'message' => 'LOA Request Disapproved Successfully');
+			echo json_encode($response);
 		}
-		echo json_encode($response);
+
+		
 	}
 
 

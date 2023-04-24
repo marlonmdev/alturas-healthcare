@@ -1,11 +1,8 @@
-
-<!-- Start of Page Wrapper -->
 <div class="page-wrapper">
-  <!-- Bread crumb and right sidebar toggle -->
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">Letter of Authorization</h4>
+        <h4 class="page-title ls-2">LETTER OF AUTHORIZATION</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -19,19 +16,17 @@
       </div>
     </div>
   </div>
-  <!-- End Bread crumb and right sidebar toggle -->
-  <!-- Start of Container fluid  -->
+
   <div class="container-fluid">
     <div class="row">
-
       <div class="col-lg-12">
         <div class="card shadow">
           <div class="card-body">
 
             <form method="post" action="<?= base_url(); ?>member/request-loa/submit" class="mt-2" id="memberLoaRequestForm" enctype="multipart/form-data">
-              <!-- Start of Hidden Inputs -->
+
               <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
-              <!-- End of Hidden Inputs -->
+
               <span class="text-info fs-3 fw-bold ls-2"><i class="mdi mdi-account-card-details"></i> PATIENT DETAILS</span><br>
               <div class="form-group row">
                 <div class="col-sm-6 mb-2">
@@ -42,14 +37,14 @@
                   <label class="colored-label">Date of Birth</label>
                   <input type="date" class="form-control" name="date-of-birth" value="<?= $member['date_of_birth'] ?>" disabled>
                 </div>
-                <!-- Start of Age Calculator -->
+                <!-- Start of Age Calculation -->
                 <?php
-                $birthDate = date("d-m-Y", strtotime($member['date_of_birth']));
-                $currentDate = date("d-m-Y");
-                $diff = date_diff(date_create($birthDate), date_create($currentDate));
-                $age = $diff->format("%y");
+                  $birthDate = date("d-m-Y", strtotime($member['date_of_birth']));
+                  $currentDate = date("d-m-Y");
+                  $diff = date_diff(date_create($birthDate), date_create($currentDate));
+                  $age = $diff->format("%y");
                 ?>
-                <!-- End of Age Calculator -->
+                <!-- End of Age Calculation -->
                 <div class="col-sm-3 mb-2">
                   <label class="colored-label">Age</label>
                   <input type="text" class="form-control" name="age" value="<?= $age ?>" disabled>
@@ -57,11 +52,11 @@
               </div>
 
               <div class="form-group row">
-                <div class="col-sm-2 mb-2">
+                <div class="col-sm-6 mb-2">
                   <label class="colored-label">Gender</label>
                   <input type="text" class="form-control" name="gender" value="<?= $member['gender'] ?>" disabled>
                 </div>
-                <div class="col-sm-4 mb-2">
+                <div class="col-sm-3 mb-2">
                   <label class="colored-label">PhilHealth Number</label>
                   <input type="text" class="form-control" name="philhealth-no" value="<?= $member['philhealth_no'] ?>" disabled>
                 </div>
@@ -80,7 +75,6 @@
                   <label class="colored-label">City Address</label>
                   <input type="text" class="form-control" name="city-address" value="<?= $member['city_address'] ?>" disabled>
                 </div>
-
               </div>
 
               <div class="form-group row">
@@ -100,22 +94,19 @@
                   <label class="colored-label">Contact Person Name</label>
                   <input type="text" class="form-control" name="contact-person" value="<?= $member['contact_person'] ?>" disabled>
                 </div>
-                <div class="col-sm-6 mb-2">
+                <div class="col-sm-3 mb-2">
                   <label class="colored-label">Contact Number</label>
                   <input type="text" class="form-control" name="contact-person-no" value="<?= $member['contact_person_no'] ?>" disabled>
                 </div>
-
-              </div>
-
-              <div class="form-group row">
-                <div class="col-sm-6 mb-2">
+                <div class="col-sm-3 mb-2">
                   <label class="colored-label">Address</label>
                   <input type="text" class="form-control" name="contact-person-addr" value="<?= $member['contact_person_addr'] ?>" disabled>
                 </div>
               </div>
+
               <span class="text-info fs-3 fw-bold ls-2"><i class="mdi mdi-file-document-box"></i> LOA REQUEST DETAILS</span>
               <div class="form-group row">
-                <div class="col-lg-7 col-sm-12 col-lg-offset-3 mb-2">
+                <div class="col-sm-6 mb-2">
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Healthcare Provider</label>
                   <select class="form-select" name="healthcare-provider" id="healthcare-provider" oninput="enableRequestType()">
                     <option value="" selected>Select Healthcare Provider</option>
@@ -131,8 +122,9 @@
                   </select>
                   <em id="healthcare-provider-error" class="text-danger"></em>
                 </div>
-                <div class="col-lg-5 col-sm-12 mb-2">
-                  <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Type of LOA Request</label>
+
+                <div class="col-sm-3 mb-2">
+                  <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Type of Request</label>
                   <select class="form-select" name="loa-request-type" id="loa-request-type" onchange="showMedServices()" disabled>
                     <option value="" selected>Select LOA Request Type</option>
                     <option value="Consultation">Consultation</option>
@@ -145,9 +137,7 @@
               <div class="form-group row">
                 <div class="col-lg-12 col-sm-12 mb-2 d-none" id="med-services-div">
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Select Medical Service/s</label><br>
-                  <div id="med-services-wrapper">
-                    <!-- med-services select box will be appended here... -->
-                  </div>
+                  <div id="med-services-wrapper"></div>
                   <em id="med-services-error" class="text-danger"></em>
                 </div>
               </div>
@@ -237,20 +227,16 @@
                   </a>
                 </div>
               </div>
+
             </form>
-            <!-- End of Form -->
           </div>
-          <!-- End of Card Body -->
-        </div>
-        <!-- End of Card -->
-      <!-- End Row  -->  
+        </div> 
       </div>
-    <!-- End Container fluid  -->
     </div>
-  <!-- End Page wrapper  -->
   </div>
-<!-- End Wrapper -->
 </div>
+
+
 <script>
   const baseUrl = "<?= base_url() ?>";
 

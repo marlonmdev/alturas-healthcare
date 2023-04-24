@@ -32,13 +32,13 @@
                     <thead>
                         <tr>
                             <th class="fw-bold">#</th>
-                            <th class="fw-bold">Name</th>
-                            <th class="fw-bold">EmpType</th>
-                            <th class="fw-bold">Status</th>
-                            <th class="fw-bold">Business Unit</th>
-                            <th class="fw-bold">Department</th>
-                            <th class="fw-bold">Approval Status</th>
-                            <th class="fw-bold">Actions</th>
+                            <th class="fw-bold">NAME OF PATIENT</th>
+                            <th class="fw-bold">TYPE OF EMPLOYEE</th>
+                            <th class="fw-bold">STATUS</th>
+                            <th class="fw-bold">BUSINESS UNIT</th>
+                            <th class="fw-bold">DEPARTMENT</th>
+                            <th class="fw-bold">STATUS</th>
+                            <th class="fw-bold">ACTION</th>
                         </tr>
                     </thead>
                     <tbody>

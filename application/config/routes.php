@@ -201,10 +201,15 @@ $route['healthcare-provider/reports/report-list/ajax/addEquipments']['post'] = '
 $route['healthcare-provider/reports/report-list/ajax/billLoaMember'] = 'healthcare_provider/Billing_controller/billLoaMember';
 $route['healthcare-provider/reports/report-list/ajax/billingServicesMember'] = 'healthcare_provider/Billing_controller/billingServicesMember';
 
+// HealthCare Provider List of Patient Routes
+$route['healthcare-provider/patient/design'] = 'healthcare_provider/patient_controller/design';
+$route['healthcare-provider/patient/fetch_all_patient'] = 'healthcare_provider/patient_controller/fetch_all_patient';
+$route['healthcare-provider/patient/view_information/(:any)'] = 'healthcare_provider/patient_controller/view_information';
 
 
-
-
+// $route['head-office-iad/transaction/members'] = 'ho_iad/transaction_controller/members';
+// $route['head-office-iad/transaction/fetch_all_members'] = 'ho_iad/transaction_controller/fetch_all_members';
+// $route['head-office-iad/transaction/view_information/(:any)'] = 'ho_iad/transaction_controller/view_information';
 
 // HealthCare Provider User Account Routes
 $route['healthcare-provider/account-settings'] = 'healthcare_provider/account_controller/account_settings';
@@ -485,14 +490,16 @@ $route['healthcare-coordinator/reschedule/managers-key/check'] = 'healthcare_coo
 // Company Doctor Navigation Links Routes
 $route['company-doctor/dashboard'] = 'company_doctor/pages_controller';
 $route['company-doctor/healthcare-providers'] = 'company_doctor/pages_controller/view_healthcare_providers';
-$route['company-doctor/members'] = 'company_doctor/pages_controller/view_all_members';
+$route['company-doctor/view_all_patient'] = 'company_doctor/pages_controller/view_all_patient';
 $route['company-doctor/accounts'] = 'company_doctor/pages_controller/view_all_accounts';
 $route['company-doctor/accounts/register'] = 'company_doctor/pages_controller/register_account_form';
 $route['company-doctor/setup/affiliate-hospitals'] = 'company_doctor/pages_controller/view_all_affiliate_hospitals';
 $route['company-doctor/loa/requests-list'] = 'company_doctor/pages_controller/view_pending_loa_list';
 $route['company-doctor/loa/requests-list/approved'] = 'company_doctor/pages_controller/view_approved_loa_list';
+$route['company-doctor/loa/requests-list/expired/backdate_expired'] = 'company_doctor/loa_controller/backdate_expired';
 $route['company-doctor/loa/requests-list/disapproved'] = 'company_doctor/pages_controller/view_disapproved_loa_list';
 $route['company-doctor/loa/requests-list/completed'] = 'company_doctor/pages_controller/view_completed_loa_list';
+$route['company-doctor/loa/requests-list/referral'] = 'company_doctor/pages_controller/view_referral_loa_list';
 $route['company-doctor/loa/requests-list/expired'] = 'company_doctor/pages_controller/view_expired_loa_list';
 $route['company-doctor/noa/requests-list'] = 'company_doctor/pages_controller/view_pending_noa_list';
 $route['company-doctor/noa/requests-list/approved'] = 'company_doctor/pages_controller/view_approved_noa_list';
@@ -508,8 +515,10 @@ $route['company-doctor/account-settings/username/update'] = 'company_doctor/acco
 
 
 // Company Doctor Members Routes
+$route['company-doctor/members'] = 'company_doctor/pages_controller/view_all_members';
 $route['company-doctor/members/fetch'] = 'company_doctor/members_controller/fetch_all_members';
 $route['company-doctor/member/view/(:any)'] = 'company_doctor/members_controller/view_member_info';
+
 
 
 // Company Doctor LOA Routes
@@ -517,6 +526,7 @@ $route['company-doctor/loa/requests-list/fetch'] = 'company_doctor/loa_controlle
 $route['company-doctor/loa/requests-list/approved/fetch'] = 'company_doctor/loa_controller/fetch_all_approved_loa';
 $route['company-doctor/loa/requests-list/disapproved/fetch'] = 'company_doctor/loa_controller/fetch_all_disapproved_loa';
 $route['company-doctor/loa/requests-list/completed/fetch'] = 'company_doctor/loa_controller/fetch_all_completed_loa';
+$route['company-doctor/loa/requests-list/referral/fetch'] = 'company_doctor/loa_controller/fetch_all_referral_loa';
 $route['company-doctor/loa/requests-list/expired/fetch'] = 'company_doctor/loa_controller/fetch_all_expired_loa';
 $route['company-doctor/loa/requests-list/view/(:any)'] = 'company_doctor/loa_controller/get_loa_info';
 // $route['company-doctor/loa/requests-list/approve/(:any)'] = 'company_doctor/loa_controller/approve_loa_request';
@@ -535,6 +545,8 @@ $route['company-doctor/noa/requests-list/view/(:any)'] = 'company_doctor/noa_con
 $route['company-doctor/noa/requests-list/approve-request'] = 'company_doctor/noa_controller/approve_noa_request';
 $route['company-doctor/noa/requests-list/disapprove/(:any)'] = 'company_doctor/noa_controller/disapprove_noa_request';
 $route['company-doctor/noa/requested-noa/generate-printable-noa/(:any)'] = 'company_doctor/noa_controller/generate_printable_noa';
+
+
 // End of Company Doctor Routes
 //========================================================================================================
 

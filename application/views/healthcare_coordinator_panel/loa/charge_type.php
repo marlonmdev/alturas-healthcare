@@ -20,15 +20,13 @@
               </select>
               <span class="text-danger" id="charge-type-error"></span>
 
-              <div class="form-group row pt-4">
-                <div class="nwr" id="percentage">
-                  <div id="med-services-wrapper">
-                    <div class="mb-2 fs-5 ls-1">
-                      <label class="colored-label">Enter Percentage</label>
-                      <input type="number" class="form-control" name="percentage">
-                    </div>
+              <div class="mb-2 fs-5 ls-1">
+                <label class="colored-label">Enter Percentage</label>
+                <div class="input-group">
+                  <input type="number" class="form-control" name="percentage" min="0" max="100" step="0.01" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="2">
+                  <div class="input-group-append">
+                    <span class="input-group-text">%</span>
                   </div>
-                  <em id="nwpercentage-error" class="text-danger"></em>
                 </div>
               </div>
             </div>

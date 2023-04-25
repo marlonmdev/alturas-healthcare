@@ -219,9 +219,13 @@
 
               <div class="row mt-2">
                 <div class="col-sm-12 mb-2 d-flex justify-content-start">
-                  <button type="submit" class="btn btn-primary me-2">
-                    <i class="mdi mdi-content-save-settings"></i> SUBMIT
-                  </button>
+                  <?php
+                    $emp_id=$this->session->userdata('emp_id');
+                    $pending = $this->loa_model->db_get_status_pending($emp_id);
+                    $disabled = !empty($pending) && (!isset($pending['status']) || $pending['status'] == 'Pending');
+                  ?>
+                  <button type="submit" class="btn btn-primary me-2"<?php if($disabled) echo "disabled";?>>
+                  <i class="mdi mdi-content-save-settings"></i> SUBMIT</button>
                   <a href="#" onclick="window.history.back()" class="btn btn-danger">
                     <i class="mdi mdi-arrow-left-bold"></i> GO BACK
                   </a>

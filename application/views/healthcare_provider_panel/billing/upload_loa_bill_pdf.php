@@ -102,56 +102,15 @@
       let reader = new FileReader();
       reader.onload = function () {
         let pdfObject = "<object data='" + reader.result + "' type='application/pdf' width='100%' height='600px'>";
-            pdfObject += "</object>";
-            pdfPreview.innerHTML = pdfObject;
+        pdfObject += "</object>";
+        pdfPreview.innerHTML = pdfObject;
       }
       reader.readAsDataURL(pdfFile);
     }else{
       pdfPreview.innerHTML = "Please select a PDF file.";
     }
   }
-
-  async function readPDF(pdfUrl){
-    const pdfDoc = await pdfjsLib.getDocument(pdfUrl).promise;
-
-    // Initialize variables for tracking "total" values and the total sum
-    let totalValues = [];
-    let totalSum = 0;
-
-    // Loop through each page in the PDF and extract the text
-    for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
-      const page = await pdfDoc.getPage(pageNum);
-      const content = await page.getTextContent();
-
-      // Loop through each text item on the page and check for "total"
-      for (let i = 0; i < content.items.length; i++) {
-        const text = content.items[i].str;
-        if (text.toLowerCase().includes('total')) {
-          // Extract the number from the "total" text and add it to the total sum
-          const totalNumber = Number(text.match(/\d+(?:,\d+)*(?:\.\d+)?/)[0].replace(',', ''));
-          totalValues.push(totalNumber);
-          totalSum += totalNumber;
-        }
-      }
-    }
-    // Print out the "total" values and the total sum
-    console.log(totalValues);
-    console.log(totalSum);
-  }
-
-
-  const pdfUrl = 'example.pdf';
-const pdfDoc = await pdfjsLib.getDocument(pdfUrl).promise;
-let pdfText = '';
-
-for (let i = 1; i <= pdfDoc.numPages; i++) {
-  const page = await pdfDoc.getPage(i);
-  const content = await page.getTextContent();
-  pdfText += content.items.map(item => item.str).join(' ');
-}
-
-document.getElementById('pdf-text').innerHTML = pdfText;
-
+  
   const form = document.querySelector('#pdfBillingForm');
   $(document).ready(function(){
     $('#pdfBillingForm').submit(function(event){
@@ -161,9 +120,8 @@ document.getElementById('pdf-text').innerHTML = pdfText;
         form.classList.add('was-validated');
         return;
       }
-
       let formData = new FormData($(this)[0]);
-          
+            
       $.ajax({
         type: 'POST',
         url: $(this).attr('action'),
@@ -175,17 +133,9 @@ document.getElementById('pdf-text').innerHTML = pdfText;
           const { token, status, message, billing_id } = response;
 
           if(status == 'success'){
-            swal({
-              title: 'Success',
-              text: message,
-              timer: 3000,
-              showConfirmButton: false,
-              type: 'success'
-            });
-              
             setTimeout(function() {
-              window.location.href = `${baseUrl}healthcare-provider/loa-requests/billed`;
-            }, 3000);
+              window.location.href = `${baseUrl}healthcare-provider/billing/bill-loa/upload-pdf/${billing_id}/success`;
+            }, 300);
           }else{
             swal({
               title: 'Failed',
@@ -203,6 +153,6 @@ document.getElementById('pdf-text').innerHTML = pdfText;
       let pdfPreview = document.getElementById('pdf-preview');
       $('#pdfBillingForm')[0].reset();
       pdfPreview.innerHTML = "";
-    }); 
+    });   
   });
 </script>

@@ -1,11 +1,8 @@
-
-<!-- Start of Page Wrapper -->
 <div class="page-wrapper">
-  <!-- Bread crumb and right sidebar toggle -->
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">Requested NOA</h4>
+        <h4 class="page-title ls-2">PENDING REQUEST</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -19,49 +16,39 @@
       </div>
     </div>
   </div>
-  <!-- End Bread crumb and right sidebar toggle -->
-  <!-- Start of Container fluid  -->
+
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
 
         <ul class="nav nav-tabs mb-4" role="tablist">
           <li class="nav-item">
-            <a
-              class="nav-link active"
-              href="<?php echo base_url(); ?>member/requested-noa/pending"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Pending</span></a
-            >
+            <a class="nav-link active" href="<?php echo base_url(); ?>member/requested-noa/pending" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">PENDING</span>
+            </a>
           </li>
+
           <li class="nav-item">
-            <a
-              class="nav-link"
-              href="<?php echo base_url(); ?>member/requested-noa/approved"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Approved</span></a
-            >
+            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-noa/approved" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">APPROVED</span>
+            </a>
           </li>
+
           <li class="nav-item">
-            <a
-              class="nav-link"
-              href="<?php echo base_url(); ?>member/requested-noa/disapproved"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
-            >
+            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-noa/disapproved" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">DISAPPROVED</span>
+            </a>
           </li>
-            <!-- <li class="nav-item">
-            <a
-              class="nav-link"
-              href="<?php echo base_url(); ?>member/requested-noa/completed"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
-            >
-          </li> -->
+
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-noa/completed" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">COMPLETED</span>
+            </a>
+          </li>
         </ul>
 
         <div class="card shadow">
@@ -70,12 +57,12 @@
               <table class="table table-hover" id="memberPendingNoa">
                 <thead>
                   <tr>
-                    <th class="fw-bold">NOA No.</th>
-                    <th class="fw-bold">Admission Date</th>
-                    <th class="fw-bold">Hospital Name</th>
-                    <th class="fw-bold">Request Date</th>
-                    <th class="fw-bold">Status</th>
-                    <th class="fw-bold">Actions</th>
+                    <th class="fw-bold">NOA NO.</th>
+                    <th class="fw-bold">DATE OF ADMISSION</th>
+                    <th class="fw-bold">NAME OF HOSPITAL</th>
+                    <th class="fw-bold">DATE OF REQUEST</th>
+                    <th class="fw-bold">STATUS</th>
+                    <th class="fw-bold">ACTION</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -84,18 +71,13 @@
             </div>
           </div>
         </div>
-
         <?php include 'view_noa_details.php'; ?>
-
       </div>
-      <!-- End Row  -->  
-      </div>
-    <!-- End Container fluid  -->
     </div>
-  <!-- End Page wrapper  -->
   </div>
-<!-- End Wrapper -->
 </div>
+
+
 <script>
   const baseUrl = `<?php echo base_url(); ?>`;
   const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;

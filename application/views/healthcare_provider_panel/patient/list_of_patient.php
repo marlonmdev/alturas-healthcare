@@ -28,8 +28,6 @@
 										<th class="fw-bold">Business Unit</th>
 										<th class="fw-bold">Name of Department</th>
                     <th class="fw-bold">Hospital Name</th>
-                    <!-- <th class="fw-bold">Max Benefit Limit</th>
-                    <th class="fw-bold">Remaining MBL</th> -->
                     <th class="fw-bold">Remaining MBL</th>
 										<th class="fw-bold">Action</th>
                   </tr>

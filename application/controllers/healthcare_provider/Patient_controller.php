@@ -45,7 +45,7 @@ class Patient_controller extends CI_Controller {
 			$percent=0;
 			$p=null;
       @$p = ($rmbl /$mbl) * 100;
-      $percent = number_format($p,2);
+      $percent = number_format($p);
 
 			if($percent == 100){
 	      $bar = "<div class='progress-container' id='animated-bar' style='border: 1px solid #E6E9ED;'>

@@ -361,6 +361,58 @@ class List_model extends CI_Model{
         return $this->db->get()->row_array();
         
     }
+
+    function fetch_for_payment_bill($status) {
+        $this->db->select('*')
+                ->from('monthly_payable as tbl_1')
+                ->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
+                ->where('status', $status);
+    
+        if($this->input->post('filter')){
+          $this->db->like('tbl_1.hp_id', $this->input->post('filter'));
+        }
+    
+        return $this->db->get()->result_array();
+      }
+    
+    function fetch_monthly_billed_noa($hp_id) {
+    $this->db->select('*')
+            ->from('healthcare_providers')
+            ->where('hp_id', $hp_id);
+    return $this->db->get()->row_array();
+    }
+
+   // Start of server-side processing datatables
+    var $table_1_monthly = 'billing';
+    var $table_2_monthly = 'noa_requests';
+    var $table_3_monthly = 'loa_requests';
+
+    private function _get_monthly_datatables_query($payment_no) {
+    $this->db->from($this->table_1_monthly . ' as tbl_1');
+    $this->db->join($this->table_2_monthly . ' as tbl_2', 'tbl_1.noa_id = tbl_2.noa_id');
+    $this->db->join($this->table_3_monthly . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id');
+    $this->db->where('tbl_1.payment_no', $payment_no);
+    
+    } 
+
+    function monthly_bill_datatable($payment_no) {
+    $this->_get_monthly_datatables_query($payment_no);
+    if ($_POST['length'] != -1)
+        $this->db->limit($_POST['length'], $_POST['start']);
+    $query = $this->db->get();
+    return $query->result_array();
+    }
+    // end datatable
+
+
+    function get_payment_nos($hp_id,$year,$converted_month) {
+        $this->db->where('hp_id', $hp_id)
+                ->where('year', $year)
+                ->where('month', $converted_month)
+                ->where('status', 'Billed');
+        return $this->db->get('monthly_payable')->result_array();
+    }
+
 //=================================================
 
     public function loa_member()

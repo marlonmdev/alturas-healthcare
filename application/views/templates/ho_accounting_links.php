@@ -9,10 +9,10 @@
               </li>
 
               <li class="sidebar-item">
-              <?php echo ($this->uri->segment(4) == 'closed' || $this->uri->segment(4) == 'unbilled') ? 'selected' : ''; ?>
+              <!-- <?php echo ($this->uri->segment(2) == 'bill') ? 'selected' : ''; ?> -->
                 <a
                   class="sidebar-link"
-                  href="<?php echo base_url(); ?>head-office-accounting/billing-list/billed"
+                  href="<?php echo base_url(); ?>head-office-accounting/bill/billing-list/billed-loa-noa"
                   aria-expanded="false"
                   ><i class="mdi mdi-file-check"></i
                   ><span class="hide-menu ls-1">Billing List</span>

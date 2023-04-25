@@ -242,6 +242,9 @@ $route['head-office-accounting/billing-list/unbilled_noa/view/(:any)'] = 'ho_acc
 $route['head-office-accounting/billing-list/payment-history/fetch'] = 'ho_accounting/main_controller/payment_history_fetch';
 $route['head-office-accounting/billing-list/view-payment-details/(:any)'] = 'ho_accounting/main_controller/view_payment_details';
 $route['head-office-accounting/billing-list/view-employee-payment/(:any)'] = 'ho_accounting/main_controller/view_employee_payment';
+$route['head-office-accounting/bill/requests-list/fetch'] = 'ho_accounting/main_controller/fetch_for_payment';
+$route['head-office-accounting/bill/billed-loa/fetch-payable/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/fetch_consolidated_bill';
+$route['head-office-accounting/bill/monthly-bill/fetch'] = 'ho_accounting/main_controller/fetch_monthly_bill';
 //Pages
 $route['head-office-accounting/billing-list'] = 'ho_accounting/TableList';
 $route['head-office-accounting/billing-list/billed'] = 'ho_accounting/TableList/billed_record';
@@ -255,6 +258,7 @@ $route['head-office-accounting/noa-request-list/noa-completed'] = 'ho_accounting
 $route['head-office-accounting/payment_history'] = 'ho_accounting/Pages_controller/show_payment_history_form';
 $route['head-office-accounting/billing-list/unbilled/loa'] = 'ho_accounting/Pages_controller/unbilled_loa_form';
 $route['head-office-accounting/billing-list/unbilled/noa'] = 'ho_accounting/Pages_controller/unbilled_noa_form';
+$route['head-office-accounting/bill/billing-list/billed-loa-noa'] = 'ho_accounting/Pages_controller/view_billed_loa_noa';
 // LOA datatables
 $route['head-office-accounting/loa-request-list/loa-approved/fetch'] = 'ho_accounting/Loa_ho_controller/get_approved_loa';
 $route['head-office-accounting/loa-request-list/loa-completed/fetch'] = 'ho_accounting/Loa_ho_controller/get_completed_loa';

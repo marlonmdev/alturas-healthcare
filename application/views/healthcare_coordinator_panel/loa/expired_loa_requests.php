@@ -109,7 +109,6 @@
           <?php include 'back_date_modal.php'; ?>
         </div>
         <?php include 'view_expired_loa_details.php'; ?>
-
       </div>
     </div>
   </div>

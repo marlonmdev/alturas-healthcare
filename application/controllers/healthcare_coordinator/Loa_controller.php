@@ -182,7 +182,6 @@ class Loa_controller extends CI_Controller {
 		$this->security->get_csrf_hash();
 		$loa_id = $this->uri->segment(5);
 		$input_post = $this->input->post(NULL, TRUE);
-		// JSON Decode - Takes a JSON encoded string and converts it into a PHP value
 		$physicians_tags = json_decode($this->input->post('attending-physician'), TRUE);
 		$physician_arr = [];
 		$request_type = $this->input->post('loa-request-type');
@@ -193,7 +192,7 @@ class Loa_controller extends CI_Controller {
 				$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[1000]');
 				$this->form_validation->set_rules('requesting-physician', 'Requesting Physician', 'trim|required');
 				if ($this->form_validation->run() == FALSE) {
-					$response = [
+					$response =[
 						'status' => 'error',
 						'healthcare_provider_error' => form_error('healthcare-provider'),
 						'loa_request_type_error' => form_error('loa-request-type'),
@@ -201,18 +200,18 @@ class Loa_controller extends CI_Controller {
 						'requesting_physician_error' => form_error('requesting-physician'),
 					];
 					echo json_encode($response);
-				} else {
+				}else{
 					$rx_file = '';
 					$med_services = [];
-					// for physician multi-tags input
+
 					foreach ($physicians_tags as $physician_tag) :
 						array_push($physician_arr, ucwords($physician_tag['value']));
 					endforeach;
 					$attending_physician = implode(', ', $physician_arr);
-					// Call function update_loa
 					$this->update_loa($loa_id, $input_post, $med_services, $attending_physician, $rx_file);
 				}
-				break;
+			break;
+
 			case ($request_type === 'Diagnostic Test'):
 				$this->form_validation->set_rules('healthcare-provider', 'HealthCare Provider', 'required');
 				$this->form_validation->set_rules('loa-request-type', 'LOA Request Type', 'required');
@@ -231,12 +230,11 @@ class Loa_controller extends CI_Controller {
 						'rx_file_error' => form_error('rx-file'),
 					];
 					echo json_encode($response);
-				} else {
+				}else{
 					$row = $this->loa_model->db_get_loa_attach_filename($loa_id);
 					$db_filename = $row['rx_file'];
 					$med_services = $this->input->post('med-services');
 
-					// for physician multi-tags input
 					foreach ($physicians_tags as $physician_tag) :
 						array_push($physician_arr, ucwords($physician_tag['value']));
 					endforeach;
@@ -1805,7 +1803,6 @@ class Loa_controller extends CI_Controller {
 	function view_tag_loa_completed() {
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$loa = $this->loa_model->get_all_approved_loa($loa_id);
-
 		$existing = $this->loa_model->check_loa_no($loa_id);
 		
 		if(!$existing){
@@ -1823,14 +1820,10 @@ class Loa_controller extends CI_Controller {
 			$data['expired_on'] = $loa['expiration_date'];
 			
 			if($loa['loa_request_type'] == 'Consultation'){
-
 				$view_page ='tag_to_complete_consultation.php';
-
 			}else if($loa['loa_request_type'] == 'Diagnostic Test'){
-
 				$view_page ='tag_loa_to_complete.php';
 			}
-			
 			$this->load->view('templates/header', $data);
 			$this->load->view('healthcare_coordinator_panel/loa/'.$view_page.'');
 			$this->load->view('templates/footer');
@@ -1839,6 +1832,7 @@ class Loa_controller extends CI_Controller {
 			$loa_info['user_role'] = $this->session->userdata('user_role');
 			$loa_info['loaInfo'] = $this->loa_model->get_performed_loa_data($loa_id);
 			$loa_info['hc_provider'] = $loa['hp_name'];
+
 			$loa_info['full_name'] = $loa['first_name'] .' '. $loa['middle_name'] .' '. $loa['last_name'] .' '. $loa['suffix'];
 			$loa_info['hp_id'] = $loa['hp_id'];
 			$loa_info['loa_id'] = $loa['loa_id'];
@@ -1851,17 +1845,13 @@ class Loa_controller extends CI_Controller {
 			if($loa['loa_request_type'] == 'Consultation'){
 				$loa_info['loa_data'] = $this->loa_model->get_consultation_data($loa_id);
 				$view_page ='edit_tag_complete_consultation.php';
-
 			}else if($loa['loa_request_type'] == 'Diagnostic Test'){
-
 				$view_page ='edit_tagged_loa_to_complete.php';
 			}
-
 			$this->load->view('templates/header', $loa_info);
 			$this->load->view('healthcare_coordinator_panel/loa/'.$view_page.'');
 			$this->load->view('templates/footer');
 		}
-		
 	}
 
 	function submit_performed_loa_info() {

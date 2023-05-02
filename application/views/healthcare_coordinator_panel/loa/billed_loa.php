@@ -1,22 +1,19 @@
 <!-- Start of Page Wrapper -->
 <div class="page-wrapper">
-  <!-- Bread crumb and right sidebar toggle -->
   <div class="page-breadcrumb">
-      <div class="row">
+    <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-          <h4 class="page-title ls-2">Outpatient Billing</h4>
-          <div class="ms-auto text-end">
+        <h4 class="page-title ls-2">Outpatient Billing</h4>
+        <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
-              <ol class="breadcrumb">
+            <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
-              <li class="breadcrumb-item active" aria-current="page">
-                  Billed LOA
-              </li>
-              </ol>
+              <li class="breadcrumb-item active" aria-current="page">Billed LOA</li>
+            </ol>
           </nav>
-          </div>
+        </div>
       </div>
-      </div>
+    </div>
   </div>
   <!-- End Bread crumb and right sidebar toggle -->
   <!-- Start of Container fluid  -->
@@ -25,44 +22,41 @@
       <div class="col-lg-12">
         <ul class="nav nav-tabs mb-4" role="tablist">
           <li class="nav-item">
-            <a
-              class="nav-link active"
-              href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/billed"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Billed LOA</span></a
-            >
+            <a class="nav-link active" href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/billed" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Billed LOA</span>
+            </a>
           </li>
+
           <li class="nav-item">
-            <a
-              class="nav-link"
-              href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/for-charging"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">For Payment LOA</span></a
-            >
+            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/for-charging" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">For Payment LOA</span>
+            </a>
           </li>
         </ul>
+
         <form method="POST" action="<?php echo base_url(); ?>healthcare-coordinator/loa/matched-bill/submit">
-        <div class="row pt-2 pb-2">
-              <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
-                <div class="col-lg-5 ps-5 pb-3 pt-1 pb-4">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text bg-dark text-white">
-                            <i class="mdi mdi-filter"></i>
-                            </span>
-                        </div>
-                        <select class="form-select fw-bold" name="billed-hospital-filter" id="billed-hospital-filter" oninput="enableDate()">
-                                <option value="">Select Hospital</option>
-                                <?php foreach($hcproviders as $option) : ?>
-                                <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
-                                <?php endforeach; ?>
-                        </select>
-                    </div>
+          <div class="row pt-2 pb-2">
+            <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
+            <div class="col-lg-5 ps-5 pb-3 pt-1 pb-4">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text bg-dark text-white">
+                    <i class="mdi mdi-filter"></i>
+                  </span>
                 </div>
+                <select class="form-select fw-bold" name="billed-hospital-filter" id="billed-hospital-filter" oninput="enableDate()">
+                  <option value="">Select Hospital</option>
+                  <?php foreach($hcproviders as $option) : ?>
+                    <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
+                  <?php endforeach; ?>
+                </select>
+              </div>
+            </div>
 
                 
+<<<<<<< HEAD
                 <div class="col-lg-6 offset-1">
                       <div class="input-group">
                           <div class="input-group-append">
@@ -80,92 +74,106 @@
                           <input type="date" class="form-control" name="end-date" id="end-date" oninput="validateDateRange();" placeholder="End Date" disabled>
                       </div>
                   </div>
+=======
+            <div class="col-lg-6 offset-1">
+              <div class="input-group">
+                <div class="input-group-append">
+                  <span class="input-group-text bg-dark text-white ls-1 ms-2">
+                    <i class="mdi mdi-filter"></i>
+                  </span>
+>>>>>>> 68a735cd0814d1320690d6467285b8645ec07d30
                 </div>
-          
-            <div class="card shadow" style="background-color:">
-              <div class="card-body">
-                <div class="table-responsive">
-                  <table class="table table-hover table-responsive" id="billedLoaTable">
-                    <thead style="background-color:#ded4c3">
-                      <tr>
-                        <th class="fw-bold">LOA No.</th>
-                        <th class="fw-bold">Name</th>
-                        <th class="fw-bold">LOA Type</th>
-                        <th class="fw-bold">Coordinator Bill</th>
-                        <th class="fw-bold">View Bill</th>
-                        <th class="fw-bold">Hospital Bill</th>
-                        <th class="fw-bold">View SOA</th>
-                        <th class="fw-bold">Variance</th> 
-                      </tr>
-                    </thead>
-                    <tbody id="billed-tbody">
-                    </tbody>
-                  </table>
+                <input type="date" class="form-control" name="start-date" id="start-date" oninput="validateDateRange()" placeholder="Start Date" disabled>
+                <div class="input-group-append">
+                  <span class="input-group-text bg-dark text-white ls-1 ms-2">
+                    <i class="mdi mdi-filter"></i>
+                  </span>
                 </div>
-                <div class="row pt-4">
-                  <div class="col-lg-2 offset-6">
-                    <label>Total Coordinator Bill : </label>
-                    <input name="total-coordinator-bill" id="total-coordinator-bill" class="form-control text-center fw-bold" value="0" readonly>
-                  </div>
-                  <div class="col-lg-2">
-                    <label>Total Hospital Bill : </label>
-                    <input name="total-hospital-bill" id="total-hospital-bill" class="form-control text-center fw-bold" value="0" readonly>
-                  </div>
-                  <div class="col-lg-2">
-                    <label>Total Variance : </label>
-                    <input name="total-variance" id="total-variance" class="form-control text-center fw-bold" value="0" readonly>
-                  </div>
-                </div>
+                <input type="date" class="form-control" name="end-date" id="end-date" oninput="validateDateRange();enableProceedBtn()" placeholder="End Date" disabled>
               </div>
-              <div class="offset-10 pt-2 pb-4">
-                  <button class="btn btn-info fw-bold fs-5 btn-lg" type="submit" id="proceed-btn" disabled><i class="mdi mdi-send"></i> Proceed</button>
-              </div>
-              <?php include 'view_coordinator_bill_modal.php'; ?>
             </div>
-      </div>
+          </div>
+          
+          <div class="card shadow" style="background-color:">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-hover table-responsive" id="billedLoaTable">
+                  <thead style="background-color:#ded4c3">
+                    <tr>
+                      <th class="fw-bold">LOA No.</th>
+                      <th class="fw-bold">Name</th>
+                      <th class="fw-bold">LOA Type</th>
+                      <th class="fw-bold">Coordinator Bill</th>
+                      <th class="fw-bold">View Bill</th>
+                      <th class="fw-bold">Hospital Bill</th>
+                      <th class="fw-bold">View SOA</th>
+                      <th class="fw-bold">Variance</th> 
+                    </tr>
+                  </thead>
+                  <tbody id="billed-tbody">
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="row pt-4">
+                <div class="col-lg-2 offset-6">
+                  <label>Total Coordinator Bill : </label>
+                  <input name="total-coordinator-bill" id="total-coordinator-bill" class="form-control text-center fw-bold" value="0" readonly>
+                </div>
+
+                <div class="col-lg-2">
+                  <label>Total Hospital Bill : </label>
+                  <input name="total-hospital-bill" id="total-hospital-bill" class="form-control text-center fw-bold" value="0" readonly>
+                </div>
+
+                <div class="col-lg-2">
+                  <label>Total Variance : </label>
+                  <input name="total-variance" id="total-variance" class="form-control text-center fw-bold" value="0" readonly>
+                </div>
+              </div>
+            </div>
+            <div class="offset-10 pt-2 pb-4">
+              <button class="btn btn-info fw-bold fs-5 btn-lg" type="submit" id="proceed-btn" disabled><i class="mdi mdi-send"></i> Proceed</button>
+            </div>
+            <?php include 'view_coordinator_bill_modal.php'; ?>
+          </div>
+        </div>
       </form>
-      <!-- End Row  -->  
-      </div>
-    <!-- End Container fluid  -->
     </div>
-  <!-- End Page wrapper  -->
   </div>
   <?php include 'view_pdf_bill_modal.php'; ?>
-<!-- End Wrapper -->
+</div>
+  
 
 <script>
-  const baseUrl = "<?php echo base_url(); ?>";
-
+  const baseUrl = "<?php echo base_url()?>";
   $(document).ready(function() {
-
     $('#billedLoaTable').submit(function(){
+      event.preventDefault();
+      let $data = $(this).serialize();
       $.ajax({
+        type: "POST",
         url: $(this).attr('action'),
-        data: {
-          'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
-          'hp_id' : $('#billed-hospital-filter').val(),
-          'startDate' : $('#start-date').val(),
-          'endDate' : $('#end-date').val(),
-        },
-        type: 'POST',
-        dataType: 'json',
+        data: $data,
+        dataType: "json",
         success: function(response) {
-            const {
-                token,status,message
-            } = response;
+          const {
+            status,
+            message,
+          } = response;
 
-            switch(status){
-                
-                case 'failed':
-                    swal({
-                        title: 'Error',
-                        text: message,
-                        timer: 3000,
-                        showConfirmButton: true,
-                        type: 'error'
-                    });
-                break;
+          switch(status){
+            case 'failed':
+              swal({
+                title: 'Error',
+                text: message,
+                timer: 3000,
+                showConfirmButton: true,
+                type: 'error'
+              });
+            break;
 
+<<<<<<< HEAD
                 case 'success':
                     swal({
                         title: 'Success',
@@ -180,8 +188,22 @@
                     
                 break;
             }
+=======
+            case 'success':
+              swal({
+                title: 'Success',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'success'
+              });
+              setTimeout(function () {
+                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/for-charging';
+              }, 2600);    
+            break;
+          }
+>>>>>>> 68a735cd0814d1320690d6467285b8645ec07d30
         }
-
       });
     });
 

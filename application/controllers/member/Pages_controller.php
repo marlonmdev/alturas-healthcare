@@ -58,6 +58,7 @@ class Pages_controller extends CI_Controller {
 		$data['doctors'] = $this->loa_model->db_get_company_doctors();
 		$data['costtypes'] = $this->loa_model->db_get_cost_types();
 		$data['member'] = $this->loa_model->db_get_member_infos($emp_id);
+		$data['pending'] = $this->loa_model->db_get_status_pending($emp_id);
 		$this->load->view('templates/header', $data);
 		$this->load->view('member_panel/loa/request_loa_form');
 		$this->load->view('templates/footer');
@@ -69,7 +70,7 @@ class Pages_controller extends CI_Controller {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['hospitals'] = $this->noa_model->db_get_all_hospitals();
 		$data['member'] = $this->loa_model->db_get_member_infos($emp_id);
-		$data['costtypes'] = $this->noa_model->db_get_all_cost_types();
+		$data['costtypes'] = $this->noa_model->db_get_all_cost_types($emp_id);
 		$this->load->view('templates/header', $data);
 		$this->load->view('member_panel/noa/request_noa_form');
 		$this->load->view('templates/footer');

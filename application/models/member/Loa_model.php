@@ -70,6 +70,7 @@ class Loa_model extends CI_Model {
     return $query->row_array();
   }
 
+
   function db_insert_loa_request($post_data) {
     $query = $this->db->insert('loa_requests', $post_data);
     return $query ? $this->db->insert_id() : false;
@@ -194,6 +195,13 @@ class Loa_model extends CI_Model {
     $this->db->where('emp_id', $emp_id);
     $query = $this->db->get('members');
     return $query->num_rows() > 0 ? $query->row_array() : false;
+  }
+
+  function db_get_status_pending($emp_id){
+    $this->db->select('status');
+    $this->db->where('emp_id', $emp_id);
+    $query = $this->db->get('loa_requests');
+    return $query->row_array();
   }
 
   function db_insert_loa_cancellation_request($post_data){

@@ -1,6 +1,5 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
-
 class Autorun_controller extends CI_Controller {
 
 	public function __construct() {
@@ -28,7 +27,6 @@ class Autorun_controller extends CI_Controller {
 				if(!empty($row['expiration_date'])){
 					$date_result = $this->checkExpiration($row['expiration_date']);
 				}
-
 				if($date_result == 'Expired'){
 					$this->autorun_model->update_loa_expired($row['loa_id']);
 				}

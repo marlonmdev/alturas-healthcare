@@ -22,22 +22,12 @@ class Members_controller extends CI_Controller {
 			$row = [];
 			$app_id = $this->myhash->hasher($member['app_id'], 'encrypt');
 			
-			// split employee id number through the dash(-) separator
-			// $employee_id = $member['emp_id'];
-			// $exploded = preg_split('/-(?=[0-9])/', $employee_id, 2);
-			// $emp_no = $exploded[0];
-			// $emp_year = $exploded[1];
-
 			$full_name = $member['first_name'] . ' ' . $member['middle_name'] . ' ' . $member['last_name'] . ' ' . $member['suffix'];
 			$view_url = base_url() . 'healthcare-coordinator/members/view/applicant/' . $app_id;
-
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">Pending</span></div>';
-
 			$custom_actions = '<a class="me-2" href="' . $view_url . '" data-bs-toggle="tooltip" title="View Member Profile"><i class="mdi mdi-account-card-details fs-2 text-info"></i></a>';
-
 			$custom_actions .= '<a href="JavaScript:void(0)" onclick="showCreateUserAccount(\'' . $member['emp_id'] . '\', \'' . $member['emp_no'] . '\')" data-bs-toggle="tooltip" title="Create Member Account"><i class="mdi mdi-account-plus fs-2 text-primary"></i></a>';
 
-			// this data will be rendered to the datatable
 			$row[] = $member['app_id'];
 			$row[] = $full_name;
 			$row[] = $member['emp_type'];
@@ -68,14 +58,10 @@ class Members_controller extends CI_Controller {
 			$member_id = $this->myhash->hasher($member['member_id'], 'encrypt');
 			$full_name = $member['first_name'] . ' ' . $member['middle_name'] . ' ' . $member['last_name'] . ' ' . $member['suffix'];
 			$view_url = base_url() . 'healthcare-coordinator/members/view/' . $member_id;
-
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $member['approval_status'] . '</span></div>';
-
 			$custom_actions = '<a href="' . $view_url . '" data-bs-toggle="tooltip" title="View Member Profile"><i class="mdi mdi-account-card-details fs-2 text-info"></i></a>';
-
 			$custom_actions .= '<a href="JavaScript:void(0)" onclick="addEmployeeHcId(\'' . $member['emp_id'] . '\', \'' . $full_name . '\')" data-bs-toggle="tooltip" title="Upload Healthcard ID"><i class="mdi mdi-note-plus ps-2 fs-2 text-danger"></i></a>';
 
-			// this data will be rendered to the datatable
 			$row[] = $member['member_id'];
 			$row[] = $full_name;
 			$row[] = $member['emp_type'];
@@ -96,7 +82,6 @@ class Members_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 
-
 	private function _hash_password($password) {
 		$hashed_password = password_hash($password, PASSWORD_DEFAULT);
 		return $hashed_password;
@@ -115,7 +100,7 @@ class Members_controller extends CI_Controller {
 				'status' => 'save-error', 
 				'message' => 'Member Does Not Exist!'
 			];
-		} else {
+		}else{
 			$first_name = $result['first_name'];
 			$middle_name = $result['middle_name'];
 			$last_name = $result['last_name'];

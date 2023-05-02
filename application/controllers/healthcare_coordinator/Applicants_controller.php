@@ -60,6 +60,7 @@ class Applicants_controller extends CI_Controller {
 		return $hashed_password;
 	}
 
+	//Get Data from database in Create Member Account
 	function create_member_user_account() {
 		$this->security->get_csrf_hash();
 		$emp_id = $this->input->post('emp-id');
@@ -68,13 +69,12 @@ class Applicants_controller extends CI_Controller {
 		$password = $this->input->post('password');
 
 		$result = $this->applicants_model->db_get_applicant($emp_id);
-		if (!$result) {
+		if (!$result){
 			$response = [
 				'status' => 'save-error', 
 				'message' => 'Applicant Does Not Exist!'
 			];
-		} else {
-			// get all the applicant's details
+		}else{
 			$app_id = $result['app_id'];
 			$emp_no = $result['emp_no'];
 			$first_name = $result['first_name'];

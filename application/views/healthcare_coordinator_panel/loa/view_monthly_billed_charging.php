@@ -32,7 +32,7 @@
 			}
         ?>
       <h4 class="page-title ls-2">Billing for the Month of <?php echo $month . ', ' . $payable['year']; ?></h4>
-      <input type="hidden" id="payment-no" value="<?php echo $payable['payment_no']; ?>">
+      <input type="hidden" id="bill-no" value="<?php echo $payable['bill_no']; ?>">
           <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
@@ -58,34 +58,23 @@
                 
             <div class="card shadow" style="background-color:">
               <div class="card-body">
-                <div class="table-responsive">
-                  <table class="table table-hover table-responsive" id="billedLoaTable">
-                    <thead style="background-color:#eddcb7">
-                      <tr>
-                        <th class="fw-bold">LOA No.</th>
-                        <th class="fw-bold">Name</th>
-                        <th class="fw-bold">Percentage</th>
-                        <th class="fw-bold">Total Net Bill</th>
-                        <th class="fw-bold">Company Charge</th>
-                        <th class="fw-bold">Personal Charge</th>
-                        <th class="fw-bold">Previous MBL</th>
-                        <th class="fw-bold">Remaining MBL</th>
-                      </tr>
-                    </thead>
-                    <tbody id="billed-tbody">
-                    </tbody>
-                  </table>
-                </div>
-                <!-- <div class="row pt-4 pb-2">
-                  <div class="col-lg-2 offset-7">
-                    <label>Total Coordinator Bill : </label>
-                    <input name="total-coordinator-bill" id="total-coordinator-bill" class="form-control text-center fw-bold" value="0" readonly>
-                  </div>
-                  <div class="col-lg-2 ">
-                    <label>Total Hospital Bill : </label>
-                    <input name="total-hospital-bill" id="total-hospital-bill" class="form-control text-center fw-bold" value="0" readonly>
-                  </div>
-                </div> -->
+                <table class="table table-hover table-responsive" id="billedLoaTable">
+                  <thead style="background-color:#eddcb7">
+                    <tr>
+                      <th class="fw-bold">LOA No.</th>
+                      <th class="fw-bold">Name</th>
+                      <th class="fw-bold">Business Unit</th>
+                      <th class="fw-bold">Percentage</th>
+                      <th class="fw-bold">Total Net Bill</th>
+                      <th class="fw-bold">Company Charge</th>
+                      <th class="fw-bold">Personal Charge</th>
+                      <th class="fw-bold">Previous MBL</th>
+                      <th class="fw-bold">Remaining MBL</th>
+                    </tr>
+                  </thead>
+                  <tbody id="billed-charging-tbody">
+                  </tbody>
+                </table>
               </div>
                 <div class="col-12 offset-10 mb-4 mt-2">
                     <div class="input-group">
@@ -111,7 +100,7 @@
 
 <script>
      const baseUrl = "<?php echo base_url(); ?>";
-     const payment_no = document.querySelector('#payment-no').value;
+     const bill_no = document.querySelector('#bill-no').value;
     
  $(document).ready(function(){
     
@@ -122,7 +111,7 @@
 
       // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}healthcare-coordinator/loa/monthly-bill/charging/${payment_no}`,
+        url: `${baseUrl}healthcare-coordinator/loa/monthly-bill/charging/${bill_no}`,
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: function(data) {

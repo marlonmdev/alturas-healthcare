@@ -96,9 +96,21 @@ class Pages_controller extends CI_Controller {
 
 	function view_billed_loa_noa() {
 		$data['user_role'] = $this->session->userdata('user_role');
+		$data['user'] = $this->session->userdata('fullname');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
+		$data['billing'] = $this->List_model->get_for_payment_loa_noa();
+		$data['sum'] = $this->List_model->get_sum_billed();
+		$data['business_unit'] = $this->List_model->get_business_units();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/print_billed_reports.php', $hc_provider);
+		$this->load->view('templates/footer');
+	}
+
+	function view_paid_loa_noa() {
+		$data['user_role'] = $this->session->userdata('user_role');
 		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
 		$this->load->view('templates/header', $data);
-		$this->load->view('ho_accounting_panel/billing_list_table/billed_loa_noa.php', $hc_provider);
+		$this->load->view('ho_accounting_panel/billing_list_table/paid_loa_noa.php', $hc_provider);
 		$this->load->view('templates/footer');
 	}
 

@@ -32,7 +32,7 @@
 			}
         ?>
       <h4 class="page-title ls-2">Billing for the Month of <?php echo $month . ', ' . $payable['year']; ?> [Inpatient]</h4>
-      <input type="hidden" id="payment-no" value="<?php echo $payable['payment_no']; ?>">
+      <input type="hidden" id="bill-no" value="<?php echo $payable['bill_no']; ?>">
           <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
@@ -64,6 +64,7 @@
                       <tr>
                         <th class="fw-bold">NOA No.</th>
                         <th class="fw-bold">Name</th>
+                        <th class="fw-bold">Business Unit</th>
                         <th class="fw-bold">Percentage</th>
                         <th class="fw-bold">Total Net Bill</th>
                         <th class="fw-bold">Company Charge</th>
@@ -99,7 +100,7 @@
 
 <script>
      const baseUrl = "<?php echo base_url(); ?>";
-     const payment_no = document.querySelector('#payment-no').value;
+     const bill_no = document.querySelector('#bill-no').value;
     
  $(document).ready(function(){
     
@@ -110,7 +111,7 @@
 
       // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}healthcare-coordinator/noa/monthly-bill/charging/${payment_no}`,
+        url: `${baseUrl}healthcare-coordinator/noa/monthly-bill/charging/${bill_no}`,
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: function(data) {

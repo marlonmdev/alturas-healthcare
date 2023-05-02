@@ -66,7 +66,7 @@
               <table class="table table-hover table-responsive" id="matchedLoaTable">
                 <thead class="fs-5">
                   <tr>
-                    <th class="fw-bold">Payment No.</th>
+                    <th class="fw-bold">Billing No.</th>
                     <th class="fw-bold"></th>
                     <th class="fw-bold">Healthcare Provider</th>
                     <th class="fw-bold">Status</th>

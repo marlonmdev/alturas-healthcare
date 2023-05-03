@@ -114,74 +114,67 @@
 <!-- End Wrapper -->
 
 <script>
-    const form = document.querySelector('#performedLoaConsultInfo');
-    $(document).ready(function(){
-        
-        $('#performedLoaConsultInfo').submit(function(event){
-            event.preventDefault();
+  const form = document.querySelector('#performedLoaConsultInfo');
+  $(document).ready(function(){
+    $('#performedLoaConsultInfo').submit(function(event){
+      event.preventDefault();
+      if(!form.checkValidity()){
+        form.classLIst.add('was-validated');
+        return;
+      }
 
-            if(!form.checkValidity()){
-                form.classLIst.add('was-validated');
-                return;
-            }
+      let url = $(this).attr('action');
+      let data = $(this).serialize();
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: data,
+        dataType: 'json',
+        success: function(response) {
+          const {
+            token,status,message
+          } = response;
 
-            let url = $(this).attr('action');
-            let data = $(this).serialize();
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: data,
-                dataType: 'json',
-                success: function(response) {
-                    const {
-                        token,status,message
-                    } = response;
+          switch(status){
+            case 'failed':
+              swal({
+                title: 'Error',
+                text: message,
+                timer: 3000,
+                showConfirmButton: true,
+                type: 'error'
+              });
+            break;
 
-                    switch(status){
-                       
-                        case 'failed':
-                            swal({
-                                title: 'Error',
-                                text: message,
-                                timer: 3000,
-                                showConfirmButton: true,
-                                type: 'error'
-                            });
-                        break;
+            case 'success':
+              swal({
+                title: 'Success',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'success'
+              });
+              setTimeout(function () {
+                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved';
+              }, 2600);             
+            break;
 
-                        case 'success':
-                            swal({
-                                title: 'Success',
-                                text: message,
-                                timer: 3000,
-                                showConfirmButton: false,
-                                type: 'success'
-                            });
-                            // $('#performedLoaConsultInfo')[0].reset();
-                            setTimeout(function () {
-                                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved';
-                            }, 2600);
-                            
-                        break;
-
-                        case 'complete-success':
-                            swal({
-                                title: 'Success',
-                                text: message,
-                                timer: 3000,
-                                showConfirmButton: false,
-                                type: 'success'
-                            });
-                            // $('#performedLoaConsultInfo')[0].reset();
-                            setTimeout(function () {
-                                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed';
-                            }, 2600);
-                            
-                        break;
-                    }
-                }
-            });
-        });
+            case 'complete-success':
+              swal({
+                title: 'Success',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'success'
+              });
+              setTimeout(function () {
+                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed';
+              }, 2600); 
+            break;
+          }
+        }
+      });
+    });
 
         $(".input-date").flatpickr({
             enableTime: false,

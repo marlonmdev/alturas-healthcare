@@ -88,16 +88,16 @@
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-hover table-responsive" id="reschedLoaTable">
-                <thead>
+                <thead style="background-color:#00538C">
                   <tr>
-                    <th class="fw-bold">LOA NO.</th>
-                    <th class="fw-bold">NAME OF PATIENT</th>
-                    <th class="fw-bold">TYPE OF REQUEST</th>
-                    <th class="fw-bold">HEALTHCARE PROVIDER</th>
-                    <th class="fw-bold">RX FILE</th>
-                    <th class="fw-bold">DATE OF REQUEST</th>
-                    <th class="fw-bold">STATUS</th>
-                    <th class="fw-bold" style="width:130px">ACTION</th>
+                    <th class="fw-bold" style="color: white;">LOA NO.</th>
+                    <th class="fw-bold" style="color: white;">NAME OF PATIENT</th>
+                    <th class="fw-bold" style="color: white;">TYPE OF REQUEST</th>
+                    <th class="fw-bold" style="color: white;">HEALTHCARE PROVIDER</th>
+                    <th class="fw-bold" style="color: white;">RX FILE</th>
+                    <th class="fw-bold" style="color: white;">DATE OF REQUEST</th>
+                    <th class="fw-bold" style="color: white;">STATUS</th>
+                    <th class="fw-bold" style="color: white;width:130px">ACTION</th>
                   </tr>
                 </thead>
                 <tbody>

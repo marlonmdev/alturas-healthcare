@@ -916,7 +916,7 @@ class Loa_controller extends CI_Controller {
 
 			$payment_no_custom = '<span class="fw-bold fs-5">'.$bill['payment_no'].'</span>';
 
-			$label_custom = '<span class="fw-bold fs-5">Consolidated Billing for the Month of '.$month.', '.$bill['year'].'</span>';
+			$label_custom = '<span class="fw-bold fs-5">Month of '.$month.', '.$bill['year'].'</span>';
 			
 			$hospital_custom = '<span class="fw-bold fs-5">'.$bill['hp_name'].'</span>';
 
@@ -956,9 +956,9 @@ class Loa_controller extends CI_Controller {
 
 			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
 
-			$coordinator_bill = '<a href="JavaScript:void(0)" onclick="viewCoordinatorBill(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Coordinator Billing"><i class="mdi mdi-magnify text-dark"></i>View</a>';
+			$coordinator_bill = '<a href="JavaScript:void(0)" onclick="viewCoordinatorBill(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Coordinator Billing"><i class="mdi mdi-eye text-dark"></i>View</a>';
 
-			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-dark"></i>View</a>';
+			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-eye text-dark"></i>View</a>';
 
 			$row[] = $bill['billing_no'];
 			$row[] = $fullname;
@@ -2568,7 +2568,9 @@ class Loa_controller extends CI_Controller {
 				'message' => 'Failed to Submit!'
 			]);
 		}
+		var_dump($matched);
 	}
+
 
 	function fetch_consolidated_billing() {
 		$token = $this->security->get_csrf_hash(); 
@@ -2583,9 +2585,9 @@ class Loa_controller extends CI_Controller {
 
 				$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
 
-				$coordinator_bill = '<a href="JavaScript:void(0)" onclick="viewCoordinatorBill(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Coordinator Billing"><i class="mdi mdi-magnify text-dark"></i>View</a>';
+				$coordinator_bill = '<a href="JavaScript:void(0)" onclick="viewCoordinatorBill(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Coordinator Billing"><i class="mdi mdi-eye text-dark"></i>View</a>';
 
-				$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-dark"></i>View</a>';
+				$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-eye text-dark"></i>View</a>';
 
 				$variance = $bill['net_bill'] - $bill['total_net_bill'];
 				if($variance > 0){
@@ -2730,6 +2732,46 @@ class Loa_controller extends CI_Controller {
 
 	}
 
+	//LEDGER============================================================
+	function fetch_datatable() {
+		$this->security->get_csrf_hash();
+		$status = 'Payable';
+		$list = $this->loa_model->get_datatables_ledger($status);
+		$data = array();
+		foreach ($list as $member){
+			$row = array();
+			$member_id = $this->myhash->hasher($member['emp_id'], 'encrypt');
+			$full_name = $member['first_name'] . ' ' . $member['middle_name'] . ' ' . $member['last_name'] . ' ' . $member['suffix'];
+			$view_url = base_url() . 'healthcare-coordinator/loa_controller/fetch_ledger/' . $member_id;
+			$custom_actions = '<a href="' . $view_url . '"  data-bs-toggle="tooltip" title="View Member Profile"><i class="mdi mdi-eye fs-2 text-info me-2"></i></a>';
 
+			$row[] = $full_name;
+			$row[] = $member['emp_type'];
+			$row[] = $member['current_status'];
+			$row[] = $member['business_unit'];
+			$row[] = $member['dept_name'];
+			$row[] = $custom_actions;
+			$data[] = $row;
+		}
+
+		$output = array(
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->loa_model->count_all_ledger($status),
+			"recordsFiltered" => $this->loa_model->count_filtered_ledger($status),
+			"data" => $data,
+		);
+		echo json_encode($output);
+	}
+
+	public function fetch_ledger() {
+    $token = $this->security->get_csrf_hash();
+    $emp_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+    $data['user_role'] = $this->session->userdata('user_role');
+    $data['billing'] = $this->loa_model->get_member_info($emp_id);
+    $this->load->view('templates/header', $data);
+    $this->load->view('healthcare_coordinator_panel/loa/ledger2');
+    $this->load->view('templates/footer');
+ 	}
+	//END============================================================
 	
 }

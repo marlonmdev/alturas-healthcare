@@ -1,76 +1,71 @@
-<!-- Start of Page Wrapper -->
 <div class="page-wrapper">
-  <!-- Bread crumb and right sidebar toggle -->
   <div class="page-breadcrumb">
-      <div class="row">
+    <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-          <h4 class="page-title ls-2">Outpatient Billing</h4>
-          <div class="ms-auto text-end">
+        <h4 class="page-title ls-2">TRANSACTION RECORD</h4>
+        <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
-              <ol class="breadcrumb">
+            <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
-              <li class="breadcrumb-item active" aria-current="page">
-                  For Payment LOA
-              </li>
-              </ol>
+              <li class="breadcrumb-item active" aria-current="page">History of Billing</li>
+            </ol>
           </nav>
-          </div>
+        </div>
       </div>
-      </div>
+    </div>
   </div>
-  <!-- End Bread crumb and right sidebar toggle -->
-  <!-- Start of Container fluid  -->
+
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
         <ul class="nav nav-tabs mb-4" role="tablist">
-        <li class="nav-item">
-            <a
-              class="nav-link"
-              href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/billed"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Billed LOA</span></a
-            >
-          </li>
           <li class="nav-item">
-            <a
-              class="nav-link active"
-              href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/for-charging"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">For Payment LOA</span></a
-            >
+            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/billed" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">BILLING</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link active" href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/for-charging" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">HISTORY OF BILLING</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/loa_controller/view_ledger" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">LEDGER</span>
+            </a>
           </li>
         </ul>
 
         <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text bg-dark text-white">
-                    <i class="mdi mdi-filter"></i>
-                    </span>
-                </div>
-                <select class="form-select fw-bold" name="matched-hospital-filter" id="matched-hospital-filter">
-                        <option value="">Select Hospital</option>
-                        <?php foreach($hcproviders as $option) : ?>
-                        <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
-                        <?php endforeach; ?>
-                </select>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text bg-dark text-white"><i class="mdi mdi-filter"></i></span>
             </div>
+            <select class="form-select fw-bold" name="matched-hospital-filter" id="matched-hospital-filter">
+              <option value="">Select Hospital</option>
+              <?php foreach($hcproviders as $option) : ?>
+                <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
         </div>
 
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-hover table-responsive" id="matchedLoaTable">
-                <thead class="fs-5">
+                <thead class="fs-5" style="background-color:#00538C">
                   <tr>
-                    <th class="fw-bold">Payment No.</th>
-                    <th class="fw-bold"></th>
-                    <th class="fw-bold">Healthcare Provider</th>
-                    <th class="fw-bold">Status</th>
-                    <th class="fw-bold">Action</th>
+                    <th class="fw-bold" style="color: white;">PAYMENT #</th>
+                    <th class="fw-bold" style="color: white;">CONSOLIDATED BILLING</th>
+                    <th class="fw-bold" style="color: white;">HEALTHCARE PROVIDER</th>
+                    <th class="fw-bold" style="color: white;">STATUS</th>
+                    <th class="fw-bold" style="color: white;">ACTION</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -79,28 +74,30 @@
             </div>
           </div>
         </div>
+
         <?php include 'view_completed_loa_details.php'; ?>
       </div>
-      <!-- End Row  -->  
-      </div>
-      <?php include 'performed_loa_info_modal.php'; ?>
-    <!-- End Container fluid  -->
     </div>
-    <?php include 'view_performed_consult_loa.php'; ?>
-  <!-- End Page wrapper  -->
+    <?php include 'performed_loa_info_modal.php'; ?>
   </div>
-  <?php include 'view_charging.php'; ?>
-<!-- End Wrapper -->
+  <?php include 'view_performed_consult_loa.php'; ?>
+</div>
+<?php include 'view_charging.php'; ?>
+
+
+
+
+
+
 <script>
   const baseUrl = "<?php echo base_url(); ?>";
   const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
 
   $(document).ready(function() {
-
     let matchedTable = $('#matchedLoaTable').DataTable({
-      processing: true, //Feature control the processing indicator.
-      serverSide: true, //Feature control DataTables' server-side processing mode.
-      order: [], //Initial no order.
+      processing: true,
+      serverSide: true,
+      order: [],
 
       // Load data for the table's content from an Ajax source  
       ajax: {
@@ -108,8 +105,8 @@
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: function(data) {
-            data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
-            data.filter = $('#matched-hospital-filter').val();
+          data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
+          data.filter = $('#matched-hospital-filter').val();
         }
       },
 
@@ -129,7 +126,6 @@
     $('#matched-hospital-filter').change(function(){
       matchedTable.draw();
     });
-
   });
 
   function viewImage(path) {

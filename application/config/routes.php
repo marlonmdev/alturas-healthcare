@@ -326,6 +326,14 @@ $route['healthcare-coordinator/loa/requests-list/rescheduled'] = 'healthcare_coo
 $route['healthcare-coordinator/bill/requests-list/billed'] = 'healthcare_coordinator/pages_controller/view_all_billed_loa';
 $route['healthcare-coordinator/bill/requests-list/for-charging'] = 'healthcare_coordinator/pages_controller/view_for_charging_lo';
 
+//Coordinator Ledger
+$route['healthcare-coordinator/loa_controller/view_ledger'] = 'healthcare_coordinator/pages_controller/view_ledger';
+$route['healthcare-coordinator/loa_controller/fetch_datatable'] = 'healthcare_coordinator/loa_controller/fetch_datatable';
+$route['healthcare-coordinator/loa_controller/fetch_ledger/(:any)'] = 'healthcare_coordinator/loa_controller/fetch_ledger';
+// $route['healthcare-coordinator/loa_controller/view_ledger'] = 'healthcare_coordinator/loa_controller/view_ledger';
+//$route['healthcare-coordinator/loa/monthly-bill/charging/(:any)'] = 'healthcare_coordinator/loa_controller/fetch_billing_for_charging';
+//end
+
 $route['healthcare-coordinator/noa/requests-list'] = 'healthcare_coordinator/pages_controller/view_pending_noa_list';
 $route['healthcare-coordinator/noa/requests-list/approved'] = 'healthcare_coordinator/pages_controller/view_approved_noa_list';
 $route['healthcare-coordinator/noa/requests-list/disapproved'] = 'healthcare_coordinator/pages_controller/view_disapproved_noa_list';

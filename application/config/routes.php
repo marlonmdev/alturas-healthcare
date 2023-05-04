@@ -256,6 +256,8 @@ $route['head-office-accounting/bill/payment-details/fetch'] = 'ho_accounting/mai
 $route['head-office-accounting/bill/billed-noa-loa/print/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_billed_loa_noa';
 $route['head-office-accounting/bill/billed/fetch'] = 'ho_accounting/main_controller/fetch_all_for_payment';
 $route['head-office-accounting/bill/charging/fetch'] = 'ho_accounting/main_controller/fetch_charging_billed';
+$route['head-office-accounting/get-business-units'] = 'ho_accounting/main_controller/get_business_units';
+$route['head-office-accounting/fetch-business-units'] = 'ho_accounting/main_controller/get_business_u';
 //Pages
 $route['head-office-accounting/billing-list'] = 'ho_accounting/TableList';
 $route['head-office-accounting/billing-list/billed'] = 'ho_accounting/TableList/billed_record';

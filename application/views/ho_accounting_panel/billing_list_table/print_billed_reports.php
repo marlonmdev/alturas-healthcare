@@ -59,13 +59,11 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-4 pt-1">
-                    <button class="btn btn-danger ls-1" onclick="printDiv('#printableDiv')"><i class="mdi mdi-printer"></i> Print </button>
-                </div>
+               
             </div>
             <div  id="billing-container" style="display:none">
                 <div class="row pt-2">
-                    <div class="col-lg-4 ps-5 pb-3 pt-1 pb-4">
+                    <div class="col-lg-3 ps-5 pb-3 pt-1 pb-4">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text text-dark fw-bold">
@@ -80,27 +78,22 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-lg-3 ps-5 pb-3 pt-1 pb-4">
+                    <div class="col-lg-4 pt-1">
                         <div class="input-group">
-                            <div class="input-group-prepend">
+                            <div class="input-group-prepend ">
                                 <span class="input-group-text text-dark fw-bold">
                                 Business Unit : 
                                 </span>
                             </div>
                             <select class="form-select fw-bold" name="billed-bu-filter" id="billed-bu-filter">
-                                <option value="">Select BU...</option>
-                                <?php
-                                    // Sort the $business_unit array by the business_unit field
-                                    usort($business_unit, function($a, $b) {
-                                        return strcmp($a['business_unit'], $b['business_unit']);
-                                    });
-                                    
-                                    // Loop through the sorted array to create the option elements
-                                    foreach($business_unit as $bu) {
-                                        echo '<option value="' . $bu['business_unit'] . '">' . $bu['business_unit'] . '</option>';
-                                    }
-                                ?>
+                                <option value="">Select Business Units...</option>
+                                <?php foreach($business_unit as $bu) : ?>
+                                <option value="<?php echo $bu['business_unit']; ?>"><?php echo $bu['business_unit']; ?></option>
+                                <?php endforeach; ?>
                             </select>
+                            <!-- <div class="col-lg-6 pt-1" id="bu-units-wrapper"> -->
+                              <!-- business units will be appended here... -->
+                            <!-- </div> -->
 
                         </div>
                     </div>
@@ -121,6 +114,9 @@
                                 <input type="date" class="form-control" name="end-date" id="end-date" oninput="validateDateRange()" placeholder="End Date">
                             </div>
                         </div>
+                    </div>
+                    <div class="pt-1 offset-10">
+                        <button class="btn btn-danger ls-1" onclick="printDiv('#printableDiv')"><i class="mdi mdi-printer"></i> Print </button>
                     </div>
                 </div>
                     <div class="row" id="printableDiv" style="background:#ffff;padding:20px 40px;">
@@ -183,7 +179,7 @@
                                         <tbody class="pt-2 text-center" id="billing-tbody" >
                                  
                                         </tbody>
-                                        <tfoot>
+                                        <tfoot class="text-center">
                                             <tr>
                                                 <td></td>
                                                 <td></td>
@@ -194,9 +190,9 @@
                                                 <td class="fw-bold">TOTAL PAYABLE</td>
                                                 <td class="fw-bold text-center ls-1"><span id="total_bill"></span></td>
                                             </tr>
-                                            </tfoot>
+                                        </tfoot>
                                     </table><br>
-                                    <div class="row offset-1 pt-3 ps-5">
+                                    <div class="row offset-1 pt-4 ps-5">
                                         <div class="col-4">
                                             <span>Prepared by : </span><br><br>
                                             <span class="text-decoration-underline fw-bold fs-5">__<?php echo $user; ?>__</span>
@@ -216,27 +212,22 @@
                         </div> 
             <div  id="charging-container" style="display:none">
                 <div class="row">
-                    <div class="col-lg-3 ps-5 pb-3 pb-4">
+                    <div class="col-lg-4 ps-5">
                         <div class="input-group">
-                            <div class="input-group-prepend">
+                            <div class="input-group-prepend ">
                                 <span class="input-group-text text-dark fw-bold">
                                 Business Unit : 
                                 </span>
                             </div>
                             <select class="form-select fw-bold" name="charging-bu-filter" id="charging-bu-filter">
-                                <option value="">Select BU...</option>
-                                <?php
-                                    // Sort the $business_unit array by the business_unit field
-                                    usort($business_unit, function($a, $b) {
-                                        return strcmp($a['business_unit'], $b['business_unit']);
-                                    });
-                                    
-                                    // Loop through the sorted array to create the option elements
-                                    foreach($business_unit as $bu) {
-                                        echo '<option value="' . $bu['business_unit'] . '">' . $bu['business_unit'] . '</option>';
-                                    }
-                                ?>
+                                <option value="">Select Business Units...</option>
+                                <?php foreach($business_unit as $bu) : ?>
+                                <option value="<?php echo $bu['business_unit']; ?>"><?php echo $bu['business_unit']; ?></option>
+                                <?php endforeach; ?>
                             </select>
+                            <!-- <div class="col-lg-6 pt-1" id="business-units-wrapper"> -->
+                              <!-- business units will be appended here... -->
+                            <!-- </div> -->
 
                         </div>
                     </div>
@@ -247,55 +238,92 @@
                                         <i class="mdi mdi-calendar-range"></i>
                                     </span>
                                 </div>
-                                <input type="date" class="form-control" name="charging-start-date" id="charging-start-date" oninput="" placeholder="Start Date">
+                                <input type="date" class="form-control" name="charging-start-date" id="charging-start-date" oninput="" placeholder="Start Date" oninput="validateDate()">
 
                                 <div class="input-group-append">
                                     <span class="input-group-text text-dark ls-1 ms-2">
                                         <i class="mdi mdi-calendar-range"></i>
                                     </span>
                                 </div>
-                                <input type="date" class="form-control" name="charging-end-date" id="charging-end-date" oninput="" placeholder="End Date">
+                                <input type="date" class="form-control" name="charging-end-date" id="charging-end-date" oninput="" placeholder="End Date" oninput="validateDate()">
                             </div>
                         </div>
+                        
+                    </div>
+                    <div class="pb-2 pt-4 offset-10">
+                        <button class="btn btn-danger ls-1" onclick="printDivs('#printableDivs')"><i class="mdi mdi-printer"></i> Print </button>
                     </div>
                 </div>
-                <div class="card shadow pt-2"  id="charging-table" style="display:noe">
+                <div class="row" id="printableDivs" style="background:#ffff;padding:20px 40px;">
+                <div class="card shadow pt-2"  id="charging-table" style="display:nne">
                     <div class="card-body">
-                        <table class="table table-hover table-responsive" id="billedChargingTable">
-                        <thead>
-                            <tr>
-                            <th class="fw-bold">LOA No.</th>
-                            <th class="fw-bold">Name</th>
-                            <th class="fw-bold">Business Unit</th>
-                            <th class="fw-bold">Percentage</th>
-                            <th class="fw-bold">Total Net Bill</th>
-                            <th class="fw-bold">Company Charge</th>
-                            <th class="fw-bold">Personal Charge</th>
-                            <th class="fw-bold">Previous MBL</th>
-                            <th class="fw-bold">Remaining MBL</th>
-                            </tr>
-                        </thead>
-                        <tbody id="billed-charging-tbody">
-                        </tbody>
-                        </table>
+                        <table class="table table-sm" id="billedChargingTable">
+                            <thead>
+                                <tr>
+                                    <th class="fw-bold">LOA No.</th>
+                                    <th class="fw-bold">Name</th>
+                                    <th class="fw-bold">Business Unit</th>
+                                    <th class="fw-bold">Percentage</th>
+                                    <th class="fw-bold">Total Net Bill</th>
+                                    <th class="fw-bold">Company Charge</th>
+                                    <th class="fw-bold">Personal Charge</th>
+                                    <th class="fw-bold">Previous MBL</th>
+                                    <th class="fw-bold">Remaining MBL</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center" id="billed-charging-tbody">
+                            </tbody>
+                            <tfoot class="text-center">
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>    
+                                    <td class="fw-bold">TOTAL </td>
+                                    <td class="fw-bold text-center ls-1"><span id="charging_total_bill"></span></td>
+                                    <td class="fw-bold text-center ls-1"><span id="charging_total_company"></span></td>
+                                    <td class="fw-bold text-center ls-1"><span id="charging_total_personal"></span></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table><br>
+                        <div class="row offset-1 pt-4 ps-5">
+                            <div class="col-4">
+                                <span>Prepared by : </span><br><br>
+                                <span class="text-decoration-underline fw-bold fs-5">__<?php echo $user; ?>__</span>
+                            </div>
+                            <div class="col-4">
+                                <span>Audited by : </span><br><br>
+                                <span class="">_______________________</span>
+                            </div>
+                            <div class="col-4">
+                                <span>Noted by : </span><br><br>
+                                <span class="">_______________________</span>
+                            </div>
+                        </div>
+                        <br><br><br>
                     </div>
                 </div>
             </div>   
-            <div class="col-12 offset-10 mb-4 mt-2">
-                <div class="input-group">
-                    <a href="<?php echo base_url(); ?>head-office-accounting/bill/billing-list/billed-loa-noa" type="submit" class="btn btn-info" data-bs-toggle="tooltip" title="Click to Go Back">
-                        <strong class="ls-2" style="vertical-align:middle">
-                            <i class="mdi mdi-arrow-left-bold"></i> Go Back
-                        </strong>
-                    </a>
-                </div>
-            </div>
         </div>
+     </div>
     </div>
-
+  
 <script>
   const baseUrl = "<?php echo base_url(); ?>";
-const printDiv = (layer) => {
+    const printDiv = (layer) => {
+        if (!layer.isPrinted) { // check if the layer has not been printed yet
+            $(layer).printThis({
+                importCSS: true,
+                copyTagClasses: true,
+                copyTagStyles: true,
+                removeInline: false,
+            });
+            layer.isPrinted = true; // set the isPrinted flag to true
+        }
+    };
+
+    const printDivs = (layer) => {
     $(layer).printThis({
       importCSS: true,
       copyTagClasses: true,
@@ -390,6 +418,68 @@ const printDiv = (layer) => {
       fixedHeader: true,
     });
 
+    chargingTable.on('draw.dt', function() {
+    let columnIdx = 4;
+    let sum = 0;
+    let rows = chargingTable.rows().nodes();
+    if ($('#billedChargingTable').DataTable().data().length > 0) {
+            // The table is not empty
+            rows.each(function(index, row) {
+                let rowData = chargingTable.row(row).data();
+                let columnValue = rowData[columnIdx];
+                let pattern = /-?[\d,]+(\.\d+)?/g;
+                let matches = columnValue.match(pattern);
+                if (matches && matches.length > 0) {
+                    let numberString = matches[0].replace(',', '');
+                    let intValue = parseInt(numberString);
+                    sum += intValue;
+                }
+            });
+        }
+        $('#charging_total_bill').html(sum.toLocaleString('PHP', { minimumFractionDigits: 2 }));
+    });
+    chargingTable.on('draw.dt', function() {
+    let columnIdx = 5;
+    let sum = 0;
+    let rows = chargingTable.rows().nodes();
+    if ($('#billedChargingTable').DataTable().data().length > 0) {
+            // The table is not empty
+            rows.each(function(index, row) {
+                let rowData = chargingTable.row(row).data();
+                let columnValue = rowData[columnIdx];
+                let pattern = /-?[\d,]+(\.\d+)?/g;
+                let matches = columnValue.match(pattern);
+                if (matches && matches.length > 0) {
+                    let numberString = matches[0].replace(',', '');
+                    let intValue = parseInt(numberString);
+                    sum += intValue;
+                }
+            });
+        }
+        $('#charging_total_company').html(sum.toLocaleString('PHP', { minimumFractionDigits: 2 }));
+    });
+    chargingTable.on('draw.dt', function() {
+    let columnIdx = 6;
+    let sum = 0;
+    let rows = chargingTable.rows().nodes();
+    if ($('#billedChargingTable').DataTable().data().length > 0) {
+            // The table is not empty
+            rows.each(function(index, row) {
+                let rowData = chargingTable.row(row).data();
+                let columnValue = rowData[columnIdx];
+                let pattern = /-?[\d,]+(\.\d+)?/g;
+                let matches = columnValue.match(pattern);
+                if (matches && matches.length > 0) {
+                    let numberString = matches[0].replace(',', '');
+                    let intValue = parseInt(numberString);
+                    sum += intValue;
+                }
+            });
+        }
+        $('#charging_total_personal').html(sum.toLocaleString('PHP', { minimumFractionDigits: 2 }));
+    });
+
+
     $("#start-date").flatpickr({
         dateFormat: 'Y-m-d',
     });
@@ -417,8 +507,22 @@ const printDiv = (layer) => {
     $('#billed-bu-filter').change(function(){
         billedTable.draw();
     });
+    $('#charging-end-date').change(function(){
+        chargingTable.draw();
+    });
+    $('#charging-start-date').change(function(){
+        chargingTable.draw();
+    });
+    $('#charging-bu-filter').change(function(){
+        chargingTable.draw();
+    });
 
  }) ;
+
+ window.onload = function() {
+    getBusinessUnits();
+    getBUnits();
+ }
 
  const viewContainer = () => {
     const report_filter = document.querySelector('#report-filter');
@@ -442,28 +546,93 @@ const printDiv = (layer) => {
  }
 
   const validateDateRange = () => {
-            const startDateInput = document.querySelector('#start-date');
-            const endDateInput = document.querySelector('#end-date');
-            const startDate = new Date(startDateInput.value);
-            const endDate = new Date(endDateInput.value);
+        const startDateInput = document.querySelector('#start-date');
+        const endDateInput = document.querySelector('#end-date');
+        const startDate = new Date(startDateInput.value);
+        const endDate = new Date(endDateInput.value);
 
-            if (startDateInput.value === '' || endDateInput.value === '') {
-                return; // Don't do anything if either input is empty
-            }
-
-            if (endDate < startDate) {
-                // alert('End date must be greater than or equal to the start date');
-                swal({
-                    title: 'Failed',
-                    text: 'End date must be greater than or equal to the start date',
-                    // timer: 4000,
-                    showConfirmButton: true,
-                    type: 'error'
-                });
-                endDateInput.value = '';
-                return;
-            }          
+        if (startDateInput.value === '' || endDateInput.value === '') {
+            return; // Don't do anything if either input is empty
         }
+
+        if (endDate < startDate) {
+            // alert('End date must be greater than or equal to the start date');
+            swal({
+                title: 'Failed',
+                text: 'End date must be greater than or equal to the start date',
+                // timer: 4000,
+                showConfirmButton: true,
+                type: 'error'
+            });
+            endDateInput.value = '';
+            return;
+        }          
+    }
+
+    const validateDate = () => {
+        const startDateInput = document.querySelector('#charging-start-date');
+        const endDateInput = document.querySelector('#charging-end-date');
+        const startDate = new Date(startDateInput.value);
+        const endDate = new Date(endDateInput.value);
+
+        if (startDateInput.value === '' || endDateInput.value === '') {
+            return; // Don't do anything if either input is empty
+        }
+
+        if (endDate < startDate) {
+            // alert('End date must be greater than or equal to the start date');
+            swal({
+                title: 'Failed',
+                text: 'End date must be greater than or equal to the start date',
+                // timer: 4000,
+                showConfirmButton: true,
+                type: 'error'
+            });
+            endDateInput.value = '';
+            return;
+        }          
+    }
+
+    const getBusinessUnits = () => {
+        $.ajax({
+              url: `${baseUrl}head-office-accounting/get-business-units`,
+              type: "GET",
+              dataType: "json",
+              success:function(response){
+
+                $('#business-units-wrapper').empty();                
+
+                $('#business-units-wrapper').append(response);
+
+                $(".chosen-select").chosen({
+                  width: "100%",
+                  no_results_text: "Oops, nothing found!"
+                }); 
+              }
+          });
+    }
+
+    const getBUnits = () => {
+        $.ajax({
+              url: `${baseUrl}head-office-accounting/fetch-business-units`,
+              type: "GET",
+              dataType: "json",
+              success:function(response){
+
+                $('#bu-units-wrapper').empty();                
+
+                $('#bu-units-wrapper').append(response);
+
+                $(".chosen-select").chosen({
+                  width: "100%",
+                  no_results_text: "Oops, nothing found!"
+                }); 
+              }
+          });
+    }
+
+
+
 
 </script>
    

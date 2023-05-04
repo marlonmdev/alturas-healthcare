@@ -142,6 +142,10 @@
                 </div>
               </div>
 
+              <input type="hidden" class="form-control" name="price" id="price">
+              <input type="hidden" class="form-control" name="total_price" id="total_price">
+              <input type="hidden" class="form-control" name="remaining_mbl" id="remaining_mbl" value="<?= $mbl['remaining_balance'] ?>">
+
               <div class="form-group row">
                 <div class="col-sm-3 mb-2">
                   <label class="colored-label">Healthcard Number</label>
@@ -263,32 +267,40 @@
 
 <script>
   const baseUrl = "<?= base_url() ?>";
-
   $(document).ready(function() {
+    $('#healthcare-provider').on('change', function(){
+      const hp_id = $(this).val();
+      const token = `<?php echo $this->security->get_csrf_hash(); ?>`;
 
-      $('#healthcare-provider').on('change', function(){
-        const hp_id = $(this).val();
-        const token = `<?php echo $this->security->get_csrf_hash(); ?>`;
+      if(hp_id != ''){
+        $.ajax({
+          url: `${baseUrl}member/get-services/${hp_id}`,
+          type: "GET",
+          dataType: "json",
+          success:function(response){
+            $('#med-services-wrapper').empty();                
+            $('#med-services-wrapper').append(response);
+            $(".chosen-select").chosen({
+              width: "100%",
+              no_results_text: "Oops, nothing found!"
+            }); 
+          }
+        });
+      }
+    });
 
-        if(hp_id != ''){
-          $.ajax({
-              url: `${baseUrl}member/get-services/${hp_id}`,
-              type: "GET",
-              dataType: "json",
-              success:function(response){
 
-                $('#med-services-wrapper').empty();                
-
-                $('#med-services-wrapper').append(response);
-
-                $(".chosen-select").chosen({
-                  width: "100%",
-                  no_results_text: "Oops, nothing found!"
-                }); 
-              }
-          });
-        }
+    $('#med-services-wrapper').on('change', function() {
+      var prices = [];
+      $('#med-services option:selected').each(function() {
+        prices.push(parseFloat($(this).data('price')));
       });
+      var total = prices.reduce(function(acc, val) {
+        return acc + val;
+      }, 0);
+      $('#price').val(prices.join(","));
+      $('#total_price').val(total.toFixed(2));
+    });
 
 
     $('#memberLoaRequestForm').submit(function(event) {

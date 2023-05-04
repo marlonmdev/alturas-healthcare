@@ -33,6 +33,15 @@
               <span class="hidden-xs-down fs-5 font-bold">For Payment</span></a
             >
           </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="<?php echo base_url(); ?>head-office-accounting/bill/billing-list/paid-loa-noa"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Paid</span></a
+            >
+          </li>
         </ul>
 
         <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
@@ -57,6 +66,7 @@
               <table class="table table-hover table-responsive" id="matchedLoaTable">
                 <thead class="fs-5">
                   <tr>
+                    <th class="fw-bold">Payment No</th>
                     <th class="fw-bold"></th>
                     <th class="fw-bold">Healthcare Provider</th>
                     <th class="fw-bold">Status</th>
@@ -72,6 +82,7 @@
       </div>
       <!-- End Row  -->  
       </div>
+      <!-- <?php include 'payment_details_modal.php'; ?> -->
     <!-- End Container fluid  -->
     </div>
   <!-- End Page wrapper  -->
@@ -116,5 +127,23 @@
     });
 
   });
+
+  const addPaymentDetails = () => {
+      const hp_name = document.querySelector('#m-hospital-name').value;
+      const word_month = document.querySelector('#m-word-month').value;
+      const hospital_bill = document.querySelector('#total-hospital-bill').value;
+      const hp_id = document.querySelector('#m-hp-id').value;
+      const month = document.querySelector('#m-month').value;
+      const word_year = document.querySelector('#m-year').value;
+
+      $('#addPaymentModal').modal('show');
+      $('#hospital_filtered').val(hp_name);
+      $('#p-month').html(word_month);
+      $('#p-year').html(word_year);
+      $('#p-total-bill').val(hospital_bill);
+      $('#pd-hp-id').val(hp_id);
+      $('#pd-month').val(month);
+      $('#pd-year').val(word_year);
+    }
 
 </script>

@@ -61,12 +61,32 @@
             </div>
 
                 
+<<<<<<< HEAD
+                <div class="col-lg-6 offset-1">
+                      <div class="input-group">
+                          <div class="input-group-append">
+                              <span class="input-group-text bg-dark text-white ls-1 ms-2">
+                                  <i class="mdi mdi-filter"></i>
+                              </span>
+                          </div>
+                          <input type="date" class="form-control" name="start-date" id="start-date" oninput="validateDateRange();" placeholder="Start Date" disabled>
+
+                          <div class="input-group-append">
+                              <span class="input-group-text bg-dark text-white ls-1 ms-2">
+                                  <i class="mdi mdi-filter"></i>
+                              </span>
+                          </div>
+                          <input type="date" class="form-control" name="end-date" id="end-date" oninput="validateDateRange();" placeholder="End Date" disabled>
+                      </div>
+                  </div>
+=======
             <div class="col-lg-6 offset-1">
               <div class="input-group">
                 <div class="input-group-append">
                   <span class="input-group-text bg-dark text-white ls-1 ms-2">
                     <i class="mdi mdi-filter"></i>
                   </span>
+>>>>>>> 68a735cd0814d1320690d6467285b8645ec07d30
                 </div>
                 <input type="date" class="form-control" name="start-date" id="start-date" oninput="validateDateRange()" placeholder="Start Date" disabled>
                 <div class="input-group-append">
@@ -159,6 +179,26 @@
                 type: 'error'
               });
             break;
+<<<<<<< HEAD
+=======
+
+<<<<<<< HEAD
+                case 'success':
+                    swal({
+                        title: 'Success',
+                        text: message,
+                        timer: 3000,
+                        showConfirmButton: false,
+                        type: 'success'
+                    });
+                    setTimeout(function () {
+                        window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/for-charging';
+                    }, 2600);
+                    
+                break;
+            }
+=======
+>>>>>>> 9db59a518b04c989b30b58c89e4bbd46fcac24c9
             case 'success':
               swal({
                 title: 'Success',
@@ -173,8 +213,14 @@
               }, 3200);
             break;
           }
+<<<<<<< HEAD
         },
       })
+=======
+>>>>>>> 68a735cd0814d1320690d6467285b8645ec07d30
+        }
+      });
+>>>>>>> 9db59a518b04c989b30b58c89e4bbd46fcac24c9
     });
 
 
@@ -191,7 +237,7 @@
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: function(data) {
-            data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
+           data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
             data.filter = $('#billed-hospital-filter').val();
             data.endDate = $('#end-date').val();
             data.startDate = $('#start-date').val();
@@ -212,19 +258,61 @@
       fixedHeader: true,
     });
 
+
+
+    billedTable.on('draw.dt', function() {
     let columnIdx = 7;
+    let intValue = 0;
+    let count =0;
     let rows = billedTable.rows().nodes();
+      if ($('#billedLoaTable').DataTable().data().length > 0) {
+        // The table is not empty
+        let disableButton = false;
+        rows.each(function(index, row) {
+            let rowData = billedTable.row(row).data();
+            let columnValue = rowData[columnIdx];
+            let pattern = /-?[\d,]+(\.\d+)?/g;
+            let matches = columnValue.match(pattern);
+            if (matches && matches.length > 0) {
+                let numberString = matches[0].replace(',', '');
+                intValue = parseInt(numberString);
+                console.log(intValue);
+                if (intValue > 100) {
+                    disableButton = true;
+                    return false;
+                }
+            }
+        });
 
-    rows.each(function(index, row) {
-        let rowData = billedTable.row(row).data();
-        let columnValue = rowData[columnIdx];
+        if (disableButton) {
+            $('#proceed-btn').prop('disabled', true);
+            console.log("disable button");
+        } else {
+            $('#proceed-btn').prop('disabled', false);
+            console.log("enable button");
+        }
 
-        if (columnValue > 100) {
+      } else {
+        // The table is empty
+        console.log("The table is empty");
         $('#proceed-btn').prop('disabled', true); // disable the button
-    } else {
-        $('#proceed-btn').prop('disabled', false); // enable the button
-    }
+      }
+      
     });
+
+    // let columnIdx = 7;
+    // let rows = billedTable.rows().nodes();
+
+    // rows.each(function(index, row) {
+    //     let rowData = billedTable.row(row).data();
+    //     let columnValue = rowData[columnIdx];
+
+    //     if (columnValue > 100) {
+    //     $('#proceed-btn').prop('disabled', true); // disable the button
+    // } else {
+    //     $('#proceed-btn').prop('disabled', false); // enable the button
+    // }
+    // });
 
     $('#billed-hospital-filter').change(function(){
       billedTable.draw();
@@ -251,19 +339,7 @@
 
   });
 
-    const enableProceedBtn = () => {
-      const hp_name = document.querySelector('#billed-hospital-filter');
-      const start_date = document.querySelector('#start-date');
-      const end_date = document.querySelector('#end-date');
-      const button = document.querySelector('#proceed-btn');
-
-      if(end_date.value == ''){
-        button.setAttribute('disabled', true);
-      }else{
-        button.removeAttribute('disabled');
-      }
-    }
-
+    
     const viewPDFBill = (pdf_bill,loa_no) => {
       $('#viewPDFBillModal').modal('show');
       $('#pdf-loa-no').html(loa_no);

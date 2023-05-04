@@ -400,7 +400,7 @@ class Noa_controller extends CI_Controller {
 				$month = 'December';
 			}
 
-			$payment_no_custom = '<span class="fw-bold fs-5">'.$bill['payment_no'].'</span>';
+			$bill_no_custom = '<span class="fw-bold fs-5">'.$bill['bill_no'].'</span>';
 
 			$label_custom = '<span class="fw-bold fs-5">Consolidated Billing for the Month of '.$month.', '.$bill['year'].'</span>';
 			
@@ -408,14 +408,14 @@ class Noa_controller extends CI_Controller {
 
 			$status_custom = '<span class="badge rounded-pill bg-success text-white">'.$bill['status'].'</span>';
 
-			// $payment_no = $this->myhash->hasher($bill['payment_no'], 'encrypt');
-			// dapat maka encrypt sa payment_no
+			// $bill_no = $this->myhash->hasher($bill['bill_no'], 'encrypt');
+			// dapat maka encrypt sa bill_no
 
-			$action_customs = '<a href="'.base_url().'healthcare-coordinator/bill/billed-noa/fetch-payable/'.$bill['payment_no'].'" data-bs-toggle="tooltip" title="View Hospital Bill"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
+			$action_customs = '<a href="'.base_url().'healthcare-coordinator/bill/billed-noa/fetch-payable/'.$bill['bill_no'].'" data-bs-toggle="tooltip" title="View Hospital Bill"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
 
-			$action_customs .= '<a href="'.base_url().'healthcare-coordinator/bill/billed-noa/charging/'.$bill['payment_no'].'" data-bs-toggle="tooltip" title="View Charging"><i class="mdi mdi-file-document-box fs-2 text-danger"></i></a>';
+			$action_customs .= '<a href="'.base_url().'healthcare-coordinator/bill/billed-noa/charging/'.$bill['bill_no'].'" data-bs-toggle="tooltip" title="View Charging"><i class="mdi mdi-file-document-box fs-2 text-danger"></i></a>';
 
-			$row[] = $payment_no_custom;
+			$row[] = $bill_no_custom;
 			$row[] = $label_custom;
 			$row[] = $hospital_custom;
 			$row[] = $status_custom;
@@ -431,8 +431,8 @@ class Noa_controller extends CI_Controller {
 
 	function fetch_monthly_bill() {
 		$token = $this->security->get_csrf_hash();
-		$payment_no = $this->uri->segment(5);
-		$billing = $this->noa_model->monthly_bill_datatable($payment_no);
+		$bill_no = $this->uri->segment(5);
+		$billing = $this->noa_model->monthly_bill_datatable($bill_no);
 		$data = [];
 
 		foreach($billing as $bill){
@@ -446,6 +446,7 @@ class Noa_controller extends CI_Controller {
 
 			$row[] = $bill['billing_no'];
 			$row[] = $fullname;
+			$row[] = $bill['business_unit'];
 			$row[] = number_format($bill['net_bill'], 2, '.', ',');
 			$row[] = $pdf_bill;
 			$data[] = $row;
@@ -462,8 +463,8 @@ class Noa_controller extends CI_Controller {
 
 	function fetch_billing_for_charging() {
 		$this->security->get_csrf_hash();
-		$payment_no = $this->uri->segment(5);
-		$billing = $this->noa_model->get_billed_for_charging($payment_no);
+		$bill_no = $this->uri->segment(5);
+		$billing = $this->noa_model->get_billed_for_charging($bill_no);
 		$data = [];
 
 		foreach($billing as $bill){
@@ -576,6 +577,7 @@ class Noa_controller extends CI_Controller {
 			
 			$row[] = $bill['noa_no'];
 			$row[] = $fullname;
+			$row[] = $bill['business_unit'];
 			$row[] = $percent_custom;
 			$row[] = number_format($bill['net_bill'],2, '.',',');
 			$row[] = $company_charge;
@@ -985,19 +987,24 @@ class Noa_controller extends CI_Controller {
 		$hp_id = $this->input->post('billed-hospital-filter', TRUE);
 		$start_date = $this->input->post('start-date', TRUE);
 		$end_date = $this->input->post('end-date', TRUE);
-		$payment_no = "PMT-" . date('His') . mt_rand(1000, 9999);
-		$matched = $this->noa_model->set_bill_for_matched($hp_id, $start_date, $end_date, $payment_no);
-
 		$date = strtotime($this->input->post('start-date', TRUE));
 		$month = date('m', $date);
 		$year = date('Y', $date);
+		// $number = 1;
+		// $number++;
+		// $consolidated_no = "PMN" . $month . $year . "00" . $number;
+		$total_payable = floatval(str_replace(',', '', $this->input->post('total-hospital-bill', TRUE)));
+		$bill_no = "BILL-" . date('His') . mt_rand(1000, 9999);
+		$matched = $this->noa_model->set_bill_for_matched($hp_id, $start_date, $end_date, $bill_no);
+
 		$data = [
-			'payment_no' => $payment_no,
+			'bill_no' => $bill_no,
 			'type' => 'NOA',
 			'hp_id' => $hp_id,
 			'month' => $month,
 			'year' => $year,
 			'status' => 'Billed',
+			'total_payable' => $total_payable,
 			'added_on' => date('Y-m-d'),
 			'added_by' => $this->session->userdata('fullname'),
 		];
@@ -1021,9 +1028,9 @@ class Noa_controller extends CI_Controller {
 	function fetch_monthly_payable() {
 		$token = $this->security->get_csrf_hash();
 		$data['user_role'] = $this->session->userdata('user_role');
-		// $payment_no =$this->myhash->hasher($this->uri->segment(5), 'decrypt');
-		$payment_no = $this->uri->segment(5);
-		$data['payable'] = $this->noa_model->fetch_monthly_billed_noa($payment_no);
+		// $bill_no =$this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$bill_no = $this->uri->segment(5);
+		$data['payable'] = $this->noa_model->fetch_monthly_billed_noa($bill_no);
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/noa/view_monthly_billed_noa');
@@ -1033,8 +1040,8 @@ class Noa_controller extends CI_Controller {
 
 	function fetch_total_hp_bill() {
 		$token = $this->security->get_csrf_hash();
-		$payment_no = $this->input->post('payment_no');;
-		$hospital = $this->noa_model->get_matched_total_hp_bill($payment_no);
+		$bill_no = $this->input->post('bill_no');;
+		$hospital = $this->noa_model->get_matched_total_hp_bill($bill_no);
 		
 		$response = [
 			'token' => $token,
@@ -1046,9 +1053,9 @@ class Noa_controller extends CI_Controller {
 	function fetch_monthly_charging() {
 		$token = $this->security->get_csrf_hash();
 		$data['user_role'] = $this->session->userdata('user_role');
-		// $payment_no =$this->myhash->hasher($this->uri->segment(5), 'decrypt');
-		$payment_no = $this->uri->segment(5);
-		$data['payable'] = $this->noa_model->fetch_monthly_billed_noa($payment_no);
+		// $bill_no =$this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$bill_no = $this->uri->segment(5);
+		$data['payable'] = $this->noa_model->fetch_monthly_billed_noa($bill_no);
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/noa/view_monthly_charging');

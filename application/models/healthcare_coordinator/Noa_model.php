@@ -210,10 +210,10 @@ class Noa_model extends CI_Model {
         return $sum;
     }
 
-    function set_bill_for_matched($hp_id, $start_date, $end_date, $payment_no) {
+    function set_bill_for_matched($hp_id, $start_date, $end_date, $bill_no) {
       $this->db->set('done_matching', '1')
               ->set('status', 'Payable')
-              ->set('payment_no', $payment_no)
+              ->set('bill_no', $bill_no)
               ->where('status', 'Billed')
               ->where('hp_id', $hp_id)
               ->where('billed_on >=', $start_date)
@@ -240,27 +240,29 @@ class Noa_model extends CI_Model {
       return $this->db->get()->result_array();
     }
 
-    function fetch_monthly_billed_noa($payment_no) {
+    function fetch_monthly_billed_noa($bill_no) {
       $this->db->select('*')
               ->from('monthly_payable as tbl_1')
               ->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
-              ->where('payment_no', $payment_no);
+              ->where('bill_no', $bill_no);
       return $this->db->get()->row_array();
     }
 
     // Start of server-side processing datatables
 var $table_1_monthly = 'billing';
 var $table_2_monthly = 'noa_requests';
+var $table_3_monthly = 'members';
 
-private function _get_monthly_datatables_query($payment_no) {
+private function _get_monthly_datatables_query($bill_no) {
   $this->db->from($this->table_1_monthly . ' as tbl_1');
   $this->db->join($this->table_2_monthly . ' as tbl_2', 'tbl_1.noa_id = tbl_2.noa_id');
-  $this->db->where('tbl_1.payment_no', $payment_no);
+  $this->db->join($this->table_3_monthly . ' as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id');
+  $this->db->where('tbl_1.bill_no', $bill_no);
   
 }
 
-function monthly_bill_datatable($payment_no) {
-  $this->_get_monthly_datatables_query($payment_no);
+function monthly_bill_datatable($bill_no) {
+  $this->_get_monthly_datatables_query($bill_no);
   if ($_POST['length'] != -1)
     $this->db->limit($_POST['length'], $_POST['start']);
   $query = $this->db->get();
@@ -268,10 +270,10 @@ function monthly_bill_datatable($payment_no) {
 }
 // end datatable
 
-function get_matched_total_hp_bill($payment_no) {
+function get_matched_total_hp_bill($bill_no) {
   $this->db->select_sum('net_bill')
             ->from('billing')
-            ->where('payment_no', $payment_no);
+            ->where('bill_no', $bill_no);
     $query = $this->db->get();
     $result = $query->result_array();
     $sum = $result[0]['net_bill'];
@@ -281,16 +283,18 @@ function get_matched_total_hp_bill($payment_no) {
 //billing for charging datatable
 var $charging_table_1 = 'billing';
 var $charging_table_2 = 'noa_requests';
+var $charging_table_3 = 'members';
 var $charging_table_4 = 'max_benefit_limits';
-private function _get_datatables_charging_query($payment_no) {
+private function _get_datatables_charging_query($bill_no) {
   $this->db->from($this->charging_table_1 . ' as tbl_1')
           ->join($this->charging_table_2 . ' as tbl_2', 'tbl_1.noa_id = tbl_2.noa_id')
+          ->join($this->charging_table_3 . ' as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id')
           ->join($this->charging_table_4 . ' as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id')
-          ->where('tbl_1.payment_no', $payment_no);
+          ->where('tbl_1.bill_no', $bill_no);
 }
 
-function get_billed_for_charging($payment_no) {
-  $this->_get_datatables_charging_query($payment_no);
+function get_billed_for_charging($bill_no) {
+  $this->_get_datatables_charging_query($bill_no);
   if ($_POST['length'] != -1)
     $this->db->limit($_POST['length'], $_POST['start']);
   $query = $this->db->get();

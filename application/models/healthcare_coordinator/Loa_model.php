@@ -737,10 +737,10 @@ function db_get_cost_types_by_hp_ID($hp_id) {
     return $this->db->get()->row_array();
   }
   
-  function set_bill_for_matched($hp_id, $start_date, $end_date, $payment_no) {
+  function set_bill_for_matched($hp_id, $start_date, $end_date, $bill_no) {
     $this->db->set('done_matching', '1')
             ->set('status', 'Payable')
-            ->set('payment_no', $payment_no)
+            ->set('bill_no', $bill_no)
             ->where('status', 'Billed')
             ->where('hp_id', $hp_id)
             ->where('billed_on >=', $start_date)
@@ -857,11 +857,11 @@ function db_get_cost_types_by_hp_ID($hp_id) {
       return $this->db->update('max_benefit_limits');
     }
 
-    function fetch_monthly_billed_loa($payment_no) {
+    function fetch_monthly_billed_loa($bill_no) {
       $this->db->select('*')
               ->from('monthly_payable as tbl_1')
               ->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
-              ->where('payment_no', $payment_no);
+              ->where('bill_no', $bill_no);
       return $this->db->get()->row_array();
     }
 
@@ -869,17 +869,18 @@ function db_get_cost_types_by_hp_ID($hp_id) {
 var $table_1_monthly = 'billing';
 var $table_2_monthly = 'loa_requests';
 var $table_3_monthly = 'hr_added_loa_fees';
-
-private function _get_monthly_datatables_query($payment_no) {
+var $table_4_monthly = 'members';
+private function _get_monthly_datatables_query($bill_no) {
   $this->db->from($this->table_1_monthly . ' as tbl_1');
   $this->db->join($this->table_2_monthly . ' as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id');
   $this->db->join($this->table_3_monthly . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id', 'left');
-  $this->db->where('tbl_1.payment_no', $payment_no);
+  $this->db->join($this->table_4_monthly . ' as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id');
+  $this->db->where('tbl_1.bill_no', $bill_no);
   
 }
 
-function monthly_bill_datatable($payment_no) {
-  $this->_get_monthly_datatables_query($payment_no);
+function monthly_bill_datatable($bill_no) {
+  $this->_get_monthly_datatables_query($bill_no);
   if ($_POST['length'] != -1)
     $this->db->limit($_POST['length'], $_POST['start']);
   $query = $this->db->get();
@@ -887,21 +888,21 @@ function monthly_bill_datatable($payment_no) {
 }
 // end datatable
 
-function get_matched_total_hp_bill($payment_no) {
+function get_matched_total_hp_bill($bill_no) {
   $this->db->select_sum('net_bill')
             ->from('billing')
-            ->where('payment_no', $payment_no);
+            ->where('bill_no', $bill_no);
     $query = $this->db->get();
     $result = $query->result_array();
     $sum = $result[0]['net_bill'];
     return $sum;
 }
 
-function get_matched_total_hr_bill($payment_no) {
+function get_matched_total_hr_bill($bill_no) {
   $this->db->select_sum('total_net_bill')
             ->from('billing as tbl_1')
             ->join('hr_added_loa_fees as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id', 'left')
-            ->where('payment_no', $payment_no);
+            ->where('bill_no', $bill_no);
     $query = $this->db->get();
     $result = $query->result_array();
     $sum = $result[0]['total_net_bill'];
@@ -913,16 +914,18 @@ var $charging_table_1 = 'billing';
 var $charging_table_2 = 'loa_requests';
 var $charging_table_3 = 'hr_added_loa_fees';
 var $charging_table_4 = 'max_benefit_limits';
-private function _get_datatables_charging_query($payment_no) {
+var $charging_table_5 = 'members';
+private function _get_datatables_charging_query($bill_no) {
   $this->db->from($this->charging_table_1 . ' as tbl_1')
           ->join($this->charging_table_2 . ' as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id')
           ->join($this->charging_table_3 . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id', 'left')
           ->join($this->charging_table_4 . ' as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id')
-          ->where('tbl_1.payment_no', $payment_no);
+          ->join($this->charging_table_5 . ' as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
+          ->where('tbl_1.bill_no', $bill_no);
 }
 
-function get_billed_for_charging($payment_no) {
-  $this->_get_datatables_charging_query($payment_no);
+function get_billed_for_charging($bill_no) {
+  $this->_get_datatables_charging_query($bill_no);
   if ($_POST['length'] != -1)
     $this->db->limit($_POST['length'], $_POST['start']);
   $query = $this->db->get();

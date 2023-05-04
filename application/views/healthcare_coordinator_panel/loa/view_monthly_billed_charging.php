@@ -30,9 +30,15 @@
 				    $month = 'December';
 			    }
         ?>
+<<<<<<< HEAD
         <h4 class="page-title ls-2">Billing for the Month of <?php echo $month . ', ' . $payable['year']; ?></h4>
         <input type="hidden" id="payment-no" value="<?php echo $payable['payment_no']; ?>">
         <div class="ms-auto text-end">
+=======
+      <h4 class="page-title ls-2">Billing for the Month of <?php echo $month . ', ' . $payable['year']; ?></h4>
+      <input type="hidden" id="bill-no" value="<?php echo $payable['bill_no']; ?>">
+          <div class="ms-auto text-end">
+>>>>>>> 9db59a518b04c989b30b58c89e4bbd46fcac24c9
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
@@ -58,6 +64,7 @@
         <div class="row pt-2 pb-2">
           <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
                 
+<<<<<<< HEAD
           <div class="card shadow" style="background-color:">
             <div class="card-body">
               <div class="table-responsive">
@@ -75,6 +82,25 @@
                     </tr>
                   </thead>
                   <tbody id="billed-tbody">
+=======
+            <div class="card shadow" style="background-color:">
+              <div class="card-body">
+                <table class="table table-hover table-responsive" id="billedLoaTable">
+                  <thead style="background-color:#eddcb7">
+                    <tr>
+                      <th class="fw-bold">LOA No.</th>
+                      <th class="fw-bold">Name</th>
+                      <th class="fw-bold">Business Unit</th>
+                      <th class="fw-bold">Percentage</th>
+                      <th class="fw-bold">Total Net Bill</th>
+                      <th class="fw-bold">Company Charge</th>
+                      <th class="fw-bold">Personal Charge</th>
+                      <th class="fw-bold">Previous MBL</th>
+                      <th class="fw-bold">Remaining MBL</th>
+                    </tr>
+                  </thead>
+                  <tbody id="billed-charging-tbody">
+>>>>>>> 9db59a518b04c989b30b58c89e4bbd46fcac24c9
                   </tbody>
                 </table>
               </div>
@@ -92,7 +118,7 @@
 
 <script>
      const baseUrl = "<?php echo base_url(); ?>";
-     const payment_no = document.querySelector('#payment-no').value;
+     const bill_no = document.querySelector('#bill-no').value;
     
  $(document).ready(function(){
     
@@ -103,7 +129,7 @@
 
       // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}healthcare-coordinator/loa/monthly-bill/charging/${payment_no}`,
+        url: `${baseUrl}healthcare-coordinator/loa/monthly-bill/charging/${bill_no}`,
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: function(data) {

@@ -133,7 +133,8 @@ class Loa_controller extends CI_Controller {
 			$response .= '<select class="chosen-select" id="med-services" name="med-services[]" data-placeholder="Choose services..." multiple="multiple">';
                     
 			foreach ($cost_types as $cost_type) {
-				$response .= '<option value="'.$cost_type['ctype_id'].'">'.$cost_type['item_description'].'</option>';
+				// $response .= '<option value="'.$cost_type['ctype_id'].'">'.$cost_type['item_description'].'</option>';
+				$response .= '<option value="'.$cost_type['ctype_id'].'">'.$cost_type['item_description'].' ₱'.$cost_type['op_price'].'</option>';
 			}
 
 			$response .= '</select>';

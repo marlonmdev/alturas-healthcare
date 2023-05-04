@@ -19,9 +19,131 @@ class Loa_controller extends CI_Controller {
 		$list = $this->loa_model->get_datatables($status);
 		$data = [];
 		foreach ($list as $loa) {
-			$loa_id = $this->myhash->hasher($loa['loa_id'], 'encrypt');
-
 			$row = [];
+			$loa_id = $this->myhash->hasher($loa['loa_id'], 'encrypt');
+			$cost_types = explode(';', $loa['med_services']);
+			$total_fee = 0;
+			foreach($cost_types as $ctype){
+				$fee = $this->loa_model->get_estimated_total_fee($ctype);
+				foreach($fee as $costs){
+					$fees = floatval($costs['op_price']);
+					$total_fee += $fees;
+				}
+				
+			}
+
+			$wpercent = '';
+			$nwpercent = '';
+
+			if($loa['work_related'] == 'Yes'){ 
+				if($loa['percentage'] == ''){
+				   $wpercent = '100% W-R';
+				   $nwpercent = '';
+				}else{
+				   $wpercent = $loa['percentage'].'%  W-R';
+				   $result = 100 - floatval($loa['percentage']);
+				   if($loa['percentage'] == '100'){
+					   $nwpercent = '';
+				   }else{
+					   $nwpercent = $result.'% Non W-R';
+				   }
+				  
+				}	
+		   }else if($loa['work_related'] == 'No'){
+			   if($loa['percentage'] == ''){
+				   $wpercent = '';
+				   $nwpercent = '100% Non W-R';
+				}else{
+				   $nwpercent = $loa['percentage'].'% Non W-R';
+				   $result = 100 - floatval($loa['percentage']);
+				   if($loa['percentage'] == '100'){
+					   $wpercent = '';
+				   }else{
+					   $wpercent = $result.'%  W-R';
+				   }
+				 
+				}
+		   }
+
+		   	$net_bill = floatval($total_fee);
+			$previous_mbl = floatval($loa['remaining_balance']);
+			$percentage = floatval($loa['percentage']);
+
+			if($loa['work_related'] == 'Yes'){
+				if($loa['percentage'] == ''){
+					$company_charge = number_format($loa['net_bill'],2, '.',',');
+					$personal_charge = number_format(0,2, '.',',');
+					if($net_bill >= $previous_mbl){
+						$remaining_mbl = number_format(0,2, '.',',');
+					}else if($net_bill < $previous_mbl){
+						$remaining_mbl = number_format($previous_mbl - $net_bill,2, '.',',');
+					}
+				}else if($loa['percentage'] != ''){
+					
+					if($net_bill <= $previous_mbl){
+						$company_charge = number_format($net_bill,2, '.',',');
+						$personal_charge = number_format(0,2, '.',',');
+						$remaining_mbl = number_format($previous_mbl - $net_bill,2, '.',',');
+					}else if($net_bill > $previous_mbl){
+						$converted_percent = $percentage/100;
+						$initial_company_charge = floatval($converted_percent) * $net_bill;
+						$initial_personal_charge = $net_bill - floatval($initial_company_charge);
+
+						if(floatval($initial_company_charge) <= $previous_mbl){
+							$result = $previous_mbl - floatval($initial_company_charge);
+							$int_personal = floatval($initial_personal_charge) - floatval($result);
+							$personal_charge = number_format($int_personal,2, '.',',');
+							$company_charge = number_format($previous_mbl,2, '.',',');
+							$remaining_mbl = number_format(0,2, '.',',');
+					
+						}else if(floatval($initial_company_charge) > $previous_mbl){
+							$personal_charge = number_format($initial_personal_charge,2, '.',',');
+							$company_charge = number_format($initial_company_charge,2, '.',',');
+							$remaining_mbl = number_format(0,2, '.',',');
+						}
+					}
+					
+				}
+			}else if($loa['work_related'] == 'No'){
+				if($loa['percentage'] == ''){
+					if($net_bill <= $previous_mbl){
+						$company_charge = number_format($net_bill,2, '.',',');
+						$personal_charge = number_format(0,2, '.',',');
+						$remaining_mbl = number_format($previous_mbl - floatval($company_charge),2, '.',',');
+					}else if($net_bill > $previous_mbl){
+						$company_charge = number_format($previous_mbl,2, '.',',');
+						$personal_charge = number_format($net_bill - $previous_mbl,2, '.',',');
+						$remaining_mbl = number_format(0,2, '.',',');
+					}
+				}else if($loa['percentage'] != ''){
+					if($net_bill <= $previous_mbl){
+						$company_charge = number_format($net_bill,2, '.',',');
+						$personal_charge = number_format(0,2, '.',',');
+						$remaining_mbl = number_format($previous_mbl - floatval($net_bill),2, '.',',');
+					}else if($net_bill > $previous_mbl){
+						$converted_percent = $percentage/100;
+						$initial_personal_charge = $converted_percent * $net_bill;
+						$initial_company_charge = $net_bill - floatval($initial_personal_charge);
+						if($initial_company_charge <= $previous_mbl){
+							$result = $previous_mbl - $initial_company_charge;
+							$initial_personal = $initial_personal_charge - $result;
+							if($initial_personal < 0 ){
+								$personal_charge = number_format(0,2, '.',',');
+								$company_charge = number_format($initial_company_charge + $initial_personal_charge,2, '.',',');
+								$remaining_mbl = number_format($previous_mbl - floatval($company_charge),2, '.',',');
+							}else if($initial_personal >= 0){
+								$personal_charge = number_format($initial_personal,2, '.',',');
+								$company_charge = number_format($previous_mbl,2, '.',',');
+								$remaining_mbl = number_format(0,2, '.',',');
+							}
+						}else if($initial_company_charge > $previous_mbl){
+							$personal_charge = number_format($initial_personal_charge,2, '.',',');
+							$company_charge = number_format($initial_company_charge,2, '.',',');
+							$remaining_mbl = number_format(0,2, '.',',');
+						}
+					}
+				}
+			}
 
 			$full_name = $loa['first_name'] . ' ' . $loa['middle_name'] . ' ' . $loa['last_name'] . ' ' . $loa['suffix'];
 
@@ -50,18 +172,6 @@ class Loa_controller extends CI_Controller {
 				$view_file = 'None';
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
 			}else{
-				// convert into array members selected cost types/med_services using PHP explode
-				// $selected_cost_types = explode(';', $loa['med_services']);
-				// loop through all the cost types from DB
-				// foreach ($cost_types as $cost_type) :
-				// 	if (in_array($cost_type['ctype_id'], $selected_cost_types)) :
-				// 		array_push($ct_array, $cost_type['cost_type']);
-				// 	endif;
-				// endforeach;
-				// convert array to string and add comma as a separator using PHP implode
-				// $med_services = implode(', ', $ct_array);
-				// if medical services are too long for displaying to the table shorten it and add the ... characters at the end 
-				// $short_med_services = strlen($med_services) > 35 ? substr($med_services, 0, 35) . "..." : $med_services;
 
 				// if Hospital Name is too long for displaying to the table shorten it and add the ... characters at the end 
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
@@ -77,6 +187,10 @@ class Loa_controller extends CI_Controller {
 			$row[] = $short_hp_name;
 			$row[] = $view_file;
 			$row[] = $custom_date;
+			$row[] = number_format($total_fee,2, '.',',');
+			$row[] = $wpercent. ', '.$nwpercent;
+			$row[] = number_format($loa['remaining_balance'],2, '.',',');
+			$row[] = $remaining_mbl;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;

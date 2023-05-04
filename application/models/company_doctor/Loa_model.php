@@ -6,6 +6,7 @@ class Loa_model extends CI_Model {
   // Start of server-side processing datatables
   var $table_1 = 'loa_requests';
   var $table_2 = 'healthcare_providers';
+  var $table_3 = 'max_benefit_limits';
   var $column_order = ['loa_no', 'first_name', 'loa_request_type', 'hp_name', null, 'request_date']; //set column field database for datatable orderable
   var $column_search = ['loa_no', 'emp_id', 'health_card_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'loa_request_type', 'med_services', 'hp_name', 'request_date', 'CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)']; //set column field database for datatable searchable 
   var $order = ['loa_id' => 'desc']; // default order 
@@ -13,6 +14,7 @@ class Loa_model extends CI_Model {
   private function _get_datatables_query($status) {
     $this->db->from($this->table_1 . ' as tbl_1');
     $this->db->join($this->table_2 . ' as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id');
+    $this->db->join($this->table_3 . ' as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id');
     $this->db->where('status', $status);
     $i = 0;
 
@@ -67,6 +69,12 @@ class Loa_model extends CI_Model {
   }
   // End of server-side processing datatables
 
+  function get_estimated_total_fee($cost_types) {
+    $this->db->select('*')
+            ->from('cost_types')
+            ->where('ctype_id', $cost_types);
+    return $this->db->get()->result_array();
+  }
 
   function db_insert_loa_request($post_data) {
     $query = $this->db->insert('loa_requests', $post_data);

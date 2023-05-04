@@ -30,14 +30,11 @@
 				    $month = 'December';
 			    }
         ?>
-<<<<<<< HEAD
 
         <h4 class="page-title ls-2">Consolidated Billing for the Month of <?php echo $month . ', ' . $payable['year']; ?>.</h4>
         <input type="hidden" id="payment-no" value="<?php echo $payable['payment_no']; ?>">
-=======
         <h4 class="page-title ls-2">Consolidated Billing for the Month of <?php echo $month . ', ' . $payable['year']; ?> [Outpatient]</h4>
       <input type="hidden" id="bill-no" value="<?php echo $payable['bill_no']; ?>">
->>>>>>> 9db59a518b04c989b30b58c89e4bbd46fcac24c9
           <div class="ms-auto text-end">
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">

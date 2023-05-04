@@ -61,19 +61,16 @@
               <table class="table table-hover table-responsive" id="matchedLoaTable">
                 <thead class="fs-5" style="background-color:#00538C">
                   <tr>
-<<<<<<< HEAD
                     <th class="fw-bold" style="color: white;">PAYMENT #</th>
                     <th class="fw-bold" style="color: white;">CONSOLIDATED BILLING</th>
                     <th class="fw-bold" style="color: white;">HEALTHCARE PROVIDER</th>
                     <th class="fw-bold" style="color: white;">STATUS</th>
                     <th class="fw-bold" style="color: white;">ACTION</th>
-=======
                     <th class="fw-bold">Billing No.</th>
                     <th class="fw-bold"></th>
                     <th class="fw-bold">Healthcare Provider</th>
                     <th class="fw-bold">Status</th>
                     <th class="fw-bold">Action</th>
->>>>>>> 9db59a518b04c989b30b58c89e4bbd46fcac24c9
                   </tr>
                 </thead>
                 <tbody>

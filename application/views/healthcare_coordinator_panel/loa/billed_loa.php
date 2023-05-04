@@ -61,7 +61,7 @@
             </div>
 
                 
-<<<<<<< HEAD
+
                 <div class="col-lg-6 offset-1">
                       <div class="input-group">
                           <div class="input-group-append">
@@ -79,14 +79,12 @@
                           <input type="date" class="form-control" name="end-date" id="end-date" oninput="validateDateRange();" placeholder="End Date" disabled>
                       </div>
                   </div>
-=======
             <div class="col-lg-6 offset-1">
               <div class="input-group">
                 <div class="input-group-append">
                   <span class="input-group-text bg-dark text-white ls-1 ms-2">
                     <i class="mdi mdi-filter"></i>
                   </span>
->>>>>>> 68a735cd0814d1320690d6467285b8645ec07d30
                 </div>
                 <input type="date" class="form-control" name="start-date" id="start-date" oninput="validateDateRange()" placeholder="Start Date" disabled>
                 <div class="input-group-append">

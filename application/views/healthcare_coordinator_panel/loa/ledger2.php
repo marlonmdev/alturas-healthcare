@@ -33,10 +33,10 @@
                   <tr>
                     <th class="fw-bold" style="color: white;">NAME OF PATIENT</th>
                     <th class="fw-bold" style="color: white;">ACCOUNT #</th>
-                    <th class="fw-bold" style="color: white;">CV #</th>
                     <th class="fw-bold" style="color: white;">COMPANY CHARGE</th>
                     <th class="fw-bold" style="color: white;">PERSONAL CHARGE</th>
-                    <th class="fw-bold" style="color: white;">MBL USED</th>
+                    <th class="fw-bold" style="color: white;">TOTAL</th>
+                    <th class="fw-bold" style="color: white;">REMARKS</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -46,10 +46,10 @@
                     <tr>
                       <td><?php echo $key === 0 ? $ledger['first_name'].' '.$ledger['middle_name'].' '.$ledger['last_name'] : ''; ?></td>
                       <td><?php echo $ledger['billing_no']; ?></td>
-                      <td></td>
                       <td><?php echo $ledger['company_charge']; ?></td>
                       <td><?php echo $ledger['personal_charge']; ?></td>
                       <td><?php echo $ledger['used_mbl']; ?></td>
+                      <td></td>
                     </tr>
                   <?php }?>
                   <tr>

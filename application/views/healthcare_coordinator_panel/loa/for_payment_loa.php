@@ -66,11 +66,11 @@
                     <th class="fw-bold" style="color: white;">HEALTHCARE PROVIDER</th>
                     <th class="fw-bold" style="color: white;">STATUS</th>
                     <th class="fw-bold" style="color: white;">ACTION</th>
-                    <th class="fw-bold">Billing No.</th>
-                    <th class="fw-bold"></th>
-                    <th class="fw-bold">Healthcare Provider</th>
-                    <th class="fw-bold">Status</th>
-                    <th class="fw-bold">Action</th>
+                    <th class="fw-bold" style="color: white;">Billing No.</th>
+                    <th class="fw-bold" style="color: white;"></th>
+                    <th class="fw-bold" style="color: white;">Healthcare Provider</th>
+                    <th class="fw-bold" style="color: white;">Status</th>
+                    <th class="fw-bold" style="color: white;">Action</th>
                   </tr>
                 </thead>
                 <tbody>

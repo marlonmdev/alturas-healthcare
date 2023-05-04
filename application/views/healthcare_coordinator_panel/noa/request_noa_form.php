@@ -1,11 +1,8 @@
-
-<!-- Start of Page Wrapper -->
 <div class="page-wrapper">
-  <!-- Bread crumb and right sidebar toggle -->
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">Notice of Admission</h4>
+        <h4 class="page-title ls-2">NOTICE OF ADMISSION</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -19,8 +16,7 @@
       </div>
     </div>
   </div>
-  <!-- End Bread crumb and right sidebar toggle -->
-  <!-- Start of Container fluid  -->
+
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">

@@ -59,6 +59,7 @@ class Pages_controller extends CI_Controller {
 		$data['costtypes'] = $this->loa_model->db_get_cost_types();
 		$data['member'] = $this->loa_model->db_get_member_infos($emp_id);
 		$data['pending'] = $this->loa_model->db_get_status_pending($emp_id);
+		$data['mbl'] = $this->loa_model->db_get_mbl($emp_id);
 		$this->load->view('templates/header', $data);
 		$this->load->view('member_panel/loa/request_loa_form');
 		$this->load->view('templates/footer');

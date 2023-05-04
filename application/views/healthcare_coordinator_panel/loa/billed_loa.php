@@ -1,22 +1,20 @@
-<!-- Start of Page Wrapper -->
 <div class="page-wrapper">
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">Outpatient Billing</h4>
+        <h4 class="page-title ls-2">CHECKING OF BILLING</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
-              <li class="breadcrumb-item active" aria-current="page">Billed LOA</li>
+              <li class="breadcrumb-item active" aria-current="page">Matching</li>
             </ol>
           </nav>
         </div>
       </div>
     </div>
   </div>
-  <!-- End Bread crumb and right sidebar toggle -->
-  <!-- Start of Container fluid  -->
+
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
@@ -24,14 +22,21 @@
           <li class="nav-item">
             <a class="nav-link active" href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/billed" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Billed LOA</span>
+              <span class="hidden-xs-down fs-5 font-bold">BILLING</span>
             </a>
           </li>
 
           <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/for-charging" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">For Payment LOA</span>
+              <span class="hidden-xs-down fs-5 font-bold">HISTORY OF BILLING</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/loa_controller/view_ledger" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">LEDGER</span>
             </a>
           </li>
         </ul>
@@ -56,7 +61,7 @@
             </div>
 
                 
-<<<<<<< HEAD
+
                 <div class="col-lg-6 offset-1">
                       <div class="input-group">
                           <div class="input-group-append">
@@ -74,14 +79,12 @@
                           <input type="date" class="form-control" name="end-date" id="end-date" oninput="validateDateRange();" placeholder="End Date" disabled>
                       </div>
                   </div>
-=======
             <div class="col-lg-6 offset-1">
               <div class="input-group">
                 <div class="input-group-append">
                   <span class="input-group-text bg-dark text-white ls-1 ms-2">
                     <i class="mdi mdi-filter"></i>
                   </span>
->>>>>>> 68a735cd0814d1320690d6467285b8645ec07d30
                 </div>
                 <input type="date" class="form-control" name="start-date" id="start-date" oninput="validateDateRange()" placeholder="Start Date" disabled>
                 <div class="input-group-append">
@@ -98,16 +101,16 @@
             <div class="card-body">
               <div class="table-responsive">
                 <table class="table table-hover table-responsive" id="billedLoaTable">
-                  <thead style="background-color:#ded4c3">
+                  <thead style="background-color:#00538C">
                     <tr>
-                      <th class="fw-bold">LOA No.</th>
-                      <th class="fw-bold">Name</th>
-                      <th class="fw-bold">LOA Type</th>
-                      <th class="fw-bold">Coordinator Bill</th>
-                      <th class="fw-bold">View Bill</th>
-                      <th class="fw-bold">Hospital Bill</th>
-                      <th class="fw-bold">View SOA</th>
-                      <th class="fw-bold">Variance</th> 
+                      <th class="fw-bold" style="color: white">LOA NO.</th>
+                      <th class="fw-bold" style="color: white">NAME OF PATIENT</th>
+                      <th class="fw-bold" style="color: white">TYPE OF REQUEST</th>
+                      <th class="fw-bold" style="color: white">COORDINATOR BILL</th>
+                      <th class="fw-bold" style="color: white">VIEW BILL</th>
+                      <th class="fw-bold" style="color: white">HOSPITAL BILL</th>
+                      <th class="fw-bold" style="color: white">VIEW BILL</th>
+                      <th class="fw-bold" style="color: white">VARIANCE</th> 
                     </tr>
                   </thead>
                   <tbody id="billed-tbody">
@@ -148,30 +151,34 @@
 <script>
   const baseUrl = "<?php echo base_url()?>";
   $(document).ready(function() {
-    $('#billedLoaTable').submit(function(){
+    $('#billedLoaTable').submit(function(event) {
       event.preventDefault();
-      let $data = $(this).serialize();
+      let $data = new FormData($(this)[0]);
       $.ajax({
         type: "POST",
         url: $(this).attr('action'),
         data: $data,
         dataType: "json",
+        processData: false,
+        contentType: false,
         success: function(response) {
           const {
+            token,
             status,
             message,
           } = response;
-
-          switch(status){
-            case 'failed':
+          switch (status) {
+            case 'save-error':
               swal({
-                title: 'Error',
+                title: 'Failed',
                 text: message,
                 timer: 3000,
-                showConfirmButton: true,
+                showConfirmButton: false,
                 type: 'error'
               });
             break;
+<<<<<<< HEAD
+=======
 
 <<<<<<< HEAD
                 case 'success':
@@ -189,6 +196,7 @@
                 break;
             }
 =======
+>>>>>>> 9db59a518b04c989b30b58c89e4bbd46fcac24c9
             case 'success':
               swal({
                 title: 'Success',
@@ -197,15 +205,24 @@
                 showConfirmButton: false,
                 type: 'success'
               });
-              setTimeout(function () {
-                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/for-charging';
-              }, 2600);    
+              $('.dropify-clear').click();
+              setTimeout(function() {
+                window.location.href = `${baseUrl}healthcare-coordinator/loa/requests-list/for-charging`;
+              }, 3200);
             break;
           }
+<<<<<<< HEAD
+        },
+      })
+=======
 >>>>>>> 68a735cd0814d1320690d6467285b8645ec07d30
         }
       });
+>>>>>>> 9db59a518b04c989b30b58c89e4bbd46fcac24c9
     });
+
+
+
 
     let billedTable = $('#billedLoaTable').DataTable({
       processing: true, //Feature control the processing indicator.

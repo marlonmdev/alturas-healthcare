@@ -19,7 +19,7 @@ class Loa_model extends CI_Model {
     if($this->input->post('filter')){
       $this->db->like('tbl_1.hcare_provider', $this->input->post('filter'));
     }
-    // loop column 
+    //loop column 
     foreach ($this->column_search as $item) {
       // if datatable send POST for search
       if ($_POST['search']['value']) {
@@ -249,6 +249,7 @@ function db_get_cost_types_by_hp_ID($hp_id) {
     $query = $this->db->get('healthcare_providers');
     return $query->result_array();
   }
+
 
   function db_get_company_doctors() {
     $query = $this->db->get('company_doctors');
@@ -595,7 +596,6 @@ function db_get_cost_types_by_hp_ID($hp_id) {
             ->where('loa_id', $loa_id)
             ->where('status', 'Cancelled');
     return $this->db->get()->result_array();
-
   }
 
   function set_loa_status_completed($loa_id, $status) {
@@ -932,5 +932,85 @@ function get_billed_for_charging($bill_no) {
   return $query->result_array();
 }
 //end billing for charging datatable
+
+
+
+//LEDGER============================================================
+  var $ledger1 = 'members';
+  var $ledger2 = 'billing';
+  var $column_order_ledger = ['member_id', 'first_name', 'emp_type', 'status', 'business_unit', 'dept_name']; 
+  var $column_search_ledger= ['member_id', 'first_name', 'middle_name', 'last_name', 'suffix', 'emp_type', 'status', 'business_unit', 'dept_name', 'CONCAT(first_name, " ",last_name)', 'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)'];
+  var $order_ledger = ['emp_no' => 'desc']; // default order 
+
+private function _get_datatables_query_ledger($status) {
+  $this->db->group_by('emp_no');
+  $this->db->from($this->ledger1 . ' as tbl_1');
+  $this->db->join($this->ledger2 . ' as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
+  $this->db->where('status', $status);
+
+  $i = 0;
+  foreach ($this->column_search_ledger as $item) {
+    if (isset($_POST['search']['value']) && !empty($_POST['search']['value'])) { // check if search value is set and not empty
+      if ($i === 0) {
+        $this->db->group_start(); // start where clause group
+        $this->db->like($item, $_POST['search']['value']);
+      } else {
+        $this->db->or_like($item, $_POST['search']['value']);
+      }
+      if (count($this->column_search_ledger) - 1 == $i)
+        $this->db->group_end(); // end where clause group
+    }
+    $i++;
+  }
+
+  if (isset($_POST['order'])) {
+    $column_order_index = $_POST['order']['0']['column'];
+    $column_order_dir = $_POST['order']['0']['dir'];
+    $column_order = $this->column_order_ledger[$column_order_index];
+    $this->db->order_by($column_order, $column_order_dir);
+  } else if (isset($this->order_ledger)) {
+    $this->db->order_by(key($this->order_ledger), $this->order_ledger[key($this->order_ledger)]);
+  }
+}
+
+function get_datatables_ledger($status) {
+  $this->_get_datatables_query_ledger($status);
+  if (isset($_POST['length']) && $_POST['length'] != -1) { 
+    $this->db->limit($_POST['length'], $_POST['start']);
+  }
+  $query = $this->db->get();
+  return $query->result_array();
+}
+
+function count_all_ledger($status) {
+  $this->db->from($this->ledger2);
+  $this->db->where('status', $status);
+  return $this->db->count_all_results();
+}
+
+function count_filtered_ledger($status) {
+  $this->_get_datatables_query_ledger($status);
+  $query = $this->db->get();
+}
+
+public function get_member_info($emp_id) {
+  $this->db->select('*');
+  $this->db->from('billing as tbl_1');
+  $this->db->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
+  $this->db->join('max_benefit_limits as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id');
+  $this->db->where('tbl_1.emp_id', $emp_id);
+  $query = $this->db->get();
+  return $query->result_array();
+
+  $this->db->select('*');
+  $this->db->from('members');
+  $this->db->where('emp_id', $emp_id);
+
+  $this->db->select('*');
+  $this->db->from('max_benefit_limits');
+  $this->db->where('emp_id', $emp_id);
+}
+
+//END==================================================
 
 }

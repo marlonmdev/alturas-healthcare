@@ -46,16 +46,16 @@
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-hover table-responsive" id="membersPendingTable">
-                <thead>
+                <thead style="background-color:#00538C">
                   <tr>
-                    <th class="fw-bold">#</th>
-                    <th class="fw-bold">NAME OF EMPLOYEE</th>
-                    <th class="fw-bold">TYPE OF EMPLOYEE</th>
-                    <th class="fw-bold">STATUS</th>
-                    <th class="fw-bold">BUSINESS UNIT</th>
-                    <th class="fw-bold">DEPARTMENT</th>
-                    <th class="fw-bold">STATUS</th>
-                    <th class="fw-bold">ACTION</th>
+                    <th class="fw-bold" style="color: white;">#</th>
+                    <th class="fw-bold" style="color: white;">NAME OF EMPLOYEE</th>
+                    <th class="fw-bold" style="color: white;">TYPE OF EMPLOYEE</th>
+                    <th class="fw-bold" style="color: white;">STATUS</th>
+                    <th class="fw-bold" style="color: white;">BUSINESS UNIT</th>
+                    <th class="fw-bold" style="color: white;">DEPARTMENT</th>
+                    <th class="fw-bold" style="color: white;">STATUS</th>
+                    <th class="fw-bold" style="color: white;">ACTION</th>
                   </tr>
                 </thead>
               <tbody>

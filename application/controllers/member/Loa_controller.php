@@ -118,30 +118,24 @@ class Loa_controller extends CI_Controller {
 	}
 
 	function get_hp_services(){
-		$token = $this->security->get_csrf_hash();
-		$hp_id = $this->uri->segment(3);
-		$cost_types = $this->loa_model->db_get_cost_types_by_hp($hp_id);
-		$response = '';
+    $token = $this->security->get_csrf_hash();
+    $hp_id = $this->uri->segment(3);
+    $cost_types = $this->loa_model->db_get_cost_types_by_hp($hp_id);
+    $response = '';
 
-		if(empty($cost_types)){
-			$response .= '<select class="chosen-select" id="med-services" name="med-services[]" multiple="multiple">';
-			
-			$response .= '<option value="" disabled>No Available Services</option>';
-
-			$response .= '</select>';
-		}else{
-			$response .= '<select class="chosen-select" id="med-services" name="med-services[]" data-placeholder="Choose services..." multiple="multiple">';
-                    
-			foreach ($cost_types as $cost_type) {
-				// $response .= '<option value="'.$cost_type['ctype_id'].'">'.$cost_type['item_description'].'</option>';
-				$response .= '<option value="'.$cost_type['ctype_id'].'">'.$cost_type['item_description'].' ₱'.$cost_type['op_price'].'</option>';
-			}
-
-			$response .= '</select>';
-		}
-
-		echo json_encode($response);
-	}
+    if(empty($cost_types)){
+        $response .= '<select class="chosen-select" id="med-services" name="med-services[]" multiple="multiple">';
+        $response .= '<option value="" disabled>No Available Services</option>';
+        $response .= '</select>';
+    }else{
+        $response .= '<select class="chosen-select" id="med-services" name="med-services[]" data-placeholder="Choose services..." multiple="multiple">';
+        foreach ($cost_types as $cost_type) {
+            $response .= '<option value="'.$cost_type['ctype_id'].'" data-price="'.$cost_type['op_price'].'">'.$cost_type['item_description'].'</option>';
+        }
+        $response .= '</select>';
+    }
+    echo json_encode($response);
+}
 
 	function get_hp_services_on_edit(){
 		$token = $this->security->get_csrf_hash();

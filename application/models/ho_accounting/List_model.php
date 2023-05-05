@@ -547,16 +547,16 @@ class List_model extends CI_Model{
             ->where('tbl_1.status', 'Payable');
 
     if ($this->input->post('startDate')) {
-        $startDate = date('Y-m-d', strtotime($this->input->post('startDate')));
-        $this->db->where('tbl_1.billed_on >=', $startDate);
-        }
-        if ($this->input->post('endDate')){
-        $endDate = date('Y-m-d', strtotime($this->input->post('endDate')));
-        $this->db->where('tbl_1.billed_on <=', $endDate);
-        }
-        if($this->input->post('business_unit')){
-        $this->db->like('tbl_4.business_unit', $this->input->post('business_unit'));
-        }
+    $startDate = date('Y-m-d', strtotime($this->input->post('startDate')));
+    $this->db->where('tbl_1.billed_on >=', $startDate);
+    }
+    if ($this->input->post('endDate')){
+    $endDate = date('Y-m-d', strtotime($this->input->post('endDate')));
+    $this->db->where('tbl_1.billed_on <=', $endDate);
+    }
+    if($this->input->post('business_unit')){
+    $this->db->like('tbl_5.business_unit', $this->input->post('business_unit'));
+    }
     }
 
     function get_billed_for_charging() {

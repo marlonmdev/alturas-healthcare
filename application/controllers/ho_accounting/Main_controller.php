@@ -1028,10 +1028,10 @@ class Main_controller extends CI_Controller {
 			$personal_charge = '';
 			$remaining_mbl = '';
 			
-
 			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
 			$wpercent = '';
 			$nwpercent = '';
+
 			if($bill['work_related'] == 'Yes'){ 
 				if($bill['percentage'] == ''){
 				   $wpercent = '100% W-R';
@@ -1045,7 +1045,7 @@ class Main_controller extends CI_Controller {
 					   $nwpercent = $result.'% Non W-R';
 				   }
 				  
-				}
+				}	
 		   }else if($bill['work_related'] == 'No'){
 			   if($bill['percentage'] == ''){
 				   $wpercent = '';
@@ -1172,6 +1172,65 @@ class Main_controller extends CI_Controller {
 		];
 		echo json_encode($output);
 	}
+	
+	function get_business_units(){
+		$token = $this->security->get_csrf_hash();
+		$units = $this->List_model->get_business_units();
+		$response = '';
+
+		if(empty($units)){
+			$response .= '<select class="chosen-select" id="charging-bu-filter" name="charging-bu-filter">';
+			
+			$response .= '<option value="" disabled>No Available Business Units</option>';
+
+			$response .= '</select>';
+		}else{
+			// Sort the $units array by the 'business_unit' key
+			array_multisort(array_column($units, 'business_unit'), SORT_ASC, $units);
+	
+			$response .= '<select class="chosen-select" id="charging-bu-filter" name="charging-bu-filter" data-placeholder="Choose Business Units...">';
+			
+			$response .= '<option value="">Choose Business Units...</option>';
+			foreach ($units as $business) {
+				
+				$response .= '<option value="'.$business['business_unit'].'">'.$business['business_unit'].'</option>';
+			}
+	
+			$response .= '</select>';
+		}
+
+		echo json_encode($response);
+	}
+
+	function get_business_u() {
+		$token = $this->security->get_csrf_hash();
+		$units = $this->List_model->get_business_units();
+		$response = '';
+	
+		if(empty($units)){
+			$response .= '<select class="chosen-select" id="billed-bu-filter" name="billed-bu-filter">';
+			
+			$response .= '<option value="" disabled>No Available Business Units</option>';
+	
+			$response .= '</select>';
+		}else{
+			// Sort the $units array by the 'business_unit' key
+			array_multisort(array_column($units, 'business_unit'), SORT_ASC, $units);
+	
+			$response .= '<select class="chosen-select" id="billed-bu-filter" name="billed-bu-filter" data-placeholder="Choose Business Units...">';
+			
+			$response .= '<option value="">Choose Business Units...</option>';
+			foreach ($units as $business) {
+				
+				$response .= '<option value="'.$business['business_unit'].'">'.$business['business_unit'].'</option>';
+			}
+	
+			$response .= '</select>';
+		}
+	
+		echo json_encode($response);
+	}
+	
 
 
 	

@@ -98,6 +98,10 @@
                     <th class="fw-bold">HEALTHCARE PROVIDER</th>
                     <th class="fw-bold">RX FILE</th>
                     <th class="fw-bold">DATE OF REQUEST</th>
+                    <th class="fw-bold">ESTIMATED TOTAL FEE</th>
+                    <th class="fw-bold">PERCENTAGE</th>
+                    <th class="fw-bold">PREVIOUS MBL</th>
+                    <th class="fw-bold">REMAINING MBL</th>
                     <th class="fw-bold">STATUS</th>
                     <th class="fw-bold">ACTION</th>
                   </tr>
@@ -136,7 +140,7 @@
       },
 
       columnDefs: [{
-        "targets": [4, 6, 7], // numbering column
+        "targets": [], // numbering column
         "orderable": false,
       }, ],
       responsive: true,

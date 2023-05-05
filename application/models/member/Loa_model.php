@@ -274,4 +274,10 @@ class Loa_model extends CI_Model {
   }
   // End of server-side processing datatables
 
+  function db_get_mbl($emp_id){
+    $this->db->where('emp_id', $emp_id);
+    $query = $this->db->get('max_benefit_limits');
+    return $query->num_rows() > 0 ? $query->row_array() : false;
+  }
+
 }

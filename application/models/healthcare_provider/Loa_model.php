@@ -4,8 +4,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Loa_model extends CI_Model{
 
     // Start of server-side processing datatables
-    var $table_1 = 'loa_requests';
+    var $table_1 = 'loa_requests'; 
     var $table_2 = 'healthcare_providers';
+
+    var $table_3 = 'billing';
    // var $column_order = array('loa_no', 'first_name', 'loa_request_type', null, null, 'request_date', null, null); //set column field database for datatable orderable
     var $column_order = array('loa_no', 'first_name', 'loa_request_type', null, null, 'request_date');
     var $column_search = array('loa_no', 'emp_id', 'health_card_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'loa_request_type', 'med_services', 'request_date', 'CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)'); //set column field database for datatable searchable 
@@ -44,6 +46,7 @@ class Loa_model extends CI_Model{
         }
     }
 
+    
     function get_datatables($status, $hp_id) {
         $this->_get_datatables_query($status, $hp_id);
         if ($_POST['length'] != -1)

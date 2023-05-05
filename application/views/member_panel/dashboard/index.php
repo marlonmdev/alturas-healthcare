@@ -183,14 +183,15 @@
                     },
               dataType: "json",
               success: function (res) {
+                console.log(res);
                  if(res.modal_display ==  true){
                   $('#termModal').modal('show');
                  }else{
                   $('#termModal').modal('hide');
                  }
-                 if(res.csrf_hash){
-                  crsf_token = res.csrf_hash;
-                }
+                //  if(res.csrf_hash){
+                //   crsf_token = res.csrf_hash;
+                // }
                 console.log("success");
               },
               error: function (e) {

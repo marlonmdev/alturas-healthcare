@@ -6,6 +6,7 @@ class Noa_controller extends CI_Controller {
 	function __construct() {
 		parent::__construct();
 				$this->load->model('healthcare_provider/noa_model');
+				$this->load->model('healthcare_provider/Billing_model');
 		$user_role = $this->session->userdata('user_role');
 		$logged_in = $this->session->userdata('logged_in');
 		if ($logged_in !== true && $user_role !== 'healthcare-provider') {
@@ -203,6 +204,7 @@ class Noa_controller extends CI_Controller {
 		$data = [];
 		foreach ($list as $noa) {
 			$noa_id = $this->myhash->hasher($noa['noa_id'], 'encrypt');
+			$billed_pdf = $this->Billing_model->get_billed_noa_pdf($noa['noa_id']);
 			$row = [];
 			$full_name = $noa['first_name'] . ' ' . $noa['middle_name'] . ' ' . $noa['last_name'] . ' ' . $noa['suffix'];
 
@@ -213,7 +215,9 @@ class Noa_controller extends CI_Controller {
 
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-cyan">' . $noa['status'] . '</span></div>';
 
-			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>
+			<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $billed_pdf->pdf_bill . '\' , \''. $noa_id .'\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i>
+			</a>';
 
 			// shorten name of values from db if its too long for viewing and add ...
 			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];

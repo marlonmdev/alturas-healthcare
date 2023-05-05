@@ -6,6 +6,7 @@ class Loa_controller extends CI_Controller {
     function __construct() {
         parent::__construct();
         $this->load->model('healthcare_provider/loa_model');
+        $this->load->model('healthcare_provider/Billing_model');
         $user_role = $this->session->userdata('user_role');
         $logged_in = $this->session->userdata('logged_in');
         if ($logged_in !== true && $user_role !== 'healthcare-provider') {
@@ -13,6 +14,7 @@ class Loa_controller extends CI_Controller {
         }
     }
 
+	
     function fetch_pending_loa_requests(){
 			$this->security->get_csrf_hash();
 			$status = 'Pending';
@@ -278,11 +280,13 @@ class Loa_controller extends CI_Controller {
 		function fetch_billed_loa_requests(){
       $this->security->get_csrf_hash();
 			$status = 'Billed';
-      $hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
+      		$hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
 			$list = $this->loa_model->get_datatables($status, $hcare_provider_id);
+			
 			$cost_types = $this->loa_model->db_get_cost_types();
 			$data = [];
 			foreach ($list as $loa) {
+				$billed_pdf = $this->Billing_model->get_billed_loa_pdf($loa['loa_id']);
 				$ct_array = $row = [];
 				$loa_id = $this->myhash->hasher($loa['loa_id'], 'encrypt');
 
@@ -294,7 +298,9 @@ class Loa_controller extends CI_Controller {
 
 				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-cyan">' . $loa['status'] . '</span></div>';
 
-				$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+				$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>
+				<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $billed_pdf->pdf_bill . '\' , \''. $loa['loa_no'] .'\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i>
+				</a>';
 
 				// initialize multiple varibles at once
 				$view_file = $short_med_services = '';

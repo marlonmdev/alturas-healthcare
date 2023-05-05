@@ -1,129 +1,152 @@
-<div class="page-wrapper">
-  <div class="page-breadcrumb">
-    <div class="row">
-      <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">AGC EMPLOYEES</h4>
-        <div class="ms-auto text-end">
-          <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item">Healthcare Coordinator</li>
-              <li class="breadcrumb-item active" aria-current="page">Create Account</li>
-            </ol>
-          </nav>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-lg-12">
-
-        <ul class="nav nav-tabs mb-4" role="tablist">
-          <li class="nav-item">
-            <a class="nav-link active" href="<?php echo base_url(); ?>healthcare-coordinator/members" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">CREATE ACCOUNT</span>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/members/approved" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">UPLOAD HEALTHCARD ID</span>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/members/approved/uploaded-scanned-id-form" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">MBL MONITORING</span>
-            </a>
-          </li>
-        </ul>
-
-        <div class="card shadow">
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-hover table-responsive" id="membersPendingTable">
-                <thead style="background-color:#00538C">
-                  <tr>
-                    <th class="fw-bold" style="color: white;">#</th>
-                    <th class="fw-bold" style="color: white;">NAME OF EMPLOYEE</th>
-                    <th class="fw-bold" style="color: white;">TYPE OF EMPLOYEE</th>
-                    <th class="fw-bold" style="color: white;">STATUS</th>
-                    <th class="fw-bold" style="color: white;">BUSINESS UNIT</th>
-                    <th class="fw-bold" style="color: white;">DEPARTMENT</th>
-                    <th class="fw-bold" style="color: white;">STATUS</th>
-                    <th class="fw-bold" style="color: white;">ACTION</th>
-                  </tr>
-                </thead>
-              <tbody>
-              </tbody>
-            </table>
+  <!-- Start of Page Wrapper -->
+  <div class="page-wrapper">
+    <!-- Bread crumb and right sidebar toggle -->
+    <div class="page-breadcrumb">
+      <div class="row">
+        <div class="col-12 d-flex no-block align-items-center">
+          <h4 class="page-title ls-2">Members</h4>
+          <div class="ms-auto text-end">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item">Healthcare Coordinator</li>
+                <li class="breadcrumb-item active" aria-current="page">
+                  Pending
+                </li>
+              </ol>
+            </nav>
           </div>
         </div>
       </div>
+    </div>
+    <!-- End Bread crumb and right sidebar toggle -->
+    <!-- Start of Container fluid  -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <ul class="nav nav-tabs mb-4" role="tablist">
+                    <li class="nav-item">
+                    <a
+                        class="nav-link active"
+                        href="<?php echo base_url(); ?>healthcare-coordinator/members"
+                        role="tab"
+                        ><span class="hidden-sm-up"></span>
+                        <span class="hidden-xs-down fs-5 font-bold">Pending</span></a
+                    >
+                    </li>
+                    <li class="nav-item">
+                    <a
+                        class="nav-link"
+                        href="<?php echo base_url(); ?>healthcare-coordinator/members/approved"
+                        role="tab"
+                        ><span class="hidden-sm-up"></span>
+                        <span class="hidden-xs-down fs-5 font-bold">Approved</span></a
+                    >
+                    </li>
+                    <li class="nav-item">
+                    <a
+                        class="nav-link"
+                        href="<?php echo base_url(); ?>healthcare-coordinator/members/approved/uploaded-scanned-id-form"
+                        role="tab"
+                        ><span class="hidden-sm-up"></span>
+                        <span class="hidden-xs-down fs-5 font-bold">Healthcard ID Monitoring</span></a
+                    >
+                    </li>
+                </ul>
 
-      <!-- Start of Create User Account Modal  -->
-      <div class="modal fade" id="createMemberUserAccountModal" tabindex="-1" data-bs-backdrop="static">
-        <div class="modal-dialog modal-md">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title text-secondary">Create Account</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <div class="modal-body">
-              <form method="post" action="<?php echo base_url(); ?>healthcare-coordinator/members/user-account/create" id="createMemberUserAccountForm">
-                <input type="hidden" name="token" id="token" value="<?php echo $this->security->get_csrf_hash(); ?>">
-                <input type="hidden" name="emp-id" id="emp-id">
-
-                <div class="form-group row">
-                  <div class="col-sm-12 mb-2">
-                    <label>Health Card Number</label>
-                    <input type="text" class="form-control has-data" name="healthcard-no" id="healthcard-no" readonly>
-                    <span id="healthcard-no-error" class="text-danger"></span>
-                  </div>
-                </div>
-
-                <div class="form-group row">
-                  <div class="col-sm-12 mb-2">
-                    <label>Username</label>
-                    <input type="text" class="form-control has-data" name="username" id="username" readonly>
-                    <span id="username-error" class="text-danger"></span>
-                  </div>
-                </div>
-
-                <div class="form-group row">
-                  <div class="col-sm-12 mb-3">
-                    <label>Password</label>
-                    <div class="main-password">
-                      <input type="password" class="form-control input-password has-data" name="password" id="password" aria-label="password" readonly>
-                      <a href="JavaScript:void(0);" class="icon-view"><i class="mdi mdi-eye" id="pwd-icon"></i></a>
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-responsive" id="membersPendingTable">
+                                <thead>
+                                    <tr>
+                                        <th class="fw-bold">#</th>
+                                        <th class="fw-bold">Name</th>
+                                        <th class="fw-bold">EmpType</th>
+                                        <th class="fw-bold">Status</th>
+                                        <th class="fw-bold">Business Unit</th>
+                                        <th class="fw-bold">Department</th>
+                                        <th class="fw-bold">Approval Status</th>
+                                        <th class="fw-bold">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                    <span id="password-error" class="text-danger"></span>
-                  </div>
                 </div>
 
-                <div class="row">
-                  <div class="col-sm-12 mb-sm-0 d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary">REGISTER</button>&nbsp;&nbsp;
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">CANCEL</button>
-                  </div>
-                </div>
+                <!-- Start of Create User Account Modal  -->
+                <div class="modal fade" id="createMemberUserAccountModal" tabindex="-1" data-bs-backdrop="static">
+                    <div class="modal-dialog modal-md">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title text-secondary">Create Member User Account</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                </button>
+                            </div>
+                            <div class="modal-body">
 
-              </form>
+                                <!-- Start of Form -->
+                                <form method="post" action="<?php echo base_url(); ?>healthcare-coordinator/members/user-account/create" id="createMemberUserAccountForm">
+                                    <input type="hidden" name="token" id="token" value="<?php echo $this->security->get_csrf_hash(); ?>">
+                                    <input type="hidden" name="emp-id" id="emp-id">
+                                    <div class="form-group row">
+                                        <div class="col-sm-12 mb-2">
+                                            <label>Health Card Number</label>
+                                            <input type="text" class="form-control has-data" name="healthcard-no" id="healthcard-no" readonly>
+                                            <span id="healthcard-no-error" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-12 mb-2">
+                                            <label>Username</label>
+                                            <input type="text" class="form-control has-data" name="username" id="username" readonly>
+                                            <span id="username-error" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-12 mb-3">
+                                            <label>Password</label>
+                                            <div class="main-password">
+                                                <input type="password" class="form-control input-password has-data" name="password" id="password" aria-label="password" readonly>
+                                                <a href="JavaScript:void(0);" class="icon-view">
+                                                    <i class="mdi mdi-eye" id="pwd-icon"></i>
+                                                </a>
+                                            </div>
+                                            <span id="password-error" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-12 mb-sm-0 d-flex justify-content-end">
+                                            <button type="submit" class="btn btn-primary">
+                                                REGISTER
+                                            </button>
+                                            &nbsp;&nbsp;
+                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                                                CANCEL
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <!-- End of Form -->
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End of Create User Account Modal -->
+
+
+                </div>
             </div>
-          </div>
-        </div>
+        <!-- End Row  -->  
       </div>
+    <!-- End Container fluid  -->
     </div>
+  <!-- End Page wrapper  -->
   </div>
-</div>
-
-
-
 <script>
     const baseUrl = '<?php echo base_url(); ?>';
     $(document).ready(function() {
@@ -236,7 +259,7 @@
 
         healthcard_no.value = `ACN-${emp_no.toString()}`;
         username.value = emp_id.toString();
-        password.value = generateRandomString(4) + current_year;
+        password.value = "Acare" + current_year;
         emp_id_input.value = emp_id;
     }
 </script>

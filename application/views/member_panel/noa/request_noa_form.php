@@ -1,11 +1,12 @@
 
+
 <!-- Start of Page Wrapper -->
 <div class="page-wrapper">
   <!-- Bread crumb and right sidebar toggle -->
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">NOTICE OF ADMISSION</h4>
+        <h4 class="page-title ls-2">Notice of Admission</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -113,8 +114,10 @@
 
 <script type="text/javascript">
   const baseUrl = `<?php echo base_url(); ?>`;
-
+  const mbl = "<?=$mbl['remaining_balance']?>";
   $(document).ready(function() {
+    $('#submit').prop('disabled',false); 
+
 
     $('#admission-date').flatpickr({
       dateFormat: "Y-m-d"
@@ -122,75 +125,95 @@
 
     $('#memberNoaRequestForm').submit(function(event) {
       event.preventDefault();
-      let $data = new FormData($(this)[0]);
-      $.ajax({
-        type: "post",
-        url: $(this).attr('action'),
-        data: $data,
-        dataType: "json",
-        processData: false,
-        contentType: false,
-        success: function(response) {
-          const {
-            token,
-            status,
-            message,
-            hospital_name_error,
-            chief_complaint_error,
-            admission_date_error
-          } = response;
-
-          if (status === 'error') {
-            // is-invalid class is a built in classname for errors in bootstrap
-            if (hospital_name_error !== '') {
-              $('#hospital-name-error').html(hospital_name_error);
-              $('#hospital-name').addClass('is-invalid');
-            } else {
-              $('#hospital-name-error').html('');
-              $('#hospital-name').removeClass('is-invalid');
-            }
-
-            if (admission_date_error !== '') {
-              $('#admission-date-error').html(admission_date_error);
-              $('#admission-date').addClass('is-invalid');
-            } else {
-              $('#admission-date-error').html('');
-              $('#admission-date').removeClass('is-invalid');
-            }
-
-            if (chief_complaint_error !== '') {
-              $('#chief-complaint-error').html(chief_complaint_error);
-              $('#chief-complaint').addClass('is-invalid');
-            } else {
-              $('#chief-complaint-error').html('');
-              $('#chief-complaint').removeClass('is-invalid');
-              $('#chief-complaint').addClass('is-valid');
-            }
-
-          } else if (status === 'save-error') {
-            swal({
-              title: 'Failed',
-              text: message,
-              timer: 3000,
-              showConfirmButton: false,
-              type: 'error'
-            });
-          } else if (status === 'success') {
-            swal({
-              title: 'Success',
-              text: message,
-              timer: 3000,
-              showConfirmButton: false,
-              type: 'success'
-            });
-
-            setTimeout(function() {
-              window.location.href = `${baseUrl}member/requested-noa/pending`;
-            }, 3200);
-          }
-        },
+        let $data = new FormData($(this)[0]);
+        if(mbl<=0){
+        $.alert({
+          title: "<strong>Unable to request!</strong>",
+          content: "<div></span>Your MBL balance is currently empty.</div>",
+          type: "red",
+          buttons: {
+              ok: {
+                  text: "OK",
+                  btnClass: "btn-danger",
+                  // action: function(){
+                  //   window.history.back()
+                  // },
+              },
+          },
       });
+          // $('#submit').prop('disabled',true);      
+      }else{
+        $.ajax({
+          type: "post",
+          url: $(this).attr('action'),
+          data: $data,
+          dataType: "json",
+          processData: false,
+          contentType: false,
+          success: function(response) {
+            const {
+              token,
+              status,
+              message,
+              hospital_name_error,
+              chief_complaint_error,
+              admission_date_error
+            } = response;
+
+            if (status === 'error') {
+              // is-invalid class is a built in classname for errors in bootstrap
+              if (hospital_name_error !== '') {
+                $('#hospital-name-error').html(hospital_name_error);
+                $('#hospital-name').addClass('is-invalid');
+              } else {
+                $('#hospital-name-error').html('');
+                $('#hospital-name').removeClass('is-invalid');
+              }
+
+              if (admission_date_error !== '') {
+                $('#admission-date-error').html(admission_date_error);
+                $('#admission-date').addClass('is-invalid');
+              } else {
+                $('#admission-date-error').html('');
+                $('#admission-date').removeClass('is-invalid');
+              }
+
+              if (chief_complaint_error !== '') {
+                $('#chief-complaint-error').html(chief_complaint_error);
+                $('#chief-complaint').addClass('is-invalid');
+              } else {
+                $('#chief-complaint-error').html('');
+                $('#chief-complaint').removeClass('is-invalid');
+                $('#chief-complaint').addClass('is-valid');
+              }
+
+            } else if (status === 'save-error') {
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
+            } else if (status === 'success') {
+              swal({
+                title: 'Success',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'success'
+              });
+
+              setTimeout(function() {
+                window.location.href = `${baseUrl}member/requested-noa/pending`;
+              }, 3200);
+            }
+          },
+        });
       // End of AJAX Request
+    }
+    
     });
   });
+ 
 </script>

@@ -39,6 +39,7 @@
                     <div id="search-results" class="border-top-0"></div>
                   </div>
                 </div>
+                <input type="text" id="mbl" hidden>
               </div>
               <div class="form-group row">
                 <div class="col-sm-7 mb-2">
@@ -124,6 +125,22 @@
     $('#noaRequestForm').submit(function(event) {
       event.preventDefault();
       let $data = new FormData($(this)[0]);
+      if($('#mbl').val()<=0){
+        $.alert({
+          title: "<strong>Unable to request!</strong>",
+          content: "<div></span>Your MBL balance is currently empty.</div>",
+          type: "red",
+          buttons: {
+              ok: {
+                  text: "OK",
+                  btnClass: "btn-danger",
+                  // action: function(){
+                  //   window.history.back()
+                  // },
+              },
+          },
+      });
+      }else{
       $.ajax({
         type: "post",
         url: $(this).attr('action'),
@@ -191,7 +208,7 @@
         },
       });
       // End of AJAX Request
-
+      }
     });
   });
 
@@ -205,7 +222,7 @@
     } else {
       result_div.innerHTML = '';
     }
-  }
+  } 
 
   function load_member_data(token, search) {
     $.ajax({
@@ -237,6 +254,7 @@
           suffix,
           date_of_birth,
           age,
+          mbl,
         } = res;
         $('#search-results').addClass('d-none');
         $('#input-search-member').val('');
@@ -244,6 +262,7 @@
         $('#full-name').val(`${first_name} ${middle_name} ${last_name} ${suffix}`);
         $('#date-of-birth').val(date_of_birth);
         $('#age').val(age);
+        $('#mbl').val(mbl);
       }
     });
   }

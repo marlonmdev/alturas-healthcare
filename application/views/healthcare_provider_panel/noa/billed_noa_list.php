@@ -97,6 +97,7 @@
             </div>
         </div>
     </div>
+    <?php include 'view_pdf_bill_modal.php'; ?>
 <script>
     const baseUrl = "<?php echo base_url(); ?>";
     $(document).ready(function() {
@@ -176,5 +177,41 @@
                 $('#request-date').html(request_date);
             }
         });
+    }
+    const viewPDFBill = (pdf_bill,noa_no) => {
+      $('#viewPDFBillModal').modal('show');
+      $('#pdf-loa-no').html(noa_no);
+
+        let pdfFile = `${baseUrl}uploads/pdf_bills/${pdf_bill}`;
+        let fileExists = checkFileExists(pdfFile);
+        console.log(pdf_bill);
+        if(fileExists){
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', pdfFile, true);
+        xhr.responseType = 'blob';
+
+        xhr.onload = function(e) {
+            if (this.status == 200) {
+            let blob = this.response;
+            let reader = new FileReader();
+
+            reader.onload = function(event) {
+                let dataURL = event.target.result;
+                let iframe = document.querySelector('#pdf-viewer');
+                iframe.src = dataURL;
+            };
+            reader.readAsDataURL(blob);
+            }
+        };
+        xhr.send();
+        }
+    }
+
+    const checkFileExists = (fileUrl) => {
+        let xhr = new XMLHttpRequest();
+        xhr.open('HEAD', fileUrl, false);
+        xhr.send();
+
+        return xhr.status == "200" ? true: false;
     }
 </script>

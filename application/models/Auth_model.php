@@ -14,7 +14,11 @@ class Auth_model extends CI_Model {
 		$query = $this->db->get('user_accounts');
 		return $query->num_rows() === 0 ? true : false;
 	}
-
+	function set_read_tnc($username) {
+		$this->db->set('read_tnc', true)
+						 ->where('username', $username);
+		return $this->db->update('user_accounts');
+	}
 	function insert_default_account($post_data) {
 		$this->db->insert('user_accounts', $post_data);
 	}

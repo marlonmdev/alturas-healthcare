@@ -18,7 +18,7 @@ class Auth_controller extends CI_Controller {
 	}
 
 	public function index() {
-		$this->load->view('pages/index');
+		$this->load->view('pages/index'); 
 	}
 
 	public function page_not_found() {
@@ -61,8 +61,10 @@ class Auth_controller extends CI_Controller {
 						'doctor_id' => $result['doctor_id'],
 						'logged_in' => true,
 						'next_route' => 'redirect-to-dashboard',
-						'next_page' => $result['user_role'] . '/dashboard'
+						'next_page' => $result['user_role'] . '/dashboard',
+						'username' => $result['username']
 					);
+					$this->session->set_userdata('username', $result['username']);
 				}
 			}
 		}
@@ -101,6 +103,8 @@ class Auth_controller extends CI_Controller {
 		$this->session->unset_userdata($array_items);
 		redirect('/');
 	}
+
+	//for checking if the the user reads the terms and conditions of the health care system
 	public function read_member_tnc() {
 		$username = $this->session->userdata('username');
 		$csrf_hash = $this->security->get_csrf_hash();
@@ -162,4 +166,5 @@ class Auth_controller extends CI_Controller {
         header('Content-Type:application/json');
         echo json_encode($response);
     }
+
 }

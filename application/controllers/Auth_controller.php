@@ -101,4 +101,65 @@ class Auth_controller extends CI_Controller {
 		$this->session->unset_userdata($array_items);
 		redirect('/');
 	}
+	public function read_member_tnc() {
+		$username = $this->session->userdata('username');
+		$csrf_hash = $this->security->get_csrf_hash();
+	
+		$res = $this->auth_model->get_user_info($username);
+	
+		if ($res) { // if success
+			$user_role = $res['user_role'];
+			$read_tnc = $res['read_tnc'];
+	
+			if ($user_role == "member" && $read_tnc == 0) {
+				$response = array(
+					'success' => true,
+					'message' => 'Terms and Conditions not yet read',
+					'modal_display' => true,
+					'csrf_hash' => $csrf_hash
+				);
+			} else {
+				$response = array(
+					'success' => true,
+					'message' => 'Terms and Conditions already read',
+					'modal_display' => false,
+					'csrf_hash' => $csrf_hash
+				);
+			}
+		} else { // if failed
+			$response = array(
+				'success' => false,
+				'message' => 'Failed to read terms and conditions',
+				'modal_display' => false,
+				'csrf_hash' => $csrf_hash
+			);
+		}
+	
+		header('Content-Type:application/json');
+		echo json_encode($response);
+	}
+
+	public function set_member_tnc() {
+        $username = $this->session->userdata('username');
+        // $csrf_hash = $this->security->get_csrf_hash();
+
+        $res = $this->auth_model->set_read_tnc($username); // call the model function
+
+        if ($res) { // if success
+            $response = array(
+                'success' => TRUE,
+                'message' => 'Terms and Conditions updated',
+				// 'csrf_hash' => $csrf_hash
+            );
+        } else { // if failed
+            $response = array(
+                'success' => FALSE,
+                'message' => 'Failed to update terms and conditions',
+				// 'csrf_hash' => $csrf_hash
+            );
+        }
+
+        header('Content-Type:application/json');
+        echo json_encode($response);
+    }
 }

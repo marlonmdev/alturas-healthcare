@@ -1,62 +1,56 @@
-
-  <!-- Start of Page Wrapper -->
-  <div class="page-wrapper">
-    <!-- Bread crumb and right sidebar toggle -->
-    <div class="page-breadcrumb">
-      <div class="row">
-        <div class="col-12 d-flex no-block align-items-center">
-          <h4 class="page-title ls-2">Members</h4>
-          <div class="ms-auto text-end">
-            <nav aria-label="breadcrumb">
-              <ol class="breadcrumb">
-                <li class="breadcrumb-item">Company Doctor</li>
-                <li class="breadcrumb-item active" aria-current="page">
-                  Members
-                </li>
-              </ol>
-            </nav>
-          </div>
+<div class="page-wrapper">
+  <div class="page-breadcrumb">
+    <div class="row">
+      <div class="col-12 d-flex no-block align-items-center">
+        <h4 class="page-title ls-2">HMO MEMBER</h4>
+        <div class="ms-auto text-end">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">Company Doctor</li>
+              <li class="breadcrumb-item active" aria-current="page">Members</li>
+            </ol>
+          </nav>
         </div>
       </div>
     </div>
-    <!-- End Bread crumb and right sidebar toggle -->
-    <!-- Start of Container fluid  -->
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-lg-12">
+  </div>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
           
-          <div class="card shadow">
-            <div class="card-body">
-              <div class="table-responsive">
-                <table class="table table-hover table-responsive" id="membersTable">
-                    <thead>
-                        <tr>
-                            <th class="fw-bold">#</th>
-                            <th class="fw-bold">NAME OF PATIENT</th>
-                            <th class="fw-bold">TYPE OF EMPLOYEE</th>
-                            <th class="fw-bold">STATUS</th>
-                            <th class="fw-bold">BUSINESS UNIT</th>
-                            <th class="fw-bold">DEPARTMENT</th>
-                            <th class="fw-bold">STATUS</th>
-                            <th class="fw-bold">ACTION</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-              </div>
+        <div class="card shadow">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover table-responsive" id="membersTable">
+                <thead style="background-color:#00538C">
+                  <tr>
+                    <th class="fw-bold" style="color: white;">#</th>
+                    <th class="fw-bold" style="color: white;">NAME OF PATIENT</th>
+                    <th class="fw-bold" style="color: white;">TYPE OF EMPLOYEE</th>
+                    <th class="fw-bold" style="color: white;">STATUS</th>
+                    <th class="fw-bold" style="color: white;">BUSINESS UNIT</th>
+                    <th class="fw-bold" style="color: white;">DEPARTMENT</th>
+                    <th class="fw-bold" style="color: white;">STATUS</th>
+                    <th class="fw-bold" style="color: white;">ACTION</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
             </div>
           </div>
-
         </div>
-      <!-- End Row  -->  
+
       </div>
-    <!-- End Container fluid  -->
     </div>
-  <!-- End Page wrapper  -->
   </div>
-<!-- End Wrapper -->
 </div>
+
+
+
+
+
   <script>
     const baseUrl = `<?php echo base_url(); ?>`;
 

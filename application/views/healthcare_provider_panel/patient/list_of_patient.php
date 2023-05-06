@@ -2,7 +2,7 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">List of Patient</h4>
+        <h4 class="page-title ls-2">LIST OF PATIENT</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
 						<ol class="breadcrumb">
@@ -21,15 +21,15 @@
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-hover table-responsive" id="patientTable">
-                <thead>
+                <thead style="background-color:#00538C">
                   <tr>
-										<th class="fw-bold">Employee No.</th>
-										<th class="fw-bold">Employee Name</th>
-										<th class="fw-bold">Business Unit</th>
-										<th class="fw-bold">Name of Department</th>
-                    <th class="fw-bold">Hospital Name</th>
-                    <th class="fw-bold">Remaining MBL</th>
-										<th class="fw-bold">Action</th>
+										<th class="fw-bold" style="color: white">EMPLOYEE NO.</th>
+										<th class="fw-bold" style="color: white">NAME OF PATIENT</th>
+										<th class="fw-bold" style="color: white">BUSINESS UNIT</th>
+										<th class="fw-bold" style="color: white">NAME OF DEPARTMENT</th>
+                    <th class="fw-bold" style="color: white">NAME OF HOSPITAL</th>
+                    <th class="fw-bold" style="color: white">REMAINING MBL</th>
+										<th class="fw-bold" style="color: white">ACTION</th>
                   </tr>
                 </thead>
               	<tbody>

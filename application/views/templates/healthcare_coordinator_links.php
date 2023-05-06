@@ -53,21 +53,47 @@
     <span class="hide-menu ls-1">NOA</span>
   </a>
 
-  <ul aria-expanded="false" class="collapse first-level">
-    <li class="sidebar-item">
-      <a href="<?php echo base_url(); ?>healthcare-coordinator/noa/request-noa" class="sidebar-link">
-        <i class="mdi mdi-note-plus"></i>
-        <span class="hide-menu ls-1">NOA Requisition</span>
-      </a>
-    </li>
-    <li class="sidebar-item">
-      <a href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list" class="sidebar-link">
-        <i class="mdi mdi-note-outline"></i>
-        <span class="hide-menu ls-1">NOA Request List</span>
-      </a>
-    </li>
-  </ul>
-</li>   
+              <li class="sidebar-item <?php echo $this->uri->segment(2) == 'bill' ? 'selected' : ''; ?>">
+                <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
+                  <i class="mdi mdi-file-check"></i>
+                  <span class="hide-menu ls-1">Billing</span>
+                </a>
+                <ul aria-expanded="false" class="collapse first-level">
+                  <li class="sidebar-item">
+                    <a href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/billed" class="sidebar-link">
+                      <i class="mdi mdi-note-outline"></i>
+                      <span class="hide-menu ls-1">Billed LOA</span>
+                    </a>
+                  </li>
+                  <li class="sidebar-item">
+                    <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
+                      <i class="mdi mdi-file-document-box"></i>
+                      <span class="hide-menu ls-1">Billed NOA</span>
+                    </a>
+                    <ul aria-expanded="false" class="collapse second-level ps-4">
+                      <li class="sidebar-item">
+                        <a href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/billed/initial" class="sidebar-link">
+                          <i class="mdi mdi-file-multiple"></i>
+                          <span class="hide-menu ls-1">Initial Billing</span>
+                        </a>
+                      </li>
+                      <li class="sidebar-item">
+                        <a href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/billed" class="sidebar-link">
+                          <i class="mdi mdi-file-document"></i>
+                          <span class="hide-menu ls-1">Final Billing</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li class="sidebar-item">
+                    <a href="<?php echo base_url(); ?>healthcare-coordinator/loa_controller/view_ledger" class="sidebar-link">
+                      <i class="mdi mdi-book-open-page-variant"></i>
+                      <span class="hide-menu ls-1">Ledger</span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
 
 <li class="sidebar-item <?php echo $this->uri->segment(2) == 'bill' ? 'selected' : ''; ?>">
   <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">

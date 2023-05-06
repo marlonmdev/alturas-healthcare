@@ -946,7 +946,7 @@ private function _get_datatables_query_ledger($status) {
   $this->db->group_by('emp_no');
   $this->db->from($this->ledger1 . ' as tbl_1');
   $this->db->join($this->ledger2 . ' as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
-  $this->db->where('status', $status);
+  $this->db->where('status',$status);
 
   $i = 0;
   foreach ($this->column_search_ledger as $item) {

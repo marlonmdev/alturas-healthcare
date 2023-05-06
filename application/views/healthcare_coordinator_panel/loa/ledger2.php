@@ -48,16 +48,17 @@
                     <tr>
                       <td><?php echo $key === 0 ? $ledger['first_name'].' '.$ledger['middle_name'].' '.$ledger['last_name'] : ''; ?></td>
                       <td><?php echo $ledger['billing_no']; ?></td>
-                      <td></td>
+                      <td><?php echo $ledger['work_related']; ?></td>
                       <td><?php echo number_format($ledger['net_bill'], 2); ?></td>
                       <td><?php echo number_format($ledger['company_charge'],2); ?></td>
                       <td><?php echo number_format($ledger['personal_charge'],2); ?></td>
                       <td><?php echo number_format($ledger['company_charge'] + $ledger['personal_charge'], 2); ?></td>
-                      <td><?php echo ($ledger['status'] == 'Billed' || $ledger['status'] == 'Payable') ? 'Unpaid' : $ledger['status']; ?></td>
+                      <td><?php echo $ledger['status']; ?></td>
+                      <!-- <td><?php echo ($ledger['status'] == 'Billed' || $ledger['status'] == 'Payable') ? 'Unpaid' : $ledger['status']; ?></td> -->
                     </tr>
                   <?php }?>
                   <tr>
-                    <td colspan="5"></td>
+                    <td colspan="6"></td>
                     <td colspan="1" style="text-align: right"><b style="font-size:15px">RUNNING BALANCE:</b></td>
                     <td colspan="4"><b style="font-size:15px">₱ <?php echo number_format($ledger['remaining_balance'],2); ?></b></td>
                   </tr>

@@ -1,82 +1,73 @@
-  <!-- Start of Page Wrapper -->
-  <div class="page-wrapper">
-    <!-- Bread crumb and right sidebar toggle -->
-    <div class="page-breadcrumb">
-      <div class="row">
-        <div class="col-12 d-flex no-block align-items-center">
-          <h4 class="page-title ls-2">Personal Charges</h4>
-          <div class="ms-auto text-end">
-            <nav aria-label="breadcrumb">
-              <ol class="breadcrumb">
-                <li class="breadcrumb-item">Member</li>
-                <li class="breadcrumb-item active" aria-current="page">
-                  Paid Personal Charges
-                </li>
-              </ol>
-            </nav>
-          </div>
+<div class="page-wrapper">
+  <div class="page-breadcrumb">
+    <div class="row">
+      <div class="col-12 d-flex no-block align-items-center">
+        <h4 class="page-title ls-2">PERSONAL CHARGES</h4>
+        <div class="ms-auto text-end">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">Member</li>
+              <li class="breadcrumb-item active" aria-current="page">Paid</li>
+            </ol>
+          </nav>
         </div>
       </div>
     </div>
-    <!-- End Bread crumb and right sidebar toggle -->
-    <!-- Start of Container fluid  -->
-    <div class="container-fluid">
-      <div class="row">
+  </div>
 
-        <div class="col-lg-12">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
 
-          <ul class="nav nav-tabs mb-4" role="tablist">
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                href="<?php echo base_url(); ?>member/personal-charges"
-                role="tab"
-                ><span class="hidden-sm-up"></span>
-                <span class="hidden-xs-down fs-5 font-bold">Unpaid</span></a
-              >
-            </li>
-            <li class="nav-item">
-              <a
-                class="nav-link active"
-                href="<?php echo base_url(); ?>member/personal-charges/paid"
-                role="tab"
-                ><span class="hidden-sm-up"></span>
-                <span class="hidden-xs-down fs-5 font-bold">Paid</span></a
-              >
-            </li>
-          </ul>
+        <ul class="nav nav-tabs mb-4" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>member/personal-charges" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">UNPAID</span>
+            </a>
+          </li>
 
-          <div class="card shadow">
-            <div class="card-body">
-              <div class="table-responsive">
-                <table class="table table-striped table-hover" id="memberPersonalCharges">
-                  <thead>
-                    <tr>
-                      <th class="fw-bold">#</th>
-                      <th class="fw-bold">Billing No.</th>
-                      <th class="fw-bold">Charge Amount</th>
-                      <th class="fw-bold">Added On</th>
-                      <th class="fw-bold">Status</th>
-                      <th class="fw-bold">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  </tbody>
-                </table>
-              </div>
+          <li class="nav-item">
+            <a class="nav-link active" href="<?php echo base_url(); ?>member/personal-charges/paid" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">PAID</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="card shadow">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-striped table-hover" id="memberPersonalCharges">
+                <thead style="background-color:#00538C">
+                  <tr>
+                    <th class="fw-bold" style="color: white">#</th>
+                    <th class="fw-bold" style="color: white">BILLING #</th>
+                    <th class="fw-bold" style="color: white">CHARGE AMOUNT</th>
+                    <th class="fw-bold" style="color: white">ADDED ON</th>
+                    <th class="fw-bold" style="color: white">STATUS</th>
+                    <th class="fw-bold" style="color: white">ACTION</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
             </div>
           </div>
-          <?php include 'view_personal_charges.php'; ?>
+        </div>
 
+      <?php include 'view_personal_charges.php'; ?>
       </div>
-      <!-- End Row  -->
-      </div>
-    <!-- End Container fluid  -->
     </div>
-  <!-- End Page wrapper  -->
   </div>
-<!-- End Wrapper -->
 </div>
+
+
+
+
+
+
+
 <script>
   const baseUrl = "<?= base_url() ?>";
   $(document).ready(function() {

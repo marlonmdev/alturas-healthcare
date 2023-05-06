@@ -33,12 +33,12 @@
             </a>
           </li>
 
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/loa_controller/view_ledger" role="tab">
               <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">LEDGER</span>
             </a>
-          </li>
+          </li> -->
         </ul>
 
         <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
@@ -66,11 +66,11 @@
                     <th class="fw-bold" style="color: white;">HEALTHCARE PROVIDER</th>
                     <th class="fw-bold" style="color: white;">STATUS</th>
                     <th class="fw-bold" style="color: white;">ACTION</th>
-                    <th class="fw-bold" style="color: white;">Billing No.</th>
+                    <th class="fw-bold" style="color: white;">BILLING #</th>
                     <th class="fw-bold" style="color: white;"></th>
-                    <th class="fw-bold" style="color: white;">Healthcare Provider</th>
-                    <th class="fw-bold" style="color: white;">Status</th>
-                    <th class="fw-bold" style="color: white;">Action</th>
+                    <th class="fw-bold" style="color: white;">HEALTHCARE PROVIDER</th>
+                    <th class="fw-bold" style="color: white;">STATUS</th>
+                    <th class="fw-bold" style="color: white;">ACTION</th>
                   </tr>
                 </thead>
                 <tbody>

@@ -2770,6 +2770,7 @@ class Loa_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 
+
 	public function fetch_ledger() {
     $token = $this->security->get_csrf_hash();
     $emp_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');

@@ -2742,7 +2742,7 @@ class Loa_controller extends CI_Controller {
 	//LEDGER============================================================
 	function fetch_datatable() {
 		$this->security->get_csrf_hash();
-		$status = 'Payable';
+		$status = 'Paid';
 		$list = $this->loa_model->get_datatables_ledger($status);
 		$data = array();
 		foreach ($list as $member){

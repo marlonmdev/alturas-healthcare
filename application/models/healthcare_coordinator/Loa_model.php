@@ -998,6 +998,7 @@ public function get_member_info($emp_id) {
   $this->db->from('billing as tbl_1');
   $this->db->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
   $this->db->join('max_benefit_limits as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id');
+  $this->db->join('loa_requests as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id');
   $this->db->where('tbl_1.emp_id', $emp_id);
   $query = $this->db->get();
   return $query->result_array();
@@ -1008,6 +1009,10 @@ public function get_member_info($emp_id) {
 
   $this->db->select('*');
   $this->db->from('max_benefit_limits');
+  $this->db->where('emp_id', $emp_id);
+
+  $this->db->select('*');
+  $this->db->from('loa_requests');
   $this->db->where('emp_id', $emp_id);
 }
 

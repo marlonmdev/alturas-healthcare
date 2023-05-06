@@ -32,7 +32,9 @@
                 <thead class="fs-5"style="background-color:#00538C">
                   <tr>
                     <th class="fw-bold" style="color: white;">NAME OF PATIENT</th>
-                    <th class="fw-bold" style="color: white;">ACCOUNT #</th>
+                    <th class="fw-bold" style="color: white;">BILLING #</th>
+                    <th class="fw-bold" style="color: white;">WORK RELATED</th>
+                    <th class="fw-bold" style="color: white;">NET BILL</th>
                     <th class="fw-bold" style="color: white;">COMPANY CHARGE</th>
                     <th class="fw-bold" style="color: white;">PERSONAL CHARGE</th>
                     <th class="fw-bold" style="color: white;">TOTAL</th>
@@ -46,14 +48,16 @@
                     <tr>
                       <td><?php echo $key === 0 ? $ledger['first_name'].' '.$ledger['middle_name'].' '.$ledger['last_name'] : ''; ?></td>
                       <td><?php echo $ledger['billing_no']; ?></td>
-                      <td><?php echo $ledger['company_charge']; ?></td>
-                      <td><?php echo $ledger['personal_charge']; ?></td>
-                      <td><?php echo $ledger['used_mbl']; ?></td>
                       <td></td>
+                      <td><?php echo number_format($ledger['net_bill'], 2); ?></td>
+                      <td><?php echo number_format($ledger['company_charge'],2); ?></td>
+                      <td><?php echo number_format($ledger['personal_charge'],2); ?></td>
+                      <td><?php echo number_format($ledger['company_charge'] + $ledger['personal_charge'], 2); ?></td>
+                      <td><?php echo ($ledger['status'] == 'Billed' || $ledger['status'] == 'Payable') ? 'Unpaid' : $ledger['status']; ?></td>
                     </tr>
                   <?php }?>
                   <tr>
-                    <td colspan="4"></td>
+                    <td colspan="5"></td>
                     <td colspan="1" style="text-align: right"><b style="font-size:15px">RUNNING BALANCE:</b></td>
                     <td colspan="4"><b style="font-size:15px">₱ <?php echo number_format($ledger['remaining_balance'],2); ?></b></td>
                   </tr>

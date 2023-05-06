@@ -85,6 +85,13 @@
                       </li>
                     </ul>
                   </li>
+
+                  <li class="sidebar-item">
+                    <a href="<?php echo base_url(); ?>healthcare-coordinator/loa_controller/view_ledger" class="sidebar-link">
+                      <i class="mdi mdi-book-open-page-variant"></i>
+                      <span class="hide-menu ls-1">Ledger</span>
+                    </a>
+                  </li>
                 </ul>
               </li>
 

@@ -5,14 +5,12 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">NOA Requests</h4>
+        <h4 class="page-title ls-2">APPROVED REQUEST</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Company Doctor</li>
-              <li class="breadcrumb-item active" aria-current="page">
-                Approved NOA
-              </li>
+              <li class="breadcrumb-item active" aria-current="page">Approved</li>
             </ol>
           </nav>
         </div>
@@ -31,7 +29,7 @@
               href="<?php echo base_url(); ?>company-doctor/noa/requests-list"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Pending</span></a
+              <span class="hidden-xs-down fs-5 font-bold">PENDING</span></a
             >
           </li>
           <li class="nav-item">
@@ -40,7 +38,7 @@
               href="<?php echo base_url(); ?>company-doctor/noa/requests-list/approved"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Approved</span></a
+              <span class="hidden-xs-down fs-5 font-bold">APPROVED</span></a
             >
           </li>
           <li class="nav-item">
@@ -49,7 +47,7 @@
               href="<?php echo base_url(); ?>company-doctor/noa/requests-list/disapproved"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
+              <span class="hidden-xs-down fs-5 font-bold">DISAPPROVED</span></a
             >
           </li>
             <!-- <li class="nav-item">
@@ -83,15 +81,15 @@
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-hover" id="approvedNoaTable">
-                <thead>
+                <thead style="background-color:#00538C">
                   <tr>
-                    <th class="fw-bold">NOA NO.</th>
-                    <th class="fw-bold">NAME OF PATIENT</th>
-                    <th class="fw-bold">DATE OF ADMISSION</th>
-                    <th class="fw-bold">NAME OF HOSPITAL</th>
-                    <th class="fw-bold">DATE OF EXPIRATION</th>
-                    <th class="fw-bold">STATUS</th>
-                    <th class="fw-bold">ACTION</th>
+                    <th class="fw-bold" style="color: white">NOA NO.</th>
+                    <th class="fw-bold" style="color: white">NAME OF PATIENT</th>
+                    <th class="fw-bold" style="color: white">DATE OF ADMISSION</th>
+                    <th class="fw-bold" style="color: white">NAME OF HOSPITAL</th>
+                    <th class="fw-bold" style="color: white">DATE OF EXPIRATION</th>
+                    <th class="fw-bold" style="color: white">STATUS</th>
+                    <th class="fw-bold" style="color: white">ACTION</th>
                   </tr>
                 </thead>
                 <tbody>

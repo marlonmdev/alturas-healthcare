@@ -23,14 +23,14 @@
                             <div class="col-lg-6 ps-2">
                                 <div class="input-group">
                                     <div class="input-group-append">
-                                        <label class="text-danger ls-1 me-2 pt-2">From : </label>
+                                        <label class="text-danger ls-1 me-2 pt-2">Posted On : </label>
                                     </div>
                                         <input class="form-control text-dark fw-bold ls-1 fs-6" placeholder="" name="start_date" id="start_date" readonly>
 
-                                    <div class="input-group-append ms-2">
+                                    <!-- <div class="input-group-append ms-2">
                                         <label class="text-danger ls-1 me-2 pt-2">To : </label>
                                     </div>
-                                    <input class="form-control text-dark fw-bold ls-1 fs-6" placeholder="" name="end_date" id="end_date" readonly>
+                                    <input class="form-control text-dark fw-bold ls-1 fs-6" placeholder="" name="end_date" id="end_date" readonly> -->
                                 </div>
 
                             </div>
@@ -85,6 +85,13 @@
                         </div>
                         <div class="col-lg-8">
                             <input type="number" class="form-control text-dark fs-5" name="amount-paid" id="amount-paid" readonly>
+                        </div>
+
+                        <div class="row col-lg-4 pb-3 pt-2">
+                            <label class=" text-dark fw-bold ms-2 fs-5">Billing Date: </label>
+                        </div>
+                        <div class="col-lg-8">
+                            <input type="text" class="form-control text-dark fs-5" name="c-billed-date" id="c-billed-date" readonly>
                         </div>
 
                         <div class="row col-lg-4 pb-3 pt-2">

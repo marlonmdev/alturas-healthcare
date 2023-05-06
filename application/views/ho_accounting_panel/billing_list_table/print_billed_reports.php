@@ -4,7 +4,7 @@
         <div class="page-breadcrumb">
             <div class="row">
             <div class="col-12 d-flex no-block align-items-center">
-                <h4 class="page-title ls-2"></h4>
+                <h4 class="page-title ls-2">Print Bills</h4>
                 <div class="ms-auto text-end">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
@@ -35,10 +35,19 @@
                     <li class="nav-item">
                         <a
                             class="nav-link"
-                            href="<?php echo base_url(); ?>head-office-accounting/billing-list/closedm"
+                            href="<?php echo base_url(); ?>head-office-accounting/billing-list/for-payment"
                             role="tab"
                             ><span class="hidden-sm-up"></span>
                             <span class="hidden-xs-down fs-5 font-bold">For Payment</span></a
+                        >
+                    </li>
+                    <li class="nav-item">
+                       <a
+                            class="nav-link"
+                            href="<?php echo base_url(); ?>head-office-accounting/billing-list/paid-bill"
+                            role="tab"
+                            ><span class="hidden-sm-up"></span>
+                            <span class="hidden-xs-down fs-5 font-bold">Paid Bill</span></a
                         >
                     </li>
                 </ul>
@@ -70,7 +79,7 @@
                                 Filter Hospital : 
                                 </span>
                             </div>
-                            <select class="form-select fw-bold" name="billed-hospital-filter" id="billed-hospital-filter">
+                            <select class="form-select fw-bold" name="billed-hospital-filter" id="billed-hospital-filter" onchange="displayValue()">
                                 <option value="">Select Hospital...</option>
                                 <?php foreach($hc_provider as $hospital) : ?>
                                 <option value="<?php echo $hospital['hp_id']; ?>"><?php echo $hospital['hp_name']; ?></option>
@@ -85,12 +94,19 @@
                                 Business Unit : 
                                 </span>
                             </div>
-                            <select class="form-select fw-bold" name="billed-bu-filter" id="billed-bu-filter">
+                            <select class="form-select fw-bold" name="billed-bu-filter" id="billed-bu-filter" onchange="displayValue()">
                                 <option value="">Select Business Units...</option>
-                                <?php foreach($business_unit as $bu) : ?>
-                                <option value="<?php echo $bu['business_unit']; ?>"><?php echo $bu['business_unit']; ?></option>
+                                <?php
+                                    // Sort the business units alphabetically
+                                    $sorted_bu = array_column($business_unit, 'business_unit');
+                                    asort($sorted_bu);
+                                    
+                                    foreach($sorted_bu as $bu) :
+                                ?>
+                                <option value="<?php echo $bu; ?>"><?php echo $bu; ?></option>
                                 <?php endforeach; ?>
                             </select>
+
                             <!-- <div class="col-lg-6 pt-1" id="bu-units-wrapper"> -->
                               <!-- business units will be appended here... -->
                             <!-- </div> -->
@@ -104,63 +120,38 @@
                                         <i class="mdi mdi-calendar-range"></i>
                                     </span>
                                 </div>
-                                <input type="date" class="form-control" name="start_date" id="start-date" oninput="validateDateRange()" placeholder="Start Date">
+                                <input type="date" class="form-control" name="start_date" id="start-date" oninput="validateDateRange()" placeholder="Start Date" onchange="displayValue()">
 
                                 <div class="input-group-append">
                                     <span class="input-group-text text-dark ls-1 ms-2">
                                         <i class="mdi mdi-calendar-range"></i>
                                     </span>
                                 </div>
-                                <input type="date" class="form-control" name="end-date" id="end-date" oninput="validateDateRange()" placeholder="End Date">
+                                <input type="date" class="form-control" name="end-date" id="end-date" oninput="validateDateRange()" placeholder="End Date" onchange="displayValue()">
                             </div>
                         </div>
                     </div>
-                    <div class="pt-1 offset-10">
-                        <button class="btn btn-danger ls-1" onclick="printDiv('#printableDiv')"><i class="mdi mdi-printer"></i> Print </button>
+                    <div class="row">
+                        <div class="col pb-2 pt-4 offset-9">
+                            <button class="btn btn-info w-100" onclick="submitForPayment()" title="click to submit data for payment"><i class="mdi mdi-send"></i> For Payment </button>
+                        </div>
+                        <div class="col pb-2 pt-4">
+                            <button class="btn btn-danger ls-1" onclick="printDiv('#printableDiv')" title="click to print data"><i class="mdi mdi-printer"></i> Print </button>
+                        </div>
                     </div>
                 </div>
                     <div class="row" id="printableDiv" style="background:#ffff;padding:20px 40px;">
                         <div class="card shadow"  id="billing-table" style="display:noe">
                             <div class="card-body">
-                             <!-- <?php if($month == '01'){
-                                        $word_month = 'January';
-                                    }else if($month == '02'){   
-                                        $word_month = 'February';
-                                    }else if($month == '03'){
-                                        $word_month = 'March';
-                                    }else if($month == '04'){
-                                        $word_month = 'April';
-                                    }else if($month == '05'){
-                                        $word_month = 'May';
-                                    }else if($month == '06'){
-                                        $word_month = 'June';
-                                    }else if($month == '07'){
-                                        $word_month = 'July';
-                                    }else if($month == '08'){
-                                        $word_month = 'August';
-                                    }else if($month == '09'){
-                                        $word_month = 'September';
-                                    }else if($month == '10'){
-                                        $word_month = 'October';
-                                    }else if($month == '11'){
-                                        $word_month = 'November';
-                                    }else if($month == '12'){
-                                        $word_month = 'December';
-                                    }?>
-                             <div class="text-center">
+                                <div class="text-center">
                                     <h4>ALTURAS HEALTHCARE SYSTEM</h4>
                                     <h4>Billing Summary Details</h4>
-                                    <h5>For the Month of <?php echo $word_month; ?>, <?php echo $year; ?></h5>
-                                    <?php  $prev_payment_no = null; ?>
-                                    <?php foreach($payment_no as $pay) : 
-                                        if ($pay['payment_no'] != $prev_payment_no) { // check if bill number is different from previous
-                                            echo '<h5>' . $pay['payment_no'] . '</h5>'; // display bill number
-                                            
-                                            $prev_payment_no = $pay['payment_no']; // set current bill number as previous for next iteration
-                                        }?>
-                                        <input type="hidden" id="payment_no" value="<?php echo $pay['payment_no']; ?>">
-                                    <?php endforeach; ?>
-                                     -->
+                                    <h5><span id="b-bu-units"></span></h5>
+                                    <h5><span id="b-payment-no"></span></h5>
+                                </div>
+                                <div class="pt-3 pb-2">
+                                    <span class="fw-bold fs-5 ps-2" id="b-hospital"></span><br>
+                                    <span class="fw-bold fs-5 ps-2 pt-1" id="b-date"></span>
                                 </div>
                                 <div class="pt-2">
                                     <table class="table table-sm" id="billedTable">
@@ -212,6 +203,21 @@
                         </div> 
             <div  id="charging-container" style="display:none">
                 <div class="row">
+                    <div class="col-lg-3 ps-5 pb-3 pt-1 pb-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text text-dark fw-bold">
+                                Filter Hospital : 
+                                </span>
+                            </div>
+                            <select class="form-select fw-bold" name="charging-hospital-filter" id="charging-hospital-filter" onchange="viewValues()">
+                                <option value="">Select Hospital...</option>
+                                <?php foreach($hc_provider as $hospital) : ?>
+                                <option value="<?php echo $hospital['hp_id']; ?>"><?php echo $hospital['hp_name']; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
                     <div class="col-lg-4 ps-5">
                         <div class="input-group">
                             <div class="input-group-prepend ">
@@ -219,12 +225,19 @@
                                 Business Unit : 
                                 </span>
                             </div>
-                            <select class="form-select fw-bold" name="charging-bu-filter" id="charging-bu-filter">
+                            <select class="form-select fw-bold" name="charging-bu-filter" id="charging-bu-filter" onchange="viewValues()">
                                 <option value="">Select Business Units...</option>
-                                <?php foreach($business_unit as $bu) : ?>
-                                <option value="<?php echo $bu['business_unit']; ?>"><?php echo $bu['business_unit']; ?></option>
+                                <?php
+                                    // Sort the business units alphabetically
+                                    $sorted_bu = array_column($business_unit, 'business_unit');
+                                    asort($sorted_bu);
+                                    
+                                    foreach($sorted_bu as $bu) :
+                                ?>
+                                <option value="<?php echo $bu; ?>"><?php echo $bu; ?></option>
                                 <?php endforeach; ?>
                             </select>
+
                             <!-- <div class="col-lg-6 pt-1" id="business-units-wrapper"> -->
                               <!-- business units will be appended here... -->
                             <!-- </div> -->
@@ -238,37 +251,48 @@
                                         <i class="mdi mdi-calendar-range"></i>
                                     </span>
                                 </div>
-                                <input type="date" class="form-control" name="charging-start-date" id="charging-start-date" oninput="" placeholder="Start Date" oninput="validateDate()">
+                                <input type="date" class="form-control" name="charging-start-date" id="charging-start-date" oninput="" placeholder="Start Date" oninput="validateDate()" onchange="viewValues()">
 
                                 <div class="input-group-append">
                                     <span class="input-group-text text-dark ls-1 ms-2">
                                         <i class="mdi mdi-calendar-range"></i>
                                     </span>
                                 </div>
-                                <input type="date" class="form-control" name="charging-end-date" id="charging-end-date" oninput="" placeholder="End Date" oninput="validateDate()">
+                                <input type="date" class="form-control" name="charging-end-date" id="charging-end-date" oninput="" placeholder="End Date" oninput="validateDate()" onchange="viewValues()">
                             </div>
                         </div>
                         
                     </div>
-                    <div class="pb-2 pt-4 offset-10">
-                        <button class="btn btn-danger ls-1" onclick="printDivs('#printableDivs')"><i class="mdi mdi-printer"></i> Print </button>
+                    <div class="row offset-10">
+                        <div class="col pb-2 pt-4">
+                            <button class="btn btn-danger" onclick="printDivs('#printableDivs')"><i class="mdi mdi-printer"></i> Print </button>
+                        </div>
                     </div>
                 </div>
                 <div class="row" id="printableDivs" style="background:#ffff;padding:20px 40px;">
                 <div class="card shadow pt-2"  id="charging-table" style="display:nne">
+                    <div class="text-center pt-3 pb-3">
+                        <h4>ALTURAS HEALTHCARE SYSTEM</h4>
+                        <h4>Business Unit Charging Details</h4>
+                        <h5><span id="c-bu-units"></span></h5>
+                        <h6><span id="c-hp"></span></h6>
+                    </div>
+                    <div class="ps-4 pt-3">
+                       <span class="fw-bold fs-5" id="c-date"></span>
+                    </div>
                     <div class="card-body">
                         <table class="table table-sm" id="billedChargingTable">
                             <thead>
                                 <tr>
-                                    <th class="fw-bold">LOA No.</th>
-                                    <th class="fw-bold">Name</th>
-                                    <th class="fw-bold">Business Unit</th>
-                                    <th class="fw-bold">Percentage</th>
-                                    <th class="fw-bold">Total Net Bill</th>
-                                    <th class="fw-bold">Company Charge</th>
-                                    <th class="fw-bold">Personal Charge</th>
-                                    <th class="fw-bold">Previous MBL</th>
-                                    <th class="fw-bold">Remaining MBL</th>
+                                    <th class="fw-bold text-center">LOA No.</th>
+                                    <th class="fw-bold text-center">Name</th>
+                                    <th class="fw-bold text-center">Business Unit</th>
+                                    <th class="fw-bold text-center">Percentage</th>
+                                    <th class="fw-bold text-center">Total Net Bill</th>
+                                    <th class="fw-bold text-center">Company Charge</th>
+                                    <th class="fw-bold text-center">Personal Charge</th>
+                                    <th class="fw-bold text-center">Previous MBL</th>
+                                    <th class="fw-bold text-center">Remaining MBL</th>
                                 </tr>
                             </thead>
                             <tbody class="text-center" id="billed-charging-tbody">
@@ -311,17 +335,14 @@
   
 <script>
   const baseUrl = "<?php echo base_url(); ?>";
-    const printDiv = (layer) => {
-        if (!layer.isPrinted) { // check if the layer has not been printed yet
-            $(layer).printThis({
-                importCSS: true,
-                copyTagClasses: true,
-                copyTagStyles: true,
-                removeInline: false,
-            });
-            layer.isPrinted = true; // set the isPrinted flag to true
-        }
-    };
+  const printDiv = (layer) => {
+    $(layer).printThis({
+      importCSS: true,
+      copyTagClasses: true,
+      copyTagStyles: true,
+      removeInline: false,
+    });
+  }
 
     const printDivs = (layer) => {
     $(layer).printThis({
@@ -401,6 +422,7 @@
             data.endDate = $('#charging-end-date').val();
             data.startDate = $('#charging-start-date').val();
             data.business_unit = $('#charging-bu-filter').val();
+            data.hp_id = $('#charging-hospital-filter').val();
           
         }
       },
@@ -516,8 +538,160 @@
     $('#charging-bu-filter').change(function(){
         chargingTable.draw();
     });
+    $('#charging-hospital-filter').change(function(){
+        chargingTable.draw();
+    });
 
  }) ;
+
+ const displayValue = () => {
+    const hospitalSelect = document.querySelector('#billed-hospital-filter');
+    const hospitalOption = hospitalSelect.options[hospitalSelect.selectedIndex];
+    let hospital = hospitalOption.textContent;
+
+    // Capitalize the hospital value
+    hospital = hospital.toUpperCase();
+
+    const startDate = new Date(document.querySelector('#start-date').value);
+    const endDate = new Date(document.querySelector('#end-date').value);
+
+    const options = { month: 'long', day: '2-digit', year: 'numeric' };
+    const formattedStartDate = startDate.toLocaleDateString('en-US', options);
+    const formattedEndDate = endDate.toLocaleDateString('en-US', options);
+
+    const bHospital = document.querySelector('#b-hospital');
+    const bDate = document.querySelector('#b-date');
+
+    if(hospitalSelect.value != ''){
+        bHospital.textContent = 'Hospital : '+hospital;
+    }else{
+        bHospital.textContent = '';
+    }
+   
+    if(document.querySelector('#start-date').value || document.querySelector('#end-date').value != ''){
+        bDate.textContent = 'Date : '+formattedStartDate + ' to ' + formattedEndDate;
+    }else{
+        bDate.textContent = '';
+    }
+
+    const b_units = document.querySelector('#b-bu-units');
+    const bu_filter = document.querySelector('#billed-bu-filter').value;
+    if(bu_filter != ''){
+        b_units.textContent = 'BU :  '+bu_filter;
+    }else{
+        b_units.textContent = '';
+    }
+   
+    
+}
+
+const viewValues = () => {
+    const hospitalSelect = document.querySelector('#charging-hospital-filter');
+    const hospitalOption = hospitalSelect.options[hospitalSelect.selectedIndex];
+    let hospital = hospitalOption.textContent;
+
+    // Capitalize the hospital value
+    hospital = hospital.toUpperCase();
+
+    const startDate = new Date(document.querySelector('#charging-start-date').value);
+    const endDate = new Date(document.querySelector('#charging-end-date').value);
+
+    const options = { month: 'long', day: '2-digit', year: 'numeric' };
+    const formattedStartDate = startDate.toLocaleDateString('en-US', options);
+    const formattedEndDate = endDate.toLocaleDateString('en-US', options);
+
+    const bDate = document.querySelector('#c-date');
+    const bHospital = document.querySelector('#c-hp');
+
+    if(hospitalSelect.value != ''){
+        bHospital.textContent = hospital;
+    }else{
+        bHospital.textContent = '';
+    }
+
+   
+    if(document.querySelector('#charging-start-date').value || document.querySelector('#charging-end-date').value != ''){
+        bDate.textContent = 'Date : '+formattedStartDate + ' to ' + formattedEndDate;
+    }else{
+        bDate.textContent = '';
+    }
+
+    const b_units = document.querySelector('#c-bu-units');
+    const bu_filter = document.querySelector('#charging-bu-filter').value;
+    if(bu_filter != ''){
+        b_units.textContent = 'BU :  '+bu_filter;
+    }else{
+        b_units.textContent = '';
+    }   
+}
+
+
+ const submitForPayment = () => {
+    const hp_id = document.querySelector('#billed-hospital-filter').value;
+    const start_date = document.querySelector('#start-date').value;
+    const end_date = document.querySelector('#end-date').value;
+
+    $.confirm({
+                    title: '<strong>Confirmation!</strong>',
+                    content: 'Are you sure? Please review before you proceed.',
+                    type: 'blue',
+                    buttons: {
+                        confirm: {
+                            text: 'Yes',
+                            btnClass: 'btn-blue',
+                            action: function(){
+
+                                $.ajax({
+                                    url: `${baseUrl}head-office-accounting/bill/submit-for-payment-bill`,
+                                    method: "POST",
+                                    data: {
+                                        'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
+                                        'hp_id' : hp_id,
+                                        'start_date' : start_date,
+                                        'end_date' : end_date,
+                                    },
+                                    dataType: "json",
+                                    success: function(response){
+                                        const { 
+                                            token,payment_no,status,message
+                                        } = response;
+
+                                        if(status == 'success'){
+                                            swal({
+                                                title: 'Success',
+                                                text: message,
+                                                timer: 3000,
+                                                showConfirmButton: false,
+                                                type: 'success'
+                                            });
+                                            if(payment_no != ''){
+                                                const paymentno = document.querySelector('#b-payment-no');
+                                                paymentno.textContent = payment_no;
+                                                printDiv('#printableDiv');
+                                            }
+                                        }
+                                        if(status == 'error'){
+                                            swal({
+                                                title: 'Error',
+                                                text: message,
+                                                timer: 3000,
+                                                showConfirmButton: true,
+                                                type: 'error'
+                                            });
+                                        }
+                                    }
+                                }); 
+                            },
+                        },
+                        cancel: {
+                            btnClass: 'btn-dark',
+                            action: function() {
+                                // close dialog
+                            }
+                        },
+                    }
+                });
+ }
 
  window.onload = function() {
     getBusinessUnits();

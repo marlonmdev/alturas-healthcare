@@ -250,7 +250,7 @@ $route['head-office-accounting/bill/monthly-bill/fetch'] = 'ho_accounting/main_c
 $route['head-office-accounting/bill/matched/total-bill/fetch'] = 'ho_accounting/main_controller/get_total_hp_bill';
 $route['head-office-accounting/bill/paid-list/fetch'] = 'ho_accounting/main_controller/view_paid_loa_noa';
 $route['head-office-accounting/bill/paid-loa/fetch-payable/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/fetch_consolidated_paid';
-$route['head-office-accounting/bill/monthly-paid/fetch'] = 'ho_accounting/main_controller/fetch_monthly_paid';
+$route['head-office-accounting/bill/monthly-paid/fetch'] = 'ho_accounting/main_controller/fetch_monthly_paid_bill';
 $route['head-office-accounting/bill/paid/total-bill/fetch'] = 'ho_accounting/main_controller/get_total_hp_paid_bill';
 $route['head-office-accounting/bill/payment-details/fetch'] = 'ho_accounting/main_controller/get_payment_details';
 $route['head-office-accounting/bill/billed-noa-loa/print/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_billed_loa_noa';
@@ -258,6 +258,12 @@ $route['head-office-accounting/bill/billed/fetch'] = 'ho_accounting/main_control
 $route['head-office-accounting/bill/charging/fetch'] = 'ho_accounting/main_controller/fetch_charging_billed';
 $route['head-office-accounting/get-business-units'] = 'ho_accounting/main_controller/get_business_units';
 $route['head-office-accounting/fetch-business-units'] = 'ho_accounting/main_controller/get_business_u';
+$route['head-office-accounting/bill/submit-for-payment-bill'] = 'ho_accounting/main_controller/submit_for_payment_bill';
+$route['head-office-accounting/bill/for-payment/fetch'] = 'ho_accounting/main_controller/fetch_for_payment_bill';
+$route['head-office-accounting/bill/monthly-payment/fetch'] = 'ho_accounting/main_controller/fetch_payment_bill';
+$route['head-office-accounting/bill/for-payment-details/fetch'] = 'ho_accounting/main_controller/fetch_for_pay_details';
+$route['head-office-accounting/bill/paid-bill/fetch'] = 'ho_accounting/main_controller/fetch_paid_bills';
+
 //Pages
 $route['head-office-accounting/billing-list'] = 'ho_accounting/TableList';
 $route['head-office-accounting/billing-list/billed'] = 'ho_accounting/TableList/billed_record';
@@ -273,6 +279,10 @@ $route['head-office-accounting/billing-list/unbilled/loa'] = 'ho_accounting/Page
 $route['head-office-accounting/billing-list/unbilled/noa'] = 'ho_accounting/Pages_controller/unbilled_noa_form';
 $route['head-office-accounting/bill/billing-list/billed-loa-noa'] = 'ho_accounting/Pages_controller/view_billed_loa_noa';
 $route['head-office-accounting/bill/billing-list/paid-loa-noa'] = 'ho_accounting/Pages_controller/view_paid_loa_noa';
+$route['head-office-accounting/billing-list/for-payment'] = 'ho_accounting/Pages_controller/view_for_payments';
+$route['head-office-accounting/bill/fetch_payments/(:any)'] = 'ho_accounting/Pages_controller/view_payments';
+$route['head-office-accounting/billing-list/paid-bill'] = 'ho_accounting/Pages_controller/view_paid_bill';
+$route['head-office-accounting/bill/fetch_paid/(:any)'] = 'ho_accounting/Pages_controller/view_monthly_paid_bill';
 // LOA datatables
 $route['head-office-accounting/loa-request-list/loa-approved/fetch'] = 'ho_accounting/Loa_ho_controller/get_approved_loa';
 $route['head-office-accounting/loa-request-list/loa-completed/fetch'] = 'ho_accounting/Loa_ho_controller/get_completed_loa';
@@ -356,6 +366,7 @@ $route['healthcare-coordinator/noa/requests-list/completed'] = 'healthcare_coord
 $route['healthcare-coordinator/noa/request-noa'] = 'healthcare_coordinator/pages_controller/request_noa_form';
 $route['healthcare-coordinator/bill/noa-requests/billed'] = 'healthcare_coordinator/pages_controller/view_billed_no';
 $route['healthcare-coordinator/bill/noa-requests/for-charging'] = 'healthcare_coordinator/pages_controller/view_for_payment_noa';
+$route['healthcare-coordinator/bill/noa-requests/billed/initial'] = 'healthcare_coordinator/pages_controller/view_initial_billing';
 
 // HealthCare Coordinator User Account Routes
 $route['healthcare-coordinator/account-settings'] = 'healthcare_coordinator/account_controller/account_settings';

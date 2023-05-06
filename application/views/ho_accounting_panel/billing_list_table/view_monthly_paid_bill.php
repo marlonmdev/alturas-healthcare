@@ -4,46 +4,14 @@
   <div class="page-breadcrumb">
       <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <?php if($month == '01'){
-				$word_month = 'January';
-			}else if($month == '02'){
-				$word_month = 'February';
-			}else if($month == '03'){
-				$word_month = 'March';
-			}else if($month == '04'){
-				$word_month = 'April';
-			}else if($month == '05'){
-				$word_month = 'May';
-			}else if($month == '06'){
-				$word_month = 'June';
-			}else if($month == '07'){
-				$word_month = 'July';
-			}else if($month == '08'){
-				$word_month = 'August';
-			}else if($month == '09'){
-				$word_month = 'September';
-			}else if($month == '10'){
-				$word_month = 'October';
-			}else if($month == '11'){
-				$word_month = 'November';
-			}else if($month == '12'){
-				$word_month = 'December';
-			}
-        ?>
-        <h4 class="page-title ls-2">Paid Bill for the Month of <?php echo $word_month . ', ' . $year; ?></h4>
-        <input type="hidden" id="m-month" value="<?php echo $month; ?>">
-        <input type="hidden" id="m-word-month" value="<?php echo $word_month; ?>">
-        <input type="hidden" id="m-year" value="<?php echo $year; ?>">
-        <input type="hidden" id="m-hp-id" value="<?php echo  $hc_provider['hp_id']; ?>">
-        <input type="hidden" id="m-hospital-name" value="<?php echo $hc_provider['hp_name']; ?>">
+      <h4 class="page-title ls-2">Payment No : <?php echo $payment_no; ?></h4>
           <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
               <li class="breadcrumb-item">Head Office Accounting</li>
               <li class="breadcrumb-item active" aria-current="page">
-                  Paid
+                  Billed
               </li>
-              <li class="breadcrumb-item"><?php echo $hc_provider['hp_name']; ?></li>
               </ol>
           </nav>
           </div>
@@ -56,7 +24,7 @@
   <div class="container-fluid">
     <div class="col-12 pb-2">
         <div class="input-group">
-            <a href="<?php echo base_url(); ?>head-office-accounting/bill/billing-list/paid-loa-noa" type="submit" class="btn btn-info" data-bs-toggle="tooltip" title="Click to Go Back">
+            <a href="<?php echo base_url(); ?>head-office-accounting/billing-list/paid-bill" type="submit" class="btn btn-info" data-bs-toggle="tooltip" title="Click to Go Back">
                 <strong class="ls-2" style="vertical-align:middle">
                     <i class="mdi mdi-arrow-left-bold"></i> Go Back
                 </strong>
@@ -67,15 +35,16 @@
       <div class="col-lg-12">
         <div class="row pt-2 pb-2">
             <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
-                
+            <input type="hidden" name="pd-payment-no" id="pd-payment-no" value="<?php echo $payment_no ?>">
             <div class="card shadow" style="background-color:">
               <div class="card-body">
                 <div class="table-responsive">
-                  <table class="table table-hover table-responsive" id="billedLoaTable">
+                  <table class="table table-hover table-responsive" id="paidTable">
                     <thead style="background-color:#eddcb7">
                       <tr>
                         <th class="fw-bold">Billing No.</th>
                         <th class="fw-bold">LOA/NOA #</th>
+                        <th class="fw-bold">Healthcare Provider</th>
                         <th class="fw-bold">Name</th>
                         <th class="fw-bold">Healthcare Bill</th>
                         <th class="fw-bold">Status</th>
@@ -84,42 +53,36 @@
                     </thead>
                     <tbody id="billed-tbody">
                     </tbody>
+                    <tfoot>
+                       <td></td>
+                       <td></td>
+                       <td></td>
+                       <td class="fw-bold">TOTAL BILL </td>
+                       <td><span class="text-danger fw-bold fs-5" id="pd-total-bill"></span></td>
+                       <td></td>
+                       <td></td>
+                    </tfoot>
                   </table>
-                </div>
-
-                <div class="row col-lg-4 offset-6 pt-4 pb-3">
-                    <div class="input-group">
-                        <div class="input-group-append">
-                            <span class="input-group-text text-dark fw-bold ls-1 fs-6">TOTAL PAID BILL: </span>
-                        </div>
-                        <input type="text" class="form-control ps-3 text-danger fw-bold fs-6" value="0" name="total-hospital-bill" id="total-hospital-bill" readonly>
-                       
-                    </div>
                 </div>
               </div>
             </div>
       </div>
-      <?php include 'view_pdf_bill_modal.php'; ?>
       <!-- End Row  -->  
       </div>
-      <?php include 'payment_details_modal.php'; ?>
     <!-- End Container fluid  -->
     </div>
-
+    <?php include 'view_pdf_bill_modal.php'; ?>
   <!-- End Page wrapper  -->
   </div>
 <!-- End Wrapper -->
 
 <script>
      const baseUrl = "<?php echo base_url(); ?>";
-     const hp_id = document.querySelector('#m-hp-id').value;
-     const month = document.querySelector('#m-month').value;
-     const year = document.querySelector('#m-year').value;
-     const hospital_bill = document.querySelector('#total-hospital-bill');
+     const payment_no = document.querySelector('#pd-payment-no').value;
 
  $(document).ready(function(){
     
-    let billedTable = $('#billedLoaTable').DataTable({
+    let billedTable = $('#paidTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
@@ -131,9 +94,7 @@
         // passing the token as data so that requests will be allowed
         data: function(data) {
             data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
-            data.hp_id = hp_id;
-            data.month = month;
-            data.year = year;
+            data.payment_no = payment_no;
         },
       },
       //Set column definition initialisation properties.
@@ -150,37 +111,36 @@
       fixedHeader: true,
     });
 
+    billedTable.on('draw.dt', function() {
+    let columnIdx = 4;
+    let sum = 0;
+    let rows = billedTable.rows().nodes();
+    if ($('#paidTable').DataTable().data().length > 0) {
+            // The table is not empty
+            rows.each(function(index, row) {
+                let rowData = billedTable.row(row).data();
+                let columnValue = rowData[columnIdx];
+                let pattern = /-?[\d,]+(\.\d+)?/g;
+                let matches = columnValue.match(pattern);
+                if (matches && matches.length > 0) {
+                    let numberString = matches[0].replace(',', '');
+                    let intValue = parseInt(numberString);
+                    sum += intValue;
+                }
+            });
+        }
+        $('#pd-total-bill').html(sum.toLocaleString('PHP', { minimumFractionDigits: 2 }));
+    });
+
  });
 
- window.onload = function() {
-    getTotalBill();
- }
-
-  const getTotalBill = () => {
-      $.ajax({
-          type: 'post',
-          url: `${baseUrl}head-office-accounting/bill/paid/total-bill/fetch`,
-          dataType: "json",
-          data: {
-              'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
-              'hp_id' : hp_id,
-              'month' : month,
-              'year' : year,
-          },
-          success: function(response){
-            hospital_bill.value = response.total_bill;
-          },
-
-      });
-    }
-
-    const viewPDFBill = (pdf_bill,noa_no,loa_no) => {
+ const viewPDFBill = (pdf_bill,noa_no,loa_no) => {
       $('#viewPDFBillModal').modal('show');
-      if(loa_no != ''){
-        $('#pdf-loa-no').html(loa_no);
-      }else if(noa_no != ''){
+      if(noa_no != ''){
         $('#pdf-loa-no').html(noa_no);
-      }  
+      }else{
+        $('#pdf-loa-no').html(loa_no);
+      }
 
         let pdfFile = `${baseUrl}uploads/pdf_bills/${pdf_bill}`;
         let fileExists = checkFileExists(pdfFile);

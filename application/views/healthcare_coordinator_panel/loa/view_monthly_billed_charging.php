@@ -64,7 +64,6 @@
         <div class="row pt-2 pb-2">
           <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
                 
-<<<<<<< HEAD
           <div class="card shadow" style="background-color:">
             <div class="card-body">
               <div class="table-responsive">
@@ -82,25 +81,6 @@
                     </tr>
                   </thead>
                   <tbody id="billed-tbody">
-=======
-            <div class="card shadow" style="background-color:">
-              <div class="card-body">
-                <table class="table table-hover table-responsive" id="billedLoaTable">
-                  <thead style="background-color:#eddcb7">
-                    <tr>
-                      <th class="fw-bold">LOA No.</th>
-                      <th class="fw-bold">Name</th>
-                      <th class="fw-bold">Business Unit</th>
-                      <th class="fw-bold">Percentage</th>
-                      <th class="fw-bold">Total Net Bill</th>
-                      <th class="fw-bold">Company Charge</th>
-                      <th class="fw-bold">Personal Charge</th>
-                      <th class="fw-bold">Previous MBL</th>
-                      <th class="fw-bold">Remaining MBL</th>
-                    </tr>
-                  </thead>
-                  <tbody id="billed-charging-tbody">
->>>>>>> 9db59a518b04c989b30b58c89e4bbd46fcac24c9
                   </tbody>
                 </table>
               </div>

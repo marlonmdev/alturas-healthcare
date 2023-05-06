@@ -95,10 +95,10 @@
             
         });
 
-        const viewPaymentInfo = (payment_id) => {
+        const viewPaymentInfo = (details_id) => {
             $.ajax({
                 type: 'GET',
-                url: `${baseUrl}head-office-accounting/billing-list/view-payment-details/${payment_id}`,
+                url: `${baseUrl}head-office-accounting/billing-list/view-payment-details/${details_id}`,
                 success: function(response){
                     const res = JSON.parse(response);
                     const base_url = window.location.origin;
@@ -107,22 +107,23 @@
                         token,
                         payment_no,
                         hp_name,
-                        start_date,
-                        end_date,
+                        added_on,
                         acc_number,
                         acc_name,
                         check_num,
                         check_date,
                         bank,
                         amount_paid,
-                        covered_loa_no
+                        billed_date,
+                        covered_loa_no,
+                       
                     } = res;
-                    
+           
                     $('#viewPaymentModal').modal('show');
 
                     $('#hospital_filtered').val(hp_name);
-                    $('#start_date').val(start_date);
-                    $('#end_date').val(end_date);
+                    $('#start_date').val(added_on);
+                    // $('#end_date').val(end_date);
                     $('#payment-num').val(payment_no);
                     $('#acc-number').val(acc_number);
                     $('#acc-name').val(acc_name);
@@ -130,7 +131,8 @@
                     $('#check-date').val(check_date);
                     $('#bank').val(bank);
                     $('#amount-paid').val(parseFloat(amount_paid).toFixed(2));
-                    $('#textbox').html(covered_loa_no);
+                    $('#textbox').val(covered_loa_no);
+                    $('#c-billed-date').val(billed_date);
                 }
             });
         }

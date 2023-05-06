@@ -2,15 +2,13 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-cyan">
-                <h4 class="modal-title ls-2 text-dark">For the Month of <span id="p-month"></span>, <span id="p-year"></span></h4>
+                <h4 class="modal-title ls-2 text-dark">Payment No : <span name="p-payment-no" id="p-payment-no"></span></h4>
                 <button type="button" class="btn-close btn-light" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
         <form id="payment_details_form" enctype="multipart/form-data">
             <div class="modal-body">
              <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
-             <input type="hidden" name="pd-month" id="pd-month">
-             <input type="hidden" name="pd-year" id="pd-year">
-             <input type="hidden" name="pd-hp-id" id="pd-hp-id">
+             <input type="hidden" name="pd-payment-no" id="pd-payment-no">
                 <div class="container">
                     <div class="row pb-2">
                         <div class="row mb-3 pt-2">
@@ -19,9 +17,9 @@
                                     <div class="input-group-prepend">
                                         <span><i class="mdi mdi-hospital-building fs-3 text-danger pe-2"></i></span>
                                     </div>
-                                        <input class="form-control text-dark fw-bold ls-1 fs-6" name="hospital_filtered" id="hospital_filtered" readonly>
+                                        <div id="hp-name-con">
 
-                                        <input type="hidden" name="hp_id" id="hp_id"></input>
+                                        </div>
                                 </div>
                             </div>
                         

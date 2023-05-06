@@ -45,14 +45,14 @@
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-hover table-responsive" id="ledgertable">
-                <thead class="fs-5">
+                <thead class="fs-6">
                   <tr>
-                    <th class="fw-bold" style="background-color: #00538C; color: white;">NAME OF PATIENT</th>
-                    <th class="fw-bold" style="background-color: #00538C; color: white;">TYPE OF EMPLOYMENT</th>
-                    <th class="fw-bold" style="background-color: #00538C; color: white;">STATUS</th>
-                    <th class="fw-bold" style="background-color: #00538C; color: white;">BUSINESS UNIT</th>
-                    <th class="fw-bold" style="background-color: #00538C; color: white;">DEPARTMENT</th>
-                    <th class="fw-bold" style="background-color: #00538C; color: white;">ACTION</th>
+                    <th style="background-color: #00538C; color: white;">NAME OF PATIENT</th>
+                    <th style="background-color: #00538C; color: white;">TYPE OF EMPLOYMENT</th>
+                    <th style="background-color: #00538C; color: white;">STATUS</th>
+                    <th style="background-color: #00538C; color: white;">BUSINESS UNIT</th>
+                    <th style="background-color: #00538C; color: white;">DEPARTMENT</th>
+                    <th style="background-color: #00538C; color: white;">ACTION</th>
                   </tr>
                 </thead>
                 <tbody>

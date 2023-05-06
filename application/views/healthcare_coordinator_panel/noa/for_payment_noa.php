@@ -4,7 +4,7 @@
   <div class="page-breadcrumb">
       <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-          <h4 class="page-title ls-2">Inpatient Billing</h4>
+          <h4 class="page-title ls-2">Final Billing (Inpatient)</h4>
           <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
@@ -64,13 +64,13 @@
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-hover table-responsive" id="matchedLoaTable">
-                <thead class="fs-5">
+                <thead class="" style="background-color:#00538C">
                   <tr>
-                    <th class="fw-bold">Billing No.</th>
-                    <th class="fw-bold"></th>
-                    <th class="fw-bold">Healthcare Provider</th>
-                    <th class="fw-bold">Status</th>
-                    <th class="fw-bold">Action</th>
+                    <th style="color: white">Billing No.</th>
+                    <th style="color: white"></th>
+                    <th style="color: white">Healthcare Provider</th>
+                    <th style="color: white">Status</th>
+                    <th style="color: white">Action</th>
                   </tr>
                 </thead>
                 <tbody>

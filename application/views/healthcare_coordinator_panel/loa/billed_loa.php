@@ -83,18 +83,18 @@
           
           <div class="card shadow" style="background-color:">
             <div class="card-body">
-              <div class="table-responsive">
+              <div class="">
                 <table class="table table-hover table-responsive" id="billedLoaTable">
                   <thead style="background-color:#00538C">
                     <tr>
-                      <th class="fw-bold" style="color: white">LOA NO.</th>
-                      <th class="fw-bold" style="color: white">NAME OF PATIENT</th>
-                      <th class="fw-bold" style="color: white">TYPE OF REQUEST</th>
-                      <th class="fw-bold" style="color: white">COORDINATOR BILL</th>
-                      <th class="fw-bold" style="color: white">VIEW BILL</th>
-                      <th class="fw-bold" style="color: white">HOSPITAL BILL</th>
-                      <th class="fw-bold" style="color: white">VIEW BILL</th>
-                      <th class="fw-bold" style="color: white">VARIANCE</th> 
+                      <th style="color: white">LOA NO.</th>
+                      <th style="color: white">NAME OF PATIENT</th>
+                      <th style="color: white">TYPE OF REQUEST</th>
+                      <th style="color: white">COORDINATOR BILL</th>
+                      <th style="color: white">VIEW BILL</th>
+                      <th style="color: white">HOSPITAL BILL</th>
+                      <th style="color: white">VIEW BILL</th>
+                      <th style="color: white">VARIANCE</th> 
                     </tr>
                   </thead>
                   <tbody id="billed-tbody">
@@ -146,67 +146,33 @@
         processData: false,
         contentType: false,
         success: function(response) {
-          const {
-            token,
-            status,
-            message,
+          const { 
+              token,status,message
           } = response;
-          switch (status) {
-            case 'save-error':
-              swal({
-                title: 'Failed',
-                text: message,
-                timer: 3000,
-                showConfirmButton: false,
-                type: 'error'
-              });
-            break;
-<<<<<<< HEAD
-=======
 
-<<<<<<< HEAD
-                case 'success':
-                    swal({
-                        title: 'Success',
-                        text: message,
-                        timer: 3000,
-                        showConfirmButton: false,
-                        type: 'success'
-                    });
-                    setTimeout(function () {
-                        window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/for-charging';
-                    }, 2600);
-                    
-                break;
-            }
-=======
->>>>>>> 9db59a518b04c989b30b58c89e4bbd46fcac24c9
-            case 'success':
+          if(status == 'success'){
               swal({
-                title: 'Success',
-                text: message,
-                timer: 3000,
-                showConfirmButton: false,
-                type: 'success'
+                  title: 'Success',
+                  text: message,
+                  timer: 3000,
+                  showConfirmButton: false,
+                  type: 'success'
               });
-              $('.dropify-clear').click();
-              setTimeout(function() {
-                window.location.href = `${baseUrl}healthcare-coordinator/loa/requests-list/for-charging`;
-              }, 3200);
-            break;
+              window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/for-charging';
           }
-<<<<<<< HEAD
-        },
-      })
-=======
->>>>>>> 68a735cd0814d1320690d6467285b8645ec07d30
+          if(status == 'failed'){
+              swal({
+                  title: 'Error',
+                  text: message,
+                  timer: 3000,
+                  showConfirmButton: true,
+                  type: 'error'
+              });
+          }      
         }
       });
->>>>>>> 9db59a518b04c989b30b58c89e4bbd46fcac24c9
-    });
-
-
-
+      
+      
 
     let billedTable = $('#billedLoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
@@ -282,20 +248,6 @@
       
     });
 
-    // let columnIdx = 7;
-    // let rows = billedTable.rows().nodes();
-
-    // rows.each(function(index, row) {
-    //     let rowData = billedTable.row(row).data();
-    //     let columnValue = rowData[columnIdx];
-
-    //     if (columnValue > 100) {
-    //     $('#proceed-btn').prop('disabled', true); // disable the button
-    // } else {
-    //     $('#proceed-btn').prop('disabled', false); // enable the button
-    // }
-    // });
-
     $('#billed-hospital-filter').change(function(){
       billedTable.draw();
       getTotalBill();
@@ -320,6 +272,7 @@
     });
 
   });
+});
 
     
     const viewPDFBill = (pdf_bill,loa_no) => {

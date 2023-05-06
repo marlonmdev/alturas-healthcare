@@ -312,4 +312,13 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('healthcare_coordinator_panel/noa/for_payment_noa');
 		$this->load->view('templates/footer');
 	}
+
+	function view_initial_billing() {
+		$this->load->model('healthcare_coordinator/noa_model');
+		$data['hcproviders'] = $this->noa_model->db_get_healthcare_providers();
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/noa/initial_billing');
+		$this->load->view('templates/footer');
+	}
 }

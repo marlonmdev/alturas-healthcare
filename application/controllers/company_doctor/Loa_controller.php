@@ -29,7 +29,6 @@ class Loa_controller extends CI_Controller {
 					$fees = floatval($costs['op_price']);
 					$total_fee += $fees;
 				}
-				
 			}
 
 			$wpercent = '';
@@ -145,6 +144,16 @@ class Loa_controller extends CI_Controller {
 				}
 			}
 
+			
+			if(floatval($total_fee) >  $previous_mbl) {
+				$totalFee = '<span class="text-danger">'.number_format($total_fee,2, '.',',').'</span>';
+				$prev_mbl = '<span class="text-danger">'.number_format($previous_mbl,2, '.',',').'</span>';
+			}else{
+				$totalFee = '<span>'.number_format($total_fee,2, '.',',').'</span>';
+				$prev_mbl = '<span>'.number_format($previous_mbl,2, '.',',').'</span>';
+			}
+
+
 			$full_name = $loa['first_name'] . ' ' . $loa['middle_name'] . ' ' . $loa['last_name'] . ' ' . $loa['suffix'];
 
 			$custom_loa_no = '<mark class="bg-primary text-white">'.$loa['loa_no'].'</mark>';
@@ -187,9 +196,9 @@ class Loa_controller extends CI_Controller {
 			$row[] = $short_hp_name;
 			$row[] = $view_file;
 			$row[] = $custom_date;
-			$row[] = number_format($total_fee,2, '.',',');
+			$row[] = $totalFee;
 			$row[] = $wpercent. ', '.$nwpercent;
-			$row[] = number_format($loa['remaining_balance'],2, '.',',');
+			$row[] = $prev_mbl;
 			$row[] = $remaining_mbl;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;

@@ -114,4 +114,43 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
+	function view_for_payments() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/for_payment_bills.php', $hc_provider);
+		$this->load->view('templates/footer');
+	}
+	
+	function view_payments() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
+		$data['payment_no'] = $this->uri->segment(4);
+		$data['hp_name'] =$this->List_model->get_billed_hp_name($this->uri->segment(4));
+		$data['date'] =$this->List_model->get_billed_date($this->uri->segment(4));
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/view_monthly_bill.php', $hc_provider);
+		$this->load->view('templates/footer');
+	}
+
+	function view_paid_bill() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
+		$data['payment_no'] = $this->uri->segment(4);
+		$data['hp_name'] =$this->List_model->get_billed_hp_name($this->uri->segment(4));
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/paid_loa_noa.php', $hc_provider);
+		$this->load->view('templates/footer');
+	}
+
+	function view_monthly_paid_bill() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
+		$data['payment_no'] = $this->uri->segment(4);
+		$data['hp_name'] =$this->List_model->get_billed_hp_name($this->uri->segment(4));
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/view_monthly_paid_bill.php', $hc_provider);
+		$this->load->view('templates/footer');
+	}
+
 }

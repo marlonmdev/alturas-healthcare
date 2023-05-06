@@ -4,13 +4,13 @@
   <div class="page-breadcrumb">
       <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-          <h4 class="page-title ls-2">Final Billing (Inpatient)</h4>
+          <h4 class="page-title ls-2">Initial Billing (Inpatient)</h4>
           <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
               <li class="breadcrumb-item active" aria-current="page">
-                  Billed NOA
+                  Initial Bill NOA
               </li>
               </ol>
           </nav>
@@ -27,13 +27,13 @@
           <li class="nav-item">
             <a
               class="nav-link active"
-              href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/billed"
+              href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/billed/initial"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Billed NOA</span></a
+              <span class="hidden-xs-down fs-5 font-bold">Initially Billed NOA</span></a
             >
           </li>
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a
               class="nav-link"
               href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/for-charging"
@@ -41,7 +41,7 @@
               ><span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">For Payment NOA</span></a
             >
-          </li>
+          </li> -->
         </ul>
         <form method="POST" action="<?php echo base_url(); ?>healthcare-coordinator/noa/matched-bill/submit">
         <div class="row pt-2 pb-2">
@@ -91,6 +91,11 @@
                         <th style="color: white">NOA No.</th>
                         <th style="color: white">Name</th>
                         <th style="color: white">Hospital Bill</th>
+                        <th style="color: white">Percentage</th>
+                        <th style="color: white">Company Charge</th>
+                        <th style="color: white">Personal Charge</th>
+                        <th style="color: white">Previous MBL</th>
+                        <th style="color: white">Remaining MBL</th>
                         <th style="color: white">View SOA</th>
                       </tr>
                     </thead>

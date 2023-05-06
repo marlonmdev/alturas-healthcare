@@ -308,16 +308,15 @@ class Main_controller extends CI_Controller {
 			}else{
 				$uploadData = $this->upload->data();
 				$counter = 1;
-				$details_no = "details-" . strtotime(date('h:i:s')).$counter;
 				$counter++;
+				$details_no = "details-" . strtotime(date('h:i:s')).$counter;
+				
 				
 				$added_by = $this->session->userdata('fullname');
 
 				$data = array(
 					"details_no" => $details_no,
 					"hp_id" => $this->input->post('pd-hp-id'),
-					"month" => $this->input->post('pd-month'),
-					"year" => $this->input->post('pd-year'),
 					"total_hp_bill" => str_replace(',', '', $this->input->post('p-total-bill')),
 					"acc_number" => $this->input->post('acc-number'),
 					"acc_name" => $this->input->post('acc-name'),
@@ -333,33 +332,26 @@ class Main_controller extends CI_Controller {
 				$this->List_model->add_payment_details($data);
 				$paid_by = $this->session->userdata('fullname');
 				$paid_on = date('Y-m-d');
-				$status = 'Billed';
-				$hp_id = $this->input->post('pd-hp-id');
-				$month = $this->input->post('pd-month');
-				$year = $this->input->post('pd-year');
-				$converted_month = (int)$month;
-				$payable = $this->List_model->get_bill_nos($hp_id,$year,$converted_month,$status);
+				$payment_no = $this->input->post('pd-payment-no');
+			
+				$this->List_model->set_details_no($payment_no,$details_no);
+				// $this->List_model->set_monthly_payable($pay['bill_no'],$paid_by,$paid_on,$details_no);
+				$result = $this->List_model->get_loa_noa_id($payment_no);
 
-				foreach($payable as $pay){
-					$this->List_model->set_details_no($pay['bill_no'], $details_no);
-					$this->List_model->set_monthly_payable($pay['bill_no'],$paid_by,$paid_on,$details_no);
-					$result = $this->List_model->get_loa_noa_id($pay['bill_no']);
-
-					if (!empty($result)) {
-						foreach ($result as $row) {
-							$loa_id = $row['loa_id'];
-							$noa_id = $row['noa_id'];
-					
-							if (!empty($loa_id)) {
-								$this->List_model->set_loa_status($loa_id);
-							}
-							if (!empty($noa_id)) {
-								$this->List_model->set_noa_status($noa_id);
-							}
+				if (!empty($result)) {
+					foreach ($result as $row) {
+						$loa_id = $row['loa_id'];
+						$noa_id = $row['noa_id'];
+				
+						if (!empty($loa_id)) {
+							$this->List_model->set_loa_status($loa_id);
+						}
+						if (!empty($noa_id)) {
+							$this->List_model->set_noa_status($noa_id);
 						}
 					}
-	
 				}
+	
 				echo json_encode([
 					'token' => $token,
 					'status' => 'success',
@@ -690,29 +682,35 @@ class Main_controller extends CI_Controller {
 
 	function payment_history_fetch() {
 		$this->security->get_csrf_hash();
-
+	
 		$list = $this->List_model->get_payment_datatables();
 		$data = [];
-
+		$previous_payment_no = '';
+	
 		foreach($list as $payment){
-			$row = [];
-			$payment_id = $this->myhash->hasher($payment['payment_id'], 'encrypt');
-
-			$custom_bill_no = 	'<mark class="bg-primary text-white">'.$payment['bill_no'].'</mark>';
-
-			$custom_actions = '<a class="text-info fw-bold ls-1 fs-4" href="JavaScript:void(0)" onclick="viewPaymentInfo(\'' . $payment_id . '\')"  data-bs-toggle="tooltip"><u><i class="mdi mdi-view-list fs-3" title="View Payment Details"></i></u></a>';
-
-			$custom_actions .= '<a class="text-info fw-bold ls-1 ps-2 fs-4" href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'assets/paymentDetails/' . $payment['supporting_file'] . '\')" data-bs-toggle="tooltip"><u><i class="mdi mdi-file-image fs-3" title="View Proof"></i></u></a>';
-
-			$row[] = $custom_bill_no;
-			$row[] = $payment['acc_number'];
-			$row[] = $payment['acc_name'];
-			$row[] = $payment['check_num'];
-			$row[] = $payment['check_date'];
-			$row[] = $payment['bank'];
-			$row[] = $custom_actions;
-			$data[] = $row;
-
+			// Check if payment_no is the same as the previous iteration
+			if ($payment['payment_no'] !== $previous_payment_no) {
+				$row = [];
+				$details_id = $this->myhash->hasher($payment['details_id'], 'encrypt');
+	
+				$custom_details_no = '<mark class="bg-primary text-white">'.$payment['payment_no'].'</mark>';
+	
+				$custom_actions = '<a class="text-info fw-bold ls-1 fs-4" href="JavaScript:void(0)" onclick="viewPaymentInfo(\'' . $details_id . '\')"  data-bs-toggle="tooltip"><u><i class="mdi mdi-view-list fs-3" title="View Payment Details"></i></u></a>';
+	
+				$custom_actions .= '<a class="text-success fw-bold ls-1 ps-2 fs-4" href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/paymentDetails/' . $payment['supporting_file'] . '\')" data-bs-toggle="tooltip"><u><i class="mdi mdi-file-image fs-3" title="View Proof"></i></u></a>';
+	
+				$row[] = $custom_details_no;
+				$row[] = $payment['acc_number'];
+				$row[] = $payment['acc_name'];
+				$row[] = $payment['check_num'];
+				$row[] = $payment['check_date'];
+				$row[] = $payment['bank'];
+				$row[] = $custom_actions;
+				$data[] = $row;
+				
+				// Update the previous_payment_no variable
+				$previous_payment_no = $payment['payment_no'];
+			}
 		}
 		$output = [
 			"draw" => $_POST['draw'],
@@ -722,14 +720,14 @@ class Main_controller extends CI_Controller {
 		];
 		echo json_encode($output);
 	}
+	
 
 	function view_payment_details() {
-		$payment_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
-		$payment = $this->List_model->get_payment_details($payment_id);
+		$details_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$payment = $this->List_model->get_payment_details($details_id);
 		
-		$bill_no = $payment['bill_no'];
-		$loa_no = $this->List_model->get_loa($bill_no);
-		$noa_no = $this->List_model->get_noa($bill_no);
+		$loa_no = $this->List_model->get_loa($payment['details_no']);
+		$noa_no = $this->List_model->get_noa($payment['details_no']);
 		$noa_loa_array = [];
 		foreach($loa_no as $covered_loa){
 			if($covered_loa['loa_id'] != '' ){
@@ -748,19 +746,19 @@ class Main_controller extends CI_Controller {
 			$response = [
 				'status' => 'success',
 				'token' => $this->security->get_csrf_hash(),
-				'bill_no' => $payment['bill_no'],
+				'payment_no' => $payment['payment_no'],
 				'hp_name' => $payment['hp_name'],
-				'start_date' => $payment['start_date'],
-				'end_date' => $payment['end_date'],
+				'added_on' => date("F d, Y", strtotime($payment['date_add'])),
 				'acc_number' => $payment['acc_number'],
 				'acc_name' => $payment['acc_name'],
 				'check_num' => $payment['check_num'],
 				'check_date' => $payment['check_date'],
 				'bank' => $payment['bank'],
 				'amount_paid' => $payment['amount_paid'],
+				'billed_date' => 'From '. date("F d, Y", strtotime($payment['startDate'])).' to '. date("F d, Y", strtotime($payment['endDate'])),
 				'covered_loa_no' => $loa_noa_no
-				
 			]; 
+			
 		echo json_encode($response);
 	}
 
@@ -851,54 +849,6 @@ class Main_controller extends CI_Controller {
 		$output = [
 			"total_bill" => number_format($total_bill,2, '.',','),
 		];
-		echo json_encode($output);
-	}
-
-	function fetch_monthly_paid() {
-		$token = $this->security->get_csrf_hash();
-		$hp_id = $this->input->post('hp_id');
-		$month = $this->input->post('month');
-		$year = $this->input->post('year');
-		$converted_month = (int)$month;
-		$payable = $this->List_model->get_paid_bill_nos($hp_id,$year,$converted_month);
-
-		$data = []; // Create an empty array to hold the data
-		
-		foreach($payable as $pay){
-			$billing = $this->List_model->monthly_bill_datatable($pay['bill_no']);
-	
-			foreach($billing as $bill){
-				$row = [];
-
-				$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
-
-				if($bill['loa_id'] != ''){
-					$loa_noa = $bill['loa_no'];
-
-				}else if($bill['noa_id'] != ''){
-					$loa_noa = $bill['noa_no'];
-				}
-				
-				$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-dark"></i>View</a>';
-
-				$status_custom = '<span class="text-center"><span class="badge rounded-pill bg-success">Paid</span></span>';
-
-				$row[] = $bill['billing_no'];
-				$row[] = $loa_noa;
-				$row[] = $fullname;
-				$row[] = number_format($bill['net_bill'], 2, '.', ',');
-				$row[] = $status_custom;
-				$row[] = $pdf_bill;
-				$data[] = $row;
-
-			}
-		}
-		// Output the JSON data for all the fetched data
-		$output = [
-			"draw" => $_POST['draw'],
-			"data" => $data,
-		];
-
 		echo json_encode($output);
 	}
 
@@ -1161,6 +1111,180 @@ class Main_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 
+	function fetch_for_payment_bill() {
+		$token = $this->security->get_csrf_hash();
+		$billing = $this->List_model->fetch_for_payment_bills();
+		$data = [];
+		$unique_bills = []; // initialize array to store unique bills
+		foreach($billing as $bill) {
+			$bill_id = $bill['payment_no'] . '_' . $bill['hp_id']; // concatenate payment_no and hp_id to create unique id
+			if (!in_array($bill_id, $unique_bills)) { // check if bill with this id has already been added
+				$row = [];
+
+				$consolidated = '<span>Consolidated Bill with the Payment No. <span class="fw-bold">'.$bill['payment_no'].'</span></span>';
+
+				$date = '<span>'.date('F d, Y', strtotime($bill['startDate'])).' to '.date('F d, Y', strtotime($bill['endDate'])).'</span>';
+
+				$hp_name = '<span>'.$bill['hp_name'].'</span>';
+
+				$status = '<span class="text-center badge rounded-pill bg-success">Billed</span>'; 
+
+				$payment_no = $this->myhash->hasher($bill['payment_no'], 'encrypt');
+
+				$action_customs = '<a href="'.base_url().'head-office-accounting/bill/fetch_payments/'.$bill['payment_no'].'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
+
+				$action_customs .= '<a href="javascript:void(0)" onclick="addPaymentDetails(\''.$bill['payment_no'].'\')" data-bs-toggle="tooltip" title="Add Payment Details"><i class="mdi mdi-file-document fs-2 pe-2 text-danger"></i></a>';
+
+				$row[] = $consolidated;
+				$row[] = $date;
+				$row[] = $hp_name;
+				$row[] = $status;
+				$row[] = $action_customs;
+				$data[] = $row;
+				$unique_bills[] = $bill_id; // add unique bill id to array
+			}
+		}
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
+
+		echo json_encode($output);
+	}
+
+	function fetch_payment_bill() {
+		$token = $this->security->get_csrf_hash();
+		$payment_no = $this->input->post('payment_no');
+		$billing = $this->List_model->monthly_bill_datatable($payment_no);
+		$data = [];
+		foreach($billing as $bill){
+			$row = [];
+
+			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
+
+			if($bill['loa_id'] != ''){
+				$loa_noa = $bill['loa_no'];
+
+			}else if($bill['noa_id'] != ''){
+				$loa_noa = $bill['noa_no'];
+			}
+			
+			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-dark"></i>View</a>';
+
+			$row[] = $bill['billing_no'];
+			$row[] = $loa_noa;
+			$row[] = $bill['hp_name'];
+			$row[] = $fullname;
+			$row[] = number_format($bill['net_bill'], 2, '.', ',');
+			$row[] = $pdf_bill;
+			$data[] = $row;
+
+		}
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
+
+		echo json_encode($output);
+	}
+
+	function fetch_paid_bills() {
+		$token = $this->security->get_csrf_hash();
+		$billing = $this->List_model->fetch_paid_bills();
+		$data = [];
+		$unique_bills = []; // initialize array to store unique bills
+		foreach($billing as $bill) {
+			$bill_id = $bill['payment_no'] . '_' . $bill['hp_id']; // concatenate payment_no and hp_id to create unique id
+			if (!in_array($bill_id, $unique_bills)) { // check if bill with this id has already been added
+				$row = [];
+
+				$consolidated = '<span>Paid Bill with the Payment No. <span class="fw-bold">'.$bill['payment_no'].'</span></span>';
+
+				$date = '<span>'.date('F d, Y', strtotime($bill['startDate'])).' to '.date('F d, Y', strtotime($bill['endDate'])).'</span>';
+
+				$hp_name = '<span>'.$bill['hp_name'].'</span>';
+
+				$status = '<span class="text-center badge rounded-pill bg-info">Paid</span>'; 
+
+				$payment_no = $this->myhash->hasher($bill['payment_no'], 'encrypt');
+
+				$action_customs = '<a href="'.base_url().'head-office-accounting/bill/fetch_paid/'.$bill['payment_no'].'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
+
+				$check = $this->List_model->get_check_details($bill['details_no']);
+
+				$action_customs .= '<a href="javascript:void(0)" onclick="viewImage(\''.base_url().'uploads/paymentDetails/'.$check['supporting_file'].'\')" data-bs-toggle="tooltip" title="View Check"><i class="mdi mdi-image fs-2 pe-2 text-danger"></i></a>';
+
+				$row[] = $consolidated;
+				$row[] = $date;
+				$row[] = $hp_name;
+				$row[] = date('F d, Y', strtotime($bill['date_add']));
+				$row[] = $status;
+				$row[] = $action_customs;
+				$data[] = $row;
+				$unique_bills[] = $bill_id; // add unique bill id to array
+			}
+		}
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
+
+		echo json_encode($output);
+	}
+
+	function fetch_monthly_paid_bill() {
+		$token = $this->security->get_csrf_hash();
+		$payment_no = $this->input->post('payment_no');
+		$billing = $this->List_model->monthly_bill_datatable($payment_no);
+		$data = [];
+		foreach($billing as $bill){
+			$row = [];
+
+			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
+
+			if($bill['loa_id'] != ''){
+				$loa_noa = $bill['loa_no'];
+
+			}else if($bill['noa_id'] != ''){
+				$loa_noa = $bill['noa_no'];
+			}
+			
+			$status = '<span class="text-center badge rounded-pill bg-success">Paid</span>'; 
+
+			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-dark"></i>View</a>';
+
+			$row[] = $bill['billing_no'];
+			$row[] = $loa_noa;
+			$row[] = $bill['hp_name'];
+			$row[] = $fullname;
+			$row[] = number_format($bill['net_bill'], 2, '.', ',');
+			$row[] = $status;
+			$row[] = $pdf_bill;
+			$data[] = $row;
+
+		}
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
+
+		echo json_encode($output);
+	}
+
+	function fetch_for_pay_details() {
+		$token = $this->security->get_csrf_hash();
+		$payment_no = $this->input->get('payment_no');
+		$billing = $this->List_model->get_billed_hp_name($payment_no);
+		$sum = $this->List_model->get_total_payables($payment_no);
+	
+		$output = [
+			'billing' => $billing,
+			'total_payable' => number_format($sum,2, '.',','),
+		];
+		echo json_encode($output);
+	}
+	
+
 	function view_forpayment_loa_noa() {
 		$token = $this->security->get_csrf_hash();
 		$data = $this->List_model->get_for_payment_loa_noa();
@@ -1229,6 +1353,30 @@ class Main_controller extends CI_Controller {
 		}
 	
 		echo json_encode($response);
+	}
+
+	function submit_for_payment_bill() {
+		$token = $this->security->get_csrf_hash();
+		$user = $this->session->userdata('fullname');
+		$number = 0;
+		$number++;
+		$payment_no = 'PMT-' . date('Ymis') . $number;
+		$inserted = $this->List_model->submit_forPayment_bill($payment_no);
+		$this->List_model->set_payment_no_date($payment_no,$user);
+		if($inserted){
+			echo json_encode([
+				'token' => $token,
+				'payment_no' => $payment_no,
+				'status' => 'success',
+				'message' => 'Successfully Submitted!'
+			]);
+		}else{
+			echo json_encode([
+				'token' => $token,
+				'status' => 'error',
+				'message' => 'Failed to Submit!'
+			]);
+		}
 	}
 	
 

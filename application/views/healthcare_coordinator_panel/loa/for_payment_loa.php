@@ -59,18 +59,18 @@
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-hover table-responsive" id="matchedLoaTable">
-                <thead class="fs-5" style="background-color:#00538C">
+                <thead class="fs-6" style="background-color:#00538C">
                   <tr>
-                    <th class="fw-bold" style="color: white;">PAYMENT #</th>
-                    <th class="fw-bold" style="color: white;">CONSOLIDATED BILLING</th>
-                    <th class="fw-bold" style="color: white;">HEALTHCARE PROVIDER</th>
-                    <th class="fw-bold" style="color: white;">STATUS</th>
-                    <th class="fw-bold" style="color: white;">ACTION</th>
-                    <th class="fw-bold" style="color: white;">Billing No.</th>
-                    <th class="fw-bold" style="color: white;"></th>
-                    <th class="fw-bold" style="color: white;">Healthcare Provider</th>
-                    <th class="fw-bold" style="color: white;">Status</th>
-                    <th class="fw-bold" style="color: white;">Action</th>
+                    <th style="color: white;">PAYMENT #</th>
+                    <th style="color: white;">CONSOLIDATED BILLING</th>
+                    <th style="color: white;">HEALTHCARE PROVIDER</th>
+                    <th style="color: white;">STATUS</th>
+                    <th style="color: white;">ACTION</th>
+                    <th style="color: white;">Billing No.</th>
+                    <th style="color: white;"></th>
+                    <th style="color: white;">Healthcare Provider</th>
+                    <th style="color: white;">Status</th>
+                    <th style="color: white;">Action</th>
                   </tr>
                 </thead>
                 <tbody>

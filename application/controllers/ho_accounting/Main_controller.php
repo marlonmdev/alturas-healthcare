@@ -758,7 +758,7 @@ class Main_controller extends CI_Controller {
 				'billed_date' => 'From '. date("F d, Y", strtotime($payment['startDate'])).' to '. date("F d, Y", strtotime($payment['endDate'])),
 				'covered_loa_no' => $loa_noa_no
 			]; 
-			
+
 		echo json_encode($response);
 	}
 
@@ -916,36 +916,74 @@ class Main_controller extends CI_Controller {
 				$loa_noa = $pay['noa_no'];
 			}
 			$fullname =  $pay['first_name'] . ' ' . $pay['middle_name'] . ' ' . $pay['last_name'] . ' ' . $pay['suffix'];
-	
-			if($pay['work_related'] == 'Yes'){ 
-				if($pay['percentage'] == ''){
-				   $wpercent = '100% W-R';
-				   $nwpercent = '';
-				}else{
-				   $wpercent = $pay['percentage'].'%  W-R';
-				   $result = 100 - floatval($pay['percentage']);
-				   if($pay['percentage'] == '100'){
+			$wpercent = '';
+			$nwpercent = '';
+			if($pay['loa_id'] != ''){
+				$loa_noa = $pay['loa_no'];
+				$loa = $this->List_model->get_loa_info($pay['loa_id']);
+				if($loa['work_related'] == 'Yes'){ 
+					if($loa['percentage'] == ''){
+					   $wpercent = '100% W-R';
 					   $nwpercent = '';
-				   }else{
-					   $nwpercent = $result.'% Non W-R';
-				   }
-				  
-				}
-		   }else if($pay['work_related'] == 'No'){
-			   if($pay['percentage'] == ''){
-				   $wpercent = '';
-				   $nwpercent = '100% Non W-R';
-				}else{
-				   $nwpercent = $pay['percentage'].'% Non W-R';
-				   $result = 100 - floatval($pay['percentage']);
-				   if($pay['percentage'] == '100'){
+					}else{
+					   $wpercent = $loa['percentage'].'%  W-R';
+					   $result = 100 - floatval($loa['percentage']);
+					   if($loa['percentage'] == '100'){
+						   $nwpercent = '';
+					   }else{
+						   $nwpercent = $result.'% Non W-R';
+					   }
+					  
+					}	
+			   }else if($loa['work_related'] == 'No'){
+				   if($loa['percentage'] == ''){
 					   $wpercent = '';
-				   }else{
-					   $wpercent = $result.'%  W-R';
-				   }
-				 
-				}
-		   }
+					   $nwpercent = '100% Non W-R';
+					}else{
+					   $nwpercent = $loa['percentage'].'% Non W-R';
+					   $result = 100 - floatval($loa['percentage']);
+					   if($loa['percentage'] == '100'){
+						   $wpercent = '';
+					   }else{
+						   $wpercent = $result.'%  W-R';
+					   }
+					 
+					}
+			   }
+			}else if($pay['noa_id'] != ''){
+				$loa_noa = $pay['noa_no'];
+				$noa = $this->List_model->get_noa_info($pay['noa_id']);
+				if($noa['work_related'] == 'Yes'){ 
+					if($noa['percentage'] == ''){
+					   $wpercent = '100% W-R';
+					   $nwpercent = '';
+					}else{
+					   $wpercent = $noa['percentage'].'%  W-R';
+					   $result = 100 - floatval($noa['percentage']);
+					   if($noa['percentage'] == '100'){
+						   $nwpercent = '';
+					   }else{
+						   $nwpercent = $result.'% Non W-R';
+					   }
+					  
+					}	
+			   }else if($noa['work_related'] == 'No'){
+				   if($noa['percentage'] == ''){
+					   $wpercent = '';
+					   $nwpercent = '100% Non W-R';
+					}else{
+					   $nwpercent = $noa['percentage'].'% Non W-R';
+					   $result = 100 - floatval($noa['percentage']);
+					   if($noa['percentage'] == '100'){
+						   $wpercent = '';
+					   }else{
+						   $wpercent = $result.'%  W-R';
+					   }
+					 
+					}
+			   }
+			}
+
 
 			$row[] = $pay['billing_no'];
 			$row[] = $loa_noa;
@@ -981,51 +1019,54 @@ class Main_controller extends CI_Controller {
 			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
 			$wpercent = '';
 			$nwpercent = '';
-
-			if($bill['work_related'] == 'Yes'){ 
-				if($bill['percentage'] == ''){
-				   $wpercent = '100% W-R';
-				   $nwpercent = '';
-				}else{
-				   $wpercent = $bill['percentage'].'%  W-R';
-				   $result = 100 - floatval($bill['percentage']);
-				   if($bill['percentage'] == '100'){
-					   $nwpercent = '';
-				   }else{
-					   $nwpercent = $result.'% Non W-R';
-				   }
-				  
-				}	
-		   }else if($bill['work_related'] == 'No'){
-			   if($bill['percentage'] == ''){
-				   $wpercent = '';
-				   $nwpercent = '100% Non W-R';
-				}else{
-				   $nwpercent = $bill['percentage'].'% Non W-R';
-				   $result = 100 - floatval($bill['percentage']);
-				   if($bill['percentage'] == '100'){
-					   $wpercent = '';
-				   }else{
-					   $wpercent = $result.'%  W-R';
-				   }
-				 
-				}
-		   }
-
 			$net_bill = floatval($bill['net_bill']);
 			$previous_mbl = floatval($bill['remaining_balance']);
-			$percentage = floatval($bill['percentage']);
 
-			if($bill['work_related'] == 'Yes'){
-				if($bill['percentage'] == ''){
-					$company_charge = number_format($bill['net_bill'],2, '.',',');
+			if($bill['loa_id'] != ''){
+				$loa_noa = $bill['loa_no'];
+				$loa = $this->List_model->get_loa_info($bill['loa_id']);
+				if($loa['work_related'] == 'Yes'){ 
+					if($loa['percentage'] == ''){
+					   $wpercent = '100% W-R';
+					   $nwpercent = '';
+					}else{
+					   $wpercent = $loa['percentage'].'%  W-R';
+					   $result = 100 - floatval($loa['percentage']);
+					   if($loa['percentage'] == '100'){
+						   $nwpercent = '';
+					   }else{
+						   $nwpercent = $result.'% Non W-R';
+					   }
+					  
+					}	
+			   }else if($loa['work_related'] == 'No'){
+				   if($loa['percentage'] == ''){
+					   $wpercent = '';
+					   $nwpercent = '100% Non W-R';
+					}else{
+					   $nwpercent = $loa['percentage'].'% Non W-R';
+					   $result = 100 - floatval($loa['percentage']);
+					   if($loa['percentage'] == '100'){
+						   $wpercent = '';
+					   }else{
+						   $wpercent = $result.'%  W-R';
+					   }
+					 
+					}
+			   }
+
+			   $percentage = floatval($loa['percentage']);
+
+			if($loa['work_related'] == 'Yes'){
+				if($loa['percentage'] == ''){
+					$company_charge = number_format($net_bill,2, '.',',');
 					$personal_charge = number_format(0,2, '.',',');
 					if($net_bill >= $previous_mbl){
 						$remaining_mbl = number_format(0,2, '.',',');
 					}else if($net_bill < $previous_mbl){
 						$remaining_mbl = number_format($previous_mbl - $net_bill,2, '.',',');
 					}
-				}else if($bill['percentage'] != ''){
+				}else if($loa['percentage'] != ''){
 					
 					if($net_bill <= $previous_mbl){
 						$company_charge = number_format($net_bill,2, '.',',');
@@ -1051,8 +1092,8 @@ class Main_controller extends CI_Controller {
 					}
 					
 				}
-			}else if($bill['work_related'] == 'No'){
-				if($bill['percentage'] == ''){
+			}else if($loa['work_related'] == 'No'){
+				if($loa['percentage'] == ''){
 					if($net_bill <= $previous_mbl){
 						$company_charge = number_format($net_bill,2, '.',',');
 						$personal_charge = number_format(0,2, '.',',');
@@ -1062,7 +1103,7 @@ class Main_controller extends CI_Controller {
 						$personal_charge = number_format($net_bill - $previous_mbl,2, '.',',');
 						$remaining_mbl = number_format(0,2, '.',',');
 					}
-				}else if($bill['percentage'] != ''){
+				}else if($loa['percentage'] != ''){
 					if($net_bill <= $previous_mbl){
 						$company_charge = number_format($net_bill,2, '.',',');
 						$personal_charge = number_format(0,2, '.',',');
@@ -1091,8 +1132,120 @@ class Main_controller extends CI_Controller {
 					}
 				}
 			}
-			
-			$row[] = $bill['loa_no'];
+
+			}else if($bill['noa_id'] != ''){
+				$loa_noa = $bill['noa_no'];
+				$noa = $this->List_model->get_noa_info($bill['noa_id']);
+				if($noa['work_related'] == 'Yes'){ 
+					if($noa['percentage'] == ''){
+					   $wpercent = '100% W-R';
+					   $nwpercent = '';
+					}else{
+					   $wpercent = $noa['percentage'].'%  W-R';
+					   $result = 100 - floatval($noa['percentage']);
+					   if($noa['percentage'] == '100'){
+						   $nwpercent = '';
+					   }else{
+						   $nwpercent = $result.'% Non W-R';
+					   }
+					  
+					}	
+			   }else if($noa['work_related'] == 'No'){
+				   if($noa['percentage'] == ''){
+					   $wpercent = '';
+					   $nwpercent = '100% Non W-R';
+					}else{
+					   $nwpercent = $noa['percentage'].'% Non W-R';
+					   $result = 100 - floatval($noa['percentage']);
+					   if($noa['percentage'] == '100'){
+						   $wpercent = '';
+					   }else{
+						   $wpercent = $result.'%  W-R';
+					   }
+					 
+					}
+			   }
+
+			   $percentage = floatval($noa['percentage']);
+
+			if($noa['work_related'] == 'Yes'){
+				if($noa['percentage'] == ''){
+					$company_charge = number_format($net_bill,2, '.',',');
+					$personal_charge = number_format(0,2, '.',',');
+					if($net_bill >= $previous_mbl){
+						$remaining_mbl = number_format(0,2, '.',',');
+					}else if($net_bill < $previous_mbl){
+						$remaining_mbl = number_format($previous_mbl - $net_bill,2, '.',',');
+					}
+				}else if($noa['percentage'] != ''){
+					
+					if($net_bill <= $previous_mbl){
+						$company_charge = number_format($net_bill,2, '.',',');
+						$personal_charge = number_format(0,2, '.',',');
+						$remaining_mbl = number_format($previous_mbl - $net_bill,2, '.',',');
+					}else if($net_bill > $previous_mbl){
+						$converted_percent = $percentage/100;
+						$initial_company_charge = floatval($converted_percent) * $net_bill;
+						$initial_personal_charge = $net_bill - floatval($initial_company_charge);
+
+						if(floatval($initial_company_charge) <= $previous_mbl){
+							$result = $previous_mbl - floatval($initial_company_charge);
+							$int_personal = floatval($initial_personal_charge) - floatval($result);
+							$personal_charge = number_format($int_personal,2, '.',',');
+							$company_charge = number_format($previous_mbl,2, '.',',');
+							$remaining_mbl = number_format(0,2, '.',',');
+					
+						}else if(floatval($initial_company_charge) > $previous_mbl){
+							$personal_charge = number_format($initial_personal_charge,2, '.',',');
+							$company_charge = number_format($initial_company_charge,2, '.',',');
+							$remaining_mbl = number_format(0,2, '.',',');
+						}
+					}
+					
+				}
+			}else if($noa['work_related'] == 'No'){
+				if($noa['percentage'] == ''){
+					if($net_bill <= $previous_mbl){
+						$company_charge = number_format($net_bill,2, '.',',');
+						$personal_charge = number_format(0,2, '.',',');
+						$remaining_mbl = number_format($previous_mbl - floatval($company_charge),2, '.',',');
+					}else if($net_bill > $previous_mbl){
+						$company_charge = number_format($previous_mbl,2, '.',',');
+						$personal_charge = number_format($net_bill - $previous_mbl,2, '.',',');
+						$remaining_mbl = number_format(0,2, '.',',');
+					}
+				}else if($noa['percentage'] != ''){
+					if($net_bill <= $previous_mbl){
+						$company_charge = number_format($net_bill,2, '.',',');
+						$personal_charge = number_format(0,2, '.',',');
+						$remaining_mbl = number_format($previous_mbl - floatval($net_bill),2, '.',',');
+					}else if($net_bill > $previous_mbl){
+						$converted_percent = $percentage/100;
+						$initial_personal_charge = $converted_percent * $net_bill;
+						$initial_company_charge = $net_bill - floatval($initial_personal_charge);
+						if($initial_company_charge <= $previous_mbl){
+							$result = $previous_mbl - $initial_company_charge;
+							$initial_personal = $initial_personal_charge - $result;
+							if($initial_personal < 0 ){
+								$personal_charge = number_format(0,2, '.',',');
+								$company_charge = number_format($initial_company_charge + $initial_personal_charge,2, '.',',');
+								$remaining_mbl = number_format($previous_mbl - floatval($company_charge),2, '.',',');
+							}else if($initial_personal >= 0){
+								$personal_charge = number_format($initial_personal,2, '.',',');
+								$company_charge = number_format($previous_mbl,2, '.',',');
+								$remaining_mbl = number_format(0,2, '.',',');
+							}
+						}else if($initial_company_charge > $previous_mbl){
+							$personal_charge = number_format($initial_personal_charge,2, '.',',');
+							$company_charge = number_format($initial_company_charge,2, '.',',');
+							$remaining_mbl = number_format(0,2, '.',',');
+						}
+					}
+				}
+			}
+			}
+
+			$row[] = $loa_noa;
 			$row[] = $fullname;
 			$row[] = $bill['business_unit'];
 			$row[] = $wpercent. ', '.$nwpercent;

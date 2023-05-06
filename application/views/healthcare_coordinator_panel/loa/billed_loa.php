@@ -22,14 +22,14 @@
           <li class="nav-item">
             <a class="nav-link active" href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/billed" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">BILLING</span>
+              <span class="hidden-xs-down fs-5 font-bold">BILLED LOA</span>
             </a>
           </li>
 
           <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/for-charging" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">HISTORY OF BILLING</span>
+              <span class="hidden-xs-down fs-5 font-bold">FOR PAYMENT</span>
             </a>
           </li>
 
@@ -41,7 +41,7 @@
           </li> -->
         </ul>
 
-        <form method="POST" action="<?php echo base_url(); ?>healthcare-coordinator/loa/matched-bill/submit">
+        <form id="billedForm" method="POST" action="<?php echo base_url(); ?>healthcare-coordinator/loa/matched-bill/submit">
           <div class="row pt-2 pb-2">
             <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
             <div class="col-lg-5 ps-5 pb-3 pt-1 pb-4">
@@ -135,42 +135,68 @@
 <script>
   const baseUrl = "<?php echo base_url()?>";
   $(document).ready(function() {
-    $('#billedLoaTable').submit(function(event) {
-      event.preventDefault();
-      let $data = new FormData($(this)[0]);
-      $.ajax({
-        type: "POST",
-        url: $(this).attr('action'),
-        data: $data,
-        dataType: "json",
-        processData: false,
-        contentType: false,
-        success: function(response) {
-          const { 
-              token,status,message
-          } = response;
 
-          if(status == 'success'){
-              swal({
-                  title: 'Success',
-                  text: message,
-                  timer: 3000,
-                  showConfirmButton: false,
-                  type: 'success'
-              });
-              window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/for-charging';
-          }
-          if(status == 'failed'){
-              swal({
-                  title: 'Error',
-                  text: message,
-                  timer: 3000,
-                  showConfirmButton: true,
-                  type: 'error'
-              });
-          }      
-        }
-      });
+    $('#billedForm').submit(function(){
+      $.confirm({
+            title: '<strong>Confirmation!</strong>',
+            content: 'Are you sure? Please review before you proceed.',
+            type: 'blue',
+            buttons: {
+                confirm: {
+                    text: 'Yes',
+                    btnClass: 'btn-blue',
+                    action: function(){
+
+                        $.ajax({
+                            url: $(this).attr('action'),
+                            method: "POST",
+                            data: {
+                              'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
+                              'billed-hospital-filter' : $('#billed-hospital-filter').val(),
+                              'start-date' : $('#start-date').val(),
+                              'end-date' : $('#end-date').val(),
+                            },
+                            dataType: "json",
+                            success: function(response){
+                              const {
+                                  token,status,message
+                              } = response;
+
+                                if(status == 'success'){
+                                    swal({
+                                        title: 'Success',
+                                        text: message,
+                                        timer: 3000,
+                                        showConfirmButton: false,
+                                        type: 'success'
+                                    });
+                                    setTimeout(function () {
+                                        window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/billed';
+                                    }, 2600);
+                                }
+                                if(status == 'failed'){
+                                    swal({
+                                        title: 'Error',
+                                        text: message,
+                                        timer: 3000,
+                                        showConfirmButton: true,
+                                        type: 'error'
+                                    });
+                                }
+                            }
+                        }); 
+                    },
+                },
+                cancel: {
+                    btnClass: 'btn-dark',
+                    action: function() {
+                        // close dialog
+                    }
+                },
+            }
+        });
+   
+    });
       
       
 
@@ -272,7 +298,6 @@
     });
 
   });
-});
 
     
     const viewPDFBill = (pdf_bill,loa_no) => {

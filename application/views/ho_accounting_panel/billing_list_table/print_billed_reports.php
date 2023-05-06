@@ -284,7 +284,7 @@
                         <table class="table table-sm" id="billedChargingTable">
                             <thead>
                                 <tr>
-                                    <th class="fw-bold text-center">LOA No.</th>
+                                    <th class="fw-bold text-center">LOA/NOA No.</th>
                                     <th class="fw-bold text-center">Name</th>
                                     <th class="fw-bold text-center">Business Unit</th>
                                     <th class="fw-bold text-center">Percentage</th>

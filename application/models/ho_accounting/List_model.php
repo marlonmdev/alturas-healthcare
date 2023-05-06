@@ -566,6 +566,14 @@ class List_model extends CI_Model{
     }
     //end billing for charging datatable
 
+    function get_loa_info($loa_id){
+        return $this->db->get_where('loa_requests', ['loa_id' => $loa_id])->row_array();
+    }
+
+    function get_noa_info($noa_id){
+        return $this->db->get_where('noa_requests', ['noa_id' => $noa_id])->row_array();
+    }
+
     function submit_forPayment_bill($payment_no) {
         $this->db->set('payment_no', $payment_no)
                 ->set('status', 'Payment')

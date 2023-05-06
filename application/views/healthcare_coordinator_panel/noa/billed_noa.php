@@ -43,7 +43,7 @@
             >
           </li>
         </ul>
-        <form method="POST" action="<?php echo base_url(); ?>healthcare-coordinator/noa/matched-bill/submit">
+        <form id="billedTableLoaNoa" method="POST" action="<?php echo base_url(); ?>healthcare-coordinator/noa/matched-bill/submit">
         <div class="row pt-2 pb-2">
               <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
                 <div class="col-lg-5 ps-5 pb-3 pt-1 pb-4">
@@ -106,7 +106,7 @@
                 </div>
               </div>
               <div class="offset-10 pt-2 pb-4">
-                  <button class="btn btn-info fw-bold fs-5 btn-lg" type="submit" id="proceed-btn" disabled><i class="mdi mdi-send"></i> Proceed</button>
+                  <button class="btn btn-info fw-bold fs-5 btn-lg" type="submit" id="proceed-btn" ><i class="mdi mdi-send"></i> Proceed</button>
               </div>
             </div>
       </div>
@@ -125,51 +125,66 @@
 
   $(document).ready(function() {
 
-    $('#billedLoaTable').submit(function(){
-      $.ajax({
-        url: $(this).attr('action'),
-        data: {
-          'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
-          'hp_id' : $('#billed-hospital-filter').val(),
-          'startDate' : $('#start-date').val(),
-          'endDate' : $('#end-date').val(),
-        },
-        type: 'POST',
-        dataType: 'json',
-        success: function(response) {
-            const {
-                token,status,message
-            } = response;
+    $('#billedTableLoaNoa').submit(function(){
+      $.confirm({
+            title: '<strong>Confirmation!</strong>',
+            content: 'Are you sure? Please review before you proceed.',
+            type: 'blue',
+            buttons: {
+                confirm: {
+                    text: 'Yes',
+                    btnClass: 'btn-blue',
+                    action: function(){
 
-            switch(status){
-                
-                case 'failed':
-                    swal({
-                        title: 'Error',
-                        text: message,
-                        timer: 3000,
-                        showConfirmButton: true,
-                        type: 'error'
-                    });
-                break;
+                        $.ajax({
+                            url: $(this).attr('action'),
+                            method: "POST",
+                            data: {
+                              'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
+                              'hp_id' : $('#billed-hospital-filter').val(),
+                              'startDate' : $('#start-date').val(),
+                              'endDate' : $('#end-date').val(),
+                            },
+                            dataType: "json",
+                            success: function(response){
+                              const {
+                                  token,status,message
+                              } = response;
 
-                case 'success':
-                    swal({
-                        title: 'Success',
-                        text: message,
-                        timer: 3000,
-                        showConfirmButton: false,
-                        type: 'success'
-                    });
-                    setTimeout(function () {
-                        window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/for-charging';
-                    }, 2600);
-                    
-                break;
+                                if(status == 'success'){
+                                    swal({
+                                        title: 'Success',
+                                        text: message,
+                                        timer: 3000,
+                                        showConfirmButton: false,
+                                        type: 'success'
+                                    });
+                                    setTimeout(function () {
+                                        window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/for-charging';
+                                    }, 2600);
+                                }
+                                if(status == 'failed'){
+                                    swal({
+                                        title: 'Error',
+                                        text: message,
+                                        timer: 3000,
+                                        showConfirmButton: true,
+                                        type: 'error'
+                                    });
+                                }
+                            }
+                        }); 
+                    },
+                },
+                cancel: {
+                    btnClass: 'btn-dark',
+                    action: function() {
+                        // close dialog
+                    }
+                },
             }
-        }
-
-      });
+        });
+   
     });
 
     let billedTable = $('#billedLoaTable').DataTable({

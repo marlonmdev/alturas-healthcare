@@ -2,7 +2,7 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">HISTORY OF CHARGES</h4>
+        <h4 class="page-title ls-2">LEDGER</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -18,7 +18,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
-        <ul class="nav nav-tabs mb-4" role="tablist">
+       <!--  <ul class="nav nav-tabs mb-4" role="tablist">
           <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/billed" role="tab">
               <span class="hidden-sm-up"></span>
@@ -39,7 +39,7 @@
               <span class="hidden-xs-down fs-5 font-bold">LEDGER</span>
             </a>
           </li>
-        </ul>
+        </ul> -->
 
         <div class="card shadow">
           <div class="card-body">

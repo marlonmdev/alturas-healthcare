@@ -7,9 +7,7 @@
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Member</li>
-              <li class="breadcrumb-item active" aria-current="page">
-                Approved NOA
-              </li>
+              <li class="breadcrumb-item active" aria-current="page">Approved</li>
             </ol>
           </nav>
         </div>
@@ -55,14 +53,14 @@
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-hover" id="memberApprovedNoa">
-                <thead>
+                <thead style="background-color:#00538C">
                   <tr>
-                    <th class="fw-bold">NOA NO.</th>
-                    <th class="fw-bold">DATE OF ADMISSION</th>
-                    <th class="fw-bold">NAME OF HOSPITAL</th>
-                    <th class="fw-bold">DATE OF REQUEST</th>
-                    <th class="fw-bold">STATUS</th>
-                    <th class="fw-bold">ACTION</th>
+                    <th class="fw-bold" style="color: white">NOA NO.</th>
+                    <th class="fw-bold" style="color: white">DATE OF ADMISSION</th>
+                    <th class="fw-bold" style="color: white">NAME OF HOSPITAL</th>
+                    <th class="fw-bold" style="color: white">DATE OF REQUEST</th>
+                    <th class="fw-bold" style="color: white">STATUS</th>
+                    <th class="fw-bold" style="color: white">ACTION</th>
                   </tr>
                 </thead>
                 <tbody>

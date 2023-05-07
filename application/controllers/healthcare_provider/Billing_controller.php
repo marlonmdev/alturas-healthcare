@@ -794,9 +794,11 @@ class Billing_controller extends CI_Controller {
 	function upload_noa_pdf_bill_form() {
         $noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
         $noa = $this->billing_model->get_noa_to_bill($noa_id);
+        $mbl = $this->billing_model->get_member_mbl($noa['emp_id']);
         $data['noa_id'] = $this->uri->segment(5);
         $data['noa_no'] = $noa['noa_no'];
         $data['healthcard_no'] = $noa['health_card_no'];
+        $data['remaining_balance'] = $mbl['remaining_balance'];
         $data['patient_name'] = $noa['first_name'].' '. $noa['middle_name'].' '. $noa['last_name'].' '.$noa['suffix'];
         $data['billing_no'] = 'BLN-' . strtotime(date('Y-m-d h:i:s'));
 		$data['user_role'] = $this->session->userdata('user_role');
@@ -805,7 +807,7 @@ class Billing_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
-    function submit_noa_pdf_bill() {
+    function submit_noa_pdf_bill() { 
         $this->security->get_csrf_hash();
         $noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
         $billing_no = $this->input->post('billing-no', TRUE);

@@ -13,7 +13,7 @@ class Pages_controller extends CI_Controller {
 		if ($logged_in !== true && $user_role !== 'member') {
 			redirect(base_url());
 		}
-	}
+	} 
 
 	function index() {
 		$this->load->model('member/count_model');
@@ -61,7 +61,7 @@ class Pages_controller extends CI_Controller {
 		$data['pending'] = $this->loa_model->db_get_status_pending($emp_id);
 		$data['mbl'] = $this->loa_model->db_get_mbl($emp_id);
 		$this->load->view('templates/header', $data);
-		$this->load->view('member_panel/loa/request_loa_form');
+		$this->load->view('member_panel/loa/request_loa_form',$data);
 		$this->load->view('templates/footer');
 	}
 

@@ -97,6 +97,10 @@
         $("#search-select").on('change', function(){
             searchMethods();
         });
+        $("#search-form-1")[0].reset();
+            $("#search-by-name").addClass('d-none');
+            $("#search-by-healthcard").removeClass('d-none is-invalid is-valid');
+            $("#healthcard-no").focus();
     });    
 
     const searchMethods = () => {

@@ -128,8 +128,8 @@
         let $data = new FormData($(this)[0]);
         if(mbl<=0){
         $.alert({
-          title: "<strong>Unable to request!</strong>",
-          content: "<div></span>Your MBL balance is currently empty.</div>",
+          title: "<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Unable to Request</h3>",
+          content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it looks like your MBL balance is currently empty. Please ensure that you have enough MBL in your account before attempting to make a request. Thank you for your understanding.</div>",
           type: "red",
           buttons: {
               ok: {

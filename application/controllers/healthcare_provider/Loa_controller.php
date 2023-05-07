@@ -13,7 +13,7 @@ class Loa_controller extends CI_Controller {
           redirect(base_url());
         }
     }
-
+ 
 	
     function fetch_pending_loa_requests(){
 			$this->security->get_csrf_hash();

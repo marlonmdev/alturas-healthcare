@@ -111,7 +111,7 @@
                           login_validated(res.token, res.user_id, res.emp_id, res.fullname, res.user_role, res.dsg_hcare_prov, res.doctor_id, res.logged_in, res.next_route, res.next_page);
                     }
                 },
-            });
+            }); 
         }
 
         const login_validated = (token, user_id, emp_id, fullname, user_role, dsg_hcare_prov, doctor_id, logged_in,

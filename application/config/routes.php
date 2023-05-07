@@ -97,7 +97,7 @@ $route['member/personal-charges/paid/fetch'] = 'member/pcharges_controller/fetch
 // End of Member Routes
 //======================================================================================================
 
-
+ 
 //======================================================================================================
 // Start of HealthCare Provider (Hospital, Clinics, and Laboratories Users) Routes
 $route['healthcare-provider/dashboard'] = 'healthcare_provider/pages_controller';

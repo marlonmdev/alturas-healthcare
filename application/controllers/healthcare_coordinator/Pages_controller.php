@@ -260,7 +260,7 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('healthcare_coordinator_panel/noa/pending_noa_requests');
 		$this->load->view('templates/footer');
 	}
-
+ 
 	function view_approved_noa_list() {
 		$this->load->model('healthcare_coordinator/noa_model');
 		$data['hcproviders'] = $this->noa_model->db_get_healthcare_providers();

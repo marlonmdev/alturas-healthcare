@@ -42,7 +42,7 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
-	function disapproved_loa_requests() {
+	function disapproved_loa_requests() { 
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_provider_panel/loa/disapproved_loa_list');

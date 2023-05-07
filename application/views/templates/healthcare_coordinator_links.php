@@ -47,13 +47,28 @@
                 </ul>
               </li> -->
 
-<li class="sidebar-item <?php echo $this->uri->segment(2) == 'noa' ? 'selected' : ''; ?>">
-  <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
-    <i class="mdi mdi-file-chart"></i>
-    <span class="hide-menu ls-1">NOA</span>
-  </a>
+  <li class="sidebar-item <?php echo $this->uri->segment(2) == 'noa' ? 'selected' : ''; ?>">
+    <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
+      <i class="mdi mdi-file-chart"></i>
+      <span class="hide-menu ls-1">NOA</span>
+    </a>
+    <ul aria-expanded="false" class="collapse first-level">
+                  <li class="sidebar-item">
+                    <a href="<?php echo base_url(); ?>healthcare-coordinator/noa/request-noa" class="sidebar-link"
+                      ><i class="mdi mdi-note-plus"></i
+                      ><span class="hide-menu ls-1">NOA Requisition</span>
+                    </a>
+                  </li>
+                  <li class="sidebar-item">
+                    <a href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list" class="sidebar-link"
+                      ><i class="mdi mdi-note-outline"></i
+                      ><span class="hide-menu ls-1">NOA Request List</span>
+                    </a>
+                  </li>
+                </ul>
+  </li>
 
-              <li class="sidebar-item <?php echo $this->uri->segment(2) == 'bill' ? 'selected' : ''; ?>">
+              <!-- <li class="sidebar-item <?php echo $this->uri->segment(2) == 'bill' ? 'selected' : ''; ?>">
                 <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
                   <i class="mdi mdi-file-check"></i>
                   <span class="hide-menu ls-1">Billing</span>
@@ -93,7 +108,8 @@
                     </a>
                   </li>
                 </ul>
-              </li>
+              </li> -->
+
 
 <li class="sidebar-item <?php echo $this->uri->segment(2) == 'bill' ? 'selected' : ''; ?>">
   <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">

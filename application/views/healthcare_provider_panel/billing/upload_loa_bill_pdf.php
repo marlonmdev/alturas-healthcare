@@ -111,6 +111,8 @@
     }
   }
   
+ 
+
   const form = document.querySelector('#pdfBillingForm');
   $(document).ready(function(){
     $('#pdfBillingForm').submit(function(event){
@@ -154,5 +156,98 @@
       $('#pdfBillingForm')[0].reset();
       pdfPreview.innerHTML = "";
     });   
+
+          //extract pdf text 
+        let pdfFileInput = document.getElementById('pdf-file');
+
+      pdfFileInput.addEventListener('change', function() {
+      let reader = new FileReader();
+      reader.onload = function() {
+          let typedarray = new Uint8Array(this.result);
+          pdfjsLib.getDocument(typedarray).promise.then(function(pdf) {
+          let numPages = pdf.numPages;
+          let pageNum = 1;
+          pdf.getPage(pageNum).then(function(page) {
+              page.getTextContent().then(function(textContent) {
+                let sortedItems = textContent.items
+                    .map(function(item) {
+                      return {text: item.str.toLowerCase(), x: item.transform[4], y: item.transform[5]};
+                    })
+                    .sort(function(a, b) {
+                      if (Math.abs(a.y - b.y) < 5) {
+                        return a.x - b.x;
+                      } else {
+                        return b.y - a.y;
+                      }
+                    })
+                    .reduce(function(groups, item) {
+                      const lastGroup = groups[groups.length - 1];
+                      if (lastGroup && Math.abs(lastGroup.y - item.y) < 5) {
+                        lastGroup.text += ' ' + item.text;
+                      } else {
+                        groups.push({text: item.text, x: item.x, y: item.y});
+                      }
+                      return groups;
+                    }, []);
+
+                  let finalResult = sortedItems.reduce(function(result, item) {
+                    //remove all the dots. that not used in group text
+                    const pattern = /\.{2,}(?!\.)/g;
+                    return result = result + '\n' + item.text.replace(pattern, '');
+                  }, '').trim();
+
+                
+              //get only the text between hospital charges and professional fee
+              const pattern = /hospital charges(.*?)professional fee/si;
+              const matchs = finalResult.match(pattern);
+              const result = matchs ? matchs[1] : null;
+              console.log(result);
+              const lines = result.split("\n");
+
+              for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const matches = line.match(/^(.*\S)?\s+(\S+(?=\s|$))/);
+
+                if (matches !== null) {
+                  const beforeLastGroup = matches[1] || "";
+                  const lastGroup = matches[2] || "";
+
+                  console.log(`Line ${i + 1}:`);
+                  console.log(`Before last group: ${beforeLastGroup}`);
+                  console.log(`Last group: ${lastGroup}`);
+                  console.log("");
+                }
+              }
+              //get each new text line and store in an array
+              // const lines = finalResult.split(/\r?\n/);
+              // console.log(lines);
+              // get only the last group text in a line
+              // const lastGroup = result.match(/\S+(?=\s|$)(?!.*\S)/)[0];
+              // console.log(lastGroup);
+              // const regexs = /^.*\s(\S+(?=\s|$))|(\S+(?=\s|$))(?:.*)?$/;
+              // const matches = result.match(regexs);
+              // console.log(matches);
+              // const textBeforeLastNonSpaceSequence = matches[1] || "";
+              // const lastNonSpaceSequenceAndText = matches[2] || "";
+              // let result = text1.replace(/subtotal\s*[\.]*\s*[\w\s]*\s*\(([\d,\.]+)\)/, "$1"); 
+              const regex = /subtotal\s*\.*\s*\(([\d,\.]+)\)/i;
+              // const regex = /subtotal\s*\.{26}\s*\(([\d,\.]+)\)/i;
+                  const match = finalResult.match(regex);
+                  console.log("match",match);
+                  if (match) {
+                  const subtotalValue = parseFloat(match[1].replace(/,/g, ""));
+                  document.getElementsByName("net-bill")[0].value = subtotalValue;
+                  console.log(subtotalValue);
+                  } else {
+                  console.log("Subtotal value not found");
+                  }
+              }); 
+          });
+          }, function(error) {
+          console.error(error);
+          });
+      };
+      reader.readAsArrayBuffer(this.files[0]);
+      });
   });
 </script>

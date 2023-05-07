@@ -94,6 +94,10 @@
 
       $(document).ready(function(){
         /* This is a jQuery function that is used to hide and show the search form. */
+            $("#search-form-1")[0].reset();
+            $("#search-by-name").addClass('d-none');
+            $("#search-by-healthcard").removeClass('d-none is-invalid is-valid');
+            $("#healthcard-no").focus();
         $("#search-select").on('change', function(){
           if($(this).val() == "healthcard"){
             $("#search-form-1")[0].reset();
@@ -249,7 +253,7 @@
           inputStream : {
               name : "Live",
               type : "LiveStream",
-              target: document.querySelector('#scanner-container')
+              target: document.querySelector('#healthcard-no')
             },
             decoder : {
                 readers : ["ean_reader"]

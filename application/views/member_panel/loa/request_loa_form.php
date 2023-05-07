@@ -132,8 +132,13 @@
                   </select>
                   <em id="loa-request-type-error" class="text-danger"></em>
                 </div>
-              </div>
 
+                <div class="col-sm-3 mb-2">
+                  <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i>MBL Balance</label>
+                  <input type="number" class="form-control" name="remaining_mbl" id="remaining_mbl" value="<?= $mbl['remaining_balance'] ?>" disabled>
+                </div>
+                
+              </div>
               <div class="form-group row">
                 <div class="col-lg-12 col-sm-12 mb-2 d-none" id="med-services-div">
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Select Medical Service/s</label><br>
@@ -142,9 +147,8 @@
                 </div>
               </div>
 
-              <input type="hidden" class="form-control" name="price" id="price">
-              <input type="hidden" class="form-control" name="total_price" id="total_price">
-              <input type="hidden" class="form-control" name="remaining_mbl" id="remaining_mbl" value="<?= $mbl['remaining_balance'] ?>">
+              <input type="text" class="form-control" name="price" id="price">
+              <input type="number" class="form-control" name="total_price" id="total_price">
 
               <div class="form-group row">
                 <div class="col-sm-3 mb-2">
@@ -223,35 +227,9 @@
 
               <div class="row mt-2">
                 <div class="col-sm-12 mb-2 d-flex justify-content-start">
-                  <!-- <?php
-                    $emp_id=$this->session->userdata('emp_id');
-                    $pending = $this->loa_model->db_get_status_pending($emp_id);
-                    $disabled = !empty($pending) && (!isset($pending['status']) || $pending['status'] == 'Pending');
-                  ?>
-                  <button type="submit" class="btn btn-primary me-2"<?php if($disabled) echo "disabled";?>><i class="mdi mdi-content-save-settings"></i> SUBMIT</button> -->
-
-
-
-                  <?php
-                    $emp_id = $this->session->userdata('emp_id');
-                    $pending = $this->loa_model->db_get_status_pending($emp_id);
-    
-                    // Retrieve remaining balance from the database
-                    $this->load->database(); // Load database library
-                    $query = $this->db->get('max_benefit_limits');
-                    $balance = $query->row()->remaining_balance;
-                    $disabled = !empty($pending) && (!isset($pending['status']) || $pending['status'] == 'Pending' || $balance <= 100);
-                  ?>
-                  <button type="submit" class="btn btn-primary me-2" <?php if($disabled) echo "disabled";?>><i class="mdi mdi-content-save-settings"></i> 
-                    <?php 
-                      if ($balance <= 100){
-                        echo "You have no MBL balance to submit form";
-                      }else{
-                        echo "SUBMIT";
-                    }?>
+                  <button type="submit" class="btn btn-primary me-2" id="submit"><i class="mdi mdi-content-save-settings"></i> 
+                  SUBMIT
                   </button>
-
-
                   <a href="#" onclick="window.history.back()" class="btn btn-danger"><i class="mdi mdi-arrow-left-bold"></i> GO BACK</a>
                 </div>
               </div>
@@ -268,6 +246,12 @@
 <script>
   const baseUrl = "<?= base_url() ?>";
   $(document).ready(function() {
+
+    $("#remaining_mbl").css("border-color", "default");
+    if($('#remaining_mbl').val()==0){
+      $("#remaining_mbl").css("border-color", "red");
+    }
+
     $('#healthcare-provider').on('change', function(){
       const hp_id = $(this).val();
       const token = `<?php echo $this->security->get_csrf_hash(); ?>`;
@@ -289,7 +273,6 @@
       }
     });
 
-
     $('#med-services-wrapper').on('change', function() {
       var prices = [];
       $('#med-services option:selected').each(function() {
@@ -301,11 +284,24 @@
       $('#price').val(prices.join(","));
       $('#total_price').val(total.toFixed(2));
     });
-
-
+    
     $('#memberLoaRequestForm').submit(function(event) {
       event.preventDefault();
       let $data = new FormData($(this)[0]);
+      if($('#remaining_mbl').val()==0){
+        $.alert({
+          title: "<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Unable to Request</h3>",
+          content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it looks like your MBL balance is currently empty. Please ensure that you have enough MBL in your account before attempting to make a request. Thank you for your understanding.</div>",
+          type: "red",
+          buttons: {
+              ok: {
+                  text: "OK",
+                  btnClass: "btn-danger",
+              },
+          },
+      });
+      
+      }else{
       $.ajax({
         type: "POST",
         url: $(this).attr('action'),
@@ -400,7 +396,7 @@
               break;
           }
         },
-      })
+      })}
     });
 
 

@@ -16,7 +16,7 @@
                     </nav>
                 </div>
             </div>
-        </div>
+        </div> 
     </div>
     <!-- End Bread crumb and right sidebar toggle -->
     <hr>
@@ -77,15 +77,11 @@
                         </div>
 
                         <div class="col-lg-5">
-                            <label class="form-label fs-5 ls-1">
-                                <i class="mdi mdi-asterisk text-danger ms-1"></i> Net Bill
-                            </label>
+                        <label class="form-label fs-5 ls-1">Remaining MBL Balance</label>
                             <div class="input-group mb-3">
                                 <span class="input-group-text bg-cyan text-white">&#8369;</span>
-                                <input type="number" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" placeholder="Enter Net Bill" required>
-                                <div class="invalid-feedback fs-6">
-                                    Net Bill is required
-                                </div>
+                                <input type="number" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="<?= $remaining_balance ?>"  disabled>
+                                <input type="number" class="form-control fw-bold ls-1" id="net-bill" name="net-bill"  hidden required>
                             </div>
                         </div>
                     </div>
@@ -156,21 +152,22 @@
                     const { token, status, message, billing_id } = response;
 
                     if(status == 'success'){
-                        swal({
-                            title: 'Success',
-                            text: message,
-                            timer: 3000,
-                            showConfirmButton: false,
-                            type: 'success'
-                        });
+                        // swal({
+                        //    /// healthcare-provider/billing/bill-noa/upload-pdf/(:any)/success
+                        //     title: 'Success',
+                        //     text: message,
+                        //     timer: 3000,
+                        //     showConfirmButton: false,
+                        //     type: 'success'
+                        // });
                         
-                        setTimeout(function() {
-                            window.location.href = `${baseUrl}healthcare-provider/noa-requests/billed`;
-                        }, 3000);
-
                         // setTimeout(function() {
-                        //     window.location.href = `${baseUrl}healthcare-provider/billing/bill-noa/upload-pdf/${billing_id}/success`;
-                        // }, 300);
+                        //     window.location.href = `${baseUrl}healthcare-provider/noa-requests/billed`;
+                        // }, 3000);
+
+                        setTimeout(function() {
+                            window.location.href = `${baseUrl}healthcare-provider/billing/bill-noa/upload-pdf/${billing_id}/success`;
+                        }, 300);
                     }else{
                         swal({
                             title: 'Failed',
@@ -191,6 +188,48 @@
             pdfPreview.innerHTML = '';
         });
 
+        //extract pdf text 
+        let pdfFileInput = document.getElementById('pdf-file');
+
+        pdfFileInput.addEventListener('change', function() {
+        let reader = new FileReader();
+        reader.onload = function() {
+            let typedarray = new Uint8Array(this.result);
+            pdfjsLib.getDocument(typedarray).promise.then(function(pdf) {
+            let numPages = pdf.numPages;
+            let pageNum = 1;
+            pdf.getPage(pageNum).then(function(page) {
+                page.getTextContent().then(function(textContent) {
+                let sortedItems = textContent.items.map(function(item) {
+                    return {text: item.str.toLowerCase(), y: item.transform[5]};
+                }).sort(function(a, b) {
+                    return b.y - a.y;
+                });
+                let text = sortedItems.map(function(item) {
+                    return item.text;
+                }).join('');
+                console.log(text);
+
+                // let result = text1.replace(/subtotal\s*[\.]*\s*[\w\s]*\s*\(([\d,\.]+)\)/, "$1"); 
+                const regex = /subtotal\s*\.*\s*\(([\d,\.]+)\)/i;
+                // const regex = /subtotal\s*\.{26}\s*\(([\d,\.]+)\)/i;
+                    const match = text.match(regex);
+                    console.log("match",match);
+                    if (match) {
+                    const subtotalValue = parseFloat(match[1].replace(/,/g, ""));
+                    document.getElementsByName("net-bill")[0].value = subtotalValue;
+                    console.log(subtotalValue);
+                    } else {
+                    console.log("Subtotal value not found");
+                    }
+                }); 
+            });
+            }, function(error) {
+            console.error(error);
+            });
+        };
+        reader.readAsArrayBuffer(this.files[0]);
+        });
        
     });
    

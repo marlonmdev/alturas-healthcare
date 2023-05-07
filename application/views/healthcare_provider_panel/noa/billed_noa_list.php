@@ -14,7 +14,7 @@
       </div>
     </div>
   </div>
-
+ 
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
@@ -170,7 +170,7 @@
     }
     const viewPDFBill = (pdf_bill,noa_no) => {
       $('#viewPDFBillModal').modal('show');
-      $('#pdf-loa-no').html(noa_no);
+      $('#pdf-noa-no').html(noa_no);
 
         let pdfFile = `${baseUrl}uploads/pdf_bills/${pdf_bill}`;
         let fileExists = checkFileExists(pdfFile);

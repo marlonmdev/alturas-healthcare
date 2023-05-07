@@ -157,8 +157,8 @@
       pdfPreview.innerHTML = "";
     });   
 
-          //extract pdf text 
-        let pdfFileInput = document.getElementById('pdf-file');
+      //extract pdf text 
+      let pdfFileInput = document.getElementById('pdf-file');
 
       pdfFileInput.addEventListener('change', function() {
       let reader = new FileReader();
@@ -202,8 +202,8 @@
               const matchs = finalResult.match(pattern);
               const result = matchs ? matchs[1] : null;
               console.log(result);
+              let hospital_charges = {};
               const lines = result.split("\n");
-
               for (let i = 0; i < lines.length; i++) {
                 const line = lines[i];
                 const matches = line.match(/^(.*\S)?\s+(\S+(?=\s|$))/);
@@ -211,13 +211,15 @@
                 if (matches !== null) {
                   const beforeLastGroup = matches[1] || "";
                   const lastGroup = matches[2] || "";
-
+                  hospital_charges[beforeLastGroup]=lastGroup;
                   console.log(`Line ${i + 1}:`);
                   console.log(`Before last group: ${beforeLastGroup}`);
                   console.log(`Last group: ${lastGroup}`);
                   console.log("");
                 }
               }
+
+              console.log("hospital charges",hospital_charges);
               //get each new text line and store in an array
               // const lines = finalResult.split(/\r?\n/);
               // console.log(lines);

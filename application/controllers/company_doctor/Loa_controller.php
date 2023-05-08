@@ -63,7 +63,9 @@ class Loa_controller extends CI_Controller {
 				 
 				}
 		   }
-
+		    $remaining_mbl = 0;
+			$company_charge = 0;
+			$personal_charge = 0;
 		   	$net_bill = floatval($total_fee);
 			$previous_mbl = floatval($loa['remaining_balance']);
 			$percentage = floatval($loa['percentage']);
@@ -762,7 +764,7 @@ class Loa_controller extends CI_Controller {
 			'rx_file' => $row['rx_file'],
 			'req_status' => $req_stat,
 			'work_related' => $row['work_related'],
-			'percentage' => $row['percentage'] != '' ? $row['percentage'].'%' : 'None',
+			'percentage' => $row['percentage'] != '' ? $row['percentage'] : 'None',
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'disapproved_by' =>  $doctor_name,

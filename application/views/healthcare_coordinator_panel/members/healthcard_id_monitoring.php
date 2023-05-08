@@ -7,7 +7,7 @@
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
-              <li class="breadcrumb-item active" aria-current="page">max benefit limit</li>
+              <li class="breadcrumb-item active" aria-current="page">Members' ID</li>
             </ol>
           </nav>
         </div>
@@ -37,7 +37,7 @@
           <li class="nav-item">
             <a class="nav-link active" href="<?php echo base_url(); ?>healthcare-coordinator/members/approved/uploaded-scanned-id-form" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">MBL MONITORING</span>
+              <span class="hidden-xs-down fs-5 font-bold">ID MONITORING</span>
             </a>
           </li>
         </ul>

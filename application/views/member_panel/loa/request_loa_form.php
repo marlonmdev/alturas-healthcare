@@ -303,16 +303,19 @@
             console.log("final",total);
             $('#total_sevices').val(total);
             $.alert({
-              title: "<strong>Unable to Add More Services!</strong>",
-              content: "<div></span>Insufficient MBL</div>",
-              type: "red",
-              buttons: {
-                ok: {
+          title: "<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Unable to Request</h3>",
+          content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it looks like your MBL balance is currently empty. Please ensure that you have enough MBL in your account before attempting to make a request. Thank you for your understanding.</div>",
+          type: "red",
+          buttons: {
+              ok: {
                   text: "OK",
                   btnClass: "btn-danger",
-                },
+                  // action: function(){
+                  //   window.history.back()
+                  // },
               },
-            });
+          },
+      });
           }
     });
     

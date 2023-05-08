@@ -147,8 +147,8 @@
                 </div>
               </div>
 
-              <input type="text" class="form-control" name="price" id="price">
-              <input type="number" class="form-control" name="total_price" id="total_price">
+              <!-- <input type="text" class="form-control" name="price" id="price">
+              <input type="number" class="form-control" name="total_price" id="total_price"> -->
 
               <div class="form-group row">
                 <div class="col-sm-3 mb-2">
@@ -245,6 +245,7 @@
 
 <script>
   const baseUrl = "<?= base_url() ?>";
+  const mbl = $('#remaining_mbl').val();
   $(document).ready(function() {
 
     $("#remaining_mbl").css("border-color", "default");
@@ -274,15 +275,45 @@
     });
 
     $('#med-services-wrapper').on('change', function() {
-      var prices = [];
-      $('#med-services option:selected').each(function() {
-        prices.push(parseFloat($(this).data('price')));
-      });
-      var total = prices.reduce(function(acc, val) {
-        return acc + val;
-      }, 0);
-      $('#price').val(prices.join(","));
-      $('#total_price').val(total.toFixed(2));
+          var prices = [];
+          var total = 0;
+          $('#med-services option:selected').each(function() {
+            var price = $(this).data('price');
+            if (typeof price !== 'undefined') {
+              prices.push(price);
+              console.log("price", price);
+            }
+          });
+          total = prices.reduce(function(acc, val) {
+            return acc + val;
+          }, 0);
+          $('#total_sevices').val(total);
+          $("#remaining_mbl").val(mbl);
+          console.log("total",total);
+          if (total > mbl) {
+            var lastIndex = $('#med-services option:selected').length - 1;
+            var lastOption = $('#med-services option:selected').eq(lastIndex);
+            lastOption.prop('selected', false);
+            // Trigger the Chosen plugin to update the display
+            $('#med-services').trigger('chosen:updated');
+            prices.pop();
+            total = prices.reduce(function(acc, val) {
+              return acc + val;
+            }, 0);
+            console.log("final",total);
+            $('#total_sevices').val(total);
+            $.alert({
+              title: "<strong>Unable to Add More Services!</strong>",
+              content: "<div></span>Insufficient MBL</div>",
+              type: "red",
+              buttons: {
+                ok: {
+                  text: "OK",
+                  btnClass: "btn-danger",
+                },
+              },
+            });
+          }
     });
     
     $('#memberLoaRequestForm').submit(function(event) {

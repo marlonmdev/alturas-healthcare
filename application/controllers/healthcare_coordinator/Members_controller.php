@@ -316,7 +316,7 @@ class Members_controller extends CI_Controller {
 			$custom_actions = '<a href="' . $view_url . '" data-bs-toggle="tooltip" title="View Member Profile"><i class="mdi mdi-account-card-details fs-2 text-info"></i></a>';
 
 			$emp_id = $this->myhash->hasher($member['emp_id'], 'encrypt');
-			$custom_view = '<a class="fw-bold" href="JavaScript:void(0)" onclick="viewImage(\''.$emp_id.'\')">View ID</a>';
+			$custom_view = '<a class="fw-bold ps-4" href="JavaScript:void(0)" onclick="viewImage(\''.$emp_id.'\')">View ID</a>';
 
 			// this data will be rendered to the datatable
 			$row[] = $member['member_id'];

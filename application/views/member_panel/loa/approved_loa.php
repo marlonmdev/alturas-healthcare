@@ -88,7 +88,7 @@
     </div>
     <?php include 'request_loa_cancellation.php'; ?>
   </div>
-  <?php include 'view_approved_loa_details.php'; ?>
+  <?php include 'view_approved_loa_detail.php'; ?>
 </div>
 
   
@@ -193,10 +193,11 @@
           attending_physician,
           rx_file,
           req_status,
-          work_related
+          work_related,
+          percentage
         } = res;
 
-        $("#viewLoaModal").modal("show");
+        $("#viewAppLoaModal").modal("show");
 
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
@@ -228,7 +229,36 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
-        $('#work-related-val').html(work_related);
+        if(work_related == 'Yes'){ 
+					if(percentage == ''){
+					  wpercent = '100% W-R';
+					  nwpercent = '';
+					}else{
+					   wpercent = percentage+'%  W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   nwpercent = '';
+					   }else{
+						   nwpercent = result+'% Non W-R';
+					   }
+					  
+					}	
+			   }else if(work_related == 'No'){
+				   if(percentage == ''){
+					   wpercent = '';
+					   nwpercent = '100% Non W-R';
+					}else{
+					   nwpercent = percentage+'% Non W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   wpercent = '';
+					   }else{
+						   wpercent = result+'%  W-R';
+					   }
+					 
+					}
+			   }
+        $('#a-percentage').html(wpercent+', '+nwpercent);
       }
     });
   }

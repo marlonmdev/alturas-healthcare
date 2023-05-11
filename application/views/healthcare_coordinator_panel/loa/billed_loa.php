@@ -355,16 +355,27 @@
 
           fullname += bill.first_name+' '+bill.middle_name+' '+bill.last_name+' '+bill.suffix;
           hp_name += bill.hp_name;
-    
-           $.each(service, function(index, item){
-            let op_price = parseFloat(item.op_price);
-            
+          
+          if(bill.request_type == 'Consultation'){
+            let services = parseFloat(bill.total_services);
+
             service_table += ' <tr> ' +
+                                '<td class="text-center ls-1">Consultation</td>' +
+                                '<td class="text-center ls-1">'+services.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
+                              '</tr>' ;
+          }else{
+            $.each(service, function(index, item){
+              let op_price = parseFloat(item.op_price);
+            
+              service_table += ' <tr> ' +
                                 '<td class="text-center ls-1">'+item.item_description+'</td>' +
                                 '<td class="text-center ls-1">'+op_price.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
                               '</tr>' ;
+            
            });
 
+          }
+         
            let total_services = parseFloat(bill.total_services);
            if(parseFloat(bill.medicines) != ''){
             service_table +=  '<tr>' +

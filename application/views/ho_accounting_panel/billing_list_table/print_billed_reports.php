@@ -52,7 +52,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="row">
+            <!-- <div class="row">
                 <div class="col-lg-3 ps-5 pb-3 pt-1 pb-4">
                     <div class="input-group">
                         <input type="hidden" name="token" id="token" value="<?php echo $this->security->get_csrf_hash(); ?>">
@@ -69,10 +69,10 @@
                     </div>
                 </div>
                
-            </div>
-            <div  id="billing-container" style="display:none">
+            </div> -->
+            <div  id="billing-container" style="display:">
                 <div class="row pt-2">
-                    <div class="col-lg-3 ps-5 pb-3 pt-1 pb-4">
+                    <div class="col-lg-4 ps-5 pb-3 pt-1 pb-4">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text text-dark fw-bold">
@@ -113,7 +113,7 @@
 
                         </div>
                     </div>
-                    <div class="col-lg-4 pt-1 offset-1">
+                    <div class="col-lg-4 pt-1 offset-">
                             <div class="input-group">
                                 <div class="input-group-append">
                                     <span class="input-group-text text-dark ls-1 ms-2">
@@ -140,10 +140,11 @@
                         </div>
                     </div>
                 </div>
-                    <div class="row" id="printableDiv" style="background:#ffff;padding:20px 40px;">
-                        <div class="card shadow"  id="billing-table" style="display:noe">
+                <div class="card shadow">
+                    <div class="row pe-2" id="printableDiv" style="">
+                        <div id="billing-table">
                             <div class="card-body">
-                                <div class="text-center">
+                                <div class="text-center pt-3">
                                     <h4>ALTURAS HEALTHCARE SYSTEM</h4>
                                     <h4>Billing Summary Details</h4>
                                     <h5><span id="b-bu-units"></span></h5>
@@ -157,32 +158,24 @@
                                     <table class="table table-sm" id="billedTable">
                                         <thead>
                                             <tr class="border-secondary border-2 border-0 border-top border-bottom">
-                                                <th class="text-center fw-bold ls-2"><strong>Billing No</strong></th>
-                                                <th class="text-center fw-bold ls-2"><strong>LOA/NOA #</strong></th>
-                                                <th class="text-center fw-bold ls-2"><strong>Employee Name</strong></th>
-                                                <th class="text-center fw-bold ls-2"><strong>Business Unit</strong></th>
-                                                <th class="text-center fw-bold ls-2"><strong>Remaining MBL</strong></th>
-                                                <th class="text-center fw-bold ls-2"><strong>Hospital Bill</strong></th>
-                                                <th class="text-center fw-bold ls-2"><strong>Percentage</strong></th>
-                                                <th class="text-center fw-bold ls-2"><strong>Subtotal Payable</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Billing No</strong></th>
+                                                <th class="fw-bold ls-2"><strong>LOA/NOA #</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Patient Name</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Business Unit</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Remaining MBL</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Percentage</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Hospital Bill</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Company Charge</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Personal Charge</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Total Payable</strong></th>
                                             </tr>
                                         </thead>
-                                        <tbody class="pt-2 text-center" id="billing-tbody" >
-                                 
+                                        <tbody class="pt-2" id="billing-tbody" >
                                         </tbody>
-                                        <tfoot class="text-center">
-                                            <tr>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>       
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td class="fw-bold">TOTAL PAYABLE</td>
-                                                <td class="fw-bold text-center ls-1"><span id="total_bill"></span></td>
-                                            </tr>
-                                        </tfoot>
                                     </table><br>
+                                    <div class="row offset-10">
+                                        <span class="ps-5 fw-bold">TOTAL  <span class="offset-3" id="total_bill"></span></span>
+                                    </div>
                                     <div class="row offset-1 pt-4 ps-5">
                                         <div class="col-4">
                                             <span>Prepared by : </span><br><br>
@@ -201,6 +194,7 @@
                                 </div>
                             </div>
                         </div> 
+                    </div>
             <div  id="charging-container" style="display:none">
                 <div class="row">
                     <div class="col-lg-3 ps-5 pb-3 pt-1 pb-4">
@@ -269,8 +263,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="row" id="printableDivs" style="background:#ffff;padding:20px 40px;">
-                <div class="card shadow pt-2"  id="charging-table" style="display:nne">
+                <div class="row pe-2" id="printableDivs" style="background:#ffff;padding:20px 40px;">
+                <div class="card shadow pt-2"  id="charging-table" style="display:none">
                     <div class="text-center pt-3 pb-3">
                         <h4>ALTURAS HEALTHCARE SYSTEM</h4>
                         <h4>Business Unit Charging Details</h4>
@@ -329,6 +323,7 @@
                     </div>
                 </div>
             </div>   
+           
         </div>
      </div>
     </div>
@@ -337,13 +332,12 @@
   const baseUrl = "<?php echo base_url(); ?>";
   const printDiv = (layer) => {
     $(layer).printThis({
-      importCSS: true,
-      copyTagClasses: true,
-      copyTagStyles: true,
-      removeInline: false,
+        importCSS: true,
+        copyTagClasses: true,
+        copyTagStyles: true,
+        removeInline: false,
     });
-  }
-
+    };
     const printDivs = (layer) => {
     $(layer).printThis({
       importCSS: true,
@@ -563,7 +557,7 @@
     const bDate = document.querySelector('#b-date');
 
     if(hospitalSelect.value != ''){
-        bHospital.textContent = 'Hospital : '+hospital;
+        bHospital.textContent = 'Healthcare Provider : '+hospital;
     }else{
         bHospital.textContent = '';
     }
@@ -624,13 +618,16 @@ const viewValues = () => {
         b_units.textContent = '';
     }   
 }
-
-
+   
+    
  const submitForPayment = () => {
     const hp_id = document.querySelector('#billed-hospital-filter').value;
     const start_date = document.querySelector('#start-date').value;
     const end_date = document.querySelector('#end-date').value;
-
+    // const tdElement = document.querySelector('#td-val'); // Replace 'td' with the specific selector for your target <td> element
+    // const spanElement = tdElement.querySelector('span');
+    const total = document.querySelector('#total_bill');
+    const spanValue = total.textContent;
     $.confirm({
                     title: '<strong>Confirmation!</strong>',
                     content: 'Are you sure? Please review before you proceed.',
@@ -649,6 +646,7 @@ const viewValues = () => {
                                         'hp_id' : hp_id,
                                         'start_date' : start_date,
                                         'end_date' : end_date,
+                                        'total_bill' : spanValue,
                                     },
                                     dataType: "json",
                                     success: function(response){
@@ -664,6 +662,8 @@ const viewValues = () => {
                                                 showConfirmButton: false,
                                                 type: 'success'
                                             });
+                                            // window.location.href = '<?php echo base_url();?>head-office-accounting/billing-list/for-payment';
+
                                             if(payment_no != ''){
                                                 const paymentno = document.querySelector('#b-payment-no');
                                                 paymentno.textContent = payment_no;
@@ -805,7 +805,32 @@ const viewValues = () => {
           });
     }
 
+    // const printPDF = () => {
+    //     const bu_filter = document.querySelector('#billed-bu-filter').value;
+    //     const hp_id = document.querySelector('#billed-hospital-filter').value;
+    //     const start_date = document.querySelector('#start-date').value;
+    //     const end_date = document.querySelector('#end-date').value;
+    //     const tdElement = document.querySelector('#td-val'); // Replace 'td' with the specific selector for your target <td> element
+    //     const spanElement = tdElement.querySelector('span');
+    //     const spanValue = spanElement.textContent;
 
+    //     $.ajax({
+    //           url: `${baseUrl}head-office-accounting/reports/print`,
+    //           type: "GET",
+    //           dataType: "json",
+    //           data: {
+    //             'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
+    //             'hp_id' : hp_id,
+    //             'start_date' : start_date,
+    //             'end_date' : end_date,
+    //             'total_bill' : spanValue,
+    //             'bu_filter' : bu_filter
+    //           },
+    //           success:function(response){
+
+    //           }
+    //       });
+    // }
 
 
 </script>

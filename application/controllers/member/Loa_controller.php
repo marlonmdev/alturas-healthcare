@@ -872,6 +872,7 @@ class Loa_controller extends CI_Controller {
 			'rx_file' => $row['rx_file'],
 			'req_status' => $req_stat,
 			'work_related' => $row['work_related'] ? $row['work_related'] : 'Not Set',
+			'percentage' => $row['percentage'] != '' ? $row['percentage'] : '100',
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'disapproved_by' => $doctor_name,

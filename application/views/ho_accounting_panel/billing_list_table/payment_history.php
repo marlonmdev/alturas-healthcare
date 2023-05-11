@@ -95,7 +95,7 @@
             
         });
 
-        const viewPaymentInfo = (details_id) => {
+        const viewPaymentInfo = (details_id,check_image) => {
             $.ajax({
                 type: 'GET',
                 url: `${baseUrl}head-office-accounting/billing-list/view-payment-details/${details_id}`,
@@ -133,6 +133,7 @@
                     $('#amount-paid').val(parseFloat(amount_paid).toFixed(2));
                     $('#textbox').val(covered_loa_no);
                     $('#c-billed-date').val(billed_date);
+                    $('#supporting-docu').attr('src', check_image);
                 }
             });
         }

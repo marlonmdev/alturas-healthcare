@@ -275,6 +275,22 @@ class List_model extends CI_Model{
                 ->where('noa_id', $noa_id);
         return $this->db->update('noa_requests');
     }
+
+    function get_employee_mbl($emp_id) {
+        return $this->db->get_where('max_benefit_limits', ['emp_id' => $emp_id])->row_array();
+    }
+
+    function set_max_benifit_limit($emp_id, $remaining_mbl) {
+        $this->db->set('remaining_balance', $remaining_mbl)
+                ->where('emp_id', $emp_id);
+        return $this->db->update('max_benefit_limits');
+    }
+
+    function set_after_max_benifit_limit($emp_id, $remaining_mbl) {
+        $this->db->set('after_remaining_bal', $remaining_mbl)
+                ->where('emp_id', $emp_id);
+        return $this->db->update('billing');
+    }
     
     // Start of server-side processing datatables
 	var $table_payment_1 = 'payment_details';
@@ -416,6 +432,8 @@ class List_model extends CI_Model{
    var $table_3_monthly = 'loa_requests';
    var $table_4_monthly = 'members';
    var $table_5_monthly = 'healthcare_providers';
+   var $table_6_monthly = 'locate_business_unit';
+   var $table_7_monthly = 'max_benefit_limits';
 
    private function _get_monthly_datatables_query($payment_no) {
        $this->db->select('*');
@@ -424,6 +442,8 @@ class List_model extends CI_Model{
        $this->db->join($this->table_3_monthly . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id', 'left');
        $this->db->join($this->table_4_monthly . ' as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id');
        $this->db->join($this->table_5_monthly . ' as tbl_5', 'tbl_1.hp_id = tbl_5.hp_id');
+       $this->db->join($this->table_6_monthly . ' as tbl_6', 'tbl_4.business_unit = tbl_6.business_unit');
+       $this->db->join($this->table_7_monthly . ' as tbl_7', 'tbl_1.emp_id = tbl_7.emp_id');
        $this->db->where('tbl_1.payment_no', $payment_no);
    }
 
@@ -593,6 +613,7 @@ class List_model extends CI_Model{
             'hp_id' => $this->input->post('hp_id'),
             'startDate' => date('Y-m-d', strtotime($this->input->post('start_date'))),
             'endDate' => date('Y-m-d', strtotime($this->input->post('end_date'))),
+            'total_payable' => floatval(str_replace(',','',$this->input->post('total_bill'))),
             'added_on' => date('Y-m-d'),
             'added_by' => $user
         );
@@ -628,7 +649,11 @@ class List_model extends CI_Model{
     }
 
     function get_billed_date($payment_no) {
-        return $this->db->get_where('monthly_payable', ['payment_no' => $payment_no])->row_array();
+        $this->db->select('*')
+                ->from('monthly_payable as tbl_1')
+                ->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
+                ->where('tbl_1.payment_no', $payment_no);
+        return $this->db->get()->row_array();
     }
 
     function get_total_payables($payment_no) {
@@ -639,6 +664,26 @@ class List_model extends CI_Model{
         $sum = $result[0]['net_bill'];
         return $sum;
     }
+
+    function get_print_billed_loa_noa() {
+        $this->db->select('*')
+                ->from('billing as tbl_1')
+                ->join('loa_requests as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id', 'left')
+                ->join('noa_requests as tbl_3', 'tbl_1.noa_id = tbl_3.noa_id', 'left')
+                ->join('healthcare_providers as tbl_4', 'tbl_1.hp_id = tbl_4.hp_id')
+                ->join('members as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
+                ->join('locate_business_unit as tbl_6', 'tbl_5.business_unit = tbl_6.business_unit')
+                ->join('max_benefit_limits as tbl_7', 'tbl_1.emp_id = tbl_7.emp_id')
+                ->where('tbl_1.hp_id', $this->input->post('hp_id'))
+                ->where('tbl_5.business_unit', $this->input->post('bu_filter'));
+        $startDate = date('Y-m-d', strtotime($this->input->post('start_date')));
+        $this->db->where('tbl_1.billed_on >=', $startDate);
+        $endDate = date('Y-m-d', strtotime($this->input->post('end_date')));
+        $this->db->where('tbl_1.billed_on <=', $endDate);
+        return $this->db->get()->result_array();
+    }
+
+    
 
 
 //=================================================

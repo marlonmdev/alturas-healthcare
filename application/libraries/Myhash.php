@@ -16,4 +16,14 @@ class Myhash {
       return hashids_decrypt($string, $this->CI->config->item('hashid_salt'), 20);
     }
   }
+
+//   function hasher($string, $type) {
+//     if ($type == "encrypt") {
+//         return hashids_encrypt(str_replace("-", "_", $string), $this->CI->config->item('hashid_salt'), 20);
+//     } elseif ($type == "decrypt") {
+//         $decrypted = hashids_decrypt($string, $this->CI->config->item('hashid_salt'), 20);
+//         return str_replace("_", "-", $decrypted);
+//     }
+// }
+
 }

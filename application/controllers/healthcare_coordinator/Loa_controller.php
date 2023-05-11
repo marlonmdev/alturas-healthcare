@@ -401,13 +401,13 @@ class Loa_controller extends CI_Controller {
 				if($exists){
 					$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaConsult(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-cyan"></i></a>';
 				}else{
-					$custom_actions .= '<i class="me-1" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-secondary"></i></i>';
+					$custom_actions .= '';
 				}
 			}else{
 				if($exists){
 					$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-cyan"></i></a>';
 				}else{
-					$custom_actions .= '<i class="me-1" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-secondary"></i></i>';
+					$custom_actions .= '';
 				}
 			}				
 

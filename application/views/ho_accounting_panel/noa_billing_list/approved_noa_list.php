@@ -66,15 +66,15 @@
                     <div class="table-responsive">  
                         <?php include 'view_approved_noa_details.php'; ?>
                         <table id="approvedNoaTable" class="table table-striped" style="width:100%">
-                            <thead>
+                            <thead style="background-color:#00538C">
                                 <tr>
-                                    <th class="fw-bold">NOA No.</th>
-                                    <th class="fw-bold">Name</th>
-                                    <th class="fw-bold">Hosptial Name</th>
-                                    <th class="fw-bold">Admission Date</th>
-                                    <th class="fw-bold">Request Date</th>
-                                    <th class="fw-bold">Status</th>
-                                    <th class="fw-bold">Actions</th>
+                                    <th class="text-white">NOA No.</th>
+                                    <th class="text-white">Name</th>
+                                    <th class="text-white">Hosptial Name</th>
+                                    <th class="text-white">Admission Date</th>
+                                    <th class="text-white">Request Date</th>
+                                    <th class="text-white">Status</th>
+                                    <th class="text-white">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -178,9 +178,37 @@
         $('#hospital-name').html(hospital_name);
         $('#admission-date').html(admission_date);
         $('#chief-complaint').html(chief_complaint);
-        $('#work-related').html(work_related);
-        $('#percentage').html(percentage);
         $('#request-date').html(request_date);
+        if(work_related == 'Yes'){ 
+					if(percentage == ''){
+					  wpercent = '100% W-R';
+					  nwpercent = '';
+					}else{
+					   wpercent = percentage+'%  W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   nwpercent = '';
+					   }else{
+						   nwpercent = result+'% Non W-R';
+					   }
+					  
+					}	
+			   }else if(work_related == 'No'){
+				   if(percentage == ''){
+					   wpercent = '';
+					   nwpercent = '100% Non W-R';
+					}else{
+					   nwpercent = percentage+'% Non W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   wpercent = '';
+					   }else{
+						   wpercent = result+'%  W-R';
+					   }
+					 
+					}
+			   }
+        $('#percentage').html(wpercent+', '+nwpercent);
       }
     });
   }

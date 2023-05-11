@@ -352,9 +352,10 @@
           approved_by,
           approved_on,
           expiry_date,
+          percentage
         } = res;
 
-        $("#viewLoaModal").modal("show");
+        $("#viewExpiredLoaModal").modal("show");
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
         $('#loa-no').html(loa_no);
@@ -364,7 +365,6 @@
         $('#expiry-date').html(expiry_date);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
-        $('#work-related-val').html(work_related);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
         $('#date-of-birth').html(date_of_birth);
         $('#age').html(age);
@@ -387,6 +387,35 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
+        if(work_related == 'Yes'){ 
+					if(percentage == ''){
+					  wpercent = '100% W-R';
+					  nwpercent = '';
+					}else{
+					   wpercent = percentage+'%  W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   nwpercent = '';
+					   }else{
+						   nwpercent = result+'% Non W-R';
+					   }
+					  
+					}	
+			   }else if(work_related == 'No'){
+				   if(percentage == ''){
+					   wpercent = '';
+					   nwpercent = '100% Non W-R';
+					}else{
+					   nwpercent = percentage+'% Non W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   wpercent = '';
+					   }else{
+						   wpercent = result+'%  W-R';
+					   }
+					}
+			   }
+        $('#percentage').html(wpercent+', '+nwpercent);
       }
     });
   }

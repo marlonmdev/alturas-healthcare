@@ -420,6 +420,7 @@ $route['healthcare-coordinator/loa/cancelled/view/(:any)'] = 'healthcare_coordin
 $route['healthcare-coordinator/loa/completed/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_completed_loa_info';
 $route['healthcare-coordinator/loa/resched/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_resched_loa_info';
 $route['healthcare-coordinator/loa/requests-list/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_loa_details';
+$route['healthcare-coordinator/loa/expired/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_expired_loa_info';
 $route['healthcare-coordinator/loa/requests-list/approve/(:any)'] = 'healthcare_coordinator/loa_controller/approve_loa_request';
 $route['healthcare-coordinator/loa/requests-list/disapprove/(:any)'] = 'healthcare_coordinator/loa_controller/disapprove_loa_request';
 $route['healthcare-coordinator/loa/requests-list/set-charge-type'] = 'healthcare_coordinator/loa_controller/set_charge_type';

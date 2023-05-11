@@ -623,6 +623,7 @@ class Noa_controller extends CI_Controller {
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'req_status' => $row['work_related'] != '' ? 'for Approval': $row['status'],
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		];
@@ -667,6 +668,7 @@ class Noa_controller extends CI_Controller {
 			'work_related' => $row['work_related'],
 			'req_status' => $row['status'],
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'expiry_date' => $row['expiration_date'] ? date("F d, Y", strtotime($row['expiration_date'])) : 'None',
@@ -713,6 +715,7 @@ class Noa_controller extends CI_Controller {
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'req_status' => $row['status'],
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'disapproved_by' => $doctor_name,
 			'disapprove_reason' => $row['disapprove_reason'],
 			'disapproved_on' => date("F d, Y", strtotime($row['approved_on'])),
@@ -757,9 +760,9 @@ class Noa_controller extends CI_Controller {
 			'chief_complaint' => $row['chief_complaint'],
 			// Full Month Date Year Format (F d Y)
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
-			'work_related' => $row['work_related'],
 			'req_status' => $row['status'],
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'expiry_date' => $row['expiration_date'] ? date("F d, Y", strtotime($row['expiration_date'])) : 'None',
@@ -805,6 +808,7 @@ class Noa_controller extends CI_Controller {
 			// Full Month Date Year Format (F d Y)
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'req_status' => $row['status'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),

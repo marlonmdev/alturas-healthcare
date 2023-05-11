@@ -132,9 +132,8 @@
                           <td class="fw-bold ls-1">Member's Remaining MBL :</td>
                           <td class="fw-bold ls-1">&#8369;<span id="remaining-mbl"></span></td>
                         </tr>
-                        <tr class="d-none" id="work-related-info">
-                          <td class="fw-bold ls-1">Work Related :</td>
-                          <td class="fw-bold ls-1" id="work-related-val"></td>
+                          <td class="fw-bold ls-1">Percentage :</td>
+                          <td class="fw-bold ls-1" id="percentage"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Full Name :</td>
@@ -269,6 +268,7 @@
           chief_complaint,
           request_date,
           req_status,
+          percentage
         } = res;
 
         $("#viewNoaModal").modal("show");
@@ -297,13 +297,36 @@
         $('#admission-date').html(admission_date);
         $('#chief-complaint').html(chief_complaint);
         $('#request-date').html(request_date);
-        if(work_related != ''){
-          $('#work-related-info').removeClass('d-none');
-          $('#work-related-val').html(work_related);
-        }else{
-          $('#work-related-info').addClass('d-none');
-          $('#work-related-val').html('');
-        }
+        if(work_related == 'Yes'){ 
+					if(percentage == ''){
+					  wpercent = '100% W-R';
+					  nwpercent = '';
+					}else{
+					   wpercent = percentage+'%  W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   nwpercent = '';
+					   }else{
+						   nwpercent = result+'% Non W-R';
+					   }
+					  
+					}	
+			   }else if(work_related == 'No'){
+				   if(percentage == ''){
+					   wpercent = '';
+					   nwpercent = '100% Non W-R';
+					}else{
+					   nwpercent = percentage+'% Non W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   wpercent = '';
+					   }else{
+						   wpercent = result+'%  W-R';
+					   }
+					 
+					}
+			   }
+        $('#percentage').html(wpercent+', '+nwpercent);
       }
     });
   }

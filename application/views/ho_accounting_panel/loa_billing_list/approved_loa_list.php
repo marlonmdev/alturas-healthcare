@@ -68,16 +68,16 @@
                     <div class="table-responsive">
                         <?php include 'view_approved_loa_details.php'; ?>
                         <table id="approvedLoaTable" class="table table-striped">
-                            <thead>
+                            <thead style="background-color:#00538C">
                                 <tr>
-                                    <th class="fw-bold">LOA No.</th>
-                                    <th class="fw-bold">Name</th>
-                                    <th class="fw-bold">LOA Type</th>
-                                    <th class="fw-bold">Service/s</th>
-                                    <th class="fw-bold">RX File</th>
-                                    <th class="fw-bold">Request Date</th>
-                                    <th class="fw-bold">Status</th>
-                                    <th class="fw-bold">Actions</th>
+                                    <th class="text-white">LOA No.</th>
+                                    <th class="text-white">Name</th>
+                                    <th class="text-white">LOA Type</th>
+                                    <th class="text-white">Service/s</th>
+                                    <th class="text-white">RX File</th>
+                                    <th class="text-white">Request Date</th>
+                                    <th class="text-white">Status</th>
+                                    <th class="text-white">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -180,7 +180,6 @@
             $('#approved-on').html(approved_on);
             $('#member-mbl').html(member_mbl);
             $('#remaining-mbl').html(remaining_mbl);
-            $('#work-related-val').html(work_related);
             $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
             $('#date-of-birth').html(date_of_birth);
             $('#age').html(age);
@@ -203,7 +202,36 @@
             $('#chief-complaint').html(chief_complaint);
             $('#requesting-physician').html(requesting_physician);
             $('#attending-physician').html(at_physician);
-            $('#percentage').html(percentage);
+            if(work_related == 'Yes'){ 
+					if(percentage == ''){
+					  wpercent = '100% W-R';
+					  nwpercent = '';
+					}else{
+					   wpercent = percentage+'%  W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   nwpercent = '';
+					   }else{
+						   nwpercent = result+'% Non W-R';
+					   }
+					  
+					}	
+			   }else if(work_related == 'No'){
+				   if(percentage == ''){
+					   wpercent = '';
+					   nwpercent = '100% Non W-R';
+					}else{
+					   nwpercent = percentage+'% Non W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   wpercent = '';
+					   }else{
+						   wpercent = result+'%  W-R';
+					   }
+					 
+					}
+			   }
+        $('#percentage').html(wpercent+', '+nwpercent);
         }
         });
     }

@@ -31,7 +31,7 @@
       <form action="<?php echo base_url();?>healthcare-provider/billing/bill-loa/upload-pdf/<?= $loa_id ?>/submit" id="pdfBillingForm" enctype="multipart/form-data" class="needs-validation" novalidate>
         <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
         <input type="hidden" name="billing-no" value="<?= $billing_no ?>">
-        <input type="hidden" name="net-bill" value="0">
+        <!-- <input type="hidden" name="net-bill" value="0"> -->
         <div class="card">
           <div class="card-body shadow">
             <div class="row mt-3">
@@ -54,21 +54,46 @@
               </div>
             </div>
 
-            <div class="row">
-              <div class="col-lg-7">
-                <label class="fw-bold fs-5 ls-1"><i class="mdi mdi-asterisk text-danger ms-1"></i> Select PDF File</label>
-                <input type="file" class="form-control" name="pdf-file" id="pdf-file" accept="application/pdf" onchange="previewPdfFile()" required>
-                <div class="invalid-feedback fs-6">PDF File is required</div>
-              </div>
-
-              <div class="col-lg-5">
-                <label class="form-label fs-5 ls-1">Remaining MBL Balance</label>
-                <div class="input-group mb-3">
-                  <span class="input-group-text bg-cyan text-white">&#8369;</span>
-                  <input type="number" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="<?= $remaining_balance ?>" placeholder="Enter Net Bill" disabled>
-                </div>
-              </div>
+            <div class="btn-group">
+              <button type="button" class="btn btn-success dropdown-toggle fw-bold animate__animated" data-bs-toggle="dropdown" aria-expanded="false">
+                Final Billing
+              </button>
+              <ul class="dropdown-menu bg-white">
+                <li><a class="dropdown-item" href="#">Initial Billing</a></li>
+                <li><a class="dropdown-item " href="#">Final Billing</a></li>
+              </ul>
             </div>
+
+
+
+            <div class="row pt-3">
+                        <div class="col-lg-6">
+                            <label class="fw-bold fs-5 ls-1">
+                                <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Initial Billing 
+                            </label>
+                            <input type="file" class="form-control" name="pdf-file" id="pdf-file" accept="application/pdf" onchange="previewPdfFile()" required>
+                            <div class="invalid-feedback fs-6">
+                                PDF File is required
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3">
+                        <label class="form-label fs-5 ls-1">Remaining MBL Balance</label>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text bg-cyan text-white">&#8369;</span>
+                                <input type="text" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="0"  disabled>
+                                <input type="number" class="form-control fw-bold ls-1" id="net-bill" name="net-bill"  hidden required>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3">
+                        <label class="form-label fs-5 ls-1">Initial Bill</label>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text bg-cyan text-white">&#8369;</span>
+                                <input type="text" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="0"  disabled>
+                            </div>
+                        </div>
+                    </div>
 
             <div class="row">
               <div class="d-flex justify-content-center align-items-center mt-2">
@@ -82,7 +107,36 @@
                 <div class="mt-3" id="pdf-preview"></div>
               </div>
             </div>
-                  
+                 <div class="ps-5 pe-5">
+                        <h4 class="page-title ls-2  pb-2 ">Uploaded Initial Billing</h4>
+                        <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Filename</th>
+                                    <th scope="col">Subtotal</th>
+                                    <th scope="col">View</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                    <th scope="row">1</th>
+                                    <td>HIS_ADHOC_IPDSOA3_RCH_revise_2</td>
+                                    <td>2,600</td>
+                                    <td class="mdi mdi-eye"></td>
+                                    </tr>
+                                    <tr>
+                                    <th scope="row">2</th>
+                                    <td>HIS_ADHOC_IPDSOA3_RCH_revise_2</td>
+                                    <td>21,991.50</td>
+                                    <td class="mdi mdi-eye"></td>
+                                    </tr>
+                                    <tr>
+                                    
+                                    </tr>
+                                </tbody>
+                                </table>
+                        </div> 
           </div>
         </div>
       </form>
@@ -93,6 +147,21 @@
 
 <script>
   const baseUrl = `<?php echo base_url(); ?>`;
+
+   // Get all the dropdown list items
+  //  var dropdownItems = document.querySelectorAll('.dropdown-menu');
+
+  //   // Add event listeners for mouseover and mouseout
+  //   dropdownItems.forEach(function(item) {
+  //     item.addEventListener('mouseover', function() {
+  //       item.classList.add('animate__animated', 'animate__fadeIn');
+  //     });
+
+  //     item.addEventListener('mouseout', function() {
+  //       item.classList.remove('animate__animated', 'animate__fadeIn');
+  //     });
+  //   });
+    
   const previewPdfFile = () => {
     let pdfFileInput = document.getElementById('pdf-file');
     let pdfPreview = document.getElementById('pdf-preview');
@@ -114,6 +183,7 @@
  
 
   const form = document.querySelector('#pdfBillingForm');
+  let hospital_charges ="";
   $(document).ready(function(){
     $('#pdfBillingForm').submit(function(event){
       event.preventDefault();
@@ -123,7 +193,13 @@
         return;
       }
       let formData = new FormData($(this)[0]);
-            
+    
+      // if (hospital_charges != null) {
+      //   const hospitalBillJSON = JSON.stringify(hospital_charges);
+      //   formData.append('hospital_bill_data', hospitalBillJSON);
+      // }
+      formData.append('hospital_bill_data', hospital_charges);
+      
       $.ajax({
         type: 'POST',
         url: $(this).attr('action'),
@@ -195,53 +271,36 @@
                     const pattern = /\.{2,}(?!\.)/g;
                     return result = result + '\n' + item.text.replace(pattern, '');
                   }, '').trim();
-
-                
+                  
+                console.log(finalResult);
               //get only the text between hospital charges and professional fee
-              const pattern = /hospital charges(.*?)professional fee/si;
-              const matchs = finalResult.match(pattern);
-              const result = matchs ? matchs[1] : null;
+              const pattern = /hospital charges(.*?)please pay for this amount/si;
+              const matches = finalResult.match(pattern);
+              const result = matches ? matches[1] : null;
+              hospital_charges = result;
               console.log(result);
-              let hospital_charges = {};
-              const lines = result.split("\n");
-              for (let i = 0; i < lines.length; i++) {
-                const line = lines[i];
-                const matches = line.match(/^(.*\S)?\s+(\S+(?=\s|$))/);
 
-                if (matches !== null) {
-                  const beforeLastGroup = matches[1] || "";
-                  const lastGroup = matches[2] || "";
-                  hospital_charges[beforeLastGroup]=lastGroup;
-                  console.log(`Line ${i + 1}:`);
-                  console.log(`Before last group: ${beforeLastGroup}`);
-                  console.log(`Last group: ${lastGroup}`);
-                  console.log("");
-                }
-              }
-
-              console.log("hospital charges",hospital_charges);
-              //get each new text line and store in an array
-              // const lines = finalResult.split(/\r?\n/);
-              // console.log(lines);
-              // get only the last group text in a line
-              // const lastGroup = result.match(/\S+(?=\s|$)(?!.*\S)/)[0];
-              // console.log(lastGroup);
-              // const regexs = /^.*\s(\S+(?=\s|$))|(\S+(?=\s|$))(?:.*)?$/;
-              // const matches = result.match(regexs);
-              // console.log(matches);
-              // const textBeforeLastNonSpaceSequence = matches[1] || "";
-              // const lastNonSpaceSequenceAndText = matches[2] || "";
-              // let result = text1.replace(/subtotal\s*[\.]*\s*[\w\s]*\s*\(([\d,\.]+)\)/, "$1"); 
-              const regex = /subtotal\s*\.*\s*\(([\d,\.]+)\)/i;
+              const regex = /please pay for this amount\s*\.*\s*([\d,\.]+)/i;
               // const regex = /subtotal\s*\.{26}\s*\(([\d,\.]+)\)/i;
                   const match = finalResult.match(regex);
                   console.log("match",match);
                   if (match) {
                   const subtotalValue = parseFloat(match[1].replace(/,/g, ""));
-                  document.getElementsByName("net-bill")[0].value = subtotalValue;
-                  console.log(subtotalValue);
+                    document.getElementsByName("net-bill")[0].value = subtotalValue;
+                    console.log(subtotalValue);
                   } else {
-                  console.log("Subtotal value not found");
+                    console.log("please pay for this amount is not found");
+                    $.alert({
+                            title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'></h3>`,
+                            content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it looks like your uploaded pdf is already . Thank you for your understanding.</div>",
+                            type: "red",
+                            buttons: {
+                            ok: {
+                                text: "OK",
+                                btnClass: "btn-danger",
+                            },
+                        },
+                    });
                   }
               }); 
           });
@@ -252,4 +311,40 @@
       reader.readAsArrayBuffer(this.files[0]);
       });
   });
+
+  // function hospital_bills(finalResult){
+  //       const pattern = /hospital charges(.*?)please pay for this amount/si;
+  //       const matches = finalResult.match(pattern);
+  //       const result = matches ? matches[1] : null;
+  //       console.log(result);
+
+        // let bills = [];
+        // const lines = result.split("\n");
+        // for (let i = 0; i < lines.length; i++) {
+        //   const line = lines[i];
+        //   const matches = line.match(/^(.*?)(\s+\S+(?=\s|$))?$/);
+
+        //   if (matches !== null) {
+        //     let beforeLastGroup = matches[1] || "";
+        //     let lastGroup = matches[2] ? matches[2].trim() : '0';
+
+        //     // let suffix = 1;
+        //     // while (bills.some(item => item.text === beforeLastGroup)) {
+        //     //   beforeLastGroup = `${beforeLastGroup}_${suffix}`;
+        //     //   suffix++;
+        //     // }
+        //     lastGroup = lastGroup.replace(/[^0-9.-]/g, '');
+        //     if (/\S/.test(beforeLastGroup)) {
+        //       console.log(`Line ${i + 1}:`);
+        //       console.log(`Before last group: ${beforeLastGroup}`);
+        //       console.log(`Last group: ${lastGroup}`);
+        //       console.log("");
+        //       bills.push({ beforeLastGroup,lastGroup});
+        //     }
+        //   }
+        // }
+        // console.log(bills);   
+        // hospital_charges = bills;  
+  // }
+
 </script>

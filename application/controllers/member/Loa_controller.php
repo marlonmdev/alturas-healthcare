@@ -163,6 +163,7 @@ class Loa_controller extends CI_Controller {
 
 			$response .= '</select>';
 		}
+		
 
 		echo json_encode($response);
 	}

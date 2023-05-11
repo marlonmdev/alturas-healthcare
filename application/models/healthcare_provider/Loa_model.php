@@ -6,7 +6,6 @@ class Loa_model extends CI_Model{
     // Start of server-side processing datatables
     var $table_1 = 'loa_requests'; 
     var $table_2 = 'healthcare_providers';
-
     var $table_3 = 'billing';
    // var $column_order = array('loa_no', 'first_name', 'loa_request_type', null, null, 'request_date', null, null); //set column field database for datatable orderable
     var $column_order = array('loa_no', 'first_name', 'loa_request_type', null, null, 'request_date');

@@ -287,32 +287,30 @@
           total = prices.reduce(function(acc, val) {
             return acc + val;
           }, 0);
-          $('#total_sevices').val(total);
           $("#remaining_mbl").val(mbl);
           console.log("total",total);
           if (total > mbl) {
+            prices.pop();
             var lastIndex = $('#med-services option:selected').length - 1;
             var lastOption = $('#med-services option:selected').eq(lastIndex);
+            var lastValue = lastOption.text(); // get the value of the last selected option
             lastOption.prop('selected', false);
             // Trigger the Chosen plugin to update the display
             $('#med-services').trigger('chosen:updated');
-            prices.pop();
+
             total = prices.reduce(function(acc, val) {
               return acc + val;
             }, 0);
             console.log("final",total);
-            $('#total_sevices').val(total);
+            $('#net_bill').val(total);
             $.alert({
-          title: "<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Unable to Request</h3>",
-          content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it looks like your MBL balance is currently empty. Please ensure that you have enough MBL in your account before attempting to make a request. Thank you for your understanding.</div>",
-          type: "red",
-          buttons: {
+              title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Unable to add ${lastValue}</h3>`,
+              content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it looks like your MBL balance is currently empty. Please ensure that you have enough MBL in your account before attempting to make a request. Thank you for your understanding.</div>",
+              type: "red",
+              buttons: {
               ok: {
                   text: "OK",
                   btnClass: "btn-danger",
-                  // action: function(){
-                  //   window.history.back()
-                  // },
               },
           },
       });

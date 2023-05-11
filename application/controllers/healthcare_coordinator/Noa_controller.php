@@ -746,7 +746,7 @@ class Noa_controller extends CI_Controller {
 			'noa_no' => $row['noa_no'],
 			'health_card_no' => $row['health_card_no'],
 			'requesting_company' => $row['requesting_company'],
-			'first_name' => $row['first_name'],
+			'first_name' => $row['first_name'], 
 			'middle_name' => $row['middle_name'],
 			'last_name' => $row['last_name'],
 			'suffix' => $row['suffix'],

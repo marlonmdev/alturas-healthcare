@@ -7,6 +7,7 @@ class Pages_controller extends CI_Controller {
 		parent::__construct();
 		$this->load->model('healthcare_provider/count_model');
 		$this->load->model('healthcare_provider/hospital_model');
+		$this->load->model('ho_accounting/List_model');
 		$user_role = $this->session->userdata('user_role');
 		$logged_in = $this->session->userdata('logged_in');
 		if ($logged_in !== true && $user_role !== 'healthcare-provider') {
@@ -101,11 +102,19 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
+	// function upload_textfile_form() {
+	// 	$data['user_role'] = $this->session->userdata('user_role');
+	// 	$this->load->view('templates/header', $data);
+	// 	$this->load->view('healthcare_provider_panel/billing/upload_textfile');
+	// 	$this->load->view('templates/footer');
+	// }
 	function upload_textfile_form() {
 		$data['user_role'] = $this->session->userdata('user_role');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
+		// $data['payment_no'] = $this->uri->segment(4);
+		// $data['hp_name'] =$this->List_model->get_billed_hp_name($this->uri->segment(4));
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_provider_panel/billing/upload_textfile');
+		$this->load->view('healthcare_provider_panel/billing/upload_textfile.php', $hc_provider);
 		$this->load->view('templates/footer');
 	}
-
 }

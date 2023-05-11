@@ -16,7 +16,7 @@
                 </nav>
                 </div>
             </div>
-            </div>
+            </div> 
         </div>
         <!-- End Bread crumb and right sidebar toggle -->
         <!-- Start of Container fluid  -->

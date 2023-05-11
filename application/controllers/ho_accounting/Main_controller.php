@@ -189,7 +189,8 @@ class Main_controller extends CI_Controller {
 
 				$action_customs = '<a href="' . base_url() . 'head-office-accounting/bill/paid-loa/fetch-payable/' . $hp_id . '/' . $month . '/' . $year . '" data-bs-toggle="tooltip" title="View Hospital Bill"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
 	
-				$action_customs .= '<a href="JavaScript:void(0)" onclick="viewPaymentDetails(\''.$bill['details_no'].'\')" data-bs-toggle="tooltip" title="View Check Details"><i class="mdi mdi-file-document fs-2 text-cyan"></i></a>';
+				$action_customs .= '<a href="JavaScript:void(0)" onclick="viewPaymentDetails(\''.$bill['details_no'].'\')"
+				 data-bs-toggle="tooltip" title="View Check Details"><i class="mdi mdi-file-document fs-2 text-cyan"></i></a>';
 			
 				$row[] = $payment_no;
 				$row[] = $label_custom;

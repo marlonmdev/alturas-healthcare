@@ -8,7 +8,7 @@
    </a>
 </li>
 
-<li class="sidebar-item <?php echo $this->uri->segment(2) == "loa-requests" ? "selected" : ""; ?>">
+<li class="sidebar-item <?php echo $this->uri->segment(2) == "loa-requests" ? "selected" : ""; ?>" onclick="toggleSelected(this)">
   <a
     class="sidebar-link"
     href="<?php echo base_url(); ?>healthcare-provider/loa-requests/pending"
@@ -18,7 +18,7 @@
   </a>
 </li>
 
-<li class="sidebar-item <?php echo $this->uri->segment(2) == "noa-requests" ? "selected" : ""; ?>">
+<li class="sidebar-item <?php echo $this->uri->segment(2) == "noa-requests" ? "selected" : ""; ?>" onclick="toggleSelected(this)">
   <a
     class="sidebar-link"
     href="<?php echo base_url(); ?>healthcare-provider/noa-requests/pending"
@@ -28,14 +28,14 @@
   </a>
 </li>
 
-<li class="sidebar-item <?php echo $this->uri->segment(2) == "billing" ? "selected" : ""; ?>">
+<li class="sidebar-item <?php echo $this->uri->segment(2) == "billing" ? "selected" : ""; ?>" onclick="toggleSelected(this)">
   <a
     class="sidebar-link has-arrow"
     href="javascript:void(0)"
     aria-expanded="false">
     <i class="mdi mdi-file-check"></i>
     <span class="hide-menu ls-1">Billing</span>
-  </a>
+  </a> 
   <ul aria-expanded="false" class="collapse first-level">
     <li class="sidebar-item">
       <a href="<?php echo base_url(); ?>healthcare-provider/billing" class="sidebar-link">
@@ -46,13 +46,13 @@
     <li class="sidebar-item">
       <a href="<?php echo base_url(); ?>healthcare-provider/billing/upload-texfile" class="sidebar-link">
         <i class="mdi mdi-upload"></i>
-        <span class="hide-menu ls-1">Upload Textfile</span>
+        <span class="hide-menu ls-1">Payment List</span>
       </a>
     </li>
   </ul>
 </li>
 
-<li class="sidebar-item <?php echo $this->uri->segment(2) == 'billing' ? 'selected' : ""; ?>">
+<li class="sidebar-item <?php echo $this->uri->segment(2) == 'patient' ? 'selected' : ""; ?>" onclick="toggleSelected(this)">
   <a class="sidebar-link sidebar-link" href="<?php echo base_url(); ?>healthcare-provider/patient/design" aria-expanded="false">
     <i class="mdi mdi-account-multiple"></i>
     <span class="hide-menu ls-1">List of Patient</span>
@@ -79,3 +79,21 @@
     <span class="hide-menu ls-1">Logout</span>
   </a>
 </li> 
+<script>
+ let lastSelectedItem = null;
+
+function toggleSelected(item) {
+  // Deselect all other items
+  const list = item.parentNode;
+  const items = list.getElementsByTagName("li");
+  for (let i = 0; i < items.length; i++) {
+    if (items[i] !== item) {
+      items[i].classList.remove("selected");
+    }
+  }
+
+  // Select the clicked item
+  item.classList.add("selected");
+  lastSelectedItem = item;
+}
+</script>

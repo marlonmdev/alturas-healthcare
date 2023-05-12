@@ -224,6 +224,9 @@ class Billing_model extends CI_Model {
     function insert_billing($data) {
         return $this->db->insert('billing', $data);
     }
+    function insert_hospital_charges($data) {
+        return $this->db->insert('hospital_charges', $data);
+    }
 
     function insert_diagnostic_test_billing_services($services) {
         return $this->db->insert_batch('billing_services', $services);

@@ -263,6 +263,7 @@ $route['head-office-accounting/bill/for-payment/fetch'] = 'ho_accounting/main_co
 $route['head-office-accounting/bill/monthly-payment/fetch'] = 'ho_accounting/main_controller/fetch_payment_bill';
 $route['head-office-accounting/bill/for-payment-details/fetch'] = 'ho_accounting/main_controller/fetch_for_pay_details';
 $route['head-office-accounting/bill/paid-bill/fetch'] = 'ho_accounting/main_controller/fetch_paid_bills';
+$route['head-office-accounting/reports/print'] = 'ho_accounting/main_controller/fetch_for_printing';
 
 //Pages
 $route['head-office-accounting/billing-list'] = 'ho_accounting/TableList';
@@ -419,6 +420,7 @@ $route['healthcare-coordinator/loa/cancelled/view/(:any)'] = 'healthcare_coordin
 $route['healthcare-coordinator/loa/completed/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_completed_loa_info';
 $route['healthcare-coordinator/loa/resched/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_resched_loa_info';
 $route['healthcare-coordinator/loa/requests-list/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_loa_details';
+$route['healthcare-coordinator/loa/expired/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_expired_loa_info';
 $route['healthcare-coordinator/loa/requests-list/approve/(:any)'] = 'healthcare_coordinator/loa_controller/approve_loa_request';
 $route['healthcare-coordinator/loa/requests-list/disapprove/(:any)'] = 'healthcare_coordinator/loa_controller/disapprove_loa_request';
 $route['healthcare-coordinator/loa/requests-list/set-charge-type'] = 'healthcare_coordinator/loa_controller/set_charge_type';
@@ -461,7 +463,7 @@ $route['healthcare-coordinator/loa/matched/total-bill/fetch'] = 'healthcare_coor
 $route['healthcare-coordinator/bill/billed/charging/(:any)'] = 'healthcare_coordinator/loa_controller/get_bill_for_charging';
 $route['healthcare-coordinator/loa/monthly-bill/charging/(:any)'] = 'healthcare_coordinator/loa_controller/fetch_billing_for_charging';
 
-// HealthCare Coordinator NOA Routes
+//HealthCare Coordinator NOA Routes
 $route['healthcare-coordinator/noa/requests-list/fetch'] = 'healthcare_coordinator/noa_controller/fetch_all_pending_noa';
 $route['healthcare-coordinator/noa/requests-list/approved/fetch'] = 'healthcare_coordinator/noa_controller/fetch_all_approved_noa';
 $route['healthcare-coordinator/noa/requests-list/disapproved/fetch'] = 'healthcare_coordinator/noa_controller/fetch_all_disapproved_noa';

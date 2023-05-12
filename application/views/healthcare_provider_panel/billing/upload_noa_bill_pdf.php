@@ -128,7 +128,7 @@
     }
 
     const form = document.querySelector('#pdfBillingForm');
-
+    let hospital_charges ="";
     $(document).ready(function(){
 
         $('#pdfBillingForm').submit(function(event){
@@ -140,7 +140,12 @@
             }
 
             let formData = new FormData($(this)[0]);
-            
+
+            // if (hospital_charges != null) {
+            //     const hospitalBillJSON = JSON.stringify(hospital_charges);
+            //     formData.append('hospital_bill_data', hospitalBillJSON);
+            // }
+            formData.append('hospital_bill_data', hospital_charges);
             $.ajax({
                 type: 'POST',
                 url: $(this).attr('action'),
@@ -200,38 +205,108 @@
             let pageNum = 1;
             pdf.getPage(pageNum).then(function(page) {
                 page.getTextContent().then(function(textContent) {
-                let sortedItems = textContent.items.map(function(item) {
-                    return {text: item.str.toLowerCase(), y: item.transform[5]};
-                }).sort(function(a, b) {
-                    return b.y - a.y;
-                });
-                let text = sortedItems.map(function(item) {
-                    return item.text;
-                }).join('');
-                console.log(text);
+                let sortedItems = textContent.items
+                    .map(function(item) {
+                        return {text: item.str.toLowerCase(), x: item.transform[4], y: item.transform[5]};
+                    })
+                    .sort(function(a, b) {
+                        if (Math.abs(a.y - b.y) < 5) {
+                        return a.x - b.x;
+                        } else {
+                        return b.y - a.y;
+                        }
+                    })
+                    .reduce(function(groups, item) {
+                        const lastGroup = groups[groups.length - 1];
+                        if (lastGroup && Math.abs(lastGroup.y - item.y) < 5) {
+                        lastGroup.text += ' ' + item.text;
+                        } else {
+                        groups.push({text: item.text, x: item.x, y: item.y});
+                        }
+                        return groups;
+                    }, []);
 
-                // let result = text1.replace(/subtotal\s*[\.]*\s*[\w\s]*\s*\(([\d,\.]+)\)/, "$1"); 
-                const regex = /subtotal\s*\.*\s*\(([\d,\.]+)\)/i;
-                // const regex = /subtotal\s*\.{26}\s*\(([\d,\.]+)\)/i;
-                    const match = text.match(regex);
-                    console.log("match",match);
-                    if (match) {
-                    const subtotalValue = parseFloat(match[1].replace(/,/g, ""));
-                    document.getElementsByName("net-bill")[0].value = subtotalValue;
-                    console.log(subtotalValue);
-                    } else {
-                    console.log("Subtotal value not found");
-                    }
-                }); 
-            });
-            }, function(error) {
-            console.error(error);
-            });
-        };
-        reader.readAsArrayBuffer(this.files[0]);
-        });
-       
-    });
-   
+                    let finalResult = sortedItems.reduce(function(result, item) {
+                    //remove all the dots. that not used in group text
+                    const pattern = /\.{2,}(?!\.)/g;
+                    return result = result + '\n' + item.text.replace(pattern, '');
+                    }, '').trim();
+                            
+                        console.log(finalResult);
+                        const pattern = /hospital charges(.*?)please pay for this amount/si;
+                        const matches = finalResult.match(pattern);
+                        const result = matches ? matches[1] : null;
+                        console.log(result);
+                        //get only the text between hospital charges and professional fee
+                        hospital_charges = result;
+                        // hospital_bills(finalResult);
+                        
+                        const regex = /please pay for this amount\s*\.*\s*([\d,\.]+)/i;
+                        // const regex = /subtotal\s*\.{26}\s*\(([\d,\.]+)\)/i;
+                            const match = finalResult.match(regex);
+                            console.log("match",match);
+                            if (match) {
+                            const subtotalValue = parseFloat(match[1].replace(/,/g, ""));
+                            document.getElementsByName("net-bill")[0].value = subtotalValue;
+                            console.log(subtotalValue);
+                            } else {
+                            console.log("please pay for this amount is not found");
+                            $.alert({
+                                    title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'></h3>`,
+                                    content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it looks like your uploaded pdf is already . Thank you for your understanding.</div>",
+                                    type: "red",
+                                    buttons: {
+                                    ok: {
+                                        text: "OK",
+                                        btnClass: "btn-danger",
+                                    },
+                                },
+                            });
+                            }
+                        }); 
+                    });
+                    }, function(error) {
+                    console.error(error);
+                    });
+                };
+                reader.readAsArrayBuffer(this.files[0]);
+                });
+                });
+
+        //         function hospital_bills(finalResult){
+        //         const pattern = /hospital charges(.*?)please pay for this amount/si;
+        //         const matches = finalResult.match(pattern);
+        //         const result = matches ? matches[1] : null;
+        //         console.log(result);
+
+        //         let bills = [];
+        //         const lines = result.split("\n");
+        //         for (let i = 0; i < lines.length; i++) {
+        //             const line = lines[i];
+        //             const matches = line.match(/^(.*?)(\s+\S+(?=\s|$))?$/);
+
+        //             if (matches !== null) {
+        //             let beforeLastGroup = matches[1] || "";
+        //             let lastGroup = matches[2] ? matches[2].trim() : '0';
+
+        //             // let suffix = 1;
+        //             // while (bills.some(item => item.text === beforeLastGroup)) {
+        //             //   beforeLastGroup = `${beforeLastGroup}_${suffix}`;
+        //             //   suffix++;
+        //             // }
+        //             lastGroup = lastGroup.replace(/[^0-9.-]/g, '');
+        //             if (/\S/.test(beforeLastGroup)) {
+        //                 console.log(`Line ${i + 1}:`);
+        //                 console.log(`Before last group: ${beforeLastGroup}`);
+        //                 console.log(`Last group: ${lastGroup}`);
+        //                 console.log("");
+        //                 bills.push({ beforeLastGroup,lastGroup});
+        //             }
+        //             }
+        //         }
+        //         console.log(bills);   
+        //         hospital_charges = bills;  
+        // }
+
 
 </script>

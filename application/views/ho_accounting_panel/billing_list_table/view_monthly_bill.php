@@ -4,7 +4,7 @@
   <div class="page-breadcrumb">
       <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-      <h4 class="page-title ls-2">Payment No : <span class="text-info"><?php echo $payment_no; ?></span>  [ <?php echo date('F d, Y', strtotime($date['startDate'])).' to '.date('F d, Y', strtotime($date['endDate']))?> ]</h4>
+      <!-- <h4 class="page-title ls-2">Payment No : <span class="text-info"><?php echo $payment_no; ?></span>  [ <?php echo date('F d, Y', strtotime($pay['startDate'])).' to '.date('F d, Y', strtotime($pay['endDate']))?> ]</h4> -->
           <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
@@ -22,14 +22,16 @@
   <!-- End Bread crumb and right sidebar toggle -->
   <!-- Start of Container fluid  -->
   <div class="container-fluid">
-    <div class="col-12 pb-2">
-        <div class="input-group">
-            <a href="<?php echo base_url(); ?>head-office-accounting/billing-list/for-payment" type="submit" class="btn btn-info" data-bs-toggle="tooltip" title="Click to Go Back">
-                <strong class="ls-2" style="vertical-align:middle">
-                    <i class="mdi mdi-arrow-left-bold"></i> Go Back
-                </strong>
-            </a>
-        </div>
+    <div class="row">
+      <div class="col-6 pb-2">
+          <div class="input-group">
+              <a href="<?php echo base_url(); ?>head-office-accounting/billing-list/for-payment" type="submit" class="btn btn-info" data-bs-toggle="tooltip" title="Click to Go Back">
+                  <strong class="ls-2" style="vertical-align:middle">
+                      <i class="mdi mdi-arrow-left-bold"></i> Go Back
+                  </strong>
+              </a>
+          </div>
+      </div>
     </div>
     <div class="row pt-3 pt-1">
       <div class="col-lg-12">
@@ -37,32 +39,54 @@
             <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
             <input type="hidden" name="payment-no" id="payment-no" value="<?php echo $payment_no ?>">
             <div class="card shadow" style="background-color:">
-              <div class="card-body">
-                <div class="table-responsive">
-                  <table class="table table-hover table-responsive" id="billedLoaTable">
-                    <thead style="background-color:#eddcb7">
-                      <tr>
-                        <th class="fw-bold">Billing No.</th>
-                        <th class="fw-bold">LOA/NOA #</th>
-                        <th class="fw-bold">Healthcare Provider</th>
-                        <th class="fw-bold">Name</th>
-                        <th class="fw-bold">Healthcare Bill</th>
-                        <th class="fw-bold">View SOA</th>
-                      </tr>
-                    </thead>
-                    <tbody id="billed-tbody">
-                    </tbody>
-                    <tfoot>
-                       <td></td>
-                       <td></td>
-                       <td></td>
-                       <td class="fw-bold">TOTAL BILL </td>
-                       <td><span class="text-danger fw-bold fs-5" id="mt-total-bill"></span></td>
-                       <td></td>
-                    </tfoot>
-                  </table>
+              <div id="printableDiv">
+                  <div class="text-center pt-4">
+                        <h4>ALTURAS HEALTHCARE SYSTEM</h4>
+                        <h4>For Payment Billing Summary</h4>
+                        <h5><?php echo $pay['hp_name']; ?></h5>
+                        <h6><?php echo date('F d, Y', strtotime($pay['startDate'])).' to '.date('F d, Y', strtotime($pay['endDate']))?></h6>
+                        <h6><?php echo $payment_no; ?></h6>
+                  </div>
+                <div class="card-body">
+                  <div class="">
+                    <table class="table table-hover table-responsive" id="billedLoaTable">
+                      <thead style="background-color:#eddcb7">
+                        <tr>
+                            <th class="text-center fw-bold ls-2"><strong>Billing No</strong></th>
+                            <th class="text-center fw-bold ls-2"><strong>LOA/NOA #</strong></th>
+                            <th class="text-center fw-bold ls-2"><strong>Patient Name</strong></th>
+                            <th class="text-center fw-bold ls-2"><strong>Business Unit</strong></th>
+                            <th class="text-center fw-bold ls-2"><strong>Remaining MBL</strong></th>
+                            <th class="text-center fw-bold ls-2"><strong>Percentage</strong></th>
+                            <th class="text-center fw-bold ls-2"><strong>Hospital Bill</strong></th>
+                            <th class="text-center fw-bold ls-2"><strong>Company Charge</strong></th>
+                            <th class="text-center fw-bold ls-2"><strong>Personal Charge</strong></th>
+                            <th class="text-center fw-bold ls-2"><strong>Total Payable</strong></th>
+                            <th class="text-center fw-bold ls-2"><strong>SOA</strong></th>
+                        </tr>
+                      </thead>
+                      <tbody id="billed-tbody">
+                      </tbody>
+                      <tfoot>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="fw-bold">TOTAL BILL </td>
+                        <td><span class="text-danger fw-bold fs-5" id="mt-total-bill"></span></td>
+                        <td></td>
+                      </tfoot>
+                    </table>
+                  </div>
                 </div>
               </div>
+            </div>
+            <div class="col pt-4 offset-10">
+              <button class="btn btn-danger ls-1" onclick="printDiv('#printableDiv')" title="click to print data"><i class="mdi mdi-printer"></i> Print </button>
             </div>
       </div>
       <!-- End Row  -->  
@@ -75,6 +99,16 @@
 <!-- End Wrapper -->
 
 <script>
+
+const printDiv = (layer) => {
+    $(layer).printThis({
+        importCSS: true,
+        copyTagClasses: true,
+        copyTagStyles: true,
+        removeInline: false,
+    });
+    };
+
      const baseUrl = "<?php echo base_url(); ?>";
      const payment_no = document.querySelector('#payment-no').value;
 
@@ -110,7 +144,7 @@
     });
 
     billedTable.on('draw.dt', function() {
-    let columnIdx = 4;
+    let columnIdx = 9;
     let sum = 0;
     let rows = billedTable.rows().nodes();
     if ($('#billedLoaTable').DataTable().data().length > 0) {

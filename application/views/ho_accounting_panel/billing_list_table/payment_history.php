@@ -24,7 +24,7 @@
         <div class="col-lg-5 ps-5">
             <div class="input-group">
                 <div class="input-group-prepend">
-                    <span class="input-group-text bg-secondary text-white">
+                    <span class="input-group-text bg-dark text-white">
                     <i class="mdi mdi-filter"></i>
                     </span>
                 </div>
@@ -41,15 +41,15 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-hover" id="billedTable">
-                        <thead>
+                        <thead style="background-color:#00538C">
                             <tr>
-                                <td class="fw-bold">Payment Number</td>
-                                <td class="fw-bold">Account Number</td>
-                                <td class="fw-bold">Account Name</td>
-                                <td class="fw-bold">Check Number</td>
-                                <td class="fw-bold">Check Date</td>
-                                <td class="fw-bold">Bank</td>
-                                <td class="fw-bold">Action</td>
+                                <td class="text-white">Payment Number</td>
+                                <td class="text-white">Account Number</td>
+                                <td class="text-white">Account Name</td>
+                                <td class="text-white">Check Number</td>
+                                <td class="text-white">Check Date</td>
+                                <td class="text-white">Bank</td>
+                                <td class="text-white">Action</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -95,7 +95,7 @@
             
         });
 
-        const viewPaymentInfo = (details_id) => {
+        const viewPaymentInfo = (details_id,check_image) => {
             $.ajax({
                 type: 'GET',
                 url: `${baseUrl}head-office-accounting/billing-list/view-payment-details/${details_id}`,
@@ -133,6 +133,7 @@
                     $('#amount-paid').val(parseFloat(amount_paid).toFixed(2));
                     $('#textbox').val(covered_loa_no);
                     $('#c-billed-date').val(billed_date);
+                    $('#supporting-docu').attr('src', check_image);
                 }
             });
         }

@@ -1,128 +1,154 @@
-<!-- Page wrapper  -->
+<!-- Start of Page wrapper  -->
 <div class="page-wrapper">
     <!-- Bread crumb and right sidebar toggle -->
     <div class="page-breadcrumb">
         <div class="row">
-            <div class="col-12 d-flex no-block align-items-center">
-                <h4 class="page-title ls-2">Upload SOA</h4>
-                <div class="ms-auto text-end">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item">Healthcare Provider</li>
-                            <li class="breadcrumb-item active" aria-current="page">
-                            Upload Textfile
-                            </li>
-                        </ol>
-                    </nav>
+        <div class="col-12 d-flex no-block align-items-center">
+            <h4 class="page-title">Payment List</h4>
+            <div class="ms-auto text-end">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Healthcare Provider</li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        Payment List
+                    </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        </div>
+    </div><hr>
+    <!-- End Bread crumb and right sidebar toggle -->
+    <div class="container-fluid">
+        <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
+        <!-- <div class="col-lg-5 ps-5">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text bg-secondary text-white">
+                    <i class="mdi mdi-filter"></i>
+                    </span>
+                </div>
+                <select class="form-select fw-bold" name="hospital-filter" id="hospital-filter" oninput="enableDate()">
+                        <option value="">Select Hospital</option>
+                        <?php foreach($hc_provider as $option) : ?>
+                        <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
+                        <?php endforeach; ?>
+                </select>
+            </div>
+        </div> -->
+        <br>
+        <div class="card bg-light">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="billedTable">
+                        <thead>
+                            <tr>
+                                <td class="fw-bold">Payment Number</td>
+                                <td class="fw-bold">Account Number</td>
+                                <td class="fw-bold">Account Name</td>
+                                <td class="fw-bold">Check Number</td>
+                                <td class="fw-bold">Check Date</td>
+                                <td class="fw-bold">Bank</td>
+                                <td class="fw-bold">Payment Details</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- End Bread crumb and right sidebar toggle -->
-    <hr>
-    <div class="container-fluid" id="container-div">
-        <form action="<?php echo base_url();?>healthcare-provider/billing/upload-soa-textfile" id="text-file-form" enctype="multipart/form-data">
-        <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
-            <div class="card">
-                <div class="card-body shadow">
-                    <div class="col-lg-6 pb-4 ps-3" id="file-form">
-                        <label class="fw-bold pt-3 pb-3 fs-5 ls-1"><i class="mdi mdi-asterisk text-danger ms-1"></i> Upload SOA Textfile : </label>
-                        <input class="form-control fs-5 mb-2" type="file" name="textfile" id="textfile" accept=".csv, .txt">
-                        <em class="text-info fw-bold ls-1">Allowed file format (.txt | .csv)</em>
-                    </div>
-
-                    <div class="row mt-4">
-                        <div class="col-md-6 offset-3">
-                            <button type="submit" class="btn btn-success text-white btn-lg ls-2 me-2" id="upload-btn">
-                                <i class="mdi mdi-upload me-1"></i>UPLOAD
-                            </button>
-                            <button type="button" class="btn btn-dark text-white btn-lg ls-2" id="clear-btn">CLEAR</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
+    </div> 
 </div>
+ <?php include 'view_payment_details.php' ?>
 <script>
-    const baseUrl = '<?php echo base_url(); ?>';
-    $(document).ready(function(){
+        const baseUrl = "<?php echo base_url(); ?>";
+            $(document).ready(function(){
+                let closedTable = $('#billedTable').DataTable({
+                    processing: true, //Feature control the processing indicator.
+                    serverSide: true, //Feature control DataTables' server-side processing mode.
+                    order: [], //Initial no order.
 
-        $('#text-file-form').submit(function(event){
-            event.preventDefault();
-            var formData = new FormData(this);
-            
-            $.ajax({
-                type: 'POST',
-                url: $(this).attr('action'),
-                data: formData,
-                dataType: "json",
-                enctype: 'multipart/form-data',
-	            async: true,
-	            cache: false,
-                processData: false,
-                contentType: false,
-                success: function(response){
-                    const {
-                        token,
-                        status,
-                        message
-                    } = response;
+                    // Load data for the table's content from an Ajax source
+                    ajax: {
+                        url: `${baseUrl}healthcare-provider/bill/payment-list/fetch`,
+                        type: "POST",
+                        data: function(data) {
+                            data.token     = '<?php echo $this->security->get_csrf_hash(); ?>';
+                            data.filter    = "Ramiro Hospital";
+                        },
+                    
+                    },
 
-                    if(status == 'success'){
-                        swal({
-                            title: 'Success',
-                            text: message,
-                            timer: 3000,
-                            showConfirmButton: false,
-                            type: 'success'
-                        });
-                        $('#text-file-form')[0].reset();
-                        
-                    } else if(status == 'error-format'){
-                        swal({
-                            title: 'Failed',
-                            text: message,
-                            timer: 3000,
-                            showConfirmButton: false,
-                            type: 'error'
-                        });
-                    }else if(status == 'error-delimiter'){
-                        swal({
-                            title: 'Failed',
-                            text: message,
-                            timer: 3000,
-                            showConfirmButton: false,
-                            type: 'error'
-                        });
-                    }else if(status == 'error'){
-                        swal({
-                            title: 'Failed',
-                            text: message,
-                            timer: 3000,
-                            showConfirmButton: false,
-                            type: 'error'
-                        });
-                    }else if(status == 'empty'){
-                        swal({
-                            title: 'Failed',
-                            text: message,
-                            timer: 3000,
-                            showConfirmButton: false,
-                            type: 'error'
-                        });
-                    }
-                }
+                    //Set column definition initialisation properties.
+                    columnDefs: [{
+                        "targets": [5], // 5th column / numbering column
+                        "orderable": false, //set not orderable
+                    }, ],
+                    responsive: true,
+                    fixedHeader: true,
+                });
+
+                $('#hospital-filter').change(function(){
+                    closedTable.draw();
+                });
+                
             });
 
-        });
+            const viewPaymentInfo = (details_id) => {
+                $.ajax({
+                    type: 'GET',
+                    url: `${baseUrl}healthcare-provider/bill/payment-list/view-payment-details/${details_id}`,
+                    success: function(response){
+                        console.log(response);
+                        const res = JSON.parse(response);
+                        const base_url = window.location.origin;
+                        const {
+                            status,
+                            token,
+                            payment_no,
+                            hp_name,
+                            added_on,
+                            acc_number,
+                            acc_name,
+                            check_num,
+                            check_date,
+                            bank,
+                            amount_paid,
+                            billed_date,
+                            covered_loa_no,
+                        } = res;
+            
+                        $('#viewPaymentModal').modal('show');
 
-        $('#clear-btn').on('click', function(){
-            $('#text-file-form')[0].reset();
-        });
+                        $('#hospital_filtered').val(hp_name);
+                        $('#start_date').val(added_on);
+                        // $('#end_date').val(end_date);
+                        $('#payment-num').val(payment_no);
+                        $('#acc-number').val(acc_number);
+                        $('#acc-name').val(acc_name);
+                        $('#check-number').val(check_num);
+                        $('#check-date').val(check_date);
+                        $('#bank').val(bank);
+                        $('#amount-paid').val(parseFloat(amount_paid).toFixed(2));
+                        $('#textbox').val(covered_loa_no);
+                        $('#c-billed-date').val(billed_date);
+                    }
+                });
+            }
 
-       
-    });
-   
+            function viewImage(path) {
+            let item = [{
+                src: path, // path to image
+                title: 'Attached Check File' // If you skip it, there will display the original image name
+            }];
+            // define options (if needed)
+            let options = {
+                index: 0 // this option means you will start at first image
+            };
+            // Initialize the plugin
+            let photoviewer = new PhotoViewer(item, options);
+        }
 
-</script>
+          
+    </script>

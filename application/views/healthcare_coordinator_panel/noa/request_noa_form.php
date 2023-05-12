@@ -35,7 +35,7 @@
                     <div id="search-results" class="border-top-0"></div>
                   </div>
                 </div>
-                <input type="text" id="mbl" hidden>
+                <input type="number" id="mbl" hidden>
               </div>
               <div class="form-group row">
                 <div class="col-sm-7 mb-2">
@@ -121,23 +121,23 @@
     $('#noaRequestForm').submit(function(event) {
       event.preventDefault();
       let $data = new FormData($(this)[0]);
-      if($('#mbl').val()<=0){
-        $.alert({
-          title: "<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Unable to Request</h3>",
-          content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it looks like His/Her MBL balance is currently empty. Please ensure that you have enough MBL in your account before attempting to make a request. Thank you for your understanding.</div>",
+      // if($('#mbl').val()<=0){
+      //   $.alert({
+      //     title: "<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Unable to Request</h3>",
+      //     content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it looks like His/Her MBL balance is currently empty. Please ensure that you have enough MBL in your account before attempting to make a request. Thank you for your understanding.</div>",
 
-          type: "red",
-          buttons: {
-              ok: {
-                  text: "OK",
-                  btnClass: "btn-danger",
-                  // action: function(){
-                  //   window.history.back()
-                  // },
-              },
-          },
-      });
-      }else{
+      //     type: "red",
+      //     buttons: {
+      //         ok: {
+      //             text: "OK",
+      //             btnClass: "btn-danger",
+      //             // action: function(){
+      //             //   window.history.back()
+      //             // },
+      //         },
+      //     },
+      // });
+      // }else{
       $.ajax({
         type: "post",
         url: $(this).attr('action'),
@@ -205,7 +205,7 @@
         },
       });
       // End of AJAX Request
-      }
+      //}
     });
   });
 

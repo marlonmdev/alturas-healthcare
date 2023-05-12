@@ -401,13 +401,13 @@ class Loa_controller extends CI_Controller {
 				if($exists){
 					$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaConsult(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-cyan"></i></a>';
 				}else{
-					$custom_actions .= '<i class="me-1" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-secondary"></i></i>';
+					$custom_actions .= '';
 				}
 			}else{
 				if($exists){
 					$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-cyan"></i></a>';
 				}else{
-					$custom_actions .= '<i class="me-1" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-secondary"></i></i>';
+					$custom_actions .= '';
 				}
 			}				
 
@@ -1173,6 +1173,7 @@ class Loa_controller extends CI_Controller {
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['work_related'] != '' ? 'for Approval': $row['status'],
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		];
@@ -1240,6 +1241,7 @@ class Loa_controller extends CI_Controller {
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'expiry_date' => $row['expiration_date'] ? date("F d, Y", strtotime($row['expiration_date'])) : 'None',
@@ -1310,6 +1312,7 @@ class Loa_controller extends CI_Controller {
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'disapproved_by' => $doctor_name,
 			'disapprove_reason' => $row['disapprove_reason'],
 			'disapproved_on' => $row['approved_on'] ? date("F d, Y", strtotime($row['approved_on'])) : '',
@@ -1352,6 +1355,7 @@ class Loa_controller extends CI_Controller {
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'health_card_no' => $row['health_card_no'],
 			'first_name' => $row['first_name'],
 			'middle_name' => $row['middle_name'],
@@ -1378,6 +1382,7 @@ class Loa_controller extends CI_Controller {
 			'attending_physician' => $row['attending_physician'],
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
+			
 		];
 		echo json_encode($response);
 	}
@@ -1443,6 +1448,7 @@ class Loa_controller extends CI_Controller {
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'approved_by' => $doctor_name,
 			'approved_on' => $row['approved_on'] ? date("F d, Y", strtotime($row['approved_on'])) : '',
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
@@ -1504,6 +1510,70 @@ class Loa_controller extends CI_Controller {
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
+			'member_mbl' => number_format($row['max_benefit_limit'], 2),
+			'remaining_mbl' => number_format($row['remaining_balance'], 2),
+			'requested_by' => $row['requested_by'],
+			'approved_by' => $row['doctor_name'],
+			'approved_on' => $row['approved_on']
+		];
+		echo json_encode($response);
+	}
+
+	function get_expired_loa_info() {
+		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$this->load->model('healthcare_coordinator/loa_model');
+		$row = $this->loa_model->db_get_resched_loa_details($loa_id);
+		
+		$cost_types = $this->loa_model->db_get_cost_types();
+		// Calculate Age
+		$birthDate = date("d-m-Y", strtotime($row['date_of_birth']));
+		$currentDate = date("d-m-Y");
+		$diff = date_diff(date_create($birthDate), date_create($currentDate));
+		$age = $diff->format("%y");
+		// get selected medical services
+		$selected_cost_types = explode(';', $row['med_services']);
+		$ct_array = [];
+		foreach ($cost_types as $cost_type) :
+			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
+				array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
+			}
+		endforeach;
+		$med_serv = implode(' ', $ct_array);
+
+		$response = [
+			'status' => 'success',
+			'token' => $this->security->get_csrf_hash(),
+			'loa_id' => $row['loa_id'],
+			'loa_no' => $row['loa_no'],
+			'first_name' => $row['first_name'],
+			'middle_name' => $row['middle_name'],
+			'last_name' => $row['last_name'],
+			'suffix' => $row['suffix'],
+			'date_of_birth' => 	date("F d, Y", strtotime($row['date_of_birth'])),
+			'age' => $age,
+			'gender' => $row['gender'],
+			'blood_type' => $row['blood_type'],
+			'philhealth_no' => $row['philhealth_no'],
+			'contact_no' => $row['contact_no'],
+			'home_address' => $row['home_address'],
+			'city_address' => $row['city_address'],
+			'email' => $row['email'],
+			'contact_person' => $row['contact_person'],
+			'contact_person_addr' => $row['contact_person_addr'],
+			'contact_person_no' => $row['contact_person_no'],
+			'healthcare_provider' => $row['hp_name'],
+			'loa_request_type' => $row['loa_request_type'],
+			'med_services' => $med_serv,
+			'health_card_no' => $row['health_card_no'],
+			'requesting_company' => $row['requesting_company'],
+			'request_date' => date("F d, Y", strtotime($row['request_date'])),
+			'chief_complaint' => $row['chief_complaint'],
+			'requesting_physician' => $row['doctor_name'],
+			'rx_file' => $row['rx_file'],
+			'req_status' => $row['status'],
+			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 			'requested_by' => $row['requested_by'],

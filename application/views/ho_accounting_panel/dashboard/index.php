@@ -33,7 +33,7 @@
                   <div class="icon">
                     <i class="mdi mdi-file-document" aria-hidden="true"></i>
                   </div>
-                  <a href="<?php echo base_url() ?>head-office-accounting/billing-list/billed" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                  <a href="<?php echo base_url() ?>head-office-accounting/bill/billing-list/billed-loa-noa" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
               </div>
 
@@ -54,7 +54,7 @@
                 <div class="card-box bg-orange">
                   <div class="inner">
                     <h3><?php echo $loa_count; ?></h3>
-                    <p>LOA Requests</p>
+                    <p>Approved LOA Requests</p>
                   </div>
                   <div class="icon">
                     <i class="mdi mdi-file-document" aria-hidden="true"></i>
@@ -67,7 +67,7 @@
                 <div class="card-box bg-red">
                   <div class="inner">
                     <h3><?php echo $noa_count; ?></h3>
-                    <p>NOA Requests</p>
+                    <p>Approved NOA Requests</p>
                   </div>
                   <div class="icon">
                     <i class="mdi mdi-file-chart" aria-hidden="true"></i>

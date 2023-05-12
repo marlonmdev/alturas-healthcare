@@ -10,7 +10,7 @@
               <ol class="breadcrumb">
               <li class="breadcrumb-item">Head Office Accounting</li>
               <li class="breadcrumb-item active" aria-current="page">
-                  Billed
+                  Paid
               </li>
               </ol>
           </nav>
@@ -37,34 +37,50 @@
             <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
             <input type="hidden" name="pd-payment-no" id="pd-payment-no" value="<?php echo $payment_no ?>">
             <div class="card shadow" style="background-color:">
-              <div class="card-body">
-                <div class="table-responsive">
-                  <table class="table table-hover table-responsive" id="paidTable">
-                    <thead style="background-color:#eddcb7">
-                      <tr>
-                        <th class="fw-bold">Billing No.</th>
-                        <th class="fw-bold">LOA/NOA #</th>
-                        <th class="fw-bold">Healthcare Provider</th>
-                        <th class="fw-bold">Name</th>
-                        <th class="fw-bold">Healthcare Bill</th>
-                        <th class="fw-bold">Status</th>
-                        <th class="fw-bold">View SOA</th>
-                      </tr>
-                    </thead>
-                    <tbody id="billed-tbody">
-                    </tbody>
-                    <tfoot>
-                       <td></td>
-                       <td></td>
-                       <td></td>
-                       <td class="fw-bold">TOTAL BILL </td>
-                       <td><span class="text-danger fw-bold fs-5" id="pd-total-bill"></span></td>
-                       <td></td>
-                       <td></td>
-                    </tfoot>
-                  </table>
+              <div id="printableDiv">
+                <div class="text-center pt-4">
+                      <h4>ALTURAS HEALTHCARE SYSTEM</h4>
+                      <h4>For Payment Billing Summary</h4>
+                      <h5><?php echo $pay['hp_name']; ?></h5>
+                      <h6><?php echo date('F d, Y', strtotime($pay['startDate'])).' to '.date('F d, Y', strtotime($pay['endDate']))?></h6>
+                      <h6><?php echo $payment_no; ?></h6>
+                </div>
+                <div class="card-body">
+                  <div class="table">
+                    <table class="table table-hover table-responsive" id="paidTable">
+                      <thead style="background-color:#eddcb7">
+                        <tr>
+                          <th class="fw-bold">Billing No.</th>
+                          <th class="fw-bold">LOA/NOA #</th>
+                          <th class="fw-bold">Name</th>
+                          <th class="fw-bold">Company Charge</th>
+                          <th class="fw-bold">Cash Advance</th>
+                          <th class="fw-bold">Total Paid Bill</th>
+                          <th class="fw-bold">Remaining MBL</th>
+                          <th class="fw-bold">Status</th>
+                          <th class="fw-bold">View SOA</th>
+                        </tr>
+                      </thead>
+                      <tbody id="billed-tbody">
+                      </tbody>
+                      <tfoot>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="fw-bold">TOTAL BILL </td>
+                        <td><span class="text-danger fw-bold fs-5" id="pd-total-bill"></span></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tfoot>
+                    </table>
+                  </div>
                 </div>
               </div>
+            </div>
+            <div class="col pt-4 offset-10">
+              <button class="btn btn-danger ls-1" onclick="printDiv('#printableDiv')" title="click to print data"><i class="mdi mdi-printer"></i> Print </button>
             </div>
       </div>
       <!-- End Row  -->  
@@ -77,6 +93,17 @@
 <!-- End Wrapper -->
 
 <script>
+
+  
+const printDiv = (layer) => {
+    $(layer).printThis({
+        importCSS: true,
+        copyTagClasses: true,
+        copyTagStyles: true,
+        removeInline: false,
+    });
+    };
+
      const baseUrl = "<?php echo base_url(); ?>";
      const payment_no = document.querySelector('#pd-payment-no').value;
 
@@ -112,7 +139,7 @@
     });
 
     billedTable.on('draw.dt', function() {
-    let columnIdx = 4;
+    let columnIdx = 5;
     let sum = 0;
     let rows = billedTable.rows().nodes();
     if ($('#paidTable').DataTable().data().length > 0) {

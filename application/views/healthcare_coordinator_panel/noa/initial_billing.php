@@ -100,7 +100,7 @@
                       </tr>
                     </thead>
                     <tbody id="billed-tbody">
-                    </tbody>
+                    </tbody> 
                   </table>
                 </div>
                 <div class="row pt-4">

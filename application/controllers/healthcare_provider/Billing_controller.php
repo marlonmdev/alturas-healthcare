@@ -1050,89 +1050,6 @@ class Billing_controller extends CI_Controller {
 
         echo json_encode($response);
 	}
-    function submit_initial_loa_pdf_bill() {
-        $this->security->get_csrf_hash();
-        $loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
-        $billing_no = $this->input->post('billing-no', TRUE);
-        $net_bill = $this->input->post('net-bill', TRUE);
-        $hospitalBillData = $_POST['hospital_bill_data'];
-        // $hospitalBillArray = json_decode($hospitalBillData, true);
-        //var_dump($hospitalBillArray);
-
-        // PDF File Upload
-        $config['upload_path'] = './uploads/pdf_bills/';
-        $config['allowed_types'] = 'pdf';
-        $config['encrypt_name'] = TRUE;
-        $this->load->library('upload', $config);
-
-        if (!$this->upload->do_upload('pdf-file')) {
-            $response = [
-                'status'  => 'save-error',
-                'message' => 'PDF Bill Upload Failed'
-            ];
-
-        } else {
-            $upload_data = $this->upload->data();
-            $pdf_file = $upload_data['file_name'];
-            $loa_info = $this->loa_model->db_get_loa_info($loa_id);
-            $result_charge = $this->get_personal_and_company_charge("loa",$loa_id,$net_bill);
-
-            // var_dump($net_bill);
-            $data = [
-                'billing_no'            => $billing_no,
-                'emp_id'                => $loa_info['emp_id'],
-                'loa_id'                => $loa_id,
-                'hp_id'                 => $this->session->userdata('dsg_hcare_prov'),
-                'initial_bill'              => $net_bill,
-                'company_charge'        => floatval(str_replace(',', '', $result_charge['company_charge'])),
-                'personal_charge'       => floatval(str_replace(',', '', $result_charge['personal_charge'])),
-                'pdf_bill'              => $pdf_file,
-                'uploaded_by'             => $this->session->userdata('fullname'),
-                'date_uploaded'             => date('Y-m-d'),
-                'status'                => 'Initial',
-            ];    
-            
-            $inserted = $this->initial_billing_model->insert_initial_bill($data);
-            // $existing = $this->billing_model->check_if_loa_already_added($loa_id);
-            // $resched = $this->billing_model->check_if_done_created_new_loa($loa_id);
-            // $rescheduled = $this->billing_model->check_if_status_cancelled($loa_id);
-            
-
-            // if($rescheduled){
-            //     if($existing && $resched['reffered'] == 1){
-            //         $this->billing_model->set_completed_value($loa_id);
-            //     }
-            // }else{
-            //     if($existing){
-            //         $this->billing_model->set_completed_value($loa_id);
-            //     }
-            // }
-            
-            if(!$inserted){
-                $response = [
-                   'status'  => 'save-error',
-                   'message' => 'PDF Bill Upload Failed'
-                ];
-            }else{
-                $response = [
-                        'status'     => 'success',
-                        'initial'    => true,
-                        'message'    => 'Initial Bill Uploaded Successfully'
-                    ];   
-            }
-            // $type = 'LOA';
-            // $this->update_request_status($type, $loa_id);
-            // $bill = $this->billing_model->get_billing($billing_no);
-            // $encrypted_id = $this->myhash->hasher($bill['billing_id'], 'encrypt');
-            // $response = [
-            //     'status'     => 'success',
-            //     'message'    => 'PDF Bill Uploaded Successfully',
-            //     'billing_id' => $encrypted_id,
-            // ];   
-        }
-
-        echo json_encode($response);
-	}
 
     function pdf_billing_success(){
         $billing_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
@@ -1474,5 +1391,51 @@ class Billing_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
+    function fetch_initial_billing() {
+		$this->security->get_csrf_hash();
+		$status = 'Billed';
+        $hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
+		$list = $this->noa_model->get_datatables($status, $hcare_provider_id);
+		$data = [];
+		foreach ($list as $noa) {
+			$noa_id = $this->myhash->hasher($noa['noa_id'], 'encrypt');
+			$billed_pdf = $this->Billing_model->get_billed_noa_pdf($noa['noa_id']);
+			$row = [];
+			$full_name = $noa['first_name'] . ' ' . $noa['middle_name'] . ' ' . $noa['last_name'] . ' ' . $noa['suffix'];
+
+			$admission_date = date("m/d/Y", strtotime($noa['admission_date']));
+			$request_date = date("m/d/Y", strtotime($noa['request_date']));
+
+			$custom_noa_no = '<mark class="bg-primary text-white">'.$noa['noa_no'].'</mark>';
+
+			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-cyan">' . $noa['status'] . '</span></div>';
+
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>
+			<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $billed_pdf->pdf_bill . '\' , \''. $noa['noa_no'] .'\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i>
+			</a>';
+
+			// shorten name of values from db if its too long for viewing and add ...
+			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];
+
+			// this data will be rendered to the datatable
+			$row[] = $custom_noa_no;
+			$row[] = $full_name;
+			$row[] = $short_hosp_name;
+			$row[] = $admission_date;
+			$row[] = $request_date;
+			$row[] = $custom_status;
+			$row[] = $custom_actions;
+			$data[] = $row;
+		}
+
+		$output = array(
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->noa_model->count_all($status, $hcare_provider_id),
+			"recordsFiltered" => $this->noa_model->count_filtered($status, $hcare_provider_id),
+			"data" => $data,
+		);
+
+		echo json_encode($output);
+	}
     
 }

@@ -118,7 +118,6 @@ $route['healthcare-provider/billing/search']  = 'healthcare_provider/billing_con
 // LOA Billing
 $route['healthcare-provider/billing/bill-loa/upload-pdf/(:any)'] = 'healthcare_provider/billing_controller/upload_loa_pdf_bill_form';
 $route['healthcare-provider/billing/bill-loa/upload-pdf/(:any)/submit'] = 'healthcare_provider/billing_controller/submit_loa_pdf_bill';
-$route['healthcare-provider/initial_billing/bill-loa/upload-pdf/(:any)/submit'] = 'healthcare_provider/billing_controller/submit_initial_loa_pdf_bill';
 $route['healthcare-provider/billing/bill-loa/upload-pdf/(:any)/success'] = 'healthcare_provider/billing_controller/pdf_billing_success';
 $route['healthcare-provider/billing/bill-loa/manual/(:any)'] = 'healthcare_provider/billing_controller/bill_patient_loa';
 
@@ -134,6 +133,7 @@ $route['healthcare-provider/billing/noa/view-receipt/(:any)'] = 'healthcare_prov
 $route['healthcare-provider/billing/bill-noa/upload-pdf/(:any)'] = 'healthcare_provider/billing_controller/upload_noa_pdf_bill_form';
 $route['healthcare-provider/billing/bill-noa/upload-pdf/(:any)/submit'] = 'healthcare_provider/billing_controller/submit_noa_pdf_bill';
 $route['healthcare-provider/initial_billing/bill-noa/upload-pdf/(:any)/submit'] = 'healthcare_provider/billing_controller/submit_initial_noa_pdf_bill';
+$route['healthcare-provider/fetch_initial_billing/bill-noa/'] = 'healthcare_provider/billing_controller/fetch_initial_billing';
 $route['healthcare-provider/billing/bill-noa/upload-pdf/(:any)/success'] = 'healthcare_provider/billing_controller/pdf_billing_success';
 $route['healthcare-provider/billing/bill-noa/manual/(:any)']  = 'healthcare_provider/billing_controller/bill_patient_noa';
 $route['healthcare-provider/billing/bill-noa/submit/(:any)'] = 'healthcare_provider/billing_controller/noa_final_billing';

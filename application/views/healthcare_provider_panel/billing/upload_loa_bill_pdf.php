@@ -28,10 +28,10 @@
         </form>
       </div>
 
-      <form id="pdfBillingForm" enctype="multipart/form-data" class="needs-validation" novalidate>
+      <form action="<?php echo base_url();?>healthcare-provider/billing/bill-loa/upload-pdf/<?= $loa_id ?>/submit" id="pdfBillingForm" enctype="multipart/form-data" class="needs-validation" novalidate>
         <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
         <input type="hidden" name="billing-no" value="<?= $billing_no ?>">
-  
+        <!-- <input type="hidden" name="net-bill" value="0"> -->
         <div class="card">
           <div class="card-body shadow">
             <div class="row mt-3">
@@ -54,19 +54,7 @@
               </div>
             </div>
 
-            <div class="btn-group">
-              <button type="button" class="btn btn-success dropdown-toggle fw-bold animate__animated" data-bs-toggle="dropdown" aria-expanded="false">
-              Initial Billing
-              </button>
-              <ul class="dropdown-menu bg-white">
-                <li><a class="dropdown-item">Initial Billing</a></li>
-                <li><a class="dropdown-item ">Final Billing</a></li>
-              </ul>
-            </div>
-
-
-               
-                    <div class="row pt-3">
+            <div class="row pt-3">
                         <div class="col-lg-6">
                             <label class="fw-bold fs-5 ls-1">
                                 <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Initial Billing 
@@ -81,56 +69,38 @@
                         <label class="form-label fs-5 ls-1">Remaining MBL Balance</label>
                             <div class="input-group mb-3">
                                 <span class="input-group-text bg-cyan text-white">&#8369;</span>
-                                <input type="number" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="<?= $remaining_balance ?>"  disabled>
+                                <input type="text" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="<?= $remaining_balance ?>"  readonly>
                             </div>
                         </div>
 
                         <div class="col-lg-3">
-                        <label class="form-label fs-5 ls-1" id="net_bill_label">Initial Bill</label>
+                        <label class="form-label fs-5 ls-1">Net Bill</label>
                             <div class="input-group mb-3">
                                 <span class="input-group-text bg-cyan text-white">&#8369;</span>
-                                <input type="number" class="form-control fw-bold ls-1" id="net-bill" name="net-bill"  readonly>
+                                <input type="number" class="form-control fw-bold ls-1" id="net-bill" name="net-bill"   readonly>
                             </div>
                         </div>
                     </div>
 
-                  <div class="row">
-                    <div class="d-flex justify-content-center align-items-center mt-2">
-                      <button type="submit" class="btn btn-info text-white btn-lg ls-2 me-3" id="upload-btn"><i class="mdi mdi-upload me-1"></i>UPLOAD</button>
-                      <button type="button" class="btn btn-dark text-white btn-lg ls-2" id="clear-btn">CLEAR</button>
-                    </div>
-                  </div>
+            <div class="row">
+              <div class="d-flex justify-content-center align-items-center mt-2">
+                <button type="submit" class="btn btn-info text-white btn-lg ls-2 me-3" id="upload-btn"><i class="mdi mdi-upload me-1"></i>UPLOAD</button>
+                <button type="button" class="btn btn-dark text-white btn-lg ls-2" id="clear-btn">CLEAR</button>
+              </div>
+            </div>
 
-                  <div class="row">
-                    <div class="col-lg-12">
-                      <div class="mt-3" id="pdf-preview"></div>
-                    </div>
-                  </div>
-
-                  <div id="initial_bill_holder">
-                      <div class="ps-5 pe-5">
-                              <h4 class="page-title ls-2  pb-2 ">Uploaded Initial Billing</h4>
-                              <table class="table table-sm">
-                                      <thead>
-                                          <tr>
-                                          <th scope="col">#</th>
-                                          <th scope="col">Filename</th>
-                                          <th scope="col">Subtotal</th>
-                                          <th scope="col">View</th>
-                                          </tr>
-                                      </thead>
-                                      <tbody>
-                                          
-                                      </tbody>
-                                      </table>
-                              </div> 
-                    </div>
-                </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="mt-3" id="pdf-preview"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </form>
     </div>
   </div>
 </div>
+
 
 <script>
   const baseUrl = `<?php echo base_url(); ?>`;
@@ -171,31 +141,7 @@
 
   const form = document.querySelector('#pdfBillingForm');
   let hospital_charges ="";
-  
   $(document).ready(function(){
-    var base_url = "<?php echo base_url(); ?>";
-    var loa_id = "<?php echo $loa_id; ?>";
-    // Get the form element
-    var forms = document.getElementById('pdfBillingForm');
-    // Construct the new action URL
-    var final_action = base_url + 'healthcare-provider/billing/bill-loa/upload-pdf/' + loa_id + '/submit';
-    var initial_action = base_url + 'healthcare-provider/initial_billing/bill-loa/upload-pdf/' + loa_id + '/submit';
-    // Change the action attribute
-    forms.action = initial_action;
-
-    $('.dropdown-item').click(function() {
-      var selectedText = $(this).text();
-      $('.btn.dropdown-toggle').text(selectedText);
-      $('#net_bill_label').text(selectedText);
-      if(selectedText==="Initial Billing"){
-        $('#initial_bill_holder').prop("hidden",false);
-        forms.action = initial_action;
-      }else{
-        $('#initial_bill_holder').prop("hidden",true);
-        forms.action = final_action;
-      }
-    });
-
     $('#pdfBillingForm').submit(function(event){
       event.preventDefault();
 
@@ -219,32 +165,12 @@
         processData: false,
         contentType: false,
         success: function(response){
-          const { token, status, initial, message, billing_id } = response;
+          const { token, status, message, billing_id } = response;
 
           if(status == 'success'){
-            if(initial){
-              $.alert({
-                title: "<h3 style='font-weight: bold; color: #28a745; margin-top: 0;'>Uploaded Successfully</h3>",
-                content: "<div style='font-size: 16px; color: #333;'>Initial Bill uploaded successfully</div>",
-                type: "green",
-                buttons: {
-                  ok: {
-                    text: "OK",
-                    btnClass: "btn-success",
-                    action: function () {
-                      let pdfPreview = document.getElementById('pdf-preview');
-                      $('#pdfBillingForm')[0].reset();
-                      pdfPreview.innerHTML = "";
-                    },
-                  },
-                },
-               
-              });
-            }else{
-              setTimeout(function() {
+            setTimeout(function() {
               window.location.href = `${baseUrl}healthcare-provider/billing/bill-loa/upload-pdf/${billing_id}/success`;
             }, 300);
-            }
           }else{
             swal({
               title: 'Failed',

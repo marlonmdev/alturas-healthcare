@@ -207,6 +207,11 @@ class Members_controller extends CI_Controller {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['member'] = $member = $this->members_model->db_get_member_details($member_id);
 		$data['mbl'] = $this->members_model->db_get_member_mbl($member['emp_id']);
+		$data['bar'] = $this->members_model->bar_pending();
+		$data['bar1'] = $this->members_model->bar_approved();
+		$data['bar2'] = $this->members_model->bar_completed();
+		$data['bar3'] = $this->members_model->bar_referral();
+		$data['bar4'] = $this->members_model->bar_expired();
 
 		/* This is checking if the image file exists in the directory. */
 		$file_path = './uploads/profile_pics/' . $member['photo'];

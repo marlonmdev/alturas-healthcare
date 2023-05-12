@@ -303,6 +303,12 @@
             $('#loa-status').html(`<strong class="text-info">[${req_status}]</strong>`);
             break;
         }
+        const bt = blood_type !== '' ? blood_type : 'None';
+        const ca = city_address !== '' ? city_address : 'None';
+        const em = email !== '' ? email : 'None';
+        const cp = contact_person !== '' ? contact_person : 'None';
+        const cpa = contact_person_addr !== '' ? contact_person_addr : 'None';
+        const cpn = contact_person_no !== '' ? contact_person_no : 'None';
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
         $('#loa-no').html(loa_no);
@@ -316,13 +322,13 @@
         $('#age').html(age);
         $('#gender').html(gender);
         $('#philhealth-no').html(philhealth_no);
-        $('#blood-type').html(blood_type);
+        $('#blood-type').html(bt);
         $('#contact-no').html(contact_no);
         $('#home-address').html(home_address);
-        $('#city-address').html(city_address);
-        $('#email').html(email);
-        $('#contact-person').html(contact_person);
-        $('#contact-person-addr').html(contact_person_addr);
+        $('#city-address').html(ca);
+        $('#email').html(em);
+        $('#contact-person').html(cp);
+        $('#contact-person-addr').html(cpa);
         $('#contact-person-no').html(contact_person_no);
         $('#healthcare-provider').html(healthcare_provider);
         $('#loa-request-type').html(loa_request_type);

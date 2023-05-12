@@ -20,6 +20,11 @@ class Pages_controller extends CI_Controller {
 		$data['pending_loa_count'] = $this->count_model->count_all_pending_loa();
 		$data['pending_noa_count'] = $this->count_model->count_all_pending_noa();
 		$data['doctors'] = $this->count_model->db_get_company_doctors();
+		$data['bar'] = $this->count_model->bar_pending();
+		$data['bar1'] = $this->count_model->bar_approved();
+		$data['bar2'] = $this->count_model->bar_completed();
+		$data['bar3'] = $this->count_model->bar_referral();
+		$data['bar4'] = $this->count_model->bar_expired();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/dashboard/index');
 		$this->load->view('templates/footer');
@@ -35,20 +40,37 @@ class Pages_controller extends CI_Controller {
 		$data['hospitals'] = $this->setup_model->db_get_hospitals();
 		$data['labs'] = $this->setup_model->db_get_laboratories();
 		$data['clinics'] = $this->setup_model->db_get_clinics();
+		$data['bar'] = $this->count_model->bar_pending();
+		$data['bar1'] = $this->count_model->bar_approved();
+		$data['bar2'] = $this->count_model->bar_completed();
+		$data['bar3'] = $this->count_model->bar_referral();
+		$data['bar4'] = $this->count_model->bar_expired();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/healthcare_providers/healthcare_providers');
 		$this->load->view('templates/footer');
 	}
 
 	function view_all_pending_members() {
+		$this->load->model('healthcare_coordinator/applicants_model');
 		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bar'] = $this->applicants_model->bar_pending();
+		$data['bar1'] = $this->applicants_model->bar_approved();
+		$data['bar2'] = $this->applicants_model->bar_completed();
+		$data['bar3'] = $this->applicants_model->bar_referral();
+		$data['bar4'] = $this->applicants_model->bar_expired();
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_coordinator_panel/members/pending_members');
+		$this->load->view('healthcare_coordinator_panel/members/create_account');
 		$this->load->view('templates/footer');
 	}
 
 	function view_all_approved_members() {
 		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->model('healthcare_coordinator/loa_model');
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/members/approved_members');
 		$this->load->view('templates/footer');
@@ -56,6 +78,12 @@ class Pages_controller extends CI_Controller {
 
 	function healthcard_monitoring() {
 		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->model('healthcare_coordinator/loa_model');
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/members/healthcard_id_monitoring');
 		$this->load->view('templates/footer');
@@ -129,6 +157,11 @@ class Pages_controller extends CI_Controller {
 		$this->load->model('healthcare_coordinator/loa_model');
 		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
 		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/loa/pending_loa_requests');
 		$this->load->view('templates/footer');
@@ -138,6 +171,11 @@ class Pages_controller extends CI_Controller {
 		$this->load->model('healthcare_coordinator/loa_model');
 		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
 		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/loa/approved_loa_requests');
 		$this->load->view('templates/footer');
@@ -147,6 +185,11 @@ class Pages_controller extends CI_Controller {
 		$this->load->model('healthcare_coordinator/loa_model');
 		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
 		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/loa/disapproved_loa_requests');
 		$this->load->view('templates/footer');
@@ -156,6 +199,11 @@ class Pages_controller extends CI_Controller {
 		$this->load->model('healthcare_coordinator/loa_model');
 		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
 		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/loa/expired_loa_requests');
 		$this->load->view('templates/footer');
@@ -165,6 +213,11 @@ class Pages_controller extends CI_Controller {
 		$this->load->model('healthcare_coordinator/loa_model');
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/loa/cancelled_loa_requests');
 		$this->load->view('templates/footer');
@@ -201,6 +254,11 @@ class Pages_controller extends CI_Controller {
 		$this->load->model('healthcare_coordinator/loa_model');
 		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
 		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/loa/completed_loa_requests');
 		$this->load->view('templates/footer');
@@ -210,6 +268,11 @@ class Pages_controller extends CI_Controller {
 		$this->load->model('healthcare_coordinator/loa_model');
 		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
 		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/loa/referred_loa_requests');
 		$this->load->view('templates/footer');
@@ -247,6 +310,11 @@ class Pages_controller extends CI_Controller {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['hospitals'] = $this->setup_model->db_get_hospitals();
 		$data['costtypes'] = $this->setup_model->db_get_all_cost_types();
+		$data['bar'] = $this->setup_model->bar_pending();
+		$data['bar1'] = $this->setup_model->bar_approved();
+		$data['bar2'] = $this->setup_model->bar_completed();
+		$data['bar3'] = $this->setup_model->bar_referral();
+		$data['bar4'] = $this->setup_model->bar_expired();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/noa/request_noa_form');
 		$this->load->view('templates/footer');
@@ -256,6 +324,11 @@ class Pages_controller extends CI_Controller {
 		$this->load->model('healthcare_coordinator/noa_model');
 		$data['hcproviders'] = $this->noa_model->db_get_healthcare_providers();
 		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bar'] = $this->noa_model->bar_pending();
+		$data['bar1'] = $this->noa_model->bar_approved();
+		$data['bar2'] = $this->noa_model->bar_completed();
+		$data['bar3'] = $this->noa_model->bar_referral();
+		$data['bar4'] = $this->noa_model->bar_expired();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/noa/pending_noa_requests');
 		$this->load->view('templates/footer');

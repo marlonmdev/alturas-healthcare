@@ -137,8 +137,9 @@
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i>MBL Balance</label>
                   <input type="number" class="form-control" name="remaining_mbl" id="remaining_mbl" value="<?= $mbl['remaining_balance'] ?>" disabled>
                 </div>
-                
               </div>
+
+
               <div class="form-group row">
                 <div class="col-lg-12 col-sm-12 mb-2 d-none" id="med-services-div">
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Select Medical Service/s</label><br>
@@ -227,9 +228,7 @@
 
               <div class="row mt-2">
                 <div class="col-sm-12 mb-2 d-flex justify-content-start">
-                  <button type="submit" class="btn btn-primary me-2" id="submit"><i class="mdi mdi-content-save-settings"></i> 
-                  SUBMIT
-                  </button>
+                  <button type="submit" class="btn btn-primary me-2" id="submit"><i class="mdi mdi-content-save-settings"></i> SUBMIT</button>
                   <a href="#" onclick="window.history.back()" class="btn btn-danger"><i class="mdi mdi-arrow-left-bold"></i> GO BACK</a>
                 </div>
               </div>
@@ -247,11 +246,33 @@
   const baseUrl = "<?= base_url() ?>";
   const mbl = $('#remaining_mbl').val();
   $(document).ready(function() {
-
     $("#remaining_mbl").css("border-color", "default");
     if($('#remaining_mbl').val()==0){
       $("#remaining_mbl").css("border-color", "red");
     }
+
+    $('#loa-request-type').on('change', function() {
+      const selectedService = $(this).val();
+      const remainingMbl = parseFloat($('#remaining_mbl').val());
+      const submitButton = $('#submit');
+  
+      if (selectedService === "Consultation" && remainingMbl < 500) {
+        $.alert({
+          title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Warning!</h3>`,
+          content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it looks like your MBL balance is not enough to make a consultation request. Please ensure that you have enough MBL in your account before attempting to make a request. Thank you for your understanding.</div>",
+          type: "red",
+          buttons: {
+            ok: {
+              text: "OK",
+              btnClass: "btn-danger",
+            },
+          },
+        });
+        submitButton.prop('disabled', true);
+      }else{
+        submitButton.prop('disabled', false);
+      }
+    });
 
     $('#healthcare-provider').on('change', function(){
       const hp_id = $(this).val();
@@ -275,49 +296,50 @@
     });
 
     $('#med-services-wrapper').on('change', function() {
-          var prices = [];
-          var total = 0;
-          $('#med-services option:selected').each(function() {
-            var price = $(this).data('price');
-            if (typeof price !== 'undefined') {
-              prices.push(price);
-              console.log("price", price);
-            }
-          });
-          total = prices.reduce(function(acc, val) {
-            return acc + val;
-          }, 0);
-          $('#total_sevices').val(total);
-          $("#remaining_mbl").val(mbl);
-          console.log("total",total);
-          if (total > mbl) {
-            var lastIndex = $('#med-services option:selected').length - 1;
-            var lastOption = $('#med-services option:selected').eq(lastIndex);
-            lastOption.prop('selected', false);
-            // Trigger the Chosen plugin to update the display
-            $('#med-services').trigger('chosen:updated');
-            prices.pop();
-            total = prices.reduce(function(acc, val) {
-              return acc + val;
-            }, 0);
-            console.log("final",total);
-            $('#total_sevices').val(total);
-            $.alert({
-          title: "<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Unable to Request</h3>",
+      var prices = [];
+      var total = 0;
+      $('#med-services option:selected').each(function() {
+        var price = $(this).data('price');
+        if (typeof price !== 'undefined') {
+          prices.push(price);
+          console.log("price", price);
+        }
+      });
+      total = prices.reduce(function(acc, val) {
+        return acc + val;
+      }, 0);
+      $("#remaining_mbl").val(mbl);
+      console.log("total",total);
+      if (total > mbl) {
+        prices.pop();
+        var lastIndex = $('#med-services option:selected').length - 1;
+        var lastOption = $('#med-services option:selected').eq(lastIndex);
+        var lastValue = lastOption.data(); // get the value of the last selected option
+        lastOption.prop('selected', false);
+        // Trigger the Chosen plugin to update the display
+        $('#med-services').trigger('chosen:updated');
+
+        total = prices.reduce(function(acc, val) {
+          return acc + val;
+        }, 0);
+        console.log("final",total);
+        $('#net_bill').val(total);
+        $.alert({
+          title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Unable to add ABG (ARTERIAL BLOOD GASES)</h3>`,
           content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it looks like your MBL balance is currently empty. Please ensure that you have enough MBL in your account before attempting to make a request. Thank you for your understanding.</div>",
           type: "red",
           buttons: {
-              ok: {
-                  text: "OK",
-                  btnClass: "btn-danger",
-                  // action: function(){
-                  //   window.history.back()
-                  // },
-              },
+          ok: {
+            text: "OK",
+            btnClass: "btn-danger",
           },
+        },
       });
-          }
-    });
+    }
+  });
+
+
+
     
     $('#memberLoaRequestForm').submit(function(event) {
       event.preventDefault();

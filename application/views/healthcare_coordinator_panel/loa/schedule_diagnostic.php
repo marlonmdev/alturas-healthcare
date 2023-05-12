@@ -2,12 +2,14 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">LETTER OF AUTHORIZATION</h4>
+        <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved" type="submit" class="btn btn-outline-dark" data-bs-toggle="tooltip" title="Click to Go Back">
+          <strong class="ls-2" style="vertical-align:middle"><i class="mdi mdi-arrow-left-bold"></i> Back</strong>
+        </a>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
-              <li class="breadcrumb-item active" aria-current="page">LOA for Completion</li>
+              <li class="breadcrumb-item active" aria-current="page">Diagnostic</li>
             </ol>
           </nav>
         </div>
@@ -16,13 +18,11 @@
   </div>
 
   <div class="container-fluid">
-    <div class="col-12 mb-4 mt-0">
-      <div class="input-group">
-        <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved" type="submit" class="btn btn-outline-dark" data-bs-toggle="tooltip" title="Click to Go Back">
-          <strong class="ls-2" style="vertical-align:middle"><i class="mdi mdi-arrow-left-bold"></i> Go Back</strong>
-        </a>
+    <hr style="color:red">
+      <div class="col-12">
+        <div class="text-center mb-4 mt-0"><h4 class="page-title ls-2">MEDICAL APPOINTMENT SCHEDULED</h4></div>
       </div>
-    </div>
+    <hr style="color:red">
                 
     <form id="performedLoaInfo" method="post" action="<?php echo base_url();?>healthcare-coordinator/loa-requests/approved/performed-loa-info/submit" class="needs-validation" novalidate>
       <div class="row">
@@ -36,11 +36,13 @@
           <label class="fw-bold">Member's Name : </label>
           <input class="form-control text-danger fw-bold" type="text" name="member-name" id="member-name" value="<?php echo $full_name ?>" readonly>
         </div>
-        <div class="col-lg-3">
+
+        <div class="col-lg-4">
           <label class="fw-bold">LOA Number : </label>
           <input class="form-control text-danger fw-bold" type="text" name="loa-num" id="loa-num" value="<?php echo $loa_no?>" readonly>
-        </div>     
-        <div class="col-lg-5">
+        </div>
+
+        <div class="col-lg-4">
           <label class="fw-bold">Healthcare Provider : </label>
           <input class="form-control text-danger fw-bold" type="text" name="hp-name" id="hp-name" value="<?php echo $hc_provider ?>" readonly>
         </div>
@@ -51,8 +53,6 @@
           <div class="row">
 
             <?php 
-              /* Exploding the string into an array and then checking if the array
-              contains the value. */
               $selectedOptions = explode(';', $med_services);
               foreach ($cost_types as $cost_type) :
                 if (in_array($cost_type['ctype_id'], $selectedOptions)) :
@@ -116,9 +116,11 @@
               endforeach;
             ?>
           </div>
+
           <div class="offset-10 pt-3">
             <button class="btn btn-success fw-bold fs-4 badge" type="submit" name="submit-btn" id="submit-btn"><i class="mdi mdi-near-me"></i> Submit</button>
           </div>
+
         </div>
       </div>  
     </form>

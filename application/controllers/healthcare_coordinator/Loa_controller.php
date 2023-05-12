@@ -394,7 +394,7 @@ class Loa_controller extends CI_Controller {
 
 			$custom_actions .= '<a class="me-1" href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Print LOA"><i class="mdi mdi-printer fs-2 text-primary"></i></a>';
 
-			$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Update LOA"><i class="mdi mdi-playlist-check fs-2 text-success"></i></a>';
+			$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Performed"><i class="mdi mdi-playlist-check fs-2 text-success"></i></a>';
 
 			$exists = $this->loa_model->check_loa_no($loa['loa_id']);
 			if($loa['loa_request_type'] == 'Consultation'){
@@ -608,6 +608,11 @@ class Loa_controller extends CI_Controller {
 
 	function fetch_all_rescheduled_loa() {
 		$this->security->get_csrf_hash();
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
 		$status = 'Reffered';
 		$list = $this->loa_model->get_datatables($status);
 		$data = [];
@@ -1641,6 +1646,11 @@ class Loa_controller extends CI_Controller {
 		$data['cost_types'] = $this->loa_model->db_get_cost_types();
 		$data['req'] = $this->loa_model->db_get_doctor_by_id($exist['requesting_physician']);
 		$data['doc'] = $this->loa_model->db_get_doctor_by_id($exist['approved_by']);
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
 		if (!$exist) {
 			$this->load->view('pages/page_not_found');
 		} else {
@@ -1658,6 +1668,11 @@ class Loa_controller extends CI_Controller {
 		$data['cost_types'] = $this->loa_model->db_get_cost_types();
 		$data['req'] = $this->loa_model->db_get_doctor_by_id($exist['requesting_physician']);
 		$data['doc'] = $this->loa_model->db_get_doctor_by_id($exist['approved_by']);
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
 		if (!$exist) {
 			$this->load->view('pages/page_not_found');
 		} else {
@@ -1890,11 +1905,16 @@ class Loa_controller extends CI_Controller {
 			$data['request_type'] = $loa['loa_request_type'];
 			$data['approved_on'] = $loa['approved_on'];
 			$data['expired_on'] = $loa['expiration_date'];
+			$data['bar'] = $this->loa_model->bar_pending();
+			$data['bar1'] = $this->loa_model->bar_approved();
+			$data['bar2'] = $this->loa_model->bar_completed();
+			$data['bar3'] = $this->loa_model->bar_referral();
+			$data['bar4'] = $this->loa_model->bar_expired();
 			
 			if($loa['loa_request_type'] == 'Consultation'){
-				$view_page ='tag_to_complete_consultation.php';
+				$view_page ='schedule_consultation.php';
 			}else if($loa['loa_request_type'] == 'Diagnostic Test'){
-				$view_page ='tag_loa_to_complete.php';
+				$view_page ='schedule_diagnostic.php';
 			}
 			$this->load->view('templates/header', $data);
 			$this->load->view('healthcare_coordinator_panel/loa/'.$view_page.'');
@@ -2171,6 +2191,11 @@ class Loa_controller extends CI_Controller {
 			$data['max_benefit_limit'] = number_format($loa['max_benefit_limit'],2);
 			$data['remaining_balance'] = number_format($loa['remaining_balance'],2);
 			$data['loa_id'] = $loa_id;
+			$data['bar'] = $this->loa_model->bar_pending();
+			$data['bar1'] = $this->loa_model->bar_approved();
+			$data['bar2'] = $this->loa_model->bar_completed();
+			$data['bar3'] = $this->loa_model->bar_referral();
+			$data['bar4'] = $this->loa_model->bar_expired();
 		
 			$this->load->view('templates/header', $data);
 			$this->load->view('healthcare_coordinator_panel/loa/add_diagnostic_loa_fees.php');
@@ -2394,10 +2419,11 @@ class Loa_controller extends CI_Controller {
 			$data['request_type'] = $loa['loa_request_type'];
 			$data['approved_on'] = $loa['approved_on'];
 			$data['expired_on'] = $loa['expiration_date'];
+
 			
 			if($loa['loa_request_type'] == 'Consultation'){
 
-				$view_page ='tag_to_complete_consultation.php';
+				$view_page ='schedule_consultation.php';
 
 			}else if($loa['loa_request_type'] == 'Diagnostic Test'){
 
@@ -2420,6 +2446,12 @@ class Loa_controller extends CI_Controller {
 			$loa_info['request_type'] = $loa['loa_request_type'];
 			$loa_info['approved_on'] = $loa['approved_on'];
 			$loa_info['expired_on'] = $loa['expiration_date'];
+
+			$loa_info['bar'] = $this->loa_model->bar_pending();
+			$loa_info['bar1'] = $this->loa_model->bar_approved();
+			$loa_info['bar2'] = $this->loa_model->bar_completed();
+			$loa_info['bar3'] = $this->loa_model->bar_referral();
+			$loa_info['bar4'] = $this->loa_model->bar_expired();
 
 			if($loa['loa_request_type'] == 'Consultation'){
 				$loa_info['loa_data'] = $this->loa_model->get_consultation_data($loa_id);

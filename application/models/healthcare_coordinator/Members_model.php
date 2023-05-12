@@ -174,4 +174,28 @@ class Members_model extends CI_Model {
      return $this->db->count_all_results();
    }
    // End of server-side processing datatables
+  //Bar =================================================
+  public function bar_pending(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Pending' ");
+    return $query->num_rows(); 
+  }
+
+  public function bar_approved(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Approved' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_completed(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Completed' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_referral(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Referral' ");
+    return $query->num_rows(); 
+  }
+  public function bar_expired(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Expired' ");
+    return $query->num_rows(); 
+  } 
+  //End =================================================
+  
 }

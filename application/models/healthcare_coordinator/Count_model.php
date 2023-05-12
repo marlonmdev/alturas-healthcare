@@ -46,4 +46,28 @@ class Count_model extends CI_Model {
              ->join('user_accounts as t2', 't1.doctor_id = t2.doctor_id');
     return $this->db->get()->result_array();
   }
+
+  //Bar =================================================
+  public function bar_pending(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Pending' ");
+    return $query->num_rows(); 
+  }
+
+  public function bar_approved(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Approved' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_completed(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Completed' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_referral(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Referral' ");
+    return $query->num_rows(); 
+  }
+  public function bar_expired(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Expired' ");
+    return $query->num_rows(); 
+  } 
+  //End =================================================
 }

@@ -242,7 +242,7 @@
         const res = JSON.parse(response);
         const base_url = window.location.origin;
         const {
-          status,token,loa_no,req_status,request_date,requested_by,approved_on,approved_by,member_mbl,remaining_mbl,work_related,health_card_no,first_name,middle_name,last_name,suffix,date_of_birth,age,gender,blood_type,philhealth_no,home_address,city_address,contact_no,email,contact_person,contact_person_addr,contact_person_no,healthcare_provider,loa_request_type,med_services,requesting_company,chief_complaint,requesting_physician
+          status,token,loa_no,req_status,request_date,requested_by,approved_on,approved_by,member_mbl,remaining_mbl,work_related,health_card_no,first_name,middle_name,last_name,suffix,date_of_birth,age,gender,blood_type,philhealth_no,home_address,city_address,contact_no,email,contact_person,contact_person_addr,contact_person_no,healthcare_provider,loa_request_type,med_services,requesting_company,chief_complaint,requesting_physician,percentage
         } = res;
 
         $("#viewLoaModal").modal("show");
@@ -274,7 +274,6 @@
         $('#approved-by').html(approved_by);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
-        $('#work-related').html(work_related);
         $('#health-card-no').html(health_card_no);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
         $('#date-of-birth').html(date_of_birth);
@@ -295,6 +294,36 @@
         $('#requesting-company').html(requesting_company);
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
+        if(work_related == 'Yes'){ 
+					if(percentage == ''){
+					  wpercent = '100% W-R';
+					  nwpercent = '';
+					}else{
+					   wpercent = percentage+'%  W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   nwpercent = '';
+					   }else{
+						   nwpercent = result+'% Non W-R';
+					   }
+					  
+					}	
+			   }else if(work_related == 'No'){
+				   if(percentage == ''){
+					   wpercent = '';
+					   nwpercent = '100% Non W-R';
+					}else{
+					   nwpercent = percentage+'% Non W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   wpercent = '';
+					   }else{
+						   wpercent = result+'%  W-R';
+					   }
+					 
+					}
+			   }
+        $('#percentage').html(wpercent+', '+nwpercent);
       }
     });
   }

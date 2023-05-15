@@ -165,6 +165,15 @@
                     </div>
                   </div>
                   <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0 text-secondary" style="font-weight:600;">Email Address:</h6>
+                    </div>
+                    <div class="col-sm-9 colored-label" style="font-weight:600;">
+                      <?= $member['email']; ?>
+                    </div>
+                  </div>
+                  <hr>
                   <?php
                   if ($member['spouse'] !== '') :
                   ?>

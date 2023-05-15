@@ -260,6 +260,7 @@ class Noa_controller extends CI_Controller {
 			// Full Month Date Year Format (F d Y)
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'req_status' => $req_stat,
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),

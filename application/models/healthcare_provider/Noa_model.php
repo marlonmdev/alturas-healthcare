@@ -118,4 +118,13 @@ class Noa_model extends CI_Model{
         $query = $this->db->get_where('company_doctors', ['doctor_id' => $doctor_id]);
         return $query->row_array();
     }
+    function fetch_initial_bill($hp_id,$emp_id){
+        $this->db->select('*')
+                 ->from('initial_billing')
+                 ->where('hp_id', $hp_id)
+                 ->where('emp_id', $emp_id)
+                 ->where('status', 'Initial');
+        $query = $this->db->get();
+        return $query->result();
+    }
 }

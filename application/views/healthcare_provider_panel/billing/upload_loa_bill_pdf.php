@@ -54,18 +54,6 @@
               </div>
             </div>
 
-            <div class="btn-group">
-              <button type="button" class="btn btn-success dropdown-toggle fw-bold animate__animated" data-bs-toggle="dropdown" aria-expanded="false">
-                Final Billing
-              </button>
-              <ul class="dropdown-menu bg-white">
-                <li><a class="dropdown-item" href="#">Initial Billing</a></li>
-                <li><a class="dropdown-item " href="#">Final Billing</a></li>
-              </ul>
-            </div>
-
-
-
             <div class="row pt-3">
                         <div class="col-lg-6">
                             <label class="fw-bold fs-5 ls-1">
@@ -81,16 +69,15 @@
                         <label class="form-label fs-5 ls-1">Remaining MBL Balance</label>
                             <div class="input-group mb-3">
                                 <span class="input-group-text bg-cyan text-white">&#8369;</span>
-                                <input type="text" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="0"  disabled>
-                                <input type="number" class="form-control fw-bold ls-1" id="net-bill" name="net-bill"  hidden required>
+                                <input type="text" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="<?= $remaining_balance ?>"  readonly>
                             </div>
                         </div>
 
                         <div class="col-lg-3">
-                        <label class="form-label fs-5 ls-1">Initial Bill</label>
+                        <label class="form-label fs-5 ls-1">Net Bill</label>
                             <div class="input-group mb-3">
                                 <span class="input-group-text bg-cyan text-white">&#8369;</span>
-                                <input type="text" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="0"  disabled>
+                                <input type="number" class="form-control fw-bold ls-1" id="net-bill" name="net-bill"   readonly>
                             </div>
                         </div>
                     </div>
@@ -107,36 +94,6 @@
                 <div class="mt-3" id="pdf-preview"></div>
               </div>
             </div>
-                 <div class="ps-5 pe-5">
-                        <h4 class="page-title ls-2  pb-2 ">Uploaded Initial Billing</h4>
-                        <table class="table table-sm">
-                                <thead>
-                                    <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Filename</th>
-                                    <th scope="col">Subtotal</th>
-                                    <th scope="col">View</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                    <th scope="row">1</th>
-                                    <td>HIS_ADHOC_IPDSOA3_RCH_revise_2</td>
-                                    <td>2,600</td>
-                                    <td class="mdi mdi-eye"></td>
-                                    </tr>
-                                    <tr>
-                                    <th scope="row">2</th>
-                                    <td>HIS_ADHOC_IPDSOA3_RCH_revise_2</td>
-                                    <td>21,991.50</td>
-                                    <td class="mdi mdi-eye"></td>
-                                    </tr>
-                                    <tr>
-                                    
-                                    </tr>
-                                </tbody>
-                                </table>
-                        </div> 
           </div>
         </div>
       </form>

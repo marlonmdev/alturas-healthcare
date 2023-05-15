@@ -225,7 +225,8 @@
           req_status,
           work_related,
           approved_by,
-          approved_on
+          approved_on,
+          percentage
         } = res;
 
         $("#viewLoaModal").modal("show");
@@ -261,7 +262,36 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
-        $('#work-related-val').html(work_related);
+        if(work_related == 'Yes'){ 
+					if(percentage == ''){
+					  wpercent = '100% W-R';
+					  nwpercent = '';
+					}else{
+					   wpercent = percentage+'%  W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   nwpercent = '';
+					   }else{
+						   nwpercent = result+'% Non W-R';
+					   }
+					  
+					}	
+			   }else if(work_related == 'No'){
+				   if(percentage == ''){
+					   wpercent = '';
+					   nwpercent = '100% Non W-R';
+					}else{
+					   nwpercent = percentage+'% Non W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   wpercent = '';
+					   }else{
+						   wpercent = result+'%  W-R';
+					   }
+					 
+					}
+			   }
+        $('#percentage').html(wpercent+', '+nwpercent);
       }
     });
   }

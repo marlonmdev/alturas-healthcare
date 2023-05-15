@@ -1391,51 +1391,48 @@ class Billing_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
-    function fetch_initial_billing() {
-		$this->security->get_csrf_hash();
-		$status = 'Billed';
-        $hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
-		$list = $this->noa_model->get_datatables($status, $hcare_provider_id);
-		$data = [];
-		foreach ($list as $noa) {
-			$noa_id = $this->myhash->hasher($noa['noa_id'], 'encrypt');
-			$billed_pdf = $this->Billing_model->get_billed_noa_pdf($noa['noa_id']);
-			$row = [];
-			$full_name = $noa['first_name'] . ' ' . $noa['middle_name'] . ' ' . $noa['last_name'] . ' ' . $noa['suffix'];
+    function fetch_initial_billing()
+    {
+        $this->security->get_csrf_hash();
+        $status = 'Initial';
+        $hcare_provider_id = $this->session->userdata('dsg_hcare_prov');
+        $noa_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+       
+        $list = $this->initial_billing_model->get_initial_bill($noa_id, $hcare_provider_id, $status);
+    
+        $data = [];
+        foreach ($list as $noa) {
+            $date_uploaded = date("m/d/Y", strtotime($noa->date_uploaded));
+            $custom_billing_no = '<mark class="bg-primary text-white">' . $noa->billing_no . '</mark>';
+            $file_name = $noa->pdf_bill;
+            $initial_bill = number_format($noa->initial_bill);
+            $custom_actions = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $noa->pdf_bill . '\' , \''. $noa->billing_no .'\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i></a>';
+    
+            // This data will be rendered to the datatable
+            $row = [
+                $custom_billing_no,
+                $file_name,
+                $date_uploaded,
+                $initial_bill,
+                $custom_actions
+            ];
+            $data[] = $row;
+        }
+    
+        $draw = $_POST['draw'];
+        $totalRecords = $this->initial_billing_model->count_all($noa_id, $hcare_provider_id, $status);
+        $filteredRecords = $this->initial_billing_model->count_all($noa_id, $hcare_provider_id, $status);
+    
+        $output = [
+            "draw" => intval($draw),
+            "recordsTotal" => intval($totalRecords),
+            "recordsFiltered" => intval($filteredRecords),
+            "data" => $data,
+        ];
+    
+        echo json_encode($output);
+    }
+    
 
-			$admission_date = date("m/d/Y", strtotime($noa['admission_date']));
-			$request_date = date("m/d/Y", strtotime($noa['request_date']));
-
-			$custom_noa_no = '<mark class="bg-primary text-white">'.$noa['noa_no'].'</mark>';
-
-			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-cyan">' . $noa['status'] . '</span></div>';
-
-			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>
-			<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $billed_pdf->pdf_bill . '\' , \''. $noa['noa_no'] .'\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i>
-			</a>';
-
-			// shorten name of values from db if its too long for viewing and add ...
-			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];
-
-			// this data will be rendered to the datatable
-			$row[] = $custom_noa_no;
-			$row[] = $full_name;
-			$row[] = $short_hosp_name;
-			$row[] = $admission_date;
-			$row[] = $request_date;
-			$row[] = $custom_status;
-			$row[] = $custom_actions;
-			$data[] = $row;
-		}
-
-		$output = array(
-			"draw" => $_POST['draw'],
-			"recordsTotal" => $this->noa_model->count_all($status, $hcare_provider_id),
-			"recordsFiltered" => $this->noa_model->count_filtered($status, $hcare_provider_id),
-			"data" => $data,
-		);
-
-		echo json_encode($output);
-	}
     
 }

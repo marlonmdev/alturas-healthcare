@@ -57,7 +57,7 @@
             <div class="row pt-3">
                         <div class="col-lg-6">
                             <label class="fw-bold fs-5 ls-1">
-                                <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Initial Billing 
+                                <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload PDF Bill 
                             </label>
                             <input type="file" class="form-control" name="pdf-file" id="pdf-file" accept="application/pdf" onchange="previewPdfFile()" required>
                             <div class="invalid-feedback fs-6">

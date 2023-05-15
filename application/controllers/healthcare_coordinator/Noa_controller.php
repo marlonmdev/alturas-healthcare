@@ -167,6 +167,7 @@ class Noa_controller extends CI_Controller {
 		$this->security->get_csrf_hash();
 		$status = 'Approved';
 		$list = $this->noa_model->get_datatables($status);
+
 		$data = [];
 		foreach ($list as $noa) {
 			$row = [];
@@ -184,8 +185,6 @@ class Noa_controller extends CI_Controller {
 			$custom_actions = '<a class="me-2" href="JavaScript:void(0)" onclick="viewApprovedNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
 			$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/noa/requested-noa/generate-printable-noa/' . $noa_id . '" data-bs-toggle="tooltip" title="Print NOA"><i class="mdi mdi-printer fs-2 text-primary pe-2"></i></a>';
-
-			$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/noa/requested-noa/update-noa-details/' . $noa_id . '" data-bs-toggle="tooltip" title="Update LOA"><i class="mdi mdi-playlist-check fs-2 text-success"></i></a>';
 
 			// shorten name of values from db if its too long for viewing and add ...
 			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];
@@ -343,7 +342,7 @@ class Noa_controller extends CI_Controller {
 
 	function fetch_all_billed_noa() {
 		$token = $this->security->get_csrf_hash();
-		$status = 'Billed';
+		$status = 'Initial';
 		$noa = $this->noa_model->get_billed_datatables($status);
 		$data = [];
 		foreach($noa as $bill){
@@ -355,6 +354,8 @@ class Noa_controller extends CI_Controller {
 
 			$row[] = $bill['noa_no'];
 			$row[] = $fullname;
+			$row[] = $bill['remaining_balance'];
+			$row[] = $bill['date_uploaded'];
 			$row[] = number_format($bill['net_bill'],2, '.',',');
 			$row[] = $pdf_bill;
 			$data[] = $row;
@@ -825,6 +826,11 @@ class Noa_controller extends CI_Controller {
 		$data['row'] = $this->noa_model->db_get_noa_info($noa_id);
 		$data['hospitals'] = $this->setup_model->db_get_hospitals();
 		$data['costtypes'] = $this->setup_model->db_get_all_cost_types();
+		$data['bar'] = $this->noa_model->bar_pending();
+		$data['bar1'] = $this->noa_model->bar_approved();
+		$data['bar2'] = $this->noa_model->bar_completed();
+		$data['bar3'] = $this->noa_model->bar_referral();
+		$data['bar4'] = $this->noa_model->bar_expired();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/noa/edit_noa_request');
 		$this->load->view('templates/footer');
@@ -893,6 +899,11 @@ class Noa_controller extends CI_Controller {
 		$data['row'] = $exist = $this->noa_model->db_get_noa_info($noa_id);
 		$data['mbl'] = $this->noa_model->db_get_member_mbl($exist['emp_id']);
 		$data['doc'] = $this->noa_model->db_get_doctor_by_id($exist['approved_by']);
+		$data['bar'] = $this->noa_model->bar_pending();
+		$data['bar1'] = $this->noa_model->bar_approved();
+		$data['bar2'] = $this->noa_model->bar_completed();
+		$data['bar3'] = $this->noa_model->bar_referral();
+		$data['bar4'] = $this->noa_model->bar_expired();
 		if (!$exist) {
 			$this->load->view('pages/page_not_found');
 		} else {

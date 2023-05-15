@@ -7,10 +7,8 @@
       </div>
       <div class="modal-body">
         <div class="container">
-
           <form method="post" action="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/set-charge-type" id="formUpdateChargeType">
-
-            <div class="row mb-3">
+            <div class="row mb-4">
               <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
               <input type="hidden" name="loa-id" id="loa-id">
               <select class="form-control chargetype fs-5" name="charge-type" id="charge-type">
@@ -37,10 +35,16 @@
                 <button type="button" class="btn btn-danger ls-1" data-bs-dismiss="modal">CANCEL</button>
               </div>
             </div>
-
           </form>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<style type="text/css">
+  .modal-header{
+    background-color:#00538C;
+    color:#fff
+  }
+</style>

@@ -14,10 +14,16 @@ class Account_controller extends CI_Controller {
 	}
 
 	function account_settings() {
+		$this->load->model('healthcare_coordinator/setup_model');
 		$user_id = $this->session->userdata('user_id');
 		$data['page_title'] = 'Alturas Healthcare - Healthcare Coordinator';
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['row'] = $this->account_model->get_user_account_details($user_id);
+		$data['bar'] = $this->setup_model->bar_pending();
+		$data['bar1'] = $this->setup_model->bar_approved();
+		$data['bar2'] = $this->setup_model->bar_completed();
+		$data['bar3'] = $this->setup_model->bar_referral();
+		$data['bar4'] = $this->setup_model->bar_expired();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/dashboard/account_settings');
 		$this->load->view('templates/footer');

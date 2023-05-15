@@ -7,9 +7,7 @@
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
-              <li class="breadcrumb-item active" aria-current="page">
-                Pending
-              </li>
+              <li class="breadcrumb-item active" aria-current="page">Pending</li>
             </ol>
           </nav>
         </div>
@@ -111,7 +109,7 @@
           </div>
         </div>
 
-        <?php include 'view_loa_details.php'; ?>
+        <?php include 'view_pending_details.php'; ?>
       </div>
     </div>
   </div>
@@ -266,9 +264,16 @@
 
         $("#viewLoaModal").modal("show");
 
+
+        const dob = date_of_birth !== '' ? date_of_birth : 'None';
+        const ag = age !== '' ? age : 'None';
+        const gndr = gender !== '' ? gender : 'None';
         const bt = blood_type !== '' ? blood_type : 'None';
-        const em = email !== '' ? email : 'None';
+        const pn = philhealth_no !== '' ? philhealth_no : 'None';
+        const ha = home_address !== '' ? home_address : 'None';
         const ca = city_address !== '' ? city_address : 'None';
+        const cn = contact_no !== '' ? contact_no : 'None';
+        const em = email !== '' ? email : 'None';
         const cp = contact_person !== '' ? contact_person : 'None';
         const cpa = contact_person_addr !== '' ? contact_person_addr : 'None';
         const cpn = contact_person_no !== '' ? contact_person_no : 'None';
@@ -277,7 +282,7 @@
         
         let rstat = '';
         if(req_status == 'Pending'){
-          req_stat = `<strong class="text-warning">[${req_status}]</strong>`;
+          req_stat = `<strong style="color:maroon">[${req_status}]</strong>`;
         }else{
           req_stat = `<strong class="text-cyan">[${req_status}]</strong>`;
         }
@@ -287,13 +292,13 @@
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
-        $('#date-of-birth').html(date_of_birth);
-        $('#age').html(age);
-        $('#gender').html(gender);
-        $('#philhealth-no').html(philhealth_no);
+        $('#date-of-birth').html(dob);
+        $('#age').html(ag);
+        $('#gender').html(gndr);
+        $('#philhealth-no').html(pn);
         $('#blood-type').html(bt);
-        $('#contact-no').html(contact_no);
-        $('#home-address').html(home_address);
+        $('#contact-no').html(cn);
+        $('#home-address').html(ha);
         $('#city-address').html(ca);
         $('#email').html(em);
         $('#contact-person').html(cp);

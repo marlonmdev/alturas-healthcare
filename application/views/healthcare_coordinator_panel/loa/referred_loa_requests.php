@@ -107,7 +107,7 @@
           </div>
         </div>
 
-        <?php include 'view_resched_loa_details.php'; ?>
+        <?php include 'view_referral_details.php'; ?>
       </div>
     </div>
     <?php include 'performed_loa_info_modal.php'; ?>
@@ -229,7 +229,8 @@
           req_status,
           requested_by,
           approved_by,
-          percentage
+          percentage,
+          approved_on
         } = res;
 
         $("#viewLoaModal").modal("show");
@@ -248,11 +249,17 @@
             $('#loa-status').html(`<strong class="text-info">[${req_status}]</strong>`);
             break;
           case 'Reffered':
-          $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
+          $('#loa-status').html(`<strong style="color:#80ff00">[${req_status}]</strong>`);
           break;
         }
+        const dob = date_of_birth !== '' ? date_of_birth : 'None';
+        const ag = age !== '' ? age : 'None';
+        const gndr = gender !== '' ? gender : 'None';
         const bt = blood_type !== '' ? blood_type : 'None';
+        const pn = philhealth_no !== '' ? philhealth_no : 'None';
+        const ha = home_address !== '' ? home_address : 'None';
         const ca = city_address !== '' ? city_address : 'None';
+        const cn = contact_no !== '' ? contact_no : 'None';
         const em = email !== '' ? email : 'None';
         const cp = contact_person !== '' ? contact_person : 'None';
         const cpa = contact_person_addr !== '' ? contact_person_addr : 'None';
@@ -264,13 +271,13 @@
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
-        $('#date-of-birth').html(date_of_birth);
-        $('#age').html(age);
-        $('#gender').html(gender);
-        $('#philhealth-no').html(philhealth_no);
+        $('#date-of-birth').html(dob);
+        $('#age').html(ag);
+        $('#gender').html(gndr);
+        $('#philhealth-no').html(pn);
         $('#blood-type').html(bt);
         $('#contact-no').html(contact_no);
-        $('#home-address').html(home_address);
+        $('#home-address').html(ha);
         $('#city-address').html(ca);
         $('#email').html(em);
         $('#contact-person').html(cp);
@@ -285,6 +292,8 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#approved-by').html(approved_by);
+        $('#work_related').html(work_related);
+        $('#approved_on').html(approved_on);
         if(work_related == 'Yes'){ 
 					if(percentage == ''){
 					  wpercent = '100% W-R';

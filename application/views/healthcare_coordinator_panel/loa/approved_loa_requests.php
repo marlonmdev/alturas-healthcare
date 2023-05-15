@@ -7,9 +7,7 @@
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
-              <li class="breadcrumb-item active" aria-current="page">
-                Approved
-              </li>
+              <li class="breadcrumb-item active" aria-current="page">Approved</li>
             </ol>
           </nav>
         </div>
@@ -289,33 +287,40 @@
           approved_by,
           approved_on,
           expiry_date,
-          percentage
+          percentage,
         } = res;
 
         $("#viewLoaModal").modal("show");
+        const dob = date_of_birth !== '' ? date_of_birth : 'None';
+        const ag = age !== '' ? age : 'None';
+        const gndr = gender !== '' ? gender : 'None';
         const bt = blood_type !== '' ? blood_type : 'None';
-        const em = email !== '' ? email : 'None';
+        const pn = philhealth_no !== '' ? philhealth_no : 'None';
+        const ha = home_address !== '' ? home_address : 'None';
         const ca = city_address !== '' ? city_address : 'None';
+        const cn = contact_no !== '' ? contact_no : 'None';
+        const em = email !== '' ? email : 'None';
         const cp = contact_person !== '' ? contact_person : 'None';
         const cpa = contact_person_addr !== '' ? contact_person_addr : 'None';
         const cpn = contact_person_no !== '' ? contact_person_no : 'None';
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
         $('#loa-no').html(loa_no);
-        $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
+        $('#loa-status').html(`<strong style="color:#80FF00">[${req_status}]</strong>`);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
         $('#expiry-date').html(expiry_date);
+        $('#work_related').html(work_related);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
-        $('#date-of-birth').html(date_of_birth);
-        $('#age').html(age);
-        $('#gender').html(gender);
-        $('#philhealth-no').html(philhealth_no);
+        $('#date-of-birth').html(dob);
+        $('#age').html(ag);
+        $('#gender').html(gndr);
+        $('#philhealth-no').html(pn);
         $('#blood-type').html(bt);
-        $('#contact-no').html(contact_no);
-        $('#home-address').html(home_address);
+        $('#contact-no').html(cn);
+        $('#home-address').html(ha);
         $('#city-address').html(ca);
         $('#email').html(em);
         $('#contact-person').html(cp);

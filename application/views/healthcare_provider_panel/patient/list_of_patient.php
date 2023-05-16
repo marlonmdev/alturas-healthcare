@@ -20,6 +20,15 @@
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
+            <div class="mb-3 d-flex align-items-center">
+              <label for="filterDropdown" class="form-label me-2">Filter:</label>
+              <select id="filterDropdown" class="form-select form-control" style="width: 80px;">
+                <option value="loa">LOA</option>
+                <option value="noa">NOA</option>
+              </select>
+            </div>
+
+
               <table class="table table-hover table-responsive" id="patientTable">
                 <thead style="background-color:#00538C">
                   <tr>
@@ -45,14 +54,15 @@
 
 <script>
   const baseUrl = `<?php echo base_url(); ?>`;
+  var loa_noa = "";
   $(document).ready(function () {
-    $('#patientTable').DataTable({ 
+    var table = $('#patientTable').DataTable({ 
 			processing: true,
 			serverSide: true,
 			order: [],
 
 			ajax: {
-				url: `${baseUrl}healthcare-provider/patient/fetch_all_patient`,
+				url: `${baseUrl}healthcare-provider/patient/fetch_all_patient/loa`,
 				type: "POST",
 				data: { 'token' : '<?php echo $this->security->get_csrf_hash(); ?>' }
 			},
@@ -64,6 +74,11 @@
       ],
       responsive: true,
       fixedHeader: true,
-    });      
+    });   
+    
+    $('#filterDropdown').on('change', function() {
+      var value = $(this).val();
+      table.ajax.url(`${baseUrl}healthcare-provider/patient/fetch_all_patient/${value}`).load();
+    });
   });
 </script>

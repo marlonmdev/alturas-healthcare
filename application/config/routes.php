@@ -114,6 +114,7 @@ $route['healthcare-provider/billing'] = 'healthcare_provider/billing_controller/
 $route['healthcare-provider/billing/search-by-healthcard']  = 'healthcare_provider/billing_controller/search_member_by_healthcard';
 $route['healthcare-provider/billing/search-by-name'] = 'healthcare_provider/billing_controller/search_member_by_name';
 $route['healthcare-provider/billing/search']  = 'healthcare_provider/billing_controller/search_member_by_healthcard';
+$route['healthcare-provider/billing-list/payment-history/fetch']  = 'healthcare_provider/billing_controller/payment_history_fetch';
 // $route['healthcare-provider/billing/bill-loa/(:any)'] = 'healthcare_provider/billing_controller/bill_patient_loa';
 // LOA Billing
 $route['healthcare-provider/billing/bill-loa/upload-pdf/(:any)'] = 'healthcare_provider/billing_controller/upload_loa_pdf_bill_form';
@@ -207,7 +208,7 @@ $route['healthcare-provider/reports/report-list/ajax/billingServicesMember'] = '
 
 // HealthCare Provider List of Patient Routes
 $route['healthcare-provider/patient/design'] = 'healthcare_provider/patient_controller/design';
-$route['healthcare-provider/patient/fetch_all_patient'] = 'healthcare_provider/patient_controller/fetch_all_patient';
+$route['healthcare-provider/patient/fetch_all_patient/(:any)'] = 'healthcare_provider/patient_controller/fetch_all_patient';
 $route['healthcare-provider/patient/view_information/(:any)'] = 'healthcare_provider/patient_controller/view_information';
 
 

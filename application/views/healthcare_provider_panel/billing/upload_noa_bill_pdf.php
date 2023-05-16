@@ -243,7 +243,16 @@
             }
         },
         responsive: true,
-        fixedHeader: true
+        fixedHeader: true,
+        initComplete: function () {
+        var dataTable = $('#initial_bill_table').DataTable();
+        var columnData = dataTable.column(3).data(); // Assuming column 4 is index 3
+        var firstIndex = columnData[0];
+        if (dataTable.rows().count() !== 0) {
+            $('#net-bill').val(parseFloat(firstIndex.replace(/,/g, '')));
+        }
+            
+    }
     });
 
       
@@ -311,7 +320,8 @@
                                 // let pdfPreview = document.getElementById('pdf-preview');
                                 // $('#pdfBillingForm')[0].reset();
                                 // pdfPreview.innerHTML = "";
-                                location.reload();
+                                // location.reload();
+                                window.location.href = `${baseUrl}healthcare-provider/billing`;
                                 },
                             },
                             },

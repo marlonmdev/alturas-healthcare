@@ -29,10 +29,16 @@ class Patient_controller extends CI_Controller {
 	function fetch_all_patient(){
 		$this->security->get_csrf_hash();
 		$hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
-		$list = $this->patient_model->get_datatables($hcare_provider_id);
+		$loa_noa = $this->uri->segment(4);
+		if($loa_noa === "loa"){
+			$list = $this->patient_model->get_datatables($hcare_provider_id,$loa_noa);
+		}elseif($loa_noa === "noa"){
+			$list = $this->patient_model->get_datatables($hcare_provider_id,$loa_noa);
+		}
+		
 		$data = array();
 		foreach ($list as $member){
-			$row = array();
+			$row = array(); 
 
 			$member_id = $this->myhash->hasher($member['member_id'], 'encrypt');
 			$full_name = $member['first_name'] . ' ' . $member['middle_name'] . ' ' . $member['last_name'] . ' ' . $member['suffix'];
@@ -91,8 +97,8 @@ class Patient_controller extends CI_Controller {
 
 		$output = array(
 			"draw" => $_POST['draw'],
-			"recordsTotal" => $this->patient_model->count_all($hcare_provider_id),
-			"recordsFiltered" => $this->patient_model->count_filtered($hcare_provider_id),
+			"recordsTotal" => $this->patient_model->count_all($hcare_provider_id,$loa_noa),
+			"recordsFiltered" => $this->patient_model->count_filtered($hcare_provider_id,$loa_noa),
 			"data" => $data,
 		);
 		echo json_encode($output);

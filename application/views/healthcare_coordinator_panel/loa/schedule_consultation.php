@@ -20,7 +20,7 @@
   <div class="container-fluid">
     <hr style="color:red">
       <div class="col-12">
-        <div class="text-center mb-4 mt-0"><h4 class="page-title ls-2">MEDICAL APPOINTMENT SCHEDULED</h4></div>
+        <div class="text-center mb-4 mt-0"><h4 class="page-title ls-2">MEDICAL APPOINTMENT SCHEDULE</h4></div>
       </div>
     <hr style="color:red">
                 
@@ -78,7 +78,7 @@
             </div>
 
             <div class="row offset-3">
-              <div class="col-lg-2 pb-3">
+              <div class="col-lg-3 pb-3">
                 <label class="fw-bold label-physician">Physician/Consultant : </label>
                 <input class="form-control fw-bold fname" name="physician-fname" placeholder="First Name"  autocomplete="on" required>
                 <span class="text-danger" id="physician-fname-error"></span>

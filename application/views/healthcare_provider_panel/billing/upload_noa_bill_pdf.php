@@ -65,19 +65,23 @@
                         </div>
                     </div>
 
-                        <div class="btn-group">
+                    <div class="btn-group">
                         <button type="button" class="btn btn-success dropdown-toggle fw-bold animate__animated" data-bs-toggle="dropdown" aria-expanded="false">
-                        Initial Billing
+                             Initial Billing
                         </button>
                         <ul class="dropdown-menu bg-white">
-                            <li><a class="dropdown-item">Initial Billing</a></li>
-                            <li><a class="dropdown-item ">Final Billing</a></li>
+                            <li>
+                                <a class="dropdown-item" href="#">Initial Billing</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">Final Billing</a>
+                            </li>
                         </ul>
-                        </div>
+                    </div>
 
                         <div class="row pt-3">
                         <div class="col-lg-6">
-                            <label class="fw-bold fs-5 ls-1">
+                            <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
                                 <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Initial Billing 
                             </label>
                             <input type="file" class="form-control" name="pdf-file" id="pdf-file" accept="application/pdf" onchange="previewPdfFile()" required>
@@ -90,7 +94,7 @@
                         <label class="form-label fs-5 ls-1">Remaining MBL Balance</label>
                             <div class="input-group mb-3">
                                 <span class="input-group-text bg-cyan text-white">&#8369;</span>
-                                <input type="number" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="<?= $remaining_balance ?>"  disabled>
+                                <input type="number" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="<?= $remaining_balance ?>"  readonly>
                             </div>
                         </div>
 
@@ -98,7 +102,7 @@
                         <label class="form-label fs-5 ls-1" id="net_bill_label">Initial Bill</label>
                             <div class="input-group mb-3">
                                 <span class="input-group-text bg-cyan text-white">&#8369;</span>
-                                <input type="number" class="form-control fw-bold ls-1" id="net-bill" name="net-bill"  readonly>
+                                <input type="number" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" value="0.00" readonly>
                             </div>
                         </div>
                     </div>
@@ -112,34 +116,66 @@
                             <button type="button" class="btn btn-dark text-white btn-lg ls-2" id="clear-btn">CLEAR</button>
                         </div>
                     </div>
+                    
+                    <!-- Modal -->
+                    <!-- <div class="modal fade" id="viewPDFBillModal" tabindex="-1" data-bs-backdrop="static" style="height: 100%;">
+                        <div class="modal-dialog modal-xl">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Initial Bill</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <iframe id="pdf-viewer" style="width: 100%; height: 500px;"></iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Upload</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
 
                     <div class="row">
                         <div class="col-lg-12">
                            <div class="mt-3" id="pdf-preview"></div>
                         </div>
                     </div>
-
-                  <div id="initial_bill_holder">
-                      <div class="ps-5 pe-5">
-                              <h4 class="page-title ls-2  pb-2 ">Uploaded Initial Billing</h4>
-                              <table class="table table-sm">
-                                      <thead>
-                                          <tr>
-                                          <th scope="col">#</th>
-                                          <th scope="col">Filename</th>
-                                          <th scope="col">Subtotal</th>
-                                          <th scope="col">View</th>
-                                          </tr>
-                                      </thead>
-                                      <tbody>
-                                          
-                                      </tbody>
-                                      </table>
-                              </div> 
+                </div>
+                
+            </div>
+        </form>
+        <div id="initial_bill_history">
+        <label class="fw-bold fs-5 ls-1 ps-3" id="initial_btn_label">
+                                <i class="mdi mdi-asterisk text-danger ms-1"></i> Initial Billing History
+                            </label>
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="initial_bill_table">
+                            <thead style="background-color: #00538C; color: white;">
+                                <tr>
+                                    <th class="fw-bold" style="color: white;">BILLING NO</th>
+                                    <th class="fw-bold" style="color: white;">FILE NAME</th>
+                                    <th class="fw-bold" style="color: white;">DATE UPLOADED</th>
+                                    <th class="fw-bold" style="color: white;">INITIAL  BILL</th>
+                                    <th class="fw-bold" style="color: white;">VIEW</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Add your table rows dynamically here -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
+        <?php include 'view_pdf_bill_modal.php'; ?>
+
     </div>
 </div>
 <script>
@@ -151,6 +187,7 @@
         let pdfFile = pdfFileInput.files[0];
 
         if (pdfFile.type === 'application/pdf') {
+            $('#myModal').modal('show');
             let reader = new FileReader();
             reader.onload = function () {
                 let pdfObject = "<object data='" + reader.result + "' type='application/pdf' width='100%' height='600px'>";
@@ -163,31 +200,77 @@
         }
     }
 
+    // const previewPdfFile = () => {
+    // $('#viewPDFBillModal').modal('show');
+
+    // let pdfFileInput = document.getElementById('pdf-file');
+    // let pdfFile = pdfFileInput.files[0];
+    // let reader = new FileReader();
+
+    // reader.onload = function(event) {
+    //     let dataURL = event.target.result;
+    //     let iframe = document.querySelector('#pdf-viewer');
+    //     iframe.src = dataURL;
+    // };
+
+    // reader.readAsDataURL(pdfFile);
+    // };
+
+    // $(document).ready(function() {
+        
+    // $('#viewPDFBillModal').on('hidden.bs.modal', function() {
+    //     // Code to execute when the modal is closed
+    //     console.log('Modal closed');
+    //     // Add your custom logic here
+    //     });
+    // });
+
     const form = document.querySelector('#pdfBillingForm');
     let hospital_charges ="";
-    $(document).ready(function(){
 
-        var base_url = "<?php echo base_url(); ?>";
+    $(document).ready(function(){
         var noa_id = "<?php echo $noa_id; ?>";
+        $('#initial_bill_table').DataTable({
+        processing: true,
+        serverSide: true,
+        searching: false,
+        order: [],
+        ajax: {
+            url: `${baseUrl}healthcare-provider/fetch_initial_billing/fetch/${noa_id}`,
+            type: "POST",
+            data: {
+                token: '<?php echo $this->security->get_csrf_hash(); ?>'
+            }
+        },
+        responsive: true,
+        fixedHeader: true
+    });
+
+      
         // Get the form element
         var forms = document.getElementById('pdfBillingForm');
         // Construct the new action URL
-        var final_action = base_url + 'healthcare-provider/billing/bill-noa/upload-pdf/' + noa_id + '/submit';
-        var initial_action = base_url + 'healthcare-provider/initial_billing/bill-noa/upload-pdf/' + noa_id + '/submit';
+        var final_action = baseUrl + 'healthcare-provider/billing/bill-noa/upload-pdf/' + noa_id + '/submit';
+        var initial_action = baseUrl + 'healthcare-provider/initial_billing/bill-noa/upload-pdf/' + noa_id + '/submit';
         // Change the action attribute
         forms.action = initial_action;
 
         $('.dropdown-item').click(function() {
-        var selectedText = $(this).text();
-        $('.btn.dropdown-toggle').text(selectedText);
-        $('#net_bill_label').text(selectedText);
-        if(selectedText==="Initial Billing"){
-            $('#initial_bill_holder').prop("hidden",false);
-            forms.action = initial_action;
-        }else{
-            $('#initial_bill_holder').prop("hidden",true);
-            forms.action = final_action;
-        }
+            var selectedText = $(this).text();
+            $('.btn.dropdown-toggle').text(selectedText);
+            $('#net_bill_label').text(selectedText);
+            
+            if(selectedText==="Initial Billing"){
+                $('#initial_bill_holder').prop("hidden",false);
+                $('#initial_bill_history').prop("hidden",false);
+                $('#initial_btn_label').html('<i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Initial Billing');
+                forms.action = initial_action;
+            }else{
+                $('#initial_bill_holder').prop("hidden",true);
+                $('#initial_bill_history').prop("hidden",true);
+                $('#initial_btn_label').html('<i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Final Billing');
+                forms.action = final_action;
+            }
         });
 
         $('#pdfBillingForm').submit(function(event){
@@ -225,9 +308,10 @@
                                 text: "OK",
                                 btnClass: "btn-success",
                                 action: function () {
-                                let pdfPreview = document.getElementById('pdf-preview');
-                                $('#pdfBillingForm')[0].reset();
-                                pdfPreview.innerHTML = "";
+                                // let pdfPreview = document.getElementById('pdf-preview');
+                                // $('#pdfBillingForm')[0].reset();
+                                // pdfPreview.innerHTML = "";
+                                location.reload();
                                 },
                             },
                             },
@@ -317,8 +401,8 @@
                             } else {
                             console.log("please pay for this amount is not found");
                             $.alert({
-                                    title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'></h3>`,
-                                    content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it looks like your uploaded pdf is already . Thank you for your understanding.</div>",
+                                    title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
+                                    content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it appears that there was an issue with the uploaded PDF. Please review the PDF file and try again.</div>",
                                     type: "red",
                                     buttons: {
                                     ok: {
@@ -338,6 +422,75 @@
                 });
                 });
 
+                // let billedTable = $('#billedLoaTable').DataTable({
+                // processing: true, //Feature control the processing indicator.
+                // serverSide: true, //Feature control DataTables' server-side processing mode.
+                // order: [], //Initial no order.
+
+                // // Load data for the table's content from an Ajax source
+                // ajax: {
+                //     url: `${baseUrl}healthcare-provider/fetch_initial_billing/bill-noa/${billing_id}`,
+                //     type: "POST",
+                //     // passing the token as data so that requests will be allowed
+                //     data: function(data) {
+                //     data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
+                //         data.filter = $('#billed-hospital-filter').val();
+                //         data.endDate = $('#end-date').val();
+                //         data.startDate = $('#start-date').val();
+                    
+                //     }
+                // },
+                // //Set column definition initialisation properties.
+                // columnDefs: [{
+                //     "orderable": false, //set not orderable
+                // }, ],
+                // data: [],  // Empty data array
+                // deferRender: true,  // Enable deferred rendering
+                // info: false,
+                // paging: false,
+                // filter: false,
+                // lengthChange: false,
+                // responsive: true,
+                // fixedHeader: true,
+                // });
+
+               
+                const viewPDFBill = (pdf_bill,noa_no) => {
+                $('#viewPDFBillModal').modal('show');
+                $('#pdf-noa-no').html(noa_no);
+
+                    let pdfFile = `${baseUrl}uploads/pdf_bills/${pdf_bill}`;
+                    let fileExists = checkFileExists(pdfFile);
+                    console.log(pdf_bill);
+                    if(fileExists){
+                    let xhr = new XMLHttpRequest();
+                    xhr.open('GET', pdfFile, true);
+                    xhr.responseType = 'blob';
+
+                    xhr.onload = function(e) {
+                        if (this.status == 200) {
+                        let blob = this.response;
+                        let reader = new FileReader();
+
+                        reader.onload = function(event) {
+                            let dataURL = event.target.result;
+                            let iframe = document.querySelector('#pdf-viewer');
+                            iframe.src = dataURL;
+                        };
+                        reader.readAsDataURL(blob);
+                        }
+                    };
+                    xhr.send();
+                    }
+                }
+
+                const checkFileExists = (fileUrl) => {
+                    let xhr = new XMLHttpRequest();
+                    xhr.open('HEAD', fileUrl, false);
+                    xhr.send();
+
+                    return xhr.status == "200" ? true: false;
+                }
         //         function hospital_bills(finalResult){
         //         const pattern = /hospital charges(.*?)please pay for this amount/si;
         //         const matches = finalResult.match(pattern);

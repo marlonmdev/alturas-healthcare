@@ -262,7 +262,9 @@
   const showBackDateForm = (loa_id, loa_no) => {
     $("#backDateModal").modal("show");
     $('#bd-loa-id').val(loa_id);
-    $('#bd-loa-no').val(loa_no);
+    // $('#bd-loa-no').val(loa_no);
+
+    $('#bd-loa-no').html(loa_no);
   }
 
   const viewImage = (path) => {

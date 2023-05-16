@@ -1326,8 +1326,15 @@ class Loa_controller extends CI_Controller {
 		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$this->load->model('healthcare_coordinator/loa_model');
 		$row = $this->loa_model->db_get_loa_details($loa_id);
-
+		$doctor_name = "";
+		if ($row['approved_by']) {
+			$doc = $this->loa_model->db_get_doctor_by_id($row['approved_by']);
+			$doctor_name = $doc['doctor_name'];
+		} else {
+			$doctor_name = "Does not exist from Database";
+		}
 		$cost_types = $this->loa_model->db_get_cost_types();
+
 		// Calculate Age
 		$birth_date = date("d-m-Y", strtotime($row['date_of_birth']));
 		$current_date = date("d-m-Y");
@@ -1382,6 +1389,8 @@ class Loa_controller extends CI_Controller {
 			'attending_physician' => $row['attending_physician'],
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
+			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
+			'approved_by' => $doctor_name,
 			
 		];
 		echo json_encode($response);
@@ -1515,7 +1524,7 @@ class Loa_controller extends CI_Controller {
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 			'requested_by' => $row['requested_by'],
 			'approved_by' => $row['doctor_name'],
-			'approved_on' => $row['approved_on']
+			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 		];
 		echo json_encode($response);
 	}
@@ -2220,6 +2229,12 @@ class Loa_controller extends CI_Controller {
 		$data['request_type'] = $loa['loa_request_type'];
 		$data['max_benefit_limit'] = number_format($loa['max_benefit_limit'],2);
 		$data['remaining_balance'] = number_format($loa['remaining_balance'],2);
+
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
 	
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/loa/add_consultation_loa_fees.php');
@@ -2291,6 +2306,12 @@ class Loa_controller extends CI_Controller {
 		$data['emp_id'] = $loa['emp_id'];
 		$data['loa_id'] = $loa['loa_id'];
 		$data['approved_by'] = $approved_by;
+
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/loa/create_new_loa.php');
@@ -2405,6 +2426,11 @@ class Loa_controller extends CI_Controller {
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$loa = $this->loa_model->get_all_resched_loa($loa_id);
 		$existing = $this->loa_model->check_loa_no($loa_id);
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
 		
 		if(!$existing){
 			$data['user_role'] = $this->session->userdata('user_role');

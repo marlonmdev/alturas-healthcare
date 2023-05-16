@@ -160,15 +160,17 @@ class Noa_model extends CI_Model {
   }
 
    // Start of billed noa server-side processing datatables
-   var $table_1_billed = 'billing';
+   var $table_1_billed = 'initial_billing';
    var $table_2_billed = 'noa_requests';
-   var $column_order_billed = ['loa_no', 'first_name', 'loa_request_type', 'hp_name', null, 'request_date']; //set column field database for datatable orderable
-   var $column_search_billed = ['loa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'loa_request_type', 'med_services', 'emp_id', 'health_card_no', 'hp_name', 'request_date', 'CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)']; //set column field database for datatable searchable 
-   var $order_billed = ['loa_id' => 'desc']; // default order 
+   var $table_3_billed = 'max_benefit_limits';
+   var $column_order_billed = ['noa_no', 'first_name', 'remaining_balance','date_uploaded','initial_bill','pdf_bill']; //set column field database for datatable orderable
+   var $column_search_billed = ['noa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'remaining_balance','date_uploaded', 'initial_bill', 'pdf_bill','CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)']; //set column field database for datatable searchable 
+   var $order_billed = ['date_uploaded' => 'desc']; // default order 
  
    private function _get_billed_datatables_query($status) {
      $this->db->from($this->table_1_billed . ' as tbl_1');
      $this->db->join($this->table_2_billed . ' as tbl_2', 'tbl_1.noa_id = tbl_2.noa_id');
+     $this->db->join($this->table_3_billed . ' as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id', 'left');
      $this->db->where('tbl_1.status', $status);
      $i = 0;
  

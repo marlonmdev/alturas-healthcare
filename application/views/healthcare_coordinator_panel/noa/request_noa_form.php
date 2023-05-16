@@ -87,28 +87,23 @@
               <br>
               <div class="row">
                 <div class="col-sm-12 mb-2 d-flex justify-content-start">
-                  <button type="submit" class="btn btn-primary me-2">
-                    <i class="mdi mdi-content-save"></i> SUBMIT
-                  </button>
-                  <button type="reset" class="btn btn-danger">
-                    <i class="mdi mdi-close-box"></i> RESET
-                  </button>
+                  <button type="submit" class="btn btn-primary me-2"><i class="mdi mdi-content-save"></i> SUBMIT</button>
+                  <button type="reset" class="btn btn-danger"><i class="mdi mdi-close-box"></i> CLEAR</button>
                 </div>
               </div>
+
             </form>
-            <!-- End of Form -->
           </div>
-          <!-- End of Card Body -->
         </div>
-        <!-- End of Card -->
       </div>
-      <!-- End Row  -->  
-      </div>
-    <!-- End Container fluid  -->
     </div>
-  <!-- End Page wrapper  -->
   </div>
-<!-- End Wrapper -->
+</div>
+
+
+
+
+
 
 <script type="text/javascript">
   const baseUrl = '<?= base_url() ?>';

@@ -1,129 +1,103 @@
-<!-- Start of Page Wrapper -->
 <div class="page-wrapper">
-  <!-- Bread crumb and right sidebar toggle -->
   <div class="page-breadcrumb">
-      <div class="row">
+    <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-          <h4 class="page-title ls-2">Initial Billing (Inpatient)</h4>
-          <div class="ms-auto text-end">
+        <h4 class="page-title ls-2">CHECKING OF BILLING</h4>
+        <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
-              <ol class="breadcrumb">
-              <li class="breadcrumb-item">Healthcare Coordinator</li>
-              <li class="breadcrumb-item active" aria-current="page">
-                  Initial Bill NOA
-              </li>
+            <ol class="breadcrumb">
+            <li class="breadcrumb-item">Healthcare Coordinator</li>
+            <li class="breadcrumb-item active" aria-current="page">Initial Billing</li>
               </ol>
           </nav>
-          </div>
+        </div>
       </div>
-      </div>
+    </div>
   </div>
-  <!-- End Bread crumb and right sidebar toggle -->
-  <!-- Start of Container fluid  -->
+
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
         <ul class="nav nav-tabs mb-4" role="tablist">
           <li class="nav-item">
-            <a
-              class="nav-link active"
-              href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/billed/initial"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Initially Billed NOA</span></a
-            >
+            <a class="nav-link active" href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/billed/initial" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">INITIAL BILLING</span>
+            </a>
           </li>
-          <!-- <li class="nav-item">
-            <a
-              class="nav-link"
-              href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/for-charging"
-              role="tab"
-              ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">For Payment NOA</span></a
-            >
-          </li> -->
         </ul>
         <form method="POST" action="<?php echo base_url(); ?>healthcare-coordinator/noa/matched-bill/submit">
-        <div class="row pt-2 pb-2">
-              <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
-                <div class="col-lg-5 ps-5 pb-3 pt-1 pb-4">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text bg-dark text-white">
-                            <i class="mdi mdi-filter"></i>
-                            </span>
-                        </div>
-                        <select class="form-select fw-bold" name="billed-hospital-filter" id="billed-hospital-filter" oninput="enableDate()">
-                                <option value="">Select Hospital</option>
-                                <?php foreach($hcproviders as $option) : ?>
-                                <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
-                                <?php endforeach; ?>
-                        </select>
-                    </div>
+          <div class="row pt-2 pb-2">
+            <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
+            <div class="col-lg-5 ps-5 pb-3 pt-1 pb-4">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text bg-dark text-white"><i class="mdi mdi-filter"></i></span>
                 </div>
-
-                
-                <div class="col-lg-6 offset-1">
-                      <div class="input-group">
-                          <div class="input-group-append">
-                              <span class="input-group-text bg-dark text-white ls-1 ms-2">
-                                  <i class="mdi mdi-filter"></i>
-                              </span>
-                          </div>
-                          <input type="date" class="form-control" name="start-date" id="start-date" oninput="validateDateRange()" placeholder="Start Date" disabled>
-
-                          <div class="input-group-append">
-                              <span class="input-group-text bg-dark text-white ls-1 ms-2">
-                                  <i class="mdi mdi-filter"></i>
-                              </span>
-                          </div>
-                          <input type="date" class="form-control" name="end-date" id="end-date" oninput="validateDateRange();enableProceedBtn()" placeholder="End Date" disabled>
-                      </div>
-                  </div>
-                </div>
-          
-            <div class="card shadow" style="background-color:">
-              <div class="card-body">
-                <div class="">
-                  <table class="table table-hover table-responsive" id="billedLoaTable">
-                    <thead style="background-color:#00538C">
-                      <tr>
-                        <th style="color: white">NOA No.</th>
-                        <th style="color: white">Name</th>
-                        <th style="color: white">Hospital Bill</th>
-                        <th style="color: white">Percentage</th>
-                        <th style="color: white">Company Charge</th>
-                        <th style="color: white">Personal Charge</th>
-                        <th style="color: white">Previous MBL</th>
-                        <th style="color: white">Remaining MBL</th>
-                        <th style="color: white">View SOA</th>
-                      </tr>
-                    </thead>
-                    <tbody id="billed-tbody">
-                    </tbody> 
-                  </table>
-                </div>
-                <div class="row pt-4">
-                  <div class="col-lg-2 offset-7">
-                    <label>Total Hospital Bill : </label>
-                    <input name="total-hospital-bill" id="total-hospital-bill" class="form-control text-center fw-bold" value="0" readonly>
-                  </div>
-                </div>
-              </div>
-              <div class="offset-10 pt-2 pb-4">
-                  <button class="btn btn-info fw-bold fs-5 btn-lg" type="submit" id="proceed-btn" disabled><i class="mdi mdi-send"></i> Proceed</button>
+                <select class="form-select fw-bold" name="billed-hospital-filter" id="billed-hospital-filter" oninput="enableDate()">
+                  <option value="">Select Hospital</option>
+                  <?php foreach($hcproviders as $option) : ?>
+                    <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
+                  <?php endforeach; ?>
+                </select>
               </div>
             </div>
+
+            <div class="col-lg-6 offset-1">
+              <div class="input-group">
+                <div class="input-group-append">
+                  <span class="input-group-text bg-dark text-white ls-1 ms-2"><i class="mdi mdi-filter"></i></span>
+                </div>
+                <input type="date" class="form-control" name="start-date" id="start-date" oninput="validateDateRange()" placeholder="Start Date" disabled>
+                <div class="input-group-append">
+                  <span class="input-group-text bg-dark text-white ls-1 ms-2"><i class="mdi mdi-filter"></i></span>
+                </div>
+                <input type="date" class="form-control" name="end-date" id="end-date" oninput="validateDateRange();enableProceedBtn()" placeholder="End Date" disabled>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card shadow" style="background-color:">
+            <div class="card-body">
+              <div class="">
+                <table class="table table-hover table-responsive" id="billedLoaTable">
+                  <thead style="background-color:#00538C">
+                    <tr>
+                      <th style="color: white">NOA NO.</th>
+                      <th style="color: white">NAME OF PATIENT</th>
+                      <th style="color: white">REMAINING MBL</th>
+                      <th style="color: white">DATE</th>
+                      <th style="color: white">HOSPITAL BILL</th>
+                      <th style="color: white">VIEW SOA</th>
+                    </tr>
+                  </thead>
+                  <tbody id="billed-tbody">
+                  </tbody> 
+                </table>
+              </div>
+              <div class="row pt-4">
+                <div class="col-lg-2 offset-10">
+                  <label>Total Hospital Bill : </label>
+                  <input name="total-hospital-bill" id="total-hospital-bill" class="form-control text-center fw-bold" value="0" readonly>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="offset-10 pt-2 pb-4">
+              <button class="btn btn-info fw-bold fs-5 btn-lg" type="submit" id="proceed-btn" disabled><i class="mdi mdi-send"></i> Proceed</button>
+            </div> -->
+          </div>
+
+        </form>
       </div>
-      </form>
-      <!-- End Row  -->  
-      </div>
-    <!-- End Container fluid  -->
     </div>
-  <!-- End Page wrapper  -->
   </div>
   <?php include 'view_pdf_bill_modal.php'; ?>
-<!-- End Wrapper -->
+</div>
+
+
+
+
+
 
 <script>
   const baseUrl = "<?php echo base_url(); ?>";

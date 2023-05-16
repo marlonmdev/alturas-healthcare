@@ -111,6 +111,7 @@ class Noa_controller extends CI_Controller {
 		$status = 'Pending';
 		$hcc_emp_id = $this->session->userdata('emp_id');
 		$list = $this->noa_model->get_datatables($status);
+
 		$data = [];
 		foreach ($list as $noa) {
 			$row = [];
@@ -479,6 +480,13 @@ class Noa_controller extends CI_Controller {
 		$data['row'] = $this->noa_model->db_get_noa_info($noa_id);
 		$data['hospitals'] = $this->setup_model->db_get_hospitals();
 		$data['costtypes'] = $this->setup_model->db_get_all_cost_types();
+
+		$data['bar'] = $this->setup_model->bar_pending();
+		$data['bar1'] = $this->setup_model->bar_approved();
+		$data['bar2'] = $this->setup_model->bar_completed();
+		$data['bar3'] = $this->setup_model->bar_referral();
+		$data['bar4'] = $this->setup_model->bar_expired();
+
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/noa/edit_noa_request');
 		$this->load->view('templates/footer');

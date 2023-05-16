@@ -231,8 +231,15 @@
                 } = res;
 
                 $("#viewLoaModal").modal("show");
+
+                const dob = date_of_birth !== '' ? date_of_birth : 'None';
+                const ag = age !== '' ? age : 'None';
+                const gndr = gender !== '' ? gender : 'None';
                 const bt = blood_type !== '' ? blood_type : 'None';
+                const pn = philhealth_no !== '' ? philhealth_no : 'None';
+                const ha = home_address !== '' ? home_address : 'None';
                 const ca = city_address !== '' ? city_address : 'None';
+                const cn = contact_no !== '' ? contact_no : 'None';
                 const em = email !== '' ? email : 'None';
                 const cp = contact_person !== '' ? contact_person : 'None';
                 const cpa = contact_person_addr !== '' ? contact_person_addr : 'None';
@@ -240,20 +247,20 @@
                 const med_serv = med_services !== '' ? med_services : 'None';
                 const at_physician = attending_physician !== '' ? attending_physician : 'None';
                 $('#loa-no').html(loa_no);
-                $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
+                $('#loa-status').html(`<strong style="color:maroon">[${req_status}]</strong>`);
                 $('#disapproved-by').html(disapproved_by);
                 $('#disapproved-on').html(disapproved_on);
                 $('#disapprove-reason').html(disapprove_reason);
                 $('#member-mbl').html(member_mbl);
                 $('#remaining-mbl').html(remaining_mbl);
                 $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
-                $('#date-of-birth').html(date_of_birth);
-                $('#age').html(age);
-                $('#gender').html(gender);
-                $('#philhealth-no').html(philhealth_no);
+                $('#date-of-birth').html(dob);
+                $('#age').html(ag);
+                $('#gender').html(gndr);
+                $('#philhealth-no').html(pn);
                 $('#blood-type').html(bt);
-                $('#contact-no').html(contact_no);
-                $('#home-address').html(home_address);
+                $('#contact-no').html(cn);
+                $('#home-address').html(ha);
                 $('#city-address').html(ca);
                 $('#email').html(em);
                 $('#contact-person').html(cp);
@@ -268,6 +275,7 @@
                 $('#chief-complaint').html(chief_complaint);
                 $('#requesting-physician').html(requesting_physician);
                 $('#attending-physician').html(at_physician);
+                $('#work_related').html(work_related);
                 if(work_related == 'Yes'){ 
                   if(percentage == ''){
                     wpercent = '100% W-R';

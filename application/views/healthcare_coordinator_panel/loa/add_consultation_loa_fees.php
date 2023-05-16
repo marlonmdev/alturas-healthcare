@@ -20,7 +20,7 @@
   <div class="container-fluid">
     <hr style="color:red">
       <div class="col-12">
-        <div class="text-center mb-4 mt-0"><h4 class="page-title ls-2">ADD SERVICE FEE</h4></div>
+        <div class="text-center mb-4 mt-0"><h4 class="page-title ls-2" style="letter-spacing:10px">ADD SERVICE FEE</h4></div>
       </div>
     <hr style="color:red">
                 

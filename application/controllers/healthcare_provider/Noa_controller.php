@@ -199,7 +199,7 @@ class Noa_controller extends CI_Controller {
 	function fetch_billed_noa_requests() {
 		$this->security->get_csrf_hash();
 		$status = 'Billed';
-    $hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
+    	$hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
 		$list = $this->noa_model->get_datatables($status, $hcare_provider_id);
 		$data = [];
 		foreach ($list as $noa) {

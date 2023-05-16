@@ -3,12 +3,12 @@
     <div class="modal-content">
       <section id="printableDiv">
         <div class="modal-header">
-          <h4 class="modal-title ls-2">LOA #: <span class="loano" id="loa-no" class="text-primary"></span> <span id="loa-status"></span></h4>
+          <h4 class="modal-title ls-2">LOA #: <span class="loa_no" id="loa-no" class="text-primary"></span> <span id="loa-status"></span></h4>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
           </button>
         </div>
         <div class="modal-body">
-          <div class="container">
+          <div class="container-fluid">
             <div class="row text-center">
               <h4><strong>PATIENT DETAILS</strong></h4>
             </div>
@@ -19,26 +19,6 @@
                   <td class="fw-bold ls-1" id="request-date"></td>
                 </tr>
                 <tr>
-                  <td class="fw-bold ls-1">Disapproved On :</td>
-                  <td class="fw-bold ls-1" id="disapproved-on"></td>
-                </tr>
-                <tr>
-                  <td class="fw-bold ls-1">Disapproved By :</td>
-                  <td class="fw-bold ls-1" id="disapproved-by"></td>
-                </tr>
-                <tr>
-                  <td class="fw-bold ls-1">Reason for Disapproval :</td>
-                  <td class="fw-bold ls-1" id="disapprove-reason"></td>
-                </tr>
-                <tr>
-                  <td class="fw-bold ls-1">Work Related :</td>
-                  <td class="fw-bold ls-1" id="work_related"></td>
-                </tr>
-                <tr>
-                  <td class="fw-bold ls-1">Percentage :</td>
-                  <td class="fw-bold ls-1" id="percentage"></td>
-                </tr>
-                <tr>
                   <td class="fw-bold ls-1">Maximum Benefit Limit :</td>
                   <td class="fw-bold ls-1">&#8369;<span id="member-mbl"></span></td>
                 </tr>
@@ -46,7 +26,6 @@
                   <td class="fw-bold ls-1">Remaining MBL :</td>
                   <td class="fw-bold ls-1">&#8369;<span id="remaining-mbl"></span></td>
                 </tr>
-
                 <tr>
                   <td class="fw-bold ls-1">Healthcard Number :</td>
                   <td class="fw-bold ls-1" id="health-card-no"></td>
@@ -140,16 +119,13 @@
         <button class="btn btn-dark ls-1 me-2" onclick="saveAsImage()"><i class="mdi mdi-file-image"></i> Save as Image</button>
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
       </div>
+
     </div>
   </div>
 </div>
 
 <style type="text/css">
-  .modal-header{
-    background-color:#00538c;
-    color:#fff
-  }
-  .loano{
+  .loa_no{
     color:orange
   }
 </style>

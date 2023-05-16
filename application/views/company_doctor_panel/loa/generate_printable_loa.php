@@ -53,7 +53,7 @@
 
                     <table>
                       <tr>
-                        <td class="ls-1" style="padding-left:20px;">
+                        <td class="ls-1 fs-5" style="padding-left:20px;">
                           <span class="fw-bold fs-3 ls-1">LETTER OF AUTHORIZATION</span><br>
                           <?php
                             $valid_until = $row['expiration_date'] ? date('F d, Y', strtotime($row['expiration_date'])) : '';
@@ -68,7 +68,7 @@
                       </tr>
 
                       <tr>
-                        <td class="ls-1" style="padding:20px 20px 0 20px;text-align:justify" colspan="2">
+                        <td class="ls-1 fs-5" style="padding:20px 20px 0 20px;text-align:justify" colspan="2">
                           We wish to authorize the following health care services for the account of Alturas Healthcare for our member, <strong><?= $row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] ?></strong> with Healthcard No. <strong><?= $row['health_card_no'] ?></strong>. This authorization letter is valid until <strong><?= $valid_until ?></strong> only.
                         </td>
                       </tr>
@@ -100,7 +100,7 @@
                       </tr>
 
                       <tr>
-                        <td class="ls-1" style="padding:10px 0 0 20px;text-align:justify;vertical-align:baseline;" colspan="2">
+                        <td class="ls-1 fs-5"  style="padding:10px 0 0 20px;text-align:justify;vertical-align:baseline;" colspan="2">
                           <h5 class="ls-1">CHIEF COMPLAINT/DIAGNOSIS</h5>
                           <i class="mdi mdi-chevron-right fs-4"></i><?= $row['chief_complaint'] ?>
                         </td>
@@ -113,7 +113,7 @@
                       </tr>
 
                       <tr>
-                        <td class="ls-1" style="padding: 0 0 0 20px;text-align:justify;vertical-align:baseline;">
+                        <td class="ls-1 fs-5" style="padding: 0 0 0 20px;text-align:justify;vertical-align:baseline;">
                           <i class="mdi mdi-information fs-4"></i> <strong>PATIENT DETAILS</strong><br>
                           Name: <?= $row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] ?><br>
                           <!-- Start of Age Calculator -->
@@ -152,12 +152,12 @@
                       </tr>
 
                       <tr>
-                        <td class="ls-1" style="padding:0 0 0 20px;vertical-align:baseline;">
+                        <td class="ls-1 fs-5" style="padding:0 0 0 20px;vertical-align:baseline;">
                           Requesting Physician: <br>
                           <i class="mdi mdi-chevron-right fs-4"></i><span class="fw-bold"><?= $req['doctor_name'] ?></span>
                         </td>
 
-                        <td class="ls-1" style="padding:0 20px 0 0;text-align:justify;">
+                        <td class="ls-1 fs-5" style="padding:0 20px 0 0;text-align:justify;">
                           Attending Physician: <br>
                           <i class="mdi mdi-chevron-right fs-4"></i><span class="fw-bold"><?= $row['attending_physician'] ?></span>
                         </td>
@@ -168,14 +168,33 @@
                           <svg id="barcode"></svg>
                         </td>
 
-                        <td class="ls-1" style="padding: 0 20px 0 0;">
+                        <td class="ls-1 fs-5" style="padding: 0 20px 0 0;">
                           Approved By : <span class="fw-bold"><?= $doc['doctor_name'] ?></span>
                           <img src="<?= base_url() . "uploads/doctor_signatures/" . $doc['doctor_signature'] ?>" alt="Doctor's Signature" style="height:auto;width:170px;vertical-align:baseline;margin-left:-170px">
-                          <br><small style="margin-left:105px;text-align:center;">Company Physician</small>
+                          <br><span style="margin-left:105px;text-align:center;">Company Physician</span>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td colspan="2" style="padding: 0 10px 0 10px;">
+                          <div class="my-3" style="border:0.2px solid #a3a2a2;"></div>
                         </td>
                       </tr>
                     </table>
-
+                        <small class="ls-1" style="padding:0 0 0 20px;vertical-align:baseline;">
+                        LETTER OF AUTHORIZATION (LOA)
+                          </i>•	A Letter of Authority (LOA) is required for out-patient requests to avail of the Alturas Healthcare program. The request should be submitted through the Alturas healthcare system portal and must be approved by the company physician.
+                          •	Once approved, the eligible employee can present the approved computer-generated LOA to the healthcare provider to avail of their services.
+                          •	When filling out a LOA, the eligible employee is only allowed to request up to their Maximum Benefit Limit (MBL).
+                          •	If the amount requested in the LOA exceeds the MBL, it will not be approved.
+                          •	The percentage of work-related expenses versus non-work-related expenses will be applied when the head office charges the healthcare expenses to its business unit.<br>
+                          NOTICE OF ADMISSION (NOA)
+                          •	A Notice of Admission (NOA) is required for in-patient requests to avail of the Alturas Healthcare program. The request should be submitted through the Alturas healthcare system portal and must be approved by the company physician. 
+                          •	Once approved, the eligible employee or the authorized representative can present the approved computer-generated NOA to the healthcare provider, to avail of the provider’s services.
+                          •	If an employee exceeds the Maximum Benefit Limit (MBL), the ‘Not-Work Related’ percentage is subject for Healthcare Advances. Approval from the supervisor and incorporator is necessary for such advances.
+                          •	If the amount requested in the NOA exceeds the MBL before approval, it will not be approved. 
+                          •	The percentage of work-related expenses versus non-work-related expenses will be applied when the head office charges the healthcare expenses to its business unit.
+                        </small>
                   </div>
                 </div>
               </div>

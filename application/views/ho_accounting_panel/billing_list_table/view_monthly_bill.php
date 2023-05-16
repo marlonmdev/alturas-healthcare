@@ -52,17 +52,17 @@
                     <table class="table table-hover table-responsive" id="billedLoaTable">
                       <thead style="background-color:#eddcb7">
                         <tr>
-                            <th class="text-center fw-bold ls-2"><strong>Billing No</strong></th>
-                            <th class="text-center fw-bold ls-2"><strong>LOA/NOA #</strong></th>
-                            <th class="text-center fw-bold ls-2"><strong>Patient Name</strong></th>
-                            <th class="text-center fw-bold ls-2"><strong>Business Unit</strong></th>
-                            <th class="text-center fw-bold ls-2"><strong>Remaining MBL</strong></th>
-                            <th class="text-center fw-bold ls-2"><strong>Percentage</strong></th>
-                            <th class="text-center fw-bold ls-2"><strong>Hospital Bill</strong></th>
-                            <th class="text-center fw-bold ls-2"><strong>Company Charge</strong></th>
-                            <th class="text-center fw-bold ls-2"><strong>Personal Charge</strong></th>
-                            <th class="text-center fw-bold ls-2"><strong>Total Payable</strong></th>
-                            <th class="text-center fw-bold ls-2"><strong>SOA</strong></th>
+                            <th class="fw-bold ls-2"><strong>Billing No</strong></th>
+                            <th class="fw-bold ls-2"><strong>LOA/NOA #</strong></th>
+                            <th class="fw-bold ls-2"><strong>Patient Name</strong></th>
+                            <th class="fw-bold ls-2"><strong>Business Unit</strong></th>
+                            <th class="fw-bold ls-2"><strong>Current MBL</strong></th>
+                            <th class="fw-bold ls-2"><strong>Percentage</strong></th>
+                            <th class="fw-bold ls-2"><strong>Hospital Bill</strong></th>
+                            <th class="fw-bold ls-2"><strong>Company Charge</strong></th>
+                            <th class="fw-bold ls-2"><strong>Personal Charge</strong></th>
+                            <th class="fw-bold ls-2"><strong>Total Payable</strong></th>
+                            <th class="fw-bold ls-2"><strong>SOA</strong></th>
                         </tr>
                       </thead>
                       <tbody id="billed-tbody">

@@ -52,11 +52,12 @@
                         <tr>
                           <th class="fw-bold">Billing No.</th>
                           <th class="fw-bold">LOA/NOA #</th>
-                          <th class="fw-bold">Name</th>
+                          <th class="fw-bold">Patient Name</th>
+                          <th class="fw-bold">Remaining MBL</th>
                           <th class="fw-bold">Company Charge</th>
                           <th class="fw-bold">Cash Advance</th>
                           <th class="fw-bold">Total Paid Bill</th>
-                          <th class="fw-bold">Remaining MBL</th>
+                 
                           <th class="fw-bold">Status</th>
                           <th class="fw-bold">View SOA</th>
                         </tr>
@@ -68,9 +69,9 @@
                         <td></td>
                         <td></td>
                         <td></td>
+                        <td></td>
                         <td class="fw-bold">TOTAL BILL </td>
                         <td><span class="text-danger fw-bold fs-5" id="pd-total-bill"></span></td>
-                        <td></td>
                         <td></td>
                         <td></td>
                       </tfoot>
@@ -139,7 +140,7 @@ const printDiv = (layer) => {
     });
 
     billedTable.on('draw.dt', function() {
-    let columnIdx = 5;
+    let columnIdx = 6;
     let sum = 0;
     let rows = billedTable.rows().nodes();
     if ($('#paidTable').DataTable().data().length > 0) {

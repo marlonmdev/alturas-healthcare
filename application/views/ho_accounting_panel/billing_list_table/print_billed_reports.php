@@ -162,7 +162,7 @@
                                                 <th class="fw-bold ls-2"><strong>LOA/NOA #</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Patient Name</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Business Unit</strong></th>
-                                                <th class="fw-bold ls-2"><strong>Remaining MBL</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Current MBL</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Percentage</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Hospital Bill</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Company Charge</strong></th>
@@ -331,13 +331,21 @@
 <script>
   const baseUrl = "<?php echo base_url(); ?>";
   const printDiv = (layer) => {
-    $(layer).printThis({
+     $(layer).printThis({
         importCSS: true,
         copyTagClasses: true,
         copyTagStyles: true,
         removeInline: false,
+        afterPrint: function() {
+        const pdf = new Blob([$(layer).get(0).outerHTML], { type: "application/pdf" });
+        let number = 10;
+        number++;
+        const fileName =  "bill_00" +number + ".pdf"; // Change the file name if desired
+        saveAs(pdf, fileName);
+        }
     });
-    };
+};
+
     const printDivs = (layer) => {
     $(layer).printThis({
       importCSS: true,

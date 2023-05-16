@@ -280,15 +280,17 @@ class List_model extends CI_Model{
         return $this->db->get_where('max_benefit_limits', ['emp_id' => $emp_id])->row_array();
     }
 
-    function set_max_benifit_limit($emp_id, $remaining_mbl) {
+    function set_max_benefit_limit($emp_id, $remaining_mbl) {
         $this->db->set('remaining_balance', $remaining_mbl)
                 ->where('emp_id', $emp_id);
         return $this->db->update('max_benefit_limits');
     }
 
-    function set_after_max_benifit_limit($emp_id, $remaining_mbl) {
+    function set_after_mbl_paid_amount($billing_id, $before_mbl, $remaining_mbl, $paid_amount) {
         $this->db->set('after_remaining_bal', $remaining_mbl)
-                ->where('emp_id', $emp_id);
+                ->set('before_remaining_bal', $before_mbl)
+                ->set('total_paid_amount', $paid_amount)
+                ->where('billing_id', $billing_id);
         return $this->db->update('billing');
     }
     

@@ -5,6 +5,8 @@ class Patient_controller extends CI_Controller {
   function __construct() {
 		parent::__construct();
 		$this->load->model('healthcare_provider/patient_model');
+		$this->load->model('healthcare_provider/loa_model');
+        $this->load->model('healthcare_provider/noa_model');
 		$user_role = $this->session->userdata('user_role');
 		$logged_in = $this->session->userdata('logged_in');
 		if ($logged_in !== true && $user_role !== 'healthcare-provider') {
@@ -105,9 +107,12 @@ class Patient_controller extends CI_Controller {
 	}
 	public function view_information(){
 		$member_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$hp_id = $this->session->userdata('dsg_hcare_prov');
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['member'] = $member = $this->patient_model->db_get_member_details($member_id);
 		$data['mbl'] = $this->patient_model->db_get_member_mbl($member['emp_id']);
+		$data['loa'] = $this->loa_model->get_loa_history($hp_id,$member['emp_id']);
+		$data['noa'] = $this->noa_model->get_noa_history($hp_id,$member['emp_id']);
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_provider_panel/patient/patient_profile');
 		$this->load->view('templates/footer');

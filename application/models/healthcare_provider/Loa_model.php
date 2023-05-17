@@ -118,6 +118,14 @@ class Loa_model extends CI_Model{
         return $query->result();
     }
 
+    function get_loa_history($hp_id,$emp_id){
+        $this->db->select('*')
+        ->from('loa_requests')
+        ->where('hcare_provider', $hp_id)
+        ->where('emp_id', $emp_id);
+        $query = $this->db->get();
+        return $query->result();
+    }
     function db_get_loa_info($loa_id) {
         $this->db->select('*')
                  ->from('loa_requests as tbl_1')

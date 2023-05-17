@@ -1,5 +1,4 @@
-
-    <!-- Start of Page Wrapper -->
+  <!-- Start of Page Wrapper -->
     <div class="page-wrapper">
       <!-- Bread crumb and right sidebar toggle -->
       <div class="page-breadcrumb">

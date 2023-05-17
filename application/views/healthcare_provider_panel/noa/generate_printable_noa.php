@@ -25,7 +25,7 @@
 
         <div class="row mb-3">
           <div class="col-sm-12">
-            <a class="btn btn-dark me-2" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/approved">
+            <a class="btn btn-dark me-2" href="<?php echo base_url(); ?>company-doctor/noa/requests-list/approved">
               <i class="mdi mdi-arrow-left-bold"></i>
               Go Back
             </a>
@@ -53,11 +53,10 @@
 
                     <table>
                       <tr>
-                        <td class="ls-1" style="padding-left:20px;">
+                        <td class="ls-1  fs-5" style="padding-left:20px;">
                           <span class="fw-bold fs-3 ls-1">NOTICE OF ADMISSION</span><br>
                           <?php
-                            $expires = strtotime('+1 week', strtotime($row['approved_on']));
-                            $valid_until = date('F d, Y', $expires);
+                            $valid_until = $row['expiration_date'] ? date('F d, Y', strtotime($row['expiration_date'])) : '';
                           ?>
                           NOA Number : <strong><?= $row['noa_no'] ?></strong><br>
                           Approved On : <strong><?= date('F d, Y', strtotime($row['approved_on'])) ?></strong><br>
@@ -70,7 +69,7 @@
                       </tr>
 
                       <tr>
-                        <td class="ls-1" style="padding:40px 20px 0 20px;text-align:justify" colspan="2">
+                        <td class="ls-1  fs-5" style="padding:40px 20px 0 20px;text-align:justify" colspan="2">
                           We wish to authorize this Notice of Admission for the account of Alturas Healthcare for our member, <strong><?= $row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] ?></strong> with Healthcard No. <strong><?= $row['health_card_no'] ?></strong>. This notice is valid until <strong><?= $valid_until ?></strong> only.
                         </td>
                       </tr>
@@ -82,7 +81,7 @@
                       </tr>
 
                       <tr>
-                        <td  class="ls-1"style="padding:0 20px 0 20px;text-align:center;" colspan="2">
+                        <td  class="ls-1  fs-5"style="padding:0 20px 0 20px;text-align:center;" colspan="2">
                           <h5>CHIEF COMPLAINT/DIAGNOSIS</h5>
                           <span><?= $row['chief_complaint'] ?></span>
                         </td>
@@ -95,7 +94,7 @@
                       </tr>
 
                       <tr>
-                        <td class="ls-1" style="padding: 0 0 0 20px;text-align:justify;vertical-align:baseline;">
+                        <td class="ls-1 fs-5" style="padding: 0 0 0 20px;text-align:justify;vertical-align:baseline;">
                           <i class="mdi mdi-information fs-4"></i> <strong>PATIENT DETAILS</strong><br>
                           Name: <?= $row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] ?><br>
                           <!-- Start of Age Calculator -->
@@ -111,10 +110,11 @@
                           Home Address: <?= $row['home_address'] ?><br>
                           City Address: <?= $row['city_address'] ?><br>
                           Contact No.: <?= $row['contact_no'] ?><br>
-                          Philhealth No.: <?= $row['philhealth_no'] ?>
+                          Philhealth No.: <?= $row['philhealth_no'] ?><br>
+                          Patient No.: <?= $row['emp_no'] ?>
                         </td>
 
-                        <td class="ls-1" style="padding: 0 20px 0 0;vertical-align:baseline;">
+                        <td class="ls-1  fs-5" style="padding: 0 20px 0 0;vertical-align:baseline;">
                           <i class="mdi mdi-information fs-4"></i> <strong>CONTACT PERSON DETAILS</strong><br>
                           Name: <?= $row['contact_person'] ?><br>
                           Address: <?= $row['contact_person_addr'] ?><br>
@@ -137,13 +137,33 @@
                         <td style="padding: 0 0 0 10px;">
                           <svg id="barcode"></svg>
                         </td>
-                        <td style="padding: 0 20px 0 0;">
+                        <td class=" fs-5" style="padding: 0 20px 0 0;">
                           Approved By : <strong> <?= $doc['doctor_name'] ?></strong>
                           <img src="<?= base_url() . "uploads/doctor_signatures/" . $doc['doctor_signature'] ?>" alt="Doctor's Signature" style="height:auto;width:170px;vertical-align:baseline;margin-left:-170px">
-                          <br><small style="margin-left:105px;text-align:center;">Company Physician</small>
+                          <br><span style="margin-left:105px;text-align:center;">Company Physician</span>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td colspan="2" style="padding: 0 10px 0 10px;">
+                          <div class="my-3" style="border:0.2px solid #a3a2a2;"></div>
                         </td>
                       </tr>
                     </table>
+                    <small class="ls-1" style="padding:0 0 0 20px;vertical-align:baseline;">
+                        LETTER OF AUTHORIZATION (LOA)
+                          </i>•	A Letter of Authority (LOA) is required for out-patient requests to avail of the Alturas Healthcare program. The request should be submitted through the Alturas healthcare system portal and must be approved by the company physician.
+                          •	Once approved, the eligible employee can present the approved computer-generated LOA to the healthcare provider to avail of their services.
+                          •	When filling out a LOA, the eligible employee is only allowed to request up to their Maximum Benefit Limit (MBL).
+                          •	If the amount requested in the LOA exceeds the MBL, it will not be approved.
+                          •	The percentage of work-related expenses versus non-work-related expenses will be applied when the head office charges the healthcare expenses to its business unit.<br>
+                          NOTICE OF ADMISSION (NOA)
+                          •	A Notice of Admission (NOA) is required for in-patient requests to avail of the Alturas Healthcare program. The request should be submitted through the Alturas healthcare system portal and must be approved by the company physician. 
+                          •	Once approved, the eligible employee or the authorized representative can present the approved computer-generated NOA to the healthcare provider, to avail of the provider’s services.
+                          •	If an employee exceeds the Maximum Benefit Limit (MBL), the ‘Not-Work Related’ percentage is subject for Healthcare Advances. Approval from the supervisor and incorporator is necessary for such advances.
+                          •	If the amount requested in the NOA exceeds the MBL before approval, it will not be approved. 
+                          •	The percentage of work-related expenses versus non-work-related expenses will be applied when the head office charges the healthcare expenses to its business unit.
+                        </small>
                   </div>
                 </div>
               </div>

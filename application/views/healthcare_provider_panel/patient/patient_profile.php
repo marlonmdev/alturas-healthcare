@@ -79,6 +79,46 @@
                 
               </ul>
             </div>
+            <span style="font-weight:600;" class="colored-label ps-3">Patient History</span>
+            <!-- patient history Loa-->
+            <div class="card shadow mt-2" >
+            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap border-0">
+                  <!-- <h6 class="mb-0 text-secondary" style="font-weight:600;">LOA </h6> -->
+                  <span style="font-weight:600;" class="colored-label">LOA #</span>
+                  <span style="font-weight:600;" class="colored-label">Status</span>
+                </li>
+              <ul class="list-group list-group-flush" style="overflow-y: auto; max-height: 200px;">
+
+                <?php foreach ($loa as $l) : ?>
+                  <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                    <h6 class="mb-0 text-secondary" style="font-weight:600;"><?= $l->loa_no?></h6>
+                    <span style="font-weight:600;" class="colored-label"><?= $l->status?></span>
+                  </li>
+                <?php endforeach; ?>
+
+              </ul>
+            </div>
+
+            <!-- patient history noa-->
+            <div class="card shadow mt-3">
+            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap border-0">
+                  <!-- <h6 class="mb-0 text-secondary" style="font-weight:600;">LOA </h6> -->
+                  <span style="font-weight:600;" class="colored-label">NOA #</span>
+                  <span style="font-weight:600;" class="colored-label">Status</span>
+                </li>
+              <ul class="list-group list-group-flush"  style="overflow-y: auto; max-height: 200px;">
+                
+                
+                <?php foreach ($noa as $n) : ?>
+                  <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                    <h6 class="mb-0 text-secondary" style="font-weight:600;"><?= $n->noa_no?></h6>
+                    <span style="font-weight:600;" class="colored-label"><?= $n->status?></span>
+                  </li>
+                <?php endforeach; ?>
+                
+              </ul>
+            </div>
+
           </div>
           <div class="col-md-8">
             <div class="card shadow mb-0">
@@ -135,6 +175,12 @@
                     <div class="col-sm-3"><h6 class="mb-0 text-secondary" style="font-weight:600;">Contact Number:</h6></div>
                     <div class="col-sm-9 colored-label" style="font-weight:600;">
                       <?= $member['contact_no']; ?>
+                    </div>
+                  </div><hr>
+                  <div class="row">
+                    <div class="col-sm-3"><h6 class="mb-0 text-secondary" style="font-weight:600;">Email Address:</h6></div>
+                    <div class="col-sm-9 colored-label" style="font-weight:600;">
+                      <?= $member['email']; ?>
                     </div>
                   </div><hr>
                   <?php

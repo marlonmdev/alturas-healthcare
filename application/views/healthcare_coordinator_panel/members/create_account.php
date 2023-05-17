@@ -230,14 +230,14 @@
         const healthcard_no = document.querySelector('#healthcard-no');
         const username = document.querySelector('#username');
         const password = document.querySelector('#password');
-        const current_year = new Date().getFullYear();
+        // const current_year = new Date().getFullYear();
 
         $('#createMemberUserAccountForm')[0].reset();
         $('#createMemberUserAccountModal').modal('show');
 
         healthcard_no.value = `ACN-${emp_no.toString()}`;
         username.value = emp_id.toString();
-        password.value = "Acare" + current_year;
+        password.value = "Acare2022";
         emp_id_input.value = emp_id;
     }
 </script>

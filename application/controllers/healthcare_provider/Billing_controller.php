@@ -9,7 +9,7 @@ class Billing_controller extends CI_Controller {
         $this->load->model('healthcare_provider/loa_model');
         $this->load->model('healthcare_provider/noa_model');
         $this->load->model('healthcare_provider/initial_billing_model');
-        $this->load->model('ho_accounting/List_model');
+        $this->load->model('ho_accounting/list_model');
         $user_role = $this->session->userdata('user_role');
         $logged_in = $this->session->userdata('logged_in');
         if ($logged_in !== true && $user_role !== 'healthcare-provider') {
@@ -1085,24 +1085,57 @@ class Billing_controller extends CI_Controller {
         // $hospitalBillArray = json_decode($hospitalBillData, true);
         //var_dump($hospitalBillArray);
         // PDF File Upload
-        $config['upload_path'] = './uploads/pdf_bills/';
-        $config['allowed_types'] = 'pdf';
+        // $config['upload_path'] = './uploads/pdf_bills/';
+        $config['allowed_types'] = 'pdf|jpeg|jpg|png|gif|svg';
         $config['encrypt_name'] = TRUE;
         $this->load->library('upload', $config);
+        
+        $uploaded_files = array();
+        $error_occurred = FALSE;
 
-        if (!$this->upload->do_upload('pdf-file')) {
+        // Define the upload paths for each file
+            $file_paths = array(
+                'pdf-file' => './uploads/pdf_bills/',
+                'Rinal-Diagnosis' => './uploads/rinal_diagnosis/',
+                'Medical-Abstract' => './uploads/medical_abstract/',
+                'Operation' => './uploads/operation/'
+            );
+    
+        // Iterate over each file input and perform the upload
+            $file_inputs = array('pdf-file', 'Rinal-Diagnosis', 'Medical-Abstract', 'Operation');
+            foreach ($file_inputs as $input_name) {
+                if ($input_name === 'Medical-Abstract' && empty($_FILES[$input_name]['name'])) {
+                    // Skip the 'Medical-Abstract' field if it is empty
+                    continue;
+                }
+
+                $config['upload_path'] = $file_paths[$input_name];
+                $this->upload->initialize($config);
+
+                if (!$this->upload->do_upload($input_name)) {
+                    $error = $this->upload->display_errors();
+                    if ($input_name !== 'Operation' || !empty($error)) {
+                        // If error occurred for required files or any other file, set error flag
+                        $error_occurred = TRUE;
+                    }
+                } else {
+                    $uploaded_files[$input_name] = $this->upload->data($input_name);
+                }
+            }
+    
+        if ($error_occurred) {
             $response = [
                 'status'  => 'save-error',
                 'message' => 'PDF Bill Upload Failed'
             ];
-
         } else {
-            $upload_data = $this->upload->data();
-            $pdf_file = $upload_data['file_name'];
+            // $pdf_file = $this->upload->data('pdf-file');
+            // $rinal_file = $this->upload->data('Rinal-Diagnosis');
+            // $medical_file = $this->upload->data('Medical-Abstract');
+            // $operation_file = $this->upload->data('Operation');
             $noa = $this->billing_model->get_noa_to_bill($noa_id);
 
             $result_charge = $this->get_personal_and_company_charge("noa",$noa_id,$net_bill);
-            // var_dump($result_charge);
             $data = [
                 'billing_no'            => $billing_no,
                 'billing_type'          => 'PDF Billing',
@@ -1113,7 +1146,10 @@ class Billing_controller extends CI_Controller {
                 'net_bill'              => $net_bill,
                 'company_charge'        => floatval(str_replace(',', '', $result_charge['company_charge'])),
                 'personal_charge'       => floatval(str_replace(',', '', $result_charge['personal_charge'])),
-                'pdf_bill'              => $pdf_file,
+                'pdf_bill'              => isset($uploaded_files['pdf-file']) ? $uploaded_files['pdf-file']['file_name'] : NULL,
+                'rinal_file'            => isset($uploaded_files['Rinal-Diagnosis']) ? $uploaded_files['Rinal-Diagnosis']['file_name'] : NULL,
+                'medical_file'          => isset($uploaded_files['Medical-Abstract']) ? $uploaded_files['Medical-Abstract']['file_name'] : NULL,
+                'operation_file'        => isset($uploaded_files['Operation']) ? $uploaded_files['Operation']['file_name'] : NULL,
                 'billed_by'             => $this->session->userdata('fullname'),
                 'billed_on'             => date('Y-m-d'),
                 'status'                => 'Billed',
@@ -1141,7 +1177,7 @@ class Billing_controller extends CI_Controller {
                    'status'  => 'save-error',
                    'message' => 'PDF Bill Upload Failed'
                 ];
-            }
+            }   
             $type = 'NOA';
             $this->update_request_status($type, $noa_id);
             $bill = $this->billing_model->get_billing($billing_no);
@@ -1155,6 +1191,7 @@ class Billing_controller extends CI_Controller {
 
         echo json_encode($response);
 	}
+
     function submit_initial_noa_pdf_bill() { 
         $this->security->get_csrf_hash();
         $noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
@@ -1351,12 +1388,20 @@ class Billing_controller extends CI_Controller {
         }       
     }  
 
+    // function check_image($str){
+	// 	if(isset($_FILES['supporting-docu']['name']) && !empty($_FILES['supporting-docu']['name'])){
+	// 		return true;
+	// 	}else{
+	// 		$this->form_validation->set_message('check_image', 'Supporting Document is Required!');
+	// 		return false;
+	// 	}
+    // }
     function view_payment_details() {
-		$details_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
-		$payment = $this->List_model->get_payment_details($details_id);
-		
-		$loa_no = $this->List_model->get_loa($payment['details_no']);
-		$noa_no = $this->List_model->get_noa($payment['details_no']);
+		$details_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$payment = $this->list_model->get_payment_details($details_id);
+		$loa_no = $this->list_model->get_loa($payment['details_no']);
+		$noa_no = $this->list_model->get_noa($payment['details_no']);
+      
 		$noa_loa_array = [];
 		foreach($loa_no as $covered_loa){
 			if($covered_loa['loa_id'] != '' ){
@@ -1397,7 +1442,7 @@ class Billing_controller extends CI_Controller {
         $status = 'Initial';
         $hcare_provider_id = $this->session->userdata('dsg_hcare_prov');
         $noa_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
-       
+        
         $list = $this->initial_billing_model->get_initial_bill($noa_id, $hcare_provider_id, $status);
     
         $data = [];
@@ -1435,8 +1480,7 @@ class Billing_controller extends CI_Controller {
     
     function payment_history_fetch() {
 		$this->security->get_csrf_hash();
-	
-		$list = $this->List_model->get_payment_datatables();
+		$list = $this->list_model->get_payment_datatables();
 		$data = [];
 		$previous_payment_no = '';
 		foreach($list as $payment){
@@ -1466,8 +1510,8 @@ class Billing_controller extends CI_Controller {
 		}
 		$output = [
 			"draw" => $_POST['draw'],
-			"recordsTotal" => $this->List_model->count_payment_all(),
-			"recordsFiltered" => $this->List_model->count_payment_filtered(),
+			"recordsTotal" => $this->list_model->count_payment_all(),
+			"recordsFiltered" => $this->list_model->count_payment_filtered(),
 			"data" => $data
 		];
 		echo json_encode($output);

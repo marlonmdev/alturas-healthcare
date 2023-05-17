@@ -13,7 +13,6 @@
             </div>
             <select class="form-select" name="search_select" id="search-select">
               <option value="healthcard">Healthcard Number</option>
-              <option value="">Select Search Method</option>
               <option value="name">Patient Name</option>
             </select>
           </div>

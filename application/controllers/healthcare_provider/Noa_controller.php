@@ -64,6 +64,25 @@ class Noa_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 
+	function generate_printable_noa() {
+		$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['row'] = $exist = $this->noa_model->db_get_noa_info($noa_id);
+		$data['mbl'] = $this->noa_model->db_get_member_mbl($exist['emp_id']);
+		$data['doc'] = $this->noa_model->db_get_doctor_by_id($exist['approved_by']);
+		$data['bar'] = $this->noa_model->bar_pending();
+		$data['bar1'] = $this->noa_model->bar_approved();
+		$data['bar2'] = $this->noa_model->bar_completed();
+		$data['bar3'] = $this->noa_model->bar_referral();
+		$data['bar4'] = $this->noa_model->bar_expired();
+		if (!$exist) {
+			$this->load->view('pages/page_not_found');
+		} else {
+			$this->load->view('templates/header', $data);
+			$this->load->view('healthcare_provider_panel/noa/generate_printable_noa.php',);
+			$this->load->view('templates/footer');
+		}
+	}
 	function fetch_approved_noa_requests() {
 		$this->security->get_csrf_hash();
 		$status = 'Approved';
@@ -83,7 +102,7 @@ class Noa_controller extends CI_Controller {
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $noa['status'] . '</span></div>';
 
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
-
+			$custom_actions .= '<a href="' . base_url() . 'healthcare-provider/noa/requested-noa/generate-printable-noa/' . $noa_id . '" data-bs-toggle="tooltip" title="Print NOA"><i class="mdi mdi-printer fs-2 text-primary pe-2"></i></a>';
 			// shorten name of values from db if its too long for viewing and add ...
 			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];
 

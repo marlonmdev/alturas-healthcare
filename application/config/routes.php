@@ -108,7 +108,7 @@ $route['healthcare-provider/search-member/name'] = 'healthcare_provider/search_c
 $route['healthcare-provider/history/get_loa_noa'] = 'healthcare_provider/search_controller/get_loa_noa';
 
 //Upload Textfile
-$route['healthcare-provider/billing/upload-texfile'] = 'healthcare_provider/pages_controller/upload_textfile_form';
+$route['healthcare-provider/billing/payment_list'] = 'healthcare_provider/pages_controller/payment_list';
 $route['healthcare-provider/billing/upload-soa-textfile'] = 'healthcare_provider/billing_controller/db_upload_textfile';
 // Patient's Billing
 $route['healthcare-provider/billing'] = 'healthcare_provider/billing_controller/billing_search_member';
@@ -116,6 +116,7 @@ $route['healthcare-provider/billing/search-by-healthcard']  = 'healthcare_provid
 $route['healthcare-provider/billing/search-by-name'] = 'healthcare_provider/billing_controller/search_member_by_name';
 $route['healthcare-provider/billing/search']  = 'healthcare_provider/billing_controller/search_member_by_healthcard';
 $route['healthcare-provider/billing-list/payment-history/fetch']  = 'healthcare_provider/billing_controller/payment_history_fetch';
+$route['healthcare-provider/bill/payment-list/view-payment-details/(:any)']  = 'healthcare_provider/billing_controller/view_payment_details';
 // $route['healthcare-provider/billing/bill-loa/(:any)'] = 'healthcare_provider/billing_controller/bill_patient_loa';
 // LOA Billing
 $route['healthcare-provider/billing/bill-loa/upload-pdf/(:any)'] = 'healthcare_provider/billing_controller/upload_loa_pdf_bill_form';
@@ -154,6 +155,7 @@ $route['healthcare-provider/loa-requests/billed'] = 'healthcare_provider/pages_c
 // LOA Datatables fetch data routes
 $route['healthcare-provider/loa-requests/pending/fetch'] = 'healthcare_provider/loa_controller/fetch_pending_loa_requests';
 $route['healthcare-provider/loa-requests/approved/fetch'] = 'healthcare_provider/loa_controller/fetch_approved_loa_requests';
+$route['healthcare-provider/loa/requested-loa/generate-printable-loa/(:any)'] = 'healthcare_provider/loa_controller/generate_printable_loa';
 $route['healthcare-provider/loa-requests/disapproved/fetch'] = 'healthcare_provider/loa_controller/fetch_disapproved_loa_requests';
 $route['healthcare-provider/loa-requests/completed/fetch'] = 'healthcare_provider/loa_controller/fetch_completed_loa_requests';
 $route['healthcare-provider/loa-requests/billed/fetch'] = 'healthcare_provider/loa_controller/fetch_billed_loa_requests';
@@ -176,6 +178,7 @@ $route['healthcare-provider/noa-requests/billed'] = 'healthcare_provider/pages_c
 // Noa Datatables fetch data routes
 $route['healthcare-provider/noa-requests/pending/fetch'] = 'healthcare_provider/noa_controller/fetch_pending_noa_requests';
 $route['healthcare-provider/noa-requests/approved/fetch'] = 'healthcare_provider/noa_controller/fetch_approved_noa_requests';
+$route['healthcare-provider/noa/requested-noa/generate-printable-noa/(:any)'] = 'healthcare_provider/noa_controller/generate_printable_noa';
 $route['healthcare-provider/noa-requests/disapproved/fetch'] = 'healthcare_provider/noa_controller/fetch_disapproved_noa_requests';
 $route['healthcare-provider/noa-requests/completed/fetch'] = 'healthcare_provider/noa_controller/fetch_completed_noa_requests';
 $route['healthcare-provider/noa-requests/billed/fetch'] = 'healthcare_provider/noa_controller/fetch_billed_noa_requests';

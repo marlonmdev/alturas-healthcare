@@ -158,8 +158,27 @@ class Pages_controller extends CI_Controller {
 	function view_generate_reports() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
+		$data['bu'] = $this->List_model->get_business_units();
 		$this->load->view('templates/header', $data);
-		$this->load->view('ho_accounting_panel/billing_list_table/generate_reports.php', $hc_provider);
+		$this->load->view('ho_accounting_panel/reports/generate_reports.php', $hc_provider);
+		$this->load->view('templates/footer');
+	}
+
+	function view_cash_advances() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
+		$data['bu'] = $this->List_model->get_business_units();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/reports/cash_advances_report.php', $hc_provider);
+		$this->load->view('templates/footer');
+	}
+
+	function view_charging() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
+		$data['bu'] = $this->List_model->get_business_units();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/reports/charging_report.php', $hc_provider);
 		$this->load->view('templates/footer');
 	}
 

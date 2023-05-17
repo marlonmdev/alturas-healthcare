@@ -51,7 +51,7 @@
               </li>
 
               <li class="sidebar-item">
-                <?php echo ($this->uri->segment(3) == 'noa-request-list') ? 'selected' : '' ; ?>
+                <?php echo ($this->uri->segment(3) == 'reports') ? 'selected' : '' ; ?>
                 <a
                   class="sidebar-link"
                   href="<?php echo base_url(); ?>head-office-accounting/reports"

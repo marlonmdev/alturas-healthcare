@@ -1530,6 +1530,11 @@ class Main_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 
+	function fetch_paid_bill_report() {
+		$token = $this->security->get_csrf_hash();
+		$this->List_model->get_paid_for_report();
+	}
+
 	function fetch_for_pay_details() {
 		$token = $this->security->get_csrf_hash();
 		$payment_no = $this->input->get('payment_no');

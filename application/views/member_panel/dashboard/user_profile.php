@@ -120,6 +120,27 @@
                       ?>
                     </span>
                   </li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                    <h6 class="mb-0 text-secondary" style="font-weight:600;">MBL Start Date: </h6>
+                    <span style="font-weight:600;" class="colored-label">
+                      <?php
+                      if($mbl['start_date'] != ''){
+                        $dateString = $mbl['start_date'];
+                        $timestamp = strtotime($dateString);
+                        $formattedDate = date("F d, Y", $timestamp);
+  
+                        echo $formattedDate;
+                      }else{
+                        $dateString = $member['date_approved'];
+                        $timestamp = strtotime($dateString);
+                        $formattedDate = date("F d, Y", $timestamp);
+
+                        echo $formattedDate;
+                      }
+                      
+                      ?>
+                    </span>
+                  </li> 
                 </ul>
               </div>
 

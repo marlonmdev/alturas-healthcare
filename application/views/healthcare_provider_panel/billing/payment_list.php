@@ -21,21 +21,6 @@
     <!-- End Bread crumb and right sidebar toggle -->
     <div class="container-fluid">
         <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
-        <!-- <div class="col-lg-5 ps-5">
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text bg-secondary text-white">
-                    <i class="mdi mdi-filter"></i>
-                    </span>
-                </div>
-                <select class="form-select fw-bold" name="hospital-filter" id="hospital-filter" oninput="enableDate()">
-                        <option value="">Select Hospital</option>
-                        <?php foreach($hc_provider as $option) : ?>
-                        <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
-                        <?php endforeach; ?>
-                </select>
-            </div>
-        </div> -->
         <br>
         <div class="card bg-light">
             <div class="card-body">
@@ -57,7 +42,7 @@
                     </table>
                 </div>
             </div>
-        </div>
+        </div>  
     </div> 
 </div>
  <?php include 'view_payment_details.php' ?>
@@ -75,7 +60,7 @@
                         type: "POST",
                         data: function(data) {
                             data.token     = '<?php echo $this->security->get_csrf_hash(); ?>';
-                            data.filter    = "Ramiro Hospital";
+                            data.filter    = '<?= $hc_id?>';
                         },
                     
                     },
@@ -95,7 +80,7 @@
                 
             });
 
-            const viewPaymentInfo = (details_id) => {
+            const viewPaymentInfo = (details_id,check_image) => {
                 $.ajax({
                     type: 'GET',
                     url: `${baseUrl}healthcare-provider/bill/payment-list/view-payment-details/${details_id}`,
@@ -133,22 +118,23 @@
                         $('#amount-paid').val(parseFloat(amount_paid).toFixed(2));
                         $('#textbox').val(covered_loa_no);
                         $('#c-billed-date').val(billed_date);
+                        $('#supporting-docu').attr('src', check_image);
                     }
                 });
             }
 
-            function viewImage(path) {
-            let item = [{
-                src: path, // path to image
-                title: 'Attached Check File' // If you skip it, there will display the original image name
-            }];
-            // define options (if needed)
-            let options = {
-                index: 0 // this option means you will start at first image
-            };
-            // Initialize the plugin
-            let photoviewer = new PhotoViewer(item, options);
-        }
+        //     function viewImage(path) {
+        //     let item = [{
+        //         src: path, // path to image
+        //         title: 'Attached Check File' // If you skip it, there will display the original image name
+        //     }];
+        //     // define options (if needed)
+        //     let options = {
+        //         index: 0 // this option means you will start at first image
+        //     };
+        //     // Initialize the plugin
+        //     let photoviewer = new PhotoViewer(item, options);
+        // }
 
           
     </script>

@@ -11,14 +11,14 @@
                 <div class="container">
                     <div class="row pb-2">
                         <div class="row mb-3 pt-2">
-                            <div class="col-lg-6">
+                            <!-- <div class="col-lg-6">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <span><i class="mdi mdi-hospital-building fs-3 text-danger pe-2"></i></span>
                                     </div>
                                         <input class="form-control text-dark fw-bold ls-1 fs-6" placeholder="" name="hospital_filtered" id="hospital_filtered" readonly>
                                 </div>
-                            </div>
+                            </div> -->
                         
                             <div class="col-lg-6 ps-2">
                                 <div class="input-group">
@@ -100,7 +100,10 @@
                         <div class="col-lg-8">
                             <textarea class="form-control text-dark fs-5" id="textbox" value="" readonly></textarea>
                         </div>
-
+                        <div class="col-lg-8 pt-2">
+                            <label class="fw-bold text-dark fs-5">Check Image : </label>
+                            <img src="" id="supporting-docu" style="width: 750px;height: 250px;">
+                        </div>
                     </div>
                 </div>
             </div>

@@ -85,6 +85,27 @@ class Loa_controller extends CI_Controller {
 			echo json_encode($output);
     }
 
+	function generate_printable_loa() {
+		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['row'] = $exist = $this->loa_model->db_get_loa_info($loa_id);
+		$data['mbl'] = $this->loa_model->db_get_member_mbl($exist['emp_id']);
+		$data['cost_types'] = $this->loa_model->db_get_cost_types();
+		$data['req'] = $this->loa_model->db_get_doctor_by_id($exist['requesting_physician']);
+		$data['doc'] = $this->loa_model->db_get_doctor_by_id($exist['approved_by']);
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
+		if (!$exist) {
+			$this->load->view('pages/page_not_found');
+		} else {
+			$this->load->view('templates/header', $data);
+			$this->load->view('healthcare_provider_panel/loa/generate_printable_loa.php',);
+			$this->load->view('templates/footer');
+		}
+	}
     function fetch_approved_loa_requests(){
       		$this->security->get_csrf_hash();
 			$status = 'Approved';
@@ -105,7 +126,7 @@ class Loa_controller extends CI_Controller {
 				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $loa['status'] . '</span></div>';
 
 				$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
-
+				$custom_actions .= '<a class="me-1" href="' . base_url() . 'healthcare-provider/loa/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Print LOA"><i class="mdi mdi-printer fs-2 text-primary"></i></a>';
 				// initialize multiple varibles at once
 				$view_file = $short_med_services = '';
 				if ($loa['loa_request_type'] === 'Consultation') {

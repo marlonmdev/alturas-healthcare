@@ -80,32 +80,65 @@
                     </div>
 
                         <div class="row pt-3">
-                        <div class="col-lg-6">
-                            <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
-                                <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Initial Billing 
-                            </label>
-                            <input type="file" class="form-control" name="pdf-file" id="pdf-file" accept="application/pdf" onchange="previewPdfFile()" required>
-                            <div class="invalid-feedback fs-6">
-                                PDF File is required
+                            <div class="col-lg-6">
+                                <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
+                                    <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Initial Billing 
+                                </label>
+                                <input type="file" class="form-control" name="pdf-file" id="pdf-file" accept="application/pdf" onchange="previewPdfFile('pdf-file')" required>
+                                <div class="invalid-feedback fs-6">
+                                    PDF File is required
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3">
+                            <label class="form-label fs-5 ls-1">Remaining MBL Balance</label>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-cyan text-white">&#8369;</span>
+                                    <input type="number" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="<?= $remaining_balance ?>"  readonly>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3">
+                            <label class="form-label fs-5 ls-1" id="net_bill_label">Initial Bill</label>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-cyan text-white">&#8369;</span>
+                                    <input type="number" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" value="0.00" readonly>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="col-lg-3">
-                        <label class="form-label fs-5 ls-1">Remaining MBL Balance</label>
-                            <div class="input-group mb-3">
-                                <span class="input-group-text bg-cyan text-white">&#8369;</span>
-                                <input type="number" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="<?= $remaining_balance ?>"  readonly>
+                        <div class="row pt-1" id="final_diagnosis">
+                            <div class="col-lg-6">
+                                <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
+                                    <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Rinal Diagnosis 
+                                </label>
+                                <input type="file" class="form-control" name="Rinal-Diagnosis" id="Rinal-Diagnosis" accept="application/pdf" onchange="previewPdfFile('Rinal-Diagnosis')" required disabled>
+                                <div class="invalid-feedback fs-6">
+                                    PDF File is required
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="col-lg-3">
-                        <label class="form-label fs-5 ls-1" id="net_bill_label">Initial Bill</label>
-                            <div class="input-group mb-3">
-                                <span class="input-group-text bg-cyan text-white">&#8369;</span>
-                                <input type="number" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" value="0.00" readonly>
+                            <div class="col-lg-6 ">
+                                <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
+                                    <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Medical Abstract(Optional)
+                                </label>
+                                <input type="file" class="form-control" name="Medical-Abstract" id="Medical-Abstract" accept="image/jpeg,image/png" onchange="previewPdfFile('Medical-Abstract')" disabled>
+                                <div class="invalid-feedback fs-6">
+                                    PDF File is required
+                                </div>
                             </div>
+
+                            <div class="col-lg-6">
+                                <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
+                                    <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Operation
+                                </label>
+                                <input type="file" class="form-control" name="Operation" id="Operation" accept="application/pdf" onchange="previewPdfFile('Operation')" required disabled>
+                                <div class="invalid-feedback fs-6">
+                                    PDF File is required
+                                </div>
+                            </div>
+                            
                         </div>
-                    </div>
              
 
                     <div class="row">
@@ -118,12 +151,12 @@
                     </div>
                     
                     <!-- Modal -->
-                    <!-- <div class="modal fade" id="viewPDFBillModal" tabindex="-1" data-bs-backdrop="static" style="height: 100%;">
+                    <div class="modal fade" id="viewPDFBillModal" tabindex="-1" data-bs-backdrop="static" style="height: 100%;">
                         <div class="modal-dialog modal-xl">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title">Initial Bill</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="cancel"></button> -->
                                 </div>
                                 <div class="modal-body">
                                     <div class="row">
@@ -133,18 +166,18 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Upload</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancel">Cancel</button>
+                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
                                 </div>
                             </div>
                         </div>
-                    </div> -->
+                    </div>
 
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-lg-12">
                            <div class="mt-3" id="pdf-preview"></div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 
             </div>
@@ -180,56 +213,65 @@
 </div>
 <script>
     const baseUrl = `<?php echo base_url(); ?>`;
-
-    const previewPdfFile = () => {
-        let pdfFileInput = document.getElementById('pdf-file');
-        let pdfPreview = document.getElementById('pdf-preview');
-        let pdfFile = pdfFileInput.files[0];
-
-        if (pdfFile.type === 'application/pdf') {
-            $('#myModal').modal('show');
-            let reader = new FileReader();
-            reader.onload = function () {
-                let pdfObject = "<object data='" + reader.result + "' type='application/pdf' width='100%' height='600px'>";
-                pdfObject += "</object>";
-                pdfPreview.innerHTML = pdfObject;
-            }
-            reader.readAsDataURL(pdfFile);
-        } else {
-            pdfPreview.innerHTML = "Please select a PDF file.";
-        }
-    }
-
+    let pdfPreview = document.getElementById('pdf-preview');
     // const previewPdfFile = () => {
-    // $('#viewPDFBillModal').modal('show');
+    //     let pdfFileInput = document.getElementById('pdf-file');
+       
+    //     let pdfFile = pdfFileInput.files[0];
 
-    // let pdfFileInput = document.getElementById('pdf-file');
-    // let pdfFile = pdfFileInput.files[0];
-    // let reader = new FileReader();
+    //     if (pdfFile.type === 'application/pdf') {
+    //         $('#myModal').modal('show');
+    //         let reader = new FileReader();
+    //         reader.onload = function () {
+    //             let pdfObject = "<object data='" + reader.result + "' type='application/pdf' width='100%' height='600px'>";
+    //             pdfObject += "</object>";
+    //             pdfPreview.innerHTML = pdfObject;
+    //         }
+    //         reader.readAsDataURL(pdfFile);
+    //     } else {
+    //         pdfPreview.innerHTML = "Please select a PDF file.";
+    //     }
+    // }
+        let pdfinput = "";
+    const previewPdfFile = (pdf_input) => {
+        pdfinput = pdf_input;
+        $('#viewPDFBillModal').modal('show');
 
-    // reader.onload = function(event) {
-    //     let dataURL = event.target.result;
-    //     let iframe = document.querySelector('#pdf-viewer');
-    //     iframe.src = dataURL;
-    // };
+        let pdfFileInput = document.getElementById(pdf_input);
+        let pdfFile = pdfFileInput.files[0];
+        let reader = new FileReader();
 
-    // reader.readAsDataURL(pdfFile);
-    // };
+        reader.onload = function(event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-viewer');
+            iframe.src = dataURL;
+        };
+
+        reader.readAsDataURL(pdfFile);
+    };
 
     // $(document).ready(function() {
-        
-    // $('#viewPDFBillModal').on('hidden.bs.modal', function() {
-    //     // Code to execute when the modal is closed
-    //     console.log('Modal closed');
-    //     // Add your custom logic here
-    //     });
+       
+    // // $('#viewPDFBillModal').on('hidden.bs.modal', function() {
+    // //     // Code to execute when the modal is closed
+    // //     // console.log(pdfinput);
+    // //     $('#'+pdfinput).val('');
+    // //     // Add your custom logic here
+    // //     });
+
     // });
 
     const form = document.querySelector('#pdfBillingForm');
     let hospital_charges ="";
 
     $(document).ready(function(){
+
+        $('#cancel').on('click',function(){
+           $('#'+pdfinput).val('');
+        });
+
         var noa_id = "<?php echo $noa_id; ?>";
+        $('#final_diagnosis').prop("hidden",true);
         $('#initial_bill_table').DataTable({
         processing: true,
         serverSide: true,
@@ -256,32 +298,46 @@
     });
 
       
-        // Get the form element
+        
         var forms = document.getElementById('pdfBillingForm');
-        // Construct the new action URL
+        
         var final_action = baseUrl + 'healthcare-provider/billing/bill-noa/upload-pdf/' + noa_id + '/submit';
         var initial_action = baseUrl + 'healthcare-provider/initial_billing/bill-noa/upload-pdf/' + noa_id + '/submit';
-        // Change the action attribute
+    
         forms.action = initial_action;
 
         $('.dropdown-item').click(function() {
+            // location.reload();
+            form.reset();
             var selectedText = $(this).text();
             $('.btn.dropdown-toggle').text(selectedText);
             $('#net_bill_label').text(selectedText);
-            
+            var div = document.getElementById("final_diagnosis");
+            var inputs = div.getElementsByTagName("input");
+
             if(selectedText==="Initial Billing"){
                 $('#initial_bill_holder').prop("hidden",false);
                 $('#initial_bill_history').prop("hidden",false);
+                $('#final_diagnosis').prop("hidden",true);
+                for (var i = 0; i < inputs.length; i++) {
+                inputs[i].disabled = true;
+                }
                 $('#initial_btn_label').html('<i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Initial Billing');
                 forms.action = initial_action;
             }else{
                 $('#initial_bill_holder').prop("hidden",true);
                 $('#initial_bill_history').prop("hidden",true);
+                $('#final_diagnosis').prop("hidden",false);
                 $('#initial_btn_label').html('<i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Final Billing');
                 forms.action = final_action;
+                for (var i = 0; i < inputs.length; i++) {
+                inputs[i].disabled = false;
+                }
             }
         });
 
+
+        //submit the form
         $('#pdfBillingForm').submit(function(event){
             event.preventDefault();
 
@@ -291,11 +347,6 @@
             }
 
             let formData = new FormData($(this)[0]);
-
-            // if (hospital_charges != null) {
-            //     const hospitalBillJSON = JSON.stringify(hospital_charges);
-            //     formData.append('hospital_bill_data', hospitalBillJSON);
-            // }
             formData.append('hospital_bill_data', hospital_charges);
             $.ajax({
                 type: 'POST',
@@ -306,32 +357,52 @@
                 contentType: false,
                 success: function(response){
                     const { token, status, initial, message, billing_id } = response;
+
                 if(status == 'success'){
                     if(initial){
-                        $.alert({
-                            title: "<h3 style='font-weight: bold; color: #28a745; margin-top: 0;'>Uploaded Successfully</h3>",
-                            content: "<div style='font-size: 16px; color: #333;'>Initial Bill uploaded successfully</div>",
-                            type: "green",
-                            buttons: {
-                            ok: {
-                                text: "OK",
-                                btnClass: "btn-success",
-                                action: function () {
-                                // let pdfPreview = document.getElementById('pdf-preview');
-                                // $('#pdfBillingForm')[0].reset();
-                                // pdfPreview.innerHTML = "";
-                                // location.reload();
-                                window.location.href = `${baseUrl}healthcare-provider/billing`;
-                                },
-                            },
-                            },
-                        
+                        swal({
+                            title: 'Success',
+                            text: 'Initial Bill Uploaded Successfully...',
+                            timer: 1000,
+                            showConfirmButton: false,
+                            type: 'success'
+                            }).then(function() {
+                                location.reload();
                         });
+
+
+
+
+                        // $.alert({
+                        //     title: "<h3 style='font-weight: bold; color: #28a745; margin-top: 0;'>Uploaded Successfully</h3>",
+                        //     content: "<div style='font-size: 16px; color: #333;'>Initial Bill uploaded successfully</div>",
+                        //     type: "green",
+                        //     buttons: {
+                        //     ok: {
+                        //         text: "OK",
+                        //         btnClass: "btn-success",
+                        //         action: function () {
+                        //         window.location.href = `${baseUrl}healthcare-provider/billing`;
+                        //         },
+                        //     },
+                        //     },
+                        
+                        // });
                     }else{
-                        setTimeout(function() {
-                            window.location.href = `${baseUrl}healthcare-provider/billing/bill-noa/upload-pdf/${billing_id}/success`;
-                        }, 300);
+                        swal({
+                            title: 'Success',
+                            text: 'Final Bill Uploaded Successfully...',
+                            timer: 1000,
+                            showConfirmButton: false,
+                            type: 'success'
+                            }).then(function() {
+                                window.location.href = `${baseUrl}healthcare-provider/billing/bill-noa/upload-pdf/${billing_id}/success`;
+                        });
+                        // setTimeout(function() {
+                        //     window.location.href = `${baseUrl}healthcare-provider/billing/bill-noa/upload-pdf/${billing_id}/success`;
+                        // }, 300);
                     }
+
                     }else{
                         swal({
                             title: 'Failed',
@@ -339,7 +410,7 @@
                             timer: 3000,
                             showConfirmButton: false,
                             type: 'error'
-                        });
+                        }); 
                     }
                 }
             });

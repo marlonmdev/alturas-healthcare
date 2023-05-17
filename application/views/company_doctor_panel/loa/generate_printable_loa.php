@@ -129,7 +129,8 @@
                           Home Address: <?= $row['home_address'] ?><br>
                           City Address: <?= $row['city_address'] ?><br>
                           Contact No.: <?= $row['contact_no'] ?><br>
-                          Philhealth No.: <?= $row['philhealth_no'] ?>
+                          Philhealth No.: <?= $row['philhealth_no'] ?><br>
+                          Patient No.: <?= $row['emp_no'] ?>
                         </td>
 
                         <td class="ls-1" style="padding: 0 20px 0 0;vertical-align:baseline;">

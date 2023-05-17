@@ -354,8 +354,15 @@ class Main_controller extends CI_Controller {
 
 						$paid_amount = floatval($row['company_charge'] + floatval($row['personal_charge']));
 						$before_mbl = floatval($mbl['remaining_balance']);
+						$used_mbl = floatval($row['company_charge'] + floatval($mbl['used_mbl']));
+						
+						if(floatval($used_mbl) > $mbl['max_benefit_limit']){
+							$usedMBL = $mbl['max_benefit_limit'];
+						}else{
+							$usedMBL = $used_mbl;
+						}
  					
-						$this->List_model->set_max_benefit_limit($row['emp_id'], $remaining_mbl);
+						$this->List_model->set_max_benefit_limit($row['emp_id'], $remaining_mbl, $usedMBL);
 						$this->List_model->set_after_mbl_paid_amount($row['billing_id'], $before_mbl, $remaining_mbl, $paid_amount);
 
 						if (!empty($loa_id)) {
@@ -1635,10 +1642,10 @@ class Main_controller extends CI_Controller {
 		$this->security->get_csrf_hash();
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['billed'] = $this->List_model->get_print_billed_loa_noa();
-		$data['hospital'] = $this->List_model->db_get_hp_name($this->input->post('hp_id'));
-		$data['total_bill'] = $this->input->post('total_bill');
-		$data['start_date'] = $this->input->post('start_date');
-		$data['end_date'] = $this->input->post('end_date');
+		$data['hospital'] = $this->List_model->db_get_hp_name($this->input->get('hp_id'));
+		$data['total_bill'] = $this->input->get('total_bill');
+		$data['start_date'] = $this->input->get('start_date');
+		$data['end_date'] = $this->input->get('end_date');
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('ho_accounting_panel/billing_list_table/print_billed_charging');

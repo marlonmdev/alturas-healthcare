@@ -70,7 +70,7 @@ class Search_controller extends CI_Controller {
                 'contact_person_no' => $row['contact_person_no'],
                 'mbr_mbl' => $member_mbl,
                 'mbr_rmg_bal' => $member_rmg_bal,
-                'photo_status' => file_exists($file_path) ? 'Exist' : 'Not Found'
+                'photo_status' => file_exists($file_path) ? 'Exist' : 'Not Found',
             ];
         }
         echo json_encode($response);
@@ -138,6 +138,15 @@ class Search_controller extends CI_Controller {
             ];
         }
         echo json_encode($response);
+    }
+
+    function get_loa_noa() {
+        $token = $this->security->get_csrf_hash();
+        $emp_id = $this->input->get('emp_id');
+        $hp_id = $this->input->get('hp_id');
+        $data = $this->search_model->db_get_loa_noa_history($emp_id,$hp_id);
+
+        echo json_encode($data);
     }
 
 

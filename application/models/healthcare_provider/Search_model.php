@@ -30,6 +30,18 @@ class Search_model extends CI_Model {
     return $query->row_array();
   }
 
+  function db_get_loa_noa_history($emp_id,$hp_id) {
+    $this->db->select('*')
+             ->from('members as tbl_1')
+             ->join('loa_requests as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id','left')
+             ->join('noa_requests as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id','left')
+             ->where('tbl_1.emp_id', $emp_id)
+             ->where('tbl_2.hcare_provider', $hp_id)
+             ->where('tbl_3.hospital_id', $hp_id);
+    $query = $this->db->get();
+    return $query->result_array();
+  }
+
   function db_get_member_by_name($first_name, $last_name, $date_of_birth){
     $this->db->select('*')
              ->from('members')

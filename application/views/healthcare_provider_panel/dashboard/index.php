@@ -24,7 +24,7 @@
         <!-- Start of Container fluid  -->
         <div class="container-fluid">
           <div class="row">
-
+            <input id="hp-id" type="hidden" value="<?php echo $hp_id;?>">
             <div class="col-lg-3 col-sm-6">
               <div class="card-box bg-green">
                 <div class="inner">
@@ -76,7 +76,7 @@
                 <a href="<?php echo base_url() ?>healthcare-provider/patient/design" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
               </div>
             </div>
-
+           
             <?php include "search_member_form.php"; ?>
 
             <?php include "searched_member_profile.php"; ?>
@@ -161,6 +161,7 @@
                 $("#cvl-status").html(res.civil_status);
                 $("#mbr-sex").html(res.gender);
                 $("#contact-no").html(res.contact_no);
+                $("#email-ad").html(res.email);
                 // Show spouse div if res.spouse is not empty
                 if(res.spouse != ''){
                   $("#spouse-div").removeClass('d-none');
@@ -176,6 +177,8 @@
                 $("#cp-name").html(res.contact_person);
                 $("#cp-addr").html(res.contact_person_addr);
                 $("#cp-contact").html(res.contact_person_no);
+                $("#s-emp-id").val(res.emp_id);
+                get_loa_noa();
               }
             }
           });
@@ -229,6 +232,7 @@
                 $("#cvl-status").html(res.civil_status);
                 $("#mbr-sex").html(res.gender);
                 $("#contact-no").html(res.contact_no);
+                $("#email-ad").html(res.email);
                 // Show spouse div if res.spouse is not empty
                 if(res.spouse != ''){
                   $("#spouse-div").removeClass('d-none');
@@ -244,6 +248,8 @@
                 $("#cp-name").html(res.contact_person);
                 $("#cp-addr").html(res.contact_person_addr);
                 $("#cp-contact").html(res.contact_person_no);
+                $("#s-emp-id").val(res.emp_id);
+                get_loa_noa();
               }
             }
           });
@@ -273,6 +279,66 @@
           });
 
       });
+
+      // window.onload = function() {
+      //   get_loa_noa();
+      // };
+
+      const get_loa_noa = () => {
+        const emp_id = document.querySelector('#s-emp-id').value;
+        const hp_id = document.querySelector('#hp-id').value;
+
+        $.ajax({
+          url: '<?php echo base_url();?>healthcare-provider/history/get_loa_noa',
+          type: 'get',
+          dataType: 'json',
+          data: {
+            'token' : '<?php echo $this->security->get_csrf_hash();?>',
+            'emp_id' : emp_id,
+            'hp_id' : hp_id,
+          }, 
+          success: function(res){
+            let data = '';
+            
+            let displayedLoaNos = []; // Array to store the displayed LOA numbers or NOA numbers
+
+              if(res !== ""){
+                $.each(res, function(index, loa_noa) {
+                  let loaNoa = '';
+
+                  if (loa_noa.loa_id !== '') {
+                    loaNoa = loa_noa.loa_no;
+                  }
+
+                  // Check if the LOA number or NOA number has already been displayed
+                  if (!displayedLoaNos.includes(loaNoa)) {
+                    let status = loa_noa.status;
+                    let approvedOn = loa_noa.approved_on;
+                    let output = '<div><span class="mb-0 text-secondary" style="font-weight:600;">' + loaNoa + '</span>' +
+                      '<span class="mb-0 text-secondary ps-5 ms-4 pt-1" style="font-weight:600;">' + status + '</span>' +
+                      '<span class="mb-0 text-secondary ps-5 ms-5 pt-1" style="font-weight:600;">' + approvedOn + '</span></div>';
+
+                    // Include the NOA number if available
+                    if (loa_noa.noa_id !== '' && loa_noa.noa_no !== '') {
+                      let noaNo = loa_noa.noa_no;
+                      output += '<div><span class="mb-0 text-secondary" style="font-weight:600;">' + noaNo + '</span>' +
+                        '<span class="mb-0 text-secondary ps-5 ms-4 pt-1" style="font-weight:600;">' + status + '</span>' +
+                        '<span class="mb-0 text-secondary ps-5 ms-5 pt-1" style="font-weight:600;">' + approvedOn + '</span></div>';
+                    }
+
+                    data += output;
+                    displayedLoaNos.push(loaNoa); // Add the LOA number or NOA number to the displayed array
+                  }
+                });
+
+              }else{
+                data += 'No Histories';
+              }
+           
+            $('#history').html(data);
+          }
+        });
+      }
 
       
     </script>

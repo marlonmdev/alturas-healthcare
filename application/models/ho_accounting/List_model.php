@@ -280,8 +280,9 @@ class List_model extends CI_Model{
         return $this->db->get_where('max_benefit_limits', ['emp_id' => $emp_id])->row_array();
     }
 
-    function set_max_benefit_limit($emp_id, $remaining_mbl) {
+    function set_max_benefit_limit($emp_id, $remaining_mbl, $used_mbl) {
         $this->db->set('remaining_balance', $remaining_mbl)
+                ->set('used_mbl', $used_mbl)
                 ->where('emp_id', $emp_id);
         return $this->db->update('max_benefit_limits');
     }

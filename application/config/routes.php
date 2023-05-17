@@ -105,6 +105,7 @@ $route['healthcare-provider/dashboard'] = 'healthcare_provider/pages_controller'
 // Search Member
 $route['healthcare-provider/search-member/healthcard'] = 'healthcare_provider/search_controller/search_member_by_healthcard';
 $route['healthcare-provider/search-member/name'] = 'healthcare_provider/search_controller/search_member_by_name';
+$route['healthcare-provider/history/get_loa_noa'] = 'healthcare_provider/search_controller/get_loa_noa';
 
 //Upload Textfile
 $route['healthcare-provider/billing/payment_list'] = 'healthcare_provider/pages_controller/payment_list';
@@ -271,6 +272,7 @@ $route['head-office-accounting/bill/for-payment-details/fetch'] = 'ho_accounting
 $route['head-office-accounting/bill/paid-bill/fetch'] = 'ho_accounting/main_controller/fetch_paid_bills';
 $route['head-office-accounting/reports/print'] = 'ho_accounting/main_controller/fetch_for_printing';
 
+
 //Pages
 $route['head-office-accounting/billing-list'] = 'ho_accounting/TableList';
 $route['head-office-accounting/billing-list/billed'] = 'ho_accounting/TableList/billed_record';
@@ -290,6 +292,7 @@ $route['head-office-accounting/billing-list/for-payment'] = 'ho_accounting/Pages
 $route['head-office-accounting/bill/fetch_payments/(:any)'] = 'ho_accounting/Pages_controller/view_payments';
 $route['head-office-accounting/billing-list/paid-bill'] = 'ho_accounting/Pages_controller/view_paid_bill';
 $route['head-office-accounting/bill/fetch_paid/(:any)'] = 'ho_accounting/Pages_controller/view_monthly_paid_bill';
+$route['head-office-accounting/reports'] = 'ho_accounting/Pages_controller/view_generate_reports';
 // LOA datatables
 $route['head-office-accounting/loa-request-list/loa-approved/fetch'] = 'ho_accounting/Loa_ho_controller/get_approved_loa';
 $route['head-office-accounting/loa-request-list/loa-completed/fetch'] = 'ho_accounting/Loa_ho_controller/get_completed_loa';

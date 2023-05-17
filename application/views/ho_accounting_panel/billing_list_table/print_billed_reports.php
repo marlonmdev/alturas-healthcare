@@ -670,7 +670,9 @@ const viewValues = () => {
                                                 showConfirmButton: false,
                                                 type: 'success'
                                             });
-                                            // window.location.href = '<?php echo base_url();?>head-office-accounting/billing-list/for-payment';
+                                            // setTimeout(function () {
+                                            //     window.location.href = '<?php echo base_url();?>head-office-accounting/billing-list/for-payment';
+                                            // }, 2600);
 
                                             if(payment_no != ''){
                                                 const paymentno = document.querySelector('#b-payment-no');
@@ -742,7 +744,6 @@ const viewValues = () => {
             swal({
                 title: 'Failed',
                 text: 'End date must be greater than or equal to the start date',
-                // timer: 4000,
                 showConfirmButton: true,
                 type: 'error'
             });

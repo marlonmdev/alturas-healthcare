@@ -26,6 +26,7 @@ class Pages_controller extends CI_Controller {
 			$hp_id = $paid['hp_id'];
 			$data['paid_count'] = $this->List_model->hp_count_paid($hp_id);
 			$data['hp_name'] = $paid['hp_name'];
+		
 		}
 		
 		// $data_paid = [
@@ -151,6 +152,14 @@ class Pages_controller extends CI_Controller {
 		$data['pay'] =$this->List_model->get_billed_date($this->uri->segment(4));
 		$this->load->view('templates/header', $data);
 		$this->load->view('ho_accounting_panel/billing_list_table/view_monthly_paid_bill.php', $hc_provider);
+		$this->load->view('templates/footer');
+	}
+
+	function view_generate_reports() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/generate_reports.php', $hc_provider);
 		$this->load->view('templates/footer');
 	}
 

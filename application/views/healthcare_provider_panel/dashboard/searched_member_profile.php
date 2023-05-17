@@ -39,6 +39,22 @@
           </ul>
         </div>
 
+        <div class="card shadow mt-3">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-center align-items-center flex-wrap">
+              <span class="mb-0 text-secondary fw-bold" style="font-weight:600;">LOA & NOA Histories </span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+              <span class="mb-0" style="font-weight:600;">LOA & NOA No.</span>
+              <span style="font-weight:600;" class="colored-label">Status</span>
+              <span style="font-weight:600;" class="colored-label">Date Approved</span>
+            </li>
+            <li id="history" class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+            
+            </li>
+          </ul>
+        </div>
+
       </div>
       <div class="col-md-8">
         <div class="card shadow mb-0">
@@ -105,6 +121,15 @@
               </div>
               <div class="col-sm-9 colored-label" style="font-weight:600;" id="contact-no">
               </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0 text-secondary" style="font-weight:600;">Email Address:</h6>
+              </div>
+              <div class="col-sm-9 colored-label" style="font-weight:600;" id="email-ad">
+              </div>
+              <input type="hidden" id="s-emp-id">
             </div>
             <hr>
             <div class="row" id="spouse-div">

@@ -41,15 +41,15 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-hover" id="billedTable">
-                        <thead>
+                    <thead style="background-color:#00538C">
                             <tr>
-                                <td class="fw-bold">Payment Number</td>
-                                <td class="fw-bold">Account Number</td>
-                                <td class="fw-bold">Account Name</td>
-                                <td class="fw-bold">Check Number</td>
-                                <td class="fw-bold">Check Date</td>
-                                <td class="fw-bold">Bank</td>
-                                <td class="fw-bold">Payment Details</td>
+                                <td class="fw-bold" style="color: white">PAYMENT NUMBER</td>
+                                <td class="fw-bold" style="color: white">ACCOUNT NUMBER</td>
+                                <td class="fw-bold" style="color: white">ACCOUNT NAME</td>
+                                <td class="fw-bold" style="color: white">CHECK NUMBER</td>
+                                <td class="fw-bold" style="color: white">CHECK DATE</td>
+                                <td class="fw-bold" style="color: white">BANK</td>
+                                <td class="fw-bold" style="color: white">PAYMENT DETAILS</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -71,7 +71,7 @@
 
                     // Load data for the table's content from an Ajax source
                     ajax: {
-                        url: `${baseUrl}healthcare-provider/bill/payment-list/fetch`,
+                        url: `${baseUrl}healthcare-provider/billing-list/payment-history/fetch`,
                         type: "POST",
                         data: function(data) {
                             data.token     = '<?php echo $this->security->get_csrf_hash(); ?>';
@@ -89,9 +89,9 @@
                     fixedHeader: true,
                 });
 
-                $('#hospital-filter').change(function(){
-                    closedTable.draw();
-                });
+                // $('#hospital-filter').change(function(){
+                //     closedTable.draw();
+                // });
                 
             });
 

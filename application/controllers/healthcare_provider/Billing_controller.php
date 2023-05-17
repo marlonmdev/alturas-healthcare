@@ -1433,6 +1433,44 @@ class Billing_controller extends CI_Controller {
         echo json_encode($output);
     }
     
-
+    function payment_history_fetch() {
+		$this->security->get_csrf_hash();
+	
+		$list = $this->List_model->get_payment_datatables();
+		$data = [];
+		$previous_payment_no = '';
+		foreach($list as $payment){
+			// Check if payment_no is the same as the previous iteration
+			if ($payment['payment_no'] !== $previous_payment_no) {
+				$row = [];
+				$details_id = $this->myhash->hasher($payment['details_id'], 'encrypt');
+	
+				$custom_details_no = '<span class="text-dark fw-bold">'.$payment['payment_no'].'</span>';
+	
+				$custom_actions = '<a class="text-info fw-bold ls-1 fs-4" href="JavaScript:void(0)" onclick="viewPaymentInfo(\'' . $details_id . '\',\'' . base_url() . 'uploads/paymentDetails/' . $payment['supporting_file'] . '\')"  data-bs-toggle="tooltip"><u><i class="mdi mdi-view-list fs-3" title="View Payment Details"></i></u></a>';
+	
+				// $custom_actions .= '<a class="text-success fw-bold ls-1 ps-2 fs-4" href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/paymentDetails/' . $payment['supporting_file'] . '\')" data-bs-toggle="tooltip"><u><i class="mdi mdi-file-image fs-3" title="View Proof"></i></u></a>';
+	
+				$row[] = $custom_details_no;
+				$row[] = $payment['acc_number'];
+				$row[] = $payment['acc_name'];
+				$row[] = $payment['check_num'];
+				$row[] = $payment['check_date'];
+				$row[] = $payment['bank'];
+				$row[] = $custom_actions;
+				$data[] = $row;
+				
+				// Update the previous_payment_no variable
+				$previous_payment_no = $payment['payment_no'];
+			}
+		}
+		$output = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->List_model->count_payment_all(),
+			"recordsFiltered" => $this->List_model->count_payment_filtered(),
+			"data" => $data
+		];
+		echo json_encode($output);
+	}
     
 }

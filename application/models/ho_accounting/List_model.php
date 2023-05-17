@@ -304,7 +304,7 @@ class List_model extends CI_Model{
 
 	private function _get_payment_datatables_query() {
 
-        $this->db->from($this->table_payment_1. ' as tbl_1');
+        $this->db->from($this->table_payment_1. ' as tbl_1'); 
         $this->db->join($this->table_payment_2. ' as tbl_2', 'tbl_1.details_no = tbl_2.details_no');
 		$i = 0;
 
@@ -342,7 +342,7 @@ class List_model extends CI_Model{
 	function get_payment_datatables() {
 		$this->_get_payment_datatables_query();
 		if ($_POST['length'] != -1)
-			$this->db->limit($_POST['length'], $_POST['start']);
+			$this->db->limit($_POST['length'], $_POST['start']); 
 		$query = $this->db->get();
 		return $query->result_array();
 	}

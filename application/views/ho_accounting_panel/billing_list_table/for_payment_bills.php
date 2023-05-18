@@ -225,7 +225,7 @@
                                         showConfirmButton: false,
                                         type: 'success'
                                     });
-                                        redirectPage(page, 200);
+                                        redirectPage(page, 3000);
                                 }
                                 if(status == 'error'){
                                     swal({

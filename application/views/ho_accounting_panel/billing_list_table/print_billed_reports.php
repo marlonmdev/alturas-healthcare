@@ -162,7 +162,7 @@
                                                 <th class="fw-bold ls-2"><strong>LOA/NOA #</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Patient Name</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Business Unit</strong></th>
-                                                <th class="fw-bold ls-2"><strong>Remaining MBL</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Current MBL</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Percentage</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Hospital Bill</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Company Charge</strong></th>
@@ -331,13 +331,21 @@
 <script>
   const baseUrl = "<?php echo base_url(); ?>";
   const printDiv = (layer) => {
-    $(layer).printThis({
+     $(layer).printThis({
         importCSS: true,
         copyTagClasses: true,
         copyTagStyles: true,
         removeInline: false,
+        afterPrint: function() {
+        const pdf = new Blob([$(layer).get(0).outerHTML], { type: "application/pdf" });
+        let number = 10;
+        number++;
+        const fileName =  "bill_00" +number + ".pdf"; // Change the file name if desired
+        saveAs(pdf, fileName);
+        }
     });
-    };
+};
+
     const printDivs = (layer) => {
     $(layer).printThis({
       importCSS: true,
@@ -662,7 +670,9 @@ const viewValues = () => {
                                                 showConfirmButton: false,
                                                 type: 'success'
                                             });
-                                            // window.location.href = '<?php echo base_url();?>head-office-accounting/billing-list/for-payment';
+                                            // setTimeout(function () {
+                                            //     window.location.href = '<?php echo base_url();?>head-office-accounting/billing-list/for-payment';
+                                            // }, 2600);
 
                                             if(payment_no != ''){
                                                 const paymentno = document.querySelector('#b-payment-no');
@@ -734,7 +744,6 @@ const viewValues = () => {
             swal({
                 title: 'Failed',
                 text: 'End date must be greater than or equal to the start date',
-                // timer: 4000,
                 showConfirmButton: true,
                 type: 'error'
             });

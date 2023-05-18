@@ -280,15 +280,18 @@ class List_model extends CI_Model{
         return $this->db->get_where('max_benefit_limits', ['emp_id' => $emp_id])->row_array();
     }
 
-    function set_max_benifit_limit($emp_id, $remaining_mbl) {
+    function set_max_benefit_limit($emp_id, $remaining_mbl, $used_mbl) {
         $this->db->set('remaining_balance', $remaining_mbl)
+                ->set('used_mbl', $used_mbl)
                 ->where('emp_id', $emp_id);
         return $this->db->update('max_benefit_limits');
     }
 
-    function set_after_max_benifit_limit($emp_id, $remaining_mbl) {
+    function set_after_mbl_paid_amount($billing_id, $before_mbl, $remaining_mbl, $paid_amount) {
         $this->db->set('after_remaining_bal', $remaining_mbl)
-                ->where('emp_id', $emp_id);
+                ->set('before_remaining_bal', $before_mbl)
+                ->set('total_paid_amount', $paid_amount)
+                ->where('billing_id', $billing_id);
         return $this->db->update('billing');
     }
     
@@ -301,7 +304,7 @@ class List_model extends CI_Model{
 
 	private function _get_payment_datatables_query() {
 
-        $this->db->from($this->table_payment_1. ' as tbl_1');
+        $this->db->from($this->table_payment_1. ' as tbl_1'); 
         $this->db->join($this->table_payment_2. ' as tbl_2', 'tbl_1.details_no = tbl_2.details_no');
 		$i = 0;
 
@@ -339,7 +342,7 @@ class List_model extends CI_Model{
 	function get_payment_datatables() {
 		$this->_get_payment_datatables_query();
 		if ($_POST['length'] != -1)
-			$this->db->limit($_POST['length'], $_POST['start']);
+			$this->db->limit($_POST['length'], $_POST['start']); 
 		$query = $this->db->get();
 		return $query->result_array();
 	}
@@ -682,6 +685,41 @@ class List_model extends CI_Model{
         $this->db->where('tbl_1.billed_on <=', $endDate);
         return $this->db->get()->result_array();
     }
+
+       //billing for charging datatable
+       var $paid_table_1 = 'billing';
+       var $paid_table_2 = 'loa_requests';
+       var $paid_table_3 = 'noa_requests';
+       var $paid_table_4 = 'max_benefit_limits';
+       var $paid_table_5 = 'members';
+       private function _get_get_paid_for_report_query() {
+       $this->db->from($this->paid_table_1 . ' as tbl_1')
+               ->join($this->paid_table_2 . ' as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id', 'left')
+               ->join($this->paid_table_3 . ' as tbl_3', 'tbl_1.noa_id = tbl_3.noa_id', 'left')
+               ->join($this->paid_table_4 . ' as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id')
+               ->join($this->paid_table_5 . ' as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
+               ->where('tbl_1.status', 'Paid');
+   
+            if($this->input->post('hp_id')){
+                $this->db->like('tbl_1.hp_id', $this->input->post('hp_id'));
+            }
+            if ($this->input->post('startDate')) {
+            $startDate = date('Y-m-d', strtotime($this->input->post('startDate')));
+            $this->db->where('tbl_1.billed_on >=', $startDate);
+            }
+            if ($this->input->post('endDate')){
+            $endDate = date('Y-m-d', strtotime($this->input->post('endDate')));
+            $this->db->where('tbl_1.billed_on <=', $endDate);
+            }
+       }
+   
+       function get_paid_for_report() {
+       $this->_get_get_paid_for_report_query();
+       if ($_POST['length'] != -1)
+           $this->db->limit($_POST['length'], $_POST['start']);
+       $query = $this->db->get();
+       return $query->result_array();
+       }
 
     
 

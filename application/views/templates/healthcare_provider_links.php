@@ -44,7 +44,7 @@
       </a>
     </li>
     <li class="sidebar-item">
-      <a href="<?php echo base_url(); ?>healthcare-provider/billing/upload-texfile" class="sidebar-link">
+      <a href="<?php echo base_url(); ?>healthcare-provider/billing/payment_list" class="sidebar-link">
         <i class="mdi mdi-upload"></i>
         <span class="hide-menu ls-1">Payment List</span>
       </a>

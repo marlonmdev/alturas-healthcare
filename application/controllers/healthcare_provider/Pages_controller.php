@@ -24,6 +24,7 @@ class Pages_controller extends CI_Controller {
 		$data['noa_count'] = $this->count_model->hp_approved_noa_count($hp_id);
 		$data['bllled_count'] = $this->count_model->hp_done_billing_count($hp_id);
 		$data['total_patient'] = $this->count_model->total_patient($hp_id);
+		$data['hp_id'] = $hp_id;
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_provider_panel/dashboard/index');
 		$this->load->view('templates/footer');
@@ -108,13 +109,11 @@ class Pages_controller extends CI_Controller {
 	// 	$this->load->view('healthcare_provider_panel/billing/upload_textfile');
 	// 	$this->load->view('templates/footer');
 	// }
-	function upload_textfile_form() {
+	function payment_list() {
 		$data['user_role'] = $this->session->userdata('user_role');
-		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
-		// $data['payment_no'] = $this->uri->segment(4);
-		// $data['hp_name'] =$this->List_model->get_billed_hp_name($this->uri->segment(4));
+		$hcare_provider['hc_id'] = $this->session->userdata('dsg_hcare_prov');
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_provider_panel/billing/upload_textfile.php', $hc_provider);
+		$this->load->view('healthcare_provider_panel/billing/payment_list.php',$hcare_provider);
 		$this->load->view('templates/footer');
 	}
 }

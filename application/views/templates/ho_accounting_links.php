@@ -45,8 +45,19 @@
                   class="sidebar-link"
                   href="<?php echo base_url(); ?>head-office-accounting/noa-request-list/noa-approved"
                   aria-expanded="false"
-                  ><i class="mdi mdi-file-chart"></i
+                  ><i class="mdi mdi-file"></i
                   ><span class="hide-menu ls-1">NOA</span>
+                </a>
+              </li>
+
+              <li class="sidebar-item">
+                <?php echo ($this->uri->segment(3) == 'reports') ? 'selected' : '' ; ?>
+                <a
+                  class="sidebar-link"
+                  href="<?php echo base_url(); ?>head-office-accounting/reports"
+                  aria-expanded="false"
+                  ><i class="mdi mdi-file-chart"></i
+                  ><span class="hide-menu ls-1">Reports</span>
                 </a>
               </li>
 

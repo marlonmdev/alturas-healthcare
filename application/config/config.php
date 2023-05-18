@@ -25,8 +25,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
 */
 // $config['base_url'] = 'http://localhost/hmo-portal/';
 
+<<<<<<< HEAD
 
 $config['base_url'] = 'http://' . $_SERVER['HTTP_HOST']. '/alturas_healthcare/';
+=======
+$config['base_url'] = 'http://' . $_SERVER['HTTP_HOST']. '/alturas-healthcare/';
+>>>>>>> 3adf50d61ee2d3f69c3a4277b28e597736f2d4f7
 
 
 // default super-admin user account

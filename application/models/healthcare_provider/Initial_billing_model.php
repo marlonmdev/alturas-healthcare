@@ -13,7 +13,7 @@
             $this->db->where('noa_id', $noa_id);
             $this->db->where('hp_id', $hp_id);
             $this->db->where('status', $status);
-            $this->db->order_by('date_uploaded', 'DESC'); // Order by date_uploaded in descending order
+            $this->db->order_by('id', 'DESC'); // Order by date_uploaded in descending order
             return $this->db->get()->result();
         }
 

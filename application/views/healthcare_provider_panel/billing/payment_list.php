@@ -21,35 +21,20 @@
     <!-- End Bread crumb and right sidebar toggle -->
     <div class="container-fluid">
         <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
-        <!-- <div class="col-lg-5 ps-5">
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text bg-secondary text-white">
-                    <i class="mdi mdi-filter"></i>
-                    </span>
-                </div>
-                <select class="form-select fw-bold" name="hospital-filter" id="hospital-filter" oninput="enableDate()">
-                        <option value="">Select Hospital</option>
-                        <?php foreach($hc_provider as $option) : ?>
-                        <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
-                        <?php endforeach; ?>
-                </select>
-            </div>
-        </div> -->
         <br>
         <div class="card bg-light">
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-hover" id="billedTable">
-                        <thead>
+                    <thead style="background-color:#00538C">
                             <tr>
-                                <td class="fw-bold">Payment Number</td>
-                                <td class="fw-bold">Account Number</td>
-                                <td class="fw-bold">Account Name</td>
-                                <td class="fw-bold">Check Number</td>
-                                <td class="fw-bold">Check Date</td>
-                                <td class="fw-bold">Bank</td>
-                                <td class="fw-bold">Payment Details</td>
+                                <td class="fw-bold" style="color: white">PAYMENT NUMBER</td>
+                                <td class="fw-bold" style="color: white">ACCOUNT NUMBER</td>
+                                <td class="fw-bold" style="color: white">ACCOUNT NAME</td>
+                                <td class="fw-bold" style="color: white">CHECK NUMBER</td>
+                                <td class="fw-bold" style="color: white">CHECK DATE</td>
+                                <td class="fw-bold" style="color: white">BANK</td>
+                                <td class="fw-bold" style="color: white">PAYMENT DETAILS</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -57,7 +42,7 @@
                     </table>
                 </div>
             </div>
-        </div>
+        </div>  
     </div> 
 </div>
  <?php include 'view_payment_details.php' ?>
@@ -71,11 +56,11 @@
 
                     // Load data for the table's content from an Ajax source
                     ajax: {
-                        url: `${baseUrl}healthcare-provider/bill/payment-list/fetch`,
+                        url: `${baseUrl}healthcare-provider/billing-list/payment-history/fetch`,
                         type: "POST",
                         data: function(data) {
                             data.token     = '<?php echo $this->security->get_csrf_hash(); ?>';
-                            data.filter    = "Ramiro Hospital";
+                            data.filter    = '<?= $hc_id?>';
                         },
                     
                     },
@@ -89,13 +74,13 @@
                     fixedHeader: true,
                 });
 
-                $('#hospital-filter').change(function(){
-                    closedTable.draw();
-                });
+                // $('#hospital-filter').change(function(){
+                //     closedTable.draw();
+                // });
                 
             });
 
-            const viewPaymentInfo = (details_id) => {
+            const viewPaymentInfo = (details_id,check_image) => {
                 $.ajax({
                     type: 'GET',
                     url: `${baseUrl}healthcare-provider/bill/payment-list/view-payment-details/${details_id}`,
@@ -133,22 +118,23 @@
                         $('#amount-paid').val(parseFloat(amount_paid).toFixed(2));
                         $('#textbox').val(covered_loa_no);
                         $('#c-billed-date').val(billed_date);
+                        $('#supporting-docu').attr('src', check_image);
                     }
                 });
             }
 
-            function viewImage(path) {
-            let item = [{
-                src: path, // path to image
-                title: 'Attached Check File' // If you skip it, there will display the original image name
-            }];
-            // define options (if needed)
-            let options = {
-                index: 0 // this option means you will start at first image
-            };
-            // Initialize the plugin
-            let photoviewer = new PhotoViewer(item, options);
-        }
+        //     function viewImage(path) {
+        //     let item = [{
+        //         src: path, // path to image
+        //         title: 'Attached Check File' // If you skip it, there will display the original image name
+        //     }];
+        //     // define options (if needed)
+        //     let options = {
+        //         index: 0 // this option means you will start at first image
+        //     };
+        //     // Initialize the plugin
+        //     let photoviewer = new PhotoViewer(item, options);
+        // }
 
           
     </script>

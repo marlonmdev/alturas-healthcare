@@ -38,7 +38,7 @@
                         <div id="med-services-wrapper">
                           <div class="mb-3 fs-5">
                             <label class="colored-label ls-1">Enter Percentage</label>
-                            <input type="text" class="form-control" name="percentage">
+                            <input type="text" class="form-control" name="percentage" min="0" max="100" step="0.01" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="2">
                           </div>
                         </div>
                         <em id="med-services-error" class="text-danger"></em>

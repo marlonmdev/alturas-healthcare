@@ -1,26 +1,20 @@
-
-<!-- Start of Page Wrapper -->
 <div class="page-wrapper">
-  <!-- Bread crumb and right sidebar toggle -->
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">Notice of Admission <span class="text-success">[Edit]</span></h4>
+        <h4 class="page-title ls-2">NOTICE OF ADMISSION <span class="text-success">[Edit]</span></h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
-              <li class="breadcrumb-item active" aria-current="page">
-                Edit NOA Request
-              </li>
+              <li class="breadcrumb-item active" aria-current="page">Edit Request</li>
             </ol>
           </nav>
         </div>
       </div>
     </div>
   </div>
-  <!-- End Bread crumb and right sidebar toggle -->
-  <!-- Start of Container fluid  -->
+
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
@@ -40,10 +34,10 @@
                 </div>
                 <!-- Start of Age Calculator -->
                 <?php
-                $birthDate = date("d-m-Y", strtotime($row['date_of_birth']));
-                $currentDate = date("d-m-Y");
-                $diff = date_diff(date_create($birthDate), date_create($currentDate));
-                $age = $diff->format("%y");
+                  $birthDate = date("d-m-Y", strtotime($row['date_of_birth']));
+                  $currentDate = date("d-m-Y");
+                  $diff = date_diff(date_create($birthDate), date_create($currentDate));
+                  $age = $diff->format("%y");
                 ?>
                 <!-- End of Age Calculator -->
                 <div class="col-sm-2 mb-2">

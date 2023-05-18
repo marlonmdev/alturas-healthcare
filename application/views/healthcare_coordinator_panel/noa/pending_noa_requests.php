@@ -99,7 +99,7 @@
             <div class="modal-content">
               <section id="printableDiv">
                 <div class="modal-header">
-                  <h4 class="modal-title ls-2">NOA #: <span id="noa-no" class="text-primary"></span> <span id="noa-status"></span></h4>
+                  <h4 class="modal-title ls-2">NOA #: <span id="noa-no"></span> <span id="noa-status"></span></h4>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                   </button>
                 </div>
@@ -121,9 +121,6 @@
                         <tr>
                           <td class="fw-bold ls-1">Member's Remaining MBL :</td>
                           <td class="fw-bold ls-1">&#8369;<span id="remaining-mbl"></span></td>
-                        </tr>
-                          <td class="fw-bold ls-1">Percentage :</td>
-                          <td class="fw-bold ls-1" id="percentage"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Full Name :</td>
@@ -173,7 +170,15 @@
 <!-- End Wrapper -->
 
 
-
+<style type="text/css">
+  .modal-header{
+    background-color:#00538c;
+    color:#fff
+  }
+  #noa-no{
+    color:orange
+  }
+</style>
 
 
 
@@ -342,7 +347,7 @@
         $("#viewNoaModal").modal("show");
         let rstat = '';
         if(req_status == 'Pending'){
-          req_stat = `<strong class="text-warning">[${req_status}]</strong>`;
+          req_stat = `<strong style="color:red">[${req_status}]</strong>`;
         }else{
           req_stat = `<strong class="text-cyan">[${req_status}]</strong>`;
         }

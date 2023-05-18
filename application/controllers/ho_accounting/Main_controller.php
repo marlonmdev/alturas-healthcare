@@ -352,11 +352,11 @@ class Main_controller extends CI_Controller {
 							$remaining_mbl = $mbl['remaining_balance'] - $row['company_charge'];
 						}
 
-						$paid_amount = floatval($row['company_charge'] + floatval($row['personal_charge']));
+						$paid_amount = floatval($row['company_charge'] + floatval($row['cash_advance']));
 						$before_mbl = floatval($mbl['remaining_balance']);
 						$used_mbl = floatval($row['company_charge'] + floatval($mbl['used_mbl']));
 						
-						if(floatval($used_mbl) > $mbl['max_benefit_limit']){
+						if(floatval($used_mbl) > floatval($mbl['max_benefit_limit'])){
 							$usedMBL = $mbl['max_benefit_limit'];
 						}else{
 							$usedMBL = $used_mbl;
@@ -1013,7 +1013,7 @@ class Main_controller extends CI_Controller {
 			   }
 			}
 
-			$payable = floatval($pay['company_charge'] + floatval($pay['personal_charge']));
+			$payable = floatval($pay['company_charge'] + floatval($pay['cash_advance']));
 
 
 			$row[] = $pay['billing_no'];
@@ -1023,8 +1023,9 @@ class Main_controller extends CI_Controller {
 			$row[] = number_format($pay['remaining_balance'],2, '.',',');
 			$row[] = $wpercent. ', '.$nwpercent;
 			$row[] = number_format($pay['net_bill'],2, '.',',');
-			$row[] = number_format($pay['company_charge'],2, '.',',');
 			$row[] = number_format($pay['personal_charge'],2, '.',',');
+			$row[] = number_format($pay['company_charge'],2, '.',',');
+			$row[] = number_format($pay['cash_advance'],2, '.',',');
 			$row[] = number_format($payable,2, '.',',');
 			$data[] = $row;
 		}
@@ -1417,7 +1418,7 @@ class Main_controller extends CI_Controller {
 			   }
 			}
 
-			$payable = floatval($bill['company_charge'] + floatval($bill['personal_charge']));
+			$payable = floatval($bill['company_charge'] + floatval($bill['cash_advance']));
 			
 			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-5"></i></a>';
 
@@ -1428,8 +1429,9 @@ class Main_controller extends CI_Controller {
 			$row[] = number_format($bill['remaining_balance'],2, '.',',');
 			$row[] = $wpercent .', '.$nwpercent;
 			$row[] = number_format($bill['net_bill'], 2, '.', ',');
-			$row[] = number_format($bill['company_charge'], 2, '.', ',');
 			$row[] = number_format($bill['personal_charge'], 2, '.', ',');
+			$row[] = number_format($bill['company_charge'], 2, '.', ',');
+			$row[] = number_format($bill['cash_advance'], 2, '.', ',');
 			$row[] = number_format($payable, 2, '.', ',');
 			$row[] = $pdf_bill;
 			$data[] = $row;
@@ -1472,7 +1474,7 @@ class Main_controller extends CI_Controller {
 				$row[] = $consolidated;
 				$row[] = $date;
 				$row[] = $hp_name;
-				$row[] = date('F d, Y', strtotime($bill['date_add']));
+				$row[] = date('F d, Y', strtotime($bill['check_date']));
 				$row[] = $status;
 				$row[] = $action_customs;
 				$data[] = $row;
@@ -1499,12 +1501,72 @@ class Main_controller extends CI_Controller {
 
 			if($bill['loa_id'] != ''){
 				$loa_noa = $bill['loa_no'];
+				$loa = $this->List_model->get_loa_info($bill['loa_id']);
+				if($loa['work_related'] == 'Yes'){ 
+					if($loa['percentage'] == ''){
+					   $wpercent = '100% W-R';
+					   $nwpercent = '';
+					}else{
+					   $wpercent = $loa['percentage'].'%  W-R';
+					   $result = 100 - floatval($loa['percentage']);
+					   if($loa['percentage'] == '100'){
+						   $nwpercent = '';
+					   }else{
+						   $nwpercent = $result.'% Non W-R';
+					   }
+					  
+					}	
+			   }else if($loa['work_related'] == 'No'){
+				   if($loa['percentage'] == ''){
+					   $wpercent = '';
+					   $nwpercent = '100% Non W-R';
+					}else{
+					   $nwpercent = $loa['percentage'].'% Non W-R';
+					   $result = 100 - floatval($loa['percentage']);
+					   if($loa['percentage'] == '100'){
+						   $wpercent = '';
+					   }else{
+						   $wpercent = $result.'%  W-R';
+					   }
+					 
+					}
+			   }
 
 			}else if($bill['noa_id'] != ''){
 				$loa_noa = $bill['noa_no'];
+				$noa = $this->List_model->get_noa_info($bill['noa_id']);
+				if($noa['work_related'] == 'Yes'){ 
+					if($noa['percentage'] == ''){
+					   $wpercent = '100% W-R';
+					   $nwpercent = '';
+					}else{
+					   $wpercent = $noa['percentage'].'%  W-R';
+					   $result = 100 - floatval($noa['percentage']);
+					   if($noa['percentage'] == '100'){
+						   $nwpercent = '';
+					   }else{
+						   $nwpercent = $result.'% Non W-R';
+					   }
+					  
+					}	
+			   }else if($noa['work_related'] == 'No'){
+				   if($noa['percentage'] == ''){
+					   $wpercent = '';
+					   $nwpercent = '100% Non W-R';
+					}else{
+					   $nwpercent = $noa['percentage'].'% Non W-R';
+					   $result = 100 - floatval($noa['percentage']);
+					   if($noa['percentage'] == '100'){
+						   $wpercent = '';
+					   }else{
+						   $wpercent = $result.'%  W-R';
+					   }
+					 
+					}
+			   }
 			}
 
-			$total_paid = floatval($bill['company_charge']) + floatval($bill['personal_charge']);
+			$total_paid = floatval($bill['company_charge']) + floatval($bill['cash_advance']);
 			
 			$status = '<span class="text-center badge rounded-pill bg-success text-dark">Paid</span>'; 
 
@@ -1514,8 +1576,11 @@ class Main_controller extends CI_Controller {
 			$row[] = $loa_noa;
 			$row[] = $fullname;
 			$row[] = number_format($bill['remaining_balance'],2, '.',',');
-			$row[] = number_format($bill['company_charge'], 2, '.', ',');
+			$row[] = $wpercent .', '.$nwpercent;
+			$row[] = number_format($bill['net_bill'], 2, '.', ',');
 			$row[] = number_format($bill['personal_charge'], 2, '.', ',');
+			$row[] = number_format($bill['company_charge'], 2, '.', ',');
+			$row[] = number_format($bill['cash_advance'], 2, '.', ',');
 			$row[] = number_format($total_paid, 2, '.', ',');
 			$row[] = $status;
 			$row[] = $pdf_bill;
@@ -1540,7 +1605,7 @@ class Main_controller extends CI_Controller {
 		$payment_no = $this->input->get('payment_no');
 		$billing = $this->List_model->get_billed_hp_name($payment_no);
 		$sum = $this->List_model->get_total_payables($payment_no);
-	
+		
 		$output = [
 			'billing' => $billing,
 			'total_payable' => number_format($sum,2, '.',','),
@@ -1548,7 +1613,6 @@ class Main_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 	
-
 	function view_forpayment_loa_noa() {
 		$token = $this->security->get_csrf_hash();
 		$data = $this->List_model->get_for_payment_loa_noa();

@@ -32,6 +32,8 @@ class Members_controller extends CI_Controller {
 
 			$custom_actions = '<a href="' . $view_url . '"  data-bs-toggle="tooltip" title="View Member Profile"><i class="mdi mdi-account-card-details fs-2 text-info"></i></a>';
 
+			$custom_actions .= '<a href="' . base_url() . 'company-doctor/member/view/files/' . $member_id . '"  data-bs-toggle="tooltip" title="View Files"><i class="mdi mdi-file-multiple fs-2 text-danger ps-2"></i></a>';
+
 			// this data will be rendered to the datatable
 			$row[] = $member['member_id'];
 			$row[] = $full_name;

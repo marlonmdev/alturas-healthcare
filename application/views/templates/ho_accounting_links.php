@@ -50,7 +50,7 @@
                 </a>
               </li>
 
-              <li class="sidebar-item">
+              <!-- <li class="sidebar-item">
                 <?php echo ($this->uri->segment(3) == 'reports') ? 'selected' : '' ; ?>
                 <a
                   class="sidebar-link"
@@ -59,7 +59,7 @@
                   ><i class="mdi mdi-file-chart"></i
                   ><span class="hide-menu ls-1">Reports</span>
                 </a>
-              </li>
+              </li> -->
 
               <li class="sidebar-item">
                 <a

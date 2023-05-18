@@ -59,8 +59,9 @@
                             <th class="fw-bold ls-2"><strong>Current MBL</strong></th>
                             <th class="fw-bold ls-2"><strong>Percentage</strong></th>
                             <th class="fw-bold ls-2"><strong>Hospital Bill</strong></th>
-                            <th class="fw-bold ls-2"><strong>Company Charge</strong></th>
                             <th class="fw-bold ls-2"><strong>Personal Charge</strong></th>
+                            <th class="fw-bold ls-2"><strong>Company Charge</strong></th>
+                            <th class="fw-bold ls-2"><strong>Healthcare Advance</strong></th>
                             <th class="fw-bold ls-2"><strong>Total Payable</strong></th>
                             <th class="fw-bold ls-2"><strong>SOA</strong></th>
                         </tr>
@@ -68,6 +69,7 @@
                       <tbody id="billed-tbody">
                       </tbody>
                       <tfoot>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -144,7 +146,7 @@ const printDiv = (layer) => {
     });
 
     billedTable.on('draw.dt', function() {
-    let columnIdx = 9;
+    let columnIdx = 10;
     let sum = 0;
     let rows = billedTable.rows().nodes();
     if ($('#billedLoaTable').DataTable().data().length > 0) {

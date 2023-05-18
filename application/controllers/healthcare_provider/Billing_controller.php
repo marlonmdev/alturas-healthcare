@@ -1130,7 +1130,7 @@ class Billing_controller extends CI_Controller {
                 }
             }
 
-            var_dump( $uploaded_files['pdf-file']['file_name']);
+            // var_dump( $uploaded_files['pdf-file']['file_name']);
             // var_dump($uploaded_files['Rinal-Diagnosis']);
             // var_dump($uploaded_files['Medical-Abstract']);
     
@@ -1147,6 +1147,7 @@ class Billing_controller extends CI_Controller {
             $noa = $this->billing_model->get_noa_to_bill($noa_id);
 
             $result_charge = $this->get_personal_and_company_charge("noa",$noa_id,$net_bill);
+            // var_dump( floatval(str_replace(',', '', $result_charge['company_charge'])));
             $data = [
                 'billing_no'            => $billing_no,
                 'billing_type'          => 'PDF Billing',

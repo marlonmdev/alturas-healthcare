@@ -4,41 +4,35 @@
       <div class="col-12 d-flex no-block align-items-center">
         <?php 
           if($payable['month'] == '01'){
-  				  $month = 'January';
-  			  }else if($payable['month'] == '02'){
-				    $month = 'February';
-			    }else if($payable['month'] == '03'){
-				    $month = 'March';
-			    }else if($payable['month'] == '04'){
-				    $month = 'April';
-			    }else if($payable['month'] == '05'){
-				    $month = 'May';
-			    }else if($payable['month'] == '06'){
-				    $row[] = $payable['hp_name'];
-				    $month = 'June';
-			    }else if($payable['month'] == '07'){
-				    $month = 'July';
-			    }else if($payable['month'] == '08'){
-				    $month = 'August';
-			    }else if($payable['month'] == '09'){
-				    $month = 'September';
-			    }else if($payable['month'] == '10'){
-				    $month = 'October';
-			    }else if($payable['month'] == '11'){
-				    $month = 'November';
-			    }else if($payable['month'] == '12'){
-				    $month = 'December';
-			    }
+            $month = 'January';
+          }else if($payable['month'] == '02'){
+            $month = 'February';
+          }else if($payable['month'] == '03'){
+            $month = 'March';
+          }else if($payable['month'] == '04'){
+            $month = 'April';
+          }else if($payable['month'] == '05'){
+            $month = 'May';
+          }else if($payable['month'] == '06'){
+            $row[] = $payable['hp_name'];
+            $month = 'June';
+          }else if($payable['month'] == '07'){
+            $month = 'July';
+          }else if($payable['month'] == '08'){
+            $month = 'August';
+          }else if($payable['month'] == '09'){
+            $month = 'September';
+          }else if($payable['month'] == '10'){
+            $month = 'October';
+          }else if($payable['month'] == '11'){
+            $month = 'November';
+          }else if($payable['month'] == '12'){
+            $month = 'December';
+          }
         ?>
-<<<<<<< HEAD
-        <h4 class="page-title ls-2">Billing for the Month of <?php echo $month . ', ' . $payable['year']; ?></h4>
-        <input type="hidden" id="payment-no" value="<?php echo $payable['payment_no']; ?>">
-        <div class="ms-auto text-end">
-=======
       <h4 class="page-title ls-2">Billing for the Month of <?php echo $month . ', ' . $payable['year']; ?></h4>
       <input type="hidden" id="bill-no" value="<?php echo $payable['bill_no']; ?>">
           <div class="ms-auto text-end">
->>>>>>> 9db59a518b04c989b30b58c89e4bbd46fcac24c9
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>

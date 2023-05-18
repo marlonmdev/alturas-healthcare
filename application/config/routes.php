@@ -357,8 +357,6 @@ $route['healthcare-coordinator/bill/requests-list/for-charging'] = 'healthcare_c
 $route['healthcare-coordinator/loa_controller/view_ledger'] = 'healthcare_coordinator/pages_controller/view_ledger';
 $route['healthcare-coordinator/loa_controller/fetch_datatable'] = 'healthcare_coordinator/loa_controller/fetch_datatable';
 $route['healthcare-coordinator/loa_controller/fetch_ledger/(:any)'] = 'healthcare_coordinator/loa_controller/fetch_ledger';
-// $route['healthcare-coordinator/loa_controller/view_ledger'] = 'healthcare_coordinator/loa_controller/view_ledger';
-//$route['healthcare-coordinator/loa/monthly-bill/charging/(:any)'] = 'healthcare_coordinator/loa_controller/fetch_billing_for_charging';
 //end
 
 $route['healthcare-coordinator/noa/requests-list'] = 'healthcare_coordinator/pages_controller/view_pending_noa_list';
@@ -368,8 +366,10 @@ $route['healthcare-coordinator/noa/requests-list/expired'] = 'healthcare_coordin
 $route['healthcare-coordinator/noa/requests-list/completed'] = 'healthcare_coordinator/pages_controller/view_completed_noa_list';
 $route['healthcare-coordinator/noa/request-noa'] = 'healthcare_coordinator/pages_controller/request_noa_form';
 $route['healthcare-coordinator/bill/noa-requests/billed'] = 'healthcare_coordinator/pages_controller/view_billed_no';
-$route['healthcare-coordinator/bill/noa-requests/for-charging'] = 'healthcare_coordinator/pages_controller/view_for_payment_noa';
+
 $route['healthcare-coordinator/bill/noa-requests/billed/initial'] = 'healthcare_coordinator/pages_controller/view_initial_billing';
+$route['healthcare-coordinator/noa/billed/final_billing'] = 'healthcare_coordinator/noa_controller/final_billing';
+$route['healthcare-coordinator/bill/noa-requests/for_payment'] = 'healthcare_coordinator/pages_controller/for_payment';
 
 // HealthCare Coordinator User Account Routes
 $route['healthcare-coordinator/account-settings'] = 'healthcare_coordinator/account_controller/account_settings';
@@ -483,7 +483,8 @@ $route['healthcare-coordinator/noa/requested-noa/update/(:any)'] = 'healthcare_c
 $route['healthcare-coordinator/noa/requested-noa/cancel/(:any)'] = 'healthcare_coordinator/noa_controller/cancel_noa_request';
 $route['healthcare-coordinator/noa/requested-noa/generate-printable-noa/(:any)'] = 'healthcare_coordinator/noa_controller/generate_printable_noa';
 $route['healthcare-coordinator/noa/requests-list/set-charge-type'] = 'healthcare_coordinator/noa_controller/set_charge_type';
-$route['healthcare-coordinator/noa/billed/fetch'] = 'healthcare_coordinator/noa_controller/fetch_all_billed_noa';
+$route['healthcare-coordinator/noa/billed/initial_billing'] = 'healthcare_coordinator/noa_controller/initial_billing';
+$route['healthcare-coordinator/noa/billed/initial_billing2/(:any)'] = 'healthcare_coordinator/noa_controller/initial_billing2';
 $route['healthcare-coordinator/noa/total-bill/fetch'] = 'healthcare_coordinator/noa_controller/get_total_hp_bill';
 $route['healthcare-coordinator/noa/matched-bill/submit'] = 'healthcare_coordinator/noa_controller/submit_consolidated_bill';
 $route['healthcare-coordinator/noa/requests-list/payable/fetch'] = 'healthcare_coordinator/noa_controller/fetch_payable_noa';
@@ -492,6 +493,7 @@ $route['healthcare-coordinator/noa/monthly-bill/fetch/(:any)'] = 'healthcare_coo
 $route['healthcare-coordinator/noa/matched/total-bill/fetch'] = 'healthcare_coordinator/noa_controller/fetch_total_hp_bill';
 $route['healthcare-coordinator/bill/billed-noa/charging/(:any)'] = 'healthcare_coordinator/noa_controller/fetch_monthly_charging';
 $route['healthcare-coordinator/noa/monthly-bill/charging/(:any)'] = 'healthcare_coordinator/noa_controller/fetch_billing_for_charging';
+
 
 // HealthCare Coordinator Setup Routes
 // * setup for healthcare providers
@@ -747,7 +749,6 @@ $route['head-office-iad/transaction/fetch_all_members'] = 'ho_iad/transaction_co
 $route['head-office-iad/transaction/view_information/(:any)'] = 'ho_iad/transaction_controller/view_information';
 //end
 //IAD======================================================================================================
-
 $route['head-office-accounting/billing-list/closed/fetch'] = 'ho_accounting/main_controller/fetch_closed';
 $route['head-office-accounting/billing-list/view-employee-payment/(:any)'] = 'ho_accounting/main_controller/view_employee_payment';
 

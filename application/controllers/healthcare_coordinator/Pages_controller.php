@@ -439,7 +439,7 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
-	function view_for_payment_noa() {
+	function for_payment() {
 		$this->load->model('healthcare_coordinator/noa_model');
 		$data['hcproviders'] = $this->noa_model->db_get_healthcare_providers();
 		$data['user_role'] = $this->session->userdata('user_role');

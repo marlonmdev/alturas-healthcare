@@ -967,7 +967,7 @@ class Loa_controller extends CI_Controller {
 
 			$row[] = $bill['billing_no'];
 			$row[] = $fullname;
-			$row[] = $bill['business_unit'];
+			// $row[] = $bill['business_unit'];
 			$row[] = $bill['loa_request_type'];
 			$row[] = number_format($bill['total_net_bill'], 2, '.', ',');
 			$row[] = $coordinator_bill;
@@ -2833,6 +2833,11 @@ class Loa_controller extends CI_Controller {
 		// $bill_no =$this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$bill_no = $this->uri->segment(5);
 		$data['payable'] = $this->loa_model->fetch_monthly_billed_loa($bill_no);
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/loa/view_monthly_billed_loa');
@@ -2860,6 +2865,11 @@ class Loa_controller extends CI_Controller {
 		// $bill_no =$this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$bill_no = $this->uri->segment(5);
 		$data['payable'] = $this->loa_model->fetch_monthly_billed_loa($bill_no);
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/loa/view_monthly_billed_charging');

@@ -58,7 +58,6 @@
                   <span class="hide-menu ls-1">NOA Requests</span>
                 </a>
               </li>
-
              
               <li class="sidebar-item">
                  <!-- $account_settings_url is defined in the header.php file -->

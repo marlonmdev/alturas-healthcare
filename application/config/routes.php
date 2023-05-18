@@ -557,7 +557,8 @@ $route['company-doctor/noa/requests-list/approved'] = 'company_doctor/pages_cont
 $route['company-doctor/noa/requests-list/disapproved'] = 'company_doctor/pages_controller/view_disapproved_noa_list';
 $route['company-doctor/noa/requests-list/completed'] = 'company_doctor/pages_controller/view_completed_noa_list';
 $route['company-doctor/loa/requests-list/cancelled'] = 'company_doctor/pages_controller/view_cancelled_loa_list';
-
+$route['company-doctor/member/view/files/(:any)'] = 'company_doctor/pages_controller/view_employee_files';
+$route['company-doctor/members/(:any)/(:any)/(:any)'] = 'company_doctor/pages_controller/view_member_files';
 
 // Company Doctor User Account Routes
 $route['company-doctor/account-settings'] = 'company_doctor/account_controller/account_settings';

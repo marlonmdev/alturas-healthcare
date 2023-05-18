@@ -141,7 +141,7 @@
                     </div>
                 </div>
                 <div class="card shadow">
-                    <div class="row pe-2" id="printableDiv" style="">
+                    <div class="row pe-2" id="printableDiv">
                         <div id="billing-table">
                             <div class="card-body">
                                 <div class="text-center pt-3">
@@ -165,8 +165,9 @@
                                                 <th class="fw-bold ls-2"><strong>Current MBL</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Percentage</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Hospital Bill</strong></th>
-                                                <th class="fw-bold ls-2"><strong>Company Charge</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Personal Charge</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Company Charge</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Healthcare Advance</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Total Payable</strong></th>
                                             </tr>
                                         </thead>
@@ -389,7 +390,7 @@
     });
 
     billedTable.on('draw.dt', function() {
-    let columnIdx = 7;
+    let columnIdx = 10;
     let sum = 0;
     let rows = billedTable.rows().nodes();
     if ($('#billedTable').DataTable().data().length > 0) {

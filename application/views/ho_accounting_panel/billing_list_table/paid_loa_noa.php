@@ -123,7 +123,7 @@
   const viewImage = (path) => {
     let item = [{
       src: path, // path to image
-      title: 'Attached Check' // If you skip it, there will display the original image name
+      title: 'Attached Check Voucher' // If you skip it, there will display the original image name
     }];
     // define options (if needed)
     let options = {

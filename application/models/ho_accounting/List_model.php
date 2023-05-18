@@ -660,13 +660,20 @@ class List_model extends CI_Model{
     }
 
     function get_total_payables($payment_no) {
-        $this->db->select_sum('net_bill')
-                ->where('payment_no', $payment_no);
+        $this->db->select_sum('company_charge');
+        $this->db->select_sum('cash_advance');
+        $this->db->where('payment_no', $payment_no);
         $query = $this->db->get('billing');
         $result = $query->result_array();
-        $sum = $result[0]['net_bill'];
-        return $sum;
+    
+        $sum_company_charge = $result[0]['company_charge'];
+        $sum_cash_advance = $result[0]['cash_advance'];
+    
+        $total_sum = $sum_company_charge + $sum_cash_advance;
+    
+        return $total_sum;
     }
+    
 
     function get_print_billed_loa_noa() {
         $this->db->select('*')

@@ -5,6 +5,7 @@ class Pages_controller extends CI_Controller {
 
 	public function __construct() {
 		parent::__construct();
+		$this->load->model('company_doctor/members_model');
 		$user_role = $this->session->userdata('user_role');
 		$logged_in = $this->session->userdata('logged_in');
 		if ($logged_in !== true && $user_role !== 'company-doctor') {
@@ -140,6 +141,28 @@ class Pages_controller extends CI_Controller {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
 		$this->load->view('company_doctor_panel/noa/completed_noa_requests');
+		$this->load->view('templates/footer');
+	}
+
+	function view_employee_files() {
+		$this->load->model('healthcare_coordinator/noa_model');
+		$member_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['member'] = $this->members_model->db_get_member_details($member_id);
+		$data['hcproviders'] = $this->noa_model->db_get_healthcare_providers();
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('company_doctor_panel/members/view_employee_files');
+		$this->load->view('templates/footer');
+	}
+
+	function view_member_files() {
+		$data['type'] = $this->myhash->hasher($this->uri->segment(3), 'decrypt');
+		$data['emp_id'] = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$data['member_id'] = $member_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['member'] = $this->members_model->db_get_member_details($member_id);
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('company_doctor_panel/members/show_member_files');
 		$this->load->view('templates/footer');
 	}
 }

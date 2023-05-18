@@ -1063,6 +1063,8 @@ class Noa_controller extends CI_Controller {
 		$bill_no = "BILL-" . date('His') . mt_rand(1000, 9999);
 		$matched = $this->noa_model->set_bill_for_matched($hp_id, $start_date, $end_date, $bill_no);
 
+		$initial_status = $this->input->post('initial_status', TRUE);
+
 		$data = [
 			'bill_no' => $bill_no,
 			'type' => 'NOA',
@@ -1077,6 +1079,7 @@ class Noa_controller extends CI_Controller {
 		$inserted = $this->noa_model->insert_for_payment_consolidated($data);
 
 		if($inserted){
+			 $this->noa_model->update_initial_billing($initial_status);
 			header('Location: ' . base_url() . 'healthcare-coordinator/bill/noa-requests/for_payment');
     exit;
 		}else{

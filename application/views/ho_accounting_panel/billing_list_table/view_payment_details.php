@@ -102,7 +102,7 @@
                         </div>
 
                         <div class="col-lg-8 pt-2">
-                            <label class="fw-bold text-dark fs-5">Check Image : </label>
+                            <label class="fw-bold text-dark fs-5">Check Voucher Image : </label>
                             <img src="" id="supporting-docu" style="width: 750px;height: 250px;">
                         </div>
 

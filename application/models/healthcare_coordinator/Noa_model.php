@@ -310,6 +310,12 @@ class Noa_model extends CI_Model {
       return $this->db->insert('monthly_payable', $data);
     }
 
+    function update_initial_billing() {
+    $data = array('status' => 'Payable');
+    $this->db->where('status', 'initial');
+    $this->db->update('initial_billing', $data);
+}
+
     function fetch_for_payment_bill($status) {
       $this->db->select('*')
               ->from('monthly_payable as tbl_1')

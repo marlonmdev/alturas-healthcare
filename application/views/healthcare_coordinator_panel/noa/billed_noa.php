@@ -36,6 +36,7 @@
         </ul>
 
         <form id="billedTableLoaNoa" method="POST" action="<?php echo base_url(); ?>healthcare-coordinator/noa/matched-bill/submit">
+          <input type="text" class="form-control" name="initial_status" id="initial_status" value="Payable">
           <div class="row pt-2 pb-2">
             <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
             <div class="col-lg-5 ps-5 pb-3 pt-1 pb-4">

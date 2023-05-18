@@ -40,7 +40,7 @@
               <div id="printableDiv">
                 <div class="text-center pt-4">
                       <h4>ALTURAS HEALTHCARE SYSTEM</h4>
-                      <h4>For Payment Billing Summary</h4>
+                      <h4>Paid Billing Summary</h4>
                       <h5><?php echo $pay['hp_name']; ?></h5>
                       <h6><?php echo date('F d, Y', strtotime($pay['startDate'])).' to '.date('F d, Y', strtotime($pay['endDate']))?></h6>
                       <h6><?php echo $payment_no; ?></h6>
@@ -54,8 +54,11 @@
                           <th class="fw-bold">LOA/NOA #</th>
                           <th class="fw-bold">Patient Name</th>
                           <th class="fw-bold">Remaining MBL</th>
+                          <th class="fw-bold">Percentage</th>
+                          <th class="fw-bold">Hospital Bill</th>
+                          <th class="fw-bold">Personal Charge</th>
                           <th class="fw-bold">Company Charge</th>
-                          <th class="fw-bold">Cash Advance</th>
+                          <th class="fw-bold">Healthcare Advance</th>
                           <th class="fw-bold">Total Paid Bill</th>
                  
                           <th class="fw-bold">Status</th>
@@ -65,6 +68,9 @@
                       <tbody id="billed-tbody">
                       </tbody>
                       <tfoot>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -140,7 +146,7 @@ const printDiv = (layer) => {
     });
 
     billedTable.on('draw.dt', function() {
-    let columnIdx = 6;
+    let columnIdx = 9;
     let sum = 0;
     let rows = billedTable.rows().nodes();
     if ($('#paidTable').DataTable().data().length > 0) {

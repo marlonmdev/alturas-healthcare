@@ -104,7 +104,8 @@
 
 <script>
   const baseUrl = `<?php echo base_url(); ?>`;
-
+  const mbl = parseFloat($('#remaining-balance').val());
+  let net_bill = 0;
    // Get all the dropdown list items
   //  var dropdownItems = document.querySelectorAll('.dropdown-menu');
 
@@ -229,7 +230,8 @@
                     return result = result + '\n' + item.text.replace(pattern, '');
                   }, '').trim();
                   
-                console.log(finalResult);
+                console.log("final text",finalResult);
+
               //get only the text between hospital charges and professional fee
               const pattern = /hospital charges(.*?)please pay for this amount/si;
               const matches = finalResult.match(pattern);
@@ -244,6 +246,7 @@
                   if (match) {
                   const subtotalValue = parseFloat(match[1].replace(/,/g, ""));
                     document.getElementsByName("net-bill")[0].value = subtotalValue;
+                    net_bill=subtotalValue;
                     console.log(subtotalValue);
                   } else {
                     console.log("please pay for this amount is not found");
@@ -259,6 +262,43 @@
                         },
                     });
                   }
+                  
+                const invalid_loa = /admission no:/i;
+                const valid_loa = /registry no:/i;
+                if(finalResult.match(invalid_loa) && !finalResult.match(valid_loa)){
+                  $('#upload-btn').prop('disabled',true);
+                  setTimeout(function() {
+                  $.alert({
+                                title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>ERROR</h3>`,
+                                content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it appears that your uploaded PDF is an NOA (Notice of Admission) instead of an LOA (Letter of Authorization). Thank you for your understanding.</div>",
+                                type: "red",
+                                buttons: {
+                                    ok: {
+                                        text: "OK",
+                                        btnClass: "btn-danger",
+                                    },
+                                },
+                            });
+                          }, 1000); // Delay of 2000 milliseconds (2 seconds)
+                }else{
+                  $('#upload-btn').prop('disabled',false);
+                  if(parseFloat(net_bill)>mbl){
+                                setTimeout(function() {
+                                $.alert({
+                                    title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Warning</h3>`,
+                                    content: "<div style='font-size: 16px; color: #333;'>The uploaded PDF Bill exceeds the patient's MBL balance.</div>",
+                                    type: "red",
+                                    buttons: {
+                                        ok: {
+                                            text: "OK",
+                                            btnClass: "btn-danger",
+                                        },
+                                    },
+                                });
+                            }, 1000); // Delay of 2000 milliseconds (2 seconds)
+                    }
+                }
+                  
               }); 
           });
           }, function(error) {

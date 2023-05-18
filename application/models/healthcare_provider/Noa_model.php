@@ -168,4 +168,12 @@ public function bar_pending(){
     return $query->num_rows(); 
   } 
   //End =================================================
+  function get_noa_history($hp_id,$emp_id){
+    $this->db->select('*')
+    ->from('noa_requests')
+    ->where('hospital_id', $hp_id)
+    ->where('emp_id', $emp_id);
+    $query = $this->db->get();
+    return $query->result();
+}
 }

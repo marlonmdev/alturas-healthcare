@@ -33,8 +33,7 @@
 
         <h4 class="page-title ls-2">Consolidated Billing for the Month of <?php echo $month . ', ' . $payable['year']; ?>.</h4>
         <input type="hidden" id="payment-no" value="<?php echo $payable['payment_no']; ?>">
-        <h4 class="page-title ls-2">Consolidated Billing for the Month of <?php echo $month . ', ' . $payable['year']; ?> [Outpatient]</h4>
-      <input type="hidden" id="bill-no" value="<?php echo $payable['bill_no']; ?>">
+        <input type="hidden" id="bill-no" value="<?php echo $payable['bill_no']; ?>">
           <div class="ms-auto text-end">
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
@@ -67,7 +66,6 @@
                   <table class="table table-hover table-responsive" id="billedLoaTable">
                     <thead style="background-color:#00538C">
                       <tr>
-<<<<<<< HEAD
                         <th class="fw-bold" style="color: white;">Billing NO.</th>
                         <th class="fw-bold" style="color: white;">PATIENT NAME</th>
                         <th class="fw-bold" style="color: white;">TYPE OF REQUEST</th>
@@ -75,16 +73,6 @@
                         <th class="fw-bold" style="color: white;">VIEW</th>
                         <th class="fw-bold" style="color: white;">HEALTHCARE BILL</th>
                         <th class="fw-bold" style="color: white;">VIEW</th>
-=======
-                        <th class="fw-bold">Billing No.</th>
-                        <th class="fw-bold">Name</th>
-                        <th class="fw-bold">Business Unit</th>
-                        <th class="fw-bold">LOA Type</th>
-                        <th class="fw-bold">Coordinator Bill</th>
-                        <th class="fw-bold">View Bill</th>
-                        <th class="fw-bold">Healthcare Bill</th>
-                        <th class="fw-bold">View SOA</th>
->>>>>>> 9db59a518b04c989b30b58c89e4bbd46fcac24c9
                       </tr>
                     </thead>
                     <tbody id="billed-tbody">

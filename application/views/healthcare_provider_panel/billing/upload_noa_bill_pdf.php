@@ -110,7 +110,7 @@
                         <div class="row pt-1" id="final_diagnosis">
                             <div class="col-lg-6">
                                 <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
-                                    <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Rinal Diagnosis 
+                                    <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Final Diagnosis 
                                 </label>
                                 <input type="file" class="form-control" name="Rinal-Diagnosis" id="Rinal-Diagnosis" accept="application/pdf" onchange="previewPdfFile('Rinal-Diagnosis')" required disabled>
                                 <div class="invalid-feedback fs-6">
@@ -213,6 +213,8 @@
 </div>
 <script>
     const baseUrl = `<?php echo base_url(); ?>`;
+    const mbl = parseFloat($('#remaining-balance').val());
+    let net_bill = 0;
     let pdfPreview = document.getElementById('pdf-preview');
     // const previewPdfFile = () => {
     //     let pdfFileInput = document.getElementById('pdf-file');
@@ -314,11 +316,15 @@
             $('#net_bill_label').text(selectedText);
             var div = document.getElementById("final_diagnosis");
             var inputs = div.getElementsByTagName("input");
+            'Rinal-Diagnosis', 'Medical-Abstract', 'Operation'
 
             if(selectedText==="Initial Billing"){
                 $('#initial_bill_holder').prop("hidden",false);
                 $('#initial_bill_history').prop("hidden",false);
                 $('#final_diagnosis').prop("hidden",true);
+                $('#Rinal-diagnosis').prop("disabled",true);
+                $('#Medical-Abstract').prop("disabled",true);
+                $('#Operation').prop("disabled",true);
                 for (var i = 0; i < inputs.length; i++) {
                 inputs[i].disabled = true;
                 }
@@ -328,6 +334,9 @@
                 $('#initial_bill_holder').prop("hidden",true);
                 $('#initial_bill_history').prop("hidden",true);
                 $('#final_diagnosis').prop("hidden",false);
+                $('#Rinal-diagnosis').prop("disabled",false);
+                $('#Medical-Abstract').prop("disabled",false);
+                $('#Operation').prop("disabled",false);
                 $('#initial_btn_label').html('<i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Final Billing');
                 forms.action = final_action;
                 for (var i = 0; i < inputs.length; i++) {
@@ -340,7 +349,7 @@
         //submit the form
         $('#pdfBillingForm').submit(function(event){
             event.preventDefault();
-
+            
             if (!form.checkValidity()) {
                 form.classList.add('was-validated');
                 return;
@@ -369,25 +378,6 @@
                             }).then(function() {
                                 location.reload();
                         });
-
-
-
-
-                        // $.alert({
-                        //     title: "<h3 style='font-weight: bold; color: #28a745; margin-top: 0;'>Uploaded Successfully</h3>",
-                        //     content: "<div style='font-size: 16px; color: #333;'>Initial Bill uploaded successfully</div>",
-                        //     type: "green",
-                        //     buttons: {
-                        //     ok: {
-                        //         text: "OK",
-                        //         btnClass: "btn-success",
-                        //         action: function () {
-                        //         window.location.href = `${baseUrl}healthcare-provider/billing`;
-                        //         },
-                        //     },
-                        //     },
-                        
-                        // });
                     }else{
                         swal({
                             title: 'Success',
@@ -398,9 +388,6 @@
                             }).then(function() {
                                 window.location.href = `${baseUrl}healthcare-provider/billing/bill-noa/upload-pdf/${billing_id}/success`;
                         });
-                        // setTimeout(function() {
-                        //     window.location.href = `${baseUrl}healthcare-provider/billing/bill-noa/upload-pdf/${billing_id}/success`;
-                        // }, 300);
                     }
 
                     }else{
@@ -425,7 +412,7 @@
 
         //extract pdf text 
         let pdfFileInput = document.getElementById('pdf-file');
-
+        let subtotalValue = 0;
         pdfFileInput.addEventListener('change', function() {
         let reader = new FileReader();
         reader.onload = function() {
@@ -476,9 +463,10 @@
                             const match = finalResult.match(regex);
                             console.log("match",match);
                             if (match) {
-                            const subtotalValue = parseFloat(match[1].replace(/,/g, ""));
+                            subtotalValue = parseFloat(match[1].replace(/,/g, ""));
+                            net_bill=subtotalValue;
                             document.getElementsByName("net-bill")[0].value = subtotalValue;
-                            console.log(subtotalValue);
+                           
                             } else {
                             console.log("please pay for this amount is not found");
                             $.alert({
@@ -493,6 +481,45 @@
                                 },
                             });
                             }
+                            console.log("netbill",net_bill);
+                            console.log("mbl",mbl);
+
+                            const invalid_noa = /registry no:/i;
+                            const valid_noa = /admission no:/i;
+                            if(finalResult.match(invalid_noa) && !finalResult.match(valid_noa)){
+                            $('#upload-btn').prop('disabled',true);
+                            setTimeout(function() {
+                                $.alert({
+                                                title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>ERROR</h3>`,
+                                                content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it appears that your uploaded PDF is an LOA (Letter of Authorization) instead of  an NOA (Notice of Admission). Thank you for your understanding.</div>",
+                                                type: "red",
+                                                buttons: {
+                                                    ok: {
+                                                        text: "OK",
+                                                        btnClass: "btn-danger",
+                                                    },
+                                                },
+                                            });
+                                        }, 1000); // Delay of 2000 milliseconds (2 seconds)
+                            }else{
+                            $('#upload-btn').prop('disabled',false);
+                            if(parseFloat(net_bill)>mbl){
+                                            setTimeout(function() {
+                                            $.alert({
+                                                title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Warning</h3>`,
+                                                content: "<div style='font-size: 16px; color: #333;'>The uploaded PDF Bill exceeds the patient's MBL balance.</div>",
+                                                type: "red",
+                                                buttons: {
+                                                    ok: {
+                                                        text: "OK",
+                                                        btnClass: "btn-danger",
+                                                    },
+                                                },
+                                            });
+                                        }, 1000); // Delay of 2000 milliseconds (2 seconds)
+                                }
+                            }
+                            
                         }); 
                     });
                     }, function(error) {

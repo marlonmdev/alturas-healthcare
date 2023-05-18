@@ -159,23 +159,104 @@ class Noa_model extends CI_Model {
     return $this->db->get('healthcare_providers')->result_array();
   }
 
-   // Start of billed noa server-side processing datatables
-   var $table_1_billed = 'initial_billing';
-   var $table_2_billed = 'noa_requests';
-   var $table_3_billed = 'max_benefit_limits';
-   var $column_order_billed = ['noa_no', 'first_name', 'remaining_balance','date_uploaded','initial_bill','pdf_bill']; //set column field database for datatable orderable
-   var $column_search_billed = ['noa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'remaining_balance','date_uploaded', 'initial_bill', 'pdf_bill','CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)']; //set column field database for datatable searchable 
-   var $order_billed = ['date_uploaded' => 'desc']; // default order 
- 
-   private function _get_billed_datatables_query($status) {
-     $this->db->from($this->table_1_billed . ' as tbl_1');
-     $this->db->join($this->table_2_billed . ' as tbl_2', 'tbl_1.noa_id = tbl_2.noa_id');
-     $this->db->join($this->table_3_billed . ' as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id', 'left');
-     $this->db->where('tbl_1.status', $status);
-     $i = 0;
- 
+  //INITIAL BILLING===================================================================
+  var $initial1 = 'members';
+  var $initial2 = 'initial_billing';
+  var $initial3 = 'noa_requests';
+  var $column_order_initial = ['member_id', 'first_name', 'emp_type', 'status', 'business_unit', 'dept_name']; 
+  var $column_search_initial= ['member_id', 'first_name', 'middle_name', 'last_name', 'suffix', 'emp_type', 'status', 'business_unit', 'dept_name', 'CONCAT(first_name, " ",last_name)', 'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)'];
+  var $order_initial = ['emp_no' => 'desc']; // default order 
+
+  private function _get_datatables_query_ledger($status) {
+    $this->db->group_by('emp_no');
+    $this->db->from($this->initial1 . ' as tbl_1');
+    $this->db->join($this->initial2 . ' as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
+    $this->db->join($this->initial3 . ' as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id');
+    $this->db->where('tbl_2.status', $status);
+
+    $i = 0;
+    foreach ($this->column_search_initial as $item) {
+      if (isset($_POST['search']['value']) && !empty($_POST['search']['value'])) { // check if search value is set and not empty
+        if ($i === 0) {
+          $this->db->group_start(); // start where clause group
+          $this->db->like($item, $_POST['search']['value']);
+        } else {
+          $this->db->or_like($item, $_POST['search']['value']);
+        }
+        if (count($this->column_search_initial) - 1 == $i)
+          $this->db->group_end(); // end where clause group
+      }
+      $i++;
+    }
+
+    if (isset($_POST['order'])) {
+      $column_order_index = $_POST['order']['0']['column'];
+      $column_order_dir = $_POST['order']['0']['dir'];
+      $column_order = $this->column_order_initial[$column_order_index];
+      $this->db->order_by($column_order, $column_order_dir);
+    } else if (isset($this->order_initial)) {
+      $this->db->order_by(key($this->order_initial), $this->order_initial[key($this->order_initial)]);
+    }
+  }
+
+  function get_datatables_ledger($status) {
+    $this->_get_datatables_query_ledger($status);
+    if (isset($_POST['length']) && $_POST['length'] != -1) { 
+      $this->db->limit($_POST['length'], $_POST['start']);
+    }
+    $query = $this->db->get();
+    return $query->result_array();
+  }
+
+  function count_all_ledger($status) {
+    $this->db->from('initial_billing as tbl_2');
+    $this->db->where('tbl_2.status', $status);
+    return $this->db->count_all_results();
+  }
+
+  function count_filtered_ledger($status) {
+    $this->_get_datatables_query_ledger($status);
+    $query = $this->db->get();
+  }
+  public function get_member_info($emp_id) {
+    $this->db->select('*');
+    $this->db->from('initial_billing as tbl_1');
+    $this->db->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
+    $this->db->join('max_benefit_limits as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id');
+    $this->db->join('noa_requests as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id');
+    $this->db->where('tbl_1.emp_id', $emp_id);
+    $query = $this->db->get();
+    return $query->result_array();
+
+    $this->db->select('*');
+    $this->db->from('members');
+    $this->db->where('emp_id', $emp_id);
+
+    $this->db->select('*');
+    $this->db->from('max_benefit_limits');
+    $this->db->where('emp_id', $emp_id);
+
+    $this->db->select('*');
+    $this->db->from('noa_requests');
+    $this->db->where('emp_id', $emp_id);
+  }
+  //END INITIAL BILLING==============================================================================
+
+  //FINAL BILLING====================================================================================
+  var $table1_final='billing';
+  var $table2_final='noa_requests';
+  var $column_order_final=['noa_no', 'first_name', 'net_bill'];
+  var $column_search_final=['noa_no', 'first_name', 'middle_name', 'last_name', 'suffix','CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)'];
+  var $order_final=['noa_no' => 'desc'];
+
+  private function _get_final_datatables_query($status) {
+    $this->db->from($this->table1_final . ' as tbl_1');
+    $this->db->join($this->table2_final . ' as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
+    $this->db->where('tbl_1.status', $status);
+
+    $i = 0;
     if($this->input->post('filter')){
-       $this->db->like('tbl_1.hp_id', $this->input->post('filter'));
+      $this->db->like('tbl_1.hp_id', $this->input->post('filter'));
     }
 
     if ($this->input->post('startDate')) {
@@ -188,15 +269,16 @@ class Noa_model extends CI_Model {
       $this->db->where('tbl_1.billed_on <=', $endDate);
     }
   }
+
  
-   function get_billed_datatables($status) {
-     $this->_get_billed_datatables_query($status);
-     if ($_POST['length'] != -1)
-       $this->db->limit($_POST['length'], $_POST['start']);
-     $query = $this->db->get();
-     return $query->result_array();
-   }
-    // End of server-side processing datatables
+  function get_final_datatables($status) {
+    $this->_get_final_datatables_query($status);
+    if ($_POST['length'] != -1)
+    $this->db->limit($_POST['length'], $_POST['start']);
+    $query = $this->db->get();
+    return $query->result_array();
+  }
+  //END==============================================================================================
 
     function get_total_hp_net_bill($hp_id, $start_date, $end_date) {
       $this->db->select_sum('net_bill')

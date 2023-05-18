@@ -66,11 +66,6 @@
                     <th class="fw-bold" style="color: white;">HEALTHCARE PROVIDER</th>
                     <th class="fw-bold" style="color: white;">STATUS</th>
                     <th class="fw-bold" style="color: white;">ACTION</th>
-                    <th class="fw-bold" style="color: white;">BILLING #</th>
-                    <th class="fw-bold" style="color: white;"></th>
-                    <th class="fw-bold" style="color: white;">HEALTHCARE PROVIDER</th>
-                    <th class="fw-bold" style="color: white;">STATUS</th>
-                    <th class="fw-bold" style="color: white;">ACTION</th>
                   </tr>
                 </thead>
                 <tbody>

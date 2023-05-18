@@ -2,7 +2,7 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">CHECKING OF BILLING</h4>
+        <h4 class="page-title ls-2"></h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -60,26 +60,21 @@
           <div class="card shadow" style="background-color:">
             <div class="card-body">
               <div class="">
-                <table class="table table-hover table-responsive" id="billedLoaTable">
+                <table class="table table-hover table-responsive" id="initial_billing">
                   <thead style="background-color:#00538C">
                     <tr>
                       <th style="color: white">NOA NO.</th>
                       <th style="color: white">NAME OF PATIENT</th>
-                      <th style="color: white">REMAINING MBL</th>
-                      <th style="color: white">DATE</th>
-                      <th style="color: white">HOSPITAL BILL</th>
-                      <th style="color: white">VIEW SOA</th>
+                      <th style="color: white">TYPE OF EMPLOYMENT</th>
+                      <th style="color: white">STATUS</th>
+                      <th style="color: white">BUSINESS UNIT</th>
+                      <th style="color: white">DEPARTMENT</th>
+                      <th style="color: white">ACTION</th>
                     </tr>
                   </thead>
                   <tbody id="billed-tbody">
                   </tbody> 
                 </table>
-              </div>
-              <div class="row pt-4">
-                <div class="col-lg-2 offset-10">
-                  <label>Total Hospital Bill : </label>
-                  <input name="total-hospital-bill" id="total-hospital-bill" class="form-control text-center fw-bold" value="0" readonly>
-                </div>
               </div>
             </div>
             <!-- <div class="offset-10 pt-2 pb-4">
@@ -95,11 +90,40 @@
 </div>
 
 
-
-
-
-
 <script>
+  const baseUrl = `<?php echo base_url(); ?>`;
+  $(document).ready(function () {
+    $('#initial_billing').DataTable({ 
+      processing: true,
+      serverSide: true,
+      order: [],
+
+      ajax: {
+        url: `${baseUrl}healthcare-coordinator/noa/billed/initial_billing`,
+        type: "POST",
+        data: { 'token' : '<?php echo $this->security->get_csrf_hash(); ?>' }
+      },
+
+      columnDefs: [{ 
+        // "targets": [5],
+        "orderable": false,
+      },
+      ],
+      data: [],
+      deferRender: true,
+      info: false,
+      paging: false,
+      // filter: false,
+      lengthChange: false,
+      responsive: true,
+      fixedHeader: true,
+    });      
+  }); 
+</script>
+
+
+
+<!-- <script>
   const baseUrl = "<?php echo base_url(); ?>";
 
   $(document).ready(function() {
@@ -339,4 +363,4 @@
             }          
         }
 
-</script>
+</script> -->

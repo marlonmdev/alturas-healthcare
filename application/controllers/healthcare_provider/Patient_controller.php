@@ -118,4 +118,65 @@ class Patient_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
+	function list_of_soa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$hp_id = $this->session->userdata('dsg_hcare_prov');
+		// $data['hp_name'] = $hp_name['hp_name']= $this->patient_model->soa_list_datatable($hp_id);
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_provider_panel/patient/list_of_soa.php');
+		$this->load->view('templates/footer');
+	}
+
+	function fetch_lis_of_soa() {
+		$token = $this->security->get_csrf_hash();
+		$hp_id = $this->session->userdata('dsg_hcare_prov');
+		$soa_list = $this->patient_model->soa_list_datatable($hp_id);
+		$data = [];
+		$loa_noa = '';
+		foreach($soa_list as $soa){
+			$row = [];
+
+			$fullname = $soa['first_name'].' '.$soa['middle_name'].' '.$soa['last_name'].' '.$soa['suffix'];
+
+			if($soa['loa_id'] != ''){
+				$loa_noa = $soa['loa_no'];
+
+			}else if($soa['noa_id'] != ''){
+				$loa_noa = $soa['noa_no'];
+			}
+
+			$total_paid = floatval($soa['company_charge']) + floatval($soa['personal_charge']);
+			
+			// $status = '<span class="text-center badge rounded-pill bg-success text-dark">Paid</span>'; 
+
+			$pdf_soa = '<a href="JavaScript:void(0)" onclick="viewPDFsoa(\'' . $soa['pdf_bill'] . '\' , \''. $soa['noa_no'] .'\', \''. $soa['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file text-danger"></i></a>';
+
+			$row[] = $loa_noa;
+			$row[] = $fullname;
+			$row[] = ($soa['loa_request_type'] !='')? $soa['loa_request_type'] : 'NOA' ;
+			$row[] = number_format($soa['net_bill'], 2, '.', ',');
+			$row[] = $pdf_soa;
+			$data[] = $row;
+
+		}
+
+		// $draw = $_POST['draw'];
+        $totalRecords = $this->patient_model->count_all_soa($hp_id);
+        $filteredRecords = $this->patient_model->count_all_soa($hp_id);
+    
+        $output = [
+            "draw" => $_POST['draw'],
+            "recordsTotal" => intval($totalRecords),
+            "recordsFiltered" => intval($filteredRecords),
+            "data" => $data,
+        ];
+
+		// $output = [
+		// 	"draw" => $_POST['draw'],
+		// 	"data" => $data,
+		// ];
+
+		echo json_encode($output);
+	}
+
 }

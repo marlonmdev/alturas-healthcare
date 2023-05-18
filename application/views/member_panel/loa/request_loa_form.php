@@ -276,6 +276,8 @@
 
     $('#med-services-wrapper').on('change', function() {
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
             var prices = [];
             var total = 0;
             $('#med-services option:selected').each(function() {
@@ -322,6 +324,7 @@
 
 
 =======
+>>>>>>> 3adf50d61ee2d3f69c3a4277b28e597736f2d4f7
           var prices = [];
           var total = 0;
           $('#med-services option:selected').each(function() {

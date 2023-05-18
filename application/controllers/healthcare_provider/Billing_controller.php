@@ -1064,12 +1064,19 @@ class Billing_controller extends CI_Controller {
         $noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
         $noa = $this->billing_model->get_noa_to_bill($noa_id);
         $mbl = $this->billing_model->get_member_mbl($noa['emp_id']);
+        $hcare_provider_id = $this->session->userdata('dsg_hcare_prov');
+        $initial = $this->initial_billing_model->get_initial_billing_no($noa_id, $hcare_provider_id, "Initial");
         $data['noa_id'] = $this->uri->segment(5);
         $data['noa_no'] = $noa['noa_no'];
         $data['healthcard_no'] = $noa['health_card_no'];
         $data['remaining_balance'] = $mbl['remaining_balance'];
         $data['patient_name'] = $noa['first_name'].' '. $noa['middle_name'].' '. $noa['last_name'].' '.$noa['suffix'];
-        $data['billing_no'] = 'BLN-' . strtotime(date('Y-m-d h:i:s'));
+        if($initial){
+            $data['billing_no'] = $initial->billing_no;
+        }else{
+            $data['billing_no'] = 'BLN-' . strtotime(date('Y-m-d h:i:s'));
+        }
+        
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_provider_panel/billing/upload_noa_bill_pdf');
@@ -1119,9 +1126,13 @@ class Billing_controller extends CI_Controller {
                         $error_occurred = TRUE;
                     }
                 } else {
-                    $uploaded_files[$input_name] = $this->upload->data($input_name);
+                    $uploaded_files[$input_name] = $this->upload->data();
                 }
             }
+
+            var_dump( $uploaded_files['pdf-file']['file_name']);
+            // var_dump($uploaded_files['Rinal-Diagnosis']);
+            // var_dump($uploaded_files['Medical-Abstract']);
     
         if ($error_occurred) {
             $response = [

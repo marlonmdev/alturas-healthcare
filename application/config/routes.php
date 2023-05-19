@@ -217,6 +217,8 @@ $route['healthcare-provider/reports/report-list/ajax/billingServicesMember'] = '
 $route['healthcare-provider/patient/design'] = 'healthcare_provider/patient_controller/design';
 $route['healthcare-provider/patient/fetch_all_patient/(:any)'] = 'healthcare_provider/patient_controller/fetch_all_patient';
 $route['healthcare-provider/patient/view_information/(:any)'] = 'healthcare_provider/patient_controller/view_information';
+$route['healthcare-provider/patient/fetch_all_patient_loa'] = 'healthcare_provider/patient_controller/fetch_all_patient_loa';
+$route['healthcare-provider/patient/fetch_all_patient_noa'] = 'healthcare_provider/patient_controller/fetch_all_patient_noa';
 
 
 // $route['head-office-iad/transaction/members'] = 'ho_iad/transaction_controller/members';

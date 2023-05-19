@@ -113,6 +113,7 @@ class Patient_controller extends CI_Controller {
 		$data['mbl'] = $this->patient_model->db_get_member_mbl($member['emp_id']);
 		$data['loa'] = $this->loa_model->get_loa_history($hp_id,$member['emp_id']);
 		$data['noa'] = $this->noa_model->get_noa_history($hp_id,$member['emp_id']);
+		$data['hp_id'] = $hp_id;
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_provider_panel/patient/patient_profile');
 		$this->load->view('templates/footer');
@@ -178,5 +179,73 @@ class Patient_controller extends CI_Controller {
 
 		echo json_encode($output);
 	}
+
+	//fetch loa history
+
+	function fetch_all_patient_loa(){
+		$this->security->get_csrf_hash();
+		$emp_id = $this->input->post('emp_id');
+		$hp_id = $this->input->post('hp_id');
+		$list = $this->loa_model->get_loa_datatables($emp_id, $hp_id);
+		// var_dump("list",$list);
+		// var_dump("emp_id",$emp_id);
+		// var_dump("hp_id",$hp_id);
+		$data = array();
+		foreach ($list as $loa){
+			$row = array(); 
+
+			$member_id = $this->myhash->hasher($loa['emp_id'], 'encrypt');
+			$view_url = base_url() . 'healthcare-provider/patient/view_information/' . $member_id;
+			$custom_actions = '<a href="' . $view_url . '"  data-bs-toggle="tooltip" title="Patient Profile"><i class="mdi mdi-account-card-details fs-2 text-info me-2"></i></a>';
+
+		
+			// this data will be rendered to the datatable
+			$row[] = $loa['loa_no'];
+			$row[] =  $loa['status'];
+			$row[] = $custom_actions;
+			$data[] = $row;
+		}
+
+		$output = array(
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->loa_model->count_all_loa($emp_id, $hp_id),
+			"recordsFiltered" => $this->loa_model->count_loa_filtered($emp_id, $hp_id),
+			"data" => $data,
+		);
+		echo json_encode($output);
+	}
+	function fetch_all_patient_noa(){
+		$this->security->get_csrf_hash();
+		$emp_id = $this->input->post('emp_id');
+		$hp_id = $this->input->post('hp_id');
+		$list = $this->noa_model->get_noa_datatables($emp_id, $hp_id);
+		// var_dump("list",$list);
+		// var_dump("emp_id",$emp_id);
+		// var_dump("hp_id",$hp_id);
+		$data = array();
+		foreach ($list as $noa){
+			$row = array(); 
+
+			$member_id = $this->myhash->hasher($noa['emp_id'], 'encrypt');
+			$view_url = base_url() . 'healthcare-provider/patient/view_information/' . $member_id;
+			$custom_actions = '<a href="' . $view_url . '"  data-bs-toggle="tooltip" title="Patient Profile"><i class="mdi mdi-account-card-details fs-2 text-info me-2"></i></a>';
+
+		
+			// this data will be rendered to the datatable
+			$row[] = $noa['noa_no'];
+			$row[] =  $noa['status'];
+			$row[] = $custom_actions;
+			$data[] = $row;
+		}
+
+		$output = array(
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->noa_model->count_all_noa($emp_id, $hp_id),
+			"recordsFiltered" => $this->noa_model->count_noa_filtered($emp_id, $hp_id),
+			"data" => $data,
+		);
+		echo json_encode($output);
+	}
+	
 
 }

@@ -8,8 +8,8 @@ class Noa_model extends CI_Model{
     var $table_2 = 'healthcare_providers';
     var $column_order = ['tbl_1.noa_no', 'tbl_1.first_name', 'tbl_1.admission_date', 'tbl_2.hp_name', 'tbl_1.request_date']; //set column field database for datatable orderable
     var $column_search = ['tbl_1.noa_no', 'tbl_1.emp_id', 'tbl_1.health_card_no', 'tbl_1.first_name', 'tbl_1.middle_name', 'tbl_1.last_name', 'tbl_1.suffix', 'tbl_1.admission_date', 'tbl_2.hp_name', 'tbl_1.request_date', 'CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)']; //set column field database for datatable searchable 
-    var $order = ['tbl_1.noa_id' => 'desc']; // default order 
-
+    var $order = array('noa_id' => 'desc');
+    
     private function _get_datatables_query($status, $hp_id) {
         $this->db->from($this->table_1 . ' as tbl_1');
         $this->db->join($this->table_2 . ' as tbl_2', 'tbl_1.hospital_id = tbl_2.hp_id');
@@ -176,4 +176,59 @@ public function bar_pending(){
     $query = $this->db->get();
     return $query->result();
 }
+
+private function _get_noa_datatables_query($emp_id, $hp_id) {
+  $this->db->from($this->table_1);
+  $this->db->where('emp_id', $emp_id);
+  $this->db->where('hospital_id', $hp_id);
+  $i = 0;
+  // loop column 
+  foreach ($this->column_search as $item) {
+  // if datatable send POST for search
+  if ($_POST['search']['value']) {
+      // first loop
+      if ($i === 0) {
+      $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+      $this->db->like($item, $_POST['search']['value']);
+      } else {
+      $this->db->or_like($item, $_POST['search']['value']);
+      }
+
+      if (count($this->column_search) - 1 == $i) //last loop
+      $this->db->group_end(); //close bracket
+  }
+  $i++;
+  }
+
+  // here order processing
+  if (isset($_POST['order'])) {
+  $this->db->order_by($this->column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+  } else if (isset($this->order)) {
+  $order = $this->order;
+  $this->db->order_by(key($order), $order[key($order)]);
+  }
+}
+
+
+function get_noa_datatables($emp_id, $hp_id) {
+  $this->_get_noa_datatables_query($emp_id, $hp_id);
+  if ($_POST['length'] != -1)
+  $this->db->limit($_POST['length'], $_POST['start']);
+  $query = $this->db->get();
+  return $query->result_array();
+}
+
+function count_noa_filtered($emp_id, $hp_id) {
+  $this->_get_noa_datatables_query($emp_id, $hp_id);
+  $query = $this->db->get();
+  return $query->num_rows();
+}
+
+function count_all_noa($emp_id, $hp_id) {
+  $this->db->from($this->table_1)
+          ->where('status', $emp_id)
+          ->where('hospital_id', $hp_id);
+  return $this->db->count_all_results();
+}
+// End of server-side processing datatables
 }

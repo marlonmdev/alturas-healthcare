@@ -240,18 +240,42 @@ class Noa_model extends CI_Model {
     $this->db->from('noa_requests');
     $this->db->where('emp_id', $emp_id);
   }
+
+  // public function get_member_info($emp_id) {
+  //   $this->db->select('*');
+  //   $this->db->from('initial_billing as tbl_1');
+  //   $this->db->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
+  //   $this->db->join('max_benefit_limits as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id');
+  //   $this->db->join('noa_requests as tbl_4', 'tbl_1.noa_id = tbl_4.noa_id');
+  //   $this->db->where('tbl_1.emp_id', $emp_id);
+  //   $query = $this->db->get();
+  //   return $query->result_array();
+  // }
+
+  // public function get_member_info($emp_id) {
+  //   $this->db->select('*');
+  //   $this->db->from('billing as tbl_1');
+  //   $this->db->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
+  //   $this->db->join('max_benefit_limits as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id');
+  //   $this->db->join('noa_requests as tbl_4', 'tbl_1.noa_id = tbl_4.noa_id');
+  //   $this->db->where('tbl_1.emp_id', $emp_id);
+  //   $query = $this->db->get();
+  //   return $query->result_array();
+  // }
   //END INITIAL BILLING==============================================================================
 
   //FINAL BILLING====================================================================================
   var $table1_final='billing';
   var $table2_final='noa_requests';
-  var $column_order_final=['noa_no', 'first_name', 'net_bill'];
+  var $table3_final='max_benefit_limits';
+  var $column_order_final=['noa_no', 'first_name','remaining_balance', 'net_bill'];
   var $column_search_final=['noa_no', 'first_name', 'middle_name', 'last_name', 'suffix','CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)'];
   var $order_final=['noa_no' => 'desc'];
 
   private function _get_final_datatables_query($status) {
     $this->db->from($this->table1_final . ' as tbl_1');
     $this->db->join($this->table2_final . ' as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
+    $this->db->join($this->table3_final . ' as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id');
     $this->db->where('tbl_1.status', $status);
 
     $i = 0;
@@ -311,10 +335,22 @@ class Noa_model extends CI_Model {
     }
 
     function update_initial_billing() {
-    $data = array('status' => 'Payable');
-    $this->db->where('status', 'initial');
-    $this->db->update('initial_billing', $data);
-}
+      $data = array('status' => 'Payable');
+      $this->db->where('status', 'initial');
+      $this->db->update('initial_billing', $data);
+    }
+
+    function update_monthly_payable() {
+      $data = array('status' => 'Payable');
+      $this->db->where('status', 'Billed');
+      $this->db->update('monthly_payable', $data);
+    }
+
+    function update_noa_requests() {
+      $data = array('status' => 'Payable');
+      $this->db->where('status', 'Billed');
+      $this->db->update('noa_requests', $data);
+    }
 
     function fetch_for_payment_bill($status) {
       $this->db->select('*')
@@ -414,6 +450,38 @@ public function bar_expired(){
   $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Expired' ");
   return $query->num_rows(); 
 } 
+public function bar_billed(){
+  $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Billed' ");
+  return $query->num_rows(); 
+} 
+public function bar_pending_noa(){
+  $query = $this->db->query("SELECT status FROM noa_requests WHERE status='Pending' ");
+  return $query->num_rows(); 
+} 
+public function bar_approved_noa(){
+  $query = $this->db->query("SELECT status FROM noa_requests WHERE status='Approved' ");
+  return $query->num_rows(); 
+} 
+public function bar_initial_noa(){
+  $query = $this->db->query("SELECT status FROM initial_billing WHERE status='Initial' ");
+  return $query->num_rows(); 
+} 
+public function bar_billed_noa(){
+  $query = $this->db->query("SELECT status FROM noa_requests WHERE status='Billed' ");
+  return $query->num_rows(); 
+} 
+//End =================================================
+
+//BILLING STATEMENT=====================================
+public function processing(){
+  $query = $this->db->query("SELECT status FROM billing WHERE status='Payable'");
+  $result = $query->row_array();
+    
+  if ($result && $result['status'] === 'Payable') {
+    return 'Processing...';
+  }
+  return '';
+}
 //End =================================================
 
   

@@ -613,6 +613,7 @@ class Loa_controller extends CI_Controller {
 		$data['bar2'] = $this->loa_model->bar_completed();
 		$data['bar3'] = $this->loa_model->bar_referral();
 		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
 		$status = 'Reffered';
 		$list = $this->loa_model->get_datatables($status);
 		$data = [];
@@ -887,7 +888,7 @@ class Loa_controller extends CI_Controller {
 
 	function fetch_for_payment_loa() {
 		$this->security->get_csrf_hash();
-		$status = 'Billed';
+		$status = 'Payable';
 		$for_payment = $this->loa_model->fetch_for_payment_bill($status);
 		$data = [];
 		foreach($for_payment as $bill){
@@ -1660,6 +1661,11 @@ class Loa_controller extends CI_Controller {
 		$data['bar2'] = $this->loa_model->bar_completed();
 		$data['bar3'] = $this->loa_model->bar_referral();
 		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 		if (!$exist) {
 			$this->load->view('pages/page_not_found');
 		} else {
@@ -1682,6 +1688,11 @@ class Loa_controller extends CI_Controller {
 		$data['bar2'] = $this->loa_model->bar_completed();
 		$data['bar3'] = $this->loa_model->bar_referral();
 		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 		if (!$exist) {
 			$this->load->view('pages/page_not_found');
 		} else {
@@ -1919,6 +1930,11 @@ class Loa_controller extends CI_Controller {
 			$data['bar2'] = $this->loa_model->bar_completed();
 			$data['bar3'] = $this->loa_model->bar_referral();
 			$data['bar4'] = $this->loa_model->bar_expired();
+			$data['bar_Billed'] = $this->loa_model->bar_billed();
+			$data['bar5'] = $this->loa_model->bar_pending_noa();
+			$data['bar6'] = $this->loa_model->bar_approved_noa();
+			$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+			$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 			
 			if($loa['loa_request_type'] == 'Consultation'){
 				$view_page ='schedule_consultation.php';
@@ -2205,6 +2221,11 @@ class Loa_controller extends CI_Controller {
 			$data['bar2'] = $this->loa_model->bar_completed();
 			$data['bar3'] = $this->loa_model->bar_referral();
 			$data['bar4'] = $this->loa_model->bar_expired();
+			$data['bar_Billed'] = $this->loa_model->bar_billed();
+			$data['bar5'] = $this->loa_model->bar_pending_noa();
+			$data['bar6'] = $this->loa_model->bar_approved_noa();
+			$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+			$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 		
 			$this->load->view('templates/header', $data);
 			$this->load->view('healthcare_coordinator_panel/loa/add_diagnostic_loa_fees.php');
@@ -2235,6 +2256,11 @@ class Loa_controller extends CI_Controller {
 		$data['bar2'] = $this->loa_model->bar_completed();
 		$data['bar3'] = $this->loa_model->bar_referral();
 		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 	
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/loa/add_consultation_loa_fees.php');
@@ -2312,6 +2338,11 @@ class Loa_controller extends CI_Controller {
 		$data['bar2'] = $this->loa_model->bar_completed();
 		$data['bar3'] = $this->loa_model->bar_referral();
 		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/loa/create_new_loa.php');
@@ -2431,6 +2462,11 @@ class Loa_controller extends CI_Controller {
 		$data['bar2'] = $this->loa_model->bar_completed();
 		$data['bar3'] = $this->loa_model->bar_referral();
 		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 		
 		if(!$existing){
 			$data['user_role'] = $this->session->userdata('user_role');
@@ -2670,12 +2706,10 @@ class Loa_controller extends CI_Controller {
 		$date = strtotime($this->input->post('start-date', TRUE));
 		$month = date('m', $date);
 		$year = date('Y', $date);
-		// $number = 1;
-		// $number++;
-		// $consolidated_no = "PMN" . $month . $year . "00" . $number;
 		$bill_no = "BILL-" . date('His') . mt_rand(1000, 9999);
 		$total_payable = floatval(str_replace(',', '', $this->input->post('total-hospital-bill', TRUE)));
 		$matched = $this->loa_model->set_bill_for_matched($hp_id, $start_date, $end_date, $bill_no);
+		$status = $this->input->post('status', TRUE);
 
 		$data = [
 			'bill_no' => $bill_no,
@@ -2683,19 +2717,16 @@ class Loa_controller extends CI_Controller {
 			'hp_id' => $hp_id,
 			'month' => $month,
 			'year' => $year,
-			'status' => 'Billed',
+			'status' => 'Payable',
 			'total_payable' => $total_payable,
 			'added_on' => date('Y-m-d'),
 			'added_by' => $this->session->userdata('fullname'),
 		];
 		$inserted = $this->loa_model->insert_for_payment_consolidated($data);
-
 		if($inserted){
-			echo json_encode([
-				'token' => $token,
-				'status' => 'success',
-				'message' => 'Successfully Submitted!'
-			]);
+			$this->loa_model->update_loa_request_status($status);
+			header('Location: ' . base_url() . 'healthcare-coordinator/bill/requests-list/for-charging');
+    	exit;
 		}else{
 			echo json_encode([
 				'token' => $token,
@@ -2703,7 +2734,6 @@ class Loa_controller extends CI_Controller {
 				'message' => 'Failed to Submit!'
 			]);
 		}
-		var_dump($matched);
 	}
 
 
@@ -2720,9 +2750,9 @@ class Loa_controller extends CI_Controller {
 
 				$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
 
-				$coordinator_bill = '<a href="JavaScript:void(0)" onclick="viewCoordinatorBill(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Coordinator Billing"><i class="mdi mdi-eye text-dark"></i>View</a>';
+				$coordinator_bill = '<a href="JavaScript:void(0)" onclick="viewCoordinatorBill(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Coordinator Billing"><i class="mdi mdi-eye fs-2 text-danger"></i></a>';
 
-				$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-eye text-dark"></i>View</a>';
+				$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i></a>';
 
 				$variance = $bill['net_bill'] - $bill['total_net_bill'];
 				if($variance > 0){
@@ -2838,6 +2868,11 @@ class Loa_controller extends CI_Controller {
 		$data['bar2'] = $this->loa_model->bar_completed();
 		$data['bar3'] = $this->loa_model->bar_referral();
 		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/loa/view_monthly_billed_loa');
@@ -2870,6 +2905,11 @@ class Loa_controller extends CI_Controller {
 		$data['bar2'] = $this->loa_model->bar_completed();
 		$data['bar3'] = $this->loa_model->bar_referral();
 		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/loa/view_monthly_billed_charging');
@@ -2888,7 +2928,7 @@ class Loa_controller extends CI_Controller {
 			$member_id = $this->myhash->hasher($member['emp_id'], 'encrypt');
 			$full_name = $member['first_name'] . ' ' . $member['middle_name'] . ' ' . $member['last_name'] . ' ' . $member['suffix'];
 			$view_url = base_url() . 'healthcare-coordinator/loa_controller/fetch_ledger/' . $member_id;
-			$custom_actions = '<a href="' . $view_url . '"  data-bs-toggle="tooltip" title="View Member Profile"><i class="mdi mdi-eye fs-2 text-info me-2"></i></a>';
+			$custom_actions = '<a href="' . $view_url . '"  data-bs-toggle="tooltip" title="View Ledger"><i class="mdi mdi-eye fs-2 text-info me-2"></i></a>';
 
 			$row[] = $full_name;
 			$row[] = $member['emp_type'];
@@ -2910,10 +2950,21 @@ class Loa_controller extends CI_Controller {
 
 
 	public function fetch_ledger() {
-    $token = $this->security->get_csrf_hash();
-    $emp_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
-    $data['user_role'] = $this->session->userdata('user_role');
-    $data['billing'] = $this->loa_model->get_member_info($emp_id);
+	    $token = $this->security->get_csrf_hash();
+	    $emp_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+	    $data['user_role'] = $this->session->userdata('user_role');
+	    $data['billing'] = $this->loa_model->get_member_info($emp_id);
+	    $data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
+
     $this->load->view('templates/header', $data);
     $this->load->view('healthcare_coordinator_panel/loa/ledger2');
     $this->load->view('templates/footer');

@@ -23,20 +23,27 @@
           <li class="nav-item">
             <a class="nav-link active" href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/billed" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">BILLED NOA</span>
+              <span class="hidden-xs-down fs-5 font-bold">FINAL BILLING</span>
             </a>
           </li>
 
           <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/for_payment" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">FOR PAYMENT</span>
+              <span class="hidden-xs-down fs-5 font-bold">BILLING STATEMENT</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/for_payment" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">HISTORY</span>
             </a>
           </li>
         </ul>
 
         <form id="billedTableLoaNoa" method="POST" action="<?php echo base_url(); ?>healthcare-coordinator/noa/matched-bill/submit">
-          <input type="text" class="form-control" name="initial_status" id="initial_status" value="Payable">
+          <input type="hidden" class="form-control" name="initial_status" id="initial_status" value="Payable">
           <div class="row pt-2 pb-2">
             <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
             <div class="col-lg-5 ps-5 pb-3 pt-1 pb-4">
@@ -77,8 +84,13 @@
                     <tr>
                       <th style="color: white">NOA NO.</th>
                       <th style="color: white">NAME OF PATIENT</th>
+                      <th style="color: white">MBL REMAINING BALANCE</th>
+                      <th style="color: white">WORK RELATED</th>
+                      <th style="color: white">COMPANY CHARGE</th>
+                      <th style="color: white">PERSONAL CHARGE</th>
                       <th style="color: white">VIEW SOA</th>
                       <th style="color: white">HOSPITAL BILL</th>
+                      <th style="color: white">MBL EXCESS</th>
                     </tr>
                   </thead>
                   <tbody id="billed-tbody">

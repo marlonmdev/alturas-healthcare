@@ -752,6 +752,11 @@ function db_get_cost_types_by_hp_ID($hp_id) {
   function insert_for_payment_consolidated($data) {
     return $this->db->insert('monthly_payable', $data);
   }
+  function update_loa_request_status() {
+    $data = array('status' => 'Payable');
+    $this->db->where('status', 'Billed');
+    $this->db->update('loa_requests', $data);
+  }
 
   function fetch_for_payment_bill($status) {
     $this->db->select('*')
@@ -998,23 +1003,13 @@ public function get_member_info($emp_id) {
   $this->db->from('billing as tbl_1');
   $this->db->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
   $this->db->join('max_benefit_limits as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id');
-  $this->db->join('loa_requests as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id');
+  // $this->db->join('loa_requests as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id','left');
+  // $this->db->join('noa_requests as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id','left');
   $this->db->where('tbl_1.emp_id', $emp_id);
   $query = $this->db->get();
   return $query->result_array();
-
-  $this->db->select('*');
-  $this->db->from('members');
-  $this->db->where('emp_id', $emp_id);
-
-  $this->db->select('*');
-  $this->db->from('max_benefit_limits');
-  $this->db->where('emp_id', $emp_id);
-
-  $this->db->select('*');
-  $this->db->from('loa_requests');
-  $this->db->where('emp_id', $emp_id);
 }
+
 
 //END==================================================
 
@@ -1038,6 +1033,26 @@ public function bar_referral(){
 }
 public function bar_expired(){
   $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Expired' ");
+  return $query->num_rows(); 
+} 
+public function bar_billed(){
+  $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Billed' ");
+  return $query->num_rows(); 
+} 
+public function bar_pending_noa(){
+  $query = $this->db->query("SELECT status FROM noa_requests WHERE status='Pending' ");
+  return $query->num_rows(); 
+} 
+public function bar_approved_noa(){
+  $query = $this->db->query("SELECT status FROM noa_requests WHERE status='Approved' ");
+  return $query->num_rows(); 
+} 
+public function bar_initial_noa(){
+  $query = $this->db->query("SELECT status FROM initial_billing WHERE status='Initial' ");
+  return $query->num_rows(); 
+} 
+public function bar_billed_noa(){
+  $query = $this->db->query("SELECT status FROM noa_requests WHERE status='Billed' ");
   return $query->num_rows(); 
 } 
 //End =================================================

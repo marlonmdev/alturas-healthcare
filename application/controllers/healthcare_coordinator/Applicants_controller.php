@@ -251,6 +251,11 @@ class Applicants_controller extends CI_Controller {
 		$data['bar2'] = $this->applicants_model->bar_completed();
 		$data['bar3'] = $this->applicants_model->bar_referral();
 		$data['bar4'] = $this->applicants_model->bar_expired();
+		$data['bar_Billed'] = $this->applicants_model->bar_billed();
+		$data['bar5'] = $this->applicants_model->bar_pending_noa();
+		$data['bar6'] = $this->applicants_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->applicants_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->applicants_model->bar_billed_noa();
 
 		/* This is checking if the image file exists in the directory. */
 		$file_path = './uploads/profile_pics/' . $member['photo'];

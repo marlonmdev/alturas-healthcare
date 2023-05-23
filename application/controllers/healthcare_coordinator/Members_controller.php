@@ -212,6 +212,11 @@ class Members_controller extends CI_Controller {
 		$data['bar2'] = $this->members_model->bar_completed();
 		$data['bar3'] = $this->members_model->bar_referral();
 		$data['bar4'] = $this->members_model->bar_expired();
+		$data['bar_Billed'] = $this->members_model->bar_billed();
+		$data['bar5'] = $this->members_model->bar_pending_noa();
+		$data['bar6'] = $this->members_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->members_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->members_model->bar_billed_noa();
 
 		/* This is checking if the image file exists in the directory. */
 		$file_path = './uploads/profile_pics/' . $member['photo'];

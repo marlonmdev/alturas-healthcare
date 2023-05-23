@@ -374,18 +374,23 @@ class Noa_controller extends CI_Controller {
 
 	
 	public function initial_billing2() {
-    $token = $this->security->get_csrf_hash();
-    $emp_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
-    $data['user_role'] = $this->session->userdata('user_role');
-    $data['billing'] = $this->noa_model->get_member_info($emp_id);
-    $data['bar'] = $this->noa_model->bar_pending();
+	    $token = $this->security->get_csrf_hash();
+	    $emp_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+	    $data['user_role'] = $this->session->userdata('user_role');
+	    $data['billing'] = $this->noa_model->get_member_info($emp_id);
+	    $data['bar'] = $this->noa_model->bar_pending();
 		$data['bar1'] = $this->noa_model->bar_approved();
 		$data['bar2'] = $this->noa_model->bar_completed();
 		$data['bar3'] = $this->noa_model->bar_referral();
 		$data['bar4'] = $this->noa_model->bar_expired();
-    $this->load->view('templates/header', $data);
-    $this->load->view('healthcare_coordinator_panel/noa/initial_billing2');
-    $this->load->view('templates/footer');
+		$data['bar_Billed'] = $this->noa_model->bar_billed();
+		$data['bar5'] = $this->noa_model->bar_pending_noa();
+		$data['bar6'] = $this->noa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->noa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->noa_model->bar_billed_noa();
+	    $this->load->view('templates/header', $data);
+	    $this->load->view('healthcare_coordinator_panel/noa/initial_billing2');
+	    $this->load->view('templates/footer');
  	}
  	//END==================================================================
 
@@ -400,12 +405,20 @@ class Noa_controller extends CI_Controller {
 			$row = array();
 			$loa_id = $this->myhash->hasher($bill['loa_id'], 'encrypt');
 			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
-			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-eye text-dark"></i>View</a>';
+			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i></a>';
 
 			$row[] = $bill['noa_no'];
 			$row[] = $fullname;
+			$row[] = '₱' . number_format($bill['remaining_balance'], 2, '.', ',');
+			$workRelated = $bill['work_related'] . ' (' . $bill['percentage'] . '%)';
+			$row[] = $workRelated;
+			$row[] = '₱' . number_format($bill['company_charge'], 2, '.', ',');
+			$row[] = '₱' . number_format($bill['personal_charge'], 2, '.', ',');
 			$row[] = $pdf_bill;
-			$row[] = number_format($bill['net_bill'], 2, '.', ',');
+			$netBill = '₱' . number_format($bill['net_bill'], 2, '.', ',');
+			$row[] = $netBill;
+			$total = $bill['remaining_balance'] - $bill['net_bill'];
+			$row[] = '₱' .number_format($total, 2, '.', ',');
 			$data[] = $row;
 		}
 
@@ -416,11 +429,54 @@ class Noa_controller extends CI_Controller {
 
 		echo json_encode($output);
 	}
+
+	function submit_final_billing() {
+		$token = $this->security->get_csrf_hash();
+		$data['user_role'] = $this->session->userdata('user_role');
+		$hp_id = $this->input->post('billed-hospital-filter', TRUE);
+		$start_date = $this->input->post('start-date', TRUE);
+		$end_date = $this->input->post('end-date', TRUE);
+		$date = strtotime($this->input->post('start-date', TRUE));
+		$month = date('m', $date);
+		$year = date('Y', $date);
+		$total_payable = floatval(str_replace(',', '', $this->input->post('total-hospital-bill', TRUE)));
+		$bill_no = "BILL-" . date('His') . mt_rand(1000, 9999);
+		$matched = $this->noa_model->set_bill_for_matched($hp_id, $start_date, $end_date, $bill_no);
+		$initial_status = $this->input->post('initial_status', TRUE);
+
+		$data = [
+			'bill_no' => $bill_no,
+			'type' => 'NOA',
+			'hp_id' => $hp_id,
+			'month' => $month,
+			'year' => $year,
+			'status' => 'Billed',
+			'total_payable' => $total_payable,
+			'added_on' => date('Y-m-d'),
+			'added_by' => $this->session->userdata('fullname'),
+		];
+		$inserted = $this->noa_model->insert_for_payment_consolidated($data);
+
+		if($inserted){
+			$this->noa_model->update_initial_billing($initial_status);
+			$this->noa_model->update_monthly_payable($initial_status);
+			$this->noa_model->update_noa_requests($initial_status);
+			header('Location: ' . base_url() . 'healthcare-coordinator/bill/noa-requests/for_payment');
+    	exit;
+		}else{
+			echo json_encode([
+				'token' => $token,
+				'status' => 'failed',
+				'message' => 'Failed to Submit!'
+			]);
+		}
+	}
  	//END=================================================================
 
+	//BILLING STATEMENT===================================================
 	function fetch_payable_noa() {
 		$this->security->get_csrf_hash();
-		$status = 'Billed';
+		$status = 'Payable';
 		$for_payment = $this->noa_model->fetch_for_payment_bill($status);
 		$data = [];
 		foreach($for_payment as $bill){
@@ -453,18 +509,10 @@ class Noa_controller extends CI_Controller {
 			}
 
 			$bill_no_custom = '<span class="fw-bold fs-5">'.$bill['bill_no'].'</span>';
-
 			$label_custom = '<span class="fw-bold fs-5">Consolidated Billing for the Month of '.$month.', '.$bill['year'].'</span>';
-			
 			$hospital_custom = '<span class="fw-bold fs-5">'.$bill['hp_name'].'</span>';
-
 			$status_custom = '<span class="badge rounded-pill bg-success text-white">'.$bill['status'].'</span>';
-
-			// $bill_no = $this->myhash->hasher($bill['bill_no'], 'encrypt');
-			// dapat maka encrypt sa bill_no
-
 			$action_customs = '<a href="'.base_url().'healthcare-coordinator/bill/billed-noa/fetch-payable/'.$bill['bill_no'].'" data-bs-toggle="tooltip" title="View Hospital Bill"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
-
 			$action_customs .= '<a href="'.base_url().'healthcare-coordinator/bill/billed-noa/charging/'.$bill['bill_no'].'" data-bs-toggle="tooltip" title="View Charging"><i class="mdi mdi-file-document-box fs-2 text-danger"></i></a>';
 
 			$row[] = $bill_no_custom;
@@ -480,7 +528,7 @@ class Noa_controller extends CI_Controller {
 		];
 		echo json_encode($output);
 	}
-
+ 	//END=================================================================
 	function fetch_monthly_bill() {
 		$token = $this->security->get_csrf_hash();
 		$bill_no = $this->uri->segment(5);
@@ -882,6 +930,11 @@ class Noa_controller extends CI_Controller {
 		$data['bar2'] = $this->noa_model->bar_completed();
 		$data['bar3'] = $this->noa_model->bar_referral();
 		$data['bar4'] = $this->noa_model->bar_expired();
+		$data['bar_Billed'] = $this->noa_model->bar_billed();
+		$data['bar5'] = $this->noa_model->bar_pending_noa();
+		$data['bar6'] = $this->noa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->noa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->noa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/noa/edit_noa_request');
 		$this->load->view('templates/footer');
@@ -955,6 +1008,11 @@ class Noa_controller extends CI_Controller {
 		$data['bar2'] = $this->noa_model->bar_completed();
 		$data['bar3'] = $this->noa_model->bar_referral();
 		$data['bar4'] = $this->noa_model->bar_expired();
+		$data['bar_Billed'] = $this->noa_model->bar_billed();
+		$data['bar5'] = $this->noa_model->bar_pending_noa();
+		$data['bar6'] = $this->noa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->noa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->noa_model->bar_billed_noa();
 		if (!$exist) {
 			$this->load->view('pages/page_not_found');
 		} else {
@@ -1047,49 +1105,7 @@ class Noa_controller extends CI_Controller {
 
 	}
 
-	function submit_consolidated_bill() {
-		$token = $this->security->get_csrf_hash();
-		$data['user_role'] = $this->session->userdata('user_role');
-		$hp_id = $this->input->post('billed-hospital-filter', TRUE);
-		$start_date = $this->input->post('start-date', TRUE);
-		$end_date = $this->input->post('end-date', TRUE);
-		$date = strtotime($this->input->post('start-date', TRUE));
-		$month = date('m', $date);
-		$year = date('Y', $date);
-		// $number = 1;
-		// $number++;
-		// $consolidated_no = "PMN" . $month . $year . "00" . $number;
-		$total_payable = floatval(str_replace(',', '', $this->input->post('total-hospital-bill', TRUE)));
-		$bill_no = "BILL-" . date('His') . mt_rand(1000, 9999);
-		$matched = $this->noa_model->set_bill_for_matched($hp_id, $start_date, $end_date, $bill_no);
-
-		$initial_status = $this->input->post('initial_status', TRUE);
-
-		$data = [
-			'bill_no' => $bill_no,
-			'type' => 'NOA',
-			'hp_id' => $hp_id,
-			'month' => $month,
-			'year' => $year,
-			'status' => 'Billed',
-			'total_payable' => $total_payable,
-			'added_on' => date('Y-m-d'),
-			'added_by' => $this->session->userdata('fullname'),
-		];
-		$inserted = $this->noa_model->insert_for_payment_consolidated($data);
-
-		if($inserted){
-			 $this->noa_model->update_initial_billing($initial_status);
-			header('Location: ' . base_url() . 'healthcare-coordinator/bill/noa-requests/for_payment');
-    exit;
-		}else{
-			echo json_encode([
-				'token' => $token,
-				'status' => 'failed',
-				'message' => 'Failed to Submit!'
-			]);
-		}
-	}
+	
 
 	function fetch_monthly_payable() {
 		$token = $this->security->get_csrf_hash();
@@ -1102,6 +1118,11 @@ class Noa_controller extends CI_Controller {
 		$data['bar2'] = $this->noa_model->bar_completed();
 		$data['bar3'] = $this->noa_model->bar_referral();
 		$data['bar4'] = $this->noa_model->bar_expired();
+		$data['bar_Billed'] = $this->noa_model->bar_billed();
+		$data['bar5'] = $this->noa_model->bar_pending_noa();
+		$data['bar6'] = $this->noa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->noa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->noa_model->bar_billed_noa();
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/noa/view_monthly_billed_noa');
@@ -1132,6 +1153,11 @@ class Noa_controller extends CI_Controller {
 		$data['bar2'] = $this->noa_model->bar_completed();
 		$data['bar3'] = $this->noa_model->bar_referral();
 		$data['bar4'] = $this->noa_model->bar_expired();
+		$data['bar_Billed'] = $this->noa_model->bar_billed();
+		$data['bar5'] = $this->noa_model->bar_pending_noa();
+		$data['bar6'] = $this->noa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->noa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->noa_model->bar_billed_noa();
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/noa/view_monthly_charging');

@@ -98,6 +98,7 @@ class Loa_controller extends CI_Controller {
 		$data['bar2'] = $this->loa_model->bar_completed();
 		$data['bar3'] = $this->loa_model->bar_referral();
 		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
 		if (!$exist) {
 			$this->load->view('pages/page_not_found');
 		} else {

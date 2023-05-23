@@ -4,13 +4,13 @@
         <div class="page-breadcrumb">
             <div class="row">
             <div class="col-12 d-flex no-block align-items-center">
-                <h4 class="page-title ls-2">Print Bills</h4>
+                <h4 class="page-title ls-2"> <i class="mdi mdi-printer"></i> Print Bills</h4>
                 <div class="ms-auto text-end">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                     <li class="breadcrumb-item">Head Office Accounting</li>
                     <li class="breadcrumb-item active" aria-current="page">
-                        Print Report
+                       Print Report
                     </li>
                     </ol>
                 </nav>
@@ -52,24 +52,6 @@
                     </li>
                 </ul>
             </div>
-            <!-- <div class="row">
-                <div class="col-lg-3 ps-5 pb-3 pt-1 pb-4">
-                    <div class="input-group">
-                        <input type="hidden" name="token" id="token" value="<?php echo $this->security->get_csrf_hash(); ?>">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text bg-info text-white">
-                            <i class="mdi mdi-filter"></i>
-                            </span>
-                        </div>
-                        <select class="form-select fw-bold" name="report-filter" id="report-filter" onchange="viewContainer()">
-                            <option value="">Please Select...</option>
-                            <option value="billing">Print Summary Billing</option>
-                            <option value="charging">Print Business Unit Charging</option>
-                        </select>
-                    </div>
-                </div>
-               
-            </div> -->
             <div  id="billing-container" style="display:">
                 <div class="row pt-2">
                     <div class="col-lg-4 ps-5 pb-3 pt-1 pb-4">
@@ -165,17 +147,19 @@
                                                 <th class="fw-bold ls-2"><strong>Current MBL</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Percentage</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Hospital Bill</strong></th>
-                                                <th class="fw-bold ls-2"><strong>Personal Charge</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Company Charge</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Healthcare Advance</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Total Payable</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Personal Charge</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Remaining MBL</strong></th>
+                                                <th></th>
                                             </tr>
                                         </thead>
                                         <tbody class="pt-2" id="billing-tbody" >
                                         </tbody>
                                     </table><br>
-                                    <div class="row offset-10">
-                                        <span class="ps-5 fw-bold">TOTAL  <span class="offset-3" id="total_bill"></span></span>
+                                    <div class="row offset-7">
+                                        <span class="ps-5 fw-bold">TOTAL PAYABLE <span class="offset-2" id="total_bill"></span></span>
                                     </div>
                                     <div class="row offset-1 pt-4 ps-5">
                                         <div class="col-4">
@@ -195,157 +179,40 @@
                                 </div>
                             </div>
                         </div> 
-                    </div>
-            <div  id="charging-container" style="display:none">
-                <div class="row">
-                    <div class="col-lg-3 ps-5 pb-3 pt-1 pb-4">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text text-dark fw-bold">
-                                Filter Hospital : 
-                                </span>
-                            </div>
-                            <select class="form-select fw-bold" name="charging-hospital-filter" id="charging-hospital-filter" onchange="viewValues()">
-                                <option value="">Select Hospital...</option>
-                                <?php foreach($hc_provider as $hospital) : ?>
-                                <option value="<?php echo $hospital['hp_id']; ?>"><?php echo $hospital['hp_name']; ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 ps-5">
-                        <div class="input-group">
-                            <div class="input-group-prepend ">
-                                <span class="input-group-text text-dark fw-bold">
-                                Business Unit : 
-                                </span>
-                            </div>
-                            <select class="form-select fw-bold" name="charging-bu-filter" id="charging-bu-filter" onchange="viewValues()">
-                                <option value="">Select Business Units...</option>
-                                <?php
-                                    // Sort the business units alphabetically
-                                    $sorted_bu = array_column($business_unit, 'business_unit');
-                                    asort($sorted_bu);
-                                    
-                                    foreach($sorted_bu as $bu) :
-                                ?>
-                                <option value="<?php echo $bu; ?>"><?php echo $bu; ?></option>
-                                <?php endforeach; ?>
-                            </select>
-
-                            <!-- <div class="col-lg-6 pt-1" id="business-units-wrapper"> -->
-                              <!-- business units will be appended here... -->
-                            <!-- </div> -->
-
-                        </div>
-                    </div>
-                    <div class="col-lg-4 offset-1">
-                            <div class="input-group">
-                                <div class="input-group-append">
-                                    <span class="input-group-text text-dark ls-1 ms-2">
-                                        <i class="mdi mdi-calendar-range"></i>
-                                    </span>
-                                </div>
-                                <input type="date" class="form-control" name="charging-start-date" id="charging-start-date" oninput="" placeholder="Start Date" oninput="validateDate()" onchange="viewValues()">
-
-                                <div class="input-group-append">
-                                    <span class="input-group-text text-dark ls-1 ms-2">
-                                        <i class="mdi mdi-calendar-range"></i>
-                                    </span>
-                                </div>
-                                <input type="date" class="form-control" name="charging-end-date" id="charging-end-date" oninput="" placeholder="End Date" oninput="validateDate()" onchange="viewValues()">
-                            </div>
-                        </div>
-                        
-                    </div>
-                    <div class="row offset-10">
-                        <div class="col pb-2 pt-4">
-                            <button class="btn btn-danger" onclick="printDivs('#printableDivs')"><i class="mdi mdi-printer"></i> Print </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="row pe-2" id="printableDivs" style="background:#ffff;padding:20px 40px;">
-                <div class="card shadow pt-2"  id="charging-table" style="display:none">
-                    <div class="text-center pt-3 pb-3">
-                        <h4>ALTURAS HEALTHCARE SYSTEM</h4>
-                        <h4>Business Unit Charging Details</h4>
-                        <h5><span id="c-bu-units"></span></h5>
-                        <h6><span id="c-hp"></span></h6>
-                    </div>
-                    <div class="ps-4 pt-3">
-                       <span class="fw-bold fs-5" id="c-date"></span>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-sm" id="billedChargingTable">
-                            <thead>
-                                <tr>
-                                    <th class="fw-bold text-center">LOA/NOA No.</th>
-                                    <th class="fw-bold text-center">Name</th>
-                                    <th class="fw-bold text-center">Business Unit</th>
-                                    <th class="fw-bold text-center">Percentage</th>
-                                    <th class="fw-bold text-center">Total Net Bill</th>
-                                    <th class="fw-bold text-center">Company Charge</th>
-                                    <th class="fw-bold text-center">Personal Charge</th>
-                                    <th class="fw-bold text-center">Previous MBL</th>
-                                    <th class="fw-bold text-center">Remaining MBL</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-center" id="billed-charging-tbody">
-                            </tbody>
-                            <tfoot class="text-center">
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>    
-                                    <td class="fw-bold">TOTAL </td>
-                                    <td class="fw-bold text-center ls-1"><span id="charging_total_bill"></span></td>
-                                    <td class="fw-bold text-center ls-1"><span id="charging_total_company"></span></td>
-                                    <td class="fw-bold text-center ls-1"><span id="charging_total_personal"></span></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
-                        </table><br>
-                        <div class="row offset-1 pt-4 ps-5">
-                            <div class="col-4">
-                                <span>Prepared by : </span><br><br>
-                                <span class="text-decoration-underline fw-bold fs-5">__<?php echo $user; ?>__</span>
-                            </div>
-                            <div class="col-4">
-                                <span>Audited by : </span><br><br>
-                                <span class="">_______________________</span>
-                            </div>
-                            <div class="col-4">
-                                <span>Noted by : </span><br><br>
-                                <span class="">_______________________</span>
-                            </div>
-                        </div>
-                        <br><br><br>
-                    </div>
-                </div>
-            </div>   
-           
+                    </div>  
         </div>
      </div>
+     <?php include 'adjust_h_advance_modal.php' ;?>
     </div>
   
 <script>
   const baseUrl = "<?php echo base_url(); ?>";
   const printDiv = (layer) => {
-     $(layer).printThis({
-        importCSS: true,
-        copyTagClasses: true,
-        copyTagStyles: true,
-        removeInline: false,
-        afterPrint: function() {
-        const pdf = new Blob([$(layer).get(0).outerHTML], { type: "application/pdf" });
-        let number = 10;
-        number++;
-        const fileName =  "bill_00" +number + ".pdf"; // Change the file name if desired
-        saveAs(pdf, fileName);
-        }
-    });
-};
+        // const table = $(layer).find('table').DataTable({
+        //     // DataTables options...
+        // });
+
+        // // Hide the 11th column
+        // table.column(11).visible(false);
+
+        $(layer).printThis({
+            importCSS: true,
+            copyTagClasses: true,
+            copyTagStyles: true,
+            removeInline: false,
+            afterPrint: function() {
+            // Restore column visibility after printing
+            table.column(10).visible(true);
+
+            // const pdf = new Blob([$(layer).get(0).outerHTML], { type: "application/pdf" });
+            // let number = 10;
+            // number++;
+            // const fileName =  "bill_00" + number + ".pdf"; // Change the file name if desired
+            // saveAs(pdf, fileName);
+            }
+        });
+    };
+
 
     const printDivs = (layer) => {
     $(layer).printThis({
@@ -373,7 +240,7 @@
             data.startDate = $('#start-date').val();
             data.business_unit = $('#billed-bu-filter').val();
           
-        }
+        },
       },
       //Set column definition initialisation properties.
       columnDefs: [{
@@ -390,120 +257,61 @@
     });
 
     billedTable.on('draw.dt', function() {
-    let columnIdx = 10;
-    let sum = 0;
-    let rows = billedTable.rows().nodes();
-    if ($('#billedTable').DataTable().data().length > 0) {
+        let columnIdx = 9;
+        let sum = 0;
+        let rows = billedTable.rows().nodes();
+
+        if ($('#billedTable').DataTable().data().length > 0) {
             // The table is not empty
             rows.each(function(index, row) {
-                let rowData = billedTable.row(row).data();
-                let columnValue = rowData[columnIdx];
-                let pattern = /-?[\d,]+(\.\d+)?/g;
-                let matches = columnValue.match(pattern);
-                if (matches && matches.length > 0) {
-                    let numberString = matches[0].replace(',', '');
-                    let intValue = parseInt(numberString);
-                    sum += intValue;
-                }
+            let rowData = billedTable.row(row).data();
+            let columnValue = rowData[columnIdx];
+            let pattern = /-?[\d,]+(\.\d+)?/g;
+            let matches = columnValue.match(pattern);
+
+            if (matches && matches.length > 0) {
+                let numberString = matches[0].replace(/,/g, ''); // Replace all commas
+                let floatValue = parseFloat(numberString);
+                sum += floatValue;
+            }
             });
         }
+
         $('#total_bill').html(sum.toLocaleString('PHP', { minimumFractionDigits: 2 }));
     });
 
-    let chargingTable = $('#billedChargingTable').DataTable({
-      processing: true, //Feature control the processing indicator.
-      serverSide: true, //Feature control DataTables' server-side processing mode.
-      order: [], //Initial no order.
 
-      // Load data for the table's content from an Ajax source
-      ajax: {
-        url: `${baseUrl}head-office-accounting/bill/charging/fetch`,
-        type: "POST",
-        // passing the token as data so that requests will be allowed
-        data: function(data) {
-           data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
-            data.endDate = $('#charging-end-date').val();
-            data.startDate = $('#charging-start-date').val();
-            data.business_unit = $('#charging-bu-filter').val();
-            data.hp_id = $('#charging-hospital-filter').val();
-          
-        }
-      },
-      //Set column definition initialisation properties.
-      columnDefs: [{
-        "orderable": false, //set not orderable
-      }, ],
-      data: [],  // Empty data array
-      deferRender: true,  // Enable deferred rendering
-      info: false,
-      paging: false,
-      filter: false,
-      lengthChange: false,
-      responsive: true,
-      fixedHeader: true,
-    });
+    $('#adjustedAdvanceForm').submit(function(){
+        $.ajax({
+            url :`${baseUrl}head-office-accounting/bill/adjusted-advance/submit`,
+            type : 'POST',
+            data : $(this).serialize(),
+            dataType : 'json',
+            success : function(res){
+                const {
+                    status,message
+                } = res;
 
-    chargingTable.on('draw.dt', function() {
-    let columnIdx = 4;
-    let sum = 0;
-    let rows = chargingTable.rows().nodes();
-    if ($('#billedChargingTable').DataTable().data().length > 0) {
-            // The table is not empty
-            rows.each(function(index, row) {
-                let rowData = chargingTable.row(row).data();
-                let columnValue = rowData[columnIdx];
-                let pattern = /-?[\d,]+(\.\d+)?/g;
-                let matches = columnValue.match(pattern);
-                if (matches && matches.length > 0) {
-                    let numberString = matches[0].replace(',', '');
-                    let intValue = parseInt(numberString);
-                    sum += intValue;
+                if(status == 'success'){
+                    swal({
+                        title: 'Success',
+                        text: message,
+                        timer: 5000,
+                        showConfirmButton: false,
+                        type: 'success'
+                    });
+                }else{
+                    swal({
+                        title: 'Error',
+                        text: message,
+                        timer: 5000,
+                        showConfirmButton: false,
+                        type: 'error'
+                    });
                 }
-            });
-        }
-        $('#charging_total_bill').html(sum.toLocaleString('PHP', { minimumFractionDigits: 2 }));
+            }
+        });
     });
-    chargingTable.on('draw.dt', function() {
-    let columnIdx = 5;
-    let sum = 0;
-    let rows = chargingTable.rows().nodes();
-    if ($('#billedChargingTable').DataTable().data().length > 0) {
-            // The table is not empty
-            rows.each(function(index, row) {
-                let rowData = chargingTable.row(row).data();
-                let columnValue = rowData[columnIdx];
-                let pattern = /-?[\d,]+(\.\d+)?/g;
-                let matches = columnValue.match(pattern);
-                if (matches && matches.length > 0) {
-                    let numberString = matches[0].replace(',', '');
-                    let intValue = parseInt(numberString);
-                    sum += intValue;
-                }
-            });
-        }
-        $('#charging_total_company').html(sum.toLocaleString('PHP', { minimumFractionDigits: 2 }));
-    });
-    chargingTable.on('draw.dt', function() {
-    let columnIdx = 6;
-    let sum = 0;
-    let rows = chargingTable.rows().nodes();
-    if ($('#billedChargingTable').DataTable().data().length > 0) {
-            // The table is not empty
-            rows.each(function(index, row) {
-                let rowData = chargingTable.row(row).data();
-                let columnValue = rowData[columnIdx];
-                let pattern = /-?[\d,]+(\.\d+)?/g;
-                let matches = columnValue.match(pattern);
-                if (matches && matches.length > 0) {
-                    let numberString = matches[0].replace(',', '');
-                    let intValue = parseInt(numberString);
-                    sum += intValue;
-                }
-            });
-        }
-        $('#charging_total_personal').html(sum.toLocaleString('PHP', { minimumFractionDigits: 2 }));
-    });
-
 
     $("#start-date").flatpickr({
         dateFormat: 'Y-m-d',
@@ -815,14 +623,25 @@ const viewValues = () => {
           });
     }
 
+    const adjustHAdvance = (billing_no,loa_noa_no,fullname,advance,hospital,company) => {
+
+        $('#adjustHAModal').modal('show');
+        $('#member-fullname').html(fullname);
+        $('#advance').html(advance);
+        $('#loa-noa-no').html(loa_noa_no);
+        $('#a-bill-no').val(billing_no);
+        $('#hospital-bill').html(hospital);
+        $('#company-charge').html(company);
+    }
+
     // const printPDF = () => {
     //     const bu_filter = document.querySelector('#billed-bu-filter').value;
     //     const hp_id = document.querySelector('#billed-hospital-filter').value;
     //     const start_date = document.querySelector('#start-date').value;
     //     const end_date = document.querySelector('#end-date').value;
-    //     const tdElement = document.querySelector('#td-val'); // Replace 'td' with the specific selector for your target <td> element
-    //     const spanElement = tdElement.querySelector('span');
-    //     const spanValue = spanElement.textContent;
+    //     // const tdElement = document.querySelector('#td-val'); // Replace 'td' with the specific selector for your target <td> element
+    //     // const spanElement = tdElement.querySelector('span');
+    //     // const spanValue = spanElement.textContent;
 
     //     $.ajax({
     //           url: `${baseUrl}head-office-accounting/reports/print`,
@@ -833,7 +652,6 @@ const viewValues = () => {
     //             'hp_id' : hp_id,
     //             'start_date' : start_date,
     //             'end_date' : end_date,
-    //             'total_bill' : spanValue,
     //             'bu_filter' : bu_filter
     //           },
     //           success:function(response){

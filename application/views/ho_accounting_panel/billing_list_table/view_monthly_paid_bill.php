@@ -56,11 +56,10 @@
                           <th class="fw-bold">Remaining MBL</th>
                           <th class="fw-bold">Percentage</th>
                           <th class="fw-bold">Hospital Bill</th>
-                          <th class="fw-bold">Personal Charge</th>
                           <th class="fw-bold">Company Charge</th>
                           <th class="fw-bold">Healthcare Advance</th>
                           <th class="fw-bold">Total Paid Bill</th>
-                 
+                          <th class="fw-bold">Personal Charge</th>
                           <th class="fw-bold">Status</th>
                           <th class="fw-bold">View SOA</th>
                         </tr>
@@ -75,9 +74,9 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td></td>
                         <td class="fw-bold">TOTAL BILL </td>
                         <td><span class="text-danger fw-bold fs-5" id="pd-total-bill"></span></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                       </tfoot>
@@ -146,25 +145,25 @@ const printDiv = (layer) => {
     });
 
     billedTable.on('draw.dt', function() {
-    let columnIdx = 9;
+    let columnIdx = 8;
     let sum = 0;
     let rows = billedTable.rows().nodes();
     if ($('#paidTable').DataTable().data().length > 0) {
-            // The table is not empty
-            rows.each(function(index, row) {
-                let rowData = billedTable.row(row).data();
-                let columnValue = rowData[columnIdx];
-                let pattern = /-?[\d,]+(\.\d+)?/g;
-                let matches = columnValue.match(pattern);
-                if (matches && matches.length > 0) {
-                    let numberString = matches[0].replace(',', '');
-                    let intValue = parseInt(numberString);
-                    sum += intValue;
-                }
-            });
-        }
-        $('#pd-total-bill').html(sum.toLocaleString('PHP', { minimumFractionDigits: 2 }));
-    });
+        // The table is not empty
+        rows.each(function(index, row) {
+            let rowData = billedTable.row(row).data();
+            let columnValue = rowData[columnIdx];
+            let pattern = /-?[\d,]+(\.\d+)?/g;
+            let matches = columnValue.match(pattern);
+            if (matches && matches.length > 0) {
+                let numberString = matches[0].replace(',', '');
+                let floatValue = parseFloat(numberString);
+                sum += floatValue;
+            }
+        });
+    }
+    $('#pd-total-bill').html(sum.toLocaleString('PHP', { minimumFractionDigits: 2 }));
+});
 
  });
 

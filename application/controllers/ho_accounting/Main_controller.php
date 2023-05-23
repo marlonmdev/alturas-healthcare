@@ -5,7 +5,6 @@ class Main_controller extends CI_Controller {
 
 	public function __construct() {
 		parent::__construct();
-		$this->load->library('tcpdf_library');
 		$user_role = $this->session->userdata('user_role');
 		$logged_in = $this->session->userdata('logged_in');
 		$this->load->model('ho_accounting/Loa_model');
@@ -1015,7 +1014,38 @@ class Main_controller extends CI_Controller {
 
 			$payable = floatval($pay['company_charge'] + floatval($pay['cash_advance']));
 
+			if($pay['loa_id'] != ''){
+				$loa_id = $pay['loa_id'];
+				$no = $pay['loa_no'];
+			}else{
+				$loa_id = '';
+			}
 
+			if($pay['noa_id'] != ''){
+				$noa_id = $pay['noa_id'];
+				$no = $pay['noa_no'];
+			}else{
+				$noa_id = '';
+			}
+
+			$cash_advance = number_format(floatval($pay['cash_advance']),2, '.',',');
+			$hospital_bill = number_format(floatval($pay['net_bill']),2, '.',',');
+			$company_charge = number_format(floatval($pay['company_charge']),2, '.',',');
+
+			$remaining_mbl = floatval($pay['remaining_balance'] - $pay['company_charge']);
+			if(floatval($remaining_mbl) <= 0){
+				$mbl = 0;
+			}else if(floatval($remaining_mbl) > 0){
+				$mbl = $remaining_mbl;
+			}
+
+			if(floatval($payable) > floatval($pay['net_bill'])){
+				$action = '<a href="JavaScript:void(0)" onclick="adjustHAdvance(\''.$pay['billing_no']. '\',\''.$no.'\', \''.$fullname.'\', \''.$cash_advance.'\',\''.$hospital_bill.'\',\''.$company_charge.'\')" data-bs-toggle="tooltip" title="Adjust Healthcare Advance"><i class="mdi mdi-table-edit fs-3"></i></a>';
+			}else{
+				$action = '';
+			}
+
+		
 			$row[] = $pay['billing_no'];
 			$row[] = $loa_noa;
 			$row[] = $fullname;
@@ -1023,10 +1053,12 @@ class Main_controller extends CI_Controller {
 			$row[] = number_format($pay['remaining_balance'],2, '.',',');
 			$row[] = $wpercent. ', '.$nwpercent;
 			$row[] = number_format($pay['net_bill'],2, '.',',');
-			$row[] = number_format($pay['personal_charge'],2, '.',',');
 			$row[] = number_format($pay['company_charge'],2, '.',',');
 			$row[] = number_format($pay['cash_advance'],2, '.',',');
 			$row[] = number_format($payable,2, '.',',');
+			$row[] = number_format($pay['personal_charge'],2, '.',',');
+			$row[] = number_format($mbl,2, '.',',');
+			$row[] = $action;
 			$data[] = $row;
 		}
 		$output = [
@@ -1419,6 +1451,14 @@ class Main_controller extends CI_Controller {
 			}
 
 			$payable = floatval($bill['company_charge'] + floatval($bill['cash_advance']));
+
+			$remaining_mbl = floatval($bill['remaining_balance'] - $bill['company_charge']);
+			if(floatval($remaining_mbl) <= 0){
+				$mbl = 0;
+			}else if(floatval($remaining_mbl) > 0){
+				$mbl = $remaining_mbl;
+			}
+
 			
 			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-5"></i></a>';
 
@@ -1429,10 +1469,11 @@ class Main_controller extends CI_Controller {
 			$row[] = number_format($bill['remaining_balance'],2, '.',',');
 			$row[] = $wpercent .', '.$nwpercent;
 			$row[] = number_format($bill['net_bill'], 2, '.', ',');
-			$row[] = number_format($bill['personal_charge'], 2, '.', ',');
 			$row[] = number_format($bill['company_charge'], 2, '.', ',');
 			$row[] = number_format($bill['cash_advance'], 2, '.', ',');
 			$row[] = number_format($payable, 2, '.', ',');
+			$row[] = number_format($bill['personal_charge'], 2, '.', ',');
+			$row[] = number_format($mbl,2, '.',',');
 			$row[] = $pdf_bill;
 			$data[] = $row;
 
@@ -1578,10 +1619,10 @@ class Main_controller extends CI_Controller {
 			$row[] = number_format($bill['remaining_balance'],2, '.',',');
 			$row[] = $wpercent .', '.$nwpercent;
 			$row[] = number_format($bill['net_bill'], 2, '.', ',');
-			$row[] = number_format($bill['personal_charge'], 2, '.', ',');
 			$row[] = number_format($bill['company_charge'], 2, '.', ',');
 			$row[] = number_format($bill['cash_advance'], 2, '.', ',');
 			$row[] = number_format($total_paid, 2, '.', ',');
+			$row[] = number_format($bill['personal_charge'], 2, '.', ',');
 			$row[] = $status;
 			$row[] = $pdf_bill;
 			$data[] = $row;
@@ -1594,6 +1635,94 @@ class Main_controller extends CI_Controller {
 
 		echo json_encode($output);
 	}
+
+	function fetch_bu_charging() {
+		$token = $this->security->get_csrf_hash();
+		$charge = $this->List_model->get_charging_for_report();
+		$data = [];
+	
+		$healthCardTotals = []; // Store totals for each health_card_no
+	
+		foreach ($charge as $bill) {
+			$health_card_no = $bill['health_card_no'];
+			$number = 0;
+			$number++;
+			// Check if the health_card_no already has a total calculated
+			if (!isset($healthCardTotals[$health_card_no])) {
+				$healthCardTotals[$health_card_no] = [
+					'company_charge' => 0,
+					'cash_advance' => 0,
+					'total_paid' => 0
+				];
+			}
+	
+			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
+			$empId = str_replace('-', 'e', $bill['emp_id']);
+			$emp_id = $this->myhash->hasher($empId, 'encrypt');
+
+			$action = '<a href="' . base_url() . 'head-office-accounting/charging/member/'. $bill['emp_id'] .'" data-bs-toggle="tooltip" title="View Details"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
+	
+			// Update totals for the current health_card_no
+			$healthCardTotals[$health_card_no]['company_charge'] += floatval($bill['company_charge']);
+			$healthCardTotals[$health_card_no]['cash_advance'] += floatval($bill['cash_advance']);
+			$healthCardTotals[$health_card_no]['total_paid'] += (floatval($bill['company_charge']) + floatval($bill['cash_advance']));
+		}
+	
+		// Create data array with unique health_card_no and their totals
+		foreach ($healthCardTotals as $health_card_no => $totals) {
+			$row = [];
+			$row[] = $number;
+			$row[] = $health_card_no;
+			$row[] = $fullname;
+			$row[] = $bill['business_unit']; 
+			$row[] = number_format($totals['company_charge'], 2, '.', ',');
+			$row[] = number_format($totals['cash_advance'], 2, '.', ',');
+			$row[] = number_format($totals['total_paid'], 2, '.', ',');
+			$row[] = '<span class="bg-danger text-white badge rounded-pill">Unpaid</span>';
+			$row[] = $action;
+			$data[] = $row;
+		}
+	
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
+	
+		echo json_encode($output);
+	}
+
+	function fetch_charging_details() {
+		$token = $this->security->get_csrf_hash();
+		$details = $this->List_model->get_charging_details();
+		$data = [];
+		
+		foreach($details as $bill){
+			$row = [];
+			
+			if($bill['loa_id'] != ''){
+				$loa_noa = $bill['loa_no'];
+
+			}else if($bill['noa_id'] != ''){
+				$loa_noa = $bill['noa_no'];
+			}
+			$total = floatval($bill['company_charge']) + floatval($bill['cash_advance']);
+
+			$row[] = $bill['billing_no'];
+			$row[] = $loa_noa;
+			$row[] = number_format($bill['company_charge'], 2, '.', ',');
+			$row[] = number_format($bill['cash_advance'], 2, '.', ','); 
+			$row[] = number_format($total, 2, '.', ',');
+			$row[] = '<span class="bg-danger text-white badge rounded-pill">Unpaid</span>';
+			$data[] = $row;
+		}
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
+	
+		echo json_encode($output);
+	}
+	
 
 	function fetch_paid_bill_report() {
 		$token = $this->security->get_csrf_hash();
@@ -1709,6 +1838,8 @@ class Main_controller extends CI_Controller {
 
 	function fetch_for_printing() {
 		$this->security->get_csrf_hash();
+		$this->load->library('m_pdf');
+		$pdf = $this->m_pdf->load();
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['billed'] = $this->List_model->get_print_billed_loa_noa();
 		$data['hospital'] = $this->List_model->db_get_hp_name($this->input->get('hp_id'));
@@ -1716,9 +1847,29 @@ class Main_controller extends CI_Controller {
 		$data['start_date'] = $this->input->get('start_date');
 		$data['end_date'] = $this->input->get('end_date');
 
-		$this->load->view('templates/header', $data);
-		$this->load->view('ho_accounting_panel/billing_list_table/print_billed_charging');
-		$this->load->view('templates/footer');
+		$html = $this->load->view('ho_accounting_panel/billing_list_table/print_billed_charging',$data);
+		$pdf->WriteHTML($html);
+      	$pdf->Output($html, "I");
+		exit;
+	}
+
+	function submit_adjusted_advance() {
+		$this->security->get_csrf_hash();
+		$bill_no = $this->input->post('bill-no', TRUE);
+		$new_advance = $this->input->post('new-setup-advance', TRUE);
+		$inserted = $this->List_model->set_new_cash_advance($bill_no,$new_advance);
+
+		if(!$inserted){
+			echo json_encode([
+				'status' => 'failed',
+				'message' => 'Healthcare Advance Failed to Set up!',
+			]);
+		}else{
+			echo json_encode([
+				'status' => 'success',
+				'message' => 'Healthcare Advance Set Up Successfully!',
+			]);
+		}
 	}
 	
 

@@ -80,5 +80,12 @@
       var value = $(this).val();
       table.ajax.url(`${baseUrl}healthcare-provider/patient/fetch_all_patient/${value}`).load();
     });
+
+    
   });
+
+  
+  
+      
+
 </script>

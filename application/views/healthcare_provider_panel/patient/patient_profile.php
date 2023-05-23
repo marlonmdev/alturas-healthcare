@@ -22,9 +22,12 @@
       </div>
       <div class="col-lg-12">
         <div class="row gutters-sm">
-          <div class="col-md-4 mb-3">
-            <div class="card shadow">
-              <div class="card-body pt-4">
+          <div class="col-md-7 mb-3">
+          <div class="card d-flex justify-content-evenly">
+            <div class="row align-items-end">
+              <div class="col-md-6">
+                <div class="card shadow">
+                <div class="card-body pt-4">
                 <div class="d-flex flex-column align-items-center text-center">
                   <?php if ($member['photo'] == '') { ?>
                     <img src="<?= base_url() . 'assets/images/user.svg' ?>" alt="Member" class="rounded-circle img-responsive" width="150" height="auto">
@@ -40,10 +43,11 @@
 									</div>
                 </div>
               </div>
-            </div>
-
-            <div class="card shadow mt-3">
-              <ul class="list-group list-group-flush">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card shadow">
+                <ul class="list-group list-group-flush">
                 <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
                   <h6 class="mb-0 text-secondary" style="font-weight:600;">Position Level: </h6>
                   <span style="font-weight:600;" class="colored-label"><?= $member['position_level'] ?></span>
@@ -78,49 +82,95 @@
                 </li>
                 
               </ul>
+                </div>
+              </div>
             </div>
-            <span style="font-weight:600;" class="colored-label ps-3">Patient History</span>
+          </div>
+            <!-- <div class="card d-flex justify-content-evenly">
+            <div class="card shadow">
+             
+            </div>
+
+            <div class="card shadow">
+         
+            </div>
+            </div> -->
+            <h4 class="page-title ls-2">Patient History</h4>
             <!-- patient history Loa-->
             <div class="card shadow mt-2" >
-            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap border-0">
-                  <!-- <h6 class="mb-0 text-secondary" style="font-weight:600;">LOA </h6> -->
-                  <span style="font-weight:600;" class="colored-label">LOA #</span>
-                  <span style="font-weight:600;" class="colored-label">Status</span>
-                </li>
-              <ul class="list-group list-group-flush" style="overflow-y: auto; max-height: 200px;">
-
-                <?php foreach ($loa as $l) : ?>
-                  <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                    <h6 class="mb-0 text-secondary" style="font-weight:600;"><?= $l->loa_no?></h6>
-                    <span style="font-weight:600;" class="colored-label"><?= $l->status?></span>
-                  </li>
-                <?php endforeach; ?>
-
-              </ul>
+              <table class="table table-hover table-responsive" id="loa_table">
+                  <thead >
+                    <tr>
+                      <th > <span style="font-weight:600;" class="colored-label">LOA #</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">AMOUT</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">STATUS</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">DATE</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">VIEW</span></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
             </div>
 
             <!-- patient history noa-->
             <div class="card shadow mt-3">
-            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap border-0">
+            <table class="table table-hover table-responsive" id="noa_table">
+                <thead>
+                  <tr>
+                      <th > <span style="font-weight:600;" class="colored-label">NOA #</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">AMOUT</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">STATUS</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">DATE</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">VIEW</span></th>
+                  </tr>
+                </thead>
+              	<tbody>
+                </tbody>
+              </table>
+            </div>
+            <!-- <span style="font-weight:600;" class="colored-label ps-3">Patient History</span> -->
+            <!-- patient history Loa-->
+            <!-- <div class="card shadow mt-2" >
+            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap border-0"> -->
                   <!-- <h6 class="mb-0 text-secondary" style="font-weight:600;">LOA </h6> -->
-                  <span style="font-weight:600;" class="colored-label">NOA #</span>
+                  <!-- <span style="font-weight:600;" class="colored-label">LOA #</span>
                   <span style="font-weight:600;" class="colored-label">Status</span>
                 </li>
-              <ul class="list-group list-group-flush"  style="overflow-y: auto; max-height: 200px;">
+              <ul class="list-group list-group-flush" style="overflow-y: auto; max-height: 250px;">
+
+                <?php foreach ($loa as $l) : ?>
+                  <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap" >
+                    <h6 class="mb-0 text-primary custom-text" style="font-weight:600; cursor: pointer;" onclick="viewloa('<?= $l->loa_no?>')"><?= $l->loa_no?></h6>
+                    <span style="font-weight:600;" class="colored-label"><?= $l->status?></span>
+                  </li>
+                <?php endforeach; ?>
+              </ul>
+            </div> -->
+
+            <!-- patient history noa-->
+            <!-- <div class="card shadow mt-3">
+            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap border-0"> -->
+                  <!-- <h6 class="mb-0 text-secondary" style="font-weight:600;">LOA </h6> -->
+                  <!-- <span style="font-weight:600;" class="colored-label">NOA #</span>
+                  <span style="font-weight:600;" class="colored-label">Status</span>
+                </li>
+              <ul class="list-group list-group-flush"  style="overflow-y: auto; max-height: 250px;">
                 
                 
                 <?php foreach ($noa as $n) : ?>
-                  <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                    <h6 class="mb-0 text-secondary" style="font-weight:600;"><?= $n->noa_no?></h6>
+                  <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap" >
+                    <h6 class="mb-0 text-primary custom-text" style="font-weight:600; cursor: pointer;" onclick="viewnoa('<?= $n->noa_no?>')"><?= $n->noa_no?></h6>
                     <span style="font-weight:600;" class="colored-label"><?= $n->status?></span>
                   </li>
                 <?php endforeach; ?>
                 
               </ul>
-            </div>
+            </div> -->
 
           </div>
-          <div class="col-md-8">
+
+          <div class="col-md-5">
             <div class="card shadow mb-0">
               <div class="card-body pt-4">
                 <div class="row">
@@ -241,3 +291,72 @@
   	</div>
 	</div>
 </div>
+<!-- <style>
+  .custom-text:hover {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+</style> -->
+ <script>
+  const viewloa = (loa_no) =>{
+      console.log(loa_no);
+      }
+      const viewnoa = (noa_no) =>{
+        console.log(noa_no);
+      }
+
+      const baseurl = '<?php echo base_url();?>';
+      const emp_id = '<?= $member['emp_id']?>';
+      const hp_id = '<?= $hp_id?>';
+      
+          $(document).ready(function(){
+              $('#loa_table').DataTable({ 
+              processing: true,
+              serverSide: true,
+              order: [],
+
+              ajax: {
+                url: `${baseurl}healthcare-provider/patient/fetch_all_patient_loa`,
+                type: "POST",
+                data: { 'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
+                        'emp_id' :  emp_id,
+                        'hp_id' :  hp_id}
+              },
+
+              // columnDefs: [{ 
+              //   "targets": [6], // 6th and 7th column / numbering column
+              //   "orderable": false,
+              // },
+              // ],
+              responsive: true,
+              fixedHeader: true,
+            });   
+         
+          
+            $('#noa_table').DataTable({ 
+            processing: true,
+            serverSide: true,
+            order: [],
+
+            ajax: {
+              url: `${baseurl}healthcare-provider/patient/fetch_all_patient_noa`,
+              type: "POST",
+              data: { 'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
+                      'emp_id' :  emp_id,
+                      'hp_id' :  hp_id}
+            },
+
+            // columnDefs: [{ 
+            //   "targets": [6], // 6th and 7th column / numbering column
+            //   "orderable": false,
+            // },
+            // ],
+            responsive: true,
+            fixedHeader: true,
+            });   
+
+          });
+          
+         
+ </script>
+  
+

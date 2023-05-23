@@ -24,7 +24,7 @@
 
         <div class="row mb-3">
           <div class="col-sm-12">
-            <a class="btn btn-dark me-2" href="<?php echo base_url(); ?>company-doctor/loa/requests-list/approved">
+            <a class="btn btn-dark me-2" href="<?php echo base_url(); ?>healthcare-provider/loa-requests/approved">
               <i class="mdi mdi-arrow-left-bold"></i>
               Go Back
             </a>
@@ -217,11 +217,10 @@
     $('#qrcode').html('');
     $('#barcode').html('');
 
-    const loa_no = `<?php echo $row['loa_no']; ?>`;
     const healthcard_no = `<?php echo $row['health_card_no']; ?>`;
 
     new QRCode(document.getElementById("qrcode"), {
-      text: loa_no,
+      text: healthcard_no,
       width: 100,
       height: 100,
     });

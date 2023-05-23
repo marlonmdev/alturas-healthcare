@@ -109,4 +109,44 @@ class Patient_model extends CI_Model {
     $query = $this->db->get_where('max_benefit_limits', ['emp_id' => $emp_id]);
     return $query->row_array();
   }
+     // Start of server-side processing datatables
+     var $table_1_soa = 'billing';
+     var $table_2_soa = 'noa_requests';
+     var $table_3_soa = 'loa_requests';
+     var $table_4_soa = 'members';
+     var $table_5_soa = 'healthcare_providers';
+     var $table_7_soa = 'max_benefit_limits';
+  
+     private function _get_soa_list_datatables_query($hp_id) {
+         $this->db->select('*');
+         $this->db->from($this->table_1_soa . ' as tbl_1');
+         $this->db->join($this->table_2_soa . ' as tbl_2', 'tbl_1.noa_id = tbl_2.noa_id', 'left');
+         $this->db->join($this->table_3_soa . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id', 'left');
+         $this->db->join($this->table_4_soa . ' as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id');
+         $this->db->join($this->table_5_soa . ' as tbl_5', 'tbl_1.hp_id = tbl_5.hp_id');
+         $this->db->join($this->table_7_soa . ' as tbl_7', 'tbl_1.emp_id = tbl_7.emp_id');
+         $this->db->where('tbl_1.hp_id', $hp_id);
+         $this->db->where('tbl_1.pdf_bill IS NOT NULL');
+     }
+  
+     public function soa_list_datatable($hp_id) {
+         $this->_get_soa_list_datatables_query($hp_id);
+         if ($_POST['length'] != -1)
+              $this->db->limit($_POST['length'], $_POST['start']);
+          $query = $this->db->get();
+          return $query->result_array();
+     }
+
+     function count_filtered_soa($hp_id) {
+      $this->_get_datatables_query($status, $hp_id);
+      $query = $this->db->get();
+      return $query->num_rows();
+  }
+
+  function count_all_soa($hp_id) {
+      $this->db->from($this->table_1_soa)
+              ->where('pdf_bill IS NOT NULL')
+              ->where('hp_id', $hp_id);
+      return $this->db->count_all_results();
+  }
 }

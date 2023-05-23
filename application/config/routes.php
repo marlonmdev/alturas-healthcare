@@ -132,6 +132,9 @@ $route['healthcare-provider/billing/bill-loa/(:any)/success/(:any)'] = 'healthca
 $route['healthcare-provider/billing/loa/view-receipt/(:any)'] = 'healthcare_provider/billing_controller/view_request_billing';
 $route['healthcare-provider/billing/noa/view-receipt/(:any)'] = 'healthcare_provider/billing_controller/view_request_billing';
 
+//SOA LIST
+$route['healthcare-provider/patient_soa/soa-list'] = 'healthcare_provider/patient_controller/list_of_soa';
+$route['healthcare-provider/patient/fetch-lis-of-soa'] = 'healthcare_provider/patient_controller/fetch_lis_of_soa';
 // NOA Billing
 $route['healthcare-provider/billing/bill-noa/upload-pdf/(:any)'] = 'healthcare_provider/billing_controller/upload_noa_pdf_bill_form';
 $route['healthcare-provider/billing/bill-noa/upload-pdf/(:any)/submit'] = 'healthcare_provider/billing_controller/submit_noa_pdf_bill';
@@ -214,6 +217,8 @@ $route['healthcare-provider/reports/report-list/ajax/billingServicesMember'] = '
 $route['healthcare-provider/patient/design'] = 'healthcare_provider/patient_controller/design';
 $route['healthcare-provider/patient/fetch_all_patient/(:any)'] = 'healthcare_provider/patient_controller/fetch_all_patient';
 $route['healthcare-provider/patient/view_information/(:any)'] = 'healthcare_provider/patient_controller/view_information';
+$route['healthcare-provider/patient/fetch_all_patient_loa'] = 'healthcare_provider/patient_controller/fetch_all_patient_loa';
+$route['healthcare-provider/patient/fetch_all_patient_noa'] = 'healthcare_provider/patient_controller/fetch_all_patient_noa';
 
 
 // $route['head-office-iad/transaction/members'] = 'ho_iad/transaction_controller/members';

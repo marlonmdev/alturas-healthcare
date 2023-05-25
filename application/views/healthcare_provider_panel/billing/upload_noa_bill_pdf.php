@@ -94,7 +94,7 @@
                             <label class="form-label fs-5 ls-1">Remaining MBL Balance</label>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text bg-cyan text-white">&#8369;</span>
-                                    <input type="number" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="<?= $remaining_balance ?>"  readonly>
+                                    <input type="text" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="<?= number_format($remaining_balance) ?>"  readonly>
                                 </div>
                             </div>
 
@@ -102,15 +102,15 @@
                             <label class="form-label fs-5 ls-1" id="net_bill_label">Initial Bill</label>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text bg-cyan text-white">&#8369;</span>
-                                    <input type="number" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" value="0.00" readonly>
+                                    <input type="text" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" value="0.00" readonly>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row pt-1" id="final_diagnosis">
+                        <div class="row " id="final_diagnosis">
                             <div class="col-lg-6">
                                 <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
-                                    <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Final Diagnosis 
+                                    <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Final Diagnosis/Operation 
                                 </label>
                                 <input type="file" class="form-control" name="Rinal-Diagnosis" id="Rinal-Diagnosis" accept="application/pdf" onchange="previewPdfFile('Rinal-Diagnosis')" required disabled>
                                 <div class="invalid-feedback fs-6">
@@ -123,14 +123,21 @@
                                      Upload Medical Abstract(Optional)
                                 </label>
                                 <input type="file" class="form-control" name="Medical-Abstract" id="Medical-Abstract" accept="image/jpeg,image/png" onchange="previewPdfFile('Medical-Abstract')" disabled>
+                
+                            </div>
+
+                            <div class="col-lg-6 mt-3">
+                                <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
+                                    <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Take Home Medicine
+                                </label>
+                                <input type="file" class="form-control" name="Operation" id="Operation" accept="application/pdf" onchange="previewPdfFile('Operation')" required disabled>
                                 <div class="invalid-feedback fs-6">
                                     PDF File is required
                                 </div>
                             </div>
-
-                            <div class="col-lg-6">
+                            <div class="col-lg-6 mt-3">
                                 <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
-                                    <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Operation
+                                    <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Take Home Medicine Image
                                 </label>
                                 <input type="file" class="form-control" name="Operation" id="Operation" accept="application/pdf" onchange="previewPdfFile('Operation')" required disabled>
                                 <div class="invalid-feedback fs-6">
@@ -141,7 +148,7 @@
                         </div>
              
 
-                    <div class="row">
+                    <div class="row mt-3">
                         <div class="d-flex justify-content-center align-items-center mt-2">
                             <button type="submit" class="btn btn-info text-white btn-lg ls-2 me-3" id="upload-btn">
                                 <i class="mdi mdi-upload me-1"></i>UPLOAD
@@ -213,7 +220,7 @@
 </div>
 <script>
     const baseUrl = `<?php echo base_url(); ?>`;
-    const mbl = parseFloat($('#remaining-balance').val());
+    const mbl = parseFloat($('#remaining-balance').val().replace(/,/g, ''));
     let net_bill = 0;
     let pdfPreview = document.getElementById('pdf-preview');
     // const previewPdfFile = () => {
@@ -293,7 +300,7 @@
         var columnData = dataTable.column(3).data(); // Assuming column 4 is index 3
         var firstIndex = columnData[0];
         if (dataTable.rows().count() !== 0) {
-            $('#net-bill').val(parseFloat(firstIndex.replace(/,/g, '')));
+            $('#net-bill').val(firstIndex);
         }
             
     }
@@ -486,7 +493,7 @@
                             if (match) {
                             subtotalValue = parseFloat(match[1].replace(/,/g, ""));
                             net_bill=subtotalValue;
-                            document.getElementsByName("net-bill")[0].value = subtotalValue;
+                            document.getElementsByName("net-bill")[0].value = match[1];
                            
                             } else {
                             console.log("please pay for this amount is not found");

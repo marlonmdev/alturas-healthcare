@@ -77,13 +77,17 @@
               </div>
             </div>
            
-            <?php include "search_member_form.php"; ?>
-
-            <?php include "searched_member_profile.php"; ?>
-
+              <?php include "search_member_form.php"; ?>
+              <div id="searchedMemberContainer">
+                <?php include "searched_member_profile.php"; ?>
+              </div>
+              <?php include 'view_loa_history.php'; ?>
+              <?php include 'view_noa_history.php'; ?>
+              <?php include 'view_pdf_bill_modal.php'; ?>
+              
           </div>
           
-        <!-- End Container fluid  -->
+        <!-- End Container fluid  --> 
         </div>
       <!-- End Page wrapper  -->
       </div>
@@ -93,12 +97,26 @@
       const base_url = `<?php echo base_url(); ?>`;
 
       $(document).ready(function(){
+
+        $('#viewLoaModal').on('hidden.bs.modal', function() {
+          $('#services').empty(); // Remove all list items from the list
+          $('#documents').empty(); 
+          // Additional reset logic if needed
+        });
+
+        $('#viewNoaModal').on('hidden.bs.modal', function() {
+          $('#services-noa').empty(); // Remove all list items from the list
+          $('#documents-noa').empty(); 
+          // Additional reset logic if needed
+        });
         /* This is a jQuery function that is used to hide and show the search form. */
             $("#search-form-1")[0].reset();
             $("#search-by-name").addClass('d-none');
             $("#search-by-healthcard").removeClass('d-none is-invalid is-valid');
             $("#healthcard-no").focus();
         $("#search-select").on('change', function(){
+          document.getElementById("searchedMemberContainer").innerHTML = "";
+        
           if($(this).val() == "healthcard"){
             $("#search-form-1")[0].reset();
             $("#search-by-name").addClass('d-none');
@@ -258,7 +276,52 @@
           });
         });
 
-        Quagga.init({
+          const get_loa = () =>{
+          const emp_id = $("#s-emp-id").val();
+          const hp_id = document.querySelector('#hp-id').value;
+          $('#loa_table').DataTable({ 
+              lengthMenu: [5, 10, 25, 50],
+              processing: true,
+              serverSide: true,
+              order: [],
+
+              ajax: {
+                url: `${base_url}healthcare-provider/patient/fetch_all_patient_loa`,
+                type: "POST",
+                data: { 'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
+                        'emp_id' :  emp_id,
+                        'hp_id' :  hp_id}
+              },
+
+              responsive: true,
+              fixedHeader: true,
+            });  
+          }
+          
+          const get_noa = () =>{
+            const emp_id = $("#s-emp-id").val();
+            const hp_id = document.querySelector('#hp-id').value;
+            $('#noa_table').DataTable({ 
+            lengthMenu: [5, 10, 25, 50],
+            processing: true,
+            serverSide: true,
+            order: [],
+
+            ajax: {
+              url: `${base_url}healthcare-provider/patient/fetch_all_patient_noa`,
+              type: "POST",
+              data: { 'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
+                      'emp_id' :  emp_id,
+                      'hp_id' :  hp_id}
+            },
+
+            responsive: true,
+            fixedHeader: true,
+            });   
+  
+          }
+
+           Quagga.init({
           inputStream : {
               name : "Live",
               type : "LiveStream",
@@ -281,63 +344,157 @@
               document.querySelector('#search-form-1').submit();
           });
 
-          const baseurl = '<?php echo base_url();?>';
-          
-          const get_loa = () =>{
-          const emp_id = $("#s-emp-id").val();
-          const hp_id = document.querySelector('#hp-id').value;
-              $('#loa_table').DataTable({ 
-              processing: true,
-              serverSide: true,
-              order: [],
-
-              ajax: {
-                url: `${baseurl}healthcare-provider/patient/fetch_all_patient_loa`,
-                type: "POST",
-                data: { 'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
-                        'emp_id' :  emp_id,
-                        'hp_id' :  hp_id}
-              },
-
-              // columnDefs: [{ 
-              //   "targets": [6], // 6th and 7th column / numbering column
-              //   "orderable": false,
-              // },
-              // ],
-              responsive: true,
-              fixedHeader: true,
-            });   
-          }
-          
-          const get_noa = () =>{
-            const emp_id = $("#s-emp-id").val();
-            const hp_id = document.querySelector('#hp-id').value;
-            $('#noa_table').DataTable({ 
-            processing: true,
-            serverSide: true,
-            order: [],
-
-            ajax: {
-              url: `${baseurl}healthcare-provider/patient/fetch_all_patient_noa`,
-              type: "POST",
-              data: { 'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
-                      'emp_id' :  emp_id,
-                      'hp_id' :  hp_id}
-            },
-
-            // columnDefs: [{ 
-            //   "targets": [6], // 6th and 7th column / numbering column
-            //   "orderable": false,
-            // },
-            // ],
-            responsive: true,
-            fixedHeader: true,
-            });   
-          }
-          
-
+   
       });
 
+      function viewImage(rx_file) {
+        let item = [{
+            src: `${base_url}uploads/loa_attachments/${rx_file}`, // path to image
+            title: 'Attached RX File' // If you skip it, there will display the original image name
+        }];
+        // define options (if needed)
+        let options = {
+            index: 0 // this option means you will start at first image
+        };
+        // Initialize the plugin
+        let photoviewer = new PhotoViewer(item, options);
+    }
+
+    const viewPDFBill = (pdf_bill,loa_no) => {
+      $('#viewPDFBillModal').modal('show');
+      $('#pdf-loa-no').html(loa_no);
+
+        let pdfFile = `${base_url}uploads/pdf_bills/${pdf_bill}`;
+        let fileExists = checkFileExists(pdfFile);
+        
+        if(fileExists){
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', pdfFile, true);
+        xhr.responseType = 'blob';
+
+        xhr.onload = function(e) {
+            if (this.status == 200) {
+            let blob = this.response;
+            let reader = new FileReader();
+
+            reader.onload = function(event) {
+                let dataURL = event.target.result;
+                let iframe = document.querySelector('#pdf-viewer');
+                iframe.src = dataURL;
+            };
+            reader.readAsDataURL(blob);
+            }
+        };
+        xhr.send();
+        }
+    }
+
+    const checkFileExists = (fileUrl) => {
+        let xhr = new XMLHttpRequest();
+        xhr.open('HEAD', fileUrl, false);
+        xhr.send();
+
+        return xhr.status == "200" ? true: false;
+    }
+
+    function viewLoaHistoryInfo(loa_id) {
+        $.ajax({
+        url: `${base_url}healthcare-provider/patient_history/loa/${loa_id}`,
+        type: "GET",
+        success: function(response) {
+            const res = JSON.parse(response);
+            const base_url = window.location.origin;
+            // Object Destructuring
+            const { status, token, loa_no, member_mbl, remaining_mbl, first_name, middle_name,
+            last_name, suffix, date_of_birth, age, gender, philhealth_no, blood_type, contact_no,
+            home_address, city_address, email, contact_person, contact_person_addr, contact_person_no,
+            healthcare_provider, loa_request_type, med_services, health_card_no, requesting_company,
+            request_date, chief_complaint, requesting_physician, attending_physician, rx_file,pdf_bill,
+            req_status, work_related, approved_by, approved_on,expiration
+            } = res;
+
+            $("#viewLoaModal").modal("show");
+            // const med_serv = med_services !== '' ? med_services : 'None';
+            // const at_physician = attending_physician !== '' ? attending_physician : 'None';
+
+            $('#loa-no').html(loa_no);
+            $('#status').html(`<strong class="text-success">[${req_status}]</strong>`);
+            $('#approved-date').html(approved_on);
+            $('#expire').html(expiration);
+
+            $.each(med_services, function(index, item) {
+              $('#services').append('<li>' + item + '</li>');
+            });
+            console.log("rxfile",rx_file);
+            console.log("soafile",pdf_bill);
+            if(rx_file.length){
+              $('#documents').append('<li id="rx-file"><span class="mdi mdi-file"></span><a href="#" onclick="viewImage(\''+rx_file+'\')">Rx File</a></li>');
+            }
+            if(pdf_bill.length){
+              $('#documents').append('<li id="soa"><span class="mdi mdi-file-pdf"></span><a href="#" onclick="viewPDFBill(\''+pdf_bill+'\',\''+loa_no+'\')">Statement of Account (SOA)</a></li>');
+            }
+            // $('#soa').html();
+            
+            // $('#requesting-company').html(requesting_company);
+            // $('#request-date').html(request_date);
+            // $('#chief-complaint').html(chief_complaint);
+            // $('#requesting-physician').html(requesting_physician);
+            $('#physician').html(attending_physician);
+            // $('#work-related').html(work_related);
+          }
+
+        });
+
+    }
+    function viewNoaHistoryInfo(noa_id) {
+        $.ajax({
+        url: `${base_url}healthcare-provider/patient_history/noa/${noa_id}`,
+        type: "GET",
+        success: function(response) {
+            const res = JSON.parse(response);
+            const base_url = window.location.origin;
+            // Object Destructuring
+            const { status, token, noa_no, member_mbl, remaining_mbl, first_name, middle_name,
+            last_name, suffix, date_of_birth, age, gender, philhealth_no, blood_type, contact_no,
+            home_address, city_address, email, contact_person, contact_person_addr, contact_person_no,
+            healthcare_provider, loa_request_type, med_services, health_card_no, requesting_company,
+            request_date, chief_complaint, requesting_physician, attending_physician, pdf_bill,
+            req_status, work_related, approved_by, approved_on
+            } = res;
+
+            $("#viewNoaModal").modal("show");
+            // const med_serv = med_services !== '' ? med_services : 'None';
+            // const at_physician = attending_physician !== '' ? attending_physician : 'None';
+
+            $('#noa-no').html(noa_no);
+            $('#status-noa').html(`<strong class="text-success">[${req_status}]</strong>`);
+            $('#approved-date-noa').html(approved_on);
+            $('#expire-noa').html(approved_on);
+
+            $.each(med_services, function(index, item) {
+              $('#services-noa').append('<li>' + item + '</li>');
+            });
+            // console.log("rxfile",rx_file);
+            console.log("soafile",pdf_bill);
+            // if(rx_file.length){
+            //   $('#documents-noa').append('<li id="rx-file"><span class="mdi mdi-file"></span><a href="#" onclick="viewImage(\''+ +'\')">Rx File</a></li>');
+            // }
+            if(pdf_bill.length){
+              $('#documents-noa').append('<li id="soa"><span class="mdi mdi-file-pdf"></span><a href="#" onclick="viewPDFBill(\''+pdf_bill+'\',\''+noa_no+'\')">Statement of Account (SOA)</a></li>');
+            }
+            // $('#soa').html();
+            
+            // $('#requesting-company').html(requesting_company);
+            // $('#request-date').html(request_date);
+            // $('#chief-complaint').html(chief_complaint);
+            // $('#requesting-physician').html(requesting_physician);
+            $('#physician-noa').html(attending_physician);
+            // $('#work-related').html(work_related);
+          }
+
+        });
+
+    }
       // window.onload = function() {
       //   get_loa_noa();
       // };

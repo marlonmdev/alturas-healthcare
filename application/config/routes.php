@@ -105,6 +105,8 @@ $route['healthcare-provider/dashboard'] = 'healthcare_provider/pages_controller'
 // Search Member
 $route['healthcare-provider/search-member/healthcard'] = 'healthcare_provider/search_controller/search_member_by_healthcard';
 $route['healthcare-provider/search-member/name'] = 'healthcare_provider/search_controller/search_member_by_name';
+// $route['healthcare-provider/search-member/healthcard'] = 'healthcare_provider/search_controller/search_by_healthcard';
+// $route['healthcare-provider/search-member/name'] = 'healthcare_provider/search_controller/search_by_name';
 $route['healthcare-provider/history/get_loa_noa'] = 'healthcare_provider/search_controller/get_loa_noa';
 
 //Upload Textfile
@@ -131,6 +133,10 @@ $route['healthcare-provider/billing/bill-loa/(:any)/success/(:any)'] = 'healthca
 // viewing of loa and noa billing receipt
 $route['healthcare-provider/billing/loa/view-receipt/(:any)'] = 'healthcare_provider/billing_controller/view_request_billing';
 $route['healthcare-provider/billing/noa/view-receipt/(:any)'] = 'healthcare_provider/billing_controller/view_request_billing';
+
+//patient history
+$route['healthcare-provider/patient_history/loa/(:any)'] = 'healthcare_provider/patient_controller/get_loa_history_info';
+$route['healthcare-provider/patient_history/noa/(:any)'] = 'healthcare_provider/patient_controller/get_noa_history_info';
 
 //SOA LIST
 $route['healthcare-provider/patient_soa/soa-list'] = 'healthcare_provider/patient_controller/list_of_soa';
@@ -280,6 +286,11 @@ $route['head-office-accounting/reports/paid'] = 'ho_accounting/main_controller/f
 $route['head-office-accounting/bill/adjusted-advance/submit'] = 'ho_accounting/main_controller/submit_adjusted_advance';
 $route['head-office-accounting/charging/business-units/fetch'] = 'ho_accounting/main_controller/fetch_bu_charging';
 $route['head-office-accounting/charging/business-units/details/fetch'] = 'ho_accounting/main_controller/fetch_charging_details';
+
+
+$route['print/pdfbilling/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/sample/$1/$2/$3/$4/$5';
+// $route['print/pdfbilling/(:any)/(:any)/(:any)/(:any)'] = 'print_billed_reports/health_billing/$1/$2/$3/$4';
+
 
 //Pages
 $route['head-office-accounting/billing-list'] = 'ho_accounting/TableList';

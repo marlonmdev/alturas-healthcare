@@ -95,14 +95,14 @@
          
             </div>
             </div> -->
-            <h4 class="page-title ls-2">Patient History</h4>
+            <h4 class="page-title ls-2 ">Patient History</h4>
             <!-- patient history Loa-->
-            <div class="card shadow mt-2" >
+            <div class="card shadow mt-2 p-2" >
               <table class="table table-hover table-responsive" id="loa_table">
                   <thead >
                     <tr>
                       <th > <span style="font-weight:600;" class="colored-label">LOA #</span></th>
-                      <th > <span style="font-weight:600;" class="colored-label">AMOUT</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">NET BILL</span></th>
                       <th > <span style="font-weight:600;" class="colored-label">STATUS</span></th>
                       <th > <span style="font-weight:600;" class="colored-label">DATE</span></th>
                       <th > <span style="font-weight:600;" class="colored-label">VIEW</span></th>
@@ -114,12 +114,12 @@
             </div>
 
             <!-- patient history noa-->
-            <div class="card shadow mt-3">
+            <div class="card shadow mt-3 p-2">
             <table class="table table-hover table-responsive" id="noa_table">
                 <thead>
                   <tr>
                       <th > <span style="font-weight:600;" class="colored-label">NOA #</span></th>
-                      <th > <span style="font-weight:600;" class="colored-label">AMOUT</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">NET BILL</span></th>
                       <th > <span style="font-weight:600;" class="colored-label">STATUS</span></th>
                       <th > <span style="font-weight:600;" class="colored-label">DATE</span></th>
                       <th > <span style="font-weight:600;" class="colored-label">VIEW</span></th>
@@ -281,7 +281,7 @@
                       <?= $member['contact_person_no']; ?>
                     </div>
                   </div>
-
+                  <?php include 'view_approved_loa_details.php'; ?>
                 </div>
               </div>
             </div>
@@ -308,8 +308,15 @@
       const emp_id = '<?= $member['emp_id']?>';
       const hp_id = '<?= $hp_id?>';
       
+      function viewLoaInfo(loa_id){
+        $("#viewLoaModal").modal("show");
+      }
+      function viewNoaInfo(Noa_id){
+        $("#viewLoaModal").modal("show");
+      }
           $(document).ready(function(){
               $('#loa_table').DataTable({ 
+              lengthMenu: [5, 10, 25, 50],
               processing: true,
               serverSide: true,
               order: [],
@@ -333,6 +340,7 @@
          
           
             $('#noa_table').DataTable({ 
+            lengthMenu: [5, 10, 25, 50],
             processing: true,
             serverSide: true,
             order: [],

@@ -69,7 +69,7 @@
                         <label class="form-label fs-5 ls-1">Remaining MBL Balance</label>
                             <div class="input-group mb-3">
                                 <span class="input-group-text bg-cyan text-white">&#8369;</span>
-                                <input type="text" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="<?= $remaining_balance ?>"  readonly>
+                                <input type="text" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="<?= number_format($remaining_balance) ?>"  readonly>
                             </div>
                         </div>
 
@@ -77,7 +77,7 @@
                         <label class="form-label fs-5 ls-1">Net Bill</label>
                             <div class="input-group mb-3">
                                 <span class="input-group-text bg-cyan text-white">&#8369;</span>
-                                <input type="number" class="form-control fw-bold ls-1" id="net-bill" name="net-bill"   readonly>
+                                <input type="text" class="form-control fw-bold ls-1" id="net-bill" name="net-bill"  value="0.00"  readonly>
                             </div>
                         </div>
                     </div>
@@ -104,7 +104,7 @@
 
 <script>
   const baseUrl = `<?php echo base_url(); ?>`;
-  const mbl = parseFloat($('#remaining-balance').val());
+  const mbl = parseFloat($('#remaining-balance').val().replace(/,/g, ''));
   let net_bill = 0;
    // Get all the dropdown list items
   //  var dropdownItems = document.querySelectorAll('.dropdown-menu');
@@ -199,111 +199,134 @@
       reader.onload = function() {
           let typedarray = new Uint8Array(this.result);
           pdfjsLib.getDocument(typedarray).promise.then(function(pdf) {
-          let numPages = pdf.numPages;
-          let pageNum = 1;
-          pdf.getPage(pageNum).then(function(page) {
-              page.getTextContent().then(function(textContent) {
-                let sortedItems = textContent.items
-                    .map(function(item) {
-                      return {text: item.str.toLowerCase(), x: item.transform[4], y: item.transform[5]};
-                    })
-                    .sort(function(a, b) {
-                      if (Math.abs(a.y - b.y) < 5) {
-                        return a.x - b.x;
-                      } else {
-                        return b.y - a.y;
-                      }
-                    })
-                    .reduce(function(groups, item) {
-                      const lastGroup = groups[groups.length - 1];
-                      if (lastGroup && Math.abs(lastGroup.y - item.y) < 5) {
-                        lastGroup.text += ' ' + item.text;
-                      } else {
-                        groups.push({text: item.text, x: item.x, y: item.y});
-                      }
-                      return groups;
-                    }, []);
+                let numPages = pdf.numPages;
+                    let promises = [];
+                    console.log("number of pages",numPages);
+                    for (let page = 1; page <= numPages ; page++) {
+                    let promise = pdf.getPage(page)
+                        .then(function(page) {
+                        return page.getTextContent();
+                        })
+                        .then(function(textContent) {
+                        const sortedItems = textContent.items
+                            .map(function(item) {
+                            return {text: item.str.toLowerCase(), x: item.transform[4], y: item.transform[5]};
+                            })
+                            .sort(function(a, b) {
+                            if (Math.abs(a.y - b.y) < 5) {
+                                return a.x - b.x;
+                            } else {
+                                return b.y - a.y;
+                            }
+                            })
+                            .reduce(function(groups, item) {
+                            const lastGroup = groups[groups.length - 1];
+                            if (lastGroup && Math.abs(lastGroup.y - item.y) < 5) {
+                                lastGroup.text += ' ' + item.text;
+                            } else {
+                                groups.push({text: item.text, x: item.x, y: item.y});
+                            }
+                            return groups;
+                            }, []);
 
-                  let finalResult = sortedItems.reduce(function(result, item) {
-                    //remove all the dots. that not used in group text
-                    const pattern = /\.{2,}(?!\.)/g;
-                    return result = result + '\n' + item.text.replace(pattern, '');
-                  }, '').trim();
-                  
-                console.log("final text",finalResult);
+                        return sortedItems;
+                        })
+                        .catch(function(error) {
+                        console.log(error);
+                        });
 
-              //get only the text between hospital charges and professional fee
-              const pattern = /hospital charges(.*?)please pay for this amount/si;
-              const matches = finalResult.match(pattern);
-              const result = matches ? matches[1] : null;
-              hospital_charges = result;
-              console.log(result);
+                    promises.push(promise);
+                    }
+                    
+                    Promise.all(promises)
+                        .then(function(results) {
+                            let finalItems = results.flat();
+                            console.log(finalItems);
+                            return finalItems;
+                        })
+                        .then(function(finalItems) {
+                            let finalResult = finalItems.reduce(function(result, item) {
+                            // Remove all the dots that are not used in group text
+                            const pattern = /\.{2,}(?!\.)/g;
+                            return (result = result + '\n' + item.text.replace(pattern, ''));
+                            }, '').trim();
 
-              const regex = /please pay for this amount\s*\.*\s*([\d,\.]+)/i;
-              // const regex = /subtotal\s*\.{26}\s*\(([\d,\.]+)\)/i;
-                  const match = finalResult.match(regex);
-                  console.log("match",match);
-                  if (match) {
-                  const subtotalValue = parseFloat(match[1].replace(/,/g, ""));
-                    document.getElementsByName("net-bill")[0].value = subtotalValue;
-                    net_bill=subtotalValue;
-                    console.log(subtotalValue);
-                  } else {
-                    console.log("please pay for this amount is not found");
-                    $.alert({
-                            title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'></h3>`,
-                            content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it looks like your uploaded pdf is already . Thank you for your understanding.</div>",
-                            type: "red",
-                            buttons: {
-                            ok: {
-                                text: "OK",
-                                btnClass: "btn-danger",
-                            },
-                        },
-                    });
-                  }
-                  
-                const invalid_loa = /admission no:/i;
-                const valid_loa = /registry no:/i;
-                if(finalResult.match(invalid_loa) && !finalResult.match(valid_loa)){
-                  $('#upload-btn').prop('disabled',true);
-                  setTimeout(function() {
-                  $.alert({
-                                title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>ERROR</h3>`,
-                                content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it appears that your uploaded PDF is an NOA (Notice of Admission) instead of an LOA (Letter of Authorization). Thank you for your understanding.</div>",
-                                type: "red",
-                                buttons: {
+                            console.log(finalResult);
+                            const pattern = /hospital charges(.*?)please pay for this amount/si;
+                        const matches = finalResult.match(pattern);
+                        const result = matches ? matches[1] : null;
+                        // console.log(result);
+                        //get only the text between hospital charges and professional fee
+                        hospital_charges = result;
+                        // hospital_bills(finalResult);
+                        
+                        const regex = /please pay for this amount\s*\.*\s*([\d,\.]+)/i;
+                        // const regex = /subtotal\s*\.{26}\s*\(([\d,\.]+)\)/i;
+                            const match = finalResult.match(regex);
+                            console.log("match",match);
+                            if (match) {
+                            subtotalValue = parseFloat(match[1].replace(/,/g, ""));
+                            net_bill=subtotalValue;
+                            document.getElementsByName("net-bill")[0].value = match[1];
+                           
+                            } else {
+                            console.log("please pay for this amount is not found");
+                            $.alert({
+                                    title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
+                                    content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it appears that there was an issue with the uploaded PDF. Please review the PDF file and try again.</div>",
+                                    type: "red",
+                                    buttons: {
                                     ok: {
                                         text: "OK",
                                         btnClass: "btn-danger",
                                     },
                                 },
                             });
-                          }, 1000); // Delay of 2000 milliseconds (2 seconds)
-                }else{
-                  $('#upload-btn').prop('disabled',false);
-                  if(parseFloat(net_bill)>mbl){
-                                setTimeout(function() {
+                            }
+                            console.log("netbill",net_bill);
+                            console.log("mbl",mbl);
+
+                            const valid_loa = /registry no:/i;
+                            const invalid_loa = /admission no:/i;
+                            if(finalResult.match(invalid_loa) && !finalResult.match(valid_loa)){
+                            $('#upload-btn').prop('disabled',true);
+                            setTimeout(function() {
                                 $.alert({
-                                    title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Warning</h3>`,
-                                    content: "<div style='font-size: 16px; color: #333;'>The uploaded PDF Bill exceeds the patient's MBL balance.</div>",
-                                    type: "red",
-                                    buttons: {
-                                        ok: {
-                                            text: "OK",
-                                            btnClass: "btn-danger",
-                                        },
-                                    },
-                                });
-                            }, 1000); // Delay of 2000 milliseconds (2 seconds)
-                    }
-                }
-                  
-              }); 
-          });
-          }, function(error) {
-          console.error(error);
-          });
+                                                title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>ERROR</h3>`,
+                                                content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it appears that your uploaded PDF is an NOA (Notice of Admission) instead of  an LOA (Letter of Authorization). Thank you for your understanding.</div>",
+                                                type: "red",
+                                                buttons: {
+                                                    ok: {
+                                                        text: "OK",
+                                                        btnClass: "btn-danger",
+                                                    },
+                                                },
+                                            });
+                                        }, 1000); // Delay of 2000 milliseconds (2 seconds)
+                            }else{
+                            $('#upload-btn').prop('disabled',false);
+                            if(parseFloat(net_bill)>mbl){
+                              $('#upload-btn').prop('disabled',true);
+                                            setTimeout(function() {
+                                            $.alert({
+                                                title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Warning</h3>`,
+                                                content: "<div style='font-size: 16px; color: #333;'>The uploaded PDF Bill exceeds the patient's MBL balance.</div>",
+                                                type: "red",
+                                                buttons: {
+                                                    ok: {
+                                                        text: "OK",
+                                                        btnClass: "btn-danger",
+                                                    },
+                                                },
+                                            });
+                                        }, 1000); // Delay of 2000 milliseconds (2 seconds)
+                                }
+                            }
+                        });
+                        
+                    }, function(error) {
+                    console.error(error);
+                    });
       };
       reader.readAsArrayBuffer(this.files[0]);
       });

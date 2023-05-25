@@ -961,7 +961,8 @@ class Billing_controller extends CI_Controller {
         $this->security->get_csrf_hash();
         $loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
         $billing_no = $this->input->post('billing-no', TRUE);
-        $net_bill = $this->input->post('net-bill', TRUE);
+        $net_b = $this->input->post('net-bill', TRUE);
+        $net_bill = floatval(str_replace(',','',$net_b));
         $hospitalBillData = $_POST['hospital_bill_data'];
         // $hospitalBillArray = json_decode($hospitalBillData, true);
         //var_dump($hospitalBillArray);
@@ -1087,7 +1088,8 @@ class Billing_controller extends CI_Controller {
         $this->security->get_csrf_hash();
         $noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
         $billing_no = $this->input->post('billing-no', TRUE);
-        $net_bill = $this->input->post('net-bill', TRUE);
+        $net_b = $this->input->post('net-bill', TRUE);
+        $net_bill = floatval(str_replace(',','',$net_b));
         $hospitalBillData = $_POST['hospital_bill_data'];
         // $hospitalBillArray = json_decode($hospitalBillData, true);
         //var_dump($hospitalBillArray);
@@ -1208,7 +1210,8 @@ class Billing_controller extends CI_Controller {
         $this->security->get_csrf_hash();
         $noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
         $billing_no = $this->input->post('billing-no', TRUE);
-        $net_bill = $this->input->post('net-bill', TRUE);
+        $net_b = $this->input->post('net-bill', TRUE);
+        $net_bill = floatval(str_replace(',', '', $net_b));
         $hospitalBillData = $_POST['hospital_bill_data'];
         
 
@@ -1236,7 +1239,7 @@ class Billing_controller extends CI_Controller {
                 'emp_id'                => $noa_info['emp_id'],
                 'noa_id'                => $noa_id,
                 'hp_id'                 => $this->session->userdata('dsg_hcare_prov'),
-                'initial_bill'              => $net_bill,
+                'initial_bill'          => $net_bill,
                 'company_charge'        => floatval(str_replace(',', '', $result_charge['company_charge'])),
                 'personal_charge'       => floatval(str_replace(',', '', $result_charge['personal_charge'])),
                 'pdf_bill'              => $pdf_file,

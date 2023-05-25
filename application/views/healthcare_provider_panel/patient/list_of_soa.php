@@ -19,41 +19,94 @@
   <!-- End Bread crumb and right sidebar toggle -->
   <!-- Start of Container fluid  -->
   <div class="container-fluid">
-    <!-- <div class="col-12 pb-2">
-        <div class="input-group">
-            <a href="<?php echo base_url(); ?>head-office-accounting/billing-list/paid-bill" type="submit" class="btn btn-info" data-bs-toggle="tooltip" title="Click to Go Back">
-                <strong class="ls-2" style="vertical-align:middle">
-                    <i class="mdi mdi-arrow-left-bold"></i> Go Back
-                </strong>
-            </a>
-        </div>
-    </div> -->
+  <div class="row pt-2">
+                    <div class="col-lg-4 ps-5 pb-3 pt-1 pb-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text text-dark fw-bold">
+                                Filter : 
+                                </span>
+                            </div>
+                            <select class="form-select fw-bold" name="filter" id="filter" onchange="displayValue()">
+                                <option value="">Please Select...</option>
+                                <option value="LOA">LOA</option>
+                                <option value="NOA">NOA</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 pt-1 offset-">
+                            <div class="input-group">
+                                <div class="input-group-append">
+                                    <span class="input-group-text text-dark ls-1 ms-2">
+                                        <i class="mdi mdi-calendar-range"></i>
+                                    </span>
+                                </div>
+                                <input type="date" class="form-control" name="start_date" id="start-date" oninput="validateDateRange()" placeholder="Start Date" onchange="displayValue()">
+
+                                <div class="input-group-append">
+                                    <span class="input-group-text text-dark ls-1 ms-2">
+                                        <i class="mdi mdi-calendar-range"></i>
+                                    </span>
+                                </div>
+                                <input type="date" class="form-control" name="end-date" id="end-date" oninput="validateDateRange()" placeholder="End Date" onchange="displayValue()">
+                                  
+                              </div>
+                        </div>
+              
+                        <div class="col-lg-2 pt-1">
+                        <div class="text-center">
+                          <div class="input-group">
+                            <input type="text" id="searchInput" class="form-control">
+                            <div class="input-group-append">
+                              <span class="input-group-text">
+                                <i class="mdi mdi-magnify"></i>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                        <div class="col-lg-2 pt-1">            
+                            <button class="btn btn-danger ls-1" onclick="printDiv('#printableDiv')" title="click to print data"><i class="mdi mdi-printer"></i> Print</button>
+                        </div>
+                    </div>
+                    
+                
     <div class="row  pt-1">
       <div class="col-lg-12">
         <div class="row pt-2 pb-2">
             <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
             <!-- <input type="hidden" name="pd-payment-no" id="pd-payment-no" value="<?php echo $payment_no ?>"> -->
-            <div class="card shadow" style="background-color:">
+            <div class="card shadow" >
               <div id="printableDiv">
                 <div class="text-center pt-4">
                       <h4>ALTURAS HEALTHCARE SYSTEM</h4>
                       <h4>List of SOA</h4>
-                      <h5>RAMIRO HOSPITAL</h5>
-                      <!-- <h5><?php echo $hp_name['hp_name']; ?></h5>
-                      <h6><?php echo date('F d, Y', strtotime($pay['startDate'])).' to '.date('F d, Y', strtotime($pay['endDate']))?></h6>
-                      <h6><?php echo $payment_no; ?></h6> -->
+                      <h4><?php echo $hp_name; ?></h4>
+                </div>
+                <div class="pt-3 pb-2">
+                      <span class="fw-bold fs-5 ps-2 pt-1" id="b-date"></span>
                 </div>
                 <div class="card-body">
-                  <div class="table">
+                  <div class="table" id="table">
                     <table class="table table-hover table-responsive" id="paidTable">
                       <thead style="background-color:#eddcb7">
-                        <tr>
-                          <th class="fw-bold">LOA/NOA #</th>
-                          <th class="fw-bold">Patient Name</th>
-                          <th class="fw-bold">Type of Request</th>
-                          <th class="fw-bold">Total Bill</th>
-                          <th class="fw-bold">View SOA</th>
-                        </tr>
+         
+                        <tr class="border-secondary border-2 border-0 border-top border-bottom">
+                                                <th class="fw-bold ls-2"><strong>Billing No</strong></th>
+                                                <th class="fw-bold ls-2"><strong>LOA/NOA #</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Patient Name</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Business Unit</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Current MBL</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Percentage</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Hospital Bill</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Personal Charge</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Company Charge</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Healthcare Advance</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Healthcare Advance Status</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Total Payable of AGC</strong></th>
+                                            </tr>
+                
                       </thead>
                       <tbody id="billed-tbody">
                       </tbody>
@@ -61,20 +114,29 @@
                   </div>
                 </div>
               </div>
+             
             </div>
-            <div class="col pt-4 offset-10">
-              <button class="btn btn-danger ls-1" onclick="printDiv('#printableDiv')" title="click to print data"><i class="mdi mdi-printer"></i> Print </button>
-            </div>
+           
       </div>
       <!-- End Row  -->  
       </div>
     <!-- End Container fluid  -->
     </div>
+    <div id="pagination-container"></div>
     <?php include 'view_pdf_bill_modal.php'; ?>
   <!-- End Page wrapper  -->
   </div>
 <!-- End Wrapper -->
-
+<style>
+@media print {
+  #printableDiv {
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+  }
+}
+</style>
 <script>
 
   
@@ -91,8 +153,8 @@ const printDiv = (layer) => {
     //  const payment_no = document.querySelector('#pd-payment-no').value;
 
  $(document).ready(function(){
-    
     let billedTable = $('#paidTable').DataTable({
+      lengthMenu: [5],
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
@@ -104,6 +166,10 @@ const printDiv = (layer) => {
         // passing the token as data so that requests will be allowed
         data: function(data) {
             data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
+            data.endDate = $('#end-date').val();
+            data.startDate = $('#start-date').val();
+            data.loa_noa = $('#filter').val();
+            data.searchInput = $('#searchInput').val();
         },
       },
       //Set column definition initialisation properties.
@@ -113,7 +179,7 @@ const printDiv = (layer) => {
       data: [],  // Empty data array
       deferRender: true,  // Enable deferred rendering
       info: false,
-      paging: false,
+      paging: true,
       filter: false,
       lengthChange: false,
       responsive: true,
@@ -121,7 +187,7 @@ const printDiv = (layer) => {
     });
 
     billedTable.on('draw.dt', function() {
-    let columnIdx = 4;
+    let columnIdx = 10;
     let sum = 0;
     let rows = billedTable.rows().nodes();
     if ($('#paidTable').DataTable().data().length > 0) {
@@ -139,6 +205,27 @@ const printDiv = (layer) => {
             });
         }
         $('#pd-total-bill').html(sum.toLocaleString('PHP', { minimumFractionDigits: 2 }));
+    });
+
+    $("#start-date").flatpickr({
+        dateFormat: 'Y-m-d',
+    });
+    $("#end-date").flatpickr({
+        dateFormat: 'Y-m-d',
+    });
+
+    $('#end-date').change(function(){
+        billedTable.draw();
+    });
+    $('#start-date').change(function(){
+        billedTable.draw();
+    });
+    $('#filter').change(function(){
+      billedTable.draw();
+    });
+    $('#searchInput').on('keyup', function() {
+      // billedTable.search(this.value).draw();
+      billedTable.draw();
     });
 
  });
@@ -184,5 +271,45 @@ const printDiv = (layer) => {
         return xhr.status == "200" ? true: false;
     }
 
+    const displayValue = () => {
+
+    const startDate = new Date(document.querySelector('#start-date').value);
+    const endDate = new Date(document.querySelector('#end-date').value);
+
+    const options = { month: 'long', day: '2-digit', year: 'numeric' };
+    const formattedStartDate = startDate.toLocaleDateString('en-US', options);
+    const formattedEndDate = endDate.toLocaleDateString('en-US', options);
+
+    const bDate = document.querySelector('#b-date');
+
+    if(document.querySelector('#start-date').value || document.querySelector('#end-date').value != ''){
+        bDate.textContent = 'Date : '+formattedStartDate + ' to ' + formattedEndDate;
+    }else{
+        bDate.textContent = '';
+    }
+}
+
+const validateDateRange = () => {
+        const startDateInput = document.querySelector('#start-date');
+        const endDateInput = document.querySelector('#end-date');
+        const startDate = new Date(startDateInput.value);
+        const endDate = new Date(endDateInput.value);
+
+        if (startDateInput.value === '' || endDateInput.value === '') {
+            return; // Don't do anything if either input is empty
+        }
+
+        if (endDate < startDate) {
+            // alert('End date must be greater than or equal to the start date');
+            swal({
+                title: 'Failed',
+                text: 'End date must be greater than or equal to the start date',
+                showConfirmButton: true,
+                type: 'error'
+            });
+            endDateInput.value = '';
+            return;
+        }          
+    }
 
 </script>

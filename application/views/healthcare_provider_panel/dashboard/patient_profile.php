@@ -314,6 +314,7 @@
       function viewNoaInfo(Noa_id){
         $("#viewLoaModal").modal("show");
       }
+
           $(document).ready(function(){
               $('#loa_table').DataTable({ 
               lengthMenu: [5, 10, 25, 50],

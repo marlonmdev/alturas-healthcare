@@ -105,6 +105,8 @@ $route['healthcare-provider/dashboard'] = 'healthcare_provider/pages_controller'
 // Search Member
 $route['healthcare-provider/search-member/healthcard'] = 'healthcare_provider/search_controller/search_member_by_healthcard';
 $route['healthcare-provider/search-member/name'] = 'healthcare_provider/search_controller/search_member_by_name';
+// $route['healthcare-provider/search-member/healthcard'] = 'healthcare_provider/search_controller/search_by_healthcard';
+// $route['healthcare-provider/search-member/name'] = 'healthcare_provider/search_controller/search_by_name';
 $route['healthcare-provider/history/get_loa_noa'] = 'healthcare_provider/search_controller/get_loa_noa';
 
 //Upload Textfile
@@ -131,6 +133,10 @@ $route['healthcare-provider/billing/bill-loa/(:any)/success/(:any)'] = 'healthca
 // viewing of loa and noa billing receipt
 $route['healthcare-provider/billing/loa/view-receipt/(:any)'] = 'healthcare_provider/billing_controller/view_request_billing';
 $route['healthcare-provider/billing/noa/view-receipt/(:any)'] = 'healthcare_provider/billing_controller/view_request_billing';
+
+//patient history
+$route['healthcare-provider/patient_history/loa/(:any)'] = 'healthcare_provider/patient_controller/get_loa_history_info';
+$route['healthcare-provider/patient_history/noa/(:any)'] = 'healthcare_provider/patient_controller/get_noa_history_info';
 
 //SOA LIST
 $route['healthcare-provider/patient_soa/soa-list'] = 'healthcare_provider/patient_controller/list_of_soa';

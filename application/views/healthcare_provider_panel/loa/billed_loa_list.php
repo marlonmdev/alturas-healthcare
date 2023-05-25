@@ -173,53 +173,53 @@
     });
   }
 
-    function viewImage(path) {
-        let item = [{
-            src: path, // path to image
-            title: 'Attached RX File' // If you skip it, there will display the original image name
-        }];
-        // define options (if needed)
-        let options = {
-            index: 0 // this option means you will start at first image
-        };
-        // Initialize the plugin
-        let photoviewer = new PhotoViewer(item, options);
-    }
+      function viewImage(path) {
+          let item = [{
+              src: path, // path to image
+              title: 'Attached RX File' // If you skip it, there will display the original image name
+          }];
+          // define options (if needed)
+          let options = {
+              index: 0 // this option means you will start at first image
+          };
+          // Initialize the plugin
+          let photoviewer = new PhotoViewer(item, options);
+      }
 
-    const viewPDFBill = (pdf_bill,loa_no) => {
-      $('#viewPDFBillModal').modal('show');
-      $('#pdf-loa-no').html(loa_no);
+      const viewPDFBill = (pdf_bill,loa_no) => {
+        $('#viewPDFBillModal').modal('show');
+        $('#pdf-loa-no').html(loa_no);
 
-        let pdfFile = `${baseUrl}uploads/pdf_bills/${pdf_bill}`;
-        let fileExists = checkFileExists(pdfFile);
-        
-        if(fileExists){
-        let xhr = new XMLHttpRequest();
-        xhr.open('GET', pdfFile, true);
-        xhr.responseType = 'blob';
+          let pdfFile = `${baseUrl}uploads/pdf_bills/${pdf_bill}`;
+          let fileExists = checkFileExists(pdfFile);
+          
+          if(fileExists){
+          let xhr = new XMLHttpRequest();
+          xhr.open('GET', pdfFile, true);
+          xhr.responseType = 'blob';
 
-        xhr.onload = function(e) {
-            if (this.status == 200) {
-            let blob = this.response;
-            let reader = new FileReader();
+          xhr.onload = function(e) {
+              if (this.status == 200) {
+              let blob = this.response;
+              let reader = new FileReader();
 
-            reader.onload = function(event) {
-                let dataURL = event.target.result;
-                let iframe = document.querySelector('#pdf-viewer');
-                iframe.src = dataURL;
-            };
-            reader.readAsDataURL(blob);
-            }
-        };
-        xhr.send();
-        }
-    }
+              reader.onload = function(event) {
+                  let dataURL = event.target.result;
+                  let iframe = document.querySelector('#pdf-viewer');
+                  iframe.src = dataURL;
+              };
+              reader.readAsDataURL(blob);
+              }
+          };
+          xhr.send();
+          }
+      }
 
-    const checkFileExists = (fileUrl) => {
-        let xhr = new XMLHttpRequest();
-        xhr.open('HEAD', fileUrl, false);
-        xhr.send();
+      const checkFileExists = (fileUrl) => {
+          let xhr = new XMLHttpRequest();
+          xhr.open('HEAD', fileUrl, false);
+          xhr.send();
 
-        return xhr.status == "200" ? true: false;
-    }
+          return xhr.status == "200" ? true: false;
+      }
 </script>

@@ -59,10 +59,11 @@
                             <th class="fw-bold ls-2"><strong>Current MBL</strong></th>
                             <th class="fw-bold ls-2"><strong>Percentage</strong></th>
                             <th class="fw-bold ls-2"><strong>Hospital Bill</strong></th>
-                            <th class="fw-bold ls-2"><strong>Personal Charge</strong></th>
                             <th class="fw-bold ls-2"><strong>Company Charge</strong></th>
                             <th class="fw-bold ls-2"><strong>Healthcare Advance</strong></th>
                             <th class="fw-bold ls-2"><strong>Total Payable</strong></th>
+                            <th class="fw-bold ls-2"><strong>Personal Charge</strong></th>
+                            <th class="fw-bold ls-2"><strong>Remaining MBL</strong></th>
                             <th class="fw-bold ls-2"><strong>SOA</strong></th>
                         </tr>
                       </thead>
@@ -77,9 +78,10 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td></td>
                         <td class="fw-bold">TOTAL BILL </td>
                         <td><span class="text-danger fw-bold fs-5" id="mt-total-bill"></span></td>
+                        <td></td>
+                        <td></td>
                         <td></td>
                       </tfoot>
                     </table>
@@ -146,10 +148,10 @@ const printDiv = (layer) => {
     });
 
     billedTable.on('draw.dt', function() {
-    let columnIdx = 10;
-    let sum = 0;
-    let rows = billedTable.rows().nodes();
-    if ($('#billedLoaTable').DataTable().data().length > 0) {
+        let columnIdx = 9;
+        let sum = 0;
+        let rows = billedTable.rows().nodes();
+        if ($('#billedLoaTable').DataTable().data().length > 0) {
             // The table is not empty
             rows.each(function(index, row) {
                 let rowData = billedTable.row(row).data();
@@ -158,8 +160,8 @@ const printDiv = (layer) => {
                 let matches = columnValue.match(pattern);
                 if (matches && matches.length > 0) {
                     let numberString = matches[0].replace(',', '');
-                    let intValue = parseInt(numberString);
-                    sum += intValue;
+                    let floatValue = parseFloat(numberString);
+                    sum += floatValue;
                 }
             });
         }

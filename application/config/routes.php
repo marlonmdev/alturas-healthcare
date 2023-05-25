@@ -283,7 +283,9 @@ $route['head-office-accounting/bill/for-payment-details/fetch'] = 'ho_accounting
 $route['head-office-accounting/bill/paid-bill/fetch'] = 'ho_accounting/main_controller/fetch_paid_bills';
 $route['head-office-accounting/reports/print'] = 'ho_accounting/main_controller/fetch_for_printing';
 $route['head-office-accounting/reports/paid'] = 'ho_accounting/main_controller/fetch_paid_bill_report';
-
+$route['head-office-accounting/bill/adjusted-advance/submit'] = 'ho_accounting/main_controller/submit_adjusted_advance';
+$route['head-office-accounting/charging/business-units/fetch'] = 'ho_accounting/main_controller/fetch_bu_charging';
+$route['head-office-accounting/charging/business-units/details/fetch'] = 'ho_accounting/main_controller/fetch_charging_details';
 
 //Pages
 $route['head-office-accounting/billing-list'] = 'ho_accounting/TableList';
@@ -307,6 +309,8 @@ $route['head-office-accounting/bill/fetch_paid/(:any)'] = 'ho_accounting/Pages_c
 $route['head-office-accounting/reports'] = 'ho_accounting/Pages_controller/view_generate_reports';
 $route['head-office-accounting/reports/cash-advance'] = 'ho_accounting/Pages_controller/view_cash_advances';
 $route['head-office-accounting/reports/charging'] = 'ho_accounting/Pages_controller/view_charging';
+$route['head-office-accounting/charging/business-unit'] = 'ho_accounting/Pages_controller/view_bu_charging';
+$route['head-office-accounting/charging/member/(:any)'] = 'ho_accounting/Pages_controller/view_charging_details';
 // LOA datatables
 $route['head-office-accounting/loa-request-list/loa-approved/fetch'] = 'ho_accounting/Loa_ho_controller/get_approved_loa';
 $route['head-office-accounting/loa-request-list/loa-completed/fetch'] = 'ho_accounting/Loa_ho_controller/get_completed_loa';

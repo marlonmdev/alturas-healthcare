@@ -4,7 +4,7 @@
     <div class="page-breadcrumb">
         <div class="row">
         <div class="col-12 d-flex no-block align-items-center">
-            <h4 class="page-title">Payment History</h4>
+            <h4 class="page-title"><i class="mdi mdi-history"></i> Payment History</h4>
             <div class="ms-auto text-end">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
@@ -39,7 +39,7 @@
         <br>
         <div class="card bg-light">
             <div class="card-body">
-                <div class="table-responsive">
+                <div class="">
                     <table class="table table-hover" id="billedTable">
                         <thead style="background-color:#00538C">
                             <tr>

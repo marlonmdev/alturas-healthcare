@@ -132,6 +132,9 @@ $route['healthcare-provider/billing/bill-loa/(:any)/success/(:any)'] = 'healthca
 $route['healthcare-provider/billing/loa/view-receipt/(:any)'] = 'healthcare_provider/billing_controller/view_request_billing';
 $route['healthcare-provider/billing/noa/view-receipt/(:any)'] = 'healthcare_provider/billing_controller/view_request_billing';
 
+//SOA LIST
+$route['healthcare-provider/patient_soa/soa-list'] = 'healthcare_provider/patient_controller/list_of_soa';
+$route['healthcare-provider/patient/fetch-lis-of-soa'] = 'healthcare_provider/patient_controller/fetch_lis_of_soa';
 // NOA Billing
 $route['healthcare-provider/billing/bill-noa/upload-pdf/(:any)'] = 'healthcare_provider/billing_controller/upload_noa_pdf_bill_form';
 $route['healthcare-provider/billing/bill-noa/upload-pdf/(:any)/submit'] = 'healthcare_provider/billing_controller/submit_noa_pdf_bill';
@@ -214,6 +217,8 @@ $route['healthcare-provider/reports/report-list/ajax/billingServicesMember'] = '
 $route['healthcare-provider/patient/design'] = 'healthcare_provider/patient_controller/design';
 $route['healthcare-provider/patient/fetch_all_patient/(:any)'] = 'healthcare_provider/patient_controller/fetch_all_patient';
 $route['healthcare-provider/patient/view_information/(:any)'] = 'healthcare_provider/patient_controller/view_information';
+$route['healthcare-provider/patient/fetch_all_patient_loa'] = 'healthcare_provider/patient_controller/fetch_all_patient_loa';
+$route['healthcare-provider/patient/fetch_all_patient_noa'] = 'healthcare_provider/patient_controller/fetch_all_patient_noa';
 
 
 // $route['head-office-iad/transaction/members'] = 'ho_iad/transaction_controller/members';
@@ -272,7 +277,9 @@ $route['head-office-accounting/bill/for-payment-details/fetch'] = 'ho_accounting
 $route['head-office-accounting/bill/paid-bill/fetch'] = 'ho_accounting/main_controller/fetch_paid_bills';
 $route['head-office-accounting/reports/print'] = 'ho_accounting/main_controller/fetch_for_printing';
 $route['head-office-accounting/reports/paid'] = 'ho_accounting/main_controller/fetch_paid_bill_report';
-
+$route['head-office-accounting/bill/adjusted-advance/submit'] = 'ho_accounting/main_controller/submit_adjusted_advance';
+$route['head-office-accounting/charging/business-units/fetch'] = 'ho_accounting/main_controller/fetch_bu_charging';
+$route['head-office-accounting/charging/business-units/details/fetch'] = 'ho_accounting/main_controller/fetch_charging_details';
 
 //Pages
 $route['head-office-accounting/billing-list'] = 'ho_accounting/TableList';
@@ -296,6 +303,8 @@ $route['head-office-accounting/bill/fetch_paid/(:any)'] = 'ho_accounting/Pages_c
 $route['head-office-accounting/reports'] = 'ho_accounting/Pages_controller/view_generate_reports';
 $route['head-office-accounting/reports/cash-advance'] = 'ho_accounting/Pages_controller/view_cash_advances';
 $route['head-office-accounting/reports/charging'] = 'ho_accounting/Pages_controller/view_charging';
+$route['head-office-accounting/charging/business-unit'] = 'ho_accounting/Pages_controller/view_bu_charging';
+$route['head-office-accounting/charging/member/(:any)'] = 'ho_accounting/Pages_controller/view_charging_details';
 // LOA datatables
 $route['head-office-accounting/loa-request-list/loa-approved/fetch'] = 'ho_accounting/Loa_ho_controller/get_approved_loa';
 $route['head-office-accounting/loa-request-list/loa-completed/fetch'] = 'ho_accounting/Loa_ho_controller/get_completed_loa';
@@ -368,7 +377,9 @@ $route['healthcare-coordinator/history'] = 'healthcare_coordinator/pages_control
 //Coordinator Ledger
 $route['healthcare-coordinator/loa_controller/view_ledger'] = 'healthcare_coordinator/pages_controller/view_ledger';
 $route['healthcare-coordinator/loa_controller/fetch_datatable'] = 'healthcare_coordinator/loa_controller/fetch_datatable';
-$route['healthcare-coordinator/loa_controller/fetch_ledger/(:any)'] = 'healthcare_coordinator/loa_controller/fetch_ledger';
+$route['healthcare-coordinator/loa_controller/fetch_ledger/(:any)'] = 'healthcare_coordinator/pages_controller/fetch_ledger';
+$route['healthcare-coordinator/loa_controller/fetch_ledger_data'] = 'healthcare_coordinator/loa_controller/fetch_ledger_data';
+$route['healthcare-coordinator/loa_controller/view_record'] = 'healthcare_coordinator/loa_controller/view_record';
 //end
 
 $route['healthcare-coordinator/noa/requests-list'] = 'healthcare_coordinator/pages_controller/view_pending_noa_list';
@@ -465,6 +476,7 @@ $route['healthcare-coordinator/loa/requested-loa/match_with_billing/(:any)'] = '
 $route['healthcare-coordinator/loa/requests-list/billed/fetch'] = 'healthcare_coordinator/loa_controller/fetch_billed_loa';
 $route['healthcare-coordinator/loa/matched-bill/submit'] = 'healthcare_coordinator/loa_controller/submit_matched_bill';
 $route['healthcare-coordinator/loa/requests-list/for-charging/fetch'] = 'healthcare_coordinator/loa_controller/fetch_for_payment_loa';
+$route['healthcare-coordinator/loa/history'] = 'healthcare_coordinator/loa_controller/history';
 $route['healthcare-coordinator/get-services/(:any)'] = 'healthcare_coordinator/loa_controller/get_hp_services';
 $route['healthcare-coordinator/loa/billed/fetch'] = 'healthcare_coordinator/loa_controller/fetch_consolidated_billing';
 $route['healthcare-coordinator/loa/total-bill/fetch'] = 'healthcare_coordinator/loa_controller/fetch_total_net_bill';

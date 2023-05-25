@@ -728,8 +728,57 @@ class List_model extends CI_Model{
        return $query->result_array();
        }
 
-    
+       function set_new_cash_advance($bill_no,$new_advance) {
+        $this->db->set('cash_advance', $new_advance);
+            $this->db->where('billing_no', $bill_no);
+        return $this->db->update('billing');
+       }
 
+       var $charge_table_1 = 'billing';
+       var $charge_table_5 = 'members';
+       private function _get_get_charging_for_report_query() {
+       $this->db->from($this->charge_table_1 . ' as tbl_1')
+               ->join($this->charge_table_5 . ' as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
+               ->where('tbl_1.status', 'Paid');
+   
+            if($this->input->post('filter')){
+                $this->db->like('tbl_5.business_unit', $this->input->post('filter'));
+            }
+       }
+   
+       function get_charging_for_report() {
+       $this->_get_get_charging_for_report_query();
+       if ($_POST['length'] != -1)
+           $this->db->limit($_POST['length'], $_POST['start']);
+       $query = $this->db->get();
+       return $query->result_array();
+       }
+
+       function get_member_info($empId) {
+        return $this->db->get_where('members', ['emp_id' => $empId])->row_array();
+       }
+
+       var $details_table_1 = 'billing';
+       var $details_table_2 = 'loa_requests';
+       var $details_table_3 = 'noa_requests';
+       var $details_table_5 = 'members';
+       private function _get_get_details_for_report_query() {
+       $this->db->from($this->details_table_1 . ' as tbl_1')
+                ->join($this->details_table_2 . ' as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id', 'left')
+                ->join($this->details_table_3 . ' as tbl_3', 'tbl_1.noa_id = tbl_3.noa_id', 'left')
+               ->join($this->details_table_5 . ' as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
+               ->where('tbl_1.emp_id', $this->input->post('emp_id'))
+               ->where('tbl_1.status', 'Paid')
+               ->order_by('tbl_1.billing_id', 'desc');
+       }
+   
+       function get_charging_details() {
+       $this->_get_get_details_for_report_query();
+       if ($_POST['length'] != -1)
+           $this->db->limit($_POST['length'], $_POST['start']);
+       $query = $this->db->get();
+       return $query->result_array();
+       }
 
 //=================================================
 

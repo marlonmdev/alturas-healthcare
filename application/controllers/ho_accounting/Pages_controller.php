@@ -182,4 +182,21 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
+	function view_bu_charging() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bu'] = $this->List_model->get_business_units();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/business_unit_charging.php');
+		$this->load->view('templates/footer');
+	}
+
+	function view_charging_details() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['emp_id'] = $empId = $this->uri->segment(4);
+		$data['member'] = $this->List_model->get_member_info($empId);
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/charging_details.php');
+		$this->load->view('templates/footer');
+	}
+
 }

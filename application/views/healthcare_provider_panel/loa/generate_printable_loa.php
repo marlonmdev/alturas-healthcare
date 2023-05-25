@@ -217,10 +217,11 @@
     $('#qrcode').html('');
     $('#barcode').html('');
 
+    const loa_no = `<?php echo $row['loa_no']; ?>`;
     const healthcard_no = `<?php echo $row['health_card_no']; ?>`;
 
     new QRCode(document.getElementById("qrcode"), {
-      text: healthcard_no,
+      text: loa_no,
       width: 100,
       height: 100,
     });

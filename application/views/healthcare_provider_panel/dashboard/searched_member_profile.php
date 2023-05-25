@@ -39,21 +39,36 @@
           </ul>
         </div>
 
-        <div class="card shadow mt-3">
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item d-flex justify-content-center align-items-center flex-wrap">
-              <span class="mb-0 text-secondary fw-bold" style="font-weight:600;">LOA & NOA Histories </span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-              <span class="mb-0" style="font-weight:600;">LOA & NOA No.</span>
-              <span style="font-weight:600;" class="colored-label">Status</span>
-              <span style="font-weight:600;" class="colored-label">Date Approved</span>
-            </li>
-            <li id="history" class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-            
-            </li>
-          </ul>
-        </div>
+        <span style="font-weight:600;" class="colored-label ps-3">Patient History</span>
+            <!-- patient history Loa-->
+            <div class="card shadow mt-2" >
+              <table class="table table-hover table-responsive" id="loa_table">
+                  <thead >
+                    <tr>
+                      <th > <span style="font-weight:600;" class="colored-label">LOA #</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">STATUS</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">VIEW</span></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+            </div>
+
+            <!-- patient history noa-->
+            <div class="card shadow mt-3">
+            <table class="table table-hover table-responsive" id="noa_table">
+                <thead>
+                  <tr>
+                      <th > <span style="font-weight:600;" class="colored-label">NOA #</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">STATUS</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">VIEW</span></th>
+                  </tr>
+                </thead>
+              	<tbody>
+                </tbody>
+              </table>
+            </div>
 
       </div>
       <div class="col-md-8">

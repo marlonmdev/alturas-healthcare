@@ -120,7 +120,7 @@
 
                             <div class="col-lg-6 ">
                                 <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
-                                    <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Medical Abstract(Optional)
+                                     Upload Medical Abstract(Optional)
                                 </label>
                                 <input type="file" class="form-control" name="Medical-Abstract" id="Medical-Abstract" accept="image/jpeg,image/png" onchange="previewPdfFile('Medical-Abstract')" disabled>
                                 <div class="invalid-feedback fs-6">
@@ -410,7 +410,7 @@
             pdfPreview.innerHTML = '';
         });
 
-        //extract pdf text 
+        //extract pdf text and git the net bill
         let pdfFileInput = document.getElementById('pdf-file');
         let subtotalValue = 0;
         pdfFileInput.addEventListener('change', function() {
@@ -418,42 +418,63 @@
         reader.onload = function() {
             let typedarray = new Uint8Array(this.result);
             pdfjsLib.getDocument(typedarray).promise.then(function(pdf) {
-            let numPages = pdf.numPages;
-            let pageNum = 1;
-            pdf.getPage(pageNum).then(function(page) {
-                page.getTextContent().then(function(textContent) {
-                let sortedItems = textContent.items
-                    .map(function(item) {
-                        return {text: item.str.toLowerCase(), x: item.transform[4], y: item.transform[5]};
-                    })
-                    .sort(function(a, b) {
-                        if (Math.abs(a.y - b.y) < 5) {
-                        return a.x - b.x;
-                        } else {
-                        return b.y - a.y;
-                        }
-                    })
-                    .reduce(function(groups, item) {
-                        const lastGroup = groups[groups.length - 1];
-                        if (lastGroup && Math.abs(lastGroup.y - item.y) < 5) {
-                        lastGroup.text += ' ' + item.text;
-                        } else {
-                        groups.push({text: item.text, x: item.x, y: item.y});
-                        }
-                        return groups;
-                    }, []);
+                let numPages = pdf.numPages;
+                    let promises = [];
+                    console.log("number of pages",numPages);
+                    for (let page = 1; page <= numPages ; page++) {
+                    let promise = pdf.getPage(page)
+                        .then(function(page) {
+                        return page.getTextContent();
+                        })
+                        .then(function(textContent) {
+                        const sortedItems = textContent.items
+                            .map(function(item) {
+                            return {text: item.str.toLowerCase(), x: item.transform[4], y: item.transform[5]};
+                            })
+                            .sort(function(a, b) {
+                            if (Math.abs(a.y - b.y) < 5) {
+                                return a.x - b.x;
+                            } else {
+                                return b.y - a.y;
+                            }
+                            })
+                            .reduce(function(groups, item) {
+                            const lastGroup = groups[groups.length - 1];
+                            if (lastGroup && Math.abs(lastGroup.y - item.y) < 5) {
+                                lastGroup.text += ' ' + item.text;
+                            } else {
+                                groups.push({text: item.text, x: item.x, y: item.y});
+                            }
+                            return groups;
+                            }, []);
 
-                    let finalResult = sortedItems.reduce(function(result, item) {
-                    //remove all the dots. that not used in group text
-                    const pattern = /\.{2,}(?!\.)/g;
-                    return result = result + '\n' + item.text.replace(pattern, '');
-                    }, '').trim();
-                            
-                        console.log(finalResult);
-                        const pattern = /hospital charges(.*?)please pay for this amount/si;
+                        return sortedItems;
+                        })
+                        .catch(function(error) {
+                        console.log(error);
+                        });
+
+                    promises.push(promise);
+                    }
+                    
+                    Promise.all(promises)
+                        .then(function(results) {
+                            let finalItems = results.flat();
+                            console.log(finalItems);
+                            return finalItems;
+                        })
+                        .then(function(finalItems) {
+                            let finalResult = finalItems.reduce(function(result, item) {
+                            // Remove all the dots that are not used in group text
+                            const pattern = /\.{2,}(?!\.)/g;
+                            return (result = result + '\n' + item.text.replace(pattern, ''));
+                            }, '').trim();
+
+                            console.log(finalResult);
+                            const pattern = /hospital charges(.*?)please pay for this amount/si;
                         const matches = finalResult.match(pattern);
                         const result = matches ? matches[1] : null;
-                        console.log(result);
+                        // console.log(result);
                         //get only the text between hospital charges and professional fee
                         hospital_charges = result;
                         // hospital_bills(finalResult);
@@ -519,9 +540,8 @@
                                         }, 1000); // Delay of 2000 milliseconds (2 seconds)
                                 }
                             }
-                            
-                        }); 
-                    });
+                        });
+                        
                     }, function(error) {
                     console.error(error);
                     });

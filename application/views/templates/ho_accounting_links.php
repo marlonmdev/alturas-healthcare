@@ -30,6 +30,17 @@
               </li>
 
               <li class="sidebar-item">
+                <?php echo ($this->uri->segment(3) == 'charging') ? 'selected' : '' ; ?>
+                <a
+                  class="sidebar-link"
+                  href="<?php echo base_url(); ?>head-office-accounting/charging/business-unit"
+                  aria-expanded="false"
+                  ><i class="mdi mdi-file-multiple"></i
+                  ><span class="hide-menu ls-1">Business Unit Charging</span>
+                </a>
+              </li>
+
+              <li class="sidebar-item">
                 <a
                   class="sidebar-link"
                   href="<?php echo base_url(); ?>head-office-accounting/loa-request-list/loa-approved"
@@ -50,7 +61,7 @@
                 </a>
               </li>
 
-              <!-- <li class="sidebar-item">
+              <li class="sidebar-item">
                 <?php echo ($this->uri->segment(3) == 'reports') ? 'selected' : '' ; ?>
                 <a
                   class="sidebar-link"
@@ -59,7 +70,7 @@
                   ><i class="mdi mdi-file-chart"></i
                   ><span class="hide-menu ls-1">Reports</span>
                 </a>
-              </li> -->
+              </li>
 
               <li class="sidebar-item">
                 <a

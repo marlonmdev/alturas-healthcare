@@ -59,7 +59,6 @@
       },
 
       columnDefs: [{ 
-        // "targets": [5],
         "orderable": false,
       },
       ],
@@ -67,7 +66,6 @@
       deferRender: true,
       info: false,
       paging: false,
-      // filter: false,
       lengthChange: false,
       responsive: true,
       fixedHeader: true,

@@ -113,9 +113,139 @@ class Patient_controller extends CI_Controller {
 		$data['mbl'] = $this->patient_model->db_get_member_mbl($member['emp_id']);
 		$data['loa'] = $this->loa_model->get_loa_history($hp_id,$member['emp_id']);
 		$data['noa'] = $this->noa_model->get_noa_history($hp_id,$member['emp_id']);
+		$data['hp_id'] = $hp_id;
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_provider_panel/patient/patient_profile');
 		$this->load->view('templates/footer');
 	}
+
+	function list_of_soa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$hp_id = $this->session->userdata('dsg_hcare_prov');
+		// $data['hp_name'] = $hp_name['hp_name']= $this->patient_model->soa_list_datatable($hp_id);
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_provider_panel/patient/list_of_soa.php');
+		$this->load->view('templates/footer');
+	}
+
+	function fetch_lis_of_soa() {
+		$token = $this->security->get_csrf_hash();
+		$hp_id = $this->session->userdata('dsg_hcare_prov');
+		$soa_list = $this->patient_model->soa_list_datatable($hp_id);
+		$data = [];
+		$loa_noa = '';
+		foreach($soa_list as $soa){
+			$row = [];
+
+			$fullname = $soa['first_name'].' '.$soa['middle_name'].' '.$soa['last_name'].' '.$soa['suffix'];
+
+			if($soa['loa_id'] != ''){
+				$loa_noa = $soa['loa_no'];
+
+			}else if($soa['noa_id'] != ''){
+				$loa_noa = $soa['noa_no'];
+			}
+
+			$total_paid = floatval($soa['company_charge']) + floatval($soa['personal_charge']);
+			
+			// $status = '<span class="text-center badge rounded-pill bg-success text-dark">Paid</span>'; 
+
+			$pdf_soa = '<a href="JavaScript:void(0)" onclick="viewPDFsoa(\'' . $soa['pdf_bill'] . '\' , \''. $soa['noa_no'] .'\', \''. $soa['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file text-danger"></i></a>';
+
+			$row[] = $loa_noa;
+			$row[] = $fullname;
+			$row[] = ($soa['loa_request_type'] !='')? $soa['loa_request_type'] : 'NOA' ;
+			$row[] = number_format($soa['net_bill'], 2, '.', ',');
+			$row[] = $pdf_soa;
+			$data[] = $row;
+
+		}
+
+		// $draw = $_POST['draw'];
+        $totalRecords = $this->patient_model->count_all_soa($hp_id);
+        $filteredRecords = $this->patient_model->count_all_soa($hp_id);
+    
+        $output = [
+            "draw" => $_POST['draw'],
+            "recordsTotal" => intval($totalRecords),
+            "recordsFiltered" => intval($filteredRecords),
+            "data" => $data,
+        ];
+
+		// $output = [
+		// 	"draw" => $_POST['draw'],
+		// 	"data" => $data,
+		// ];
+
+		echo json_encode($output);
+	}
+
+	//fetch loa history
+
+	function fetch_all_patient_loa(){
+		$this->security->get_csrf_hash();
+		$emp_id = $this->input->post('emp_id');
+		$hp_id = $this->input->post('hp_id');
+		$list = $this->loa_model->get_loa_datatables($emp_id, $hp_id);
+		// var_dump("list",$list);
+		// var_dump("emp_id",$emp_id);
+		// var_dump("hp_id",$hp_id);
+		$data = array();
+		foreach ($list as $loa){
+			$row = array(); 
+
+			$member_id = $this->myhash->hasher($loa['emp_id'], 'encrypt');
+			$view_url = base_url() . 'healthcare-provider/patient/view_information/' . $member_id;
+			$custom_actions = '<a href="' . $view_url . '"  data-bs-toggle="tooltip" title="Patient Profile"><i class="mdi mdi-account-card-details fs-2 text-info me-2"></i></a>';
+
+		
+			// this data will be rendered to the datatable
+			$row[] = $loa['loa_no'];
+			$row[] =  $loa['status'];
+			$row[] = $custom_actions;
+			$data[] = $row;
+		}
+
+		$output = array(
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->loa_model->count_all_loa($emp_id, $hp_id),
+			"recordsFiltered" => $this->loa_model->count_loa_filtered($emp_id, $hp_id),
+			"data" => $data,
+		);
+		echo json_encode($output);
+	}
+	function fetch_all_patient_noa(){
+		$this->security->get_csrf_hash();
+		$emp_id = $this->input->post('emp_id');
+		$hp_id = $this->input->post('hp_id');
+		$list = $this->noa_model->get_noa_datatables($emp_id, $hp_id);
+		// var_dump("list",$list);
+		// var_dump("emp_id",$emp_id);
+		// var_dump("hp_id",$hp_id);
+		$data = array();
+		foreach ($list as $noa){
+			$row = array(); 
+
+			$member_id = $this->myhash->hasher($noa['emp_id'], 'encrypt');
+			$view_url = base_url() . 'healthcare-provider/patient/view_information/' . $member_id;
+			$custom_actions = '<a href="' . $view_url . '"  data-bs-toggle="tooltip" title="Patient Profile"><i class="mdi mdi-account-card-details fs-2 text-info me-2"></i></a>';
+
+		
+			// this data will be rendered to the datatable
+			$row[] = $noa['noa_no'];
+			$row[] =  $noa['status'];
+			$row[] = $custom_actions;
+			$data[] = $row;
+		}
+
+		$output = array(
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->noa_model->count_all_noa($emp_id, $hp_id),
+			"recordsFiltered" => $this->noa_model->count_noa_filtered($emp_id, $hp_id),
+			"data" => $data,
+		);
+		echo json_encode($output);
+	}
+	
 
 }

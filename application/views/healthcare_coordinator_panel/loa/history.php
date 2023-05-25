@@ -41,26 +41,12 @@
         </ul>
 
         <div class="row">
-          <div class="col-lg-6 d-flex justify-content-start align-items-center">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text bg-dark text-white"><i class="mdi mdi-filter"></i></span>
-              </div>
-              <select class="form-select fw-bold input-group-select" name="select-month" id="select-month">
-                <option value="">Select Month</option>
-              </select>
-              <select class="form-select fw-bold input-group-select" name="select-year" id="select-year">
-                <option value="">Select Year</option>
-              </select>
-            </div>
-          </div>
-
           <div class="col-lg-6 d-flex justify-content-end align-items-center">
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text bg-dark text-white"><i class="mdi mdi-filter"></i></span>
               </div>
-              <select class="form-select fw-bold" name="matched-hospital-filter" id="matched-hospital-filter">
+              <select class="form-select fw-bold" name="hospital-filter" id="hospital-filter">
                 <option value="">Select Hospital</option>
                 <?php foreach($hcproviders as $option) : ?>
                   <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
@@ -68,12 +54,25 @@
               </select>
             </div>
           </div>
+
+          <div class="col-lg-6 d-flex justify-content-start align-items-center">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text bg-dark text-white ls-1 ms-2"><i class="mdi mdi-filter"></i></span>
+              </div>
+              <input type="date" class="form-control" name="start-date" id="start-date" placeholder="Start Date" disabled>
+              <div class="input-group-append">
+                <span class="input-group-text bg-dark text-white ls-1 ms-2"><i class="mdi mdi-filter"></i></span>
+              </div>
+              <input type="date" class="form-control" name="end-date" id="end-date" placeholder="End Date" disabled>
+            </div>
+          </div>
         </div>
 
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover table-responsive" id="matchedLoaTable">
+              <table class="table table-hover table-responsive" id="historytable">
                 <thead class="fs-6" style="background-color:#00538C">
                   <tr>
                     <th class="fw-bold" style="color: white;">NAME OF PATIENT</th>
@@ -100,9 +99,71 @@
   <?php include 'view_performed_consult_loa.php'; ?>
 </div>
 
-<style>
-  .input-group-select {
-    width: 100%;
-    max-width: 200px; /* Adjust the maximum width as needed */
-  }
-</style>
+
+<script>
+  const baseUrl = "<?php echo base_url(); ?>";
+  $(document).ready(function() {
+    const startDateInput = $('#start-date');
+    const endDateInput = $('#end-date');
+
+    function toggleDateInputs(disabled) {
+      startDateInput.prop('disabled', disabled);
+      endDateInput.prop('disabled', disabled);
+    }
+    toggleDateInputs(true);
+
+    let table = $('#historytable').DataTable({
+      processing: true,
+      serverSide: true,
+      order: [],
+      ajax: {
+        url: `${baseUrl}healthcare-coordinator/loa/history`,
+        type: "POST",
+        data: function(data) {
+          data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
+          data.filter = $('#hospital-filter').val();
+          data.endDate = $('#end-date').val();
+          data.startDate = $('#start-date').val();
+        }
+      },
+      columnDefs: [{
+        "targets": [], // numbering column
+        "orderable": false, //set not orderable
+      }],
+      info: false,
+      paging: false,
+      filter: false,
+      lengthChange: false,
+      responsive: true,
+      fixedHeader: true,
+    });
+
+    function filterByDateRange() {
+      let startDate = $('#start-date').val();
+      let endDate = $('#end-date').val();
+      table.columns(3).search(startDate + ' - ' + endDate).draw();
+    }
+
+    function filterByDateRange() {
+      let startDate = startDateInput.val();
+      let endDate = endDateInput.val();
+      table.columns(3).search(startDate + ' - ' + endDate).draw();
+    }
+
+    $('#hospital-filter').change(function() {
+      let selectedHospital = $(this).val();
+      if (selectedHospital !== '') {
+        toggleDateInputs(false); // Enable date inputs
+        filterByDateRange();
+      } else {
+        toggleDateInputs(true); // Disable date inputs
+        table.columns(3).search('').draw(); // Clear the date filter
+      }
+    });
+
+    $('#start-date, #end-date').change(function() {
+      filterByDateRange();
+    });
+
+  });
+</script>

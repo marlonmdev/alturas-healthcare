@@ -281,6 +281,11 @@ $route['head-office-accounting/bill/adjusted-advance/submit'] = 'ho_accounting/m
 $route['head-office-accounting/charging/business-units/fetch'] = 'ho_accounting/main_controller/fetch_bu_charging';
 $route['head-office-accounting/charging/business-units/details/fetch'] = 'ho_accounting/main_controller/fetch_charging_details';
 
+
+$route['print/pdfbilling/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/sample/$1/$2/$3/$4/$5';
+// $route['print/pdfbilling/(:any)/(:any)/(:any)/(:any)'] = 'print_billed_reports/health_billing/$1/$2/$3/$4';
+
+
 //Pages
 $route['head-office-accounting/billing-list'] = 'ho_accounting/TableList';
 $route['head-office-accounting/billing-list/billed'] = 'ho_accounting/TableList/billed_record';

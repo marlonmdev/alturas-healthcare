@@ -634,31 +634,41 @@ const viewValues = () => {
         $('#company-charge').html(company);
     }
 
-    // const printPDF = () => {
-    //     const bu_filter = document.querySelector('#billed-bu-filter').value;
-    //     const hp_id = document.querySelector('#billed-hospital-filter').value;
-    //     const start_date = document.querySelector('#start-date').value;
-    //     const end_date = document.querySelector('#end-date').value;
-    //     // const tdElement = document.querySelector('#td-val'); // Replace 'td' with the specific selector for your target <td> element
-    //     // const spanElement = tdElement.querySelector('span');
-    //     // const spanValue = spanElement.textContent;
+    const printPDF = () => {
+        const bu_filters = document.querySelector('#billed-bu-filter').value;
+        const hp_id = document.querySelector('#billed-hospital-filter').value;
+        const start_date = document.querySelector('#start-date').value;
+        const end_date = document.querySelector('#end-date').value;
+        const total_bill = document.querySelector('#total_bill').value;
+        // const tdElement = document.querySelector('#td-val'); // Replace 'td' with the specific selector for your target <td> element
+        // const spanElement = tdElement.querySelector('span');
+        // const spanValue = spanElement.textContent;
 
-    //     $.ajax({
-    //           url: `${baseUrl}head-office-accounting/reports/print`,
-    //           type: "GET",
-    //           dataType: "json",
-    //           data: {
-    //             'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
-    //             'hp_id' : hp_id,
-    //             'start_date' : start_date,
-    //             'end_date' : end_date,
-    //             'bu_filter' : bu_filter
-    //           },
-    //           success:function(response){
+        // $.ajax({
+        //       url: `${baseUrl}head-office-accounting/reports/print`,
+        //       type: "GET",
+        //       dataType: "json",
+        //       data: {
+        //         'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
+        //         'hp_id' : hp_id,
+        //         'start_date' : start_date,
+        //         'end_date' : end_date,
+        //         'bu_filter' : bu_filter,
+        //         'total_bill' : total_bill
+        //       },
+        //   });
 
-    //           }
-    //       });
-    // }
+      
+          if(bu_filters == ""){
+            bu_filter = 'none';
+          }else{
+            bu_filter = bu_filters;
+          }
+
+        var base_url = `${baseUrl}`;
+        var win = window.open(base_url + "print/pdfbilling/" + hp_id + "/" + btoa(start_date) + "/" + btoa(end_date) + "/" + btoa(bu_filter) + "/" + total_bill, '_blank');
+
+    }
 
 
 </script>

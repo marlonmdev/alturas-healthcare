@@ -5,7 +5,7 @@
     <div class="page-breadcrumb">
       <div class="row">
         <div class="col-12 d-flex no-block align-items-center">
-          <h4 class="page-title ls-2">Account Settings</h4>
+          <h4 class="page-title ls-2"><i class="mdi mdi-account-settings-variant"></i> Account Settings</h4>
           <div class="ms-auto text-end">
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">

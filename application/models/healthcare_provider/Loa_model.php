@@ -133,9 +133,11 @@ class Loa_model extends CI_Model{
                  ->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id')
                  ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id')
                  ->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id= tbl_5.emp_id')
+                 ->join('performed_loa_info as tbl_6', 'tbl_1.emp_id= tbl_6.emp_id')
                  ->where('tbl_1.loa_id', $loa_id);
         return $this->db->get()->row_array();
     }
+
 
     function db_get_member_mbl($emp_id){
         $query = $this->db->get_where('max_benefit_limits', ['emp_id' => $emp_id]);

@@ -42,6 +42,8 @@ class Billing_controller extends CI_Controller {
 
 			if($label === "loa"){
                 $previous_mbl = floatval($loa_info['remaining_balance']);
+                $used_mbl = floatval($loa_info['used_mbl']);
+                $max_mbl = floatval($loa_info['max_benefit_limit']);
                 // var_dump($previous_mbl);
 				if($loa_info['work_related'] == 'Yes'){ 
 					if($loa_info['percentage'] == ''){
@@ -153,6 +155,8 @@ class Billing_controller extends CI_Controller {
 
 			}else if($label === "noa"){
                 $previous_mbl = floatval($noa_info['remaining_balance']);
+                $used_mbl = floatval($noa_info['used_mbl']);
+                $max_mbl = floatval($noa_info['max_benefit_limit']);
                 // var_dump($previous_mbl);
 				if($noa_info['work_related'] == 'Yes'){ 
 					if($noa_info['percentage'] == ''){
@@ -262,14 +266,14 @@ class Billing_controller extends CI_Controller {
 				}
 			}
 			}
+            
             $data = array(
                 'company_charge' => $company_charge,
                 'personal_charge' => $personal_charge,
-                'remaining_balance' => $remaining_mbl,
-                'used_mbl' => $previous_mbl-$remaining_mbl,
+                'remaining_balance' =>$rmbl = floatval(str_replace(',', '', $remaining_mbl)),
+                'used_mbl' =>  (($max_mbl-$rmbl)>0)? $max_mbl-$rmbl : $max_mbl,
                 'previous_mbl' => $previous_mbl,
             );
-            // var_dump($data);
 			return  $data;
 	}
     function billing_search_member() {

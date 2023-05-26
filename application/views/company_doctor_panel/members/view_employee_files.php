@@ -34,7 +34,7 @@
                 <span class="fs-5">Member's Fullname : <span class="fw-bold fs-4"><?php echo $member['first_name'].' '. $member['middle_name'].' '.$member['last_name'].' '.$member['suffix'];?></span></span><br>
                 <span class="fs-5 pt-1">Business Unit : <span class="fw-bold fs-4"><?php echo $member['business_unit'];?></span></span>
           </div>
-          <div class="row offset-2">
+          <div class="row" style="justify-content:center">
             <?php 
                 $emp_id = $this->myhash->hasher($member['emp_id'], 'encrypt');
                 $member_id = $this->myhash->hasher($member['member_id'], 'encrypt');
@@ -43,19 +43,19 @@
             <div class="col-md-2 ps-3 pt-3 pb-4">
                 <a href="<?php echo base_url(); ?>company-doctor/members/<?php echo $diagnos; ?>/<?php echo $emp_id;?>/<?php echo $member_id;?>" class="btn btn-primary btn-lg bg-light border border-light text-dark">
                     <img src="<?php echo base_url(); ?>assets/images/blank-yellow-folder.png" alt="Button Image" class="img-fluid">
-                   Final Diagnosis
-                </a>
-            </div>
-            <div class="col-md-2 ps-3 pt-3 pb-4">
-                <a href="#" class="btn btn-primary btn-lg bg-light border border-light text-dark">
-                    <img src="<?php echo base_url(); ?>assets/images/blank-yellow-folder.png" alt="Button Image" class="img-fluid">
-                   Operation
+                   <span class="fs-5">Diagnosis/Operation</span>
                 </a>
             </div>
             <div class="col-md-2 ps-3 pt-3 pb-4">
                 <a href="#" class="btn btn-primary btn-lg bg-light border border-light text-dark">
                     <img src="<?php echo base_url(); ?>assets/images/blank-yellow-folder.png" alt="Button Image" class="img-fluid">
                    Medical Abstract
+                </a>
+            </div>
+            <div class="col-md-2 ps-3 pt-3 pb-4">
+                <a href="#" class="btn btn-primary btn-lg bg-light border border-light text-dark">
+                    <img src="<?php echo base_url(); ?>assets/images/blank-yellow-folder.png" alt="Button Image" class="img-fluid">
+                   Take Home Meds
                 </a>
             </div>
             <div class="col-md-2 ps-3 pt-3 pb-4">

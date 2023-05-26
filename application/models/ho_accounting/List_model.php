@@ -675,7 +675,7 @@ class List_model extends CI_Model{
     }
     
 
-    function get_print_billed_loa_noa() {
+    function get_print_billed_loa_noa($hp_id,$start_date,$end_date,$bu_filter) {
         $this->db->select('*')
                 ->from('billing as tbl_1')
                 ->join('loa_requests as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id', 'left')
@@ -684,11 +684,11 @@ class List_model extends CI_Model{
                 ->join('members as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
                 ->join('locate_business_unit as tbl_6', 'tbl_5.business_unit = tbl_6.business_unit')
                 ->join('max_benefit_limits as tbl_7', 'tbl_1.emp_id = tbl_7.emp_id')
-                ->where('tbl_1.hp_id', $this->input->post('hp_id'))
-                ->where('tbl_5.business_unit', $this->input->post('bu_filter'));
-        $startDate = date('Y-m-d', strtotime($this->input->post('start_date')));
+                ->where('tbl_1.hp_id', $hp_id)
+                ->where('tbl_5.business_unit', $bu_filter);
+        $startDate = date('Y-m-d', strtotime($start_date));
         $this->db->where('tbl_1.billed_on >=', $startDate);
-        $endDate = date('Y-m-d', strtotime($this->input->post('end_date')));
+        $endDate = date('Y-m-d', strtotime($end_date));
         $this->db->where('tbl_1.billed_on <=', $endDate);
         return $this->db->get()->result_array();
     }
@@ -778,6 +778,19 @@ class List_model extends CI_Model{
            $this->db->limit($_POST['length'], $_POST['start']);
        $query = $this->db->get();
        return $query->result_array();
+       }
+
+       function get_for_payment_bills($payment_no) {
+        $this->db->select('*')
+                ->from('billing as tbl_1')
+                ->join('loa_requests as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id', 'left')
+                ->join('noa_requests as tbl_3', 'tbl_1.noa_id = tbl_3.noa_id', 'left')
+                ->join('healthcare_providers as tbl_4', 'tbl_1.hp_id = tbl_4.hp_id')
+                ->join('members as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
+                ->join('locate_business_unit as tbl_6', 'tbl_5.business_unit = tbl_6.business_unit')
+                ->join('max_benefit_limits as tbl_7', 'tbl_1.emp_id = tbl_7.emp_id')
+                ->where('tbl_1.payment_no', $payment_no);
+        return $this->db->get()->result_array();
        }
 
 //=================================================

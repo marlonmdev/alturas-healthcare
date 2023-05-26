@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <span class="fw-bold fs-4">BILLING # : [ <span class="text-info fw-bold" id="pdf-noa-no"></span> ]</span>
+                <span class="fw-bold fs-4" id="billing_no_holder">BILLING # : [ <span class="text-info fw-bold" id="billing_no"></span> ]</span>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
@@ -12,6 +12,10 @@
 
                 </div>
             </div>
+            <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancel">Cancel</button>
+                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                                </div>
         </div>
     </div>
 </div>

@@ -12,8 +12,7 @@ class Noa_controller extends CI_Controller {
 		if ($logged_in !== true && $user_role !== 'healthcare-provider') {
 			redirect(base_url());
 		}
-	} 
-
+	}  
   function fetch_pending_noa_requests() {
 		$this->security->get_csrf_hash();
 		$status = 'Pending';
@@ -79,7 +78,7 @@ class Noa_controller extends CI_Controller {
 			$this->load->view('pages/page_not_found');
 		} else {
 			$this->load->view('templates/header', $data);
-			$this->load->view('healthcare_provider_panel/noa/generate_printable_noa.php',);
+			$this->load->view('healthcare_provider_panel/noa/generate_printable_noa.php');
 			$this->load->view('templates/footer');
 		}
 	}
@@ -318,6 +317,25 @@ class Noa_controller extends CI_Controller {
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		);
 
+		echo json_encode($response);
+	}
+
+	function get_takehome_meds(){
+		$token = $this->security->get_csrf_hash();
+		$medicine = $this->noa_model->get_generic_meds();
+		$response = '';
+	
+		if(empty($medicine)){
+			$response .= '<select class="chosen-select" id="med-services" name="med-services[]" multiple="multiple">';
+			$response .= '<option value="" disabled>No Available Services</option>';
+			$response .= '</select>';
+		}else{
+			$response .= '<select class="chosen-select" id="med-services" name="med-services[]" data-placeholder="Choose medicines..." multiple="multiple">';
+			foreach ($medicine as $meds) {
+				$response .= '<option value="'.$meds['medno'].'" data-price="'.$meds['ceiling_price'].'">'.$meds['generic_name'].''.' ₱'.''.$meds['ceiling_price'].'</option>';
+			}
+			$response .= '</select>';
+		}
 		echo json_encode($response);
 	}
 

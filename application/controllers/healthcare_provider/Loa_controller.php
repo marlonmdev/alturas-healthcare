@@ -102,7 +102,7 @@ class Loa_controller extends CI_Controller {
 			$this->load->view('pages/page_not_found');
 		} else {
 			$this->load->view('templates/header', $data);
-			$this->load->view('healthcare_provider_panel/loa/generate_printable_loa.php',);
+			$this->load->view('healthcare_provider_panel/loa/generate_printable_loa.php');
 			$this->load->view('templates/footer');
 		}
 	}

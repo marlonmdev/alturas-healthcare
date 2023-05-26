@@ -236,5 +236,18 @@ public function bar_pending(){
                     ->where('hospital_id', $hp_id);
             return $this->db->count_all_results();
         }
+
+        function get_generic_meds(){
+          $query = $this->db->get('patient_medication_masterfile');
+          return $query->result_array();
+        }
+        function get_branded_meds(){
+          $this->db->select('*');
+          $this->db->from('patient_medication_masterlist');
+          $this->db->where('status', 1);
+          $this->db->order_by('generic_med_id', 'desc');
+          $query = $this->db->get();
+          return $query->row_array();
+        }
 // End of server-side processing datatables
 }

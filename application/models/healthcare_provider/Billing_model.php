@@ -258,7 +258,7 @@ class Billing_model extends CI_Model {
 
     function update_member_remaining_balance($emp_id, $data) {
         $this->db->where('emp_id', $emp_id);
-        return $this->db->update('max_benefit_limits', $data);
+        return $this->db->update('max_benefit_limits', $data); 
     }
 
     function update_loa_request($loa_id, $data){

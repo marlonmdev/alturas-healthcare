@@ -268,12 +268,11 @@ class Patient_controller extends CI_Controller {
 			$row = array(); 
 
 			$loa_id = $this->myhash->hasher($loa['loa_id'], 'encrypt');
-			// $view_url = base_url() . 'healthcare-provider/patient/view_information/' . $member_id;
-			
 
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaHistoryInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			
 			if($loa['tbl1_status']==="Billed" || $loa['tbl1_status']==="Paid" || $loa['tbl1_status'] === "Payable"){
 				$date = $loa['billed_on'];
-				$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaHistoryInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 			}elseif($loa['tbl1_status']==="Approved"){
 				$date = $loa['approved_on'];
 				$custom_actions ='';

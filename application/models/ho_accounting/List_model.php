@@ -793,6 +793,15 @@ class List_model extends CI_Model{
         return $this->db->get()->result_array();
        }
 
+       function get_bill_payment_no($hp_id,$start_date,$end_date) {
+        $this->db->select('*')
+                ->from('monthly_payable')
+                ->where('hp_id',$hp_id)
+                ->where('startDate',$start_date)
+                ->where('endDate',$end_date);
+        return $this->db->get()->row_array();
+       }
+
 //=================================================
 
     public function loa_member()

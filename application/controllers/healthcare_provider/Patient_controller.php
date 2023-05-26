@@ -266,18 +266,16 @@ class Patient_controller extends CI_Controller {
 		$custom_actions = '';
 		foreach ($list as $loa){
 			$row = array(); 
-
+			
 			$loa_id = $this->myhash->hasher($loa['loa_id'], 'encrypt');
-
+			// var_dump($loa['loa_id']);
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaHistoryInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 			
 			if($loa['tbl1_status']==="Billed" || $loa['tbl1_status']==="Paid" || $loa['tbl1_status'] === "Payable"){
 				$date = $loa['billed_on'];
-			}elseif($loa['tbl1_status']==="Approved"){
+			}elseif($loa['tbl1_status']==="Approved" || $loa['tbl1_status']==="Completed"){
 				$date = $loa['approved_on'];
-				$custom_actions ='';
 			}else{
-				$custom_actions ='';
 				$date = $loa['request_date'];
 			}
 			// this data will be rendered to the datatable
@@ -306,23 +304,21 @@ class Patient_controller extends CI_Controller {
 		// var_dump("emp_id",$emp_id);
 		// var_dump("hp_id",$hp_id);
 		$data = array();
-		$custom_actions = "";
 		foreach ($list as $noa){
 			$row = array(); 
 
 			$noa_id = $this->myhash->hasher($noa['noa_id'], 'encrypt');
 			// $view_url = base_url() . 'healthcare-provider/patient/view_information/' . $member_id;
 			
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewNoaHistoryInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 			
 			if($noa['tbl1_status']==="Billed" || $noa['tbl1_status']==="Paid" || $noa['tbl1_status'] === "Payable"){
 				$date = $noa['billed_on'];
-				$custom_actions = '<a href="JavaScript:void(0)" onclick="viewNoaHistoryInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
-			}elseif($noa['tbl1_status']==="Approved"){
+				
+			}elseif($noa['tbl1_status']==="Approved" || $noa['tbl1_status'] === "Completed"){
 				$date = $noa['approved_on'];
-				$custom_actions = "";
 			}else{
 				$date = $noa['request_date'];
-				$custom_actions = "";
 			}
 			// this data will be rendered to the datatable
 			$row[] = $noa['noa_no'];
@@ -344,9 +340,10 @@ class Patient_controller extends CI_Controller {
 	
 	function get_loa_history_info() {
 		$loa_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
-		// var_dump($loa_id);
+		// var_dump("loa id",$loa_id);
 		$row = $this->loa_model->db_get_loa_info($loa_id);
-		$billing = $this->billing_model->get_loa_billing_info($loa_id);
+		// var_dump("row",$row);
+		$billing = $this->billing_model->get_loa_billing_info($loa_id); 
 		$doctor_name = "";
 		if ($row['approved_by']) {
 			$doc = $this->loa_model->db_get_doctor_by_id($row['approved_by']);
@@ -387,7 +384,10 @@ class Patient_controller extends CI_Controller {
 			'req_status' => $row['status'],
 			'work_related' => $row['work_related'],
 			'approved_by' => $doctor_name,
+			'disapproved_by' => $row['disapproved_by'],
+			'date_perform' => $row['disapproved_by'],
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
+			'disapproved_on' => date("F d, Y", strtotime($row['disapproved_on'])),
 			'expiration' => date("F d, Y", strtotime($row['expiration_date'])),
 		];
 		echo json_encode($response);

@@ -169,9 +169,15 @@
           const { token, status, message, billing_id } = response;
 
           if(status == 'success'){
-            setTimeout(function() {
-              window.location.href = `${baseUrl}healthcare-provider/billing/bill-loa/upload-pdf/${billing_id}/success`;
-            }, 300);
+            swal({
+                            title: 'Success',
+                            text: 'Final Bill Uploaded Successfully...',
+                            timer: 1000,
+                            showConfirmButton: false,
+                            type: 'success'
+                            }).then(function() {
+                              window.location.href = `${baseUrl}healthcare-provider/billing/bill-loa/upload-pdf/${billing_id}/success`;
+                        });
           }else{
             swal({
               title: 'Failed',

@@ -1,0 +1,17 @@
+var base_url = 'http://localhost/FLS_Gem/';
+var win = window.open(base_url + "print/pdfattendance/" + training + "/" + btoa(datefrom) + "/" + btoa(dateto), '_blank');
+
+$route['print/pdfattendance/(:any)/(:any)/(:any)'] = 'print_file/farmer_attendance/$1/$2/$3';
+
+
+$dateFrom =  base64_decode($dF);
+$dateTo =  base64_decode($dT);
+$df = date('Y-m-d', strtotime($dateFrom));
+$dt = date('Y-m-d', strtotime($dateTo));
+
+
+
+
+
+
+

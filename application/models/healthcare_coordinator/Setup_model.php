@@ -300,5 +300,25 @@ class Setup_model extends CI_Model {
 	  $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Expired' ");
 	  return $query->num_rows(); 
 	} 
+	public function bar_billed(){
+	  $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Billed' ");
+	  return $query->num_rows(); 
+	} 
+	public function bar_pending_noa(){
+    $query = $this->db->query("SELECT status FROM noa_requests WHERE status='Pending' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_approved_noa(){
+    $query = $this->db->query("SELECT status FROM noa_requests WHERE status='Approved' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_initial_noa(){
+    $query = $this->db->query("SELECT status FROM initial_billing WHERE status='Initial' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_billed_noa(){
+    $query = $this->db->query("SELECT status FROM noa_requests WHERE status='Billed' ");
+    return $query->num_rows(); 
+  }  
 	//End =================================================
 }

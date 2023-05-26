@@ -24,6 +24,11 @@ class Account_controller extends CI_Controller {
 		$data['bar2'] = $this->setup_model->bar_completed();
 		$data['bar3'] = $this->setup_model->bar_referral();
 		$data['bar4'] = $this->setup_model->bar_expired();
+		$data['bar_Billed'] = $this->setup_model->bar_billed();
+		$data['bar5'] = $this->setup_model->bar_pending_noa();
+		$data['bar6'] = $this->setup_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->setup_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->setup_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/dashboard/account_settings');
 		$this->load->view('templates/footer');

@@ -4,16 +4,16 @@
   <div class="page-breadcrumb">
       <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-      <!-- <h4 class="page-title ls-2">Payment No : <span class="text-info"><?php echo $payment_no; ?></span>  [ <?php echo date('F d, Y', strtotime($pay['startDate'])).' to '.date('F d, Y', strtotime($pay['endDate']))?> ]</h4> -->
+      <h4 class="page-title ls-2"><i class="mdi mdi-format-float-none"></i> For Payment </h4>
           <div class="ms-auto text-end">
-          <nav aria-label="breadcrumb">
-              <ol class="breadcrumb">
-              <li class="breadcrumb-item">Head Office Accounting</li>
-              <li class="breadcrumb-item active" aria-current="page">
-                  Billed
-              </li>
-              </ol>
-          </nav>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item">Head Office Accounting</li>
+                  <li class="breadcrumb-item active" aria-current="page">
+                      Billed
+                  </li>
+                </ol>
+            </nav>
           </div>
       </div>
       </div>

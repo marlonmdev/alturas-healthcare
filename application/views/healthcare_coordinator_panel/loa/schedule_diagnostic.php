@@ -174,7 +174,7 @@
                             });
                             // $('#performedLoaInfo')[0].reset();
                             setTimeout(function () {
-                                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved';
+                                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed';
                             }, 2600);
                             
                         break;

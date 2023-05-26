@@ -25,6 +25,11 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->count_model->bar_completed();
 		$data['bar3'] = $this->count_model->bar_referral();
 		$data['bar4'] = $this->count_model->bar_expired();
+		$data['bar_Billed'] = $this->count_model->bar_billed();
+		$data['bar5'] = $this->count_model->bar_pending_noa();
+		$data['bar6'] = $this->count_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->count_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->count_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/dashboard/index');
 		$this->load->view('templates/footer');
@@ -45,6 +50,11 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->count_model->bar_completed();
 		$data['bar3'] = $this->count_model->bar_referral();
 		$data['bar4'] = $this->count_model->bar_expired();
+		$data['bar_Billed'] = $this->count_model->bar_billed();
+		$data['bar5'] = $this->count_model->bar_pending_noa();
+		$data['bar6'] = $this->count_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->count_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->count_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/healthcare_providers/healthcare_providers');
 		$this->load->view('templates/footer');
@@ -58,6 +68,11 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->applicants_model->bar_completed();
 		$data['bar3'] = $this->applicants_model->bar_referral();
 		$data['bar4'] = $this->applicants_model->bar_expired();
+		$data['bar_Billed'] = $this->applicants_model->bar_billed();
+		$data['bar5'] = $this->applicants_model->bar_pending_noa();
+		$data['bar6'] = $this->applicants_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->applicants_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->applicants_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/members/create_account');
 		$this->load->view('templates/footer');
@@ -71,6 +86,11 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->loa_model->bar_completed();
 		$data['bar3'] = $this->loa_model->bar_referral();
 		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/members/approved_members');
 		$this->load->view('templates/footer');
@@ -84,6 +104,11 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->loa_model->bar_completed();
 		$data['bar3'] = $this->loa_model->bar_referral();
 		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/members/healthcard_id_monitoring');
 		$this->load->view('templates/footer');
@@ -98,6 +123,11 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->setup_model->bar_completed();
 		$data['bar3'] = $this->setup_model->bar_referral();
 		$data['bar4'] = $this->setup_model->bar_expired();
+		$data['bar_Billed'] = $this->setup_model->bar_billed();
+		$data['bar5'] = $this->setup_model->bar_pending_noa();
+		$data['bar6'] = $this->setup_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->setup_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->setup_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/user_accounts/accounts');
 		$this->load->view('templates/footer');
@@ -121,6 +151,11 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->setup_model->bar_completed();
 		$data['bar3'] = $this->setup_model->bar_referral();
 		$data['bar4'] = $this->setup_model->bar_expired();
+		$data['bar_Billed'] = $this->setup_model->bar_billed();
+		$data['bar5'] = $this->setup_model->bar_pending_noa();
+		$data['bar6'] = $this->setup_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->setup_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->setup_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/setup/healthcare_providers');
 		$this->load->view('templates/footer');
@@ -134,6 +169,11 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->setup_model->bar_completed();
 		$data['bar3'] = $this->setup_model->bar_referral();
 		$data['bar4'] = $this->setup_model->bar_expired();
+		$data['bar_Billed'] = $this->setup_model->bar_billed();
+		$data['bar5'] = $this->setup_model->bar_pending_noa();
+		$data['bar6'] = $this->setup_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->setup_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->setup_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/setup/company_doctors');
 		$this->load->view('templates/footer');
@@ -149,6 +189,11 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->setup_model->bar_completed();
 		$data['bar3'] = $this->setup_model->bar_referral();
 		$data['bar4'] = $this->setup_model->bar_expired();
+		$data['bar_Billed'] = $this->setup_model->bar_billed();
+		$data['bar5'] = $this->setup_model->bar_pending_noa();
+		$data['bar6'] = $this->setup_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->setup_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->setup_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/setup/cost_types');
 		$this->load->view('templates/footer');
@@ -163,6 +208,11 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->setup_model->bar_completed();
 		$data['bar3'] = $this->setup_model->bar_referral();
 		$data['bar4'] = $this->setup_model->bar_expired();
+		$data['bar_Billed'] = $this->setup_model->bar_billed();
+		$data['bar5'] = $this->setup_model->bar_pending_noa();
+		$data['bar6'] = $this->setup_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->setup_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->setup_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/setup/room_types');
 		$this->load->view('templates/footer');
@@ -189,6 +239,11 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->loa_model->bar_completed();
 		$data['bar3'] = $this->loa_model->bar_referral();
 		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/loa/pending_loa_requests');
 		$this->load->view('templates/footer');
@@ -203,6 +258,11 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->loa_model->bar_completed();
 		$data['bar3'] = $this->loa_model->bar_referral();
 		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/loa/approved_loa_requests');
 		$this->load->view('templates/footer');
@@ -217,6 +277,11 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->loa_model->bar_completed();
 		$data['bar3'] = $this->loa_model->bar_referral();
 		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/loa/disapproved_loa_requests');
 		$this->load->view('templates/footer');
@@ -231,6 +296,11 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->loa_model->bar_completed();
 		$data['bar3'] = $this->loa_model->bar_referral();
 		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/loa/expired_loa_requests');
 		$this->load->view('templates/footer');
@@ -245,6 +315,11 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->loa_model->bar_completed();
 		$data['bar3'] = $this->loa_model->bar_referral();
 		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/loa/cancelled_loa_requests');
 		$this->load->view('templates/footer');
@@ -286,6 +361,11 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->loa_model->bar_completed();
 		$data['bar3'] = $this->loa_model->bar_referral();
 		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/loa/completed_loa_requests');
 		$this->load->view('templates/footer');
@@ -300,6 +380,11 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->loa_model->bar_completed();
 		$data['bar3'] = $this->loa_model->bar_referral();
 		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/loa/referred_loa_requests');
 		$this->load->view('templates/footer');
@@ -314,8 +399,14 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->loa_model->bar_completed();
 		$data['bar3'] = $this->loa_model->bar_referral();
 		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
+
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_coordinator_panel/loa/billed_loa');
+		$this->load->view('healthcare_coordinator_panel/loa/final_billing');
 		$this->load->view('templates/footer');
 	}
 
@@ -328,8 +419,33 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->loa_model->bar_completed();
 		$data['bar3'] = $this->loa_model->bar_referral();
 		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_coordinator_panel/loa/for_payment_loa');
+		$this->load->view('healthcare_coordinator_panel/loa/billing_statement');
+		$this->load->view('templates/footer');
+	}
+
+	function history() {
+		$this->load->model('healthcare_coordinator/loa_model');
+		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
+		$data['month'] = $this->loa_model->month();
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/loa/history');
 		$this->load->view('templates/footer');
 	}
 
@@ -342,8 +458,34 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->loa_model->bar_completed();
 		$data['bar3'] = $this->loa_model->bar_referral();
 		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/loa/ledger');
+		$this->load->view('templates/footer');
+	}
+
+	function fetch_ledger() {
+		$this->load->model('healthcare_coordinator/loa_model');
+		$data['emp_id'] = $this->uri->segment(4);
+		
+		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/loa/ledger2');
 		$this->load->view('templates/footer');
 	}
 
@@ -357,6 +499,11 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->setup_model->bar_completed();
 		$data['bar3'] = $this->setup_model->bar_referral();
 		$data['bar4'] = $this->setup_model->bar_expired();
+		$data['bar_Billed'] = $this->setup_model->bar_billed();
+		$data['bar5'] = $this->setup_model->bar_pending_noa();
+		$data['bar6'] = $this->setup_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->setup_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->setup_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/noa/request_noa_form');
 		$this->load->view('templates/footer');
@@ -371,6 +518,13 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->noa_model->bar_completed();
 		$data['bar3'] = $this->noa_model->bar_referral();
 		$data['bar4'] = $this->noa_model->bar_expired();
+		$data['bar_Billed'] = $this->noa_model->bar_billed();
+		$data['bar5'] = $this->noa_model->bar_pending_noa();
+		$data['bar6'] = $this->noa_model->bar_approved_noa();
+		$data['bar5'] = $this->noa_model->bar_pending_noa();
+		$data['bar6'] = $this->noa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->noa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->noa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/noa/pending_noa_requests');
 		$this->load->view('templates/footer');
@@ -385,6 +539,11 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->noa_model->bar_completed();
 		$data['bar3'] = $this->noa_model->bar_referral();
 		$data['bar4'] = $this->noa_model->bar_expired();
+		$data['bar_Billed'] = $this->noa_model->bar_billed();
+		$data['bar5'] = $this->noa_model->bar_pending_noa();
+		$data['bar6'] = $this->noa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->noa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->noa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/noa/approved_noa_requests');
 		$this->load->view('templates/footer');
@@ -399,6 +558,11 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->noa_model->bar_completed();
 		$data['bar3'] = $this->noa_model->bar_referral();
 		$data['bar4'] = $this->noa_model->bar_expired();
+		$data['bar_Billed'] = $this->noa_model->bar_billed();
+		$data['bar5'] = $this->noa_model->bar_pending_noa();
+		$data['bar6'] = $this->noa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->noa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->noa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/noa/disapproved_noa_requests');
 		$this->load->view('templates/footer');
@@ -413,6 +577,11 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->noa_model->bar_completed();
 		$data['bar3'] = $this->noa_model->bar_referral();
 		$data['bar4'] = $this->noa_model->bar_expired();
+		$data['bar_Billed'] = $this->noa_model->bar_billed();
+		$data['bar5'] = $this->noa_model->bar_pending_noa();
+		$data['bar6'] = $this->noa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->noa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->noa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/noa/expired_noa_requests');
 		$this->load->view('templates/footer');
@@ -425,7 +594,7 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
-	function view_billed_no() {
+	function view_final_billing() {
 		$this->load->model('healthcare_coordinator/noa_model');
 		$data['hcproviders'] = $this->noa_model->db_get_healthcare_providers();
 		$data['user_role'] = $this->session->userdata('user_role');
@@ -434,12 +603,17 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->noa_model->bar_completed();
 		$data['bar3'] = $this->noa_model->bar_referral();
 		$data['bar4'] = $this->noa_model->bar_expired();
+		$data['bar_Billed'] = $this->noa_model->bar_billed();
+		$data['bar5'] = $this->noa_model->bar_pending_noa();
+		$data['bar6'] = $this->noa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->noa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->noa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_coordinator_panel/noa/billed_noa');
+		$this->load->view('healthcare_coordinator_panel/noa/final_billing');
 		$this->load->view('templates/footer');
 	}
 
-	function for_payment() {
+	function billing_statement() {
 		$this->load->model('healthcare_coordinator/noa_model');
 		$data['hcproviders'] = $this->noa_model->db_get_healthcare_providers();
 		$data['user_role'] = $this->session->userdata('user_role');
@@ -448,8 +622,14 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->noa_model->bar_completed();
 		$data['bar3'] = $this->noa_model->bar_referral();
 		$data['bar4'] = $this->noa_model->bar_expired();
+		$data['status'] = $this->noa_model->processing(); // Fetch the status from the model
+		$data['bar_Billed'] = $this->noa_model->bar_billed();
+		$data['bar5'] = $this->noa_model->bar_pending_noa();
+		$data['bar6'] = $this->noa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->noa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->noa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_coordinator_panel/noa/for_payment_noa');
+		$this->load->view('healthcare_coordinator_panel/noa/billing_statement');
 		$this->load->view('templates/footer');
 	}
 
@@ -462,6 +642,11 @@ class Pages_controller extends CI_Controller {
 		$data['bar2'] = $this->noa_model->bar_completed();
 		$data['bar3'] = $this->noa_model->bar_referral();
 		$data['bar4'] = $this->noa_model->bar_expired();
+		$data['bar_Billed'] = $this->noa_model->bar_billed();
+		$data['bar5'] = $this->noa_model->bar_pending_noa();
+		$data['bar6'] = $this->noa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->noa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->noa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/noa/initial_billing');
 		$this->load->view('templates/footer');

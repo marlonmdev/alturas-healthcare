@@ -98,6 +98,7 @@ class Loa_controller extends CI_Controller {
 		$data['bar2'] = $this->loa_model->bar_completed();
 		$data['bar3'] = $this->loa_model->bar_referral();
 		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
 		if (!$exist) {
 			$this->load->view('pages/page_not_found');
 		} else {
@@ -419,6 +420,7 @@ class Loa_controller extends CI_Controller {
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['work_related'] != '' ? 'for Approval': $row['status'],
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		];
@@ -485,6 +487,7 @@ class Loa_controller extends CI_Controller {
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
@@ -553,6 +556,7 @@ class Loa_controller extends CI_Controller {
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'disapproved_by' => $doctor_name,
 			'disapprove_reason' => $row['disapprove_reason'],
 			'disapproved_on' => date("F d, Y", strtotime($row['approved_on'])),
@@ -622,6 +626,7 @@ class Loa_controller extends CI_Controller {
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
@@ -691,6 +696,7 @@ class Loa_controller extends CI_Controller {
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),

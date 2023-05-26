@@ -1838,19 +1838,22 @@ class Main_controller extends CI_Controller {
 
 	function fetch_for_printing() {
 		$this->security->get_csrf_hash();
-		$this->load->library('m_pdf');
-		$pdf = $this->m_pdf->load();
+		$this->load->library('tcpdf_library');
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['billed'] = $this->List_model->get_print_billed_loa_noa();
 		$data['hospital'] = $this->List_model->db_get_hp_name($this->input->get('hp_id'));
 		$data['total_bill'] = $this->input->get('total_bill');
 		$data['start_date'] = $this->input->get('start_date');
 		$data['end_date'] = $this->input->get('end_date');
+		$data['b_unit'] = $this->input->get('bu_filter');
 
-		$html = $this->load->view('ho_accounting_panel/billing_list_table/print_billed_charging',$data);
-		$pdf->WriteHTML($html);
-      	$pdf->Output($html, "I");
-		exit;
+		$this->load->view('templates/header');
+		$pdfContent = $this->load->view('ho_accounting_panel/billing_list_table/print_billed_charging', $data, true);
+		$this->load->view('templates/footer');
+		header('Content-Type: application/pdf');
+		header('Content-Disposition: inline; filename="name.pdf"');
+		echo $pdfContent;
+
 	}
 
 	function submit_adjusted_advance() {
@@ -1872,7 +1875,21 @@ class Main_controller extends CI_Controller {
 		}
 	}
 	
+	function sample($hp_id,$start_date,$end_date,$bu_filter,$total_bill)
+	{
+		$start_date =  base64_decode($start_date);
+		$end_date =  base64_decode($end_date);
+		$bu_filter =  base64_decode($bu_filter);
 
+		$this->load->library('tcpdf_library');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['billed'] = $this->List_model->get_print_billed_loa_noa();
+		$data['hospital'] = $this->List_model->db_get_hp_name($hp_id);
+
+		
+
+
+	}
 
 	
 	

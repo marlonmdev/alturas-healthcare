@@ -82,8 +82,8 @@
                   <textarea class="form-control" name="chief-complaint" id="chief-complaint" cols="30" rows="6"><?= $row['chief_complaint'] ?></textarea>
                   <em id="chief-complaint-error" class="text-danger"></em>
                 </div>
-              </div>
-              <br>
+              </div><br>
+
               <div class="row">
                 <div class="col-sm-12 mb-2 d-flex justify-content-start">
                   <button type="submit" class="btn btn-success me-2">
@@ -93,20 +93,18 @@
                 </div>
               </div>
             </form>
-            <!-- End of Form -->
           </div>
-          <!-- End of Card Body -->
         </div>
-        <!-- End of Card -->
       </div>
-
-    <!-- End Row  -->  
     </div>
-  <!-- End Container fluid  -->
   </div>
-<!-- End Page wrapper  -->
 </div>
-<!-- End Wrapper -->
+
+
+
+
+
+
 
 <script type="text/javascript">
   const baseUrl = `<?= base_url() ?>`;

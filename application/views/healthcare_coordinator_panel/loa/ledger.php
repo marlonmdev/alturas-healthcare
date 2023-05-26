@@ -18,29 +18,6 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
-       <!--  <ul class="nav nav-tabs mb-4" role="tablist">
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/billed" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">BILLING</span>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/for-charging" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">HISTORY OF BILLING</span>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link active" href="<?php echo base_url(); ?>healthcare-coordinator/loa_controller/view_ledger" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">LEDGER</span>
-            </a>
-          </li>
-        </ul> -->
-
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
@@ -82,7 +59,6 @@
       },
 
       columnDefs: [{ 
-        // "targets": [5],
         "orderable": false,
       },
       ],
@@ -90,7 +66,6 @@
       deferRender: true,
       info: false,
       paging: false,
-      // filter: false,
       lengthChange: false,
       responsive: true,
       fixedHeader: true,

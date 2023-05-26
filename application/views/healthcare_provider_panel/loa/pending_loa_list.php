@@ -128,7 +128,7 @@
                 last_name, suffix, date_of_birth, age, gender, philhealth_no, blood_type, contact_no,
                 home_address, city_address, email, contact_person, contact_person_addr, contact_person_no,
                 healthcare_provider, loa_request_type, med_services, health_card_no, requesting_company,
-                request_date, chief_complaint, requesting_physician, attending_physician, rx_file, req_status, work_related
+                request_date, chief_complaint, requesting_physician, attending_physician, rx_file, req_status, work_related,percentage
                 } = res;
 
                 $("#viewLoaModal").modal("show");
@@ -169,13 +169,36 @@
                 $('#chief-complaint').html(chief_complaint);
                 $('#requesting-physician').html(requesting_physician);
                 $('#attending-physician').html(at_physician);
-                if(work_related != ''){
-                    $('#work-related-info').removeClass('d-none');
-                    $('#work-related').html(work_related);
-                }else{
-                    $('#work-related-info').addClass('d-none');
-                    $('#work-related').html('');
+                if(work_related == 'Yes'){ 
+                  if(percentage == ''){
+                    wpercent = '100% W-R';
+                    nwpercent = '';
+                  }else{
+                    wpercent = percentage+'%  W-R';
+                    result = 100 - parseFloat(percentage);
+                    if(percentage == '100'){
+                      nwpercent = '';
+                    }else{
+                      nwpercent = result+'% Non W-R';
+                    }
+                    
+                  }	
+                }else if(work_related == 'No'){
+                  if(percentage == ''){
+                    wpercent = '';
+                    nwpercent = '100% Non W-R';
+                  }else{
+                    nwpercent = percentage+'% Non W-R';
+                    result = 100 - parseFloat(percentage);
+                    if(percentage == '100'){
+                      wpercent = '';
+                    }else{
+                      wpercent = result+'%  W-R';
+                    }
+                  
+                  }
                 }
+                $('#percentage').html(wpercent+', '+nwpercent);
             }
         });
     }

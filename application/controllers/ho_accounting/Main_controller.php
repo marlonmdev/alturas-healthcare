@@ -353,7 +353,7 @@ class Main_controller extends CI_Controller {
 
 						// $paid_amount = floatval($row['company_charge'] + floatval($row['cash_advance']));
 						// $before_mbl = floatval($mbl['remaining_balance']);
-						// $used_mbl = floatval($row['company_charge'] + floatval($mbl['used_mbl']));
+						//  $used_mbl = floatval($row['company_charge'] + floatval($mbl['used_mbl']));
 						
 						// if(floatval($used_mbl) > floatval($mbl['max_benefit_limit'])){
 						// 	$usedMBL = $mbl['max_benefit_limit'];
@@ -2161,6 +2161,7 @@ class Main_controller extends CI_Controller {
 					}else if(floatval($remaining_mbl) > 0){
 						$mbl = $remaining_mbl;
 					}
+					
 		$PDFdata .= ' <tbody>
 						<tr>
 							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$bill['billing_no'].'</td>

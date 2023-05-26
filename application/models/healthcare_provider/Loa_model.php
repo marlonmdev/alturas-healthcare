@@ -183,7 +183,8 @@ class Loa_model extends CI_Model{
         var $column_search_history = array('tbl_1.loa_no','tbl_2.net_bill','tbl_1.status','tbl_1.approved_on','tbl_2.billed_on','tbl_1.request_date'); //set column field database for datatable searchable 
         var $order_history = array('tbl_1.loa_id' => 'desc'); // default order 
         private function _get_loa_datatables_query($emp_id, $hp_id) {
-            $this->db->select('tbl_1.status as tbl1_status, tbl_1.*, tbl_2.*');
+            // Select all data from the first table
+            $this->db->select('tbl_1.status as tbl1_status, tbl_1.loa_id, tbl_1.emp_id, tbl_1.*, tbl_2.*');
             $this->db->from($this->table_1 . ' as tbl_1');
             $this->db->join($this->table_3 . ' as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id','left');
             $this->db->where('tbl_1.emp_id', $emp_id);
@@ -214,6 +215,7 @@ class Loa_model extends CI_Model{
             $order = $this->order_history;
             $this->db->order_by(key($order), $order[key($order)]);
             }
+           
         }
 
         

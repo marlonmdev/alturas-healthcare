@@ -397,9 +397,9 @@
         return xhr.status == "200" ? true: false;
     }
 
-    function viewLoaHistoryInfo(loa_id) {
+    function viewLoaHistoryInfo(loa_no) {
         $.ajax({
-        url: `${base_url}healthcare-provider/patient_history/loa/${loa_id}`,
+        url: `${base_url}healthcare-provider/patient_history/loa/${loa_no}`,
         type: "GET",
         success: function(response) {
             const res = JSON.parse(response);

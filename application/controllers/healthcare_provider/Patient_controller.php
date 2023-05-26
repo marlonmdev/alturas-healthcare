@@ -267,9 +267,11 @@ class Patient_controller extends CI_Controller {
 		foreach ($list as $loa){
 			$row = array(); 
 			
-			$loa_id = $this->myhash->hasher($loa['loa_id'], 'encrypt');
+			$loa_no = hashids_encrypt("asdfsdaf");
+			$loa_ = hashids_decrypt($loa_no);
+			var_dump("loa_no",$loa_);
 			// var_dump($loa['loa_id']);
-			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaHistoryInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaHistoryInfo(\'' . $loa_no . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 			
 			if($loa['tbl1_status']==="Billed" || $loa['tbl1_status']==="Paid" || $loa['tbl1_status'] === "Payable"){
 				$date = $loa['billed_on'];
@@ -339,11 +341,11 @@ class Patient_controller extends CI_Controller {
 	}
 	
 	function get_loa_history_info() {
-		$loa_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
-		// var_dump("loa id",$loa_id);
-		$row = $this->loa_model->db_get_loa_info($loa_id);
+		$loa_no = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		// var_dump("loa id",$loa_no);
+		$row = $this->loa_model->db_get_loa_info($loa_no);
 		// var_dump("row",$row);
-		$billing = $this->billing_model->get_loa_billing_info($loa_id); 
+		$billing = $this->billing_model->get_loa_billing_info($row['loa_id']); 
 		$doctor_name = "";
 		if ($row['approved_by']) {
 			$doc = $this->loa_model->db_get_doctor_by_id($row['approved_by']);
@@ -380,7 +382,7 @@ class Patient_controller extends CI_Controller {
 			'requesting_physician' => $row['doctor_name'],
 			'attending_physician' => $row['attending_physician'],
 			'rx_file' => $row['rx_file'],
-			'pdf_bill' => $billing['pdf_bill'],
+			'pdf_bill' => isset($billing['pdf_bill'])?$billing['pdf_bill']:"",
 			'req_status' => $row['status'],
 			'work_related' => $row['work_related'],
 			'approved_by' => $doctor_name,

@@ -46,6 +46,10 @@
                       <h6><?php echo $payment_no; ?></h6>
                 </div>
                 <div class="card-body">
+                  <input type="hidden" id="p-hp-id" value="<?php echo $pay['hp_id'];?>">
+                  <input type="hidden" id="p-start-date" value="<?php echo $pay['startDate'];?>">
+                  <input type="hidden" id="p-end-date" value="<?php echo $pay['endDate'];?>">
+
                   <div class="table">
                     <table class="table table-hover table-responsive" id="paidTable">
                       <thead style="background-color:#eddcb7">
@@ -86,7 +90,7 @@
               </div>
             </div>
             <div class="col pt-4 offset-10">
-              <button class="btn btn-danger ls-1" onclick="printDiv('#printableDiv')" title="click to print data"><i class="mdi mdi-printer"></i> Print </button>
+              <button class="btn btn-danger ls-1" onclick="printPaidBill()" title="click to print data"><i class="mdi mdi-printer"></i> Print </button>
             </div>
       </div>
       <!-- End Row  -->  
@@ -99,17 +103,6 @@
 <!-- End Wrapper -->
 
 <script>
-
-  
-const printDiv = (layer) => {
-    $(layer).printThis({
-        importCSS: true,
-        copyTagClasses: true,
-        copyTagStyles: true,
-        removeInline: false,
-    });
-    };
-
      const baseUrl = "<?php echo base_url(); ?>";
      const payment_no = document.querySelector('#pd-payment-no').value;
 
@@ -206,6 +199,15 @@ const printDiv = (layer) => {
         xhr.send();
 
         return xhr.status == "200" ? true: false;
+    }
+
+    const printPaidBill = () => {
+      const hp_id = document.querySelector('#p-hp-id').value;
+      const start_date = document.querySelector('#p-start-date').value;
+       const end_date = document.querySelector('#p-end-date').value;
+
+       var base_url = `${baseUrl}`;
+        var win = window.open(base_url + "printpaid/pdfbilling/" + btoa(hp_id) + "/" + btoa(start_date) + "/" + btoa(end_date), '_blank');
     }
 
 

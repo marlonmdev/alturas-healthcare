@@ -161,20 +161,7 @@
                                     <div class="row offset-7">
                                         <span class="ps-5 fw-bold">TOTAL PAYABLE <span class="offset-2" id="total_bill"></span></span>
                                     </div>
-                                    <div class="row offset-1 pt-4 ps-5">
-                                        <div class="col-4">
-                                            <span>Prepared by : </span><br><br>
-                                            <span class="text-decoration-underline fw-bold fs-5">__<?php echo $user; ?>__</span>
-                                        </div>
-                                        <div class="col-4">
-                                            <span>Audited by : </span><br><br>
-                                            <span class="">_______________________</span>
-                                        </div>
-                                        <div class="col-4">
-                                            <span>Noted by : </span><br><br>
-                                            <span class="">_______________________</span>
-                                        </div>
-                                    </div>
+                                    
                                     <br><br><br>
                                 </div>
                             </div>

@@ -49,7 +49,6 @@
                     <table class="table table-hover" id="chargeTable">
                         <thead style="background-color:#00538C">
                             <tr>
-                                <td class="text-white">#</td>
                                 <td class="text-white">Healthcard No.</td>
                                 <td class="text-white">Member</td>
                                 <td class="text-white">Business Unit</td>
@@ -63,7 +62,6 @@
                         <tbody>
                         </tbody>
                         <tfoot>
-                            <td></td>
                             <td></td>
                             <td></td>
                             <td><span class="fw-bold fs-5">TOTAL</span></td>
@@ -118,7 +116,7 @@
 
                       
         chargingTable.on('draw.dt', function() {
-            let columnIndices = [4, 5, 6]; // Array of column indices to calculate sum
+            let columnIndices = [3, 4, 5]; // Array of column indices to calculate sum
             let sums = [0, 0, 0]; // Array to store the sums for each column
 
             if ($('#chargeTable').DataTable().data().length > 0) {

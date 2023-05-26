@@ -72,7 +72,7 @@ class Loa_controller extends CI_Controller {
 
 			if($loa['work_related'] == 'Yes'){
 				if($loa['percentage'] == ''){
-					$company_charge = number_format($loa['net_bill'],2, '.',',');
+					$company_charge = number_format($net_bill,2, '.',',');
 					$personal_charge = number_format(0,2, '.',',');
 					if($net_bill >= $previous_mbl){
 						$remaining_mbl = number_format(0,2, '.',',');

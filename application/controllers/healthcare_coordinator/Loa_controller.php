@@ -1152,7 +1152,7 @@ class Loa_controller extends CI_Controller {
 	function get_pending_loa_info() {
 		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$this->load->model('healthcare_coordinator/loa_model');
-		$row = $this->loa_model->db_get_loa_details($loa_id);
+		$row = $this->loa_model->db_get_loa_detail($loa_id);
 		$cost_types = $this->loa_model->db_get_cost_types();
 		// Calculate Age
 		$birthDate = date("d-m-Y", strtotime($row['date_of_birth']));
@@ -1212,7 +1212,7 @@ class Loa_controller extends CI_Controller {
 	function get_approved_loa_info() {
 		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$this->load->model('ho_accounting/Loa_model');
-		$row = $this->Loa_model->db_get_loa_details($loa_id);
+		$row = $this->Loa_model->db_get_loa_detail($loa_id);
 		$doctor_name = "";
 		if ($row['approved_by']) {
 			$doc = $this->Loa_model->db_get_doctor_by_id($row['approved_by']);
@@ -1283,7 +1283,7 @@ class Loa_controller extends CI_Controller {
 	function get_disapproved_loa_info() {
 		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$this->load->model('healthcare_coordinator/loa_model');
-		$row = $this->loa_model->db_get_loa_details($loa_id);
+		$row = $this->loa_model->db_get_loa_detail($loa_id);
 		$doctor_name = "";
 		if ($row['disapproved_by']) {
 			$doc = $this->loa_model->db_get_doctor_by_id($row['disapproved_by']);
@@ -1354,7 +1354,7 @@ class Loa_controller extends CI_Controller {
 	function get_cancelled_loa_info() {
 		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$this->load->model('healthcare_coordinator/loa_model');
-		$row = $this->loa_model->db_get_loa_details($loa_id);
+		$row = $this->loa_model->db_get_loa_detail($loa_id);
 		$doctor_name = "";
 		if ($row['approved_by']) {
 			$doc = $this->loa_model->db_get_doctor_by_id($row['approved_by']);
@@ -1428,7 +1428,7 @@ class Loa_controller extends CI_Controller {
 	function get_completed_loa_info() {
 		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$this->load->model('healthcare_coordinator/loa_model');
-		$row = $this->loa_model->db_get_loa_details($loa_id);
+		$row = $this->loa_model->db_get_loa_detail($loa_id);
 		$doctor_name = "";
 		if ($row['approved_by']) {
 			$doc = $this->loa_model->db_get_doctor_by_id($row['approved_by']);

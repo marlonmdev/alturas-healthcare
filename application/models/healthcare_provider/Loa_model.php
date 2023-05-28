@@ -104,7 +104,7 @@ class Loa_model extends CI_Model{
         $query = $this->db->get();
         return $query->result();
     }
-
+ 
     function get_cost_type($id){
         $this->db->select('*')
                  ->from('cost_types')
@@ -126,18 +126,29 @@ class Loa_model extends CI_Model{
         $query = $this->db->get();
         return $query->result();
     }
-    function db_get_loa_info($loa_id) {
-        $this->db->select('*')
-                 ->from('loa_requests as tbl_1')
-                 ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
-                 ->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id')
-                 ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id')
-                 ->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id= tbl_5.emp_id')
-                 ->join('performed_loa_info as tbl_6', 'tbl_1.emp_id= tbl_6.emp_id')
-                 ->where('tbl_1.loa_id', $loa_id);
+
+    function check_performed_loa($loa_id) {
+        $this->db->from('performed_loa_info')
+            ->where('loa_id', $loa_id);
+        return $this->db->count_all_results();
+    }
+    
+    function db_get_loa_info($loa_id,$is_performed) {
+        $this->db->select('*');
+        $this->db->from('loa_requests as tbl_1');
+        $this->db->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
+        $this->db->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id');
+        $this->db->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id');
+        $this->db->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id');
+        
+        if ($is_performed) {
+            $this->db->join('performed_loa_info as tbl_6', 'tbl_1.emp_id = tbl_6.emp_id');
+        }
+
+        $this->db->where('tbl_1.loa_id', $loa_id);
         return $this->db->get()->row_array();
     }
-
+    
 
     function db_get_member_mbl($emp_id){
         $query = $this->db->get_where('max_benefit_limits', ['emp_id' => $emp_id]);
@@ -184,7 +195,7 @@ class Loa_model extends CI_Model{
         var $order_history = array('tbl_1.loa_id' => 'desc'); // default order 
         private function _get_loa_datatables_query($emp_id, $hp_id) {
             // Select all data from the first table
-            $this->db->select('tbl_1.status as tbl1_status, tbl_1.loa_id, tbl_1.emp_id, tbl_1.*, tbl_2.*');
+            $this->db->select('tbl_1.status as tbl1_status, tbl_1.loa_id as tbl1_loa_id, tbl_1.*, tbl_2.*');
             $this->db->from($this->table_1 . ' as tbl_1');
             $this->db->join($this->table_3 . ' as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id','left');
             $this->db->where('tbl_1.emp_id', $emp_id);

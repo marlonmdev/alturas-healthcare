@@ -25,78 +25,117 @@ class Patient_model extends CI_Model {
   ];
   var $order = ['member_id' => 'desc']; // default order 
 
-  private function _get_datatables_query($hp_id,$loa_noa) {
+  private function _get_datatables_query($hp_id) {
 
-		if($loa_noa === "noa"){
-      $this->db->group_by('emp_no');
-      $this->db->from($this->table1 . ' as tbl_1');
-      $this->db->join($this->table2 . ' as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
-      $this->db->join($this->table3 . ' as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id');
-      $this->db->join($this->table4 . ' as tbl_4', 'tbl_1.hospital_id = tbl_4.hp_id');
-      $this->db->where('tbl_1.hospital_id', $hp_id);
-      $this->db->group_start()
-         ->where('tbl_1.status', 'Approved')
-         ->or_where('tbl_1.status', 'Completed')
-         ->or_where('tbl_1.status', 'Billed')
-         ->group_end();
-    }elseif($loa_noa === "loa"){
-      $this->db->group_by('emp_no');
-      $this->db->from($this->table5 . ' as tbl_5');
-      $this->db->join($this->table2 . ' as tbl_2', 'tbl_5.emp_id = tbl_2.emp_id');
-      $this->db->join($this->table3 . ' as tbl_3', 'tbl_5.emp_id = tbl_3.emp_id');
-      $this->db->join($this->table4 . ' as tbl_4', 'tbl_5.hcare_provider = tbl_4.hp_id');
-      $this->db->where('tbl_5.hcare_provider', $hp_id);
-      $this->db->group_start()
-      ->where('tbl_5.status', 'Approved')
-      ->or_where('tbl_5.status', 'Completed')
-      ->or_where('tbl_5.status', 'Billed')
-      ->group_end();
-    }
-    $i = 0;
+		// if($loa_noa === "noa"){
+      // $this->db->group_by('emp_no');
+      // $this->db->from($this->table1 . ' as tbl_1');
+      // $this->db->join($this->table2 . ' as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
+      // $this->db->join($this->table3 . ' as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id');
+      // $this->db->join($this->table4 . ' as tbl_4', 'tbl_1.hospital_id = tbl_4.hp_id');
+      // $this->db->where('tbl_1.hospital_id', $hp_id);
+      // $this->db->group_start()
+      //    ->where('tbl_1.status', 'Approved')
+      //    ->or_where('tbl_1.status', 'Completed')
+      //    ->or_where('tbl_1.status', 'Billed')
+      //    ->group_end();
+    // }elseif($loa_noa === "loa"){
+    //   $this->db->group_by('emp_no');
+    //   $this->db->from($this->table5 . ' as tbl_5');
+    //   $this->db->join($this->table2 . ' as tbl_2', 'tbl_5.emp_id = tbl_2.emp_id');
+    //   $this->db->join($this->table3 . ' as tbl_3', 'tbl_5.emp_id = tbl_3.emp_id');
+    //   $this->db->join($this->table4 . ' as tbl_4', 'tbl_5.hcare_provider = tbl_4.hp_id');
+    //   $this->db->where('tbl_5.hcare_provider', $hp_id);
+    //   $this->db->group_start()
+    //   ->where('tbl_5.status', 'Approved')
+    //   ->or_where('tbl_5.status', 'Completed')
+    //   ->or_where('tbl_5.status', 'Billed')
+    //   ->group_end();
+    // }
+    $query1 = $this->db->select('tbl_2.emp_no, tbl_2.first_name, tbl_2.middle_name, tbl_2.last_name, tbl_2.suffix, tbl_4.hp_name, tbl_3.max_benefit_limit,
+    tbl_3.remaining_balance, tbl_2.business_unit, tbl_2.dept_name')
+    ->from($this->table1 . ' as tbl_1')
+    ->join($this->table2 . ' as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+    ->join($this->table3 . ' as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id')
+    ->join($this->table4 . ' as tbl_4', 'tbl_1.hospital_id = tbl_4.hp_id')
+    ->where('tbl_1.hospital_id', $hp_id)
+    ->group_start()
+    ->where('tbl_1.status', 'Approved')
+    ->or_where('tbl_1.status', 'Completed')
+    ->or_where('tbl_1.status', 'Billed')
+    ->group_end()
+    ->group_by('emp_no')
+    ->get_compiled_select();
 
-    foreach ($this->column_search as $item) {
-      if ($_POST['search']['value']) {
-        if ($i === 0) {
-          $this->db->group_start();
-          $this->db->like($item, $_POST['search']['value']);
-        } else {
-          $this->db->or_like($item, $_POST['search']['value']);
-        }
-        if (count($this->column_search) - 1 == $i)
-          $this->db->group_end(); 
-      }
-      $i++;
-    }
+    $query2 = $this->db->select('tbl_2.emp_no, tbl_2.first_name, tbl_2.middle_name, tbl_2.last_name, tbl_2.suffix, tbl_4.hp_name, tbl_3.max_benefit_limit,
+      tbl_3.remaining_balance, tbl_2.business_unit, tbl_2.dept_name')
+    ->from($this->table5 . ' as tbl_5')
+    ->join($this->table2 . ' as tbl_2', 'tbl_5.emp_id = tbl_2.emp_id')
+    ->join($this->table3 . ' as tbl_3', 'tbl_5.emp_id = tbl_3.emp_id')
+    ->join($this->table4 . ' as tbl_4', 'tbl_5.hcare_provider = tbl_4.hp_id')
+    ->where('tbl_5.hcare_provider', $hp_id)
+    ->group_start()
+    ->where('tbl_5.status', 'Approved')
+    ->or_where('tbl_5.status', 'Completed')
+    ->or_where('tbl_5.status', 'Billed')
+    ->group_end()
+    ->group_by('emp_no')
+    ->get_compiled_select();
+    $unionQuery = $query1 . ' UNION ' . $query2;
+    return $unionQuery;
 
-		// here order processing
-		if (isset($_POST['order'])) {
-			$this->db->order_by($this->column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
-		} else if (isset($this->order)) {
-			$order = $this->order;
-			$this->db->order_by(key($order), $order[key($order)]);
-		}
+    // $results = $query->result_array();
+    // var_dump($re)
+    // $this->db->query($query1 . ' UNION ' . $query2)->result_array();
+    // $i = 0;
+
+    // foreach ($this->column_search as $item) {
+    //   if ($_POST['search']['value']) {
+    //     if ($i === 0) {
+    //       $this->db->group_start();
+    //       $this->db->like($item, $_POST['search']['value']);
+    //     } else {
+    //       $this->db->or_like($item, $_POST['search']['value']);
+    //     }
+    //     if (count($this->column_search) - 1 == $i)
+    //       $this->db->group_end(); 
+    //   }
+    //   $i++;
+    // }
+
+		// // here order processing
+		// if (isset($_POST['order'])) {
+		// 	$this->db->order_by($this->column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+		// } else if (isset($this->order)) {
+		// 	$order = $this->order;
+		// 	$this->db->order_by(key($order), $order[key($order)]);
+		// }
   }
 
-	function get_datatables($hp_id,$loa_noa) {
-		$this->_get_datatables_query($hp_id,$loa_noa);
-		if ($_POST['length'] != -1)
-		  $this->db->limit($_POST['length'], $_POST['start']);
-		$query = $this->db->get();
-		return $query->result_array();
+	function get_datatables($hp_id) {
+    $query = $this->_get_datatables_query($hp_id);
+
+    if ($_POST['length'] != -1) {
+        $this->db->query($query);
+        $this->db->limit($_POST['length'], $_POST['start']);
+    }
+
+    $result = $this->db->get();
+    return $result->result_array();
 	}
-	function count_all($hp_id,$loa_noa) {
-    if($loa_noa === "noa"){
+	function count_all($hp_id) {
+    // if($loa_noa === "noa"){
       $this->db->from($this->table1);
       $this->db->where('hospital_id', $hp_id);
-    }elseif($loa_noa === "loa"){
+    // }elseif($loa_noa === "loa"){
       $this->db->from($this->table5);
       $this->db->where('hcare_provider', $hp_id);
-    }
+    // }
   
     return $this->db->count_all_results();
   }
-	function count_filtered($hp_id,$loa_noa) {
-    $this->_get_datatables_query($hp_id,$loa_noa);
+	function count_filtered($hp_id) {
+    $this->_get_datatables_query($hp_id);
     $query = $this->db->get();
     return $query->num_rows();
   }

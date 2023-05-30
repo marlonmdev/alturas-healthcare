@@ -2408,7 +2408,11 @@ class Loa_controller extends CI_Controller {
 		$loa = $this->loa_model->get_loa_request_info($loa_id);
 		$med_services = $this->input->post('med-services', TRUE);
 		$old_med_services = $this->input->post('old-ctype-id', TRUE);
-
+		if($old_med_services > 1){
+			$med = implode(';', $old_med_services);
+		}else{
+			$med = $old_med_services;
+		}
 		$created_on = date('Y-m-d');
 		$default = strtotime('+1 week', strtotime($created_on));
 		$expired_on = date('Y-m-d', $default);
@@ -2432,7 +2436,7 @@ class Loa_controller extends CI_Controller {
 			'old_hc_provider' => $this->input->post('old-hp-id', TRUE),
 			'loa_request_type' => $loa['loa_request_type'],
 			'med_services' => implode(';', $med_services),
-			'old_med_services' => implode(';', $old_med_services),
+			'old_med_services' => $med,
 			'health_card_no' => $loa['health_card_no'],
 			'requesting_company' => $loa['requesting_company'],
 			'request_date' => date("Y-m-d"),	

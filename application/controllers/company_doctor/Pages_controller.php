@@ -157,8 +157,9 @@ class Pages_controller extends CI_Controller {
 
 	function view_member_files() {
 		$data['type'] = $this->myhash->hasher($this->uri->segment(3), 'decrypt');
-		$data['emp_id'] = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$data['emp_id'] = $emp_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
 		$data['member_id'] = $member_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['file'] = $this->members_model->get_employee_files($emp_id);
 		$data['member'] = $this->members_model->db_get_member_details($member_id);
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);

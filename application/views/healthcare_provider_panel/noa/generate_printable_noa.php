@@ -77,9 +77,13 @@
                       </tr>
 
                       <tr>
-                        <td  class="ls-1 fs-6 lh-1"style="padding:0 10px 0 10px;text-align:center;" colspan="2">
+                        <td  class="ls-1 fs-6 lh-1 col-6"style="padding:0 10px 0 20px;text-align:justify;">
                           <h6 class="lh-1">CHIEF COMPLAINT</h6>
-                          <span><?= $row['chief_complaint'] ?></span>
+                          <span><i class="mdi mdi-chevron-right fs-4"></i> <?= $row['chief_complaint'] ?></span>
+                        </td>
+                        <td  class="ls-1 fs-6 lh-1 col-6"style="padding:0 10px 0 20px;text-align:justify;">
+                          <h6 class="lh-1">ROOM TYPE</h6>
+                          <span><i class="mdi mdi-chevron-right fs-4"></i> <?= $room_type ?></span>
                         </td>
                       </tr>
 
@@ -148,7 +152,7 @@
                     </table>
                     <small class="ls-1 lh-1" style="padding:0 0 0 20px;vertical-align:baseline;color:#b3b4b5">
                         <div class="col-12 pe-3" style="display:flex;justify-content:center;margin-right:20px;">
-                          <table class="text-center table table-bordered">
+                          <table class="text-center table table-bordered" style="color:#b3b4b5">
                               <th class="fw-bold py-1">Level</th>
                               <th class="fw-bold py-1"> Maximum Benefit Limit</th>
                               <th class="fw-bold py-1">Room and Board (Confinement)</th>

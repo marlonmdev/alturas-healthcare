@@ -158,14 +158,14 @@ class Pages_controller extends CI_Controller {
 	function unpaid_personal_charges() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
-		$this->load->view('member_panel/personal_charges/unpaid_personal_charges');
+		$this->load->view('member_panel/personal_charges/personal_charges');
 		$this->load->view('templates/footer');
 	}
 
 	function paid_personal_charges() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
-		$this->load->view('member_panel/personal_charges/paid_personal_charges');
+		$this->load->view('member_panel/personal_charges/requested_healthcare_advance');
 		$this->load->view('templates/footer');
 	}
 

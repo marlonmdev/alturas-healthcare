@@ -26,13 +26,7 @@
                                         <label class="text-danger ls-1 me-2 pt-2">Posted On : </label>
                                     </div>
                                         <input class="form-control text-dark fw-bold ls-1 fs-6" placeholder="" name="start_date" id="start_date" readonly>
-
-                                    <!-- <div class="input-group-append ms-2">
-                                        <label class="text-danger ls-1 me-2 pt-2">To : </label>
-                                    </div>
-                                    <input class="form-control text-dark fw-bold ls-1 fs-6" placeholder="" name="end_date" id="end_date" readonly> -->
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -102,8 +96,10 @@
                         </div>
 
                         <div class="col-lg-8 pt-2">
-                            <label class="fw-bold text-dark fs-5">Check Voucher Image : </label>
-                            <img src="" id="supporting-docu" style="width: 750px;height: 250px;">
+                            <label class="fw-bold text-dark fs-5">Check Voucher Image:</label>
+                            <div class="image-container">
+                                <img src="" id="supporting-docu" alt="Voucher Image">
+                            </div>
                         </div>
 
                     </div>
@@ -123,5 +119,28 @@
 			border: 1px solid #ccc;
 			padding: 5px;
 		}
+
+        .image-container {
+        width: 750px;
+        height: 250px;
+        overflow-y: auto; /* Enable vertical scrollbar */
+        scrollbar-width: thin; /* Add a thin scrollbar (Works in Firefox) */
+        scrollbar-color: gray lightgray; /* Customize scrollbar colors */
+        }
+
+        /* For webkit-based browsers (Chrome, Safari) */
+        .image-container::-webkit-scrollbar {
+        width: 7px;
+        }
+
+        .image-container::-webkit-scrollbar-thumb {
+        background-color: gray;
+        border-radius: 4px;
+        }
+
+        .image-container::-webkit-scrollbar-track {
+        background-color: lightgray;
+        }
+
 	</style>
 </div>

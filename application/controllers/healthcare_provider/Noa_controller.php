@@ -74,6 +74,16 @@ class Noa_controller extends CI_Controller {
 		$data['bar2'] = $this->noa_model->bar_completed();
 		$data['bar3'] = $this->noa_model->bar_referral();
 		$data['bar4'] = $this->noa_model->bar_expired();
+
+		if($exist['position_level'] <= 6){
+			$data['room_type'] = 'Payward';
+		}else if($exist['position_level'] > 6 && $exist['position_level'] < 10){
+			$data['room_type'] = 'Semi-private';
+		}else if($exist['position_level'] > 9){
+			$data['room_type'] = 'Regular Private';
+		}
+
+		
 		if (!$exist) {
 			$this->load->view('pages/page_not_found');
 		} else {

@@ -28,10 +28,6 @@
               <i class="mdi mdi-arrow-left-bold"></i>
               Go Back
             </a>
-            
-            <button class="btn btn-info ls-1 me-2" onclick="saveAsImage()"><i class="mdi mdi-file-image"></i> Save as Image</button>
-
-            <button class="btn btn-danger ls-1" onclick="printDiv('#printableDiv')"><i class="mdi mdi-printer"></i> Print LOA</button>
           </div>
         </div>
 
@@ -80,7 +76,7 @@
 
 
                       <tr>
-                        <td class="ls-1" style="padding:0 0 0 20px;text-align:justify;vertical-align:baseline;" colspan="1">
+                        <td class="ls-1 col-6" style="padding:0 0 0 20px;text-align:justify;vertical-align:baseline;" colspan="1">
                           <?php
                           echo '<h5>' . strtoupper($row['loa_request_type']) . '</h5>';
                           $selected_cost_types = explode(';', $row['med_services']);
@@ -96,18 +92,11 @@
                           }
                           ?>
                         </td>
-                        <td class="ls-1 fs-6"  style="padding:0 0 0 20px;text-align:justify;vertical-align:baseline;" colspan="1">
+                        <td class="ls-1 fs-6 col-6"  style="padding:0 0 0 20px;text-align:justify;vertical-align:baseline;" colspan="1">
                           <h5 class="ls-1">CHIEF COMPLAINT</h5>
                           <i class="mdi mdi-chevron-right fs-4"></i><?= $row['chief_complaint'] ?>
                         </td>
                       </tr>
-
-                      <!-- <tr>
-                        <td class="ls-1 fs-6"  style="padding:10px 0 0 20px;text-align:justify;vertical-align:baseline;" colspan="2">
-                          <h5 class="ls-1">CHIEF COMPLAINT</h5>
-                          <i class="mdi mdi-chevron-right fs-4"></i><?= $row['chief_complaint'] ?>
-                        </td>
-                      </tr> -->
 
                       <tr>
                         <td colspan="2" style="padding: 0 20px 0 20px;">
@@ -187,7 +176,7 @@
                     </table>
                     <small class="ls-1 lh-1" style="padding:0 0 0 20px;vertical-align:baseline;color:#b3b4b5">
                         <div class="col-12 pe-3" style="display:flex;justify-content:center;margin-right:20px;">
-                          <table class="text-center table table-bordered">
+                          <table class="text-center table table-bordered" style="color:#b3b4b5">
                               <th class="fw-bold py-1">Level</th>
                               <th class="fw-bold py-1"> Maximum Benefit Limit</th>
                               <tbody>

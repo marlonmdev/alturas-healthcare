@@ -234,8 +234,10 @@ class List_model extends CI_Model{
     }
     
     function db_get_hp_name($hp_id) {
-        $query = $this->db->get_where('healthcare_providers', ['hp_id' => $hp_id]);
-        return $query->row_array();
+        if(!empty($hp_id)){
+            $query = $this->db->get_where('healthcare_providers', ['hp_id' => $hp_id]);
+            return $query->row_array();
+        }
     }
 //Payment Details
     function add_payment_details($data) {
@@ -684,12 +686,22 @@ class List_model extends CI_Model{
                 ->join('members as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
                 ->join('locate_business_unit as tbl_6', 'tbl_5.business_unit = tbl_6.business_unit')
                 ->join('max_benefit_limits as tbl_7', 'tbl_1.emp_id = tbl_7.emp_id')
-                ->where('tbl_1.hp_id', $hp_id)
-                ->where('tbl_5.business_unit', $bu_filter);
-        $startDate = date('Y-m-d', strtotime($start_date));
-        $this->db->where('tbl_1.billed_on >=', $startDate);
-        $endDate = date('Y-m-d', strtotime($end_date));
-        $this->db->where('tbl_1.billed_on <=', $endDate);
+                ->where('tbl_1.status', 'Payable');
+        if(!empty($hp_id)){
+            $this->db->where('tbl_1.hp_id', $hp_id);
+        }
+        if(!empty($bu_filter)){
+            $this->db->where('tbl_5.business_unit', $bu_filter);
+        }
+        if(!empty($start_date)){
+            $startDate = date('Y-m-d', strtotime($start_date));
+            $this->db->where('tbl_1.billed_on >=', $startDate);
+        }
+        if(!empty($end_date)){
+            $endDate = date('Y-m-d', strtotime($end_date));
+            $this->db->where('tbl_1.billed_on <=', $endDate);
+        }
+        
         return $this->db->get()->result_array();
     }
 

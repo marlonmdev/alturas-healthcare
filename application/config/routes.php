@@ -92,7 +92,9 @@ $route['member/requested-noa/generate-printable-noa/(:any)'] = 'member/noa_contr
 
 // Member Personal Charges Routes
 $route['member/personal-charges/unpaid/fetch'] = 'member/pcharges_controller/fetch_unpaid_personal_charges';
-$route['member/personal-charges/paid/fetch'] = 'member/pcharges_controller/fetch_paid_personal_charges';
+$route['member/personal-charges/requested/fetch'] = 'member/pcharges_controller/fetch_requested_personal_charges';
+$route['member/personal/submit-healthcare-advance'] = 'member/pcharges_controller/submit_healthcare_advance';
+$route['member/personal-charges/view/details/(:any)'] = 'member/pcharges_controller/fetch_charges_details';
 
 // End of Member Routes
 //======================================================================================================

@@ -57,13 +57,13 @@
                           <th class="fw-bold">Billing No.</th>
                           <th class="fw-bold">LOA/NOA #</th>
                           <th class="fw-bold">Patient Name</th>
-                          <th class="fw-bold">Remaining MBL</th>
                           <th class="fw-bold">Percentage</th>
                           <th class="fw-bold">Hospital Bill</th>
                           <th class="fw-bold">Company Charge</th>
                           <th class="fw-bold">Healthcare Advance</th>
                           <th class="fw-bold">Total Paid Bill</th>
                           <th class="fw-bold">Personal Charge</th>
+                          <th class="fw-bold">Remaining MBL</th>
                           <th class="fw-bold">Status</th>
                           <th class="fw-bold">View SOA</th>
                         </tr>

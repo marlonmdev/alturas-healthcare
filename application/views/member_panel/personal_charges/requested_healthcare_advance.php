@@ -2,12 +2,12 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">PERSONAL CHARGE</h4>
+        <h4 class="page-title ls-2">REQUESTED FOR HEALTHCARE ADVANCE</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Member</li>
-              <li class="breadcrumb-item active" aria-current="page">Unpaid</li>
+              <li class="breadcrumb-item active" aria-current="page">Requested</li>
             </ol>
           </nav>
         </div>
@@ -21,30 +21,30 @@
 
         <ul class="nav nav-tabs mb-4" role="tablist">
           <li class="nav-item">
-            <a class="nav-link active" href="<?php echo base_url(); ?>member/personal-charges"role="tab">
+            <a class="nav-link" href="<?php echo base_url(); ?>member/personal-charges" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">UNPAID</span>
+              <span class="hidden-xs-down fs-5 font-bold">Charges</span>
             </a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/personal-charges/paid" role="tab">
+            <a class="nav-link active" href="<?php echo base_url(); ?>member/personal-charges/paid" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">PAID</span>
+              <span class="hidden-xs-down fs-5 font-bold">Requested</span>
             </a>
           </li>
         </ul>
 
         <div class="card shadow">
           <div class="card-body">
-            <div class="table-responsive">
+            <div class="">
               <table class="table table-striped table-hover" id="memberPersonalCharges">
                 <thead style="background-color:#00538C">
                   <tr>
                     <th class="fw-bold" style="color: white">#</th>
                     <th class="fw-bold" style="color: white">BILLING #</th>
                     <th class="fw-bold" style="color: white">CHARGE AMOUNT</th>
-                    <th class="fw-bold" style="color: white">ADDED ON</th>
+                    <th class="fw-bold" style="color: white">REQUESTED ON</th>
                     <th class="fw-bold" style="color: white">STATUS</th>
                     <th class="fw-bold" style="color: white">ACTION</th>
                   </tr>
@@ -62,12 +62,6 @@
   </div>
 </div>
 
-
-
-
-
-
-
 <script>
   const baseUrl = "<?= base_url() ?>";
   $(document).ready(function() {
@@ -78,7 +72,7 @@
 
       // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}member/personal-charges/unpaid/fetch`,
+        url: `${baseUrl}member/personal-charges/requested/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: {
@@ -96,50 +90,71 @@
     });
   });
 
-  function viewPChargeModal(pcharge_id) {
-    // $.ajax({
-    //   url: `${baseUrl}member/personal-charges/view/unpaid/${pcharge_id}`,
-    //   type: "GET",
-    //   success: function(response) {
-    //     const res = JSON.parse(response);
-    //     const base_url = window.location.origin;
-    //     const {
-    //       status,
-    //       token,
-    //       noa_no,
-    //       first_name,
-    //       middle_name,
-    //       last_name,
-    //       suffix,
-    //       date_of_birth,
-    //       age,
-    //       hospital_name,
-    //       health_card_no,
-    //       requesting_company,
-    //       admission_date,
-    //       chief_complaint,
-    //       request_date,
-    //       req_status
-    //     } = res;
+  function viewPChargeModal(billing_id) {
+    $.ajax({
+      url: `${baseUrl}member/personal-charges/view/details/${billing_id}`,
+      type: "GET",
+      success: function(response) {
+        const res = JSON.parse(response);
+        const base_url = window.location.origin;
+        const {
+          status,
+          token,
+          loa_noa_no,
+          billing_no,
+          work_related,
+          percentage,
+          before_remaining_bal,
+          net_bill,
+          company_charge,
+          personal_charge,
+          after_remaining_bal,
+          billed_on,
+        } = res;
 
         $("#viewPersonalChargeModal").modal("show");
-        // switch (req_status) {
-        //   case 'Unpaid':
-        //     $('#noa-status').html('<strong class="text-warning">[' + req_status + ']</strong>');
-        //     break;
-        //   case 'Paid':
-        //     $('#noa-status').html('<strong class="text-success">[' + req_status + ']</strong>');
-        //     break;
-        // }
-        // $('#noa-no').html(noa_no);
-        // $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
-        // $('#date-of-birth').html(date_of_birth);
-        // $('#age').html(age);
-        // $('#hospital-name').html(hospital_name);
-        // $('#admission-date').html(admission_date);
-        // $('#chief-complaint').html(chief_complaint);
-        // $('#request-date').html(request_date);
-    //   }
-    // });
+        $('#billing-no').html(billing_no);
+        $('#current-mbl').html(before_remaining_bal);
+        $('#hospital-bill').html(net_bill);
+        $('#company-charge').html(company_charge);
+        $('#personal-charge').html(personal_charge);
+        $('#remaining-mbl').html(after_remaining_bal);
+        $('#billed-on').html(billed_on);
+        $('#loa-noa-no').html(loa_noa_no);
+
+
+        if(work_related == 'Yes'){ 
+					if(percentage == ''){
+					  wpercent = '100% W-R';
+					  nwpercent = '';
+					}else{
+					   wpercent = percentage+'%  W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   nwpercent = '';
+					   }else{
+						   nwpercent = result+'% Non W-R';
+					   }
+					  
+					}	
+			   }else if(work_related == 'No'){
+				   if(percentage == ''){
+					   wpercent = '';
+					   nwpercent = '100% Non W-R';
+					}else{
+					   nwpercent = percentage+'% Non W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   wpercent = '';
+					   }else{
+						   wpercent = result+'%  W-R';
+					   }
+					 
+					}
+			   }
+        $('#percentage').html(wpercent+', '+nwpercent);
+
+      }
+    });
   }
 </script>

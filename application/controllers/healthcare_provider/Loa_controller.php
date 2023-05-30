@@ -98,7 +98,7 @@ class Loa_controller extends CI_Controller {
 		$data['bar2'] = $this->loa_model->bar_completed();
 		$data['bar3'] = $this->loa_model->bar_referral();
 		$data['bar4'] = $this->loa_model->bar_expired();
-		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		// $data['bar_Billed'] = $this->loa_model->bar_billed();
 		if (!$exist) {
 			$this->load->view('pages/page_not_found');
 		} else {
@@ -127,7 +127,7 @@ class Loa_controller extends CI_Controller {
 				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $loa['status'] . '</span></div>';
 
 				$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
-				$custom_actions .= '<a class="me-1" href="' . base_url() . 'healthcare-provider/loa/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Print LOA"><i class="mdi mdi-printer fs-2 text-primary"></i></a>';
+				$custom_actions .= '<a class="me-1" href="' . base_url() . 'healthcare-provider/loa/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="View Letter of Authorization"><i class="mdi  mdi-file-document fs-2 text-primary"></i></a>';
 				// initialize multiple varibles at once
 				$view_file = $short_med_services = '';
 				if ($loa['loa_request_type'] === 'Consultation') {

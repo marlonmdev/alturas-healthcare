@@ -587,7 +587,7 @@ const viewValues = () => {
         $('#company-charge').html(company);
     }
 
-    const printPDF = () => {
+    const printPDF = () => { 
         const bu_filters = document.querySelector('#billed-bu-filter').value;
         const hp_id = document.querySelector('#billed-hospital-filter').value;
         const start_date = document.querySelector('#start-date').value;
@@ -597,10 +597,22 @@ const viewValues = () => {
             bu_filter = 'none';
           }else{
             bu_filter = bu_filters;
+          } if(hp_id == ''){
+            hp_ids = 'none';
+          }else{
+            hp_ids = hp_id;
+          } if(start_date == ''){
+            start_dates = 'none';
+          }else{
+            start_dates = start_date;
+          } if(end_date == ''){
+            end_dates = 'none';
+          }else{
+            end_dates = end_date;
           }
 
         var base_url = `${baseUrl}`;
-        var win = window.open(base_url + "print/pdfbilling/" + btoa(hp_id) + "/" + btoa(start_date) + "/" + btoa(end_date) + "/" + btoa(bu_filter), '_blank');
+        var win = window.open(base_url + "print/pdfbilling/" + btoa(hp_ids) + "/" + btoa(start_dates) + "/" + btoa(end_dates) + "/" + btoa(bu_filter), '_blank');
 
     }
 
@@ -610,14 +622,26 @@ const viewValues = () => {
         const start_date = document.querySelector('#start-date').value;
         const end_date = document.querySelector('#end-date').value;
 
-          if(bu_filters == ""){
+        if(bu_filters == ""){
             bu_filter = 'none';
           }else{
             bu_filter = bu_filters;
+          } if(hp_id == ''){
+            hp_ids = 'none';
+          }else{
+            hp_ids = hp_id;
+          } if(start_date == ''){
+            start_dates = 'none';
+          }else{
+            start_dates = start_date;
+          } if(end_date == ''){
+            end_dates = 'none';
+          }else{
+            end_dates = end_date;
           }
 
         var base_url = `${baseUrl}`;
-        var win = window.open(base_url + "printforpayment/pdfbilling/" + btoa(hp_id) + "/" + btoa(start_date) + "/" + btoa(end_date) + "/" + btoa(bu_filter) + "/" + btoa(payment_no), '_blank');
+        var win = window.open(base_url + "printforpayment/pdfbilling/" + btoa(hp_ids) + "/" + btoa(start_dates) + "/" + btoa(end_dates) + "/" + btoa(bu_filter) + "/" + btoa(payment_no), '_blank');
     }
 </script>
    

@@ -1013,6 +1013,15 @@ class Noa_controller extends CI_Controller {
 		$data['bar6'] = $this->noa_model->bar_approved_noa();
 		$data['bar_Initial'] = $this->noa_model->bar_initial_noa();
 		$data['bar_Billed2'] = $this->noa_model->bar_billed_noa();
+
+		if($exist['position_level'] <= 6){
+			$data['room_type'] = 'Payward';
+		}else if($exist['position_level'] > 6 && $exist['position_level'] < 10){
+			$data['room_type'] = 'Semi-private';
+		}else if($exist['position_level'] > 9){
+			$data['room_type'] = 'Regular Private';
+		}
+		
 		if (!$exist) {
 			$this->load->view('pages/page_not_found');
 		} else {

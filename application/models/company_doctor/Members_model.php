@@ -71,4 +71,8 @@ class Members_model extends CI_Model {
     $query = $this->db->get_where('max_benefit_limits', ['emp_id' => $emp_id]);
     return $query->row_array();
   }
+
+  function get_employee_files($emp_id) {
+    return $this->db->get_where('billing',['emp_id' => $emp_id])->result_array();
+  }
 }

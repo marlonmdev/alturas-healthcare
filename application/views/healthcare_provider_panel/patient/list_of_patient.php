@@ -76,10 +76,10 @@
       fixedHeader: true,
     });   
     
-    $('#filterDropdown').on('change', function() {
-      var value = $(this).val();
-      table.ajax.url(`${baseUrl}healthcare-provider/patient/fetch_all_patient/${value}`).load();
-    });
+    // $('#filterDropdown').on('change', function() {
+    //   var value = $(this).val();
+    //   table.ajax.url(`${baseUrl}healthcare-provider/patient/fetch_all_patient/${value}`).load();
+    // });
 
     
   });

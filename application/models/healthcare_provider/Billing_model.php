@@ -26,7 +26,7 @@ class Billing_model extends CI_Model {
     function get_member_loa($emp_id, $hcare_provider_id) {
         $this->db->select('loa_id, loa_no, emp_id, request_date, hcare_provider, status')
                  ->from('loa_requests')
-                 ->where('emp_id', $emp_id)
+                 ->where('emp_id', $emp_id) 
                  ->where('hcare_provider', $hcare_provider_id)
                  ->order_by('loa_id', 'DESC');
         return $this->db->get()->result_array();

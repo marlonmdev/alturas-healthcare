@@ -538,6 +538,7 @@
         type: "GET",
         success: function(response) {
             const res = JSON.parse(response);
+            // console.log(response);
             const base_url = window.location.origin;
             // Object Destructuring
             const { status, token, noa_no, member_mbl, remaining_mbl, first_name, middle_name,

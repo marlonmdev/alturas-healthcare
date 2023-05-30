@@ -352,14 +352,14 @@ class Patient_controller extends CI_Controller {
 		//  var_dump("row",$row);
 		$billing = $this->billing_model->get_loa_billing_info($row['loa_id']); 
 		// var_dump($billing['attending_doctors']);
-		$paid_loa = $this->loa_model->paid_loa($billing['details_no']);
+		$paid_loa = $this->loa_model->paid_loa(isset($billing['details_no'])?$billing['details_no']:null);
 		$doctor_name = "";
 		if ($row['approved_by']) {
 			$doc = $this->loa_model->db_get_doctor_by_id($row['approved_by']);
-			$doctor_name = $doc['doctor_name'];
+			$doctor_name = isset($doc)?$doc['doctor_name']:"";
 		} elseif ($row['disapproved_by']) {
 			$doc = $this->loa_model->db_get_doctor_by_id($row['disapproved_by']);
-			$doctor_name = $doc['doctor_name'];
+			$doctor_name = isset($doc)?$doc['doctor_name']:"";
 		} else {
 			$doctor_name = "Does not exist from Database";
 		}
@@ -402,10 +402,10 @@ class Patient_controller extends CI_Controller {
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'disapproved_on' => date("F d, Y", strtotime($row['disapproved_on'])),
 			'expiration' => date("F d, Y", strtotime($row['expiration_date'])),
-			'billed_on' => date("F d, Y", strtotime($billing['billed_on'])),
-			'paid_on' => date("F d, Y", strtotime($paid_loa['date_add'])),
+			'billed_on' => isset($billing['billed_on'])?date("F d, Y", strtotime($billing['billed_on'])):"",
+			'paid_on' => isset($paid_loa['date_add'])?date("F d, Y", strtotime($paid_loa['date_add'])):"",
 			'net_bill' => isset($billing['net_bill'])?$billing['net_bill']:"",
-			'paid_amount' =>$paid_loa['amount_paid'],
+			'paid_amount' =>isset($paid_loa['amount_paid'])?$paid_loa['amount_paid']:"",
 			'attending_doctors' =>isset($billing['attending_doctors'])?$billing['attending_doctors']:""
 		];
 		echo json_encode($response);
@@ -414,9 +414,11 @@ class Patient_controller extends CI_Controller {
 		$noa_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
 		$row = $this->noa_model->db_get_noa_info($noa_id);
 		$billing = $this->billing_model->get_noa_billing_info($noa_id);
-		$paid_noa = $this->noa_model->paid_noa($billing['details_no']);
-		// var_dump($billing['attending_doctors']);
-		$doctor_name = "";
+		$paid_noa = $this->noa_model->paid_noa(isset($billing['details_no'])?$billing['details_no']:null);
+		// var_dump("noa ",$row);
+		// var_dump("billing",$billing);
+		// var_dump("paid noa",$paid_noa);
+		// $doctor_name = "";
 		if ($row['approved_by']) {
 			$doc = $this->noa_model->db_get_doctor_name_by_id($row['approved_by']);
 			$doctor_name = $doc['doctor_name'];
@@ -473,13 +475,13 @@ class Patient_controller extends CI_Controller {
 			'disapproved_on' => date("F d, Y", strtotime($row['disapproved_on'])),
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
-			'billed_on' => date("F d, Y", strtotime($billing['billed_on'])),
-			'paid_on' => date("F d, Y", strtotime($paid_noa['date_add'])),
+			'billed_on' => isset($billing['billed_on'])?(date("F d, Y", strtotime($billing['billed_on']))):"",
+			'paid_on' => isset($paid_noa['date_add'])?date("F d, Y", strtotime($paid_noa['date_add'])):"",
 			'net_bill' => isset($billing['net_bill'])?$billing['net_bill']:"",
-			'paid_amount' =>$paid_noa['amount_paid'],
+			'paid_amount' =>isset($paid_noa['amount_paid'])?$paid_noa['amount_paid']:"",
 			'attending_doctors' =>isset($billing['attending_doctors'])?$billing['attending_doctors']:""
 		);
-
+		// var_dump("response",$response);
 		echo json_encode($response);
 	}
 }

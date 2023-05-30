@@ -346,7 +346,7 @@ class Billing_controller extends CI_Controller {
             $this->session->set_userdata([
                 'b_member_info'    => $member,
                 'b_member_mbl'     => $member_mbl['max_benefit_limit'],
-                'b_member_bal'     => $member_mbl['remaining_balance'],
+                'b_member_bal'     => $member_mbl['remaining_balance'], 
                 'b_hcare_provider' => $hp_name,
                 'b_healthcard_no'  => $member['health_card_no'],
             ]);

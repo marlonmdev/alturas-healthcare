@@ -971,6 +971,7 @@ class Billing_controller extends CI_Controller {
         $net_b = $this->input->post('net-bill', TRUE);
         $net_bill = floatval(str_replace(',','',$net_b));
         $hospitalBillData = $_POST['hospital_bill_data'];
+        $attending_doctor= $_POST['attending_doctors'];
         // $hospitalBillArray = json_decode($hospitalBillData, true);
         //var_dump($hospitalBillArray);
 
@@ -1008,7 +1009,8 @@ class Billing_controller extends CI_Controller {
                 'billed_by'             => $this->session->userdata('fullname'),
                 'billed_on'             => date('Y-m-d'),
                 'status'                => 'Billed',
-                'extracted_txt'         => $hospitalBillData
+                'extracted_txt'         => $hospitalBillData,
+                'attending_doctors'      => $attending_doctor
             ];    
             $mbl = [
                         'used_mbl'            => $result_charge['used_mbl'],
@@ -1102,6 +1104,7 @@ class Billing_controller extends CI_Controller {
         $net_bill = floatval(str_replace(',','',$net_b));
         $take_home_meds = $this->input->post('med-services',true);
         $hospitalBillData = $_POST['hospital_bill_data'];
+        $attending_doctor= $_POST['attending_doctors'];
         // var_dump("take home meds",$take_home_meds);
         // $hospitalBillArray = json_decode($hospitalBillData, true);
         //var_dump($hospitalBillArray);
@@ -1181,12 +1184,13 @@ class Billing_controller extends CI_Controller {
                 'after_remaining_bal'   => floatval(str_replace(',', '', $result_charge['remaining_balance'])),
                 'pdf_bill'              => isset($uploaded_files['pdf-file']) ? $uploaded_files['pdf-file']['file_name'] : NULL,
                 'final_diagnosis_file'  => isset($uploaded_files['Final-Diagnosis']) ? $uploaded_files['Final-Diagnosis']['file_name'] : NULL,
-                'medical_abstract_file'          => isset($uploaded_files['Medical-Abstract']) ? $uploaded_files['Medical-Abstract']['file_name'] : NULL,
+                'medical_abstract_file' => isset($uploaded_files['Medical-Abstract']) ? $uploaded_files['Medical-Abstract']['file_name'] : NULL,
                 'prescription_file'     => isset($uploaded_files['Prescription']) ? $uploaded_files['Prescription']['file_name'] : NULL,
                 'billed_by'             => $this->session->userdata('fullname'),
                 'billed_on'             => date('Y-m-d'),
                 'status'                => 'Billed',
-                'extracted_txt'         => $hospitalBillData
+                'extracted_txt'         => $hospitalBillData,
+                'attending_doctors'      => $attending_doctor
             ];    
             $mbl = [
                 'used_mbl'            => $result_charge['used_mbl'],
@@ -1553,3 +1557,4 @@ class Billing_controller extends CI_Controller {
 	}
     
 }
+ 

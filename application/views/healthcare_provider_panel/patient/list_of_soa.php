@@ -168,7 +168,7 @@ const printDiv = (layer) => {
             data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
             data.endDate = $('#end-date').val();
             data.startDate = $('#start-date').val();
-            data.loa_noa = $('#filter').val();
+            data.loa_noa = $('#filter').val(); 
             data.searchInput = $('#searchInput').val();
         },
       },

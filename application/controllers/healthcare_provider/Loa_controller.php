@@ -706,3 +706,4 @@ class Loa_controller extends CI_Controller {
 	}
 
 }
+

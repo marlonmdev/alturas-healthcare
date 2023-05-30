@@ -10,35 +10,54 @@
       <ul class="list-group">
       <li class="list-group-item">
       <div class="row">
-        <div class="col-md-6">
+        <div class="col">
           <h6>LOA Details</h6>
-          <p>LOA #: <strong><span id="loa-no" class="text-primary"></span></strong></p>
-          <p>Issued on: <strong><span id="approved-date" class="text-primary"></span></strong></p>
         </div>
-        <div class="col-md-6">
-       <br>
-          <p>Validity: <strong><span id="expire" class="text-primary"></span></strong></p>
-          <p>Status: <strong><span id="status" class="text-primary"></span></strong></p>
+        <div class="col">
+          <h6>STATUS: <strong><span id="status" class="text-primary"></span></strong></h6>
         </div>
       </div>
+
+      <div class="col">
+        <div class="row">
+          <div class="col">
+            <ul class="list-unstyled ms-0 ps-0" id="loa_details_1">
+              <!-- List items go here -->
+            </ul>
+          </div>
+          <div class="col">
+            <ul class="list-unstyled ms-0 ps-0" id="loa_details_2">
+              <!-- List items go here -->
+            </ul>
+          </div>
+        </div>
+      </div>
+      
     </li>
+          <li class="list-group-item">
+            <h6>Chief Complaint</h6>
+            <p id="complaint"></p>
+          </li>
+
           <li class="list-group-item">
             <h6>Services Utilized</h6>
             <ul id="services">
              
             </ul>
           </li>
-          <li class="list-group-item">
+          <li class="list-group-item" id="p-disaproved">
+            <h6>Reason for Disapproval</h6>
+            <p id="disaproved"></p>
+          </li>
+          <li class="list-group-item" id="p-documents">
             <h6>Uploaded Documents</h6>
             <ul id="documents">
             </ul>
           </li>
-          <li class="list-group-item">
+          <li class="list-group-item" id="p-physician">
             <h6>Attending Physician</h6>
-            <ul>
-              <li>
-                <strong><span id="physician" class="text-primary"></span></strong>
-              </li>
+            <ul id="physician">
+            
             </ul>
           </li>
         </ul>

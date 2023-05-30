@@ -32,12 +32,7 @@ class Patient_controller extends CI_Controller {
 	function fetch_all_patient(){
 		$this->security->get_csrf_hash();
 		$hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
-		// $loa_noa = $this->uri->segment(4);
-		// if($loa_noa === "loa"){
-			$list = $this->patient_model->get_datatables($hcare_provider_id);
-		// }elseif($loa_noa === "noa"){
-		// 	$list = $this->patient_model->get_datatables($hcare_provider_id,$loa_noa);
-		// }
+		$list = $this->patient_model->get_datatables($hcare_provider_id);
 		
 		$data = array();
 		foreach ($list as $member){
@@ -100,8 +95,8 @@ class Patient_controller extends CI_Controller {
 
 		$output = array(
 			"draw" => $_POST['draw'],
-			// "recordsTotal" => $this->patient_model->count_all($hcare_provider_id),
-			// "recordsFiltered" => $this->patient_model->count_filtered($hcare_provider_id),
+			"recordsTotal" => $this->patient_model->count_all($hcare_provider_id),
+			"recordsFiltered" => $this->patient_model->count_filtered($hcare_provider_id),
 			"data" => $data,
 		);
 		echo json_encode($output);
@@ -259,6 +254,7 @@ class Patient_controller extends CI_Controller {
 		$list = $this->loa_model->get_loa_datatables($emp_id, $hp_id);
 
 		$date ="";
+		//var_dump("loa_id",$list['tbl1_loa_id']);
 		// var_dump("list",$list);
 		// var_dump("emp_id",$emp_id);
 		// var_dump("hp_id",$hp_id);
@@ -269,7 +265,7 @@ class Patient_controller extends CI_Controller {
 			$loa_id = $this->myhash->hasher($loa['tbl1_loa_id'], 'encrypt');
 			// $loa_no = hashids_encrypt("asdfsdaf");
 			// $loa_ = hashids_decrypt($loa_no);
-			// var_dump("loa_id",$loa['tbl1_loa_id']);
+			
 			// var_dump($loa['loa_id']);
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaHistoryInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 			
@@ -342,19 +338,27 @@ class Patient_controller extends CI_Controller {
 	
 	function get_loa_history_info() {
 		$loa_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$isperformed = false;
 		// var_dump("loa id",$loa_id);
 		if($this->loa_model->check_performed_loa($loa_id)){
-			$row = $this->loa_model->db_get_loa_info($loa_id,true);
+			// var_dump("performed",$this->loa_model->check_performed_loa($loa_id));
+			$row = $this->loa_model->db_get_loa_info_patient($loa_id,true);
+			$isperformed = true;
 		}else{
-			$row = $this->loa_model->db_get_loa_info($loa_id,false);
+			$row = $this->loa_model->db_get_loa_info_patient($loa_id,false);
+			$isperformed = false;
 		}
 		
-		// var_dump("row",$row);
+		//  var_dump("row",$row);
 		$billing = $this->billing_model->get_loa_billing_info($row['loa_id']); 
+		// var_dump($billing['attending_doctors']);
+		$paid_loa = $this->loa_model->paid_loa($billing['details_no']);
 		$doctor_name = "";
 		if ($row['approved_by']) {
 			$doc = $this->loa_model->db_get_doctor_by_id($row['approved_by']);
-			// var_dump("doc",$row['approved_by']);
+			$doctor_name = $doc['doctor_name'];
+		} elseif ($row['disapproved_by']) {
+			$doc = $this->loa_model->db_get_doctor_by_id($row['disapproved_by']);
 			$doctor_name = $doc['doctor_name'];
 		} else {
 			$doctor_name = "Does not exist from Database";
@@ -381,22 +385,28 @@ class Patient_controller extends CI_Controller {
 			'token' => $this->security->get_csrf_hash(),
 			'loa_no' => $row['loa_no'],
 			'loa_request_type' => $row['loa_request_type'],
-			'med_services' => $ct_array,
+			'med_services' => (count($ct_array)!=0) ? $ct_array : ['Consultation'],
 			'requesting_company' => $row['requesting_company'],
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
-			'chief_complaint' => $row['chief_complaint'],
+			'complaints' => $row['chief_complaint'],
 			'requesting_physician' => $row['doctor_name'],
 			'attending_physician' => $row['attending_physician'],
 			'rx_file' => $row['rx_file'],
 			'pdf_bill' => isset($billing['pdf_bill'])?$billing['pdf_bill']:"",
-			'req_status' => $row['status'],
+			'req_status' => $row['tbl_1_status'],
 			'work_related' => $row['work_related'],
 			'approved_by' => $doctor_name,
-			'disapproved_by' => $row['disapproved_by'],
-			'date_perform' => $row['disapproved_by'],
+			'disapproved_by' => $doctor_name,
+			'disapprove_reason' => $row['disapprove_reason'],
+			'date_perform' => ($isperformed)?date("F d, Y", strtotime($row['date_performed'])):"",
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'disapproved_on' => date("F d, Y", strtotime($row['disapproved_on'])),
 			'expiration' => date("F d, Y", strtotime($row['expiration_date'])),
+			'billed_on' => date("F d, Y", strtotime($billing['billed_on'])),
+			'paid_on' => date("F d, Y", strtotime($paid_loa['date_add'])),
+			'net_bill' => isset($billing['net_bill'])?$billing['net_bill']:"",
+			'paid_amount' =>$paid_loa['amount_paid'],
+			'attending_doctors' =>isset($billing['attending_doctors'])?$billing['attending_doctors']:""
 		];
 		echo json_encode($response);
 	}
@@ -404,6 +414,8 @@ class Patient_controller extends CI_Controller {
 		$noa_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
 		$row = $this->noa_model->db_get_noa_info($noa_id);
 		$billing = $this->billing_model->get_noa_billing_info($noa_id);
+		$paid_noa = $this->noa_model->paid_noa($billing['details_no']);
+		// var_dump($billing['attending_doctors']);
 		$doctor_name = "";
 		if ($row['approved_by']) {
 			$doc = $this->noa_model->db_get_doctor_name_by_id($row['approved_by']);
@@ -414,19 +426,20 @@ class Patient_controller extends CI_Controller {
 		} else {
 			$doctor_name = "Does not exist from Database";
 		}
-
+		 
+		// var_dump($row);
 		$dateOfBirth = $row['date_of_birth'];
 		$today = date("Y-m-d");
 		$diff = date_diff(date_create($dateOfBirth), date_create($today));
 		$age = $diff->format('%y') . ' years old';
-
-		/* Checking if the status is pending and the work related is not empty. If it is, then it will set
-		the req_stat to for approval. If not, then it will set the req_stat to the status. */
-		if($row['status'] == 'Pending' && $row['work_related'] != ''){
-			$req_stat = 'for Approval';
-		}else{
-			$req_stat = $row['status'];
-		}
+		// var_dump("complaint",$row['chief_complaint']);
+		// /* Checking if the status is pending and the work related is not empty. If it is, then it will set
+		// the req_stat to for approval. If not, then it will set the req_stat to the status. */
+		// if($row['status'] == 'Pending' && $row['work_related'] != ''){
+		// 	$req_stat = 'for Approval';
+		// }else{
+		// 	$req_stat = $row['status'];
+		// }
 
 		$response = array(
 			'status' => 'success',
@@ -443,12 +456,15 @@ class Patient_controller extends CI_Controller {
 			'age' => $age,
 			'hospital_name' => $row['hp_name'],
 			'admission_date' => date("F d, Y", strtotime($row['admission_date'])),
-			'chief_complaint' => $row['chief_complaint'],
+			'complaints' => $row['chief_complaint'],
 			'pdf_bill' => isset($billing['pdf_bill'])?$billing['pdf_bill']:"",
+			'final_diagnosis' => isset($billing['final_diagnosis_file'])?$billing['final_diagnosis_file']:"",
+			'medical_abstract' => isset($billing['medical_abstract_file'])?$billing['medical_abstract_file']:"",
+			'prescription' => isset($billing['prescription_file'])?$billing['prescription_file']:"",
 			// Full Month Date Year Format (F d Y)
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'work_related' => $row['work_related'],
-			'req_status' => $req_stat,
+			'req_status' => $row['status'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'expiration' => date("F d, Y", strtotime($row['expiration_date'])),
@@ -457,6 +473,11 @@ class Patient_controller extends CI_Controller {
 			'disapproved_on' => date("F d, Y", strtotime($row['disapproved_on'])),
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
+			'billed_on' => date("F d, Y", strtotime($billing['billed_on'])),
+			'paid_on' => date("F d, Y", strtotime($paid_noa['date_add'])),
+			'net_bill' => isset($billing['net_bill'])?$billing['net_bill']:"",
+			'paid_amount' =>$paid_noa['amount_paid'],
+			'attending_doctors' =>isset($billing['attending_doctors'])?$billing['attending_doctors']:""
 		);
 
 		echo json_encode($response);

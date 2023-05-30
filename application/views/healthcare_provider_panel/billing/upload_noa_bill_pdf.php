@@ -277,6 +277,7 @@
 
     const form = document.querySelector('#pdfBillingForm');
     let hospital_charges ="";
+    let attending_doctors ="";
 
     $(document).ready(function(){
         // $('#Operation').prop("disabled",true);
@@ -430,6 +431,7 @@
 
             let formData = new FormData($(this)[0]);
             formData.append('hospital_bill_data', hospital_charges);
+            formData.append('attending_doctors', attending_doctors);
             $.ajax({
                 type: 'POST',
                 url: $(this).attr('action'),
@@ -544,13 +546,29 @@
                             }, '').trim();
 
                             console.log(finalResult);
-                            const pattern = /hospital charges(.*?)please pay for this amount/si;
-                        const matches = finalResult.match(pattern);
-                        const result = matches ? matches[1] : null;
-                        // console.log(result);
-                        //get only the text between hospital charges and professional fee
-                        hospital_charges = result;
-                        // hospital_bills(finalResult);
+                            console.log("final result",finalResult);
+                            const pattern = /attending doctor\(s\):\s(.*?)\admission date:/si;
+                            const doc_pattern = /hospital charges(.*?)please pay for this amount/si;
+
+                            const matches_1 = finalResult.match(pattern);
+                            const result_1 = matches_1 ? matches_1[1] : null;
+
+                            const matches_2 = finalResult.match(doc_pattern);
+                            const result_2 = matches_2 ? matches_2[1] : null;
+
+                                // const doc_pattern_2 = /total(.*?)subtotal/si;
+                                // const matches_3 = doc_pattern_2.exec(result_2);
+                                // const result_3 = matches_3 ? matches_3[1] : null;
+                                
+
+                           
+
+                            hospital_charges = result_2;
+                            attending_doctors = result_1;
+
+                            console.log("doctors", attending_doctors);
+                            // console.log("final doctors", result_3);
+                            console.log("hospital charges", hospital_charges);
                         
                         const regex = /please pay for this amount\s*\.*\s*([\d,\.]+)/i;
                         // const regex = /subtotal\s*\.{26}\s*\(([\d,\.]+)\)/i;

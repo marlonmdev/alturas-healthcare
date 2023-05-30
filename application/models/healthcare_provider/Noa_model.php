@@ -106,14 +106,11 @@ class Noa_model extends CI_Model{
         return $query->result();
     }
 
-    // function db_get_noa_info($noa_id) {
-    //     $this->db->select('*')
-    //             ->from('noa_requests as tbl_1')
-    //             ->join('healthcare_providers as tbl_2', 'tbl_1.hospital_id = tbl_2.hp_id')
-    //             ->join('max_benefit_limits as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id')
-    //             ->where('tbl_1.noa_id', $noa_id);
-    //     return $this->db->get()->row_array();
-    // }
+    function paid_noa($details_no) {
+      $this->db->from('payment_details')
+          ->where('details_no', $details_no);
+      return $this->db->get()->row_array();
+  }
 
     function db_get_noa_info($noa_id) {
         $this->db->select('*')

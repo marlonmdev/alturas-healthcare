@@ -10,35 +10,48 @@
       <ul class="list-group">
       <li class="list-group-item">
       <div class="row">
-        <div class="col-md-6">
+        <div class="col">
           <h6>NOA Details</h6>
-          <p class="no-margin">NOA #: <strong><span id="noa-no" class="text-primary"></span></strong></p>
-          <p class="no-margin">Issued on: <strong><span id="approved-date-noa" class="text-primary"></span></strong></p>
         </div>
-        <div class="col-md-6">
-          <h6>&nbsp;</h6>
-          <p class="no-margin">Validity: <strong><span id="expire-noa" class="text-primary"></span></strong></p>
-          <p class="no-margin">Status: <strong><span id="status-noa" class="text-primary"></span></strong></p>
+        <div class="col">
+          <h6>STATUS: <strong><span id="nstatus" class="text-primary"></span></strong></h6>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="row">
+          <div class="col">
+            <ul class="list-unstyled ms-0 ps-0" id="noa_details_1">
+              <!-- List items go here -->
+            </ul>
+          </div>
+          <div class="col">
+            <ul class="list-unstyled ms-0 ps-0" id="noa_details_2">
+              <!-- List items go here -->
+            </ul>
+          </div>
         </div>
       </div>
     </li>
 
           <li class="list-group-item">
-            <h6>Services Utilized</h6>
-            <ul id="services-noa">
-             
-            </ul>
+            <h6>Chief Complaint</h6>
+            <p id="complaint-noa"></p>
           </li>
-          <li class="list-group-item">
+          <li class="list-group-item" id="p_disaproved">
+            <h6>Reason for Disapproval</h6>
+            <p id="disaproved-noa"></p>
+          </li>
+          <li class="list-group-item" id="p_documents">
             <h6>Uploaded Documents</h6>
             <ul id="documents-noa">
             </ul>
           </li>
-          <li class="list-group-item">
-            <h6>Attending Physician</h6>
+          <li class="list-group-item" id="p_physician">
+            <h6>Attending Doctors</h6>
             <ul id="physician-noa">
               <li>
-                <strong><span class="text-primary"></span></strong>
+                
               </li>
             </ul>
           </li>

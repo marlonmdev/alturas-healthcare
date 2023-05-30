@@ -132,17 +132,30 @@ class Loa_model extends CI_Model{
             ->where('loa_id', $loa_id);
         return $this->db->count_all_results();
     }
+    // function check_billed_loa($loa_id) {
+    //     $this->db->from('billing')
+    //         ->where('loa_id', $loa_id);
+    //     return $this->db->count_all_results();
+    // }
+    function paid_loa($details_no) {
+        $this->db->from('payment_details')
+            ->where('details_no', $details_no);
+        return $this->db->get()->row_array();
+    }
     
-    function db_get_loa_info($loa_id,$is_performed) {
-        $this->db->select('*');
+    function db_get_loa_info_patient($loa_id,$is_performed) {
+        // var_dump("passed loa id",$loa_id);
+        $this->db->select('tbl_1.status as tbl_1_status, tbl_1.*, tbl_2.* ,tbl_3.*, tbl_4.*, tbl_5.*');
         $this->db->from('loa_requests as tbl_1');
         $this->db->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
         $this->db->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id');
         $this->db->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id');
         $this->db->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id');
+
         
         if ($is_performed) {
-            $this->db->join('performed_loa_info as tbl_6', 'tbl_1.emp_id = tbl_6.emp_id');
+            $this->db->join('performed_loa_info as tbl_6', 'tbl_1.loa_id = tbl_6.loa_id');
+            $this->db->select('tbl_6.*');
         }
 
         $this->db->where('tbl_1.loa_id', $loa_id);
@@ -150,6 +163,16 @@ class Loa_model extends CI_Model{
     }
     
 
+    function db_get_loa_info($loa_id) {
+        $this->db->select('*')
+                 ->from('loa_requests as tbl_1')
+                 ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+                 ->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id')
+                 ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id')
+                 ->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id= tbl_5.emp_id')
+                 ->where('tbl_1.loa_id', $loa_id);
+        return $this->db->get()->row_array();
+    }
     function db_get_member_mbl($emp_id){
         $query = $this->db->get_where('max_benefit_limits', ['emp_id' => $emp_id]);
         return $query->row_array();

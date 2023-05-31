@@ -124,11 +124,10 @@
   $(document).ready(function() {
 
     let expiredTable = $('#expiredLoaTable').DataTable({
-      processing: true, //Feature control the processing indicator.
-      serverSide: true, //Feature control DataTables' server-side processing mode.
-      order: [], //Initial no order.
+      processing: true,
+      serverSide: true,
+      order: [],
 
-      // Load data for the table's content from an Ajax source
       ajax: {
         url: `${baseUrl}healthcare-coordinator/loa/requests-list/expired/fetch`,
         type: "POST",
@@ -139,18 +138,15 @@
         }
       },
 
-      //Set column definition initialisation properties.
       columnDefs: [{
-        "targets": [4, 6, 7], // numbering column
-        "orderable": false, //set not orderable
+        "targets": [4, 6, 7],
+        "orderable": false,
       }, ],
       responsive: true,
       fixedHeader: true,
     });
 
-    // Get today's date
     const today = new Date();
-    // Create a new Date object representing tomorrow's date
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
 

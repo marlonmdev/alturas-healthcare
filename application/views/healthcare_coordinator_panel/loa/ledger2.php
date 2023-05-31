@@ -176,15 +176,17 @@
           med_services,
         }=res;
         $('#recordmodal').modal('show');
+        const type_request = loa_request_type !== '' ? loa_request_type : 'None';
+
         $('#m-loa-id').val(loa_id);
         $('#m-noa-id').val(noa_id);
-
         $('#name_patient').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
-        $('#type_request').html(loa_request_type);
+        $('#type_request').html(type_request);
         $('#date_request').html(request_date);
         $('#chief_complaint').html(chief_complaint);
         $('#work_related').html(work_related);
-        $('#percentage').html(percentage);
+        // $('#percentage').html(percentage);
+        $('#percentage').html(percentage + '%');
 
       }
     });

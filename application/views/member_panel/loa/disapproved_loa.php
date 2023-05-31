@@ -61,6 +61,13 @@
               <span class="hidden-xs-down fs-5 font-bold">CANCELLED</span>
             </a>
           </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/billed" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">BILLED</span>
+            </a>
+          </li>
         </ul>
 
         <div class="card shadow">

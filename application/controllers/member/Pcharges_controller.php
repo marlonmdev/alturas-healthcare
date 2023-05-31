@@ -16,12 +16,13 @@ class Pcharges_controller extends CI_Controller {
 	function fetch_unpaid_personal_charges() {
 		$token = $this->security->get_csrf_hash();
 		$emp_id = $this->session->userdata('emp_id');
-		$list = $this->pcharges_model->get_personal_charges($emp_id);
+		$status = 'Pending';
+		$list = $this->pcharges_model->get_requested_advance($status,$emp_id);
 		$data = [];
 		foreach ($list as $pcharge) {
 			$row = [];
 			
-				$added_on = date("m/d/Y", strtotime($pcharge['billed_on']));
+				$added_on = date("m/d/Y", strtotime($pcharge['date_added']));
 
 				$billing_id = $this->myhash->hasher($pcharge['billing_id'],'encrypt');
 
@@ -34,7 +35,7 @@ class Pcharges_controller extends CI_Controller {
 				// this data will be rendered to the datatable
 				$row[] = $pcharge['billing_id'];
 				$row[] = $pcharge['billing_no'];
-				$row[] = number_format($pcharge['personal_charge'],2,'.',',');
+				$row[] = number_format($pcharge['excess_amount'],2,'.',',');
 				$row[] = $added_on; 	
 				$row[] = $custom_status; 	
 				$row[] = $custom_actions; 	
@@ -43,8 +44,8 @@ class Pcharges_controller extends CI_Controller {
 
 		$output = [
 			"draw" => $_POST['draw'],
-			"recordsTotal" => $this->pcharges_model->count_all_charge($emp_id),
-			"recordsFiltered" => $this->pcharges_model->count_charge_filtered($emp_id),
+			"recordsTotal" => $this->pcharges_model->count_all_requested($status,$emp_id),
+			"recordsFiltered" => $this->pcharges_model->count_requested_filtered($status,$emp_id),
 			"data" => $data,
 		];
 
@@ -59,20 +60,93 @@ class Pcharges_controller extends CI_Controller {
 		$data = [];
 		foreach ($list as $pcharge) {
 			$row = [];
-			
+
 			$billing_id = $this->myhash->hasher($pcharge['billing_id'], 'encrypt');
 
 			$added_on = date("m/d/Y", strtotime($pcharge['requested_on']));
 
-			$custom_status = '<div class="text-left"><span class="badge rounded-pill bg-success">For Approval</span></div>';
+			$custom_status = '<div class="text-left"><span class="badge rounded-pill bg-cyan">For Approval</span></div>';
 
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewPChargeModal(\'' . $billing_id . '\')" data-bs-toggle="tooltip" title="View Personal Charge"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
 			// this data will be rendered to the datatable
 			$row[] = $pcharge['billing_id'];
 			$row[] = $pcharge['billing_no'];
-			$row[] = $pcharge['excess_amount'];
+			$row[] = number_format($pcharge['excess_amount'],2,'.',',');
 			$row[] = $added_on;
+			$row[] = $custom_status;
+			$row[] = $custom_actions;
+			$data[] = $row;
+		}
+
+		$output = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->pcharges_model->count_all_requested($status, $emp_id),
+			"recordsFiltered" => $this->pcharges_model->count_requested_filtered($status, $emp_id),
+			"data" => $data,
+		];
+		echo json_encode($output);
+	}
+
+	function fetch_approved_advances() {
+		$token = $this->security->get_csrf_hash();
+		$status = 'Approved';
+		$emp_id = $this->session->userdata('emp_id');
+		$list = $this->pcharges_model->get_requested_advance($status, $emp_id);
+		$data = [];
+		foreach ($list as $pcharge) {
+			$row = [];
+
+			$billing_id = $this->myhash->hasher($pcharge['billing_id'], 'encrypt');
+
+			$approved_on = date("m/d/Y", strtotime($pcharge['date_approved']));
+
+			$custom_status = '<div class="text-left"><span class="badge rounded-pill bg-success">Approved</span></div>';
+
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewPChargeModal(\'' . $billing_id . '\')" data-bs-toggle="tooltip" title="View Personal Charge"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+
+			// this data will be rendered to the datatable
+			$row[] = $pcharge['billing_id'];
+			$row[] = $pcharge['billing_no'];
+			$row[] = number_format($pcharge['excess_amount'],2,'.',',');
+			$row[] = number_format($pcharge['approved_amount'],2,'.',',');
+			$row[] = $approved_on;
+			$row[] = $custom_status;
+			$row[] = $custom_actions;
+			$data[] = $row;
+		}
+
+		$output = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->pcharges_model->count_all_requested($status, $emp_id),
+			"recordsFiltered" => $this->pcharges_model->count_requested_filtered($status, $emp_id),
+			"data" => $data,
+		];
+		echo json_encode($output);
+	}
+
+	function fetch_disapproved_advances() {
+		$token = $this->security->get_csrf_hash();
+		$status = 'Disapproved';
+		$emp_id = $this->session->userdata('emp_id');
+		$list = $this->pcharges_model->get_requested_advance($status, $emp_id);
+		$data = [];
+		foreach ($list as $pcharge) {
+			$row = [];
+
+			$billing_id = $this->myhash->hasher($pcharge['billing_id'], 'encrypt');
+
+			$disapproved_on = date("m/d/Y", strtotime($pcharge['disapproved_on']));
+
+			$custom_status = '<div class="text-left"><span class="badge rounded-pill bg-danger">Disapproved</span></div>';
+
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewPChargeModal(\'' . $billing_id . '\')" data-bs-toggle="tooltip" title="View Personal Charge"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+
+			// this data will be rendered to the datatable
+			$row[] = $pcharge['billing_id'];
+			$row[] = $pcharge['billing_no'];
+			$row[] = number_format($pcharge['excess_amount'],2,'.',',');
+			$row[] = $disapproved_on;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;
@@ -91,8 +165,7 @@ class Pcharges_controller extends CI_Controller {
 		$token = $this->security->get_csrf_hash();
 		$personal_charge = $this->input->post('personal_charge',TRUE);
 		$billing_id = $this->myhash->hasher($this->input->post('billing_id'),'decrypt');
-		$billing = $this->pcharges_model->get_billing_info($billing_id);
-		$submitted = $this->pcharges_model->submit_ha_request($billing['loa_id'],$billing['noa_id']);
+		$submitted = $this->pcharges_model->submit_ha_request($billing_id);
 
 		if(!$submitted){
 			echo json_encode([

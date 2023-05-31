@@ -4,13 +4,13 @@
   <div class="page-breadcrumb">
       <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-      <h4 class="page-title ls-2"><i class="mdi mdi-format-float-none"></i> For Payment </h4>
+      <h4 class="page-title ls-2"><i class="mdi mdi-format-float-none"></i> For Audit [ <span class="text-info"><?php echo $payment_no; ?></span> ]</h4>
           <div class="ms-auto text-end">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                  <li class="breadcrumb-item">Head Office Accounting</li>
+                  <li class="breadcrumb-item">Head Office IAD</li>
                   <li class="breadcrumb-item active" aria-current="page">
-                      Billed
+                      For Audit
                   </li>
                 </ol>
             </nav>
@@ -25,7 +25,7 @@
     <div class="row">
       <div class="col-6 pb-2">
           <div class="input-group">
-              <a href="<?php echo base_url(); ?>head-office-accounting/billing-list/for-payment" type="submit" class="btn btn-info" data-bs-toggle="tooltip" title="Click to Go Back">
+              <a href="<?php echo base_url(); ?>head-office-iad/biling/audit" type="submit" class="btn btn-info" data-bs-toggle="tooltip" title="Click to Go Back">
                   <strong class="ls-2" style="vertical-align:middle">
                       <i class="mdi mdi-arrow-left-bold"></i> Go Back
                   </strong>
@@ -39,29 +39,9 @@
             <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
             <input type="hidden" name="payment-no" id="payment-no" value="<?php echo $payment_no ?>">
             <div class="card shadow" style="background-color:">
-            <?php 
-              $formatedStartDate = date('F d, Y', strtotime($pay['startDate']));
-              $formatedEndDate = date('F d, Y', strtotime($pay['endDate']));
-              if($pay['startDate'] == '0000-00-00' || $pay['endDate'] == '0000-00-00'){
-                $date = '';
-              }else{
-                $date = '<h6>From '.$formatedStartDate.' to '.$formatedEndDate.'</h6>';
-              }
-            ?>
-                  <div class="text-center pt-4">
-                        <h4>ALTURAS HEALTHCARE SYSTEM</h4>
-                        <h4>For Payment Billing Summary</h4>
-                        <h5><?php echo $pay['hp_name']; ?></h5>
-                        <?php echo $date; ?>
-                        <h6><?php echo $payment_no; ?></h6>
-                  </div>
                 <div class="card-body">
-                  <input type="hidden" id="p-hp-id" value="<?php echo $pay['hp_id'];?>">
-                  <input type="hidden" id="p-start-date" value="<?php echo $pay['startDate'];?>">
-                  <input type="hidden" id="p-end-date" value="<?php echo $pay['endDate'];?>">
-
                   <div class="">
-                    <table class="table table-hover table-responsive" id="billedLoaTable">
+                    <table class="table table-hover table-responsive" id="billedAuditTable">
                       <thead style="background-color:#eddcb7">
                         <tr>
                             <th class="fw-bold ls-2"><strong>Billing No</strong></th>
@@ -100,9 +80,6 @@
                   </div>
                 </div>
             </div>
-            <div class="col pt-4 offset-10">
-              <button class="btn btn-danger ls-1" onclick="printPayment()" title="click to print data"><i class="mdi mdi-printer"></i> Print </button>
-            </div>
       </div>
       <!-- End Row  -->  
       </div>
@@ -120,14 +97,14 @@
 
  $(document).ready(function(){
     
-    let billedTable = $('#billedLoaTable').DataTable({
+    let billedTable = $('#billedAuditTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
 
       // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}head-office-accounting/bill/monthly-payment/fetch`,
+        url: `${baseUrl}head-office-iad/biling/audit/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: function(data) {
@@ -153,7 +130,7 @@
         let columnIdx = 9;
         let sum = 0;
         let rows = billedTable.rows().nodes();
-        if ($('#billedLoaTable').DataTable().data().length > 0) {
+        if ($('#billedAuditTable').DataTable().data().length > 0) {
             // The table is not empty
             rows.each(function(index, row) {
                 let rowData = billedTable.row(row).data();
@@ -213,26 +190,6 @@
         return xhr.status == "200" ? true: false;
     }
 
-    const printPayment = () => {
-      const hp_id = document.querySelector('#p-hp-id').value;
-      const start_date = document.querySelector('#p-start-date').value;
-       const end_date = document.querySelector('#p-end-date').value;
- 
-      // if(start_date == '0000-00-00'){
-      //   start_dates = 'none';
-      // }else{
-      //   start_dates = start_date;
-      // }
-
-      // if(end_date == '0000-00-00'){
-      //   end_dates = 'none';
-      // }else{
-      //   end_dates = end_date;
-      // }
-
-       var base_url = `${baseUrl}`;
-        var win = window.open(base_url + "printpayment/pdfbilling/" + btoa(hp_id) + "/" + btoa(start_date) + "/" + btoa(end_date), '_blank');
-    }
 
 
 </script>

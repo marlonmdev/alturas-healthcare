@@ -2,12 +2,12 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">REQUESTED FOR HEALTHCARE ADVANCE</h4>
+        <h4 class="page-title ls-2">APPROVED HEALTHCARE ADVANCE</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Member</li>
-              <li class="breadcrumb-item active" aria-current="page">Requested</li>
+              <li class="breadcrumb-item active" aria-current="page">Approved</li>
             </ol>
           </nav>
         </div>
@@ -28,14 +28,14 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link active" href="<?php echo base_url(); ?>member/personal-charges/paid" role="tab">
+            <a class="nav-link" href="<?php echo base_url(); ?>member/personal-charges/paid" role="tab">
               <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">Requested</span>
             </a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/personal-charges/approved" role="tab">
+            <a class="nav-link active" href="<?php echo base_url(); ?>member/personal-charges/approved" role="tab">
               <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">Approved</span>
             </a>
@@ -58,7 +58,8 @@
                     <th class="fw-bold" style="color: white">#</th>
                     <th class="fw-bold" style="color: white">BILLING #</th>
                     <th class="fw-bold" style="color: white">REQUESTED AMOUNT</th>
-                    <th class="fw-bold" style="color: white">REQUESTED ON</th>
+                    <th class="fw-bold" style="color: white">APPROVED AMOUNT</th>
+                    <th class="fw-bold" style="color: white">APPROVED ON</th>
                     <th class="fw-bold" style="color: white">STATUS</th>
                     <th class="fw-bold" style="color: white">ACTION</th>
                   </tr>
@@ -86,7 +87,7 @@
 
       // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}member/personal-charges/requested/fetch`,
+        url: `${baseUrl}member/personal-charges/approved/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: {

@@ -2,24 +2,23 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">EXPIRED REQUEST</h4>
+        <h4 class="page-title ls-2">BILLED REQUEST</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Member</li>
-              <li class="breadcrumb-item active" aria-current="page">Expired</li>
+              <li class="breadcrumb-item active" aria-current="page">Billed</li>
             </ol>
           </nav>
         </div>
       </div>
     </div>
   </div>
- 
+
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
-
-       <ul class="nav nav-tabs mb-4" role="tablist">
+        <ul class="nav nav-tabs mb-4" role="tablist">
           <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/pending" role="tab">
               <span class="hidden-sm-up"></span>
@@ -28,7 +27,7 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/approved" role="tab">
+            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/approved"role="tab">
               <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">APPROVED</span>
             </a>
@@ -49,7 +48,7 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link active" href="<?php echo base_url(); ?>member/requested-loa/expired" role="tab">
+            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/expired" role="tab">
               <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">EXPIRED</span>
             </a>
@@ -63,7 +62,7 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/billed" role="tab">
+            <a class="nav-link active" href="<?php echo base_url(); ?>member/requested-loa/billed" role="tab">
               <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">BILLED</span>
             </a>
@@ -73,7 +72,7 @@
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover" id="memberExpiredLoa">
+              <table class="table table-hover" id="memberApprovedLoa">
                 <thead style="background-color:#00538C">
                   <tr>
                     <th class="fw-bold" style="color: white">LOA NO.</th>
@@ -93,42 +92,40 @@
         </div>
 
       </div>
-      <?php include 'view_expired_loa_details.php'; ?>
     </div>
+    <?php include 'request_loa_cancellation.php'; ?>
   </div>
+  <?php include 'view_approved_loa_detail.php'; ?>
 </div>
 
+  
 
 <script>
   const baseUrl = `<?php echo base_url(); ?>`;
   const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
 
   $(document).ready(function() {
-   
-    $('#memberExpiredLoa').DataTable({
-      processing: true, //Feature control the processing indicator.
-      serverSide: true, //Feature control DataTables' server-side processing mode.
-      order: [], //Initial no order.
-
-      // Load data for the table's content from an Ajax source
+    $("#memberApprovedLoa").DataTable({
       ajax: {
-        url: `${baseUrl}member/requested-loa/expired/fetch`,
-        type: "POST",
-        // passing the token as data so that requests will be allowed
-        data: {
-          'token': '<?php echo $this->security->get_csrf_hash(); ?>'
+        url: `${baseUrl}member/requested-loa/billed/fetch`,
+        dataSrc: function(data) {
+          if (data == "") {
+            return [];
+          } else {
+            return data.data;
+          }
         }
       },
-
-      //Set column definition initialisation properties.
-      columnDefs: [{
-        // "targets": [5, 6, 7], // numbering column
-        "targets": [4, 5, 6],
-        "orderable": false, //set not orderable
-      }, ],
+      order: [],
       responsive: true,
       fixedHeader: true,
+      columnDefs: [{
+        // "targets": [5, 6, 7], // 6th and 7th column / numbering column
+         "targets": [4, 5, 6], 
+        "orderable": false, //set not orderable
+      }, ],
     });
+
   });
 
   const viewImage = (path) => {
@@ -162,7 +159,7 @@
       });
   }
 
-  const viewExpiredLoaInfo = (req_id) => {
+  const viewApprovedLoaInfo = (req_id) => {
     $.ajax({
       url: `${baseUrl}member/requested-loa/view/${req_id}`,
       type: "GET",
@@ -207,13 +204,13 @@
           percentage
         } = res;
 
-        $("#viewLoaModal").modal("show");
+        $("#viewAppLoaModal").modal("show");
 
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
 
         $('#loa-no').html(loa_no);
-        $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
+        $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
         $('#expiry-date').html(expiry_date);
@@ -268,8 +265,78 @@
 					 
 					}
 			   }
-        $('#percentage').html(wpercent+', '+nwpercent);
+        $('#a-percentage').html(wpercent+', '+nwpercent);
       }
     });
   }
+
+  // const requestLoaCancellation = (loa_id, loa_no, hp_id) => {
+  //   $("#loaCancellationModal").modal("show");
+
+  //   $('#cancellation-reason').val('');
+  //   $('#cancellation-reason').removeClass('is-invalid');
+  //   $('#cancellation-reason-error').html('');
+
+  //   $('#cur-loa-id').val(loa_id);
+  //   $('#cur-loa-no').val(loa_no);
+  //   $('#cur-hp-id').val(hp_id);
+  //   $("#loaCancellationForm").attr("action", `${baseUrl}member/requested-loa/approve/cancel-request/${loa_id}`);
+  // }
+
+  $(document).ready(function() {
+    $('#loaCancellationForm').submit(function(event) {
+      const nextPage = `${baseUrl}member/requested-loa/cancelled-requests`;
+      event.preventDefault();
+      $.ajax({
+        type: "post",
+        url: $(this).attr('action'),
+        data: $(this).serialize(),
+        dataType: "json",
+        success: function(response) {
+          const {
+            token,
+            status,
+            message,
+            cancellation_reason_error
+          } = response;
+          switch (status) {
+            case 'error':
+              // is-invalid class is a built in classname for errors in bootstrap
+              if (cancellation_reason_error !== '') {
+                $('#cancellation-reason-error').html(cancellation_reason_error);
+                $('#cancellation-reason').addClass('is-invalid');
+              } else {
+                $('#cancellation-reason-error').html('');
+                $('#cancellation-reason').removeClass('is-invalid');
+              }
+              break;
+            case 'save-error':
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
+              break;
+            case 'success':
+              swal({
+                title: 'Success',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'success'
+              });
+              $('#loaCancellationModal').modal('hide');
+              $("#memberApprovedLoa").DataTable().ajax.reload();
+              // setTimeout(function() {
+              //   window.location.href = nextPage;
+              // }, 3200);
+              break;
+          }
+        }
+      });
+    });
+  });
+
 </script>

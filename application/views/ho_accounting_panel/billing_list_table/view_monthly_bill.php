@@ -39,12 +39,20 @@
             <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
             <input type="hidden" name="payment-no" id="payment-no" value="<?php echo $payment_no ?>">
             <div class="card shadow" style="background-color:">
-              <div id="printableDiv">
+            <?php 
+              $formatedStartDate = date('F d, Y', strtotime($pay['startDate']));
+              $formatedEndDate = date('F d, Y', strtotime($pay['endDate']));
+              if($pay['startDate'] == '0000-00-00' || $pay['endDate'] == '0000-00-00'){
+                $date = '';
+              }else{
+                $date = '<h6>From '.$formatedStartDate.' to '.$formatedEndDate.'</h6>';
+              }
+            ?>
                   <div class="text-center pt-4">
                         <h4>ALTURAS HEALTHCARE SYSTEM</h4>
                         <h4>For Payment Billing Summary</h4>
                         <h5><?php echo $pay['hp_name']; ?></h5>
-                        <h6><?php echo date('F d, Y', strtotime($pay['startDate'])).' to '.date('F d, Y', strtotime($pay['endDate']))?></h6>
+                        <?php echo $date; ?>
                         <h6><?php echo $payment_no; ?></h6>
                   </div>
                 <div class="card-body">
@@ -91,7 +99,6 @@
                     </table>
                   </div>
                 </div>
-              </div>
             </div>
             <div class="col pt-4 offset-10">
               <button class="btn btn-danger ls-1" onclick="printPayment()" title="click to print data"><i class="mdi mdi-printer"></i> Print </button>
@@ -210,6 +217,18 @@
       const hp_id = document.querySelector('#p-hp-id').value;
       const start_date = document.querySelector('#p-start-date').value;
        const end_date = document.querySelector('#p-end-date').value;
+ 
+      // if(start_date == '0000-00-00'){
+      //   start_dates = 'none';
+      // }else{
+      //   start_dates = start_date;
+      // }
+
+      // if(end_date == '0000-00-00'){
+      //   end_dates = 'none';
+      // }else{
+      //   end_dates = end_date;
+      // }
 
        var base_url = `${baseUrl}`;
         var win = window.open(base_url + "printpayment/pdfbilling/" + btoa(hp_id) + "/" + btoa(start_date) + "/" + btoa(end_date), '_blank');

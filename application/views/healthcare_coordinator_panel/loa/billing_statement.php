@@ -29,14 +29,7 @@
           <li class="nav-item">
             <a class="nav-link active" href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/for-charging" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">BILLING STATEMENT</span>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/history" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">HISTORY</span>
+              <span class="hidden-xs-down fs-5 font-bold">FOR PAYMENT</span>
             </a>
           </li>
         </ul>

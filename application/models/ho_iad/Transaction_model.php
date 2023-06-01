@@ -222,5 +222,79 @@ class Transaction_model extends CI_Model {
 		return $query->row_array();
 	}
 
+	function fetch_for_payment_bills() {
+        $this->db->select('*')
+                ->from('billing as tbl_1')
+                ->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
+                ->join('monthly_payable as tbl_3', 'tbl_1.payment_no = tbl_3.payment_no')
+                ->where('tbl_1.status', 'Payment')
+				->where('tbl_3.audited_by', '');
+        return $this->db->get()->result_array();
+    }
+
+	function fetch_audited_bills() {
+		$this->db->select('*')
+				->from('billing as tbl_1')
+				->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
+				->join('monthly_payable as tbl_3', 'tbl_1.payment_no = tbl_3.payment_no')
+				->where('tbl_3.status', 'Audited');
+		return $this->db->get()->result_array();
+	}
+
+	function get_billed_date($payment_no) {
+        $this->db->select('*')
+                ->from('monthly_payable as tbl_1')
+                ->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
+                ->where('tbl_1.payment_no', $payment_no);
+        return $this->db->get()->row_array();
+    }
+
+	  // Start of server-side processing datatables
+	  var $table_1_monthly = 'billing';
+	  var $table_2_monthly = 'noa_requests';
+	  var $table_3_monthly = 'loa_requests';
+	  var $table_4_monthly = 'members';
+	  var $table_5_monthly = 'healthcare_providers';
+	  var $table_6_monthly = 'locate_business_unit';
+	  var $table_7_monthly = 'max_benefit_limits';
+   
+	  private function _get_monthly_datatables_query($payment_no) {
+		  $this->db->select('*');
+		  $this->db->from($this->table_1_monthly . ' as tbl_1');
+		  $this->db->join($this->table_2_monthly . ' as tbl_2', 'tbl_1.noa_id = tbl_2.noa_id', 'left');
+		  $this->db->join($this->table_3_monthly . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id', 'left');
+		  $this->db->join($this->table_4_monthly . ' as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id');
+		  $this->db->join($this->table_5_monthly . ' as tbl_5', 'tbl_1.hp_id = tbl_5.hp_id');
+		  $this->db->join($this->table_6_monthly . ' as tbl_6', 'tbl_4.business_unit = tbl_6.business_unit');
+		  $this->db->join($this->table_7_monthly . ' as tbl_7', 'tbl_1.emp_id = tbl_7.emp_id');
+		  $this->db->where('tbl_1.payment_no', $payment_no);
+	  }
+   
+	  public function monthly_bill_datatable($payment_no) {
+		  $this->_get_monthly_datatables_query($payment_no);
+		  if ($_POST['length'] != -1)
+			   $this->db->limit($_POST['length'], $_POST['start']);
+		   $query = $this->db->get();
+		   return $query->result_array();
+	  }
+	   // end datatable
+
+	   function get_loa_info($loa_id){
+        return $this->db->get_where('loa_requests', ['loa_id' => $loa_id])->row_array();
+    }
+
+    function get_noa_info($noa_id){
+        return $this->db->get_where('noa_requests', ['noa_id' => $noa_id])->row_array();
+    }
+
+	function submit_audited_bill($user) {
+		$this->db->set('audited_on', date('Y-m-d'))
+				->set('status', 'Audited')
+				->set('audited_by', $user)
+				->where('payment_no', $this->input->post('payment_no'));
+		return $this->db->update('monthly_payable');
+	}
+
+
     
 }

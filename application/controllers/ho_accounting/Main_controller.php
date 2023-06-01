@@ -332,38 +332,18 @@ class Main_controller extends CI_Controller {
 				);
 				$this->List_model->add_payment_details($data);
 				$paid_by = $this->session->userdata('fullname');
-				$paid_on = date('Y-m-d');
+				$paid_on = $this->input->post('check-date');
 				$payment_no = $this->input->post('pd-payment-no');
 			
 				$this->List_model->set_details_no($payment_no,$details_no);
-				// $this->List_model->set_monthly_payable($pay['bill_no'],$paid_by,$paid_on,$details_no);
+				$this->List_model->set_monthly_payable($payment_no,$paid_by,$paid_on);
 				$result = $this->List_model->get_loa_noa_id($payment_no);
 
 				if (!empty($result)) {
 					foreach ($result as $row) {
 						$loa_id = $row['loa_id'];
 						$noa_id = $row['noa_id'];
-						
-						// $mbl = $this->List_model->get_employee_mbl($row['emp_id']);
-						// if(floatval($row['company_charge']) > floatval($mbl['remaining_balance'])){
-						// 	$remaining_mbl = '0';
-						// }else{
-						// 	$remaining_mbl = $mbl['remaining_balance'] - $row['company_charge'];
-						// }
-
-						// $paid_amount = floatval($row['company_charge'] + floatval($row['cash_advance']));
-						// $before_mbl = floatval($mbl['remaining_balance']);
-						//  $used_mbl = floatval($row['company_charge'] + floatval($mbl['used_mbl']));
-						
-						// if(floatval($used_mbl) > floatval($mbl['max_benefit_limit'])){
-						// 	$usedMBL = $mbl['max_benefit_limit'];
-						// }else{
-						// 	$usedMBL = $used_mbl;
-						// }
- 					
-						// $this->List_model->set_max_benefit_limit($row['emp_id'], $remaining_mbl, $usedMBL);
-						// $this->List_model->set_after_mbl_paid_amount($row['billing_id'], $before_mbl, $remaining_mbl, $paid_amount);
-
+					
 						if (!empty($loa_id)) {
 							$this->List_model->set_loa_status($loa_id);
 						}
@@ -1032,7 +1012,6 @@ class Main_controller extends CI_Controller {
 			$hospital_bill = number_format(floatval($pay['net_bill']),2, '.',',');
 			$company_charge = number_format(floatval($pay['company_charge']),2, '.',',');
 
-
 			if(floatval($payable) > floatval($pay['net_bill'])){
 				$action = '<a href="JavaScript:void(0)" onclick="adjustHAdvance(\''.$pay['billing_no']. '\',\''.$no.'\', \''.$fullname.'\', \''.$cash_advance.'\',\''.$hospital_bill.'\',\''.$company_charge.'\')" data-bs-toggle="tooltip" title="Adjust Healthcare Advance"><i class="mdi mdi-table-edit fs-3"></i></a>';
 			}else{
@@ -1335,7 +1314,11 @@ class Main_controller extends CI_Controller {
 
 				$consolidated = '<span>Consolidated Bill with the Payment No. <span class="fw-bold">'.$bill['payment_no'].'</span></span>';
 
-				$date = '<span>'.date('F d, Y', strtotime($bill['startDate'])).' to '.date('F d, Y', strtotime($bill['endDate'])).'</span>';
+				if($bill['startDate'] == '0000-00-00' || $bill['endDate'] == '0000-00-00'){
+				  $date = '';
+				}else{
+					$date = '<span>'.date('F d, Y', strtotime($bill['startDate'])).' to '.date('F d, Y', strtotime($bill['endDate'])).'</span>';
+				}
 
 				$hp_name = '<span>'.$bill['hp_name'].'</span>';
 
@@ -1484,7 +1467,11 @@ class Main_controller extends CI_Controller {
 
 				$consolidated = '<span>Paid Bill with the Payment No. <span class="fw-bold">'.$bill['payment_no'].'</span></span>';
 
-				$date = '<span>'.date('F d, Y', strtotime($bill['startDate'])).' to '.date('F d, Y', strtotime($bill['endDate'])).'</span>';
+				if($bill['startDate'] == '0000-00-00' || $bill['endDate'] == '0000-00-00'){
+					$date = '';
+				  }else{
+					  $date = '<span>'.date('F d, Y', strtotime($bill['startDate'])).' to '.date('F d, Y', strtotime($bill['endDate'])).'</span>';
+				  }
 
 				$hp_name = '<span>'.$bill['hp_name'].'</span>';
 
@@ -1799,8 +1786,8 @@ class Main_controller extends CI_Controller {
 		$number = 0;
 		$number++;
 		$payment_no = 'PMT-' . date('Ymis') . $number;
-		$inserted = $this->List_model->submit_forPayment_bill($payment_no);
-		$this->List_model->set_payment_no_date($payment_no,$user);
+		$this->List_model->submit_forPayment_bill($payment_no);
+		$inserted = $this->List_model->set_payment_no_date($payment_no,$user);
 		if($inserted){
 			echo json_encode([
 				'token' => $token,
@@ -2104,7 +2091,8 @@ class Main_controller extends CI_Controller {
             <h3>Billing Summary Details</h3>
 			'.$date.'
             <h3>'.$hospital.'</h3>
-			'.$business_u.'<br>';
+			'.$business_u.'
+			<h3>'.$payment_no.'</h3><br>';
 			
 
 		$PDFdata = '<table style="border:.5px solid #000; padding:3px" class="table table-bordered">';
@@ -2259,17 +2247,23 @@ class Main_controller extends CI_Controller {
 		$start_date =  base64_decode($start_date);
 		$end_date =  base64_decode($end_date);
 
+		$formattedStart_date = date('F d, Y', strtotime($start_date));
+		$formattedEnd_date = date('F d, Y', strtotime($end_date));
+
+		if($start_date == '0000-00-00' || $end_date == '0000-00-00'){
+			$date = '';
+		}else{
+			$date = '<h3>From '.$formattedStart_date.' to '.$formattedEnd_date.'</h3>';
+		}
+
 		$payment_no = $this->List_model->get_bill_payment_no($hp_id,$start_date,$end_date);
 		$billed = $this->List_model->get_for_payment_bills($payment_no['payment_no']);
 		$hospital = $this->List_model->db_get_hp_name($hp_id);
 		$pdf = new TCPDF(); 
 
-		$formattedStart_date = date('F d, Y', strtotime($start_date));
-		$formattedEnd_date = date('F d, Y', strtotime($end_date));
-
 		$title =  '<h3>ALTURAS HEALTHCARE SYSTEM</h3>
             <h3>For Payment Summary Details</h3>
-			<h3>From '.$formattedStart_date.' to '.$formattedEnd_date.'</h3>
+			'.$date.'
             <h3>'.$hospital['hp_name'].'</h3>
 			<h3>'.$payment_no['payment_no'].'</h3><br>';
 			
@@ -2433,18 +2427,24 @@ class Main_controller extends CI_Controller {
 		$start_date =  base64_decode($start_date);
 		$end_date =  base64_decode($end_date);
 
+		$formattedStart_date = date('F d, Y', strtotime($start_date));
+		$formattedEnd_date = date('F d, Y', strtotime($end_date));
+
+		if($start_date == '0000-00-00' || $end_date == '0000-00-00'){
+			$date = '';
+		}else{
+			$date = '<h3>From '.$formattedStart_date.' to '.$formattedEnd_date.'</h3>';
+		}
+
 		$payment_no = $this->List_model->get_bill_payment_no($hp_id,$start_date,$end_date);
 		$billed = $this->List_model->get_for_payment_bills($payment_no['payment_no']);
 		$hospital = $this->List_model->db_get_hp_name($hp_id);
 		$pdf = new TCPDF();
 
-		$formattedStart_date = date('F d, Y', strtotime($start_date));
-		$formattedEnd_date = date('F d, Y', strtotime($end_date));
-
 		$title =  '<h3>ALTURAS HEALTHCARE SYSTEM</h3>
             <h3>Paid Summary Details</h3>
-			<h3>From '.$formattedStart_date.' to '.$formattedEnd_date.'</h3>
-            <h3>'.$hospital['hp_name'].'</h3>
+			'.$date.'
+			<h3>'.$hospital['hp_name'].'</h3>
 			<h3>'.$payment_no['payment_no'].'</h3><br>';
 			
 

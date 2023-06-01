@@ -33,6 +33,20 @@
               <span class="hidden-xs-down fs-5 font-bold">Requested</span>
             </a>
           </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>member/personal-charges/approved" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Approved</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>member/personal-charges/disapproved" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Disapproved</span>
+            </a>
+          </li>
         </ul>
 
         <div class="card shadow">
@@ -43,7 +57,7 @@
                   <tr>
                     <th class="fw-bold" style="color: white">#</th>
                     <th class="fw-bold" style="color: white">BILLING #</th>
-                    <th class="fw-bold" style="color: white">CHARGE AMOUNT</th>
+                    <th class="fw-bold" style="color: white">REQUESTED AMOUNT</th>
                     <th class="fw-bold" style="color: white">REQUESTED ON</th>
                     <th class="fw-bold" style="color: white">STATUS</th>
                     <th class="fw-bold" style="color: white">ACTION</th>

@@ -33,6 +33,20 @@
               <span class="hidden-xs-down fs-5 font-bold">Requested </span>
             </a>
           </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>member/personal-charges/approved" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Approved</span>
+            </a>
+          </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>member/personal-charges/disapproved" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Disapproved</span>
+            </a>
+          </li>
         </ul>
 
         <div class="card shadow">
@@ -139,6 +153,10 @@
                                         showConfirmButton: true,
                                         type: 'success'
                                     });
+                                    setTimeout(function () {
+                                            window.location.href = '<?php echo base_url();?>member/personal-charges/paid';
+                                        }, 2000);
+
                                     $("#tagPersonalChargeModal").modal("hide");
                                 }
                                 if(status == 'error'){

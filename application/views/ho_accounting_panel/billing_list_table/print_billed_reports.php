@@ -432,9 +432,9 @@ const viewValues = () => {
                                                 showConfirmButton: false,
                                                 type: 'success'
                                             });
-                                            // setTimeout(function () {
-                                            //     window.location.href = '<?php echo base_url();?>head-office-accounting/billing-list/for-payment';
-                                            // }, 2600);
+                                            setTimeout(function () {
+                                                window.location.href = '<?php echo base_url();?>head-office-accounting/billing-list/for-payment';
+                                            }, 2600);
 
                                             if(payment_no != ''){
                                                 const paymentno = document.querySelector('#b-payment-no');

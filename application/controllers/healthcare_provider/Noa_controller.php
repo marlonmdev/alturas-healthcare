@@ -12,8 +12,7 @@ class Noa_controller extends CI_Controller {
 		if ($logged_in !== true && $user_role !== 'healthcare-provider') {
 			redirect(base_url());
 		}
-	} 
-
+	}  
   function fetch_pending_noa_requests() {
 		$this->security->get_csrf_hash();
 		$status = 'Pending';
@@ -75,11 +74,21 @@ class Noa_controller extends CI_Controller {
 		$data['bar2'] = $this->noa_model->bar_completed();
 		$data['bar3'] = $this->noa_model->bar_referral();
 		$data['bar4'] = $this->noa_model->bar_expired();
+
+		if($exist['position_level'] <= 6){
+			$data['room_type'] = 'Payward';
+		}else if($exist['position_level'] > 6 && $exist['position_level'] < 10){
+			$data['room_type'] = 'Semi-private';
+		}else if($exist['position_level'] > 9){
+			$data['room_type'] = 'Regular Private';
+		}
+
+		
 		if (!$exist) {
 			$this->load->view('pages/page_not_found');
 		} else {
 			$this->load->view('templates/header', $data);
-			$this->load->view('healthcare_provider_panel/noa/generate_printable_noa.php',);
+			$this->load->view('healthcare_provider_panel/noa/generate_printable_noa.php');
 			$this->load->view('templates/footer');
 		}
 	}
@@ -102,7 +111,8 @@ class Noa_controller extends CI_Controller {
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $noa['status'] . '</span></div>';
 
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
-			$custom_actions .= '<a href="' . base_url() . 'healthcare-provider/noa/requested-noa/generate-printable-noa/' . $noa_id . '" data-bs-toggle="tooltip" title="View Notice of Admission"><i class="mdi mdi-file-document fs-2 text-primary pe-2"></i></a>';
+			$custom_actions .= '<a href="' . base_url() . 'healthcare-provider/noa/requested-noa/generate-printable-noa/' . $noa_id . '" data-bs-toggle="tooltip" title="View Notice of Admission
+			"><i class="mdi mdi-file-document fs-2 text-primary pe-2"></i></a>';
 			// shorten name of values from db if its too long for viewing and add ...
 			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];
 
@@ -308,6 +318,7 @@ class Noa_controller extends CI_Controller {
 			// Full Month Date Year Format (F d Y)
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'req_status' => $req_stat,
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
@@ -321,4 +332,24 @@ class Noa_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
+	function get_takehome_meds(){
+		$token = $this->security->get_csrf_hash();
+		$medicine = $this->noa_model->get_generic_meds();
+		$response = '';
+	
+		if(empty($medicine)){
+			$response .= '<select class="chosen-select" id="med-services" name="med-services[]" multiple="multiple">';
+			$response .= '<option value="" disabled>No Available Services</option>';
+			$response .= '</select>';
+		}else{
+			$response .= '<select class="chosen-select" id="med-services" name="med-services[]" data-placeholder="Choose medicines..." multiple="multiple">';
+			foreach ($medicine as $meds) {
+				$response .= '<option value="'.$meds['medno'].'" data-price="'.$meds['ceiling_price'].'">'.$meds['generic_name'].''.' ₱'.''.$meds['ceiling_price'].'</option>';
+			}
+			$response .= '</select>';
+		}
+		echo json_encode($response);
+	}
+
 }
+ 

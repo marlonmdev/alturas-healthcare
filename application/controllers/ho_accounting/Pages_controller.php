@@ -150,6 +150,7 @@ class Pages_controller extends CI_Controller {
 		$data['payment_no'] = $this->uri->segment(4);
 		$data['hp_name'] =$this->List_model->get_billed_hp_name($this->uri->segment(4));
 		$data['pay'] =$this->List_model->get_billed_date($this->uri->segment(4));
+
 		$this->load->view('templates/header', $data);
 		$this->load->view('ho_accounting_panel/billing_list_table/view_monthly_paid_bill.php', $hc_provider);
 		$this->load->view('templates/footer');

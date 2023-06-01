@@ -234,8 +234,10 @@ class List_model extends CI_Model{
     }
     
     function db_get_hp_name($hp_id) {
-        $query = $this->db->get_where('healthcare_providers', ['hp_id' => $hp_id]);
-        return $query->row_array();
+        if(!empty($hp_id)){
+            $query = $this->db->get_where('healthcare_providers', ['hp_id' => $hp_id]);
+            return $query->row_array();
+        }
     }
 //Payment Details
     function add_payment_details($data) {
@@ -250,12 +252,11 @@ class List_model extends CI_Model{
         return $this->db->update('billing');
     }
 
-    function set_monthly_payable($bill_no,$paid_by,$paid_on,$details_no) {
+    function set_monthly_payable($payment_no,$paid_by,$paid_on) {
         $this->db->set('status', 'Paid')
-                ->set('details_no', $details_no)
                 ->set('paid_by', $paid_by)
                 ->set('paid_on', $paid_on)
-                ->where('bill_no', $bill_no);
+                ->where('payment_no', $payment_no);
         return $this->db->update('monthly_payable');
     }
 
@@ -280,21 +281,6 @@ class List_model extends CI_Model{
         return $this->db->get_where('max_benefit_limits', ['emp_id' => $emp_id])->row_array();
     }
 
-    function set_max_benefit_limit($emp_id, $remaining_mbl, $used_mbl) {
-        $this->db->set('remaining_balance', $remaining_mbl)
-                ->set('used_mbl', $used_mbl)
-                ->where('emp_id', $emp_id);
-        return $this->db->update('max_benefit_limits');
-    }
-
-    function set_after_mbl_paid_amount($billing_id, $before_mbl, $remaining_mbl, $paid_amount) {
-        $this->db->set('after_remaining_bal', $remaining_mbl)
-                ->set('before_remaining_bal', $before_mbl)
-                ->set('total_paid_amount', $paid_amount)
-                ->where('billing_id', $billing_id);
-        return $this->db->update('billing');
-    }
-    
     // Start of server-side processing datatables
 	var $table_payment_1 = 'payment_details';
     var $table_payment_2 = 'billing';
@@ -459,7 +445,6 @@ class List_model extends CI_Model{
    }
     // end datatable
 
-
     function get_bill_nos($hp_id, $status) {
         $this->db->where('hp_id', $hp_id)
                 ->where('status', $status);
@@ -601,27 +586,49 @@ class List_model extends CI_Model{
         $this->db->set('payment_no', $payment_no)
                 ->set('status', 'Payment')
                 ->where('done_matching', '1')
-                ->where('status', 'Payable')
-                ->where('hp_id', $this->input->post('hp_id'));
-        $startDate = date('Y-m-d', strtotime($this->input->post('start_date')));
-        $this->db->where('billed_on >=', $startDate);
-        $endDate = date('Y-m-d', strtotime($this->input->post('end_date')));
-        $this->db->where('billed_on <=', $endDate);
-        return $this->db->update('billing');
+                ->where('status', 'Payable');
+        if(!empty($this->input->post('hp_id'))){
+            $this->db->where('hp_id', $this->input->post('hp_id'));
+        }
+        if(!empty($this->input->post('start_date'))){
+            $startDate = date('Y-m-d', strtotime($this->input->post('start_date')));
+            $this->db->where('billed_on >=', $startDate);
+        }
+        if(!empty($this->input->post('end_date'))){
+            $endDate = date('Y-m-d', strtotime($this->input->post('end_date')));
+            $this->db->where('billed_on <=', $endDate);
+        }
+        
+        if(!empty($this->input->post('hp_id'))){
+            return $this->db->update('billing');
+        }
     }
 
     function set_payment_no_date($payment_no,$user) {
+        if(!empty($this->input->post('start_date'))){
+            $start_date = date('Y-m-d', strtotime($this->input->post('start_date')));
+        }else{
+            $start_date = '';
+        }
+        if(!empty($this->input->post('end_date'))){
+            $end_date = date('Y-m-d', strtotime($this->input->post('end_date')));
+        }else{
+            $end_date = '';
+        }
+
         $data = array(
             'payment_no' => $payment_no,
             'hp_id' => $this->input->post('hp_id'),
-            'startDate' => date('Y-m-d', strtotime($this->input->post('start_date'))),
-            'endDate' => date('Y-m-d', strtotime($this->input->post('end_date'))),
+            'startDate' => $start_date,
+            'endDate' => $end_date,
             'total_payable' => floatval(str_replace(',','',$this->input->post('total_bill'))),
             'added_on' => date('Y-m-d'),
             'added_by' => $user
         );
-    
-        return $this->db->insert('monthly_payable', $data);
+        if(!empty($this->input->post('hp_id'))){
+            return $this->db->insert('monthly_payable', $data);
+        }
+        
     }
 
     function fetch_for_payment_bills() {
@@ -675,7 +682,7 @@ class List_model extends CI_Model{
     }
     
 
-    function get_print_billed_loa_noa() {
+    function get_print_billed_loa_noa($hp_id,$start_date,$end_date,$bu_filter) {
         $this->db->select('*')
                 ->from('billing as tbl_1')
                 ->join('loa_requests as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id', 'left')
@@ -684,12 +691,22 @@ class List_model extends CI_Model{
                 ->join('members as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
                 ->join('locate_business_unit as tbl_6', 'tbl_5.business_unit = tbl_6.business_unit')
                 ->join('max_benefit_limits as tbl_7', 'tbl_1.emp_id = tbl_7.emp_id')
-                ->where('tbl_1.hp_id', $this->input->post('hp_id'))
-                ->where('tbl_5.business_unit', $this->input->post('bu_filter'));
-        $startDate = date('Y-m-d', strtotime($this->input->post('start_date')));
-        $this->db->where('tbl_1.billed_on >=', $startDate);
-        $endDate = date('Y-m-d', strtotime($this->input->post('end_date')));
-        $this->db->where('tbl_1.billed_on <=', $endDate);
+                ->where('tbl_1.status', 'Payable');
+        if(!empty($hp_id)){
+            $this->db->where('tbl_1.hp_id', $hp_id);
+        }
+        if(!empty($bu_filter)){
+            $this->db->where('tbl_5.business_unit', $bu_filter);
+        }
+        if(!empty($start_date)){
+            $startDate = date('Y-m-d', strtotime($start_date));
+            $this->db->where('tbl_1.billed_on >=', $startDate);
+        }
+        if(!empty($end_date)){
+            $endDate = date('Y-m-d', strtotime($end_date));
+            $this->db->where('tbl_1.billed_on <=', $endDate);
+        }
+        
         return $this->db->get()->result_array();
     }
 
@@ -778,6 +795,28 @@ class List_model extends CI_Model{
            $this->db->limit($_POST['length'], $_POST['start']);
        $query = $this->db->get();
        return $query->result_array();
+       }
+
+       function get_for_payment_bills($payment_no) {
+        $this->db->select('*')
+                ->from('billing as tbl_1')
+                ->join('loa_requests as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id', 'left')
+                ->join('noa_requests as tbl_3', 'tbl_1.noa_id = tbl_3.noa_id', 'left')
+                ->join('healthcare_providers as tbl_4', 'tbl_1.hp_id = tbl_4.hp_id')
+                ->join('members as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
+                ->join('locate_business_unit as tbl_6', 'tbl_5.business_unit = tbl_6.business_unit')
+                ->join('max_benefit_limits as tbl_7', 'tbl_1.emp_id = tbl_7.emp_id')
+                ->where('tbl_1.payment_no', $payment_no);
+        return $this->db->get()->result_array();
+       }
+
+       function get_bill_payment_no($hp_id,$start_date,$end_date) {
+        $this->db->select('*')
+                ->from('monthly_payable')
+                ->where('hp_id',$hp_id)
+                ->where('startDate',$start_date)
+                ->where('endDate',$end_date);
+        return $this->db->get()->row_array();
        }
 
 //=================================================

@@ -22,9 +22,9 @@
             <div class="table-responsive">
             <div class="mb-3 d-flex align-items-center">
               <label for="filterDropdown" class="form-label me-2">Filter:</label>
-              <select id="filterDropdown" class="form-select form-control" style="width: 80px;">
-                <option value="loa">LOA</option>
-                <option value="noa">NOA</option>
+              <select  name="filter" id="filter" class="form-select form-control" style="width: 80px;">
+                <option value="LOA">LOA</option>
+                <option value="NOA">NOA</option>
               </select>
             </div>
 
@@ -54,7 +54,7 @@
 
 <script>
   const baseUrl = `<?php echo base_url(); ?>`;
-  var loa_noa = "";
+
   $(document).ready(function () {
     var table = $('#patientTable').DataTable({ 
 			processing: true,
@@ -64,7 +64,10 @@
 			ajax: {
 				url: `${baseUrl}healthcare-provider/patient/fetch_all_patient/loa`,
 				type: "POST",
-				data: { 'token' : '<?php echo $this->security->get_csrf_hash(); ?>' }
+				data: function(data){ 
+          data.token ='<?php echo $this->security->get_csrf_hash(); ?>';
+          data.loa_noa = $('#filter').val(); 
+        }
 			},
 
       columnDefs: [{ 
@@ -75,11 +78,16 @@
       responsive: true,
       fixedHeader: true,
     });   
-    
-    $('#filterDropdown').on('change', function() {
-      var value = $(this).val();
-      table.ajax.url(`${baseUrl}healthcare-provider/patient/fetch_all_patient/${value}`).load();
+
+    $('#filter').on('change', function() {
+      table.draw();
     });
+    
+    
+    // $('#filterDropdown').on('change', function() {
+    //   var value = $(this).val();
+    //   table.ajax.url(`${baseUrl}healthcare-provider/patient/fetch_all_patient/${value}`).load();
+    // });
 
     
   });

@@ -25,9 +25,9 @@ class Patient_model extends CI_Model {
   ];
   var $order = ['member_id' => 'desc']; // default order 
 
-  private function _get_datatables_query($hp_id,$loa_noa) {
+  private function _get_datatables_query($hp_id) {
 
-		if($loa_noa === "noa"){
+		if($this->input->post('loa_noa') === "NOA"){
       $this->db->group_by('emp_no');
       $this->db->from($this->table1 . ' as tbl_1');
       $this->db->join($this->table2 . ' as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
@@ -39,7 +39,8 @@ class Patient_model extends CI_Model {
          ->or_where('tbl_1.status', 'Completed')
          ->or_where('tbl_1.status', 'Billed')
          ->group_end();
-    }elseif($loa_noa === "loa"){
+    }
+    if($this->input->post('loa_noa') === "LOA"){
       $this->db->group_by('emp_no');
       $this->db->from($this->table5 . ' as tbl_5');
       $this->db->join($this->table2 . ' as tbl_2', 'tbl_5.emp_id = tbl_2.emp_id');
@@ -52,6 +53,41 @@ class Patient_model extends CI_Model {
       ->or_where('tbl_5.status', 'Billed')
       ->group_end();
     }
+    // $query1 = $this->db->select('tbl_2.emp_no, tbl_2.first_name, tbl_2.middle_name, tbl_2.last_name, tbl_2.suffix, tbl_4.hp_name, tbl_3.max_benefit_limit,
+    // tbl_3.remaining_balance, tbl_2.business_unit, tbl_2.dept_name')
+    // ->from($this->table1 . ' as tbl_1')
+    // ->join($this->table2 . ' as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+    // ->join($this->table3 . ' as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id')
+    // ->join($this->table4 . ' as tbl_4', 'tbl_1.hospital_id = tbl_4.hp_id')
+    // ->where('tbl_1.hospital_id', $hp_id)
+    // ->group_start()
+    // ->where('tbl_1.status', 'Approved')
+    // ->or_where('tbl_1.status', 'Completed')
+    // ->or_where('tbl_1.status', 'Billed')
+    // ->group_end()
+    // ->group_by('emp_no')
+    // ->get_compiled_select();
+
+    // $query2 = $this->db->select('tbl_2.emp_no, tbl_2.first_name, tbl_2.middle_name, tbl_2.last_name, tbl_2.suffix, tbl_4.hp_name, tbl_3.max_benefit_limit,
+    //   tbl_3.remaining_balance, tbl_2.business_unit, tbl_2.dept_name')
+    // ->from($this->table5 . ' as tbl_5')
+    // ->join($this->table2 . ' as tbl_2', 'tbl_5.emp_id = tbl_2.emp_id')
+    // ->join($this->table3 . ' as tbl_3', 'tbl_5.emp_id = tbl_3.emp_id')
+    // ->join($this->table4 . ' as tbl_4', 'tbl_5.hcare_provider = tbl_4.hp_id')
+    // ->where('tbl_5.hcare_provider', $hp_id)
+    // ->group_start()
+    // ->where('tbl_5.status', 'Approved')
+    // ->or_where('tbl_5.status', 'Completed')
+    // ->or_where('tbl_5.status', 'Billed')
+    // ->group_end()
+    // ->group_by('emp_no')
+    // ->get_compiled_select();
+    // $unionQuery = $query1 . ' UNION ' . $query2;
+    // return $unionQuery;
+
+    // $results = $query->result_array();
+    // var_dump($re)
+    // $this->db->query($query1 . ' UNION ' . $query2)->result_array();
     $i = 0;
 
     foreach ($this->column_search as $item) {
@@ -77,26 +113,27 @@ class Patient_model extends CI_Model {
 		}
   }
 
-	function get_datatables($hp_id,$loa_noa) {
-		$this->_get_datatables_query($hp_id,$loa_noa);
-		if ($_POST['length'] != -1)
-		  $this->db->limit($_POST['length'], $_POST['start']);
-		$query = $this->db->get();
-		return $query->result_array();
+	function get_datatables($hp_id) {
+   $this->_get_datatables_query($hp_id);
+    if ($_POST['length'] != -1) {
+        $this->db->limit($_POST['length'], $_POST['start']);
+    }
+    $result = $this->db->get();
+    return $result->result_array();
 	}
-	function count_all($hp_id,$loa_noa) {
-    if($loa_noa === "noa"){
+	function count_all($hp_id) {
+    // if($loa_noa === "noa"){
       $this->db->from($this->table1);
       $this->db->where('hospital_id', $hp_id);
-    }elseif($loa_noa === "loa"){
+    // }elseif($loa_noa === "loa"){
       $this->db->from($this->table5);
       $this->db->where('hcare_provider', $hp_id);
-    }
+    // }
   
     return $this->db->count_all_results();
   }
-	function count_filtered($hp_id,$loa_noa) {
-    $this->_get_datatables_query($hp_id,$loa_noa);
+	function count_filtered($hp_id) {
+    $this->_get_datatables_query($hp_id);
     $query = $this->db->get();
     return $query->num_rows();
   }
@@ -123,18 +160,20 @@ class Patient_model extends CI_Model {
       'tbl_4.suffix',
       'tbl_4.business_unit',
       'tbl_4.dept_name',
-      'tbl_2.noa_no',
       'tbl_3.loa_no',
+      'tbl_2.noa_no',
       'tbl_1.billing_no',
       'CONCAT(tbl_4.first_name, " ", tbl_4.last_name)',
       'CONCAT(tbl_4.first_name, " ", tbl_4.last_name, " ", tbl_4.suffix)',
       'CONCAT(tbl_4.first_name, " ", tbl_4.middle_name, " ", tbl_4.last_name)',
       'CONCAT(tbl_4.first_name, " ", tbl_4.middle_name, " ", tbl_4.last_name, " ", tbl_4.suffix)'
     ];
+   
      private function _get_soa_list_datatables_query($hp_id) {
          $this->db->select('*');
          $this->db->from($this->table_1_soa . ' as tbl_1');
-
+         $loa  = true;
+         $noa = true;
          if($this->input->post('loa_noa') === "LOA"){
           $this->db->join($this->table_3_soa . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id');
         }elseif($this->input->post('loa_noa') === "NOA"){
@@ -148,10 +187,20 @@ class Patient_model extends CI_Model {
          $this->db->join($this->table_7_soa . ' as tbl_7', 'tbl_1.emp_id = tbl_7.emp_id');
          $this->db->where('tbl_1.hp_id', $hp_id);
 
-         $i = 0;
+        //  $i = 0;
         // loop column 
-        foreach ($this->column_search_soa as $item) {
+        foreach ($this->column_search_soa as $i => $item) {
         // if datatable send POST for search
+        if($this->input->post('loa_noa') === "NOA"){
+          if($item === 'tbl_3.loa_no'){
+            continue;
+          }
+        }
+        if($this->input->post('loa_noa') === "LOA"){
+          if($item === 'tbl_2.noa_no'){
+            continue;
+          }
+        }
         if ($this->input->post('searchInput')) {
             // first loop
             if ($i === 0) {
@@ -164,6 +213,7 @@ class Patient_model extends CI_Model {
             if (count($this->column_search_soa) - 1 == $i) //last loop
             $this->db->group_end(); //close bracket
         }
+  
         $i++;
         }
         //  $this->db->where('tbl_1.pdf_bill IS NOT NULL');
@@ -176,16 +226,14 @@ class Patient_model extends CI_Model {
           $endDate = date('Y-m-d', strtotime($this->input->post('endDate')));
           $this->db->where('tbl_1.billed_on <=', $endDate);
         }
-        if($this->input->post('loa_noa') === "loa"){
-
-        }
         
      }
   
      public function soa_list_datatable($hp_id) {
          $this->_get_soa_list_datatables_query($hp_id);
-         if ($_POST['length'] != -1)
-              $this->db->limit($_POST['length'], $_POST['start']);
+         if ($_POST['length'] != -1){
+          $this->db->limit($_POST['length'], $_POST['start']);
+         }
           $query = $this->db->get();
           return $query->result_array();
      }
@@ -216,4 +264,4 @@ class Patient_model extends CI_Model {
               ->where('hp_id', $hp_id);
       return $this->db->count_all_results();
   }
-}
+} 

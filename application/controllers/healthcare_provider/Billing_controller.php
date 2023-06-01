@@ -15,7 +15,7 @@ class Billing_controller extends CI_Controller {
         if ($logged_in !== true && $user_role !== 'healthcare-provider') {
             redirect(base_url());
         }
-    }
+    } 
 
     function redirectBack() {
         if (isset($_SERVER['HTTP_REFERER'])) {
@@ -42,6 +42,8 @@ class Billing_controller extends CI_Controller {
 
 			if($label === "loa"){
                 $previous_mbl = floatval($loa_info['remaining_balance']);
+                $used_mbl = floatval($loa_info['used_mbl']);
+                $max_mbl = floatval($loa_info['max_benefit_limit']);
                 // var_dump($previous_mbl);
 				if($loa_info['work_related'] == 'Yes'){ 
 					if($loa_info['percentage'] == ''){
@@ -153,6 +155,8 @@ class Billing_controller extends CI_Controller {
 
 			}else if($label === "noa"){
                 $previous_mbl = floatval($noa_info['remaining_balance']);
+                $used_mbl = floatval($noa_info['used_mbl']);
+                $max_mbl = floatval($noa_info['max_benefit_limit']);
                 // var_dump($previous_mbl);
 				if($noa_info['work_related'] == 'Yes'){ 
 					if($noa_info['percentage'] == ''){
@@ -262,11 +266,14 @@ class Billing_controller extends CI_Controller {
 				}
 			}
 			}
+            
             $data = array(
                 'company_charge' => $company_charge,
-                'personal_charge' => $personal_charge
+                'personal_charge' => $personal_charge,
+                'remaining_balance' =>$rmbl = floatval(str_replace(',', '', $remaining_mbl)),
+                'used_mbl' =>  (($max_mbl-$rmbl)>0)? $max_mbl-$rmbl : $max_mbl,
+                'previous_mbl' => $previous_mbl,
             );
-            // var_dump($data);
 			return  $data;
 	}
     function billing_search_member() {
@@ -339,7 +346,7 @@ class Billing_controller extends CI_Controller {
             $this->session->set_userdata([
                 'b_member_info'    => $member,
                 'b_member_mbl'     => $member_mbl['max_benefit_limit'],
-                'b_member_bal'     => $member_mbl['remaining_balance'],
+                'b_member_bal'     => $member_mbl['remaining_balance'], 
                 'b_hcare_provider' => $hp_name,
                 'b_healthcard_no'  => $member['health_card_no'],
             ]);
@@ -964,6 +971,7 @@ class Billing_controller extends CI_Controller {
         $net_b = $this->input->post('net-bill', TRUE);
         $net_bill = floatval(str_replace(',','',$net_b));
         $hospitalBillData = $_POST['hospital_bill_data'];
+        $attending_doctor= $_POST['attending_doctors'];
         // $hospitalBillArray = json_decode($hospitalBillData, true);
         //var_dump($hospitalBillArray);
 
@@ -995,17 +1003,21 @@ class Billing_controller extends CI_Controller {
                 'net_bill'              => $net_bill,
                 'company_charge'        => floatval(str_replace(',', '', $result_charge['company_charge'])),
                 'personal_charge'       => floatval(str_replace(',', '', $result_charge['personal_charge'])),
+                'before_remaining_bal'  => floatval(str_replace(',', '', $result_charge['previous_mbl'])),
+                'after_remaining_bal'   => floatval(str_replace(',', '', $result_charge['remaining_balance'])),
                 'pdf_bill'              => $pdf_file,
                 'billed_by'             => $this->session->userdata('fullname'),
                 'billed_on'             => date('Y-m-d'),
                 'status'                => 'Billed',
-                'extracted_txt'         => $hospitalBillData
+                'extracted_txt'         => $hospitalBillData,
+                'attending_doctors'      => $attending_doctor
             ];    
-            // $bills = [
-            //             'billing_no'            => $billing_no,
-            //             'hospital_charges'      => $hospitalBillData
-            //         ];
+            $mbl = [
+                        'used_mbl'            => $result_charge['used_mbl'],
+                        'remaining_balance'      => $result_charge['remaining_balance']
+                    ];
             $inserted = $this->billing_model->insert_billing($data);
+            $update_mbl = $this->billing_model->update_member_remaining_balance($loa['emp_id'], $mbl);
             $existing = $this->billing_model->check_if_loa_already_added($loa_id);
             $resched = $this->billing_model->check_if_done_created_new_loa($loa_id);
             $rescheduled = $this->billing_model->check_if_status_cancelled($loa_id);
@@ -1090,7 +1102,10 @@ class Billing_controller extends CI_Controller {
         $billing_no = $this->input->post('billing-no', TRUE);
         $net_b = $this->input->post('net-bill', TRUE);
         $net_bill = floatval(str_replace(',','',$net_b));
+        $take_home_meds = $this->input->post('med-services',true);
         $hospitalBillData = $_POST['hospital_bill_data'];
+        $attending_doctor= $_POST['attending_doctors'];
+        // var_dump("take home meds",$take_home_meds);
         // $hospitalBillArray = json_decode($hospitalBillData, true);
         //var_dump($hospitalBillArray);
         // PDF File Upload
@@ -1105,15 +1120,19 @@ class Billing_controller extends CI_Controller {
         // Define the upload paths for each file
             $file_paths = array(
                 'pdf-file' => './uploads/pdf_bills/',
-                'Rinal-Diagnosis' => './uploads/rinal_diagnosis/',
+                'Final-Diagnosis' => './uploads/final_diagnosis/',
                 'Medical-Abstract' => './uploads/medical_abstract/',
-                'Operation' => './uploads/operation/'
+                'Prescription' => './uploads/prescription/'
             );
     
         // Iterate over each file input and perform the upload
-            $file_inputs = array('pdf-file', 'Rinal-Diagnosis', 'Medical-Abstract', 'Operation');
+            $file_inputs = array('pdf-file', 'Final-Diagnosis', 'Medical-Abstract', 'Prescription');
             foreach ($file_inputs as $input_name) {
                 if ($input_name === 'Medical-Abstract' && empty($_FILES[$input_name]['name'])) {
+                    // Skip the 'Medical-Abstract' field if it is empty
+                    continue;
+                }
+                if ($input_name === 'Prescription' && empty($_FILES[$input_name]['name'])) {
                     // Skip the 'Medical-Abstract' field if it is empty
                     continue;
                 }
@@ -1123,7 +1142,7 @@ class Billing_controller extends CI_Controller {
 
                 if (!$this->upload->do_upload($input_name)) {
                     $error = $this->upload->display_errors();
-                    if ($input_name !== 'Operation' || !empty($error)) {
+                    if ($input_name !== 'Prescription' || !empty($error)) {
                         // If error occurred for required files or any other file, set error flag
                         $error_occurred = TRUE;
                     }
@@ -1157,23 +1176,28 @@ class Billing_controller extends CI_Controller {
                 'noa_id'                => $noa_id,
                 'hp_id'                 => $this->session->userdata('dsg_hcare_prov'),
                 'work_related'          => $noa['work_related'],
+                'take_home_meds'        => isset($take_home_meds)?implode(',',$take_home_meds):"",
                 'net_bill'              => $net_bill,
                 'company_charge'        => floatval(str_replace(',', '', $result_charge['company_charge'])),
                 'personal_charge'       => floatval(str_replace(',', '', $result_charge['personal_charge'])),
+                'before_remaining_bal'  => floatval(str_replace(',', '', $result_charge['previous_mbl'])),
+                'after_remaining_bal'   => floatval(str_replace(',', '', $result_charge['remaining_balance'])),
                 'pdf_bill'              => isset($uploaded_files['pdf-file']) ? $uploaded_files['pdf-file']['file_name'] : NULL,
-                'rinal_file'            => isset($uploaded_files['Rinal-Diagnosis']) ? $uploaded_files['Rinal-Diagnosis']['file_name'] : NULL,
-                'medical_file'          => isset($uploaded_files['Medical-Abstract']) ? $uploaded_files['Medical-Abstract']['file_name'] : NULL,
-                'operation_file'        => isset($uploaded_files['Operation']) ? $uploaded_files['Operation']['file_name'] : NULL,
+                'final_diagnosis_file'  => isset($uploaded_files['Final-Diagnosis']) ? $uploaded_files['Final-Diagnosis']['file_name'] : NULL,
+                'medical_abstract_file' => isset($uploaded_files['Medical-Abstract']) ? $uploaded_files['Medical-Abstract']['file_name'] : NULL,
+                'prescription_file'     => isset($uploaded_files['Prescription']) ? $uploaded_files['Prescription']['file_name'] : NULL,
                 'billed_by'             => $this->session->userdata('fullname'),
                 'billed_on'             => date('Y-m-d'),
                 'status'                => 'Billed',
-                'extracted_txt'         => $hospitalBillData
+                'extracted_txt'         => $hospitalBillData,
+                'attending_doctors'      => $attending_doctor
             ];    
-            // $bills = [
-            //     'billing_no'            => $billing_no,
-            //     'hospital_charges'      => $hospitalBillData
-            // ];
+            $mbl = [
+                'used_mbl'            => $result_charge['used_mbl'],
+                'remaining_balance'      => $result_charge['remaining_balance']
+            ];
             $inserted = $this->billing_model->insert_billing($data);
+            $update_mbl = $this->billing_model->update_member_remaining_balance($noa['emp_id'], $mbl);
             // $inserted = $this->billing_model-> insert_hospital_charges($bills);
             // foreach($hospitalBillArray as $hbill){
             //     $hospitalCharges = $hbill['beforeLastGroup'];
@@ -1533,3 +1557,4 @@ class Billing_controller extends CI_Controller {
 	}
     
 }
+ 

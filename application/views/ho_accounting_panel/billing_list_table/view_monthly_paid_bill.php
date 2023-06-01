@@ -38,14 +38,27 @@
             <input type="hidden" name="pd-payment-no" id="pd-payment-no" value="<?php echo $payment_no ?>">
             <div class="card shadow" style="background-color:">
               <div id="printableDiv">
+              <?php 
+                $formatedStartDate = date('F d, Y', strtotime($pay['startDate']));
+                $formatedEndDate = date('F d, Y', strtotime($pay['endDate']));
+                if($pay['startDate'] == '0000-00-00' || $pay['endDate'] == '0000-00-00'){
+                  $date = '';
+                }else{
+                  $date = '<h6>From '.$formatedStartDate.' to '.$formatedEndDate.'</h6>';
+                }
+              ?>
                 <div class="text-center pt-4">
                       <h4>ALTURAS HEALTHCARE SYSTEM</h4>
                       <h4>Paid Billing Summary</h4>
                       <h5><?php echo $pay['hp_name']; ?></h5>
-                      <h6><?php echo date('F d, Y', strtotime($pay['startDate'])).' to '.date('F d, Y', strtotime($pay['endDate']))?></h6>
+                      <?php echo $date; ?>
                       <h6><?php echo $payment_no; ?></h6>
                 </div>
                 <div class="card-body">
+                  <input type="hidden" id="p-hp-id" value="<?php echo $pay['hp_id'];?>">
+                  <input type="hidden" id="p-start-date" value="<?php echo $pay['startDate'];?>">
+                  <input type="hidden" id="p-end-date" value="<?php echo $pay['endDate'];?>">
+
                   <div class="table">
                     <table class="table table-hover table-responsive" id="paidTable">
                       <thead style="background-color:#eddcb7">
@@ -53,13 +66,13 @@
                           <th class="fw-bold">Billing No.</th>
                           <th class="fw-bold">LOA/NOA #</th>
                           <th class="fw-bold">Patient Name</th>
-                          <th class="fw-bold">Remaining MBL</th>
                           <th class="fw-bold">Percentage</th>
                           <th class="fw-bold">Hospital Bill</th>
                           <th class="fw-bold">Company Charge</th>
                           <th class="fw-bold">Healthcare Advance</th>
                           <th class="fw-bold">Total Paid Bill</th>
                           <th class="fw-bold">Personal Charge</th>
+                          <th class="fw-bold">Remaining MBL</th>
                           <th class="fw-bold">Status</th>
                           <th class="fw-bold">View SOA</th>
                         </tr>
@@ -73,9 +86,9 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td></td>
-                        <td class="fw-bold">TOTAL BILL </td>
+                        <td class="fw-bold">TOTAL </td>
                         <td><span class="text-danger fw-bold fs-5" id="pd-total-bill"></span></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -86,7 +99,7 @@
               </div>
             </div>
             <div class="col pt-4 offset-10">
-              <button class="btn btn-danger ls-1" onclick="printDiv('#printableDiv')" title="click to print data"><i class="mdi mdi-printer"></i> Print </button>
+              <button class="btn btn-danger ls-1" onclick="printPaidBill()" title="click to print data"><i class="mdi mdi-printer"></i> Print </button>
             </div>
       </div>
       <!-- End Row  -->  
@@ -99,17 +112,6 @@
 <!-- End Wrapper -->
 
 <script>
-
-  
-const printDiv = (layer) => {
-    $(layer).printThis({
-        importCSS: true,
-        copyTagClasses: true,
-        copyTagStyles: true,
-        removeInline: false,
-    });
-    };
-
      const baseUrl = "<?php echo base_url(); ?>";
      const payment_no = document.querySelector('#pd-payment-no').value;
 
@@ -145,7 +147,7 @@ const printDiv = (layer) => {
     });
 
     billedTable.on('draw.dt', function() {
-    let columnIdx = 8;
+    let columnIdx = 7;
     let sum = 0;
     let rows = billedTable.rows().nodes();
     if ($('#paidTable').DataTable().data().length > 0) {
@@ -206,6 +208,15 @@ const printDiv = (layer) => {
         xhr.send();
 
         return xhr.status == "200" ? true: false;
+    }
+
+    const printPaidBill = () => {
+      const hp_id = document.querySelector('#p-hp-id').value;
+      const start_date = document.querySelector('#p-start-date').value;
+       const end_date = document.querySelector('#p-end-date').value;
+
+       var base_url = `${baseUrl}`;
+        var win = window.open(base_url + "printpaid/pdfbilling/" + btoa(hp_id) + "/" + btoa(start_date) + "/" + btoa(end_date), '_blank');
     }
 
 

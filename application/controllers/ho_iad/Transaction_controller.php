@@ -200,7 +200,6 @@ class Transaction_controller extends CI_Controller {
 			$custom_actions = '<a href="' . $view_url . '"  data-bs-toggle="tooltip" title="View Member Profile"><i class="mdi mdi-account-card-details fs-2 text-info me-2"></i></a>';
 			$custom_actions .= '<a href="' . $view_url2 . '"  data-bs-toggle="tooltip" title="Search Payment Record"><i class="mdi mdi-magnify fs-2 text-info"></i></a>';
 
-
 			// this data will be rendered to the datatable
 			$row[] = $member['emp_no'];
 			$row[] = $full_name;
@@ -338,6 +337,227 @@ class Transaction_controller extends CI_Controller {
 			return false;
 		}
 	}
+
+	function fetch_for_payment_bill() {
+		$token = $this->security->get_csrf_hash();
+		$billing = $this->transaction_model->fetch_for_payment_bills();
+		$data = [];
+		$unique_bills = []; // initialize array to store unique bills
+		foreach($billing as $bill) {
+			$bill_id = $bill['payment_no'] . '_' . $bill['hp_id']; // concatenate payment_no and hp_id to create unique id
+			if (!in_array($bill_id, $unique_bills)) { // check if bill with this id has already been added
+				$row = [];
+
+				$consolidated = '<span>Consolidated Bill with the Payment No. <span class="fw-bold">'.$bill['payment_no'].'</span></span>';
+
+				$date = '<span>'.date('F d, Y', strtotime($bill['startDate'])).' to '.date('F d, Y', strtotime($bill['endDate'])).'</span>';
+
+				$hp_name = '<span>'.$bill['hp_name'].'</span>';
+
+				if(!empty($bill['audited_by'])){
+					$status = '<span class="text-center badge rounded-pill bg-success">Audited</span>'; 
+				}else{
+					$status = '<span class="text-center badge rounded-pill bg-info">Billed</span>'; 
+				}
+				
+
+				$payment_no = $this->myhash->hasher($bill['payment_no'], 'encrypt');
+
+				$action_customs = '<a href="'.base_url().'head-office-iad/biling/for-audit-list/'.$bill['payment_no'].'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
+
+				$action_customs .= '<a href="javascript:void(0)" onclick="tagDoneAudit(\''.$bill['payment_no'].'\')" data-bs-toggle="tooltip" title="Audited"><i class="mdi mdi-checkbox-marked-circle-outline fs-2 pe-2 text-danger"></i></a>';
+
+				$row[] = $consolidated;
+				$row[] = $date;
+				$row[] = $hp_name;
+				$row[] = $status;
+				$row[] = $action_customs;
+				$data[] = $row;
+				$unique_bills[] = $bill_id; // add unique bill id to array
+			}
+		}
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
+
+		echo json_encode($output);
+	}
+
+	function fetch_audited_bill() {
+		$token = $this->security->get_csrf_hash();
+		$billing = $this->transaction_model->fetch_audited_bills();
+		$data = [];
+		$unique_bills = []; // initialize array to store unique bills
+		foreach($billing as $bill) {
+			$bill_id = $bill['payment_no'] . '_' . $bill['hp_id']; // concatenate payment_no and hp_id to create unique id
+			if (!in_array($bill_id, $unique_bills)) { // check if bill with this id has already been added
+				$row = [];
+
+				$consolidated = '<span>Consolidated Bill with the Payment No. <span class="fw-bold">'.$bill['payment_no'].'</span></span>';
+
+				$date = '<span>'.date('F d, Y', strtotime($bill['startDate'])).' to '.date('F d, Y', strtotime($bill['endDate'])).'</span>';
+
+				$hp_name = '<span>'.$bill['hp_name'].'</span>';
+
+				if(!empty($bill['audited_by'])){
+					$status = '<span class="text-center badge rounded-pill bg-success">Audited</span>'; 
+				}else{
+					$status = '<span class="text-center badge rounded-pill bg-info">Billed</span>'; 
+				}
+				
+
+				$payment_no = $this->myhash->hasher($bill['payment_no'], 'encrypt');
+
+				$action_customs = '<a href="'.base_url().'head-office-iad/biling/audited-list/'.$bill['payment_no'].'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
+
+				$row[] = $consolidated;
+				$row[] = $date;
+				$row[] = $hp_name;
+				$row[] = $status;
+				$row[] = $action_customs;
+				$data[] = $row;
+				$unique_bills[] = $bill_id; // add unique bill id to array
+			}
+		}
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
+
+		echo json_encode($output);
+	}
+
+	function fetch_payment_bill() {
+		$token = $this->security->get_csrf_hash();
+		$payment_no = $this->input->post('payment_no');
+		$billing = $this->transaction_model->monthly_bill_datatable($payment_no);
+		$data = [];
+		foreach($billing as $bill){
+			$row = [];
+			$wpercent = '';
+			$nwpercent = '';
+
+			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
+
+			if($bill['loa_id'] != ''){
+				$loa_noa = $bill['loa_no'];
+				$loa = $this->transaction_model->get_loa_info($bill['loa_id']);
+				if($loa['work_related'] == 'Yes'){ 
+					if($loa['percentage'] == ''){
+					   $wpercent = '100% W-R';
+					   $nwpercent = '';
+					}else{
+					   $wpercent = $loa['percentage'].'%  W-R';
+					   $result = 100 - floatval($loa['percentage']);
+					   if($loa['percentage'] == '100'){
+						   $nwpercent = '';
+					   }else{
+						   $nwpercent = $result.'% Non W-R';
+					   }
+					  
+					}	
+			   }else if($loa['work_related'] == 'No'){
+				   if($loa['percentage'] == ''){
+					   $wpercent = '';
+					   $nwpercent = '100% Non W-R';
+					}else{
+					   $nwpercent = $loa['percentage'].'% Non W-R';
+					   $result = 100 - floatval($loa['percentage']);
+					   if($loa['percentage'] == '100'){
+						   $wpercent = '';
+					   }else{
+						   $wpercent = $result.'%  W-R';
+					   }
+					 
+					}
+			   }
+
+			}else if($bill['noa_id'] != ''){
+				$loa_noa = $bill['noa_no'];
+				$noa = $this->transaction_model->get_noa_info($bill['noa_id']);
+				if($noa['work_related'] == 'Yes'){ 
+					if($noa['percentage'] == ''){
+					   $wpercent = '100% W-R';
+					   $nwpercent = '';
+					}else{
+					   $wpercent = $noa['percentage'].'%  W-R';
+					   $result = 100 - floatval($noa['percentage']);
+					   if($noa['percentage'] == '100'){
+						   $nwpercent = '';
+					   }else{
+						   $nwpercent = $result.'% Non W-R';
+					   }
+					  
+					}	
+			   }else if($noa['work_related'] == 'No'){
+				   if($noa['percentage'] == ''){
+					   $wpercent = '';
+					   $nwpercent = '100% Non W-R';
+					}else{
+					   $nwpercent = $noa['percentage'].'% Non W-R';
+					   $result = 100 - floatval($noa['percentage']);
+					   if($noa['percentage'] == '100'){
+						   $wpercent = '';
+					   }else{
+						   $wpercent = $result.'%  W-R';
+					   }
+					 
+					}
+			   }
+			}
+
+			$payable = floatval($bill['company_charge'] + floatval($bill['cash_advance']));
+
+			
+			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-5"></i></a>';
+
+			$row[] = $bill['billing_no'];
+			$row[] = $loa_noa;
+			$row[] = $fullname;
+			$row[] = $bill['business_unit'];
+			$row[] = number_format($bill['before_remaining_bal'],2, '.',',');
+			$row[] = $wpercent .', '.$nwpercent;
+			$row[] = number_format($bill['net_bill'], 2, '.', ',');
+			$row[] = number_format($bill['company_charge'], 2, '.', ',');
+			$row[] = number_format($bill['cash_advance'], 2, '.', ',');
+			$row[] = number_format($payable, 2, '.', ',');
+			$row[] = number_format($bill['personal_charge'], 2, '.', ',');
+			$row[] = number_format($bill['after_remaining_bal'],2, '.',',');
+			$row[] = $pdf_bill;
+			$data[] = $row;
+
+		}
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
+
+		echo json_encode($output);
+	}
+
+	function submit_audited() {
+		$token = $this->security->get_csrf_hash();
+		$user = $this->session->userdata('fullname');
+		$audited = $this->transaction_model->submit_audited_bill($user);
+
+		if(!$audited){
+			echo json_encode([
+				'token' => $token,
+				'status' => 'error',
+				'message' => 'Failed to Submit!',
+			]);
+		}else{
+			echo json_encode([
+				'token' => $token,
+				'status' => 'success',
+				'message' => 'Submitted Successfully!',
+			]);
+		}
+	}
+
+
+
 	//END ==================================================
 }
 		

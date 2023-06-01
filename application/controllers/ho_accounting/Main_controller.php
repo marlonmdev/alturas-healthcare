@@ -332,38 +332,18 @@ class Main_controller extends CI_Controller {
 				);
 				$this->List_model->add_payment_details($data);
 				$paid_by = $this->session->userdata('fullname');
-				$paid_on = date('Y-m-d');
+				$paid_on = $this->input->post('check-date');
 				$payment_no = $this->input->post('pd-payment-no');
 			
 				$this->List_model->set_details_no($payment_no,$details_no);
-				// $this->List_model->set_monthly_payable($pay['bill_no'],$paid_by,$paid_on,$details_no);
+				$this->List_model->set_monthly_payable($payment_no,$paid_by,$paid_on);
 				$result = $this->List_model->get_loa_noa_id($payment_no);
 
 				if (!empty($result)) {
 					foreach ($result as $row) {
 						$loa_id = $row['loa_id'];
 						$noa_id = $row['noa_id'];
-						
-						$mbl = $this->List_model->get_employee_mbl($row['emp_id']);
-						if(floatval($row['company_charge']) > floatval($mbl['remaining_balance'])){
-							$remaining_mbl = '0';
-						}else{
-							$remaining_mbl = $mbl['remaining_balance'] - $row['company_charge'];
-						}
-
-						$paid_amount = floatval($row['company_charge'] + floatval($row['cash_advance']));
-						$before_mbl = floatval($mbl['remaining_balance']);
-						$used_mbl = floatval($row['company_charge'] + floatval($mbl['used_mbl']));
-						
-						if(floatval($used_mbl) > floatval($mbl['max_benefit_limit'])){
-							$usedMBL = $mbl['max_benefit_limit'];
-						}else{
-							$usedMBL = $used_mbl;
-						}
- 					
-						$this->List_model->set_max_benefit_limit($row['emp_id'], $remaining_mbl, $usedMBL);
-						$this->List_model->set_after_mbl_paid_amount($row['billing_id'], $before_mbl, $remaining_mbl, $paid_amount);
-
+					
 						if (!empty($loa_id)) {
 							$this->List_model->set_loa_status($loa_id);
 						}
@@ -1032,32 +1012,24 @@ class Main_controller extends CI_Controller {
 			$hospital_bill = number_format(floatval($pay['net_bill']),2, '.',',');
 			$company_charge = number_format(floatval($pay['company_charge']),2, '.',',');
 
-			$remaining_mbl = floatval($pay['remaining_balance'] - $pay['company_charge']);
-			if(floatval($remaining_mbl) <= 0){
-				$mbl = 0;
-			}else if(floatval($remaining_mbl) > 0){
-				$mbl = $remaining_mbl;
-			}
-
 			if(floatval($payable) > floatval($pay['net_bill'])){
 				$action = '<a href="JavaScript:void(0)" onclick="adjustHAdvance(\''.$pay['billing_no']. '\',\''.$no.'\', \''.$fullname.'\', \''.$cash_advance.'\',\''.$hospital_bill.'\',\''.$company_charge.'\')" data-bs-toggle="tooltip" title="Adjust Healthcare Advance"><i class="mdi mdi-table-edit fs-3"></i></a>';
 			}else{
 				$action = '';
 			}
 
-		
 			$row[] = $pay['billing_no'];
 			$row[] = $loa_noa;
 			$row[] = $fullname;
 			$row[] = $pay['business_unit'];
-			$row[] = number_format($pay['remaining_balance'],2, '.',',');
+			$row[] = number_format($pay['before_remaining_bal'],2, '.',',');
 			$row[] = $wpercent. ', '.$nwpercent;
 			$row[] = number_format($pay['net_bill'],2, '.',',');
 			$row[] = number_format($pay['company_charge'],2, '.',',');
 			$row[] = number_format($pay['cash_advance'],2, '.',',');
 			$row[] = number_format($payable,2, '.',',');
 			$row[] = number_format($pay['personal_charge'],2, '.',',');
-			$row[] = number_format($mbl,2, '.',',');
+			$row[] = number_format($pay['after_remaining_bal'],2, '.',',');
 			$row[] = $action;
 			$data[] = $row;
 		}
@@ -1342,7 +1314,11 @@ class Main_controller extends CI_Controller {
 
 				$consolidated = '<span>Consolidated Bill with the Payment No. <span class="fw-bold">'.$bill['payment_no'].'</span></span>';
 
-				$date = '<span>'.date('F d, Y', strtotime($bill['startDate'])).' to '.date('F d, Y', strtotime($bill['endDate'])).'</span>';
+				if($bill['startDate'] == '0000-00-00' || $bill['endDate'] == '0000-00-00'){
+				  $date = '';
+				}else{
+					$date = '<span>'.date('F d, Y', strtotime($bill['startDate'])).' to '.date('F d, Y', strtotime($bill['endDate'])).'</span>';
+				}
 
 				$hp_name = '<span>'.$bill['hp_name'].'</span>';
 
@@ -1452,13 +1428,6 @@ class Main_controller extends CI_Controller {
 
 			$payable = floatval($bill['company_charge'] + floatval($bill['cash_advance']));
 
-			$remaining_mbl = floatval($bill['remaining_balance'] - $bill['company_charge']);
-			if(floatval($remaining_mbl) <= 0){
-				$mbl = 0;
-			}else if(floatval($remaining_mbl) > 0){
-				$mbl = $remaining_mbl;
-			}
-
 			
 			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-5"></i></a>';
 
@@ -1466,14 +1435,14 @@ class Main_controller extends CI_Controller {
 			$row[] = $loa_noa;
 			$row[] = $fullname;
 			$row[] = $bill['business_unit'];
-			$row[] = number_format($bill['remaining_balance'],2, '.',',');
+			$row[] = number_format($bill['before_remaining_bal'],2, '.',',');
 			$row[] = $wpercent .', '.$nwpercent;
 			$row[] = number_format($bill['net_bill'], 2, '.', ',');
 			$row[] = number_format($bill['company_charge'], 2, '.', ',');
 			$row[] = number_format($bill['cash_advance'], 2, '.', ',');
 			$row[] = number_format($payable, 2, '.', ',');
 			$row[] = number_format($bill['personal_charge'], 2, '.', ',');
-			$row[] = number_format($mbl,2, '.',',');
+			$row[] = number_format($bill['after_remaining_bal'],2, '.',',');
 			$row[] = $pdf_bill;
 			$data[] = $row;
 
@@ -1498,7 +1467,11 @@ class Main_controller extends CI_Controller {
 
 				$consolidated = '<span>Paid Bill with the Payment No. <span class="fw-bold">'.$bill['payment_no'].'</span></span>';
 
-				$date = '<span>'.date('F d, Y', strtotime($bill['startDate'])).' to '.date('F d, Y', strtotime($bill['endDate'])).'</span>';
+				if($bill['startDate'] == '0000-00-00' || $bill['endDate'] == '0000-00-00'){
+					$date = '';
+				  }else{
+					  $date = '<span>'.date('F d, Y', strtotime($bill['startDate'])).' to '.date('F d, Y', strtotime($bill['endDate'])).'</span>';
+				  }
 
 				$hp_name = '<span>'.$bill['hp_name'].'</span>';
 
@@ -1609,20 +1582,20 @@ class Main_controller extends CI_Controller {
 
 			$total_paid = floatval($bill['company_charge']) + floatval($bill['cash_advance']);
 			
-			$status = '<span class="text-center badge rounded-pill bg-success text-dark">Paid</span>'; 
+			$status = '<span class="text-center badge rounded-pill bg-success text-white">Paid</span>'; 
 
 			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger"></i></a>';
 
 			$row[] = $bill['billing_no'];
 			$row[] = $loa_noa;
 			$row[] = $fullname;
-			$row[] = number_format($bill['remaining_balance'],2, '.',',');
 			$row[] = $wpercent .', '.$nwpercent;
 			$row[] = number_format($bill['net_bill'], 2, '.', ',');
 			$row[] = number_format($bill['company_charge'], 2, '.', ',');
 			$row[] = number_format($bill['cash_advance'], 2, '.', ',');
 			$row[] = number_format($total_paid, 2, '.', ',');
 			$row[] = number_format($bill['personal_charge'], 2, '.', ',');
+			$row[] = number_format($bill['after_remaining_bal'],2, '.',',');
 			$row[] = $status;
 			$row[] = $pdf_bill;
 			$data[] = $row;
@@ -1645,22 +1618,17 @@ class Main_controller extends CI_Controller {
 	
 		foreach ($charge as $bill) {
 			$health_card_no = $bill['health_card_no'];
-			$number = 0;
-			$number++;
 			// Check if the health_card_no already has a total calculated
 			if (!isset($healthCardTotals[$health_card_no])) {
 				$healthCardTotals[$health_card_no] = [
 					'company_charge' => 0,
 					'cash_advance' => 0,
-					'total_paid' => 0
+					'total_paid' => 0,
+					'fullname' => $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'],
+					'business_unit' => $bill['business_unit'],
+					'emp_id' => $bill['emp_id']
 				];
 			}
-	
-			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
-			$empId = str_replace('-', 'e', $bill['emp_id']);
-			$emp_id = $this->myhash->hasher($empId, 'encrypt');
-
-			$action = '<a href="' . base_url() . 'head-office-accounting/charging/member/'. $bill['emp_id'] .'" data-bs-toggle="tooltip" title="View Details"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
 	
 			// Update totals for the current health_card_no
 			$healthCardTotals[$health_card_no]['company_charge'] += floatval($bill['company_charge']);
@@ -1671,15 +1639,14 @@ class Main_controller extends CI_Controller {
 		// Create data array with unique health_card_no and their totals
 		foreach ($healthCardTotals as $health_card_no => $totals) {
 			$row = [];
-			$row[] = $number;
 			$row[] = $health_card_no;
-			$row[] = $fullname;
-			$row[] = $bill['business_unit']; 
+			$row[] = $totals['fullname'];
+			$row[] = $totals['business_unit'];
 			$row[] = number_format($totals['company_charge'], 2, '.', ',');
 			$row[] = number_format($totals['cash_advance'], 2, '.', ',');
 			$row[] = number_format($totals['total_paid'], 2, '.', ',');
 			$row[] = '<span class="bg-danger text-white badge rounded-pill">Unpaid</span>';
-			$row[] = $action;
+			$row[] = '<a href="' . base_url() . 'head-office-accounting/charging/member/'. $totals['emp_id'] .'" data-bs-toggle="tooltip" title="View Details"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
 			$data[] = $row;
 		}
 	
@@ -1690,6 +1657,7 @@ class Main_controller extends CI_Controller {
 	
 		echo json_encode($output);
 	}
+	
 
 	function fetch_charging_details() {
 		$token = $this->security->get_csrf_hash();
@@ -1818,8 +1786,8 @@ class Main_controller extends CI_Controller {
 		$number = 0;
 		$number++;
 		$payment_no = 'PMT-' . date('Ymis') . $number;
-		$inserted = $this->List_model->submit_forPayment_bill($payment_no);
-		$this->List_model->set_payment_no_date($payment_no,$user);
+		$this->List_model->submit_forPayment_bill($payment_no);
+		$inserted = $this->List_model->set_payment_no_date($payment_no,$user);
 		if($inserted){
 			echo json_encode([
 				'token' => $token,
@@ -1834,26 +1802,6 @@ class Main_controller extends CI_Controller {
 				'message' => 'Failed to Submit!'
 			]);
 		}
-	}
-
-	function fetch_for_printing() {
-		$this->security->get_csrf_hash();
-		$this->load->library('tcpdf_library');
-		$data['user_role'] = $this->session->userdata('user_role');
-		$data['billed'] = $this->List_model->get_print_billed_loa_noa();
-		$data['hospital'] = $this->List_model->db_get_hp_name($this->input->get('hp_id'));
-		$data['total_bill'] = $this->input->get('total_bill');
-		$data['start_date'] = $this->input->get('start_date');
-		$data['end_date'] = $this->input->get('end_date');
-		$data['b_unit'] = $this->input->get('bu_filter');
-
-		$this->load->view('templates/header');
-		$pdfContent = $this->load->view('ho_accounting_panel/billing_list_table/print_billed_charging', $data, true);
-		$this->load->view('templates/footer');
-		header('Content-Type: application/pdf');
-		header('Content-Disposition: inline; filename="name.pdf"');
-		echo $pdfContent;
-
 	}
 
 	function submit_adjusted_advance() {
@@ -1875,20 +1823,780 @@ class Main_controller extends CI_Controller {
 		}
 	}
 	
-	function sample($hp_id,$start_date,$end_date,$bu_filter,$total_bill)
+	function print_bills($hp_id,$start_date,$end_date,$bu_filter)
 	{
+		$this->security->get_csrf_hash();
+		$this->load->library('tcpdf_library');
+
+		$hp_id =  base64_decode($hp_id);
 		$start_date =  base64_decode($start_date);
 		$end_date =  base64_decode($end_date);
 		$bu_filter =  base64_decode($bu_filter);
 
-		$this->load->library('tcpdf_library');
-		$data['user_role'] = $this->session->userdata('user_role');
-		$data['billed'] = $this->List_model->get_print_billed_loa_noa();
-		$data['hospital'] = $this->List_model->db_get_hp_name($hp_id);
+	    if($bu_filter == 'none'){
+			$bu = '';
+		}else{
+			$bu = $bu_filter;
+		}
+		if($hp_id == 'none'){
+			$hp = '';
+		}else{
+			$hp = $hp_id;
+		}
+		if($start_date == 'none'){
+			$start = '';
+		}else{
+			$start = $start_date;
+		}
+		if($end_date == 'none'){
+			$end = '';
+		}else{
+			$end = $end_date;
+		}
+		$billed = $this->List_model->get_print_billed_loa_noa($hp,$start,$end,$bu);
+		$hospital = $this->List_model->db_get_hp_name($hp_id);
+		$pdf = new TCPDF();
 
+		$user = $this->session->userdata('fullname');
 		
+		if(!empty($start) || !empty($end)){
+			$formattedStart_date = date('F d, Y', strtotime($start));
+			$formattedEnd_date = date('F d, Y', strtotime($end));
+
+			$date = '<h3>From '.$formattedStart_date.' to '.$formattedEnd_date.'</h3>';
+		}else{
+			$date = '';
+		}
+
+		if(!empty($hospital['hp_name'])){
+			$hospital = $hospital['hp_name']; 
+		}else{
+			$hospital = '';
+		}
+
+		if(!empty($bu)){
+			$business_u = '<h3>BU: '.$bu.'</h3>';
+		}else{
+			$business_u = '';
+		}
+		
+		$title =  '<h3>ALTURAS HEALTHCARE SYSTEM</h3>
+            <h3>Billing Summary Details</h3>
+			'.$date.'
+            <h3>'.$hospital.'</h3>
+			'.$business_u.'<br>';
 
 
+		$PDFdata = '<table style="border:.5px solid #000; padding:3px" class="table table-bordered">';
+		$PDFdata .= ' <thead>
+						<tr class="border-secondary">
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Billing No</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>LOA/NOA #</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Patient Name</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Business Unit</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Current MBL</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Percentage</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Hospital Bill</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Company Charge</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Healthcare Advance</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Total Payable</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Personal Charge</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Remaining MBL</strong></th>
+						</tr>
+					</thead>';
+
+				$totalPayableSum = 0;
+				foreach($billed as $bill){
+					$wpercent = '';
+					$nwpercent = '';
+					if($bill['loa_id'] != ''){
+						$loa_noa = $bill['loa_no'];
+						$loa = $this->List_model->get_loa_info($bill['loa_id']);
+						if($loa['work_related'] == 'Yes'){ 
+							if($loa['percentage'] == ''){
+							$wpercent = '100% W-R';
+							$nwpercent = '';
+							}else{
+							$wpercent = $loa['percentage'].'%  W-R';
+							$result = 100 - floatval($loa['percentage']);
+							if($loa['percentage'] == '100'){
+								$nwpercent = '';
+							}else{
+								$nwpercent = $result.'% NonW-R';
+							}
+							
+							}	
+					}else if($loa['work_related'] == 'No'){
+						if($loa['percentage'] == ''){
+							$wpercent = '';
+							$nwpercent = '100% NonW-R';
+							}else{
+							$nwpercent = $loa['percentage'].'% NonW-R';
+							$result = 100 - floatval($loa['percentage']);
+							if($loa['percentage'] == '100'){
+								$wpercent = '';
+							}else{
+								$wpercent = $result.'%  W-R';
+							}
+							
+							}
+					}
+
+					}else if($bill['noa_id'] != ''){
+						$loa_noa = $bill['noa_no'];
+						$noa = $this->List_model->get_noa_info($bill['noa_id']);
+						if($noa['work_related'] == 'Yes'){ 
+							if($noa['percentage'] == ''){
+							$wpercent = '100% W-R';
+							$nwpercent = '';
+							}else{
+							$wpercent = $noa['percentage'].'%  W-R';
+							$result = 100 - floatval($noa['percentage']);
+							if($noa['percentage'] == '100'){
+								$nwpercent = '';
+							}else{
+								$nwpercent = $result.'% NonW-R';
+							}
+							
+							}	
+					}else if($noa['work_related'] == 'No'){
+						if($noa['percentage'] == ''){
+							$wpercent = '';
+							$nwpercent = '100% NonW-R';
+							}else{
+							$nwpercent = $noa['percentage'].'% NonW-R';
+							$result = 100 - floatval($noa['percentage']);
+							if($noa['percentage'] == '100'){
+								$wpercent = '';
+							}else{
+								$wpercent = $result.'%  W-R';
+							}
+							
+							}
+					}
+					}
+
+					$fullname =  $bill['first_name'] . ' ' . $bill['middle_name'] . ' ' . $bill['last_name'] . ' ' . $bill['suffix'];
+					
+					$total_payable = floatval($bill['company_charge'] + $bill['cash_advance']);
+
+		$PDFdata .= ' <tbody>
+						<tr>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$bill['billing_no'].'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$loa_noa.'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$fullname.'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$bill['business_unit'].'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['before_remaining_bal'],2,'.',',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$wpercent. ', '.$nwpercent.'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['net_bill'],2,'.',',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['company_charge'],2,'.',',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['cash_advance'],2,'.',',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($total_payable,2,'.',',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['personal_charge'],2,'.',',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['after_remaining_bal'],2,'.',',').'</td>
+						</tr>
+					</tbody>';
+
+					$totalPayableSum += $total_payable;
+				}
+
+		$PDFdata .= '<tfoot>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td class="fw-bold fs-5">TOTAL </td>
+					<td class="fw-bold fs-5">'.number_format($totalPayableSum,2,'.',',').'</td>
+					<td></td>
+					<td></td>
+				</tr>
+			</tfoot>';
+
+		$PDFdata .= '</table><br><br><br>';
+
+		$pdf->setPrintHeader(false);
+		$pdf->setTitle('Billing Report');
+		$pdf->setFont('times', '', 10);
+		$pdf->AddPage('L');
+		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'C', true);
+		$pdf->lastPage();
+
+		$pdfname = 'bill_'.uniqid();
+		$pdf->Output($pdfname.'.pdf', 'I');
+	}
+
+	function print_forPayment($hp_id,$start_date,$end_date,$bu_filter,$payment_no) {
+		$this->security->get_csrf_hash();
+		$this->load->library('tcpdf_library');
+
+		$hp_id =  base64_decode($hp_id);
+		$start_date =  base64_decode($start_date);
+		$end_date =  base64_decode($end_date);
+		$bu_filter =  base64_decode($bu_filter);
+		$payment_no =  base64_decode($payment_no);
+
+		if($bu_filter == 'none'){
+			$bu = '';
+		}else{
+			$bu = $bu_filter;
+		}
+		if($hp_id == 'none'){
+			$hp = '';
+		}else{
+			$hp = $hp_id;
+		}
+		if($start_date == 'none'){
+			$start = '';
+		}else{
+			$start = $start_date;
+		}
+		if($end_date == 'none'){
+			$end = '';
+		}else{
+			$end = $end_date;
+		}
+
+		$billed = $this->List_model->get_for_payment_bills($payment_no);
+		$hospital = $this->List_model->db_get_hp_name($hp);
+		$pdf = new TCPDF();
+
+		if(!empty($start) || !empty($end)){
+			$formattedStart_date = date('F d, Y', strtotime($start));
+			$formattedEnd_date = date('F d, Y', strtotime($end));
+
+			$date = '<h3>From '.$formattedStart_date.' to '.$formattedEnd_date.'</h3>';
+		}else{
+			$date = '';
+		}
+
+		if(!empty($hospital['hp_name'])){
+			$hospital = $hospital['hp_name'];
+		}else{
+			$hospital = '';
+		}
+
+		if(!empty($bu)){
+			$business_u = '<h3>BU: '.$bu.'</h3>';
+		}else{
+			$business_u = '';
+		}
+
+		$title =  '<h3>ALTURAS HEALTHCARE SYSTEM</h3>
+            <h3>Billing Summary Details</h3>
+			'.$date.'
+            <h3>'.$hospital.'</h3>
+			'.$business_u.'
+			<h3>'.$payment_no.'</h3><br>';
+			
+
+		$PDFdata = '<table style="border:.5px solid #000; padding:3px" class="table table-bordered">';
+		$PDFdata .= ' <thead>
+						<tr class="border-secondary">
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Billing No</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>LOA/NOA #</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Patient Name</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Business Unit</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Current MBL</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Percentage</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Hospital Bill</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Company Charge</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Healthcare Advance</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Total Payable</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Personal Charge</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Remaining MBL</strong></th>
+						</tr>
+					</thead>';
+
+				$totalPayableSum = 0;
+				foreach($billed as $bill){
+					$wpercent = '';
+					$nwpercent = '';
+					if($bill['loa_id'] != ''){
+							$loa_noa = $bill['loa_no'];
+							$loa = $this->List_model->get_loa_info($bill['loa_id']);
+							if($loa['work_related'] == 'Yes'){ 
+								if($loa['percentage'] == ''){
+								$wpercent = '100% W-R';
+								$nwpercent = '';
+								}else{
+								$wpercent = $loa['percentage'].'%  W-R';
+								$result = 100 - floatval($loa['percentage']);
+								if($loa['percentage'] == '100'){
+									$nwpercent = '';
+								}else{
+									$nwpercent = $result.'% NonW-R';
+								}
+								
+								}	
+						}else if($loa['work_related'] == 'No'){
+							if($loa['percentage'] == ''){
+								$wpercent = '';
+								$nwpercent = '100% NonW-R';
+								}else{
+								$nwpercent = $loa['percentage'].'% NonW-R';
+								$result = 100 - floatval($loa['percentage']);
+								if($loa['percentage'] == '100'){
+									$wpercent = '';
+								}else{
+									$wpercent = $result.'%  W-R';
+								}
+								
+								}
+						}
+
+						}else if($bill['noa_id'] != ''){
+							$loa_noa = $bill['noa_no'];
+							$noa = $this->List_model->get_noa_info($bill['noa_id']);
+							if($noa['work_related'] == 'Yes'){ 
+								if($noa['percentage'] == ''){
+								$wpercent = '100% W-R';
+								$nwpercent = '';
+								}else{
+								$wpercent = $noa['percentage'].'%  W-R';
+								$result = 100 - floatval($noa['percentage']);
+								if($noa['percentage'] == '100'){
+									$nwpercent = '';
+								}else{
+									$nwpercent = $result.'% NonW-R';
+								}
+								
+								}	
+						}else if($noa['work_related'] == 'No'){
+							if($noa['percentage'] == ''){
+								$wpercent = '';
+								$nwpercent = '100% NonW-R';
+								}else{
+								$nwpercent = $noa['percentage'].'% NonW-R';
+								$result = 100 - floatval($noa['percentage']);
+								if($noa['percentage'] == '100'){
+									$wpercent = '';
+								}else{
+									$wpercent = $result.'%  W-R';
+								}
+								
+								}
+						}
+					}
+
+					$fullname =  $bill['first_name'] . ' ' . $bill['middle_name'] . ' ' . $bill['last_name'] . ' ' . $bill['suffix'];
+					
+					$total_payable = floatval($bill['company_charge'] + $bill['cash_advance']);
+
+		$PDFdata .= ' <tbody>
+						<tr>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$bill['billing_no'].'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$loa_noa.'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$fullname.'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$bill['business_unit'].'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['before_remaining_bal'],2,'.',',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$wpercent. ', '.$nwpercent.'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['net_bill'],2,'.',',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['company_charge'],2,'.',',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['cash_advance'],2,'.',',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($total_payable,2,'.',',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['personal_charge'],2,'.',',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['after_remaining_bal'],2,'.',',').'</td>
+						</tr>
+					</tbody>';
+
+					$totalPayableSum += $total_payable;
+				}
+
+		$PDFdata .= '<tfoot>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td class="fw-bold fs-5">TOTAL </td>
+					<td class="fw-bold fs-5">'.number_format($totalPayableSum,2,'.',',').'</td>
+					<td></td>
+					<td></td>
+				</tr>
+			</tfoot>';
+
+		$PDFdata .= '</table>';
+
+		$pdf->setPrintHeader(false);
+		$pdf->setTitle('For Payment Report');
+		$pdf->setFont('times', '', 10);
+		$pdf->AddPage('L');
+		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'C', true);
+		$pdf->lastPage();
+
+		$pdfname = 'bill_'.uniqid();
+		$pdf->Output($pdfname.'.pdf', 'I');
+	}
+
+	function print_payment($hp_id,$start_date,$end_date) {
+		$this->security->get_csrf_hash();
+		$this->load->library('tcpdf_library');
+
+		$hp_id =  base64_decode($hp_id);
+		$start_date =  base64_decode($start_date);
+		$end_date =  base64_decode($end_date);
+
+		$formattedStart_date = date('F d, Y', strtotime($start_date));
+		$formattedEnd_date = date('F d, Y', strtotime($end_date));
+
+		if($start_date == '0000-00-00' || $end_date == '0000-00-00'){
+			$date = '';
+		}else{
+			$date = '<h3>From '.$formattedStart_date.' to '.$formattedEnd_date.'</h3>';
+		}
+
+		$payment_no = $this->List_model->get_bill_payment_no($hp_id,$start_date,$end_date);
+		$billed = $this->List_model->get_for_payment_bills($payment_no['payment_no']);
+		$hospital = $this->List_model->db_get_hp_name($hp_id);
+		$pdf = new TCPDF(); 
+
+		$title =  '<h3>ALTURAS HEALTHCARE SYSTEM</h3>
+            <h3>For Payment Summary Details</h3>
+			'.$date.'
+            <h3>'.$hospital['hp_name'].'</h3>
+			<h3>'.$payment_no['payment_no'].'</h3><br>';
+			
+
+		$PDFdata = '<table style="border:.5px solid #000; padding:3px" class="table table-bordered">';
+		$PDFdata .= ' <thead>
+						<tr class="border-secondary">
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Billing No</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>LOA/NOA #</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Patient Name</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Business Unit</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Current MBL</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Percentage</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Hospital Bill</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Company Charge</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Healthcare Advance</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Total Payable</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Personal Charge</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Remaining MBL</strong></th>
+						</tr>
+					</thead>';
+
+				$totalPayableSum = 0;
+				foreach($billed as $bill){
+					$wpercent = '';
+					$nwpercent = '';
+					if($bill['loa_id'] != ''){
+						$loa_noa = $bill['loa_no'];
+						$loa = $this->List_model->get_loa_info($bill['loa_id']);
+						if($loa['work_related'] == 'Yes'){ 
+							if($loa['percentage'] == ''){
+							$wpercent = '100% W-R';
+							$nwpercent = '';
+							}else{
+							$wpercent = $loa['percentage'].'%  W-R';
+							$result = 100 - floatval($loa['percentage']);
+							if($loa['percentage'] == '100'){
+								$nwpercent = '';
+							}else{
+								$nwpercent = $result.'% NonW-R';
+							}
+							
+							}	
+					}else if($loa['work_related'] == 'No'){
+						if($loa['percentage'] == ''){
+							$wpercent = '';
+							$nwpercent = '100% NonW-R';
+							}else{
+							$nwpercent = $loa['percentage'].'% NonW-R';
+							$result = 100 - floatval($loa['percentage']);
+							if($loa['percentage'] == '100'){
+								$wpercent = '';
+							}else{
+								$wpercent = $result.'%  W-R';
+							}
+							
+							}
+					}
+
+					}else if($bill['noa_id'] != ''){
+						$loa_noa = $bill['noa_no'];
+						$noa = $this->List_model->get_noa_info($bill['noa_id']);
+						if($noa['work_related'] == 'Yes'){ 
+							if($noa['percentage'] == ''){
+							$wpercent = '100% W-R';
+							$nwpercent = '';
+							}else{
+							$wpercent = $noa['percentage'].'%  W-R';
+							$result = 100 - floatval($noa['percentage']);
+							if($noa['percentage'] == '100'){
+								$nwpercent = '';
+							}else{
+								$nwpercent = $result.'% NonW-R';
+							}
+							
+							}	
+					}else if($noa['work_related'] == 'No'){
+						if($noa['percentage'] == ''){
+							$wpercent = '';
+							$nwpercent = '100% NonW-R';
+							}else{
+							$nwpercent = $noa['percentage'].'% NonW-R';
+							$result = 100 - floatval($noa['percentage']);
+							if($noa['percentage'] == '100'){
+								$wpercent = '';
+							}else{
+								$wpercent = $result.'%  W-R';
+							}
+							
+							}
+					}
+					}
+
+					$fullname =  $bill['first_name'] . ' ' . $bill['middle_name'] . ' ' . $bill['last_name'] . ' ' . $bill['suffix'];
+					
+					$total_payable = floatval($bill['company_charge'] + $bill['cash_advance']);
+
+					$remaining_mbl = floatval($bill['remaining_balance'] - $bill['company_charge']);
+					if(floatval($remaining_mbl) <= 0){
+						$mbl = 0;
+					}else if(floatval($remaining_mbl) > 0){
+						$mbl = $remaining_mbl;
+					}
+
+		$PDFdata .= ' <tbody>
+						<tr>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$bill['billing_no'].'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$loa_noa.'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$fullname.'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$bill['business_unit'].'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['before_remaining_bal'],2,'.',',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$wpercent. ', '.$nwpercent.'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['net_bill'],2,'.',',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['company_charge'],2,'.',',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['cash_advance'],2,'.',',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($total_payable,2,'.',',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['personal_charge'],2,'.',',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['after_remaining_bal'],2,'.',',').'</td>
+						</tr>
+					</tbody>';
+
+					$totalPayableSum += $total_payable;
+				}
+
+		$PDFdata .= '<tfoot>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td class="fw-bold fs-5">TOTAL </td>
+					<td class="fw-bold fs-5">'.number_format($totalPayableSum,2,'.',',').'</td>
+					<td></td>
+					<td></td>
+				</tr>
+			</tfoot>';
+
+		$PDFdata .= '</table>';
+
+		$pdf->setPrintHeader(false);
+		$pdf->setTitle('For Payment Report');
+		$pdf->setFont('times', '', 10);
+		$pdf->AddPage('L');
+		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'C', true);
+		$pdf->lastPage();
+
+		$pdfname = 'bill_'.uniqid();
+		$pdf->Output($pdfname.'.pdf', 'I');
+	}
+
+	function print_paid($hp_id,$start_date,$end_date) {
+		$this->security->get_csrf_hash();
+		$this->load->library('tcpdf_library');
+
+		$hp_id =  base64_decode($hp_id);
+		$start_date =  base64_decode($start_date);
+		$end_date =  base64_decode($end_date);
+
+		$formattedStart_date = date('F d, Y', strtotime($start_date));
+		$formattedEnd_date = date('F d, Y', strtotime($end_date));
+
+		if($start_date == '0000-00-00' || $end_date == '0000-00-00'){
+			$date = '';
+		}else{
+			$date = '<h3>From '.$formattedStart_date.' to '.$formattedEnd_date.'</h3>';
+		}
+
+		$payment_no = $this->List_model->get_bill_payment_no($hp_id,$start_date,$end_date);
+		$billed = $this->List_model->get_for_payment_bills($payment_no['payment_no']);
+		$hospital = $this->List_model->db_get_hp_name($hp_id);
+		$pdf = new TCPDF();
+
+		$title =  '<h3>ALTURAS HEALTHCARE SYSTEM</h3>
+            <h3>Paid Summary Details</h3>
+			'.$date.'
+			<h3>'.$hospital['hp_name'].'</h3>
+			<h3>'.$payment_no['payment_no'].'</h3><br>';
+			
+
+		$PDFdata = '<table style="border:.5px solid #000; padding:3px" class="table table-bordered">';
+		$PDFdata .= ' <thead>
+						<tr class="border-secondary">
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Billing No</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>LOA/NOA #</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Patient Name</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Business Unit</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Current MBL</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Percentage</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Hospital Bill</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Company Charge</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Healthcare Advance</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Total Payable</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Personal Charge</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Remaining MBL</strong></th>
+						</tr>
+					</thead>';
+
+				$totalPayableSum = 0;
+				foreach($billed as $bill){
+					$wpercent = '';
+					$nwpercent = '';
+					if($bill['loa_id'] != ''){
+						$loa_noa = $bill['loa_no'];
+						$loa = $this->List_model->get_loa_info($bill['loa_id']);
+						if($loa['work_related'] == 'Yes'){ 
+							if($loa['percentage'] == ''){
+							$wpercent = '100% W-R';
+							$nwpercent = '';
+							}else{
+							$wpercent = $loa['percentage'].'%  W-R';
+							$result = 100 - floatval($loa['percentage']);
+							if($loa['percentage'] == '100'){
+								$nwpercent = '';
+							}else{
+								$nwpercent = $result.'% NonW-R';
+							}
+							
+							}	
+					}else if($loa['work_related'] == 'No'){
+						if($loa['percentage'] == ''){
+							$wpercent = '';
+							$nwpercent = '100% NonW-R';
+							}else{
+							$nwpercent = $loa['percentage'].'% NonW-R';
+							$result = 100 - floatval($loa['percentage']);
+							if($loa['percentage'] == '100'){
+								$wpercent = '';
+							}else{
+								$wpercent = $result.'%  W-R';
+							}
+							
+							}
+					}
+
+					}else if($bill['noa_id'] != ''){
+						$loa_noa = $bill['noa_no'];
+						$noa = $this->List_model->get_noa_info($bill['noa_id']);
+						if($noa['work_related'] == 'Yes'){ 
+							if($noa['percentage'] == ''){
+							$wpercent = '100% W-R';
+							$nwpercent = '';
+							}else{
+							$wpercent = $noa['percentage'].'%  W-R';
+							$result = 100 - floatval($noa['percentage']);
+							if($noa['percentage'] == '100'){
+								$nwpercent = '';
+							}else{
+								$nwpercent = $result.'% NonW-R';
+							}
+							
+							}	
+					}else if($noa['work_related'] == 'No'){
+						if($noa['percentage'] == ''){
+							$wpercent = '';
+							$nwpercent = '100% NonW-R';
+							}else{
+							$nwpercent = $noa['percentage'].'% NonW-R';
+							$result = 100 - floatval($noa['percentage']);
+							if($noa['percentage'] == '100'){
+								$wpercent = '';
+							}else{
+								$wpercent = $result.'%  W-R';
+							}
+							
+							}
+					}
+					}
+
+					$fullname =  $bill['first_name'] . ' ' . $bill['middle_name'] . ' ' . $bill['last_name'] . ' ' . $bill['suffix'];
+					
+					$total_payable = floatval($bill['company_charge'] + $bill['cash_advance']);
+
+					$remaining_mbl = floatval($bill['remaining_balance'] - $bill['company_charge']);
+					if(floatval($remaining_mbl) <= 0){
+						$mbl = 0;
+					}else if(floatval($remaining_mbl) > 0){
+						$mbl = $remaining_mbl;
+					}
+
+		$PDFdata .= ' <tbody>
+						<tr>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$bill['billing_no'].'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$loa_noa.'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$fullname.'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$bill['business_unit'].'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['before_remaining_bal'],2,'.',',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$wpercent. ', '.$nwpercent.'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['net_bill'],2,'.',',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['company_charge'],2,'.',',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['cash_advance'],2,'.',',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($total_payable,2,'.',',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['personal_charge'],2,'.',',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['after_remaining_bal'],2,'.',',').'</td>
+						</tr>
+					</tbody>';
+
+					$totalPayableSum += $total_payable;
+				}
+
+		$PDFdata .= '<tfoot>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td class="fw-bold fs-5">TOTAL </td>
+					<td class="fw-bold fs-5">'.number_format($totalPayableSum,2,'.',',').'</td>
+					<td></td>
+					<td></td>
+				</tr>
+			</tfoot>';
+
+		$PDFdata .= '</table>';
+
+		$pdf->setPrintHeader(false);
+		$pdf->setTitle('Paid Report');
+		$pdf->setFont('times', '', 10);
+		$pdf->AddPage('L');
+		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'C', true);
+		$pdf->lastPage();
+
+		$pdfname = 'bill_'.uniqid();
+		$pdf->Output($pdfname.'.pdf', 'I');
 	}
 
 	

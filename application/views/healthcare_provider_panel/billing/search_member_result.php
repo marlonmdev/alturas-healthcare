@@ -38,6 +38,9 @@
                     <li class="nav-item" role="presentation">
                         <button class="nav-link " id="profile-tab" data-bs-toggle="tab" data-bs-target="#noa-requests" type="button" role="tab" aria-controls="profile" aria-selected="false"><strong>NOA Requests</strong></button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link " id="profile-tab" data-bs-toggle="tab" data-bs-target="#re_upload_history" type="button" role="tab" aria-controls="profile" aria-selected="false"><strong>Re Upload History</strong></button>
+                    </li>
                 </ul>
             </div>
 
@@ -196,6 +199,82 @@
                         </div>
                     </div>
                 </div>
+                <!-- =====================Re Upload Requests Tab ========================= -->
+                <div class="tab-pane fade show" id="re_upload_history" role="tabpanel">
+                    <div class="card shadow">
+                        <div class="container">
+                            <div class="row px-4 py-4">
+                                <div class="col-4">
+                                    <!-- Member Profile Info -->
+                                    <?php include "search_member_profile.php"; ?>                          
+                                </div>
+                                <div class="col-8">
+                                    <table class="table table-hover" id="tableHistory">
+                                        <thead>
+                                            <tr>
+                                                <th class="fw-bold">#</th>
+                                                <th class="fw-bold">Request Date</th>
+                                                <th class="fw-bold">Status</th>
+                                                <th class="fw-bold">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                                if (!empty($noa_requests)) :
+                                                    foreach ($noa_requests as $noa) :
+                                                        if($noa['status'] == 'Approved') {
+                                            ?>
+                                                        <tr>
+                                                            <td class="fw-bold">
+                                                                <mark class="bg-primary text-white ls-1"><?= $noa['noa_no'] ?></mark>
+                                                            </td>
+                                                            <td class="fw-bold">
+                                                                <?= date("m/d/Y", strtotime($noa['request_date'])) ?>
+                                                            </td>
+                                                            <td class="fw-bold">
+                                                                <span class="badge rounded-pill bg-success ls-1">
+                                                                    <?= $noa['status'] ?>
+                                                                </span>
+                                                            </td>
+                                                            <td class="fw-bold">
+                                                                <?php $noa_id = $this->myhash->hasher($noa['noa_id'], 'encrypt'); ?>
+
+                                                                <a href="<?php echo base_url(); ?>healthcare-provider/billing/bill-noa/upload-pdf/<?= $noa_id ?>" class="text-danger" data-bs-toggle="tooltip" title="Upload PDF Billing"><i class="mdi mdi-upload fs-2"></i></a>
+
+                                                                <a href="<?php echo base_url(); ?>healthcare-provider/billing/bill-noa/manual/<?= $noa_id ?>" class="text-info" data-bs-toggle="tooltip" title="Manual Billing"><i class="mdi mdi-keyboard-close fs-2"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                        <?php } else if($noa['status'] == 'Billed') { ?>
+                                                        <tr>
+                                                            <td class="fw-bold">
+                                                                <mark class="bg-primary text-white ls-1"><?= $noa['noa_no'] ?></mark>
+                                                            </td>
+                                                            <td class="fw-bold">
+                                                                <?= date("m/d/Y", strtotime($noa['request_date'])) ?>
+                                                            </td>
+                                                            <td class="fw-bold">
+                                                                <span class="badge rounded-pill bg-cyan ls-1">
+                                                                    <?= $noa['status'] ?>
+                                                                </span>
+                                                            </td>
+                                                            <td class="fw-bold text-justify">
+                                                                <a href="<?= base_url() ?>healthcare-provider/billing/noa/view-receipt/<?= $this->myhash->hasher($noa['noa_id'], 'encrypt') ?>" class="text-info fw-bold ls-1">
+                                                                    View Receipt
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                            <?php
+                                                        }
+                                                    endforeach;
+                                                endif;
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             </form>
         </div>
@@ -212,6 +291,13 @@
         });
 
         $('#tableNoa').DataTable({
+            searching: false,
+            columnDefs: [{
+                "targets": [2, 3], // numbering column
+                "orderable": false, //set not orderable
+            }],
+        });
+        $('#tableHistory').DataTable({
             searching: false,
             columnDefs: [{
                 "targets": [2, 3], // numbering column

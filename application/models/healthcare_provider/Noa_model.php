@@ -18,7 +18,7 @@ class Noa_model extends CI_Model{
         $this->db->where('hospital_id', $hp_id);
         $i = 0;
         // loop column 
-        foreach ($this->column_search as $item) {
+        foreach ($this->column_search as $item) { 
         // if datatable send POST for search
         if ($_POST['search']['value']) {
             // first loop
@@ -106,14 +106,11 @@ class Noa_model extends CI_Model{
         return $query->result();
     }
 
-    // function db_get_noa_info($noa_id) {
-    //     $this->db->select('*')
-    //             ->from('noa_requests as tbl_1')
-    //             ->join('healthcare_providers as tbl_2', 'tbl_1.hospital_id = tbl_2.hp_id')
-    //             ->join('max_benefit_limits as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id')
-    //             ->where('tbl_1.noa_id', $noa_id);
-    //     return $this->db->get()->row_array();
-    // }
+    function paid_noa($details_no) {
+      $this->db->from('payment_details')
+          ->where('details_no', $details_no);
+      return $this->db->get()->row_array();
+  }
 
     function db_get_noa_info($noa_id) {
         $this->db->select('*')
@@ -182,7 +179,7 @@ public function bar_pending(){
         var $column_search_history = array('tbl_1.noa_no','tbl_2.net_bill','tbl_1.status','tbl_1.approved_on','tbl_2.billed_on','tbl_1.request_date'); //set column field database for datatable searchable 
         var $order_history = array('tbl_1.noa_id' => 'desc'); // default order 
         private function _get_noa_datatables_query($emp_id, $hp_id) {
-            $this->db->select('tbl_1.status as tbl1_status, tbl_1.*, tbl_2.*');
+            $this->db->select('tbl_1.status as tbl1_status, tbl_1.noa_id as tbl1_noa_id, tbl_1.*, tbl_2.*');
             $this->db->from($this->table_1 . ' as tbl_1');
             $this->db->join($this->table_3 . ' as tbl_2', 'tbl_1.noa_id = tbl_2.noa_id','left');
             $this->db->where('tbl_1.emp_id', $emp_id);
@@ -235,6 +232,19 @@ public function bar_pending(){
                     ->where('status', $emp_id)
                     ->where('hospital_id', $hp_id);
             return $this->db->count_all_results();
+        }
+
+        function get_generic_meds(){
+          $query = $this->db->get('patient_medication_masterfile');
+          return $query->result_array();
+        }
+        function get_branded_meds(){
+          $this->db->select('*');
+          $this->db->from('patient_medication_masterlist');
+          $this->db->where('status', 1);
+          $this->db->order_by('generic_med_id', 'desc');
+          $query = $this->db->get();
+          return $query->row_array();
         }
 // End of server-side processing datatables
 }

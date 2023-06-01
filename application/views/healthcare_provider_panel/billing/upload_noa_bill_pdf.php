@@ -33,7 +33,7 @@
                         </strong>
                     </button>
                 </div>
-            </form>
+            </form> 
         </div>
 
         <form  id="pdfBillingForm" enctype="multipart/form-data" class="needs-validation" novalidate>
@@ -112,7 +112,7 @@
                                 <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
                                     <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Final Diagnosis/Operation 
                                 </label>
-                                <input type="file" class="form-control" name="Rinal-Diagnosis" id="Rinal-Diagnosis" accept="application/pdf" onchange="previewPdfFile('Rinal-Diagnosis')" required disabled>
+                                <input type="file" class="form-control" name="Final-Diagnosis" id="Final-Diagnosis" accept="application/pdf" onchange="previewPdfFile('Final-Diagnosis')" required disabled>
                                 <div class="invalid-feedback fs-6">
                                     PDF File is required
                                 </div>
@@ -126,23 +126,22 @@
                 
                             </div>
 
-                            <div class="col-lg-6 mt-3">
+                            <div class="col-lg-6 mt-3" id="prescription-div">
                                 <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
-                                    <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Take Home Medicine
+                                <input type="checkbox" id="take-home-checkbox">  Upload Prescription Image
                                 </label>
-                                <input type="file" class="form-control" name="Operation" id="Operation" accept="application/pdf" onchange="previewPdfFile('Operation')" required disabled>
+                                <input type="file" class="form-control" name="Prescription" id="Prescription" accept="image/jpeg,image/png">
                                 <div class="invalid-feedback fs-6">
                                     PDF File is required
                                 </div>
                             </div>
-                            <div class="col-lg-6 mt-3">
+
+                            <div class="col-lg-6 mt-3" id="med-services-div">
                                 <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
-                                    <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Take Home Medicine Image
+                                 Select Take Home Medicines
                                 </label>
-                                <input type="file" class="form-control" name="Operation" id="Operation" accept="application/pdf" onchange="previewPdfFile('Operation')" required disabled>
-                                <div class="invalid-feedback fs-6">
-                                    PDF File is required
-                                </div>
+                                <div id="med-services-wrapper"></div>
+                                <em id="med-services-error" class="text-danger"></em>
                             </div>
                             
                         </div>
@@ -158,13 +157,13 @@
                     </div>
                     
                     <!-- Modal -->
-                    <div class="modal fade" id="viewPDFBillModal" tabindex="-1" data-bs-backdrop="static" style="height: 100%;">
+                    <!-- <div class="modal fade" id="viewPDFBillModal_initial" tabindex="-1" data-bs-backdrop="static" style="height: 100%;">
                         <div class="modal-dialog modal-xl">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title">Initial Bill</h5>
+                                    <h5 class="modal-title">Initial Bill</h5> -->
                                     <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="cancel"></button> -->
-                                </div>
+                                <!-- </div>
                                 <div class="modal-body">
                                     <div class="row">
                                         <div class="col-lg-12">
@@ -178,7 +177,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <!-- <div class="row">
                         <div class="col-lg-12">
@@ -245,6 +244,12 @@
     const previewPdfFile = (pdf_input) => {
         pdfinput = pdf_input;
         $('#viewPDFBillModal').modal('show');
+        if(pdfinput==="pdf-file"){
+            $('#billing_no').text('<?=$billing_no?>');
+            $('#billing_no_holder').show();
+        }else{
+            $('#billing_no_holder').hide();
+        }
 
         let pdfFileInput = document.getElementById(pdf_input);
         let pdfFile = pdfFileInput.files[0];
@@ -272,12 +277,74 @@
 
     const form = document.querySelector('#pdfBillingForm');
     let hospital_charges ="";
+    let attending_doctors ="";
 
     $(document).ready(function(){
+        // $('#Operation').prop("disabled",true);
+        $('#med-services-div').hide();
+        $.ajax({
+                    url: `${baseUrl}healthcare-provider/patient/get_takehome_meds`,
+                    type: "GET",
+                    data: {token:'<?php echo $this->security->get_csrf_hash(); ?>'},
+                    dataType: "json",
+                    success:function(response){
+                        $('#med-services-wrapper').empty();                
+                        $('#med-services-wrapper').append(response);
+                        $(".chosen-select").chosen({
+                        width: "100%",
+                        no_results_text: "Oops, nothing found!"
+                        }); 
+                    }
+                    });
 
         $('#cancel').on('click',function(){
            $('#'+pdfinput).val('');
         });
+
+        $('#take-home-checkbox').on('change',function(){
+            if(this.checked){
+                $('#med-services').prop('disabled',false);
+                $('#med-services').prop('required',true);
+                $('#Prescription').prop('required',true);
+                $('#Prescription').prop('disabled',false);
+                $('#med-services-div').show();
+            }else{
+                $('#med-services').prop('disabled',true);
+                $('#med-services').prop('required',false);
+                $('#Prescription').prop('required',false);
+                $('#Prescription').prop('disabled',true);
+                $('#med-services-div').hide();
+            }   
+        });
+        // $('#med-services-wrapper').on('change', function() {
+        //     var prices = [];
+            
+        //     $('#med-services option:selected').each(function() {
+        //       var price = $(this).data('price');
+        //       var value = $(this).val();
+        //       if (typeof price !== 'undefined') {
+        //         prices.push(price);
+        //         // console.log("price", price);
+        //         console.log("value", value);
+        //       }
+        //     });
+
+        //     total = prices.reduce(function(acc, val) {
+        //       return acc + val;
+        //     }, 0);
+            
+        //     $("#remaining_mbl").val(mbl);
+        //     console.log("total", total);
+            
+        //     // if (total > mbl) {
+        //     //   total = prices.reduce(function(acc, val) {
+        //     //     return acc + val;
+        //     //   }, 0);
+
+        //       console.log("final", total);
+        //       $('#net_bill').val(total);
+        //       // }
+        //   });
 
         var noa_id = "<?php echo $noa_id; ?>";
         $('#final_diagnosis').prop("hidden",true);
@@ -323,7 +390,7 @@
             $('#net_bill_label').text(selectedText);
             var div = document.getElementById("final_diagnosis");
             var inputs = div.getElementsByTagName("input");
-            'Rinal-Diagnosis', 'Medical-Abstract', 'Operation'
+            
 
             if(selectedText==="Initial Billing"){
                 $('#initial_bill_holder').prop("hidden",false);
@@ -332,6 +399,7 @@
                 $('#Rinal-diagnosis').prop("disabled",true);
                 $('#Medical-Abstract').prop("disabled",true);
                 $('#Operation').prop("disabled",true);
+                
                 for (var i = 0; i < inputs.length; i++) {
                 inputs[i].disabled = true;
                 }
@@ -343,7 +411,6 @@
                 $('#final_diagnosis').prop("hidden",false);
                 $('#Rinal-diagnosis').prop("disabled",false);
                 $('#Medical-Abstract').prop("disabled",false);
-                $('#Operation').prop("disabled",false);
                 $('#initial_btn_label').html('<i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Final Billing');
                 forms.action = final_action;
                 for (var i = 0; i < inputs.length; i++) {
@@ -356,7 +423,7 @@
         //submit the form
         $('#pdfBillingForm').submit(function(event){
             event.preventDefault();
-            
+            console.log('medicines',$('#med-services').val());
             if (!form.checkValidity()) {
                 form.classList.add('was-validated');
                 return;
@@ -364,6 +431,7 @@
 
             let formData = new FormData($(this)[0]);
             formData.append('hospital_bill_data', hospital_charges);
+            formData.append('attending_doctors', attending_doctors);
             $.ajax({
                 type: 'POST',
                 url: $(this).attr('action'),
@@ -478,13 +546,29 @@
                             }, '').trim();
 
                             console.log(finalResult);
-                            const pattern = /hospital charges(.*?)please pay for this amount/si;
-                        const matches = finalResult.match(pattern);
-                        const result = matches ? matches[1] : null;
-                        // console.log(result);
-                        //get only the text between hospital charges and professional fee
-                        hospital_charges = result;
-                        // hospital_bills(finalResult);
+                            console.log("final result",finalResult);
+                            const pattern = /attending doctor\(s\):\s(.*?)\admission date:/si;
+                            const doc_pattern = /hospital charges(.*?)please pay for this amount/si;
+
+                            const matches_1 = finalResult.match(pattern);
+                            const result_1 = matches_1 ? matches_1[1] : null;
+
+                            const matches_2 = finalResult.match(doc_pattern);
+                            const result_2 = matches_2 ? matches_2[1] : null;
+
+                                // const doc_pattern_2 = /total(.*?)subtotal/si;
+                                // const matches_3 = doc_pattern_2.exec(result_2);
+                                // const result_3 = matches_3 ? matches_3[1] : null;
+                                
+
+                           
+
+                            hospital_charges = result_2;
+                            attending_doctors = result_1;
+
+                            console.log("doctors", attending_doctors);
+                            // console.log("final doctors", result_3);
+                            console.log("hospital charges", hospital_charges);
                         
                         const regex = /please pay for this amount\s*\.*\s*([\d,\.]+)/i;
                         // const regex = /subtotal\s*\.{26}\s*\(([\d,\.]+)\)/i;
@@ -557,39 +641,6 @@
                 });
                 });
 
-                // let billedTable = $('#billedLoaTable').DataTable({
-                // processing: true, //Feature control the processing indicator.
-                // serverSide: true, //Feature control DataTables' server-side processing mode.
-                // order: [], //Initial no order.
-
-                // // Load data for the table's content from an Ajax source
-                // ajax: {
-                //     url: `${baseUrl}healthcare-provider/fetch_initial_billing/bill-noa/${billing_id}`,
-                //     type: "POST",
-                //     // passing the token as data so that requests will be allowed
-                //     data: function(data) {
-                //     data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
-                //         data.filter = $('#billed-hospital-filter').val();
-                //         data.endDate = $('#end-date').val();
-                //         data.startDate = $('#start-date').val();
-                    
-                //     }
-                // },
-                // //Set column definition initialisation properties.
-                // columnDefs: [{
-                //     "orderable": false, //set not orderable
-                // }, ],
-                // data: [],  // Empty data array
-                // deferRender: true,  // Enable deferred rendering
-                // info: false,
-                // paging: false,
-                // filter: false,
-                // lengthChange: false,
-                // responsive: true,
-                // fixedHeader: true,
-                // });
-
-               
                 const viewPDFBill = (pdf_bill,noa_no) => {
                 $('#viewPDFBillModal').modal('show');
                 $('#pdf-noa-no').html(noa_no);
@@ -626,40 +677,21 @@
 
                     return xhr.status == "200" ? true: false;
                 }
-        //         function hospital_bills(finalResult){
-        //         const pattern = /hospital charges(.*?)please pay for this amount/si;
-        //         const matches = finalResult.match(pattern);
-        //         const result = matches ? matches[1] : null;
-        //         console.log(result);
 
-        //         let bills = [];
-        //         const lines = result.split("\n");
-        //         for (let i = 0; i < lines.length; i++) {
-        //             const line = lines[i];
-        //             const matches = line.match(/^(.*?)(\s+\S+(?=\s|$))?$/);
+               
+                   
+                
+                const showMedServices = () => {
+                const medServices = document.querySelector('#med-services-div');
 
-        //             if (matches !== null) {
-        //             let beforeLastGroup = matches[1] || "";
-        //             let lastGroup = matches[2] ? matches[2].trim() : '0';
-
-        //             // let suffix = 1;
-        //             // while (bills.some(item => item.text === beforeLastGroup)) {
-        //             //   beforeLastGroup = `${beforeLastGroup}_${suffix}`;
-        //             //   suffix++;
-        //             // }
-        //             lastGroup = lastGroup.replace(/[^0-9.-]/g, '');
-        //             if (/\S/.test(beforeLastGroup)) {
-        //                 console.log(`Line ${i + 1}:`);
-        //                 console.log(`Before last group: ${beforeLastGroup}`);
-        //                 console.log(`Last group: ${lastGroup}`);
-        //                 console.log("");
-        //                 bills.push({ beforeLastGroup,lastGroup});
-        //             }
-        //             }
-        //         }
-        //         console.log(bills);   
-        //         hospital_charges = bills;  
-        // }
+                if (loaType === "Consultation" || loaType === ""){
+                medServices.className = "d-none";
+                fileAttachment.className = "d-none";
+                } else if (loaType === "Diagnostic Test") {
+                medServices.className = "col-lg-7 col-sm-12 mb-2 d-block";
+                fileAttachment.className = "form-group row d-block";
+                }
+  }
 
 
 </script>

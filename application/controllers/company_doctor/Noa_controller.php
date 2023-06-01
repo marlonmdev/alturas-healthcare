@@ -119,6 +119,15 @@ class Noa_controller extends CI_Controller {
 		$data['row'] = $exist = $this->noa_model->db_get_noa_info($noa_id);
 		$data['mbl'] = $this->noa_model->db_get_member_mbl($exist['emp_id']);
 		$data['doc'] = $this->noa_model->db_get_doctor_by_id($exist['approved_by']);
+
+		if($exist['position_level'] <= 6){
+			$data['room_type'] = 'Payward';
+		}else if($exist['position_level'] > 6 && $exist['position_level'] < 10){
+			$data['room_type'] = 'Semi-private';
+		}else if($exist['position_level'] > 9){
+			$data['room_type'] = 'Regular Private';
+		}
+
 		if (!$exist) {
 			$this->load->view('pages/page_not_found');
 		} else {

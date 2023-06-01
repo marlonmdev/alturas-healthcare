@@ -118,7 +118,7 @@
                             <button class="btn btn-info w-100" onclick="submitForPayment()" title="click to submit data for payment"><i class="mdi mdi-send"></i> For Payment </button>
                         </div>
                         <div class="col pb-2 pt-4">
-                            <button class="btn btn-danger ls-1" onclick="printDiv('#printableDiv')" title="click to print data"><i class="mdi mdi-printer"></i> Print </button>
+                            <button class="btn btn-danger ls-1" onclick="printPDF()" title="click to print data"><i class="mdi mdi-printer"></i> Print </button>
                         </div>
                     </div>
                 </div>
@@ -161,20 +161,7 @@
                                     <div class="row offset-7">
                                         <span class="ps-5 fw-bold">TOTAL PAYABLE <span class="offset-2" id="total_bill"></span></span>
                                     </div>
-                                    <div class="row offset-1 pt-4 ps-5">
-                                        <div class="col-4">
-                                            <span>Prepared by : </span><br><br>
-                                            <span class="text-decoration-underline fw-bold fs-5">__<?php echo $user; ?>__</span>
-                                        </div>
-                                        <div class="col-4">
-                                            <span>Audited by : </span><br><br>
-                                            <span class="">_______________________</span>
-                                        </div>
-                                        <div class="col-4">
-                                            <span>Noted by : </span><br><br>
-                                            <span class="">_______________________</span>
-                                        </div>
-                                    </div>
+                                    
                                     <br><br><br>
                                 </div>
                             </div>
@@ -187,41 +174,7 @@
   
 <script>
   const baseUrl = "<?php echo base_url(); ?>";
-  const printDiv = (layer) => {
-        // const table = $(layer).find('table').DataTable({
-        //     // DataTables options...
-        // });
 
-        // // Hide the 11th column
-        // table.column(11).visible(false);
-
-        $(layer).printThis({
-            importCSS: true,
-            copyTagClasses: true,
-            copyTagStyles: true,
-            removeInline: false,
-            afterPrint: function() {
-            // Restore column visibility after printing
-            table.column(10).visible(true);
-
-            // const pdf = new Blob([$(layer).get(0).outerHTML], { type: "application/pdf" });
-            // let number = 10;
-            // number++;
-            // const fileName =  "bill_00" + number + ".pdf"; // Change the file name if desired
-            // saveAs(pdf, fileName);
-            }
-        });
-    };
-
-
-    const printDivs = (layer) => {
-    $(layer).printThis({
-      importCSS: true,
-      copyTagClasses: true,
-      copyTagStyles: true,
-      removeInline: false,
-    });
-  }
  $(document).ready(function(){
     let billedTable = $('#billedTable').DataTable({
       processing: true, //Feature control the processing indicator.
@@ -479,14 +432,14 @@ const viewValues = () => {
                                                 showConfirmButton: false,
                                                 type: 'success'
                                             });
-                                            // setTimeout(function () {
-                                            //     window.location.href = '<?php echo base_url();?>head-office-accounting/billing-list/for-payment';
-                                            // }, 2600);
+                                            setTimeout(function () {
+                                                window.location.href = '<?php echo base_url();?>head-office-accounting/billing-list/for-payment';
+                                            }, 2600);
 
                                             if(payment_no != ''){
                                                 const paymentno = document.querySelector('#b-payment-no');
                                                 paymentno.textContent = payment_no;
-                                                printDiv('#printableDiv');
+                                                printForPayment(payment_no);
                                             }
                                         }
                                         if(status == 'error'){
@@ -634,43 +587,62 @@ const viewValues = () => {
         $('#company-charge').html(company);
     }
 
-    const printPDF = () => {
+    const printPDF = () => { 
         const bu_filters = document.querySelector('#billed-bu-filter').value;
         const hp_id = document.querySelector('#billed-hospital-filter').value;
         const start_date = document.querySelector('#start-date').value;
         const end_date = document.querySelector('#end-date').value;
-        const total_bill = document.querySelector('#total_bill').value;
-        // const tdElement = document.querySelector('#td-val'); // Replace 'td' with the specific selector for your target <td> element
-        // const spanElement = tdElement.querySelector('span');
-        // const spanValue = spanElement.textContent;
 
-        // $.ajax({
-        //       url: `${baseUrl}head-office-accounting/reports/print`,
-        //       type: "GET",
-        //       dataType: "json",
-        //       data: {
-        //         'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
-        //         'hp_id' : hp_id,
-        //         'start_date' : start_date,
-        //         'end_date' : end_date,
-        //         'bu_filter' : bu_filter,
-        //         'total_bill' : total_bill
-        //       },
-        //   });
-
-      
           if(bu_filters == ""){
             bu_filter = 'none';
           }else{
             bu_filter = bu_filters;
+          } if(hp_id == ''){
+            hp_ids = 'none';
+          }else{
+            hp_ids = hp_id;
+          } if(start_date == ''){
+            start_dates = 'none';
+          }else{
+            start_dates = start_date;
+          } if(end_date == ''){
+            end_dates = 'none';
+          }else{
+            end_dates = end_date;
           }
 
         var base_url = `${baseUrl}`;
-        var win = window.open(base_url + "print/pdfbilling/" + hp_id + "/" + btoa(start_date) + "/" + btoa(end_date) + "/" + btoa(bu_filter) + "/" + total_bill, '_blank');
+        var win = window.open(base_url + "print/pdfbilling/" + btoa(hp_ids) + "/" + btoa(start_dates) + "/" + btoa(end_dates) + "/" + btoa(bu_filter), '_blank');
 
     }
 
+    const printForPayment = (payment_no) => {
+        const bu_filters = document.querySelector('#billed-bu-filter').value;
+        const hp_id = document.querySelector('#billed-hospital-filter').value;
+        const start_date = document.querySelector('#start-date').value;
+        const end_date = document.querySelector('#end-date').value;
 
+        if(bu_filters == ""){
+            bu_filter = 'none';
+          }else{
+            bu_filter = bu_filters;
+          } if(hp_id == ''){
+            hp_ids = 'none';
+          }else{
+            hp_ids = hp_id;
+          } if(start_date == ''){
+            start_dates = 'none';
+          }else{
+            start_dates = start_date;
+          } if(end_date == ''){
+            end_dates = 'none';
+          }else{
+            end_dates = end_date;
+          }
+
+        var base_url = `${baseUrl}`;
+        var win = window.open(base_url + "printforpayment/pdfbilling/" + btoa(hp_ids) + "/" + btoa(start_dates) + "/" + btoa(end_dates) + "/" + btoa(bu_filter) + "/" + btoa(payment_no), '_blank');
+    }
 </script>
    
 </html>

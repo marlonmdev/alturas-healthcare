@@ -219,6 +219,8 @@
 </div>
 <script>
     const baseUrl = `<?php echo base_url(); ?>`;
+    const re_upload = `<?php $re_upload ?>`;
+    // console.log("base url",baseUrl);
     const mbl = parseFloat($('#remaining-balance').val().replace(/,/g, ''));
     let net_bill = 0;
     let pdfPreview = document.getElementById('pdf-preview');
@@ -347,31 +349,35 @@
         //   });
 
         var noa_id = "<?php echo $noa_id; ?>";
+        console.log("noa id",noa_id);
+        // console.log("token",'<?php echo $this->security->get_csrf_hash(); ?>');
         $('#final_diagnosis').prop("hidden",true);
         $('#initial_bill_table').DataTable({
-        processing: true,
-        serverSide: true,
-        searching: false,
-        order: [],
-        ajax: {
-            url: `${baseUrl}healthcare-provider/fetch_initial_billing/fetch/${noa_id}`,
-            type: "POST",
-            data: {
-                token: '<?php echo $this->security->get_csrf_hash(); ?>'
+            processing: true,
+            serverSide: true,
+            searching: false,
+            order: [],
+            ajax: {
+                url: `${baseUrl}healthcare-provider/fetch_initial_billings/fetch/${noa_id}`,
+                type: "POST",
+                data: function (d) {
+                    d.token = '<?php echo $this->security->get_csrf_hash(); ?>';
+                },
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader('X-CSRF-Token', '<?php echo $this->security->get_csrf_hash(); ?>');
+                }
+            },
+            responsive: true,
+            fixedHeader: true,
+            initComplete: function () {
+                var dataTable = $('#initial_bill_table').DataTable();
+                var columnData = dataTable.column(3).data(); // Assuming column 4 is index 3
+                var firstIndex = columnData[0];
+                if (dataTable.rows().count() !== 0) {
+                    $('#net-bill').val(firstIndex);
+                }
             }
-        },
-        responsive: true,
-        fixedHeader: true,
-        initComplete: function () {
-        var dataTable = $('#initial_bill_table').DataTable();
-        var columnData = dataTable.column(3).data(); // Assuming column 4 is index 3
-        var firstIndex = columnData[0];
-        if (dataTable.rows().count() !== 0) {
-            $('#net-bill').val(firstIndex);
-        }
-            
-    }
-    });
+        });
 
       
         

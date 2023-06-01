@@ -147,7 +147,7 @@ $route['healthcare-provider/patient/fetch-lis-of-soa'] = 'healthcare_provider/pa
 $route['healthcare-provider/billing/bill-noa/upload-pdf/(:any)'] = 'healthcare_provider/billing_controller/upload_noa_pdf_bill_form';
 $route['healthcare-provider/billing/bill-noa/upload-pdf/(:any)/submit'] = 'healthcare_provider/billing_controller/submit_noa_pdf_bill';
 $route['healthcare-provider/initial_billing/bill-noa/upload-pdf/(:any)/submit'] = 'healthcare_provider/billing_controller/submit_initial_noa_pdf_bill';
-$route['healthcare-provider/fetch_initial_billing/fetch/(:any)'] = 'healthcare_provider/billing_controller/fetch_initial_billing';
+$route['healthcare-provider/fetch_initial_billings/fetch/(:any)'] = 'healthcare_provider/billing_controller/fetch_initial_billing';
 $route['healthcare-provider/billing/bill-noa/upload-pdf/(:any)/success'] = 'healthcare_provider/billing_controller/pdf_billing_success';
 $route['healthcare-provider/billing/bill-noa/manual/(:any)']  = 'healthcare_provider/billing_controller/bill_patient_noa';
 $route['healthcare-provider/billing/bill-noa/submit/(:any)'] = 'healthcare_provider/billing_controller/noa_final_billing';
@@ -156,6 +156,9 @@ $route['healthcare-provider/billing/bill-noa/success/(:any)'] = 'healthcare_prov
 $route['healthcare-provider/billing/billing-person/finalBilling']  = 'healthcare_provider/billing_controller/billing3NoaReview';
 $route['healthcare-provider/billing/billing-person/finish']['post']  = 'healthcare_provider/billing_controller/billing5Final';
 
+//Re-upload loa noa 
+$route['healthcare-provider/billing/bill-r_request/upload-pdf/(:any)/(:any)'] = 'healthcare_provider/billing_controller/re_upload_pdf_bill_form';
+$route['healthcare-provider/billing/bill-r_request/manual/(:any)/(:any)']  = 'healthcare_provider/billing_controller/re_upload_bill_patient';
 // LOA Pages
 $route['healthcare-provider/loa-requests/pending'] = 'healthcare_provider/pages_controller/pending_loa_requests';
 $route['healthcare-provider/loa-requests/approved'] = 'healthcare_provider/pages_controller/approved_loa_requests';

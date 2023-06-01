@@ -179,11 +179,48 @@ class Billing_model extends CI_Model {
                  ->where('tbl_1.noa_id', $id);
         return $this->db->get()->row_array();
     }
+    var $table_1_soa = 'billing';
+     var $table_2_soa = 'noa_requests';
+     var $table_3_soa = 'loa_requests';
+    //  var $table_4_soa = 'members';
+    //  var $table_5_soa = 'healthcare_providers';
+    //  var $table_7_soa = 'max_benefit_limits';
+    function get_re_upload_requests($hp_id,$emp_id){
+        $query1 = $this->db->select('tbl_2.noa_no, tbl_2.request_date, tbl_1.status, tbl_1.noa_id')
+            ->from($this->table_1_soa . ' as tbl_1')
+            ->join($this->table_2_soa . ' as tbl_2', 'tbl_1.noa_id = tbl_2.noa_id')
+            ->where('tbl_1.hp_id', $hp_id)
+            ->where('tbl_1.emp_id', $emp_id)
+            ->where('tbl_1.re_upload', 1)
+            ->get()
+            ->result_array();
+
+        $query2 = $this->db->select('tbl_3.loa_no, tbl_3.request_date, tbl_1.status, tbl_1.loa_id')
+            ->from($this->table_1_soa . ' as tbl_1')
+            ->join($this->table_3_soa . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id')
+            ->where('tbl_1.hp_id', $hp_id)
+            ->where('tbl_1.emp_id', $emp_id)
+            ->where('tbl_1.re_upload', 1)
+            ->get()
+            ->result_array();
+
+            $result = array_merge($query1, $query2);
+
+        return $result;
+
+    }
+
+    
     function get_billing($billing_no){
         $query = $this->db->get_where('billing', array('billing_no' => $billing_no));
         return $query->row_array();
     }
-
+    function get_billing_no($loa_noa){
+        $this->db->where('loa_id', $loa_noa);
+        $this->db->or_where('noa_id', $loa_noa);
+        $query = $this->db->get('billing');
+        return $query->row_array();
+    }
     function get_billing_info($billing_id){
         $this->db->select('tbl_1.billing_id, tbl_1.billing_no, tbl_1.billing_type, tbl_1.emp_id, tbl_1.hp_id, tbl_1.total_services, tbl_1.total_medications, tbl_1.total_pro_fees, tbl_1.total_room_board, tbl_1.total_bill, tbl_1.total_deduction, tbl_1.net_bill, tbl_1.company_charge, tbl_1.personal_charge, tbl_1.before_remaining_bal, tbl_1.after_remaining_bal, tbl_1.billed_by, tbl_1.billed_on, tbl_2.first_name, tbl_2.middle_name, tbl_2.last_name, tbl_2.suffix, tbl_2.health_card_no, tbl_3.hp_name')
                  ->from('billing as tbl_1')
@@ -261,6 +298,31 @@ class Billing_model extends CI_Model {
         return $this->db->update('max_benefit_limits', $data); 
     }
 
+    function check_re_upload_billing($billing_no){
+        $query = $this->db->get_where('billing', ['billing_no' => $billing_no,'re_upload' => 1]);
+        return $query->num_rows();
+     }
+    function insert_old_billing($billing_no) {
+        $query = $this->db->get_where('billing', ['billing_no' => $billing_no,'re_upload' => 1]);
+        $result = $query->result_array();
+
+        // Insert the selected records into the destination table
+        if (!empty($result)) {
+          return  $this->db->insert_batch('re_upload_billing', $result);
+        }
+        // $this->db->where('billing_no', $billing_no);
+        // $this->db->where('re_upload', 1);
+        // return $this->db->insert('billing', $data);
+    }
+
+    function update_billing($data,$billing_no) {
+        $this->db->where('billing_no', $billing_no);
+        return $this->db->update('billing', $data); 
+    }
+
+    function insert_cash_advance($data) {
+        return $this->db->insert_batch('cash_advance', $data);
+    }
     function update_loa_request($loa_id, $data){
         $this->db->where('loa_id', $loa_id);
         return $this->db->update('loa_requests', $data);

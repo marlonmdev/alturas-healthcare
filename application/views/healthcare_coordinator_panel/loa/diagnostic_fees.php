@@ -99,22 +99,22 @@
         </div>
 
         <?php 
-            foreach ($charge as $charges):
-          ?>
-            <div class="row pb-4">
-              <div class="col-lg-4">
-                <label class="fw-bold pt-2">Charge Name : </label>
-                <input class="form-control fw-bold" name="charge_name[]" value="<?php echo $charges['charge_name'] ?>" readonly>
-              </div>
-
-              <div class="col-lg-4">
-                <label class="fw-bold pt-2">Amount : </label>
-                <input class="form-control fw-bold c_amount" name="charge_amount[]" value="<?php echo $charges['charge_amount'] ?>" readonly>
-              </div>
+          foreach ($charge as $charges):
+        ?>
+          <div class="row pb-4">
+            <div class="col-lg-4">
+              <label class="fw-bold pt-2">Charge Name : </label>
+              <input class="form-control fw-bold" name="charge_name[]" value="<?php echo $charges['charge_name'] ?>" readonly>
             </div>
-          <?php 
-          endforeach;
-          ?>
+
+            <div class="col-lg-4">
+              <label class="fw-bold pt-2">Amount : </label>
+              <input class="form-control fw-bold c_amount" name="charge_amount[]" value="<?php echo $charges['charge_amount'] ?>" readonly>
+            </div>
+          </div>
+        <?php 
+        endforeach;
+        ?>
 
         <div class="col-4">
           <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addfee()">
@@ -424,13 +424,13 @@
   }
 
   const calculatebenefits = () => {
-  let other_deduction1 = 0;
-  const row_deduction = document.querySelectorAll('.row-deduction1');
-  const deduction_amount = document.querySelectorAll('.charge-amount');
+    let other_deduction1 = 0;
+    const row_deduction = document.querySelectorAll('.row-deduction1');
+    const deduction_amount = document.querySelectorAll('.charge-amount');
 
-  for (let i = 0; i < row_deduction.length; i++) {
-    other_deduction1 += deduction_amount[i].value * 1;
-  }  
-  return other_deduction1;
-}
+    for (let i = 0; i < row_deduction.length; i++) {
+      other_deduction1 += deduction_amount[i].value * 1;
+    }  
+    return other_deduction1;
+  }
 </script>

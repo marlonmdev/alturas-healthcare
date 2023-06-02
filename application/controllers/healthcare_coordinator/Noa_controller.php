@@ -409,7 +409,7 @@ class Noa_controller extends CI_Controller {
 
 			$row[] = $bill['noa_no'];
 			$row[] = $fullname;
-			$row[] = '₱' . number_format($bill['remaining_balance'], 2, '.', ',');
+			$row[] = '₱' . number_format($bill['before_remaining_bal'], 2, '.', ',');
 			$workRelated = $bill['work_related'] . ' (' . $bill['percentage'] . '%)';
 			$row[] = $workRelated;
 			$row[] = '₱' . number_format($bill['company_charge'], 2, '.', ',');
@@ -417,7 +417,7 @@ class Noa_controller extends CI_Controller {
 			$row[] = $pdf_bill;
 			$netBill = '₱' . number_format($bill['net_bill'], 2, '.', ',');
 			$row[] = $netBill;
-			$total = $bill['remaining_balance'] - $bill['net_bill'];
+			$total = '₱' . number_format($bill['after_remaining_bal'], 2, '.', ',');
 			$row[] = '₱' .number_format($total, 2, '.', ',');
 			$data[] = $row;
 		}

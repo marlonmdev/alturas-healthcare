@@ -107,7 +107,7 @@ class Patient_controller extends CI_Controller {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['member'] = $member = $this->patient_model->db_get_member_details($member_id);
 		$data['mbl'] = $this->patient_model->db_get_member_mbl($member['emp_id']);
-		$data['loa'] = $this->loa_model->get_loa_history($hp_id,$member['emp_id']);
+		$data['loa'] = $loa = $this->loa_model->get_loa_history($hp_id,$member['emp_id']);
 		$data['noa'] = $this->noa_model->get_noa_history($hp_id,$member['emp_id']);
 		$data['hp_id'] = $hp_id;
 		$this->load->view('templates/header', $data);
@@ -341,7 +341,7 @@ class Patient_controller extends CI_Controller {
 		$isperformed = false;
 		// var_dump("loa id",$loa_id);
 		if($this->loa_model->check_performed_loa($loa_id)){
-			// var_dump("performed",$this->loa_model->check_performed_loa($loa_id));
+			// $performed = $this->loa_model->get_performed_info($loa_id);
 			$row = $this->loa_model->db_get_loa_info_patient($loa_id,true);
 			$isperformed = true;
 		}else{

@@ -156,7 +156,6 @@ class Pages_controller extends CI_Controller {
 	}
 
 	function view_member_files() {
-		$data['type'] = $this->myhash->hasher($this->uri->segment(3), 'decrypt');
 		$data['emp_id'] = $emp_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
 		$data['member_id'] = $member_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$data['file'] = $this->members_model->get_employee_files($emp_id);
@@ -164,6 +163,39 @@ class Pages_controller extends CI_Controller {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
 		$this->load->view('company_doctor_panel/members/show_member_files');
+		$this->load->view('templates/footer');
+	}
+
+	function view_medical_abstract() {
+		$data['emp_id'] = $emp_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$data['member_id'] = $member_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['file'] = $this->members_model->get_employee_files($emp_id);
+		$data['member'] = $this->members_model->db_get_member_details($member_id);
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('company_doctor_panel/members/show_medical_abstract');
+		$this->load->view('templates/footer');
+	}
+
+	function view_take_home_meds() {
+		$data['emp_id'] = $emp_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$data['member_id'] = $member_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['file'] = $this->members_model->get_employee_files($emp_id);
+		$data['member'] = $this->members_model->db_get_member_details($member_id);
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('company_doctor_panel/members/show_take_home_meds');
+		$this->load->view('templates/footer');
+	}
+
+	function view_billed_soa() {
+		$data['emp_id'] = $emp_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$data['member_id'] = $member_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['file'] = $this->members_model->get_employee_files($emp_id);
+		$data['member'] = $this->members_model->db_get_member_details($member_id);
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('company_doctor_panel/members/show_billed_soa');
 		$this->load->view('templates/footer');
 	}
 }

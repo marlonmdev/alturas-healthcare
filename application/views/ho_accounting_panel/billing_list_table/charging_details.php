@@ -43,7 +43,7 @@
             <div class="card-body">
                 <div class="">
                     <table class="table table-hover" id="detailsTable">
-                        <thead style="background-color:#00538C">
+                        <thead style="background-color:#17a1d4">
                             <tr>
                                 <td class="text-white">Billing No.</td>
                                 <td class="text-white">LOA/NOA No.</td>

@@ -77,8 +77,8 @@
           <i class="mdi mdi-plus-circle"></i> Add Charge Fee
         </button>
       </div>
-      <div id="dynamic-charge"></div>
-      <input type="hidden" name="charge-count" id="charge-count"><hr>
+      <div id="dynamic-fee"></div>
+      <input type="hidden" name="fee-count" id="fee-count"><hr>
 
       <input type="hidden" name="deduction-count" id="deduction-count">
       <div class="row">
@@ -252,32 +252,33 @@
     $('#dynamic-deduction').append(html_code);
   }
 
-  const addnewcharge=()=>{
-    const dynamic_charge=document.querySelector('#dynamic-charge');
-    const charge_count=document.querySelector('#charge_count');
-    count++;
-    charge_count.value=count;
-    let html_code  = `<div class="row row-charge" id="row${count}">`;
+  const addfee = () => {
+    const container = document.querySelector('#dynamic-fee');
+    const deduction_count = document.querySelector('#fee-count');
+    count ++;
+    deduction_count.value = count;
+    let html_code  = `<div class="row row-deduction1" id="row${count}">`;
 
     html_code += `<div class="col-md-4">
-                    <input type="text" name="charge-name[]" class="form-control fw-bold ls-1 text-info" placeholder="*Enter Charge Name" required/>
-                    <div class="invalid-feedback">Charge name and amount is required</div>
+                    <input type="text" name="charge-name[]" class="form-control fw-bold ls-1" placeholder="*Enter Charge Name" required/>
+                    <div class="invalid-feedback">Deduction name and amount is required</div>
                   </div>`;
 
-    html_code += `<div class="col-md-3">
+    html_code += `<div class="col-md-4">
                     <div class="input-group mb-3">
                       <span class="input-group-text bg-success text-white">&#8369;</span>
-                      <input type="number" name="charge-amount[]" class="charge-amount form-control fw-bold ls-1 text-info" placeholder="*Charge Amount" oninput="calculateDiagnosticTestBilling()" required/>
+                      <input type="number" name="charge-amount[]" class="charge-amount form-control fw-bold ls-1" placeholder="*Charge Amount" oninput="calculateDiagnosticTestBilling()" required/>
                       <span class="other-deduction-msg text-danger fw-bold"></span>
                     </div>
                   </div>`;
-
+        
     html_code += `<div class="col-md-3">
                     <button type="button" data-id="${count}" class="btn btn-danger btn-md btn-remove" onclick="removeDeduction(this)" data-bs-toggle="tooltip" title="Click to remove Deduction"><i class="mdi mdi-close"></i></button>
                   </div>`;
 
     html_code += `</div>`;
-    $('#dynamic-charge').append(html_code);
+
+    $('#dynamic-fee').append(html_code);
   }
 
   const calculateDiagnosticTestBilling = (remaining_balance) => {

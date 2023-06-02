@@ -779,7 +779,6 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 
 // End of Super Admin Routes
 //========================================================================================================
-<<<<<<< HEAD
 
 //COORDINATOR=============================================================================================
 	//Final Billing
@@ -817,41 +816,6 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 	$route['head-office-iad/transaction/view_information/(:any)'] = 'ho_iad/transaction_controller/view_information';
 	//end
 //END======================================================================================================
-=======
-//IAD=====================================================================================================
-$route['head-office-iad/dashboard'] = 'ho_iad/pages_controller';
-$route['head-office-iad/biling/audit'] = 'ho_iad/pages_controller/view_billing_list';
-$route['head-office-iad/biling/for-audit-list/(:any)'] = 'ho_iad/pages_controller/view_for_audit';
-$route['head-office-iad/biling/audited'] = 'ho_iad/pages_controller/view_audited';
-$route['head-office-iad/biling/audited-list/(:any)'] = 'ho_iad/pages_controller/view_audited_list';
-
-//Summary of Billing
-$route['head-office-iad/transaction/search'] = 'ho_iad/transaction_controller/search';
-$route['head-office-iad/transaction/search_by_id']  = 'ho_iad/transaction_controller/search_by_id';
-$route['head-office-iad/transaction/search_by_healthcard']  = 'ho_iad/transaction_controller/search_by_healthcard';
-$route['head-office-iad/transaction/search_by_name'] = 'ho_iad/transaction_controller/search_by_name';
-$route['head-office-iad/transaction/(:any)/view_receipt/(:any)'] = 'ho_iad/transaction_controller/view_receipt';
-$route['head-office-iad/biling/for-audit/fetch'] = 'ho_iad/transaction_controller/fetch_for_payment_bill';
-$route['head-office-iad/biling/audit/fetch'] = 'ho_iad/transaction_controller/fetch_payment_bill';
-$route['head-office-iad/biling/submit-audited'] = 'ho_iad/transaction_controller/submit_audited';
-$route['head-office-iad/biling/audited/fetch'] = 'ho_iad/transaction_controller/fetch_audited_bill';
-//end
-//Payment Details
-$route['head-office-iad/transaction/payment-details/(:any)'] = 'ho_iad/transaction_controller/view_payment_details';
-// $route['head-office-iad/transaction/view_pd/(:any)'] = 'ho_iad/transaction_controller/view_pd';
-//end
-//Account Setting
-$route['head-office-iad/transaction/account_setting'] = 'ho_iad/transaction_controller/account_settings';
-$route['head-office-iad/transaction/update_password'] = 'ho_iad/transaction_controller/update_password';
-$route['head-office-iad/transaction/update_username'] = 'ho_iad/transaction_controller/update_username';
-//end
-//Members
-$route['head-office-iad/transaction/members'] = 'ho_iad/transaction_controller/members';
-$route['head-office-iad/transaction/fetch_all_members'] = 'ho_iad/transaction_controller/fetch_all_members';
-$route['head-office-iad/transaction/view_information/(:any)'] = 'ho_iad/transaction_controller/view_information';
-//end
-//IAD======================================================================================================
->>>>>>> 42a4cbefdad6f0ac08ed1e020f4f7a8a434c856d
 $route['head-office-accounting/billing-list/closed/fetch'] = 'ho_accounting/main_controller/fetch_closed';
 $route['head-office-accounting/billing-list/view-employee-payment/(:any)'] = 'ho_accounting/main_controller/view_employee_payment';
 

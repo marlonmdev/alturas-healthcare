@@ -221,6 +221,24 @@ class Billing_model extends CI_Model {
         $query = $this->db->get('billing');
         return $query->row_array();
     }
+    function get_prev_mbl($billing_no, $emp_id) {
+        $billing_row = $this->db->select('billing_id')->get_where('billing', ['billing_no' => $billing_no])->row();
+    
+        if ($billing_row !== null) {
+            $billing_id = $billing_row->billing_id;
+    
+            $this->db->select('after_remaining_bal')
+                ->where('billing_id <', $billing_id)
+                ->where('emp_id', $emp_id)
+                ->order_by('billing_id', 'desc')
+                ->limit(1);
+    
+            $query = $this->db->get('billing');
+            return $query->row_array();
+        }
+    
+        return null; // or return a default value if needed
+    }
     function get_billing_info($billing_id){
         $this->db->select('tbl_1.billing_id, tbl_1.billing_no, tbl_1.billing_type, tbl_1.emp_id, tbl_1.hp_id, tbl_1.total_services, tbl_1.total_medications, tbl_1.total_pro_fees, tbl_1.total_room_board, tbl_1.total_bill, tbl_1.total_deduction, tbl_1.net_bill, tbl_1.company_charge, tbl_1.personal_charge, tbl_1.before_remaining_bal, tbl_1.after_remaining_bal, tbl_1.billed_by, tbl_1.billed_on, tbl_2.first_name, tbl_2.middle_name, tbl_2.last_name, tbl_2.suffix, tbl_2.health_card_no, tbl_3.hp_name')
                  ->from('billing as tbl_1')
@@ -319,9 +337,24 @@ class Billing_model extends CI_Model {
         $this->db->where('billing_no', $billing_no);
         return $this->db->update('billing', $data); 
     }
+    function update_affected_billing($data,$billing_no) {
+        $this->db->where('billing_no', $billing_no);
+        return $this->db->update('billing', $data); 
+    }
 
+    function get_affected_billing($billing_no, $emp_id){
+        $billing_id = $this->db->select('billing_id')->get_where('billing', ['billing_no' => $billing_no])->row()->billing_id;
+        $this->db->select('after_remaining_bal')
+            ->where('billing_id <', $billing_id)
+            ->where('emp_id', $emp_id)
+            ->order_by('billing_id', 'desc')
+            ->limit(1);
+        $query = $this->db->get('billing');
+        return $query->row_array();
+    }
+    
     function insert_cash_advance($data) {
-        return $this->db->insert_batch('cash_advance', $data);
+        return $this->db->insert('cash_advance', $data);
     }
     function update_loa_request($loa_id, $data){
         $this->db->where('loa_id', $loa_id);

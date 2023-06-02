@@ -92,6 +92,7 @@
             <div class="row">
               <div class="col-lg-12">
                 <div class="mt-3" id="pdf-preview"></div>
+                <!-- <iframe id="view_pdf" style="width:100%;height:580px;"></iframe><br> -->
               </div>
             </div>
           </div>
@@ -106,19 +107,10 @@
   const baseUrl = `<?php echo base_url(); ?>`;
   const mbl = parseFloat($('#remaining-balance').val().replace(/,/g, ''));
   let net_bill = 0;
-   // Get all the dropdown list items
-  //  var dropdownItems = document.querySelectorAll('.dropdown-menu');
+  var re_upload = '<?= isset($re_upload)?$re_upload : ""?>';
+  var prev_billing = '<?= isset($prev_billing)?$prev_billing:"" ?>';
+  var loa_no = '<?= $loa_no ?>';
 
-  //   // Add event listeners for mouseover and mouseout
-  //   dropdownItems.forEach(function(item) {
-  //     item.addEventListener('mouseover', function() {
-  //       item.classList.add('animate__animated', 'animate__fadeIn');
-  //     });
-
-  //     item.addEventListener('mouseout', function() {
-  //       item.classList.remove('animate__animated', 'animate__fadeIn');
-  //     });
-  //   });
     
   const previewPdfFile = () => {
     let pdfFileInput = document.getElementById('pdf-file');
@@ -345,6 +337,45 @@
       };
       reader.readAsArrayBuffer(this.files[0]);
       });
+
+      // const viewPDFBill = (pdf_bill) => {
+
+      //               let pdfFile = `${baseUrl}uploads/pdf_bills/${pdf_bill}`;
+      //               let fileExists = checkFileExists(pdfFile);
+      //               if(fileExists){
+      //               let xhr = new XMLHttpRequest();
+      //               xhr.open('GET', pdfFile, true);
+      //               xhr.responseType = 'blob';
+
+      //               xhr.onload = function(e) {
+      //                   if (this.status == 200) {
+      //                   let blob = this.response;
+      //                   let reader = new FileReader();
+
+      //                   reader.onload = function(event) {
+      //                       let dataURL = event.target.result;
+      //                       let iframe = document.querySelector('#view_pdf');
+      //                       iframe.src = dataURL;
+      //                   };
+      //                   reader.readAsDataURL(blob);
+      //                   }
+      //               };
+      //               xhr.send();
+      //               }
+      //           }
+
+      //           const checkFileExists = (fileUrl) => {
+      //               let xhr = new XMLHttpRequest();
+      //               xhr.open('HEAD', fileUrl, false);
+      //               xhr.send();
+
+      //               return xhr.status == "200" ? true: false;
+      //           }
+
+      //           if(re_upload){
+      //               viewPDFBill(prev_billing);
+      //               $('#pdf-file').val("asdfdfas");
+      //           }
   });
 
   // function hospital_bills(finalResult){

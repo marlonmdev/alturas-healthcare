@@ -2,7 +2,7 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">Diagnosis/Operation Files</h4>
+        <h4 class="page-title ls-2">Take Home Meds</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -41,17 +41,17 @@
               <th class="fw-bold">Added On</th>
               <th class="fw-bold">View File</th>
               <tbody>
-              <?php
+              <?php 
                $number = 1;
-                foreach($file as $files) : 
-                if(!empty($files['final_diagnosis_file'])) : 
+               foreach($file as $files) : 
+                if(!empty($files['prescription_file'])) : 
                  
                 ?>
                 <tr>
                   <td><?php echo $number++; ?></td>
-                  <td class="fs-5"><?php echo $files['final_diagnosis_file']; ?></td>
+                  <td class="fs-5"><?php echo $files['prescription_file']; ?></td>
                   <td class="fs-5"><?php echo date('F d, Y', strtotime($files['billed_on'])); ?></td>
-                  <td class="fs-5"><a href="JavaScript:void(0)" onclick="viewPDFDiagnostic('<?php echo $files['final_diagnosis_file']?>')" data-bs-toggle="tooltip"><i class="mdi mdi-file-pdf text-danger fs-3" title="View File"></i></a></td>
+                  <td class="fs-5"><a href="JavaScript:void(0)" onclick="viewImage('<?php echo base_url() . 'uploads/prescription/' . $files['prescription_file'] ?>')" data-bs-toggle="tooltip"><i class="mdi mdi-image text-danger fs-3" title="View File"></i></a></td>
                 </tr>
                 <?php 
                 endif;
@@ -72,11 +72,25 @@
     }
 
     const baseUrl = '<?php echo base_url();?>';
-const viewPDFDiagnostic = (pdf) => {
-      $('#viewPDFBillModal').modal('show');
-      $('#pdf-name').html('Diagnosis/Operation File');
 
-        let pdfFile = `${baseUrl}uploads/final_diagnosis/${pdf}`;
+    const viewImage = (path) => {
+        let item = [{
+        src: path, // path to image
+        title: 'Take Home Meds' // If you skip it, there will display the original image name
+        }];
+        // define options (if needed)
+        let options = {
+        index: 0 // this option means you will start at first image
+        };
+        // Initialize the plugin
+        let photoviewer = new PhotoViewer(item, options);
+    }
+
+    const viewPDF = (pdf) => {
+      $('#viewPDFBillModal').modal('show');
+      $('#pdf-name').html('Medical Abstract File');
+
+        let pdfFile = `${baseUrl}uploads/prescription/${pdf}`;
         let fileExists = checkFileExists(pdfFile);
 
         if(fileExists){

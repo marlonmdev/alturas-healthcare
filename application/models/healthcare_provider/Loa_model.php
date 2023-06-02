@@ -274,4 +274,8 @@ class Loa_model extends CI_Model{
             return $this->db->count_all_results();
         }
     // End of server-side processing datatables
+
+    function get_performed_info($loa_id){
+        return $this->db->get_where('performed_loa_info', ['loa_id' => $loa_id])->result_array();
+    }
 }

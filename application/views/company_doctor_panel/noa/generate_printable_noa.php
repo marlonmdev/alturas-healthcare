@@ -76,7 +76,7 @@
 
                       <tr>
                         <td colspan="2" style="padding: 0 20px 0 20px;">
-                          <div class="my-1" style="border:0.5px solid #585858;"></div>
+                          <div class="my-2" style="border:0.5px solid #585858;"></div>
                         </td>
                       </tr>
 
@@ -93,7 +93,7 @@
 
                       <tr>
                         <td colspan="2" style="padding: 0 20px 0 20px;">
-                          <div class="my-1" style="border:0.5px solid #585858;"></div>
+                          <div class="my-2" style="border:0.5px solid #585858;"></div>
                         </td>
                       </tr>
 
@@ -133,7 +133,7 @@
 
                       <tr>
                         <td colspan="2" style="padding: 0 20px 0 20px;">
-                          <div class="my-" style="border:0.5px solid #585858;"></div>
+                          <div class="my-2 style="border:0.5px solid #585858;"></div>
                         </td>
                       </tr>
 
@@ -150,7 +150,7 @@
 
                       <tr>
                         <td colspan="2" style="padding: 0 10px 0 10px;">
-                          <div class="my-1" style="border:0.2px solid #a3a2a2;"></div>
+                          <div class="my-2" style="border:0.2px solid #a3a2a2;"></div>
                         </td>
                       </tr>
                     </table>

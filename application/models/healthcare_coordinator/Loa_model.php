@@ -349,6 +349,7 @@ function db_get_cost_types_by_hp_ID($hp_id) {
     return $this->db->get()->row_array();
   } 
 
+<<<<<<< HEAD
   // function db_get_loa_details($loa_id) {
   //       $this->db->select('*')
   //                ->from('loa_requests as tbl_1')
@@ -370,6 +371,18 @@ function db_get_cost_types_by_hp_ID($hp_id) {
                  ->where('tbl_1.loa_id', $loa_id);
         return $this->db->get()->row_array();
     }
+=======
+  function db_get_loa_detail($loa_id) {
+    $this->db->select('*')
+             ->from('loa_requests as tbl_1')
+             ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+             ->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id')
+             ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id')
+             ->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id= tbl_5.emp_id')
+             ->where('tbl_1.loa_id', $loa_id);
+    return $this->db->get()->row_array();
+  }
+>>>>>>> 42a4cbefdad6f0ac08ed1e020f4f7a8a434c856d
 
   function view_history($loa_id, $noa_id) {
     $this->db->select('*')

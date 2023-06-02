@@ -2,7 +2,7 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">Diagnosis/Operation Files</h4>
+        <h4 class="page-title ls-2">Statement of Accounts</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -39,19 +39,21 @@
               <th class="fw-bold">#</th>
               <th class="fw-bold">File Name</th>
               <th class="fw-bold">Added On</th>
+              <th class="fw-bold">Status</th>
               <th class="fw-bold">View File</th>
               <tbody>
               <?php
                $number = 1;
                 foreach($file as $files) : 
-                if(!empty($files['final_diagnosis_file'])) : 
+                if(!empty($files['pdf_bill'])) : 
                  
                 ?>
                 <tr>
                   <td><?php echo $number++; ?></td>
-                  <td class="fs-5"><?php echo $files['final_diagnosis_file']; ?></td>
+                  <td class="fs-5"><?php echo $files['pdf_bill']; ?></td>
                   <td class="fs-5"><?php echo date('F d, Y', strtotime($files['billed_on'])); ?></td>
-                  <td class="fs-5"><a href="JavaScript:void(0)" onclick="viewPDFDiagnostic('<?php echo $files['final_diagnosis_file']?>')" data-bs-toggle="tooltip"><i class="mdi mdi-file-pdf text-danger fs-3" title="View File"></i></a></td>
+                  <td class="fs-5"><span class="badge round-pill bg-success"><?php echo $files['status']; ?></span></td>
+                  <td class="fs-5"><a href="JavaScript:void(0)" onclick="viewPDFSOA('<?php echo $files['pdf_bill']?>')" data-bs-toggle="tooltip"><i class="mdi mdi-file-pdf text-danger fs-3" title="View SOA"></i></a></td>
                 </tr>
                 <?php 
                 endif;
@@ -72,33 +74,33 @@
     }
 
     const baseUrl = '<?php echo base_url();?>';
-const viewPDFDiagnostic = (pdf) => {
-      $('#viewPDFBillModal').modal('show');
-      $('#pdf-name').html('Diagnosis/Operation File');
+    const viewPDFSOA = (pdf) => {
+        $('#viewPDFBillModal').modal('show');
+        $('#pdf-name').html('Statement of Account');
 
-        let pdfFile = `${baseUrl}uploads/final_diagnosis/${pdf}`;
-        let fileExists = checkFileExists(pdfFile);
+          let pdfFile = `${baseUrl}uploads/pdf_bills/${pdf}`;
+          let fileExists = checkFileExists(pdfFile);
 
-        if(fileExists){
-        let xhr = new XMLHttpRequest();
-        xhr.open('GET', pdfFile, true);
-        xhr.responseType = 'blob';
+          if(fileExists){
+          let xhr = new XMLHttpRequest();
+          xhr.open('GET', pdfFile, true);
+          xhr.responseType = 'blob';
 
-        xhr.onload = function(e) {
-            if (this.status == 200) {
-            let blob = this.response;
-            let reader = new FileReader();
+          xhr.onload = function(e) {
+              if (this.status == 200) {
+              let blob = this.response;
+              let reader = new FileReader();
 
-            reader.onload = function(event) {
-                let dataURL = event.target.result;
-                let iframe = document.querySelector('#pdf-viewer');
-                iframe.src = dataURL;
-            };
-            reader.readAsDataURL(blob);
-            }
-        };
-        xhr.send();
-        }
+              reader.onload = function(event) {
+                  let dataURL = event.target.result;
+                  let iframe = document.querySelector('#pdf-viewer');
+                  iframe.src = dataURL;
+              };
+              reader.readAsDataURL(blob);
+              }
+          };
+          xhr.send();
+          }
     }
 
     const checkFileExists = (fileUrl) => {

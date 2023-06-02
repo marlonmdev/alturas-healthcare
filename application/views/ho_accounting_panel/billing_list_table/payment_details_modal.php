@@ -82,10 +82,10 @@
                             <label class=" text-dark fw-bold ms-2 fs-5">Amount Paid: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="number" class="form-control text-dark fs-5" name="amount-paid" id="amount-paid">
+                            <input type="number" step="any" class="form-control text-dark fs-5" name="amount-paid" id="amount-paid">
                             <span id="paid-error" class="text-danger"></span>
                         </div>
-                        
+
                         <div class="row col-lg-4 pb-3 pt-2">
                             <label class=" text-dark fw-bold ms-2 fs-5">Supporting Document ( CV ): </label>
                         </div>

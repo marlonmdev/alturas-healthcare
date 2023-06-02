@@ -38,30 +38,29 @@
             <?php 
                 $emp_id = $this->myhash->hasher($member['emp_id'], 'encrypt');
                 $member_id = $this->myhash->hasher($member['member_id'], 'encrypt');
-                $diagnos = 'final-diagnosis';
             ?>
             <div class="col-md-2 ps-3 pt-3 pb-4">
-                <a href="<?php echo base_url(); ?>company-doctor/members/<?php echo $diagnos; ?>/<?php echo $emp_id;?>/<?php echo $member_id;?>" class="btn btn-primary btn-lg bg-light border border-light text-dark">
+                <a href="<?php echo base_url(); ?>company-doctor/members/final-diagnosis/<?php echo $emp_id;?>/<?php echo $member_id;?>" class="btn btn-primary btn-lg bg-light border border-light text-dark">
                     <img src="<?php echo base_url(); ?>assets/images/blank-yellow-folder.png" alt="Button Image" class="img-fluid">
                    <span class="fs-5">Diagnosis/Operation</span>
                 </a>
             </div>
             <div class="col-md-2 ps-3 pt-3 pb-4">
-                <a href="#" class="btn btn-primary btn-lg bg-light border border-light text-dark">
+                <a href="<?php echo base_url(); ?>company-doctor/members/medical-abstract/<?php echo $emp_id;?>/<?php echo $member_id;?>" class="btn btn-primary btn-lg bg-light border border-light text-dark">
                     <img src="<?php echo base_url(); ?>assets/images/blank-yellow-folder.png" alt="Button Image" class="img-fluid">
                    Medical Abstract
                 </a>
             </div>
             <div class="col-md-2 ps-3 pt-3 pb-4">
-                <a href="#" class="btn btn-primary btn-lg bg-light border border-light text-dark">
+                <a href="<?php echo base_url(); ?>company-doctor/members/take-home-meds/<?php echo $emp_id;?>/<?php echo $member_id;?>" class="btn btn-primary btn-lg bg-light border border-light text-dark">
                     <img src="<?php echo base_url(); ?>assets/images/blank-yellow-folder.png" alt="Button Image" class="img-fluid">
                    Take Home Meds
                 </a>
             </div>
             <div class="col-md-2 ps-3 pt-3 pb-4">
-                <a href="#" class="btn btn-primary btn-lg bg-light border border-light text-dark">
+                <a href="<?php echo base_url(); ?>company-doctor/members/soa/<?php echo $emp_id;?>/<?php echo $member_id;?>" class="btn btn-primary btn-lg bg-light border border-light text-dark">
                     <img src="<?php echo base_url(); ?>assets/images/blank-yellow-folder.png" alt="Button Image" class="img-fluid">
-                   LOA & NOA Cert
+                   Statement of Accounts
                 </a>
             </div>
           </div>

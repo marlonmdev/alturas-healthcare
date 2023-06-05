@@ -27,11 +27,19 @@
 
             <?php if ($this->session->flashdata('error')): ?>
                 <script>
-                    Swal.fire({
+                   Swal.fire({
                         icon: 'error',
                         title: 'Error',
                         text: 'Member Not Found'
-                    })
+                    }).then((result) => {
+                        if (result.dismiss === Swal.DismissReason.backdrop || result.dismiss === Swal.DismissReason.esc) {
+                            // User clicked outside the modal or pressed the escape key
+                            return;
+                        }
+                        // Reset the form here
+                        const form = document.getElementById('search-form-1');
+                        form.reset();
+                    });
                 </script>
             <?php endif; ?>
 
@@ -97,10 +105,32 @@
         $("#search-select").on('change', function(){
             searchMethods();
         });
-        $("#search-form-1")[0].reset();
+            $("#search-form-1")[0].reset();
             $("#search-by-name").addClass('d-none');
             $("#search-by-healthcard").removeClass('d-none is-invalid is-valid');
             $("#healthcard-no").focus();
+
+            // $("#search-form-1").on('submit', function(event){
+            // event.preventDefault();
+            //     $.ajax({
+            //         type: 'POST',
+            //         url: $(this).attr('action'),
+            //         data: $(this).serialize(),
+            //         dataType: 'json',
+            //         success: function(res){
+            //         if(res.status == 'error'){
+            //             swal({
+            //             title: 'Error',
+            //             text: res.message,
+            //             timer: 3000,
+            //             showConfirmButton: false,
+            //             type: 'error'
+            //             });
+            //             $("#search-form-1")[0].reset();
+            //         }
+            //     }
+            //  });
+            // });
     });    
 
     const searchMethods = () => {
@@ -145,26 +175,26 @@
     })()
 
 
-    Quagga.init({
-          inputStream : {
-              name : "Live",
-              type : "LiveStream",
-              target: document.querySelector('#scanner-container')
-          },
-          decoder : {
-              readers : ["ean_reader"]
-          }
-      }, function(err) {
-          if (err) {
-              console.log(err);
-              return;
-          }
-          Quagga.start();
-      });
+    // Quagga.init({
+    //       inputStream : {
+    //           name : "Live",
+    //           type : "LiveStream",
+    //           target: document.querySelector('#scanner-container')
+    //       },
+    //       decoder : {
+    //           readers : ["ean_reader"]
+    //       }
+    //   }, function(err) {
+    //       if (err) {
+    //           console.log(err);
+    //           return;
+    //       }
+    //       Quagga.start();
+    //   });
 
-      Quagga.onDetected(function(data) {
-          var code = data.codeResult.code;
-          document.querySelector('#healthcard-no').value = code;
-          document.querySelector('#search-form-1').submit();
-    });
+    //   Quagga.onDetected(function(data) {
+    //       var code = data.codeResult.code;
+    //       document.querySelector('#healthcard-no').value = code;
+    //       document.querySelector('#search-form-1').submit();
+    // });
 </script>

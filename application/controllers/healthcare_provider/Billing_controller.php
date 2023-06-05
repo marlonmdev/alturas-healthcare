@@ -2,7 +2,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Billing_controller extends CI_Controller {
-
+    
     function __construct() {
         parent::__construct();
         $this->load->model('healthcare_provider/billing_model');
@@ -1045,6 +1045,7 @@ class Billing_controller extends CI_Controller {
                 'extracted_txt'         => $hospitalBillData,
                 'attending_doctors'     => $attending_doctor,
                 're_upload'             => isset($check_bill) ? 0 : 1,
+                'request_date'          => $loa['request_date']
             ];    
             $mbl = [
                         'used_mbl'            => $result_charge['used_mbl'],
@@ -1138,8 +1139,10 @@ class Billing_controller extends CI_Controller {
         $data['patient_name'] = $noa['first_name'].' '. $noa['middle_name'].' '. $noa['last_name'].' '.$noa['suffix'];
         if($initial){
             $data['billing_no'] = $initial->billing_no;
+            $data['admission_date'] = intval(str_replace('-', '', $initial->date_uploaded));
         }else{
             $data['billing_no'] = 'BLN-' . strtotime(date('Y-m-d h:i:s'));
+            $data['admission_date'] = intval(str_replace('-', '', $noa['admission_date']));
         }
         
 		$data['user_role'] = $this->session->userdata('user_role');
@@ -1183,6 +1186,7 @@ class Billing_controller extends CI_Controller {
             $data['remaining_balance'] =($prv_mbl != null)?$prv_mbl['after_remaining_bal']:$mbl_by_bill_no['before_remaining_bal'];
             $data['patient_name'] = $noa['first_name'].' '. $noa['middle_name'].' '. $noa['last_name'].' '.$noa['suffix'];
             $data['re_upload'] = true;
+            $data['admission_date'] = intval(str_replace('-', '', $noa['admission_date']));
             $data['prev_billing'] = $mbl_by_bill_no['pdf_bill'];
             $data['net_bill'] = $mbl_by_bill_no['net_bill'];
             if($initial){
@@ -1291,7 +1295,8 @@ class Billing_controller extends CI_Controller {
                 'status'                => 'Billed',
                 'extracted_txt'         => $hospitalBillData,
                 'attending_doctors'      => $attending_doctor,
-                're_upload'             => isset($check_bill) ? 0 : 1
+                're_upload'             => isset($check_bill) ? 0 : 1,
+                'request_date'          => $noa['request_date']
             ];    
             $mbl = [
                 'used_mbl'            => $result_charge['used_mbl'],
@@ -1347,10 +1352,11 @@ class Billing_controller extends CI_Controller {
         $noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
         $billing_no = $this->input->post('billing-no', TRUE);
         $net_b = $this->input->post('initial-net-bill', TRUE);
+        $initial_date = $this->input->post('initial-date',TRUE);
         $net_bill = floatval(str_replace(',', '', $net_b));
         $hospitalBillData = $_POST['hospital_bill_data'];
         
-
+        // var_dump("initial date",$initial_date);
         // PDF File Upload
         $config['upload_path'] = './uploads/pdf_bills/';
         $config['allowed_types'] = 'pdf';
@@ -1383,8 +1389,8 @@ class Billing_controller extends CI_Controller {
                 'company_charge'        => floatval(str_replace(',', '', $result_charge['company_charge'])),
                 'personal_charge'       => floatval(str_replace(',', '', $result_charge['personal_charge'])),
                 'pdf_bill'              => $pdf_file,
-                'uploaded_by'             => $this->session->userdata('fullname'),
-                'date_uploaded'             => date('Y-m-d'),
+                'uploaded_by'           => $this->session->userdata('fullname'),
+                'date_uploaded'         => $initial_date,
                 'status'                => 'Initial',
             ];    
             
@@ -1599,17 +1605,17 @@ class Billing_controller extends CI_Controller {
         $hcare_provider_id = $this->session->userdata('dsg_hcare_prov');
         $noa_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
         
-        $list = $this->initial_billing_model->get_initial_bill($noa_id, $hcare_provider_id, $status);
+        $list = $this->initial_billing_model->get_datatables($noa_id, $hcare_provider_id, $status);
 
-        //var_dump("initial",$list);
+        // var_dump("initial",$list);
         // var_dump("noa_id",$noa_id);
         $data = [];
         foreach ($list as $noa) {
-            $date_uploaded = date("m/d/Y", strtotime($noa->date_uploaded));
-            $custom_billing_no = '<mark class="bg-primary text-white">' . $noa->billing_no . '</mark>';
-            $file_name = $noa->pdf_bill;
-            $initial_bill = number_format($noa->initial_bill);
-            $custom_actions = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $noa->pdf_bill . '\' , \''. $noa->billing_no .'\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i></a>';
+            $date_uploaded = date("m/d/Y", strtotime($noa['date_uploaded']));
+            $custom_billing_no = '<mark class="bg-primary text-white">' . $noa['billing_no'] . '</mark>';
+            $file_name = $noa['pdf_bill'];
+            $initial_bill = number_format($noa['initial_bill']);
+            $custom_actions = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $noa['pdf_bill'] . '\' , \''. $noa['billing_no'] .'\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i></a>';
     
             // This data will be rendered to the datatable
             $row = [
@@ -1622,16 +1628,15 @@ class Billing_controller extends CI_Controller {
             $data[] = $row;
         }
     
-        $draw = $_POST['draw'];
+        $draw = $draw = isset($_POST['draw']) ? $_POST['draw'] : 0;
         $totalRecords = $this->initial_billing_model->count_all($noa_id, $hcare_provider_id, $status);
-        $filteredRecords = $this->initial_billing_model->count_all($noa_id, $hcare_provider_id, $status);
+        $filteredRecords = $this->initial_billing_model->count_filtered($noa_id, $hcare_provider_id, $status);
     
         $output = [
             "draw" => intval($draw),
             "recordsTotal" => intval($totalRecords),
             "recordsFiltered" => intval($filteredRecords),
             "data" => $data,
-            "csrf_token" => $csrf_token
         ];
     
         echo json_encode($output);

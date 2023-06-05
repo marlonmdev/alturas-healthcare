@@ -53,41 +53,7 @@ class Patient_model extends CI_Model {
       ->or_where('tbl_5.status', 'Billed')
       ->group_end();
     }
-    // $query1 = $this->db->select('tbl_2.emp_no, tbl_2.first_name, tbl_2.middle_name, tbl_2.last_name, tbl_2.suffix, tbl_4.hp_name, tbl_3.max_benefit_limit,
-    // tbl_3.remaining_balance, tbl_2.business_unit, tbl_2.dept_name')
-    // ->from($this->table1 . ' as tbl_1')
-    // ->join($this->table2 . ' as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
-    // ->join($this->table3 . ' as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id')
-    // ->join($this->table4 . ' as tbl_4', 'tbl_1.hospital_id = tbl_4.hp_id')
-    // ->where('tbl_1.hospital_id', $hp_id)
-    // ->group_start()
-    // ->where('tbl_1.status', 'Approved')
-    // ->or_where('tbl_1.status', 'Completed')
-    // ->or_where('tbl_1.status', 'Billed')
-    // ->group_end()
-    // ->group_by('emp_no')
-    // ->get_compiled_select();
-
-    // $query2 = $this->db->select('tbl_2.emp_no, tbl_2.first_name, tbl_2.middle_name, tbl_2.last_name, tbl_2.suffix, tbl_4.hp_name, tbl_3.max_benefit_limit,
-    //   tbl_3.remaining_balance, tbl_2.business_unit, tbl_2.dept_name')
-    // ->from($this->table5 . ' as tbl_5')
-    // ->join($this->table2 . ' as tbl_2', 'tbl_5.emp_id = tbl_2.emp_id')
-    // ->join($this->table3 . ' as tbl_3', 'tbl_5.emp_id = tbl_3.emp_id')
-    // ->join($this->table4 . ' as tbl_4', 'tbl_5.hcare_provider = tbl_4.hp_id')
-    // ->where('tbl_5.hcare_provider', $hp_id)
-    // ->group_start()
-    // ->where('tbl_5.status', 'Approved')
-    // ->or_where('tbl_5.status', 'Completed')
-    // ->or_where('tbl_5.status', 'Billed')
-    // ->group_end()
-    // ->group_by('emp_no')
-    // ->get_compiled_select();
-    // $unionQuery = $query1 . ' UNION ' . $query2;
-    // return $unionQuery;
-
-    // $results = $query->result_array();
-    // var_dump($re)
-    // $this->db->query($query1 . ' UNION ' . $query2)->result_array();
+    
     $i = 0;
 
     foreach ($this->column_search as $item) {

@@ -104,7 +104,7 @@
                       <th > <span style="font-weight:600;" class="colored-label">LOA #</span></th>
                       <th > <span style="font-weight:600;" class="colored-label">NET BILL</span></th>
                       <th > <span style="font-weight:600;" class="colored-label">STATUS</span></th>
-                      <th > <span style="font-weight:600;" class="colored-label">DATE</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">REQUEST DATE</span></th>
                       <th > <span style="font-weight:600;" class="colored-label">VIEW</span></th>
                     </tr>
                   </thead>
@@ -121,7 +121,7 @@
                       <th > <span style="font-weight:600;" class="colored-label">NOA #</span></th>
                       <th > <span style="font-weight:600;" class="colored-label">NET BILL</span></th>
                       <th > <span style="font-weight:600;" class="colored-label">STATUS</span></th>
-                      <th > <span style="font-weight:600;" class="colored-label">DATE</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">REQUEST DATE</span></th>
                       <th > <span style="font-weight:600;" class="colored-label">VIEW</span></th>
                   </tr>
                 </thead>
@@ -486,13 +486,16 @@
             // $('#expire').html(expiration);
             switch(req_status){
                 case 'Pending':
-                    $('#loa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
+                    $('#loa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`);
+                    if(rx_file.length){$("#p-documents").show();}
                 break;
                 case 'Approved':
                     $('#loa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>APPROVED DATE: <strong><span class="text-primary">${approved_on}</span></strong></h6>`); 
                     $('#loa_details_1').append(`<h6>APPROVED BY: <strong><span class="text-primary">${approved_by}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>EXPIRATION DATE: <strong><span class="text-primary">${expiration}</span></strong></h6>`); 
+                    if(rx_file.length){$("#p-documents").show();}
+                    $("#p-physician").show();
                 break;
                 case 'Disapproved':
                     $('#loa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
@@ -500,6 +503,7 @@
                     $('#loa_details_2').append(`<h6>DISAPPROVED BY: <strong><span class="text-primary">${disapproved_by}</span></strong></h6>`); 
                     $("#p-disaproved").show();
                     $('#disaproved').text(disapprove_reason);
+                    if(rx_file.length){$("#p-documents").show();}
                 break;
                 case 'Completed':
                     $('#loa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
@@ -517,6 +521,7 @@
                     $('#loa_details_2').append(`<h6>APPROVED DATE: <strong><span class="text-primary">${approved_on}</span></strong></h6>`);
                     $('#loa_details_1').append(`<h6>APPROVED BY: <strong><span class="text-primary">${approved_by}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>EXPIRATION DATE: <strong><span class="text-primary">${expiration}</span></strong></h6>`); 
+                    if(rx_file.length){$("#p-documents").show();}
                 break;
                 case 'Billed' || 'Payment' || 'Payable':
                     $('#loa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
@@ -556,11 +561,16 @@
                 console.log(item);
                 $('#services').append('<li>' + item + '</li>');
             });
-           
+
+            console.log("physician",attending_physician);
+            $.each(attending_physician, function(index, item) {
+                console.log("physician",item);
+                $('#physician').append('<li>' + item + '</li>');
+            });
                
-            if(attending_doctors){
-              $('#physician').append('<li>' + attending_doctors + '</li>');
-            }
+            // if(attending_doctors){
+            //   $('#physician').append('<li>' + attending_doctors + '</li>');
+            // }
             
             
           }
@@ -610,9 +620,6 @@
                     $('#noa_details_2').append(`<h6>APPROVED DATE: <strong><span class="text-primary">${approved_on}</span></strong></h6>`); 
                     $('#noa_details_1').append(`<h6>APPROVED BY: <strong><span class="text-primary">${approved_by}</span></strong></h6>`); 
                     $('#noa_details_2').append(`<h6>EXPIRATION DATE: <strong><span class="text-primary">${expiration}</span></strong></h6>`); 
-                    // $("#p_disaproved").hide();
-                    // $("#p_documents").hide();
-                    // $("#p_physician").hide();
                 break;
                 case 'Disapproved':
                     $('#noa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
@@ -635,6 +642,9 @@
                     $('#noa_details_2').append(`<h6>NET BILL: <strong><span class="text-primary">${net_bill}</span></strong></h6>`); 
                     $("#p_documents").show();
                     $("#p_physician").show();
+                break;
+                case 'Refered':
+                    $('#noa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
                 break;
                 case 'Paid':
                     $('#noa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 

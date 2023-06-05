@@ -56,7 +56,7 @@
                       <th > <span style="font-weight:600;" class="colored-label">LOA #</span></th>
                       <th > <span style="font-weight:600;" class="colored-label">NET BILL</span></th>
                       <th > <span style="font-weight:600;" class="colored-label">STATUS</span></th>
-                      <th > <span style="font-weight:600;" class="colored-label">DATE</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">REQUEST DATE</span></th>
                       <th > <span style="font-weight:600;" class="colored-label">VIEW</span></th>
                     </tr>
                   </thead>
@@ -73,7 +73,7 @@
                       <th > <span style="font-weight:600;" class="colored-label">NOA #</span></th>
                       <th > <span style="font-weight:600;" class="colored-label">NET BILL</span></th>
                       <th > <span style="font-weight:600;" class="colored-label">STATUS</span></th>
-                      <th > <span style="font-weight:600;" class="colored-label">DATE</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">REQUEST DATE</span></th>
                       <th > <span style="font-weight:600;" class="colored-label">VIEW</span></th>
                   </tr>
                 </thead>

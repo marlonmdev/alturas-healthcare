@@ -253,34 +253,18 @@ class Patient_controller extends CI_Controller {
 		$hp_id = $this->input->post('hp_id');
 		$list = $this->loa_model->get_loa_datatables($emp_id, $hp_id);
 
-		$date ="";
-		//var_dump("loa_id",$list['tbl1_loa_id']);
-		// var_dump("list",$list);
-		// var_dump("emp_id",$emp_id);
-		// var_dump("hp_id",$hp_id);
 		$data = array();
 		$custom_actions = '';
 		foreach ($list as $loa){
 			$row = array(); 
 			$loa_id = $this->myhash->hasher($loa['tbl1_loa_id'], 'encrypt');
-			// $loa_no = hashids_encrypt("asdfsdaf");
-			// $loa_ = hashids_decrypt($loa_no);
 			
-			// var_dump($loa['loa_id']);
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaHistoryInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
-			
-			if($loa['tbl1_status']==="Billed" || $loa['tbl1_status']==="Paid" || $loa['tbl1_status'] === "Payable"){
-				$date = $loa['billed_on'];
-			}elseif($loa['tbl1_status']==="Approved" || $loa['tbl1_status']==="Completed"){
-				$date = $loa['approved_on'];
-			}else{
-				$date = $loa['request_date'];
-			}
-			// this data will be rendered to the datatable
+
 			$row[] = $loa['loa_no'];
 			$row[] = (isset($loa['net_bill']) ? $loa['net_bill'] : 0);
 			$row[] =  $loa['tbl1_status'];
-			$row[] = $date;
+			$row[] = $loa['tbl1_request_date'];
 			$row[] = $custom_actions;
 			$data[] = $row;
 		}
@@ -298,31 +282,19 @@ class Patient_controller extends CI_Controller {
 		$emp_id = $this->input->post('emp_id');
 		$hp_id = $this->input->post('hp_id');
 		$list = $this->noa_model->get_noa_datatables($emp_id, $hp_id);
-		// var_dump("list",$list);
-		// var_dump("emp_id",$emp_id);
-		// var_dump("hp_id",$hp_id);
+		
 		$data = array();
 		foreach ($list as $noa){
 			$row = array(); 
 
 			$noa_id = $this->myhash->hasher($noa['tbl1_noa_id'], 'encrypt');
-			// $view_url = base_url() . 'healthcare-provider/patient/view_information/' . $member_id;
 			
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewNoaHistoryInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 			
-			if($noa['tbl1_status']==="Billed" || $noa['tbl1_status']==="Paid" || $noa['tbl1_status'] === "Payable"){
-				$date = $noa['billed_on'];
-				
-			}elseif($noa['tbl1_status']==="Approved" || $noa['tbl1_status'] === "Completed"){
-				$date = $noa['approved_on'];
-			}else{
-				$date = $noa['request_date'];
-			}
-			// this data will be rendered to the datatable
 			$row[] = $noa['noa_no'];
 			$row[] = (isset($noa['net_bill']) ? $noa['net_bill'] : 0);
 			$row[] =  $noa['tbl1_status'];
-			$row[] = $date;
+			$row[] =  $noa['tbl1_request_date'];
 			$row[] = $custom_actions;	
 			$data[] = $row;
 		}
@@ -373,11 +345,22 @@ class Patient_controller extends CI_Controller {
 		// get selected medical services
 		$selected_cost_types = explode(';', $row['med_services']);
 		$ct_array = [];
+		$physicians = [];
 		foreach ($cost_types as $cost_type) :
 			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
 				array_push($ct_array, $cost_type['item_description']);
 			}
 		endforeach;
+
+		if($isperformed){
+			foreach ($row as $physician) :
+				if (isset($physician['physician_fname']) || isset($physician['physician_mname']) || isset($physician['physician_lname'])) {
+					array_push($physicians, $physician['physician_fname'].' '.$physician['physician_mname'].' '.$physician['physician_lname']);	
+				}
+			endforeach;
+			//var_dump("physicians",$row);
+		}
+		
 		$med_serv = implode('', $ct_array);
 
 		$response = [
@@ -390,7 +373,7 @@ class Patient_controller extends CI_Controller {
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'complaints' => $row['chief_complaint'],
 			'requesting_physician' => $row['doctor_name'],
-			'attending_physician' => $row['attending_physician'],
+			'attending_physician' => $physicians,
 			'rx_file' => $row['rx_file'],
 			'pdf_bill' => isset($billing['pdf_bill'])?$billing['pdf_bill']:"",
 			'req_status' => $row['tbl_1_status'],
@@ -406,7 +389,7 @@ class Patient_controller extends CI_Controller {
 			'paid_on' => isset($paid_loa['date_add'])?date("F d, Y", strtotime($paid_loa['date_add'])):"",
 			'net_bill' => isset($billing['net_bill'])?$billing['net_bill']:"",
 			'paid_amount' =>isset($paid_loa['amount_paid'])?$paid_loa['amount_paid']:"",
-			'attending_doctors' =>isset($billing['attending_doctors'])?$billing['attending_doctors']:""
+			'attending_doctors' =>isset($billing['attending_doctors'])?$billing['attending_doctors']: ""
 		];
 		echo json_encode($response);
 	}

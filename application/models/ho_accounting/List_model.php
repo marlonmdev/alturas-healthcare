@@ -7,8 +7,8 @@ class List_model extends CI_Model{
 	var $table_1 = 'billing';
     var $table_2 = 'members';
     var $table_3 = 'healthcare_providers';
-	var $column_order = ['tbl_1.billing_no', 'tbl_2.first_name', 'tbl_1.billed_on', 'tbl_1.company_charge', NULL]; //set column field database for datatable orderable
-	var $column_search = ['tbl_1.hp_id', 'tbl_1.billing_no', 'tbl_2.first_name', 'tbl_2.middle_name', 'tbl_2.last_name', 'tbl_3.hp_name', 'tbl_1.billed_on']; //set column field database for datatable searchable 
+	var $column_order = ['tbl_1.billing_no', 'tbl_2.first_name', 'tbl_1.request_date', 'tbl_1.company_charge', NULL]; //set column field database for datatable orderable
+	var $column_search = ['tbl_1.hp_id', 'tbl_1.billing_no', 'tbl_2.first_name', 'tbl_2.middle_name', 'tbl_2.last_name', 'tbl_3.hp_name', 'tbl_1.request_date']; //set column field database for datatable searchable 
 	var $order = ['tbl_1.billing_id' => 'asc']; // default order 
 
 	private function _get_datatables_query($status) {
@@ -25,12 +25,12 @@ class List_model extends CI_Model{
 
         if ($this->input->post('startDate')) {
             $startDate = date('Y-m-d', strtotime($this->input->post('startDate')));
-            $this->db->where('tbl_1.billed_on >=', $startDate);
+            $this->db->where('tbl_1.request_date >=', $startDate);
         }
 
         if ($this->input->post('endDate')){
             $endDate = date('Y-m-d', strtotime($this->input->post('endDate')));
-            $this->db->where('tbl_1.billed_on <=', $endDate);
+            $this->db->where('tbl_1.request_date <=', $endDate);
         }
 
 		// loop column 
@@ -157,8 +157,8 @@ class List_model extends CI_Model{
         $this->db->select_sum('company_charge')
                 ->where('status', $status)
                 ->where('hp_id', $hp_id)
-                ->where('billed_on >=', $startDate)
-                ->where('billed_on <=', $endDate);
+                ->where('request_date >=', $startDate)
+                ->where('request_date <=', $endDate);
         $query = $this->db->get('billing');
         $result = $query->result_array();
         $sum = $result[0]['company_charge'];
@@ -511,18 +511,18 @@ class List_model extends CI_Model{
       }
       if ($this->input->post('startDate')) {
         $startDate = date('Y-m-d', strtotime($this->input->post('startDate')));
-        $this->db->where('tbl_1.billed_on >=', $startDate);
+        $this->db->where('tbl_1.request_date >=', $startDate);
       }
       if ($this->input->post('endDate')){
         $endDate = date('Y-m-d', strtotime($this->input->post('endDate')));
-        $this->db->where('tbl_1.billed_on <=', $endDate);
+        $this->db->where('tbl_1.request_date <=', $endDate);
       }
       if($this->input->post('business_unit')){
         $this->db->like('tbl_4.business_unit', $this->input->post('business_unit'));
       }
    }
 
-   public function get_for_payment_loa_noa() {
+   function get_for_payment_loa_noa() {
        $this->_get_billed_datatables_query();
        if ($this->input->post('length') != -1)
            $this->db->limit($this->input->post('length'), $this->input->post('start'));
@@ -554,11 +554,11 @@ class List_model extends CI_Model{
     }
     if ($this->input->post('startDate')) {
     $startDate = date('Y-m-d', strtotime($this->input->post('startDate')));
-    $this->db->where('tbl_1.billed_on >=', $startDate);
+    $this->db->where('tbl_1.request_date >=', $startDate);
     }
     if ($this->input->post('endDate')){
     $endDate = date('Y-m-d', strtotime($this->input->post('endDate')));
-    $this->db->where('tbl_1.billed_on <=', $endDate);
+    $this->db->where('tbl_1.request_date <=', $endDate);
     }
     if($this->input->post('business_unit')){
     $this->db->like('tbl_5.business_unit', $this->input->post('business_unit'));
@@ -592,11 +592,11 @@ class List_model extends CI_Model{
         }
         if(!empty($this->input->post('start_date'))){
             $startDate = date('Y-m-d', strtotime($this->input->post('start_date')));
-            $this->db->where('billed_on >=', $startDate);
+            $this->db->where('request_date >=', $startDate);
         }
         if(!empty($this->input->post('end_date'))){
             $endDate = date('Y-m-d', strtotime($this->input->post('end_date')));
-            $this->db->where('billed_on <=', $endDate);
+            $this->db->where('request_date <=', $endDate);
         }
         
         if(!empty($this->input->post('hp_id'))){
@@ -700,11 +700,11 @@ class List_model extends CI_Model{
         }
         if(!empty($start_date)){
             $startDate = date('Y-m-d', strtotime($start_date));
-            $this->db->where('tbl_1.billed_on >=', $startDate);
+            $this->db->where('tbl_1.request_date >=', $startDate);
         }
         if(!empty($end_date)){
             $endDate = date('Y-m-d', strtotime($end_date));
-            $this->db->where('tbl_1.billed_on <=', $endDate);
+            $this->db->where('tbl_1.request_date <=', $endDate);
         }
         
         return $this->db->get()->result_array();
@@ -729,11 +729,11 @@ class List_model extends CI_Model{
             }
             if ($this->input->post('startDate')) {
             $startDate = date('Y-m-d', strtotime($this->input->post('startDate')));
-            $this->db->where('tbl_1.billed_on >=', $startDate);
+            $this->db->where('tbl_1.request_date >=', $startDate);
             }
             if ($this->input->post('endDate')){
             $endDate = date('Y-m-d', strtotime($this->input->post('endDate')));
-            $this->db->where('tbl_1.billed_on <=', $endDate);
+            $this->db->where('tbl_1.request_date <=', $endDate);
             }
        }
    

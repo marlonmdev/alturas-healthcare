@@ -217,18 +217,6 @@
       const hp_id = document.querySelector('#p-hp-id').value;
       const start_date = document.querySelector('#p-start-date').value;
        const end_date = document.querySelector('#p-end-date').value;
- 
-      // if(start_date == '0000-00-00'){
-      //   start_dates = 'none';
-      // }else{
-      //   start_dates = start_date;
-      // }
-
-      // if(end_date == '0000-00-00'){
-      //   end_dates = 'none';
-      // }else{
-      //   end_dates = end_date;
-      // }
 
        var base_url = `${baseUrl}`;
         var win = window.open(base_url + "printpayment/pdfbilling/" + btoa(hp_id) + "/" + btoa(start_date) + "/" + btoa(end_date), '_blank');

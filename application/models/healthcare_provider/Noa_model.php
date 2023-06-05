@@ -179,7 +179,7 @@ public function bar_pending(){
         var $column_search_history = array('tbl_1.noa_no','tbl_2.net_bill','tbl_1.status','tbl_1.approved_on','tbl_2.billed_on','tbl_1.request_date'); //set column field database for datatable searchable 
         var $order_history = array('tbl_1.noa_id' => 'desc'); // default order 
         private function _get_noa_datatables_query($emp_id, $hp_id) {
-            $this->db->select('tbl_1.status as tbl1_status, tbl_1.noa_id as tbl1_noa_id, tbl_1.*, tbl_2.*');
+            $this->db->select('tbl_1.status as tbl1_status, tbl_1.noa_id as tbl1_noa_id, tbl_1.request_date as tbl1_request_date, tbl_1.*, tbl_2.*');
             $this->db->from($this->table_1 . ' as tbl_1');
             $this->db->join($this->table_3 . ' as tbl_2', 'tbl_1.noa_id = tbl_2.noa_id','left');
             $this->db->where('tbl_1.emp_id', $emp_id);

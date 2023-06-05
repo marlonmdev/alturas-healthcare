@@ -670,4 +670,11 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('healthcare_coordinator_panel/noa/initial_billing');
 		$this->load->view('templates/footer');
 	}
+
+	function view_reset_mbl() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/setup/yearly_reset_mbl');
+		$this->load->view('templates/footer');
+	}
 }

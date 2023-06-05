@@ -638,44 +638,64 @@ class Loa_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 
-	// function fetch_cancelled_loa() {
-	// 	$this->security->get_csrf_hash();
-	// 	$status = 'Approved';
-	// 	$info = $this->loa_model->get_cancel_datatables($status);
-	// 	$dataCancellations = [];
+	function fetch_all_billed_loa() {
+		$this->security->get_csrf_hash();
+		$status = ['Billed', 'Payable', 'Payment'];
+		$list = $this->loa_model->get_billed_datatables($status);
+		$data = [];
+		foreach ($list as $loa) {
+			// Myhash is a custom library located in application/libraries directory -> Enabled Globally
+			$loa_id = $this->myhash->hasher($loa['loa_id'], 'encrypt');
 
-	// 	foreach($info as $data){
-	// 		$row = [];
-	// 		$loa_id = $this->myhash->hasher($data['loa_id'], 'encrypt');
+			$row = [];
 
-	// 		$fullname = $data['first_name'] . ' ' . $data['middle_name'] . ' ' . $data['last_name'] . ' ' . $data['suffix'];
+			$full_name = $loa['first_name'] . ' ' . $loa['middle_name'] . ' ' . $loa['last_name'] . ' ' . $loa['suffix'];
 
-	// 		$custom_reason = '<a class="text-info fs-6 fw-bold" href="JavaScript:void(0)" onclick="viewReason(\''.$data['cancellation_reason'].'\')"><u>View Reason</u></a>';
+			$custom_loa_no = '<mark class="bg-primary text-white">'.$loa['loa_no'].'</mark>';
 
-	// 		if($data['status'] == 'Approved'){
-	// 			$custom_status = '<span class="badge rounded-pill bg-success">Cancelled</span>';
-	// 		}
+			$custom_date = date("m/d/Y", strtotime($loa['request_date']));
 
-	// 		$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-danger">Billed</span></div>';
 
-	// 		$row[] = $data['loa_no'];
-	// 		$row[] = $fullname;
-	// 		$row[] = $custom_reason;
-	// 		$row[] = date('m/d/Y', strtotime($data['confirmed_on']));
-	// 		$row[] = $data['confirmed_by'];
-	// 		$row[] = $custom_status;
-	// 		$row[] = $custom_actions;
-	// 		$dataCancellations[] = $row;
-	// 	}
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewBilledLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
-	// 	$response = [
-	// 		"draw" => $_POST['draw'],
-	// 		"recordsTotal" => $this->loa_model->count_all_cancell($status),
-	// 		"recordsFiltered" => $this->loa_model->count_cancell_filtered($status),
-	// 		"data" => $dataCancellations,
-	// 	];
-	// 	echo json_encode($response);
-	// }
+			// initialize multiple varibles at once
+			$view_file = $short_hp_name = '';
+			if ($loa['loa_request_type'] === 'Consultation') {
+				// if request is consultation set the view file to None
+				$view_file = 'None';
+
+				// if Hospital Name is too long for displaying to the table shorten it and add the ... characters at the end 
+				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
+
+			} else {
+
+				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
+
+				// link to the file attached during loa request
+				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
+			}
+
+			// this data will be rendered to the datatable
+			$row[] = $custom_loa_no;
+			$row[] = $full_name;
+			$row[] = $loa['loa_request_type'];
+			$row[] = $short_hp_name;
+			$row[] = $view_file;
+			$row[] = $custom_date;
+			$row[] = $custom_status;
+			$row[] = $custom_actions;
+			$data[] = $row;
+		}
+
+		$output = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->loa_model->count_all_billed($status),
+			"recordsFiltered" => $this->loa_model->count_filtered_billed($status),
+			"data" => $data,
+		];
+		echo json_encode($output);
+	}
 
 	function get_loa_info(){
 		$doctor_name = $requesting_physician = "";
@@ -731,6 +751,13 @@ class Loa_controller extends CI_Controller {
 			$req_stat = $row['status'];
 		}
 
+		$bill = $this->loa_model->get_bill_info($row['loa_id']);
+		if(!empty($bill)){
+			$billed_on = date('F d, Y', strtotime($bill['billed_on']));
+		}else{
+			$billed_on = '';
+		}
+
 		$response = [
 			'status' => 'success',
 			'token' => $this->security->get_csrf_hash(),
@@ -777,6 +804,7 @@ class Loa_controller extends CI_Controller {
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 			'requested_by' => $row['requested_by'],
+			'billed_on' => $billed_on
 		];
 		echo json_encode($response);
 	}

@@ -24,7 +24,7 @@
       </div>
     <hr style="color:red">
                 
-    <form id="performedLoaInfo" method="post" action="<?php echo base_url();?>healthcare-coordinator/loa/performed-loa-info/submit" class="needs-validation" novalidate>
+    <form id="performedLoaInfo" method="post" action="<?php echo base_url();?>healthcare-coordinator/loa/billed/submit_consultation" class="needs-validation" novalidate>
       <div class="row">
         <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
         <div class="col-lg-4">
@@ -72,7 +72,7 @@
         </div>
       </div>
 
-      <div class="col-4 pt-4">
+      <div class="col-4 pb-4 pt-4">
         <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addfee()">
           <i class="mdi mdi-plus-circle"></i> Add Charge Fee
         </button>
@@ -97,7 +97,7 @@
         </div>
 
         <div class="col-4 pt-4">
-          <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addNewDeduction()"><i class="mdi mdi-plus-circle"></i> Add New</button>
+          <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addNewDeduction()"><i class="mdi mdi-plus-circle"></i> Add Deduction</button>
         </div>    
       </div>
       <div id="dynamic-deduction"></div><hr>
@@ -187,7 +187,7 @@
                 type: 'success'
               });
               setTimeout(function () {
-                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed';
+                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/billed';
               }, 2600);   
             break;
 
@@ -201,7 +201,7 @@
               });
               $('#performedLoaConsultInfo')[0].reset();
               setTimeout(function () {
-                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed';
+                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/billed';
               }, 2600);           
             break;
           }
@@ -260,20 +260,20 @@
     let html_code  = `<div class="row row-deduction1" id="row${count}">`;
 
     html_code += `<div class="col-md-4">
-                    <input type="text" name="charge-name[]" class="form-control fw-bold ls-1" placeholder="*Enter Charge Name" required/>
+                    <input type="text" name="charge-name[]" class="form-control fw-bold ls-1 text-info" placeholder="*Enter Charge Name" required/>
                     <div class="invalid-feedback">Deduction name and amount is required</div>
                   </div>`;
 
     html_code += `<div class="col-md-4">
                     <div class="input-group mb-3">
                       <span class="input-group-text bg-success text-white">&#8369;</span>
-                      <input type="number" name="charge-amount[]" class="charge-amount form-control fw-bold ls-1" placeholder="*Charge Amount" oninput="calculateDiagnosticTestBilling()" required/>
+                      <input type="number" name="charge-amount[]" class="charge-amount form-control fw-bold ls-1 text-info" placeholder="*Charge Amount" oninput="calculateDiagnosticTestBilling()" required/>
                       <span class="other-deduction-msg text-danger fw-bold"></span>
                     </div>
                   </div>`;
         
     html_code += `<div class="col-md-3">
-                    <button type="button" data-id="${count}" class="btn btn-danger btn-md btn-remove" onclick="removeDeduction(this)" data-bs-toggle="tooltip" title="Click to remove Deduction"><i class="mdi mdi-close"></i></button>
+                    <button type="button" data-id="${count}" class="btn btn-danger btn-md btn-remove text-info" onclick="removeDeduction(this)" data-bs-toggle="tooltip" title="Click to remove Deduction"><i class="mdi mdi-close"></i></button>
                   </div>`;
 
     html_code += `</div>`;
@@ -281,7 +281,7 @@
     $('#dynamic-fee').append(html_code);
   }
 
-  const calculateDiagnosticTestBilling = (remaining_balance) => {
+  const calculateDiagnosticTestBilling = () => {
     let total_deductions = 0;
     let net_bill_amount = 0;
     const deduct_philhealth = document.querySelector('#deduct-philhealth');
@@ -289,18 +289,21 @@
     const net_bill = document.querySelector('#net-bill');
     const input_total_deduction = document.querySelector('#total-deduction');
 
-    total_services = totalServices();
-    total_bill.value = parseFloat(total_services).toFixed(2);
-    
-    philhealth = deduct_philhealth.value > 0 ? deduct_philhealth.value : 0 ;
+    total_services = parseFloat(totalServices()) || 0; // Ensure the value is a number
+    let total_charge = parseFloat(calculateCharge()) || 0; 
+    final_services = total_charge + total_services;
+    total_bill.value = parseFloat(final_services).toFixed(2); // No need for parseFloat() since final_services is already a number
+
+    philhealth = deduct_philhealth.value > 0 ? parseFloat(deduct_philhealth.value) : 0; // Ensure the value is a number
     other_deduction = calculateOtherDeductions();
 
     total_deductions = parseFloat(philhealth) + parseFloat(other_deduction);
-    net_bill_amount = parseFloat(total_services) - parseFloat(total_deductions);
+    net_bill_amount = parseFloat(final_services) - parseFloat(total_deductions);
 
-    input_total_deduction.value = parseFloat(total_deductions).toFixed(2);
-    net_bill.value = parseFloat(net_bill_amount).toFixed(2);
+    input_total_deduction.value = total_deductions.toFixed(2); // No need for parseFloat() since total_deductions is already a number
+    net_bill.value = net_bill_amount.toFixed(2); // No need for parseFloat() since net_bill_amount is already a number
   }
+
 
   const removeDeduction = (remove_btn) => {
     count--;
@@ -333,12 +336,12 @@
 
   const calculateCharge = () => {
     let total_charge = 0;
-    const row_charge = document.querySelectorAll('.row-charge');
+    const row_charge = document.querySelectorAll('.row-deduction1');
     const charge_amount = document.querySelectorAll('.charge-amount');
 
     for (let i = 0; i < row_charge.length; i++) {
       total_charge += parseFloat(charge_amount[i].value) || 0; // Ensure the value is a number
     }
     return total_charge;
-  }
+  };
 </script>

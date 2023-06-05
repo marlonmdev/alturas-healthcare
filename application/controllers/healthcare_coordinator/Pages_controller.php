@@ -489,6 +489,25 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
+	function view_healthcare_advance() {
+		$this->load->model('healthcare_coordinator/loa_model');
+		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/loa/healthcare_advance');
+		$this->load->view('templates/footer');
+	}
+
 	function request_noa_form() {
 		$this->load->model('healthcare_coordinator/setup_model');
 		$data['user_role'] = $this->session->userdata('user_role');

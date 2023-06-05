@@ -72,7 +72,7 @@
           <div class="input-group-append">
             <span class="input-group-text fw-bold text-dark ls-1 ms-2">Service Fee:</span>
           </div>
-          <input class="form-control fw-bold" name="service-fee" id="service-fee" type="number" value="<?php echo $fees['total_services'] ?>" oninput="calculateDiagnosticTestBilling()" required>
+          <input class="form-control fw-bold text-info" name="service-fee" id="service-fee" type="number" value="<?php echo $fees['service_fee'] ?>" oninput="calculateDiagnosticTestBilling(`<?php echo $remaining_balance ?>`)" required>
         </div>
       </div>
 
@@ -82,12 +82,12 @@
         <div class="row pb-4">
           <div class="col-lg-4">
             <label class="fw-bold pt-2">Charge Name : </label>
-            <input class="form-control fw-bold" name="charge_name[]" value="<?php echo $charges['charge_name'] ?>" readonly>
+            <input class="form-control fw-bold text-info" name="charge_name[]" value="<?php echo $charges['charge_name'] ?>" readonly>
           </div>
 
           <div class="col-lg-4">
             <label class="fw-bold pt-2">Amount : </label>
-            <input class="form-control fw-bold c_amount" name="charge_amount[]" value="<?php echo $charges['charge_amount'] ?>" readonly>
+            <input class="form-control fw-bold text-info c_amount" name="charge_amount[]" value="<?php echo $charges['charge_amount'] ?>" readonly>
           </div>
         </div>
       <?php 
@@ -117,7 +117,7 @@
           <label class="form-label ls-1">PhilHealth</label> <span class="text-muted">(optional)</span>
           <div class="input-group mb-3">
             <span class="input-group-text bg-success text-white">&#8369;</span>
-            <input type="number" class="input-deduction form-control fw-bold ls-1" id="deduct-philhealth" name="philhealth-deduction" placeholder="Deduction Amount" oninput="calculateDiagnosticTestBilling(`<?php echo $remaining_balance ?>`)" min="0">
+            <input type="number" class="input-deduction form-control fw-bold ls-1 text-info" id="deduct-philhealth" name="philhealth-deduction" placeholder="Deduction Amount" oninput="calculateDiagnosticTestBilling(`<?php echo $remaining_balance ?>`)" min="0">
             <span class="text-danger fw-bold deduction-msg"></span>
           </div>
         </div>
@@ -256,7 +256,7 @@
 
     /* Creating a new input field with the name deduction_name[] */
     html_code += `<div class="col-md-4">
-                    <input type="text" name="deduction-name[]" class="form-control fw-bold ls-1" placeholder="*Enter Deduction Name" required/>
+                    <input type="text" name="deduction-name[]" class="form-control fw-bold ls-1 text-info" placeholder="*Enter Deduction Name" required/>
                     <div class="invalid-feedback"> Deduction name and amount is required</div>
                   </div>`;
 
@@ -264,7 +264,7 @@
     html_code += `<div class="col-md-4">
                     <div class="input-group mb-3">
                       <span class="input-group-text bg-success text-white">&#8369;</span>
-                      <input type="number" name="deduction-amount[]" class="deduction-amount form-control fw-bold ls-1" placeholder="*Deduction Amount" oninput="calculateDiagnosticTestBilling()" required/>
+                      <input type="number" name="deduction-amount[]" class="deduction-amount form-control fw-bold ls-1 text-info" placeholder="*Deduction Amount" oninput="calculateDiagnosticTestBilling()" required/>
                       <span class="other-deduction-msg text-danger fw-bold"></span>
                     </div>
                   </div>`;
@@ -287,14 +287,14 @@
     let html_code  = `<div class="row row-deduction1" id="row${count}">`;
 
     html_code += `<div class="col-md-4">
-                    <input type="text" name="charge-name[]" class="form-control fw-bold ls-1" placeholder="*Enter Charge Name" required/>
+                    <input type="text" name="charge-name[]" class="form-control fw-bold ls-1 text-info" placeholder="*Enter Charge Name" required/>
                     <div class="invalid-feedback">Deduction name and amount is required</div>
                   </div>`;
 
     html_code += `<div class="col-md-4">
                     <div class="input-group mb-3">
                       <span class="input-group-text bg-success text-white">&#8369;</span>
-                      <input type="number" name="charge-amount[]" class="charge-amount form-control fw-bold ls-1" placeholder="*Charge Amount" oninput="calculateDiagnosticTestBilling()" required/>
+                      <input type="number" name="charge-amount[]" class="charge-amount form-control fw-bold ls-1 text-info" placeholder="*Charge Amount" oninput="calculateDiagnosticTestBilling()" required/>
                       <span class="other-deduction-msg text-danger fw-bold"></span>
                     </div>
                   </div>`;

@@ -349,16 +349,27 @@ function db_get_cost_types_by_hp_ID($hp_id) {
     return $this->db->get()->row_array();
   } 
 
-  function db_get_loa_detail($loa_id) {
-    $this->db->select('*')
-             ->from('loa_requests as tbl_1')
-             ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
-             ->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id')
-             ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id')
-             ->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id= tbl_5.emp_id')
-             ->where('tbl_1.loa_id', $loa_id);
-    return $this->db->get()->row_array();
-  }
+  // function db_get_loa_details($loa_id) {
+  //       $this->db->select('*')
+  //                ->from('loa_requests as tbl_1')
+  //                ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+  //                ->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id')
+  //                ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id')
+  //                ->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id= tbl_5.emp_id')
+  //                ->where('tbl_1.loa_id', $loa_id);
+  //       return $this->db->get()->row_array();
+  //   }
+
+   function db_get_loa_details($loa_id) {
+        $this->db->select('*')
+                 ->from('loa_requests as tbl_1')
+                 ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+                 ->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id')
+                 ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id')
+                 ->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id= tbl_5.emp_id')
+                 ->where('tbl_1.loa_id', $loa_id);
+        return $this->db->get()->row_array();
+    }
 
   function view_history($loa_id, $noa_id) {
     $this->db->select('*')
@@ -650,6 +661,16 @@ function db_get_cost_types_by_hp_ID($hp_id) {
     return $this->db->get()->row_array();
   }
 
+  function get_loa_information($emp_id,$request_date) {
+    $this->db->select('*')
+            ->from('loa_requests')
+            ->where('emp_id',$emp_id)
+            ->where('request_date',$request_date)
+            ->where('status','Billed');
+    return $this->db->get()->row_array();
+  }
+
+
   
 
   function check_if_status_cancelled($loa_id) {
@@ -734,9 +755,23 @@ function db_get_cost_types_by_hp_ID($hp_id) {
     return $this->db->get()->row_array();
   }
 
+  // function check_if_loa_already_added($loa_id) {
+  //   $query = $this->db->get_where('hr_added_loa_fees', ['loa_id' => $loa_id]);
+  //   return $query->num_rows() > 0 ? true : false;
+  // }
+
+  // function check_if_loa_already_added($loa_id) {
+  //   $query = $this->db->get_where('hr_added_loa_fees', ['loa_id' => $loa_id]);
+  //   return $query->num_rows() > 0 ? true : false;
+  // }
+
   function check_if_loa_already_added($loa_id) {
     $query = $this->db->get_where('hr_added_loa_fees', ['loa_id' => $loa_id]);
-    return $query->num_rows() > 0 ? true : false;
+    if ($query->num_rows() > 0) {
+        return $query->row(); // Return the fetched row
+    } else {
+        return false;
+    }
   }
 
   function insert_deductions($data) {
@@ -861,12 +896,14 @@ function db_get_cost_types_by_hp_ID($hp_id) {
    var $order_billed = ['loa_id' => 'desc']; // default order 
  
    private function _get_billed_datatables_query($status) {
+    $this->db->select('tbl_1.loa_id as tbl1_loa_id, tbl_1.*, tbl_2.*, tbl_3.*');
      $this->db->from($this->table_1_billed . ' as tbl_1');
      $this->db->join($this->table_2_billed . ' as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id');
-     $this->db->join($this->table_3_billed . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id', 'left');
+    
+       $this->db->join($this->table_3_billed . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id', 'left');
+
      $this->db->where('tbl_1.status', $status);
-     $i = 0;
- 
+      
     if($this->input->post('filter')){
        $this->db->like('tbl_1.hp_id', $this->input->post('filter'));
     }

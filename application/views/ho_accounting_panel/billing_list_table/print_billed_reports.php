@@ -159,7 +159,7 @@
                                         </tbody>
                                     </table><br>
                                     <div class="row offset-7">
-                                        <span class="ps-5 fw-bold">TOTAL PAYABLE <span class="offset-2" id="total_bill"></span></span>
+                                        <span class="ps-4 fw-bold">TOTAL PAYABLE <span class="offset-2" id="total_bill"></span></span>
                                     </div>
                                     
                                     <br><br><br>

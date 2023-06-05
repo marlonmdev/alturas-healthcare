@@ -46,13 +46,21 @@
                $number = 1;
                 foreach($file as $files) : 
                 if(!empty($files['pdf_bill'])) : 
-                 
+                 if($files['status'] == 'Billed') {
+                  $status = 'Billed';
+                 }else  if($files['status'] == 'Payable'){
+                  $status = 'Billed';
+                 }else  if($files['status'] == 'Payment'){
+                  $status = 'Billed';
+                 }else if($files['status'] == 'Paid'){
+                  $status = 'Paid';
+                 }
                 ?>
                 <tr>
                   <td><?php echo $number++; ?></td>
                   <td class="fs-5"><?php echo $files['pdf_bill']; ?></td>
                   <td class="fs-5"><?php echo date('F d, Y', strtotime($files['billed_on'])); ?></td>
-                  <td class="fs-5"><span class="badge round-pill bg-success"><?php echo $files['status']; ?></span></td>
+                  <td class="fs-5"><span class="badge round-pill bg-success"><?php echo $status; ?></span></td>
                   <td class="fs-5"><a href="JavaScript:void(0)" onclick="viewPDFSOA('<?php echo $files['pdf_bill']?>')" data-bs-toggle="tooltip"><i class="mdi mdi-file-pdf text-danger fs-3" title="View SOA"></i></a></td>
                 </tr>
                 <?php 

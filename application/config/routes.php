@@ -419,6 +419,9 @@ $route['healthcare-coordinator/bill/noa-requests/billed/initial'] = 'healthcare_
 $route['healthcare-coordinator/noa/billed/final_billing'] = 'healthcare_coordinator/noa_controller/final_billing';
 $route['healthcare-coordinator/bill/noa-requests/for_payment'] = 'healthcare_coordinator/pages_controller/billing_statement';
 
+$route['healthcare-coordinator/setup/reset-mbl/(:any)'] = 'healthcare_coordinator/pages_controller/view_reset_mbl';
+
+
 // HealthCare Coordinator User Account Routes
 $route['healthcare-coordinator/account-settings'] = 'healthcare_coordinator/account_controller/account_settings';
 $route['healthcare-coordinator/account-settings/password/update'] = 'healthcare_coordinator/account_controller/update_account_password';
@@ -576,6 +579,7 @@ $route['healthcare-coordinator/setup/room-types/delete/(:any)'] = 'healthcare_co
 // managers key
 $route['healthcare-coordinator/managers-key/check'] = 'healthcare_coordinator/account_controller/check_manager_username';
 $route['healthcare-coordinator/reschedule/managers-key/check'] = 'healthcare_coordinator/account_controller/check_manager_key';
+$route['healthcare-coordinator/reset-mbl/managers-key/check'] = 'healthcare_coordinator/account_controller/check_mbl_mgr_key';
 // End of HealthCare Coordinator Routes
 //========================================================================================================
 
@@ -605,6 +609,7 @@ $route['company-doctor/members/final-diagnosis/(:any)/(:any)'] = 'company_doctor
 $route['company-doctor/members/medical-abstract/(:any)/(:any)'] = 'company_doctor/pages_controller/view_medical_abstract';
 $route['company-doctor/members/take-home-meds/(:any)/(:any)'] = 'company_doctor/pages_controller/view_take_home_meds';
 $route['company-doctor/members/soa/(:any)/(:any)'] = 'company_doctor/pages_controller/view_billed_soa';
+$route['company-doctor/loa/requests-list/billed'] = 'company_doctor/pages_controller/view_billed_loa_list';
 
 // Company Doctor User Account Routes
 $route['company-doctor/account-settings'] = 'company_doctor/account_controller/account_settings';
@@ -632,6 +637,7 @@ $route['company-doctor/loa/requests-list/approve-request'] = 'company_doctor/loa
 $route['company-doctor/loa/requests-list/disapprove/(:any)'] = 'company_doctor/loa_controller/disapprove_loa_request';
 $route['company-doctor/loa/requested-loa/generate-printable-loa/(:any)'] = 'company_doctor/loa_controller/generate_printable_loa';
 $route['company-doctor/loa/requests-list/cancelled/fetch'] = 'company_doctor/loa_controller/fetch_all_cancelled_loa';
+$route['company-doctor/loa/requests-list/billed/fetch'] = 'company_doctor/loa_controller/fetch_all_billed_loa';
 
 // Company Doctor NOA Routes
 $route['company-doctor/noa/requests-list/fetch'] = 'company_doctor/noa_controller/fetch_all_pending_noa';

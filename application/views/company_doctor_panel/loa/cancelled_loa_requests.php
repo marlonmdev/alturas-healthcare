@@ -68,6 +68,13 @@
               <span class="hidden-xs-down fs-5 font-bold">CANCELLED</span>
             </a>
           </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>company-doctor/loa/requests-list/billed" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">BILLED</span>
+            </a>
+          </li>
         </ul>
 
         <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
@@ -109,7 +116,7 @@
             </div>
           </div>
         </div>
-        <?php include 'view_cancelled_loa_details.php'; ?>=
+        <?php include 'view_cancelled_loa_details.php'; ?>
       </div>
     </div>
   </div>

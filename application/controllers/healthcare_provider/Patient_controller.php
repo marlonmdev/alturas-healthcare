@@ -313,7 +313,7 @@ class Patient_controller extends CI_Controller {
 		$isperformed = false;
 		// var_dump("loa id",$loa_id);
 		if($this->loa_model->check_performed_loa($loa_id)){
-			// $performed = $this->loa_model->get_performed_info($loa_id);
+			$performed = $this->loa_model->get_performed_info($loa_id);
 			$row = $this->loa_model->db_get_loa_info_patient($loa_id,true);
 			$isperformed = true;
 		}else{
@@ -353,12 +353,12 @@ class Patient_controller extends CI_Controller {
 		endforeach;
 
 		if($isperformed){
-			foreach ($row as $physician) :
+			foreach ($performed as $physician) :
 				if (isset($physician['physician_fname']) || isset($physician['physician_mname']) || isset($physician['physician_lname'])) {
 					array_push($physicians, $physician['physician_fname'].' '.$physician['physician_mname'].' '.$physician['physician_lname']);	
 				}
 			endforeach;
-			//var_dump("physicians",$row);
+			// var_dump("physicians",$physicians);
 		}
 		
 		$med_serv = implode('', $ct_array);

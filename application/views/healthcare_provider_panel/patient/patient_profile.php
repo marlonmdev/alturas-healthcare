@@ -562,11 +562,15 @@
                 $('#services').append('<li>' + item + '</li>');
             });
 
-            console.log("physician",attending_physician);
-            $.each(attending_physician, function(index, item) {
+            if(attending_physician.length){
+              //console.log("physician",attending_physician);
+              $.each(attending_physician, function(index, item) {
                 console.log("physician",item);
                 $('#physician').append('<li>' + item + '</li>');
             });
+            }
+            
+           
                
             // if(attending_doctors){
             //   $('#physician').append('<li>' + attending_doctors + '</li>');

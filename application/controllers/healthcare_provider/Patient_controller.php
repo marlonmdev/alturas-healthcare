@@ -344,6 +344,8 @@ class Patient_controller extends CI_Controller {
 		$age = $diff->format("%y");
 		// get selected medical services
 		$selected_cost_types = explode(';', $row['med_services']);
+		// $perform_doctors = explode(';', $billing['attending_doctors']);
+		// var_dump("perform_doctors",$perform_doctors);
 		$ct_array = [];
 		$physicians = [];
 		foreach ($cost_types as $cost_type) :
@@ -389,7 +391,7 @@ class Patient_controller extends CI_Controller {
 			'paid_on' => isset($paid_loa['date_add'])?date("F d, Y", strtotime($paid_loa['date_add'])):"",
 			'net_bill' => isset($billing['net_bill'])?$billing['net_bill']:"",
 			'paid_amount' =>isset($paid_loa['amount_paid'])?$paid_loa['amount_paid']:"",
-			'attending_doctors' =>isset($billing['attending_doctors'])?$billing['attending_doctors']: ""
+			'attending_doctors' =>isset($billing['attending_doctors'])?explode(';', $billing['attending_doctors']): ""
 		];
 		echo json_encode($response);
 	}
@@ -412,6 +414,8 @@ class Patient_controller extends CI_Controller {
 			$doctor_name = "Does not exist from Database";
 		}
 		 
+		// $perform_doctors = explode(';', $billing['attending_doctors']);
+		// var_dump("perform_doctors",$perform_doctors);
 		// var_dump($row);
 		$dateOfBirth = $row['date_of_birth'];
 		$today = date("Y-m-d");
@@ -462,7 +466,7 @@ class Patient_controller extends CI_Controller {
 			'paid_on' => isset($paid_noa['date_add'])?date("F d, Y", strtotime($paid_noa['date_add'])):"",
 			'net_bill' => isset($billing['net_bill'])?$billing['net_bill']:"",
 			'paid_amount' =>isset($paid_noa['amount_paid'])?$paid_noa['amount_paid']:"",
-			'attending_doctors' =>isset($billing['attending_doctors'])?$billing['attending_doctors']:""
+			'attending_doctors' =>isset($billing['attending_doctors'])?explode(';', $billing['attending_doctors']):""
 		);
 		// var_dump("response",$response);
 		echo json_encode($response);

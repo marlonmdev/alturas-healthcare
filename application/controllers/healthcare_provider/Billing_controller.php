@@ -27,6 +27,8 @@ class Billing_controller extends CI_Controller {
     }
 
     public function get_personal_and_company_charge($label,$loa_noa,$net_b,$status,$prevmbl) {
+
+        // var_dump("prev balance",$prevmbl);
         
         $loa_info = $this->loa_model->db_get_loa_info($loa_noa);
         $noa_info = $this->noa_model->db_get_noa_info($loa_noa);
@@ -80,77 +82,104 @@ class Billing_controller extends CI_Controller {
 
 			if($loa_info['work_related'] == 'Yes'){
 				if($loa_info['percentage'] == ''){
-					$company_charge = number_format($net_bill,2, '.',',');
-					$personal_charge = number_format(0,2, '.',',');
-					if($net_bill >= $previous_mbl){
-						$remaining_mbl = number_format(0,2, '.',',');
-					}else if($net_bill < $previous_mbl){
-						$remaining_mbl = number_format($previous_mbl - $net_bill,2, '.',',');
-					}
+                    if($previous_mbl <= 0){
+                        $company_charge = number_format(0,2, '.',',');
+                        $personal_charge =  number_format($net_bill,2, '.',',');
+                        $remaining_mbl =  number_format(0,2, '.',',');
+                    }else{
+                        $company_charge = number_format($net_bill,2, '.',',');
+                        $personal_charge = number_format(0,2, '.',',');
+                        if($net_bill >= $previous_mbl){
+                            $remaining_mbl = number_format(0,2, '.',',');
+                        }else if($net_bill < $previous_mbl){
+                            $remaining_mbl = number_format($previous_mbl - $net_bill,2, '.',',');
+                        }
+                    }
+					
+                    
 				}else if($loa_info['percentage'] != ''){
-					
-					if($net_bill <= $previous_mbl){
-						$company_charge = number_format($net_bill,2, '.',',');
-						$personal_charge = number_format(0,2, '.',',');
-						$remaining_mbl = number_format($previous_mbl - $net_bill,2, '.',',');
-					}else if($net_bill > $previous_mbl){
-						$converted_percent = $percentage/100;
-						$initial_company_charge = floatval($converted_percent) * $net_bill;
-						$initial_personal_charge = $net_bill - floatval($initial_company_charge);
-
-						if(floatval($initial_company_charge) <= $previous_mbl){
-							$result = $previous_mbl - floatval($initial_company_charge);
-							$int_personal = floatval($initial_personal_charge) - floatval($result);
-							$personal_charge = number_format($int_personal,2, '.',',');
-							$company_charge = number_format($previous_mbl,2, '.',',');
-							$remaining_mbl = number_format(0,2, '.',',');
-					
-						}else if(floatval($initial_company_charge) > $previous_mbl){
-							$personal_charge = number_format($initial_personal_charge,2, '.',',');
-							$company_charge = number_format($initial_company_charge,2, '.',',');
-							$remaining_mbl = number_format(0,2, '.',',');
-						}
-					}
-					
+                    if($previous_mbl <= 0){
+                        $company_charge = number_format(0,2, '.',',');
+                        $personal_charge =  number_format($net_bill,2, '.',',');
+                        $remaining_mbl =  number_format(0,2, '.',',');
+                    }else{
+                        if($net_bill <= $previous_mbl){
+                            $company_charge = number_format($net_bill,2, '.',',');
+                            $personal_charge = number_format(0,2, '.',',');
+                            $remaining_mbl = number_format($previous_mbl - $net_bill,2, '.',',');
+                        }else if($net_bill > $previous_mbl){
+                            $converted_percent = $percentage/100;
+                            $initial_company_charge = floatval($converted_percent) * $net_bill;
+                            $initial_personal_charge = $net_bill - floatval($initial_company_charge);                     
+                            if(floatval($initial_company_charge) <= $previous_mbl){
+                                $result = $previous_mbl - floatval($initial_company_charge);
+                                $int_personal = floatval($initial_personal_charge) - floatval($result);
+                                $personal_charge = number_format($int_personal,2, '.',',');
+                                $company_charge = number_format($previous_mbl,2, '.',',');
+                                $remaining_mbl = number_format(0,2, '.',',');
+                        
+                            }else if(floatval($initial_company_charge) > $previous_mbl){
+                                $personal_charge = number_format($initial_personal_charge,2, '.',',');
+                                $company_charge = number_format($initial_company_charge,2, '.',',');
+                                $remaining_mbl = number_format(0,2, '.',',');
+                            }
+                            
+                        }
+                    }
 				}
 			}else if($loa_info['work_related'] == 'No'){
 				if($loa_info['percentage'] == ''){
-					if($net_bill <= $previous_mbl){
-						$company_charge = number_format($net_bill,2, '.',',');
-						$personal_charge = number_format(0,2, '.',',');
-						$remaining_mbl = number_format($previous_mbl - floatval($company_charge),2, '.',',');
-					}else if($net_bill > $previous_mbl){
-						$company_charge = number_format($previous_mbl,2, '.',',');
-						$personal_charge = number_format($net_bill - $previous_mbl,2, '.',',');
-						$remaining_mbl = number_format(0,2, '.',',');
-					}
+                    if($previous_mbl <= 0){
+                        $company_charge = number_format(0,2, '.',',');
+                        $personal_charge =  number_format($net_bill,2, '.',',');
+                        $remaining_mbl =  number_format(0,2, '.',',');
+                    }else{
+                        if($net_bill <= $previous_mbl){
+                            $company_charge = number_format($net_bill,2, '.',',');
+                            $personal_charge = number_format(0,2, '.',',');
+                            $remaining_mbl = number_format($previous_mbl - floatval($company_charge),2, '.',',');
+                        }else if($net_bill > $previous_mbl){
+                            $company_charge = number_format($previous_mbl,2, '.',',');
+                            $personal_charge = number_format($net_bill - $previous_mbl,2, '.',',');
+                            $remaining_mbl = number_format(0,2, '.',',');
+                        }
+                    }
+					
+                    
 				}else if($loa_info['percentage'] != ''){
-					if($net_bill <= $previous_mbl){
-						$company_charge = number_format($net_bill,2, '.',',');
-						$personal_charge = number_format(0,2, '.',',');
-						$remaining_mbl = number_format($previous_mbl - floatval($net_bill),2, '.',',');
-					}else if($net_bill > $previous_mbl){
-						$converted_percent = $percentage/100;
-						$initial_personal_charge = $converted_percent * $net_bill;
-						$initial_company_charge = $net_bill - floatval($initial_personal_charge);
-						if($initial_company_charge <= $previous_mbl){
-							$result = $previous_mbl - $initial_company_charge;
-							$initial_personal = $initial_personal_charge - $result;
-							if($initial_personal < 0 ){
-								$personal_charge = number_format(0,2, '.',',');
-								$company_charge = number_format($initial_company_charge + $initial_personal_charge,2, '.',',');
-								$remaining_mbl = number_format($previous_mbl - floatval($company_charge),2, '.',',');
-							}else if($initial_personal >= 0){
-								$personal_charge = number_format($initial_personal,2, '.',',');
-								$company_charge = number_format($previous_mbl,2, '.',',');
-								$remaining_mbl = number_format(0,2, '.',',');
-							}
-						}else if($initial_company_charge > $previous_mbl){
-							$personal_charge = number_format($initial_personal_charge,2, '.',',');
-							$company_charge = number_format($initial_company_charge,2, '.',',');
-							$remaining_mbl = number_format(0,2, '.',',');
-						}
-					}
+                    if($previous_mbl <= 0){
+                        $company_charge = number_format(0,2, '.',',');
+                        $personal_charge =  number_format($net_bill,2, '.',',');
+                        $remaining_mbl =  number_format(0,2, '.',',');
+                    }else{
+                        if($net_bill <= $previous_mbl){
+                            $company_charge = number_format($net_bill,2, '.',',');
+                            $personal_charge = number_format(0,2, '.',',');
+                            $remaining_mbl = number_format($previous_mbl - floatval($net_bill),2, '.',',');
+                        }else if($net_bill > $previous_mbl){
+                            $converted_percent = $percentage/100;
+                            $initial_personal_charge = $converted_percent * $net_bill;
+                            $initial_company_charge = $net_bill - floatval($initial_personal_charge);
+                        
+                            if($initial_company_charge <= $previous_mbl){
+                                $result = $previous_mbl - $initial_company_charge;
+                                $initial_personal = $initial_personal_charge - $result;
+                                if($initial_personal < 0 ){
+                                    $personal_charge = number_format(0,2, '.',',');
+                                    $company_charge = number_format($initial_company_charge + $initial_personal_charge,2, '.',',');
+                                    $remaining_mbl = number_format($previous_mbl - floatval($company_charge),2, '.',',');
+                                }else if($initial_personal >= 0){
+                                    $personal_charge = number_format($initial_personal,2, '.',',');
+                                    $company_charge = number_format($previous_mbl,2, '.',',');
+                                    $remaining_mbl = number_format(0,2, '.',',');
+                                }
+                            }else if($initial_company_charge > $previous_mbl){
+                                $personal_charge = number_format($initial_personal_charge,2, '.',',');
+                                $company_charge = number_format($initial_company_charge,2, '.',',');
+                                $remaining_mbl = number_format(0,2, '.',',');
+                            }
+                        }
+                    }
 				}
 			}
 
@@ -192,78 +221,108 @@ class Billing_controller extends CI_Controller {
 			   $percentage = floatval($noa_info['percentage']);
 
 			if($noa_info['work_related'] == 'Yes'){
+               
 				if($noa_info['percentage'] == ''){
-					$company_charge = number_format($net_bill,2, '.',',');
-					$personal_charge = number_format(0,2, '.',',');
-					if($net_bill >= $previous_mbl){
-						$remaining_mbl = number_format(0,2, '.',',');
-					}else if($net_bill < $previous_mbl){
-						$remaining_mbl = number_format($previous_mbl - $net_bill,2, '.',',');
-					}
+                    if($previous_mbl <= 0){
+                        $company_charge = number_format(0,2, '.',',');
+                        $personal_charge =  number_format($net_bill,2, '.',',');
+                        $remaining_mbl =  number_format(0,2, '.',',');
+                    }else{
+                        $company_charge = number_format($net_bill,2, '.',',');
+                        $personal_charge = number_format(0,2, '.',',');
+                        if($net_bill >= $previous_mbl){
+                            $remaining_mbl = number_format(0,2, '.',',');
+                        }else if($net_bill < $previous_mbl){
+                            $remaining_mbl = number_format($previous_mbl - $net_bill,2, '.',',');
+                        }
+                    }
+					
+                    
 				}else if($noa_info['percentage'] != ''){
-					
-					if($net_bill <= $previous_mbl){
-						$company_charge = number_format($net_bill,2, '.',',');
-						$personal_charge = number_format(0,2, '.',',');
-						$remaining_mbl = number_format($previous_mbl - $net_bill,2, '.',',');
-					}else if($net_bill > $previous_mbl){
-						$converted_percent = $percentage/100;
-						$initial_company_charge = floatval($converted_percent) * $net_bill;
-						$initial_personal_charge = $net_bill - floatval($initial_company_charge);
-
-						if(floatval($initial_company_charge) <= $previous_mbl){
-							$result = $previous_mbl - floatval($initial_company_charge);
-							$int_personal = floatval($initial_personal_charge) - floatval($result);
-							$personal_charge = number_format($int_personal,2, '.',',');
-							$company_charge = number_format($previous_mbl,2, '.',',');
-							$remaining_mbl = number_format(0,2, '.',',');
-					
-						}else if(floatval($initial_company_charge) > $previous_mbl){
-							$personal_charge = number_format($initial_personal_charge,2, '.',',');
-							$company_charge = number_format($initial_company_charge,2, '.',',');
-							$remaining_mbl = number_format(0,2, '.',',');
-						}
-					}
+					if($previous_mbl <= 0){
+                        $company_charge = number_format(0,2, '.',',');
+                        $personal_charge =  number_format($net_bill,2, '.',',');
+                        $remaining_mbl =  number_format(0,2, '.',',');
+                    }else{
+                        if($net_bill <= $previous_mbl){
+                            $company_charge = number_format($net_bill,2, '.',',');
+                            $personal_charge = number_format(0,2, '.',',');
+                            $remaining_mbl = number_format($previous_mbl - $net_bill,2, '.',',');
+                        }else if($net_bill > $previous_mbl){
+                            $converted_percent = $percentage/100;
+                            $initial_company_charge = floatval($converted_percent) * $net_bill;
+                            $initial_personal_charge = $net_bill - floatval($initial_company_charge);
+                            
+                            if(floatval($initial_company_charge) <= $previous_mbl){
+                                $result = $previous_mbl - floatval($initial_company_charge);
+                                $int_personal = floatval($initial_personal_charge) - floatval($result);
+                                $personal_charge = number_format($int_personal,2, '.',',');
+                                $company_charge = number_format($previous_mbl,2, '.',',');
+                                $remaining_mbl = number_format(0,2, '.',',');
+                        
+                            }else if(floatval($initial_company_charge) > $previous_mbl){
+                                $personal_charge = number_format($initial_personal_charge,2, '.',',');
+                                $company_charge = number_format($initial_company_charge,2, '.',',');
+                                $remaining_mbl = number_format(0,2, '.',',');
+                            }
+                        }
+                    }
 					
 				}
 			}else if($noa_info['work_related'] == 'No'){
 				if($noa_info['percentage'] == ''){
-					if($net_bill <= $previous_mbl){
-						$company_charge = number_format($net_bill,2, '.',',');
-						$personal_charge = number_format(0,2, '.',',');
-						$remaining_mbl = number_format($previous_mbl - floatval($company_charge),2, '.',',');
-					}else if($net_bill > $previous_mbl){
-						$company_charge = number_format($previous_mbl,2, '.',',');
-						$personal_charge = number_format($net_bill - $previous_mbl,2, '.',',');
-						$remaining_mbl = number_format(0,2, '.',',');
-					}
+                    if($previous_mbl <= 0){
+                        $company_charge = number_format(0,2, '.',',');
+                        $personal_charge =  number_format($net_bill,2, '.',',');
+                        $remaining_mbl =  number_format(0,2, '.',',');
+                    }else{
+                        if($net_bill <= $previous_mbl){
+                            $company_charge = number_format($net_bill,2, '.',',');
+                            $personal_charge = number_format(0,2, '.',',');
+                            $remaining_mbl = number_format($previous_mbl - floatval($company_charge),2, '.',',');
+                        }else if($net_bill > $previous_mbl){
+                            $company_charge = number_format($previous_mbl,2, '.',',');
+                            $personal_charge = number_format($net_bill - $previous_mbl,2, '.',',');
+                            $remaining_mbl = number_format(0,2, '.',',');
+                        }
+                    }
+					
+                   
 				}else if($noa_info['percentage'] != ''){
-					if($net_bill <= $previous_mbl){
-						$company_charge = number_format($net_bill,2, '.',',');
-						$personal_charge = number_format(0,2, '.',',');
-						$remaining_mbl = number_format($previous_mbl - floatval($net_bill),2, '.',',');
-					}else if($net_bill > $previous_mbl){
-						$converted_percent = $percentage/100;
-						$initial_personal_charge = $converted_percent * $net_bill;
-						$initial_company_charge = $net_bill - floatval($initial_personal_charge);
-						if($initial_company_charge <= $previous_mbl){
-							$result = $previous_mbl - $initial_company_charge;
-							$initial_personal = $initial_personal_charge - $result;
-							if($initial_personal < 0 ){
-								$personal_charge = number_format(0,2, '.',',');
-								$company_charge = number_format($initial_company_charge + $initial_personal_charge,2, '.',',');
-								$remaining_mbl = number_format($previous_mbl - floatval($company_charge),2, '.',',');
-							}else if($initial_personal >= 0){
-								$personal_charge = number_format($initial_personal,2, '.',',');
-								$company_charge = number_format($previous_mbl,2, '.',',');
-								$remaining_mbl = number_format(0,2, '.',',');
-							}
-						}else if($initial_company_charge > $previous_mbl){
-							$personal_charge = number_format($initial_personal_charge,2, '.',',');
-							$company_charge = number_format($initial_company_charge,2, '.',',');
-							$remaining_mbl = number_format(0,2, '.',',');
-						}
-					}
+                    if($previous_mbl <= 0){
+                        $company_charge = number_format(0,2, '.',',');
+                        $personal_charge =  number_format($net_bill,2, '.',',');
+                        $remaining_mbl =  number_format(0,2, '.',',');
+                    }else{
+                        if($net_bill <= $previous_mbl){
+                            $company_charge = number_format($net_bill,2, '.',',');
+                            $personal_charge = number_format(0,2, '.',',');
+                            $remaining_mbl = number_format($previous_mbl - floatval($net_bill),2, '.',',');
+                        }else if($net_bill > $previous_mbl){
+                            $converted_percent = $percentage/100;
+                            $initial_personal_charge = $converted_percent * $net_bill;
+                            $initial_company_charge = $net_bill - floatval($initial_personal_charge);
+                            
+                            if($initial_company_charge <= $previous_mbl){
+                                $result = $previous_mbl - $initial_company_charge;
+                                $initial_personal = $initial_personal_charge - $result;
+                                if($initial_personal < 0 ){
+                                    $personal_charge = number_format(0,2, '.',',');
+                                    $company_charge = number_format($initial_company_charge + $initial_personal_charge,2, '.',',');
+                                    $remaining_mbl = number_format($previous_mbl - floatval($company_charge),2, '.',',');
+                                }else if($initial_personal >= 0){
+                                    $personal_charge = number_format($initial_personal,2, '.',',');
+                                    $company_charge = number_format($previous_mbl,2, '.',',');
+                                    $remaining_mbl = number_format(0,2, '.',',');
+                                }
+                            }else if($initial_company_charge > $previous_mbl){
+                                $personal_charge = number_format($initial_personal_charge,2, '.',',');
+                                $company_charge = number_format($initial_company_charge,2, '.',',');
+                                $remaining_mbl = number_format(0,2, '.',',');
+                            }
+                            
+                        }
+                    }
 				}
 			}
 			}
@@ -1060,14 +1119,33 @@ class Billing_controller extends CI_Controller {
                 $this->billing_model->insert_old_billing($billing_no);
                 $inserted = $this->billing_model->update_billing($data,$billing_no);
 
-                $rdata = [  'company_charge'        => floatval(str_replace(',', '', $result_charge['company_charge'])),
-                            'personal_charge'       => floatval(str_replace(',', '', $result_charge['personal_charge'])),
-                            'before_remaining_bal'  => floatval(str_replace(',', '', $result_charge['previous_mbl'])),
-                            'after_remaining_bal'   => floatval(str_replace(',', '', $result_charge['remaining_balance'])),];
+                if($inserted){
+                    $row =  $this->billing_model->get_affected_billing($billing_no, $loa['emp_id']);
+                    foreach($row as $n){
+                        $get_prev_mbl1 = $this->billing_model->get_prev_mbl($n['billing_no'],$n['emp_id']);
+
+                        $get_prev_mbl_by_bill_no1 = $this->billing_model->get_billing($n['billing_no']);
+
+                        $result_charge1 = $this->get_personal_and_company_charge(($n['loa_id'])?"loa":"noa", ($n['loa_id'])?$n['loa_id']:$n['noa_id'], $n['net_bill'],($check_bill !=0)? true : false, ($get_prev_mbl1 !=null)?$get_prev_mbl1['after_remaining_bal']:$get_prev_mbl_by_bill_no1['before_remaining_bal']);
+                        $data1 =[
+                            'company_charge'        => floatval(str_replace(',', '', $result_charge1['company_charge'])),
+                            'personal_charge'       => floatval(str_replace(',', '', $result_charge1['personal_charge'])),
+                            'before_remaining_bal'  => floatval(str_replace(',', '', $result_charge1['previous_mbl'])),
+                            'after_remaining_bal'   => floatval(str_replace(',', '', $result_charge1['remaining_balance'])),
+                        ];
+
+                        $mbl1 = [
+                            'used_mbl'            => $result_charge1['used_mbl'],
+                            'remaining_balance'      => $result_charge1['remaining_balance']
+                        ];
+                        //  var_dump("affected",$data1);
+                        $this->billing_model->update_affected_billing($data1,$n['billing_no']);
+                        $this->billing_model->update_member_remaining_balance($n['emp_id'], $mbl1);
+                    //    var_dump("affected",$data);
+                    }
+                }
             }else{
                 $inserted = $this->billing_model->insert_billing($data);
-            }
-
                 if(!$inserted){
                     $response = [
                        'status'  => 'save-error',
@@ -1090,21 +1168,24 @@ class Billing_controller extends CI_Controller {
                     $resched = $this->billing_model->check_if_done_created_new_loa($loa_id);
                     $rescheduled = $this->billing_model->check_if_status_cancelled($loa_id);
                 }
-                
+                    
 
-            if($rescheduled){   
-                if($existing && $resched['reffered'] == 1){
-                    $this->billing_model->set_completed_value($loa_id);
+                if($rescheduled){   
+                    if($existing && $resched['reffered'] == 1){
+                        $this->billing_model->set_completed_value($loa_id);
+                    }
+                }else{
+                    if($existing){
+                        $this->billing_model->set_completed_value($loa_id);
+                    }
                 }
-            }else{
-                if($existing){
-                    $this->billing_model->set_completed_value($loa_id);
-                }
-            }
+                
             
-           
-            $type = 'LOA';
-            $this->update_request_status($type, $loa_id);
+                $type = 'LOA';
+                $this->update_request_status($type, $loa_id);
+            }
+
+                
             $bill = $this->billing_model->get_billing($billing_no);
             $encrypted_id = $this->myhash->hasher($bill['billing_id'], 'encrypt');
             $response = [
@@ -1307,34 +1388,64 @@ class Billing_controller extends CI_Controller {
             // var_dump("billing no",$billing_no);
             if($check_bill){
                 $this->billing_model->insert_old_billing($billing_no);
+
                 $inserted = $this->billing_model->update_billing($data,$billing_no);
+
+                if($inserted){
+                    $row =  $this->billing_model->get_affected_billing($billing_no, $noa['emp_id']);
+                    foreach($row as $n){
+                        $get_prev_mbl1 = $this->billing_model->get_prev_mbl($n['billing_no'],$n['emp_id']);
+
+                        $get_prev_mbl_by_bill_no1 = $this->billing_model->get_billing($n['billing_no']);
+
+                        $result_charge1 = $this->get_personal_and_company_charge(($n['noa_id'])?"noa":"loa", ($n['noa_id'])?$n['noa_id']:$n['loa_id'], $n['net_bill'],($check_bill !=0)? true : false, ($get_prev_mbl1 !=null)?$get_prev_mbl1['after_remaining_bal']:$get_prev_mbl_by_bill_no1['before_remaining_bal']);
+                        $data1 =[
+                            'company_charge'        => floatval(str_replace(',', '', $result_charge1['company_charge'])),
+                            'personal_charge'       => floatval(str_replace(',', '', $result_charge1['personal_charge'])),
+                            'before_remaining_bal'  => floatval(str_replace(',', '', $result_charge1['previous_mbl'])),
+                            'after_remaining_bal'   => floatval(str_replace(',', '', $result_charge1['remaining_balance'])),
+                        ];
+
+                        $mbl1 = [
+                            'used_mbl'            => $result_charge1['used_mbl'],
+                            'remaining_balance'      => $result_charge1['remaining_balance']
+                        ];
+                        //  var_dump("affected",$data1);
+                        $this->billing_model->update_affected_billing($data1,$n['billing_no']);
+                        $this->billing_model->update_member_remaining_balance($n['emp_id'], $mbl1);
+                    //    var_dump("affected",$data);
+                    }
+                }
+
             }else{
                 $inserted = $this->billing_model->insert_billing($data);
+                
+                    $personal_charge = floatval(str_replace(',', '', $result_charge['personal_charge']));
+                if(!$inserted){
+                    $response = [
+                    'status'  => 'save-error',
+                    'message' => 'PDF Bill Upload Failed'
+                    ];
+                } else{
+                    $billing_id = $this->billing_model->get_billing($billing_no);
+
+                    if($personal_charge>0){
+                        $advances = ['emp_id'                => $noa['emp_id'],
+                                    'billing_id'            => $billing_id['billing_id'],
+                                    'hp_id'                =>$this->session->userdata('dsg_hcare_prov'),
+                                    'excess_amount'       => floatval(str_replace(',', '', $result_charge['personal_charge'])),
+                                    'date_added'             => date('Y-m-d'),
+                                    'status'                => 'Pending'];
+                        $this->billing_model->insert_cash_advance($advances);
+                    }
+                    $this->billing_model->update_member_remaining_balance($noa['emp_id'], $mbl);
+                }  
+                
+                $type = 'NOA';
+                $this->update_request_status($type, $noa_id);
             }
 
-            $personal_charge = floatval(str_replace(',', '', $result_charge['personal_charge']));
-            if(!$inserted){
-                $response = [
-                   'status'  => 'save-error',
-                   'message' => 'PDF Bill Upload Failed'
-                ];
-            } else{
-                $billing_id = $this->billing_model->get_billing($billing_no);
-
-                if($personal_charge>0){
-                    $advances = ['emp_id'                => $noa['emp_id'],
-                                'billing_id'            => $billing_id['billing_id'],
-                                'hp_id'                =>$this->session->userdata('dsg_hcare_prov'),
-                                'excess_amount'       => floatval(str_replace(',', '', $result_charge['personal_charge'])),
-                                'date_added'             => date('Y-m-d'),
-                                'status'                => 'Pending'];
-                    $this->billing_model->insert_cash_advance($advances);
-                }
-                $this->billing_model->update_member_remaining_balance($noa['emp_id'], $mbl);
-            }  
             
-            $type = 'NOA';
-            $this->update_request_status($type, $noa_id);
             $bill = $this->billing_model->get_billing($billing_no);
             $encrypted_id = $this->myhash->hasher($bill['billing_id'], 'encrypt');
             $response = [
@@ -1362,8 +1473,14 @@ class Billing_controller extends CI_Controller {
         $config['allowed_types'] = 'pdf';
         $config['encrypt_name'] = TRUE;
         $this->load->library('upload', $config);
+        if($initial_date->length){
+            $response = [
+                'status'  => 'save-error',
+                'message' => 'Invalid Date'
+            ];
 
-        if (!$this->upload->do_upload('pdf-file-initial')) {
+        }
+        else if (!$this->upload->do_upload('pdf-file-initial')) {
             $response = [
                 'status'  => 'save-error',
                 'message' => 'PDF Bill Upload Failed'

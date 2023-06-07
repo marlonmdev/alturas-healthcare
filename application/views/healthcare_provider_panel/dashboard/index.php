@@ -527,12 +527,22 @@
                 $('#services').append('<li>' + item + '</li>');
             });
            
-               
-            if(attending_doctors){
-              $('#physician').append('<li>' + attending_doctors + '</li>');
+            if(attending_physician.length){
+              //console.log("physician",attending_physician);
+              $.each(attending_physician, function(index, item) {
+                console.log("physician",item);
+                $('#physician').append('<li>' + item + '</li>');
+            });
             }
             
-            
+            if(attending_doctors.length){
+              $.each(attending_doctors, function(index, item) {
+                if(item.length > 1){
+                  $('#physician').append('<li>' +'Dr. '+ item + '</li>');
+                }
+              });
+            }
+           
           }
 
         });
@@ -636,8 +646,13 @@
             // $('#request-date').html(request_date);
             // $('#chief-complaint').html(chief_complaint);
             // $('#requesting-physician').html(requesting_physician);
-            if(attending_doctors){
-              $('#physician-noa').append('<li>' + attending_doctors + '</li>');
+            if(attending_doctors.length){
+              $.each(attending_doctors, function(index, item) {
+                if(item.length > 1){
+                  $('#physician-noa').append('<li>' +'Dr. '+ item + '</li>');
+                }
+                
+              });
             }
             
             // $('#work-related').html(work_related);

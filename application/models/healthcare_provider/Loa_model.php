@@ -276,6 +276,7 @@ class Loa_model extends CI_Model{
     // End of server-side processing datatables
 
     function get_performed_info($loa_id){
-        return $this->db->get_where('performed_loa_info', ['loa_id' => $loa_id])->result_array();
+        return $this->db->get_where('performed_loa_info', ['loa_id' => $loa_id,
+                        'physician_fname !=' => '', 'physician_mname !=' => '','physician_lname !=' => '',])->result_array();
     }
 }

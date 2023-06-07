@@ -344,13 +344,12 @@ class Billing_model extends CI_Model {
 
     function get_affected_billing($billing_no, $emp_id){
         $billing_id = $this->db->select('billing_id')->get_where('billing', ['billing_no' => $billing_no])->row()->billing_id;
-        $this->db->select('after_remaining_bal')
-            ->where('billing_id <', $billing_id)
+        $this->db->select('*')
+            ->where('billing_id >', $billing_id)
             ->where('emp_id', $emp_id)
-            ->order_by('billing_id', 'desc')
-            ->limit(1);
+            ->where('status !=', 'Paid');
         $query = $this->db->get('billing');
-        return $query->row_array();
+        return $query->result_array();
     }
     
     function insert_cash_advance($data) {

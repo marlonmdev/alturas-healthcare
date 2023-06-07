@@ -495,7 +495,7 @@
                     $('#loa_details_1').append(`<h6>APPROVED BY: <strong><span class="text-primary">${approved_by}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>EXPIRATION DATE: <strong><span class="text-primary">${expiration}</span></strong></h6>`); 
                     if(rx_file.length){$("#p-documents").show();}
-                    $("#p-physician").show();
+                    if(attending_doctors.length != 0 || attending_physician.length != 0){ $("#p-physician").show();}
                 break;
                 case 'Disapproved':
                     $('#loa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
@@ -548,8 +548,8 @@
                 
             }
             
-            console.log("rxfile",rx_file);
-            console.log("soafile",pdf_bill);
+            // console.log("attending_physician",attending_physician.length);
+            // console.log("attending_doctors",attending_doctors.length);
             if(rx_file.length){
               $('#documents').append('<li id="rx-file"><span class="mdi mdi-file"></span><a href="#" onclick="viewImage(\''+rx_file+'\',\''+'rx'+'\')">Rx File</a></li>');
             }
@@ -565,17 +565,21 @@
             if(attending_physician.length){
               //console.log("physician",attending_physician);
               $.each(attending_physician, function(index, item) {
-                console.log("physician",item);
-                $('#physician').append('<li>' + item + '</li>');
+                if(item.length > 1){
+                  $('#physician').append('<li>' + item + '</li>');
+                }
             });
             }
             
-           
-               
-            // if(attending_doctors){
-            //   $('#physician').append('<li>' + attending_doctors + '</li>');
-            // }
-            
+            if(attending_doctors.length){
+              $.each(attending_doctors, function(index, item) {
+                if(item.length > 1){
+                  $('#physician').append('<li>' +'Dr. '+ item + '</li>');
+                }
+                
+            });
+              
+            }
             
           }
 
@@ -677,16 +681,15 @@
             if(prescription.length){
               $('#documents-noa').append('<li id="rx-file"><span class="mdi mdi-file"></span><a href="#" onclick="viewImage(\''+prescription+'\',\''+'prescription'+'\')">Prescription File</a></li>');
             }
-            // $('#soa').html();                                                                                               
-            
-            // $('#requesting-company').html(requesting_company);
-            // $('#request-date').html(request_date);
-            // $('#chief-complaint').html(chief_complaint);
-            // $('#requesting-physician').html(requesting_physician);
-            if(attending_doctors){
-              $('#physician-noa').append('<li>' + attending_doctors + '</li>');
+
+            if(attending_doctors.length){
+              $.each(attending_doctors, function(index, item) {
+                if(item.length > 1){
+                  $('#physician-noa').append('<li>' +'Dr. '+ item + '</li>');
+                }
+                
+              });
             }
-            
             // $('#work-related').html(work_related);
           }
 

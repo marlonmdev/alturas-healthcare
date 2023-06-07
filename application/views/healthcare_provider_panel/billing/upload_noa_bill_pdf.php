@@ -176,7 +176,7 @@
                             <i class="mdi mdi-calendar-range"></i>
                         </span>
                     </div>
-                    <input type="date" class="form-control" name="initial-date" id="initial-date" title="Initial bill As Of" oninput="validateDateRange()" placeholder="Start Date" onchange="displayValue()" required>
+                    <input type="date" class="form-control" name="initial-date" id="initial-date" title="Initial bill As Of" oninput="validateDateRange()" placeholder="Billing Date" onchange="displayValue()" required>
                 </div>
             </div>
         </div>
@@ -305,29 +305,29 @@
     let pdfinput = "";
     const  previewPdfFile = (pdf_input) => {
         pdfinput = pdf_input;
-        $('#viewPDFBillModal').modal('show');
-        if(pdfinput==="pdf-file" || pdfinput ==="pdf-file-initial"){
-            $('#billing_no').text('<?=$billing_no?>');
-            $('#billing_no_holder').show();
-        }else{
-            $('#billing_no_holder').hide();
-        }
-
         let pdfFileInput = document.getElementById(pdf_input);
         let pdfFile = pdfFileInput.files[0];
         let reader = new FileReader();
-
-        reader.onload = function(event) {
+        if(pdfFile){
+            $('#viewPDFBillModal').modal('show');
+            if(pdfinput==="pdf-file" || pdfinput ==="pdf-file-initial"){
+                $('#billing_no').text('<?=$billing_no?>');
+                $('#billing_no_holder').show();
+            }else{
+                $('#billing_no_holder').hide();
+            }
+            reader.onload = function(event) {
             let dataURL = event.target.result;
             let iframe = document.querySelector('#pdf-viewer');
             iframe.src = dataURL;
         };
+            reader.readAsDataURL(pdfFile);
+        }
 
-        reader.readAsDataURL(pdfFile);
     };
 
     $(document).ready(function(){
-       
+
         read_pdf(true);
         $('#Prescription').hide();
         $('#final_tab').on('click',function(){
@@ -519,7 +519,7 @@
         const read_pdf = (is_final) =>{
        // console.log("is_final",is_final);
         //extract pdf text and git the net bill
-        let pdfFileInput = (is_final)?document.getElementById('pdf-file'):document.getElementById('pdf-file-initial');
+        let pdfFileInput = (is_final) ? document.getElementById('pdf-file') : document.getElementById('pdf-file-initial');
         let subtotalValue = 0;
         pdfFileInput.addEventListener('change', function() {
         let reader = new FileReader();
@@ -537,23 +537,23 @@
                         .then(function(textContent) {
                         const sortedItems = textContent.items
                             .map(function(item) {
-                            return {text: item.str.toLowerCase(), x: item.transform[4], y: item.transform[5]};
+                                return {text: item.str.toLowerCase(), x: item.transform[4], y: item.transform[5]};
                             })
                             .sort(function(a, b) {
-                            if (Math.abs(a.y - b.y) < 5) {
-                                return a.x - b.x;
-                            } else {
-                                return b.y - a.y;
-                            }
-                            })
+                                if (Math.abs(a.y - b.y) < 5) {
+                                    return a.x - b.x;
+                                } else {
+                                    return b.y - a.y;
+                                }
+                                })
                             .reduce(function(groups, item) {
-                            const lastGroup = groups[groups.length - 1];
-                            if (lastGroup && Math.abs(lastGroup.y - item.y) < 5) {
-                                lastGroup.text += ' ' + item.text;
-                            } else {
-                                groups.push({text: item.text, x: item.x, y: item.y});
-                            }
-                            return groups;
+                                const lastGroup = groups[groups.length - 1];
+                                if (lastGroup && Math.abs(lastGroup.y - item.y) < 5) {
+                                    lastGroup.text += ' ' + item.text;
+                                } else {
+                                    groups.push({text: item.text, x: item.x, y: item.y});
+                                }
+                                return groups;
                             }, []);
 
                         return sortedItems;
@@ -581,6 +581,7 @@
                             console.log(finalResult);
                             console.log("final result",finalResult);
                             const pattern = /attending doctor\(s\):\s(.*?)\admission date:/si;
+                            const patient_pattern = /patient name:\s(.*?)\admission no:/si;
                             const doc_pattern = /hospital charges(.*?)please pay for this amount/si;
 
                             const matches_1 = finalResult.match(pattern);
@@ -589,19 +590,16 @@
                             const matches_2 = finalResult.match(doc_pattern);
                             const result_2 = matches_2 ? matches_2[1] : null;
 
-                                // const doc_pattern_2 = /total(.*?)subtotal/si;
-                                // const matches_3 = doc_pattern_2.exec(result_2);
-                                // const result_3 = matches_3 ? matches_3[1] : null;
-                                
-
-                           
+                            const matches_3 = finalResult.match(patient_pattern);
+                            const result_3 = matches_3 ? matches_3[1] : null;
 
                             hospital_charges = result_2;
-                            attending_doctors = result_1;
+                            attending_doctors = get_doctors(finalResult);
 
-                            console.log("doctors", attending_doctors);
+                            console.log("doctors",attending_doctors);
                             // console.log("final doctors", result_3);
                             console.log("hospital charges", hospital_charges);
+                            console.log("patient name", result_3);
                         
                         const regex = /please pay for this amount\s*\.*\s*([\d,\.]+)/i;
                         // const regex = /subtotal\s*\.{26}\s*\(([\d,\.]+)\)/i;
@@ -675,10 +673,62 @@
                     console.error(error);
                     });
                 };
-                reader.readAsArrayBuffer(this.files[0]);
+                if(this.files[0]){
+                    reader.readAsArrayBuffer(this.files[0]);
+                }
+                
                 });
 
             }
+
+            const get_doctors = (lines) => {
+                let include = false;
+                let include2 = true;
+
+                const liness = lines.split("\n");
+                const filteredLines = liness.filter((line) => {
+                    if (include) {
+                    return true;
+                    }
+                    if (/\btotal\b/i.test(line)) {
+                    include = true;
+                    }
+                    return false;
+                });
+
+                const result = filteredLines.join("\n");
+
+                if(result){
+                    const lin = result.split("\n");
+              
+                    const doctors = lin.filter(line => {
+                        if (include2) {
+                            if (/\bsubtotal\b/i.test(line)) {
+                                include2 = false;
+                                return false;
+                            }
+                            return true;
+                        }
+                        return false;
+                        });
+
+                        const doc = doctors.join("\n");
+                        
+                        const excludedTerms = ["gross", "discount", "vat", "professional fee"];
+
+                        const pattern = new RegExp("\\b(" + excludedTerms.join("|") + "|\\d{1,3}(?:,\\d{3})*(?:\\.\\d+)?)\\b", "gi");
+                        const excludedDoc = doc.replace(pattern, "");
+                        
+                        const pattern1 = /\n(\S+)/g;
+                        const modifiedDoc1 = excludedDoc.replace(pattern1, ' $1');
+
+                        const pattern2 = /^(.*\S)(\s*)$/gm;
+                        const modifiedDoc2 = modifiedDoc1.replace(pattern2, '$1;$2');
+                        
+                        return modifiedDoc2.replace(/\s+/g, ' ');;
+                }
+
+            };
 
                 const viewPDFBill = (pdf_bill,noa_no) => {
                 $('#viewPDFBillModal').modal('show');

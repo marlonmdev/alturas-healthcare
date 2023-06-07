@@ -116,17 +116,18 @@
     let pdfFileInput = document.getElementById('pdf-file');
     let pdfPreview = document.getElementById('pdf-preview');
     let pdfFile = pdfFileInput.files[0];
-
-    if (pdfFile.type === 'application/pdf') {
-      let reader = new FileReader();
-      reader.onload = function () {
-        let pdfObject = "<object data='" + reader.result + "' type='application/pdf' width='100%' height='600px'>";
-        pdfObject += "</object>";
-        pdfPreview.innerHTML = pdfObject;
+    if(pdfFile){
+      if (pdfFile.type === 'application/pdf') {
+        let reader = new FileReader();
+        reader.onload = function () {
+          let pdfObject = "<object data='" + reader.result + "' type='application/pdf' width='100%' height='600px'>";
+          pdfObject += "</object>";
+          pdfPreview.innerHTML = pdfObject;
+        }
+        reader.readAsDataURL(pdfFile);
+      }else{
+        pdfPreview.innerHTML = "Please select a PDF file.";
       }
-      reader.readAsDataURL(pdfFile);
-    }else{
-      pdfPreview.innerHTML = "Please select a PDF file.";
     }
   }
   
@@ -255,14 +256,14 @@
                             const pattern = /attending doctor\(s\):\s(.*?)\sregistry date:/si;
                             const doc_pattern = /hospital charges(.*?)please pay for this amount/si;
 
-                            const matches_1 = finalResult.match(pattern);
-                            const result_1 = matches_1 ? matches_1[1] : null;
+                            // const matches_1 = finalResult.match(pattern);
+                            // const result_1 = matches_1 ? matches_1[1] : null;
 
                             const matches_2 = finalResult.match(doc_pattern);
                             const result_2 = matches_2 ? matches_2[1] : null;
 
                             hospital_charges = result_2;
-                            attending_doctors = result_1;
+                            attending_doctors = get_doctors(finalResult);
 
                             console.log("doctors", attending_doctors);
                             console.log("hospital charges", hospital_charges);
@@ -313,7 +314,7 @@
                             }else{
                             $('#upload-btn').prop('disabled',false);
                             if(parseFloat(net_bill)>mbl){
-                              $('#upload-btn').prop('disabled',true);
+                              // $('#upload-btn').prop('disabled',true);
                                             setTimeout(function() {
                                             $.alert({
                                                 title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Warning</h3>`,
@@ -335,9 +336,58 @@
                     console.error(error);
                     });
       };
-      reader.readAsArrayBuffer(this.files[0]);
+        if(this.files[0])
+        reader.readAsArrayBuffer(this.files[0]);
       });
 
+      const get_doctors = (lines) => {
+                let include = false;
+                let include2 = true;
+
+                const liness = lines.split("\n");
+                const filteredLines = liness.filter((line) => {
+                    if (include) {
+                    return true;
+                    }
+                    if (/\btotal\b/i.test(line)) {
+                    include = true;
+                    }
+                    return false;
+                });
+
+                const result = filteredLines.join("\n");
+
+                if(result){
+                    const lin = result.split("\n");
+              
+                    const doctors = lin.filter(line => {
+                        if (include2) {
+                            if (/\bsubtotal\b/i.test(line)) {
+                                include2 = false;
+                                return false;
+                            }
+                            return true;
+                        }
+                        return false;
+                        });
+
+                        const doc = doctors.join("\n");
+                        
+                        const excludedTerms = ["gross", "discount", "vat", "professional fee"];
+
+                        const pattern = new RegExp("\\b(" + excludedTerms.join("|") + "|\\d{1,3}(?:,\\d{3})*(?:\\.\\d+)?)\\b", "gi");
+                        const excludedDoc = doc.replace(pattern, "");
+                        
+                        const pattern1 = /\n(\S+)/g;
+                        const modifiedDoc1 = excludedDoc.replace(pattern1, ' $1');
+
+                        const pattern2 = /^(.*\S)(\s*)$/gm;
+                        const modifiedDoc2 = modifiedDoc1.replace(pattern2, '$1;$2');
+                        
+                        return modifiedDoc2.replace(/\s+/g, ' ');;
+                }
+
+            };
       // const viewPDFBill = (pdf_bill) => {
 
       //               let pdfFile = `${baseUrl}uploads/pdf_bills/${pdf_bill}`;

@@ -1865,7 +1865,7 @@ class Loa_controller extends CI_Controller {
 
 		if ($this->form_validation->run() == FALSE) {
 			$response = [
-				'token' => $token,
+				//'token' => $token,
 				'status' => 'error',
 				'cancellation_reason_error' => form_error('cancellation_reason'),
 			];

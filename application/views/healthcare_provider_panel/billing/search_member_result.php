@@ -68,7 +68,7 @@
                                             <?php
                                             if (!empty($loa_requests)) :
                                                 foreach ($loa_requests as $loa) :
-                                                    if($loa['status'] == 'Approved' || $loa['status'] == 'Completed'){
+                                                    if($loa['status'] == 'Approved' || $loa['status'] == 'Completed' || $loa['status'] == 'Reffered'){
                                             ?>
                                                         <tr>
                                                             <td class="fw-bold">

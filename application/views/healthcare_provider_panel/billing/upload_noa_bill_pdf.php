@@ -23,7 +23,7 @@
     <div class="container-fluid" id="container-div">
         <!-- Go Back to Previous Page -->
         <div class="col-12 mb-4 mt-0">
-            <form method="POST" action="<?php echo base_url(); ?>healthcare-provider/billing/search">
+            <form method="POST" id="go-back" action="<?php echo base_url(); ?>healthcare-provider/billing/search">
                 <div class="input-group">
                     <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
                     <input type="hidden" name="healthcard_no" value="<?= $healthcard_no ?>">
@@ -112,7 +112,7 @@
                                     <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
                                         <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Final Diagnosis/Operation 
                                     </label>
-                                    <input type="file" class="form-control" name="Final-Diagnosis" id="Final-Diagnosis" accept="application/pdf" onchange="previewPdfFile('Final-Diagnosis')" required >
+                                    <input type="file" class="form-control" name="Final-Diagnosis" id="Final-Diagnosis" accept="application/pdf" onchange="previewPdfFile('Final-Diagnosis')"  >
                                     <div class="invalid-feedback fs-6">
                                         PDF File is required
                                     </div>
@@ -176,7 +176,7 @@
                             <i class="mdi mdi-calendar-range"></i>
                         </span>
                     </div>
-                    <input type="date" class="form-control" name="initial-date" id="initial-date" title="Initial bill As Of" oninput="validateDateRange()" placeholder="Billing Date" onchange="displayValue()" required>
+                    <input type="date" class="form-control" name="initial-date" id="initial-date" title="Initial bill As Of" oninput="validateDateRange()" placeholder="Billing Date"  required>
                 </div>
             </div>
         </div>
@@ -300,6 +300,10 @@
     
     if(re_upload){
         $('#initial_tab').hide();
+        $('#final_diagnosis').hide();
+        $('#Final-Diagnosis').prop('required',false);
+    }else{
+        $('#Final-Diagnosis').prop('required',true);
     }
 
     let pdfinput = "";
@@ -455,10 +459,11 @@
                             showConfirmButton: false,
                             type: 'success'
                             }).then(function() {
-                                window.location.href = `${baseUrl}healthcare-provider/billing/bill-noa/upload-pdf/${billing_id}/success`;
+                                $('#go-back').submit();
+                                // window.location.href = `${baseUrl}healthcare-provider/billing/bill-noa/upload-pdf/${billing_id}/success`;
+                                //window.location.href = `${baseUrl}healthcare-provider/billing/search`;
                         });
                   
-
                     }else{
                         swal({
                             title: 'Failed',
@@ -807,19 +812,19 @@
                 }
 
                                 
-                const displayValue = () => {
+                // const displayValue = () => {
 
-                const billed_date = new Date(document.querySelector('#initial-date').value);
-                const options = { month: 'long', day: '2-digit', year: 'numeric' };
-                const formattedStartDate = billed_date.toLocaleDateString('en-US', options);
+                // const billed_date = new Date(document.querySelector('#initial-date').value);
+                // const options = { month: 'long', day: '2-digit', year: 'numeric' };
+                // const formattedStartDate = billed_date.toLocaleDateString('en-US', options);
             
-                const bDate = document.querySelector('#b-date');
+                // const bDate = document.querySelector('#b-date');
 
-                if(document.querySelector('#initial-date').value){
-                    }else{
-                        bDate.textContent = '';
-                    }
-                }
+                // if(document.querySelector('#initial-date').value){
+                //     }else{
+                //         bDate.textContent = '';
+                //     }
+                // }
 
 
 </script>

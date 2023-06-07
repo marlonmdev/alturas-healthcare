@@ -119,7 +119,6 @@
 <script>
   const baseUrl = `<?= base_url(); ?>`;
   const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
-
   $(document).ready(function() {
 
     let pendingTable = $('#pendingLoaTable').DataTable({
@@ -202,8 +201,6 @@
         },
       })
     });
-
-
   });
 
   function viewImage(path) {
@@ -284,7 +281,7 @@
         if(req_status == 'Pending'){
           req_stat = `<strong style="color:maroon">[${req_status}]</strong>`;
         }else{
-          req_stat = `<strong class="text-cyan">[${req_status}]</strong>`;
+          req_stat = `<strong style="color:maroon">[${req_status}]</strong>`;
         }
 
         $('#loa-no').html(loa_no);

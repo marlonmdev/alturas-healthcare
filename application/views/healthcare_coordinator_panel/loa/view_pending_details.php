@@ -3,7 +3,7 @@
     <div class="modal-content">
       <section id="printableDiv">
         <div class="modal-header">
-          <h4 class="modal-title ls-2">LOA #: <span class="loa_no" id="loa-no" class="text-primary"></span> <span id="loa-status"></span></h4>
+          <h4 class="modal-title ls-2">LOA #: <span class="loa_no" id="loa-no"></span> <span id="loa-status"></span></h4>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
           </button>
         </div>

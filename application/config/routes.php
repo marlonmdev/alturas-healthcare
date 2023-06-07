@@ -809,6 +809,10 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 //=============================================================================================
 //COORDINATOR
 //=============================================================================================
+	//Letter
+
+	//END
+
 	//Final Billing
 	$route['healthcare-coordinator/loa/billed/datatable_final_billing'] = 'healthcare_coordinator/loa_controller/datatable_final_billing';
 	$route['healthcare-coordinator/loa/billed/submit_final_billing'] = 'healthcare_coordinator/loa_controller/submit_final_billing';

@@ -1985,7 +1985,17 @@ class Loa_controller extends CI_Controller {
 			$loa_info['request_type'] = $loa['loa_request_type'];
 			$loa_info['approved_on'] = $loa['approved_on'];
 			$loa_info['expired_on'] = $loa['expiration_date'];
-
+			$loa_info['bar'] = $this->loa_model->bar_pending();
+			$loa_info['bar1'] = $this->loa_model->bar_approved();
+			$loa_info['bar2'] = $this->loa_model->bar_completed();
+			$loa_info['bar3'] = $this->loa_model->bar_referral();
+			$loa_info['bar4'] = $this->loa_model->bar_expired();
+			$loa_info['bar_Billed'] = $this->loa_model->bar_billed();
+			$loa_info['bar5'] = $this->loa_model->bar_pending_noa();
+			$loa_info['bar6'] = $this->loa_model->bar_approved_noa();
+			$loa_info['bar_Initial'] = $this->loa_model->bar_initial_noa();
+			$loa_info['bar_Billed2'] = $this->loa_model->bar_billed_noa();
+			
 			if($loa['loa_request_type'] == 'Consultation'){
 				$loa_info['loa_data'] = $this->loa_model->get_consultation_data($loa_id);
 				$view_page ='edit_tag_complete_consultation.php';

@@ -2872,46 +2872,216 @@ class Loa_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
-// 	function add_performed_consult_fees() {
-//     $token = $this->security->get_csrf_hash();
-//     $loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
-//     $loa = $this->loa_model->get_all_completed_loa($loa_id);
 
-//     if ($loa) {
-//         $data['user_role'] = $this->session->userdata('user_role');
-//         $data['emp_id'] = $loa['emp_id'];
-//         $data['full_name'] = $loa['first_name'] .' '. $loa['middle_name'] .' '. $loa['last_name'] .' '. $loa['suffix'];
-//         $data['loa_no'] = $loa['loa_no'];
-//         $data['hc_provider'] = $loa['hp_name'];
-//         $data['hp_id'] = $loa['hp_id'];
-//         $data['loa_id'] = $loa['loa_id'];
-//         $data['health_card_no'] = $loa['health_card_no'];
-//         $data['work_related'] = $loa['work_related'];
-//         $data['med_services'] = $loa['med_services'];
-//         $data['request_type'] = $loa['loa_request_type'];
-//         $data['max_benefit_limit'] = number_format($loa['max_benefit_limit'], 2);
-//         $data['remaining_balance'] = number_format($loa['remaining_balance'], 2);
+	//HEALTHCARE ADVANCE================================================
+	function healthcare_advance_datatable_pending() {
+		$token = $this->security->get_csrf_hash();
+		$status = 'Pending';
+		$list = $this->loa_model->get_result_healthcare_advance_data_pending($status);
+		$data = [];
+		foreach ($list as $pcharge) {
+			$row = [];
 
-//         $data['bar'] = $this->loa_model->bar_pending();
-//         $data['bar1'] = $this->loa_model->bar_approved();
-//         $data['bar2'] = $this->loa_model->bar_completed();
-//         $data['bar3'] = $this->loa_model->bar_referral();
-//         $data['bar4'] = $this->loa_model->bar_expired();
-//         $data['bar_Billed'] = $this->loa_model->bar_billed();
-//         $data['bar5'] = $this->loa_model->bar_pending_noa();
-//         $data['bar6'] = $this->loa_model->bar_approved_noa();
-//         $data['bar_Initial'] = $this->loa_model->bar_initial_noa();
-//         $data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
+			$full_name = $pcharge['tbl_3_fname'] . ' ' . $pcharge['tbl_3_mname'] . ' ' . $pcharge['tbl_3_lname'] . ' ' . $pcharge['tbl_3_suffix'];
+			$billing_id = $this->myhash->hasher($pcharge['billing_id'],'encrypt');
+			$added_on = date("m/d/Y", strtotime($pcharge['requested_on']));
+			$custom_status = '<div class="text-left"><span class="badge rounded-pill bg-warning">Billed</span></div>';
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewPChargeModal(\''. $billing_id .'\')" data-bs-toggle="tooltip" title="View Personal Charge"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
-//         $this->load->view('templates/header', $data);
-//         $this->load->view('healthcare_coordinator_panel/loa/add_consultation_loa_fees', $data);
-//         $this->load->view('templates/footer');
-//     } else {
-//         // Handle the case when the data is not found or there's an error
-//         // You can redirect to an error page or display an appropriate message
-//         echo "Error: LOA data not found";
-//     }
-// }
+			$row[] = $pcharge['noa_no'];
+			$row[] = $full_name;
+			$row[] = $pcharge['billing_no'];
+			$row[] = $pcharge['hp_name'];
+			$row[] = $added_on; 		
+			$row[] = $custom_actions; 	
+			$data[] = $row;	
+		}
+
+		$output = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->loa_model->count_all_healthcare_advance_data_pending($status),
+			"recordsFiltered" => $this->loa_model->count_healthcare_advance_data_pending($status),
+			"data" => $data,
+		];
+		echo json_encode($output);
+	}
+
+	function healthcare_advance_modal_pending() {
+		$token = $this->security->get_csrf_hash();
+		$billing_id = $this->myhash->hasher($this->uri->segment(4),'decrypt');
+		$billing = $this->loa_model->get_charge_details($billing_id);
+
+		foreach($billing as $bill){
+			if(!empty($bill['loa_id'])){
+				$loa_noa_no = $bill['loa_no'];
+			}else{
+				$loa_noa_no = $bill['noa_no'];
+			}
+			$output = [
+				'loa_noa_no' => $loa_noa_no,
+				'token' => $token,
+				'status' => $bill['status'],
+				'requested_on' => date('F d, Y', strtotime($bill['requested_on'])),
+				'admission_date' => date('F d, Y', strtotime($bill['admission_date'])),
+				'attending_doctors' => $bill['attending_doctors'],
+				'billing_no' => $bill['billing_no'],
+				'healthcard_no' => $bill['health_card_no'],
+				'patient_name' => $bill['first_name'] . ' ' . $bill['middle_name'] . ' ' . $bill['last_name'],
+				'patient_address' => $bill['home_address'],
+				'hospital_name' => $bill['hp_name'],
+				'work_related' => $bill['work_related'],
+				'percentage' => $bill['percentage'],
+				'before_remaining_bal' => number_format($bill['before_remaining_bal'],2,'.',','),
+				'net_bill' => number_format($bill['net_bill'],2,'.',','),
+				'company_charge' => number_format($bill['company_charge'],2,'.',','),
+				'personal_charge' => number_format($bill['personal_charge'],2,'.',','),
+				'after_remaining_bal' => number_format($bill['after_remaining_bal'],2,'.',','),
+				'billed_on' => date('F d, Y', strtotime($bill['billed_on'])),
+			];
+		}
+		echo json_encode($output);
+	}
+
+	function healthcare_advance_datatable_approved(){
+		$token = $this->security->get_csrf_hash();
+		$status = 'Approved';
+		$list = $this->loa_model->get_result_healthcare_advance_data_approved($status);
+		$data = [];
+		foreach ($list as $pcharge) {
+			$row = [];
+
+			$full_name = $pcharge['tbl_3_fname'] . ' ' . $pcharge['tbl_3_mname'] . ' ' . $pcharge['tbl_3_lname'] . ' ' . $pcharge['tbl_3_suffix'];
+			$billing_id = $this->myhash->hasher($pcharge['billing_id'],'encrypt');
+			$added_on = date("m/d/Y", strtotime($pcharge['requested_on']));
+			$custom_status = '<div class="text-left"><span class="badge rounded-pill bg-warning">Billed</span></div>';
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewPChargeModal(\''. $billing_id .'\')" data-bs-toggle="tooltip" title="View Personal Charge"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+
+			$row[] = $pcharge['noa_no'];
+			$row[] = $full_name;
+			$row[] = $pcharge['billing_no'];
+			$row[] = $pcharge['hp_name'];
+			$row[] = $added_on; 		
+			$row[] = $custom_actions; 	
+			$data[] = $row;	
+		}
+
+		$output = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->loa_model->count_all_healthcare_advance_data_approved($status),
+			"recordsFiltered" => $this->loa_model->count_healthcare_advance_data_approved($status),
+			"data" => $data,
+		];
+		echo json_encode($output);
+	}
+
+	function healthcare_advance_modal_approved() {
+		$token = $this->security->get_csrf_hash();
+		$billing_id = $this->myhash->hasher($this->uri->segment(4),'decrypt');
+		$billing = $this->loa_model->get_charge_details($billing_id);
+
+		foreach($billing as $bill){
+			if(!empty($bill['loa_id'])){
+				$loa_noa_no = $bill['loa_no'];
+			}else{
+				$loa_noa_no = $bill['noa_no'];
+			}
+			$output = [
+				'token' => $token,
+				'status' => $bill['status'],
+				'date_approved' => date('F d, Y', strtotime($bill['date_approved'])),
+				'date_request' => date('F d, Y', strtotime($bill['requested_on'])),
+				'billed_on' => date('F d, Y', strtotime($bill['billed_on'])),
+				'admission_date' => date('F d, Y', strtotime($bill['admission_date'])),
+				'attending_doctors' => $bill['attending_doctors'],
+				'billing_no' => $bill['billing_no'],
+				'loa_noa_no' => $loa_noa_no,
+				'healthcard_no' => $bill['health_card_no'],
+				'patient_name' => $bill['first_name'] . ' ' . $bill['middle_name'] . ' ' . $bill['last_name'],
+				'patient_address' => $bill['home_address'],
+				'hospital_name' => $bill['hp_name'],
+				'percentage' => $bill['percentage'],
+				'work_related' => $bill['work_related'],
+				'remaining_mbl' => number_format($bill['after_remaining_bal'],2,'.',','),
+				'hospital_bill' => number_format($bill['net_bill'],2,'.',','),
+				'company_charge' => number_format($bill['company_charge'],2,'.',','),
+				'personal_charge' => number_format($bill['personal_charge'],2,'.',','),
+				'healthcare_advance' => number_format($bill['approved_amount'],2,'.',','),
+				// 'before_remaining_bal' => number_format($bill['before_remaining_bal'],2,'.',','),
+			];
+		}
+		echo json_encode($output);
+	}
+
+	function healthcare_advance_datatable_disapproved(){
+		$token = $this->security->get_csrf_hash();
+		$status = 'Disapproved';
+		$list = $this->loa_model->get_result_healthcare_advance_data_disapproved($status);
+		$data = [];
+		foreach ($list as $pcharge) {
+			$row = [];
+
+			$full_name = $pcharge['tbl_3_fname'] . ' ' . $pcharge['tbl_3_mname'] . ' ' . $pcharge['tbl_3_lname'] . ' ' . $pcharge['tbl_3_suffix'];
+			$billing_id = $this->myhash->hasher($pcharge['billing_id'],'encrypt');
+			$added_on = date("m/d/Y", strtotime($pcharge['requested_on']));
+			$custom_status = '<div class="text-left"><span class="badge rounded-pill bg-warning">Billed</span></div>';
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewPChargeModal(\''. $billing_id .'\')" data-bs-toggle="tooltip" title="View Personal Charge"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+
+			$row[] = $pcharge['noa_no'];
+			$row[] = $full_name;
+			$row[] = $pcharge['billing_no'];
+			$row[] = $pcharge['hp_name'];
+			$row[] = $added_on; 		
+			$row[] = $custom_actions; 	
+			$data[] = $row;	
+		}
+
+		$output = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->loa_model->count_all_healthcare_advance_data_disapproved($status),
+			"recordsFiltered" => $this->loa_model->count_healthcare_advance_data_disapproved($status),
+			"data" => $data,
+		];
+		echo json_encode($output);
+	}
+
+	function healthcare_advance_modal_disapproved() {
+		$token = $this->security->get_csrf_hash();
+		$billing_id = $this->myhash->hasher($this->uri->segment(4),'decrypt');
+		$billing = $this->loa_model->get_charge_details($billing_id);
+
+		foreach($billing as $bill){
+			if(!empty($bill['loa_id'])){
+				$loa_noa_no = $bill['loa_no'];
+			}else{
+				$loa_noa_no = $bill['noa_no'];
+			}
+			$output = [
+				'token' => $token,
+				'status' => $bill['status'],
+				'date_disapproved' => date('F d, Y', strtotime($bill['disapproved_on'])),
+				'date_request' => date('F d, Y', strtotime($bill['requested_on'])),
+				'billed_on' => date('F d, Y', strtotime($bill['billed_on'])),
+				'admission_date' => date('F d, Y', strtotime($bill['admission_date'])),
+				'attending_doctors' => $bill['attending_doctors'],
+				'billing_no' => $bill['billing_no'],
+				'loa_noa_no' => $loa_noa_no,
+				'healthcard_no' => $bill['health_card_no'],
+				'patient_name' => $bill['first_name'] . ' ' . $bill['middle_name'] . ' ' . $bill['last_name'],
+				'patient_address' => $bill['home_address'],
+				'hospital_name' => $bill['hp_name'],
+				'percentage' => $bill['percentage'],
+				'work_related' => $bill['work_related'],
+				'remaining_mbl' => number_format($bill['after_remaining_bal'],2,'.',','),
+				'hospital_bill' => number_format($bill['net_bill'],2,'.',','),
+				'company_charge' => number_format($bill['company_charge'],2,'.',','),
+				'personal_charge' => number_format($bill['personal_charge'],2,'.',','),
+				'healthcare_advance' => number_format($bill['approved_amount'],2,'.',','),
+				// 'before_remaining_bal' => number_format($bill['before_remaining_bal'],2,'.',','),
+			];
+		}
+		echo json_encode($output);
+	}
+	//END===============================================================
 
 
 	// FINAL BILLING====================================================

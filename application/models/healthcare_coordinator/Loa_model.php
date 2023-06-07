@@ -1055,295 +1055,387 @@ function get_billed_for_charging($bill_no) {
 }
 //end billing for charging datatable
 
-//FINAL BILLING==================================================
-function db_get_cost_types_by_hpID($hp_id, $loa_id){
-  $this->db->select('*')
-    ->from('performed_loa_info as tbl_1')
-    ->join('cost_types as tbl_2', 'tbl_1.ctype_id = tbl_2.ctype_id')
-    ->where('tbl_1.status', 'Performed')
-    ->where('tbl_1.loa_id', $loa_id)
-    ->where('tbl_2.hp_id', $hp_id);
-  $query = $this->db->get();
-  return $query->result_array();
-}
-
-function get_cost_types_by_hp($hp_id){
-  $this->db->select('*')
-    ->from('cost_types')
-    ->where('hp_id', $hp_id);
-  $query = $this->db->get();
-  return $query->result_array();
-}
-
-function db_get_hr_add_charges_fee($loa_id) {
-  $this->db->select('*')
-    ->from('hr_add_charges_fee')
-    ->where('loa_id', $loa_id);
-  return $this->db->get()->result_array();
-} 
-
-function db_get_hr_added_loa_fees($loa_id) {
-  $this->db->select('*')
-    ->from('hr_added_loa_fees')
-    ->where('loa_id', $loa_id);
-  return $this->db->get()->row_array();
-} 
-
-function db_get_hr_added_deductions1($loa_id) {
-  $this->db->select('*')
-    ->from('hr_added_deductions')
-    ->where('loa_id', $loa_id);
-  return $this->db->get()->result_array();
-} 
-
-function insert_added_loa_fees1($post_data) {
-  return $this->db->insert('hr_added_loa_fees', $post_data);
-}
-
-function insert_service_fee1($postData) {
-  return $this->db->insert_batch('hr_added_service_fee', $postData);
-}
-
-function insert_deductions2($data) {
-  return $this->db->insert_batch('hr_added_deductions', $data);
-}
-
-function insert_philhealth1($add_deduct) {
-  return $this->db->insert('hr_added_deductions', $add_deduct);
-}
-
-function check_if_loa_already_added1($loa_id) {
-  $query = $this->db->get_where('hr_added_loa_fees', ['loa_id' => $loa_id]);
-  if ($query->num_rows() > 0) {
-    return $query->row(); // Return the fetched row
-  }else{
-    return false;
-  }
-}
-
-function check_if_done_created_new_loa1($loa_id) {
-  $this->db->select('reffered')
-    ->from('loa_requests')
-    ->where('loa_id', $loa_id);
-  return $this->db->get()->row_array();
-}
-
-function check_if_status_cancelled1($loa_id) {
-  $this->db->select('status')
-    ->where('status', 'Referred')
-    ->where('loa_id', $loa_id)
-    ->group_by('loa_id');
-  $query = $this->db->get('performed_loa_info');
-
-  if ($query->num_rows() > 0) {
-    return true;
-  }else{
-    return false;
-  }
-}
-
-function _set_loa_status_completed2($loa_id) {
-  $this->db->set('completed', '')
-    ->where('status', 'Billed')
-    ->where('loa_id', $loa_id);
-  return $this->db->update('loa_requests');
-}
-
-function _set_loa_status_completed1($loa_id) {
-  $this->db->set('completed', '')
-    ->where('status', 'Billed')
-    ->where('loa_id', $loa_id);
-  return $this->db->update('loa_requests');
-}
-
-// function db_get_hr_added_loa_fees($loa_id){
-//   $this->db->select('*')
-//     ->from('hr_added_loa_fees')
-//     ->where('loa_id', $loa_id);
-//   return $this->db->get()->row_array();
-// }
-
-// function db_get_hr_added_deductions1($loa_id){
-//     $this->db->select('*')
-//             ->from('hr_added_deductions')
-//             ->where('loa_id', $loa_id);
-//             // ->where('deduct_id', $deduct_id);
-//     return $this->db->get()->row_array();
+//HEALTHCARE ADVANCE=============================================
+// function submit_ha_request($billing_id) {
+//     $this->db->set('status','For Advance');
+//     $this->db->set('requested_on',date('Y-m-d'));
+//     $this->db->where('billing_id',$billing_id);
+//     return $this->db->update('cash_advance');
 //   }
 
-  
- // function db_get_hr_added_deductions1($loa_id) {
- //    return $this->db->get_where('hr_added_deductions', ['loa_id' => $loa_id])->result_array();
- //  }
+  function get_charge_details($billing_id) {
+    $this->db->select('*')
+      ->from('billing as tbl_1')
+      ->join('loa_requests as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id','left')
+      ->join('noa_requests as tbl_3', 'tbl_1.noa_id = tbl_3.noa_id', 'left')
+      ->join('cash_advance as tbl_4', 'tbl_1.billing_id = tbl_4.billing_id','left')
+      ->join('members as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id','left')
+      ->join('healthcare_providers as tbl_6', 'tbl_1.hp_id = tbl_6.hp_id','left')
+      ->where('tbl_1.billing_id',$billing_id);
+    return $this->db->get()->result_array();
+  }
+
+  function get_healthcare_advance_data_pending($status) {
+    $this->db->select('tbl_3.first_name as tbl_3_fname, tbl_3.middle_name as tbl_3_mname, tbl_3.last_name as tbl_3_lname, tbl_3.suffix as tbl_3_suffix, tbl_1.*, tbl_2.*, tbl_3.*, tbl_4.*, tbl_5.*, tbl_6.*');
+    $this->db->from('cash_advance as tbl_1');
+    $this->db->join('billing as tbl_2','tbl_1.billing_id = tbl_2.billing_id');
+    $this->db->join('members as tbl_3','tbl_2.emp_id= tbl_3.emp_id','left');
+    $this->db->join('noa_requests as tbl_4','tbl_2.noa_id= tbl_4.noa_id','left');
+    $this->db->join('loa_requests as tbl_5','tbl_2.loa_id= tbl_5.loa_id','left');
+    $this->db->join('healthcare_providers as tbl_6','tbl_2.hp_id= tbl_6.hp_id');
+    $this->db->where('tbl_1.status',$status);
+  }
+
+  function get_result_healthcare_advance_data_pending($status) {
+    $this->get_healthcare_advance_data_pending($status);
+    if ($_POST['length'] != -1)
+    $this->db->limit($_POST['length'], $_POST['start']);
+    $query = $this->db->get();
+    return $query->result_array();
+  }
+
+  function count_healthcare_advance_data_pending($status) {
+    $this->get_healthcare_advance_data_pending($status);
+    $query = $this->db->get();
+    return $query->num_rows();
+  }
+
+  function count_all_healthcare_advance_data_pending($status) {
+    $this->db->from('cash_advance');
+    $this->db->where('status', $status);
+    return $this->db->count_all_results();
+  }
+
+  function get_healthcare_advance_data_approved($status) {
+    $this->db->select('tbl_3.first_name as tbl_3_fname, tbl_3.middle_name as tbl_3_mname, tbl_3.last_name as tbl_3_lname, tbl_3.suffix as tbl_3_suffix, tbl_1.*, tbl_2.*, tbl_3.*, tbl_4.*, tbl_5.*, tbl_6.*');
+    $this->db->from('cash_advance as tbl_1');
+    $this->db->join('billing as tbl_2','tbl_1.billing_id = tbl_2.billing_id');
+    $this->db->join('members as tbl_3','tbl_2.emp_id= tbl_3.emp_id','left');
+    $this->db->join('noa_requests as tbl_4','tbl_2.noa_id= tbl_4.noa_id','left');
+    $this->db->join('loa_requests as tbl_5','tbl_2.loa_id= tbl_5.loa_id','left');
+    $this->db->join('healthcare_providers as tbl_6','tbl_2.hp_id= tbl_6.hp_id');
+    $this->db->where('tbl_1.status',$status);
+  }
+
+  function get_result_healthcare_advance_data_approved($status) {
+    $this->get_healthcare_advance_data_approved($status);
+    if ($_POST['length'] != -1)
+    $this->db->limit($_POST['length'], $_POST['start']);
+    $query = $this->db->get();
+    return $query->result_array();
+  }
+
+  function count_healthcare_advance_data_approved($status) {
+    $this->get_healthcare_advance_data_approved($status);
+    $query = $this->db->get();
+    return $query->num_rows();
+  }
+
+  function count_all_healthcare_advance_data_approved($status) {
+    $this->db->from('cash_advance');
+    $this->db->where('status', $status);
+    return $this->db->count_all_results();
+  }
+
+  function get_healthcare_advance_data_disapproved($status) {
+    $this->db->select('tbl_3.first_name as tbl_3_fname, tbl_3.middle_name as tbl_3_mname, tbl_3.last_name as tbl_3_lname, tbl_3.suffix as tbl_3_suffix, tbl_1.*, tbl_2.*, tbl_3.*, tbl_4.*, tbl_5.*, tbl_6.*');
+    $this->db->from('cash_advance as tbl_1');
+    $this->db->join('billing as tbl_2','tbl_1.billing_id = tbl_2.billing_id');
+    $this->db->join('members as tbl_3','tbl_2.emp_id= tbl_3.emp_id','left');
+    $this->db->join('noa_requests as tbl_4','tbl_2.noa_id= tbl_4.noa_id','left');
+    $this->db->join('loa_requests as tbl_5','tbl_2.loa_id= tbl_5.loa_id','left');
+    $this->db->join('healthcare_providers as tbl_6','tbl_2.hp_id= tbl_6.hp_id');
+    $this->db->where('tbl_1.status',$status);
+  }
+
+  function get_result_healthcare_advance_data_disapproved($status) {
+    $this->get_healthcare_advance_data_disapproved($status);
+    if ($_POST['length'] != -1)
+    $this->db->limit($_POST['length'], $_POST['start']);
+    $query = $this->db->get();
+    return $query->result_array();
+  }
+
+  function count_healthcare_advance_data_disapproved($status) {
+    $this->get_healthcare_advance_data_disapproved($status);
+    $query = $this->db->get();
+    return $query->num_rows();
+  }
+
+  function count_all_healthcare_advance_data_disapproved($status) {
+    $this->db->from('cash_advance');
+    $this->db->where('status', $status);
+    return $this->db->count_all_results();
+  }
+//END============================================================
+
+//FINAL BILLING==================================================
+  function db_get_cost_types_by_hpID($hp_id, $loa_id){
+    $this->db->select('*')
+      ->from('performed_loa_info as tbl_1')
+      ->join('cost_types as tbl_2', 'tbl_1.ctype_id = tbl_2.ctype_id')
+      ->where('tbl_1.status', 'Performed')
+      ->where('tbl_1.loa_id', $loa_id)
+      ->where('tbl_2.hp_id', $hp_id);
+    $query = $this->db->get();
+    return $query->result_array();
+  }
+
+  function get_cost_types_by_hp($hp_id){
+    $this->db->select('*')
+      ->from('cost_types')
+      ->where('hp_id', $hp_id);
+    $query = $this->db->get();
+    return $query->result_array();
+  }
+
+  function db_get_hr_add_charges_fee($loa_id) {
+    $this->db->select('*')
+      ->from('hr_add_charges_fee')
+      ->where('loa_id', $loa_id);
+    return $this->db->get()->result_array();
+  } 
+
+  function db_get_hr_added_loa_fees($loa_id) {
+    $this->db->select('*')
+      ->from('hr_added_loa_fees')
+      ->where('loa_id', $loa_id);
+    return $this->db->get()->row_array();
+  } 
+
+  function db_get_hr_added_deductions1($loa_id) {
+    $this->db->select('*')
+      ->from('hr_added_deductions')
+      ->where('loa_id', $loa_id);
+    return $this->db->get()->result_array();
+  } 
+
+  function insert_added_loa_fees1($post_data) {
+    return $this->db->insert('hr_added_loa_fees', $post_data);
+  }
+
+  function insert_service_fee1($postData) {
+    return $this->db->insert_batch('hr_added_service_fee', $postData);
+  }
+
+  function insert_deductions2($data) {
+    return $this->db->insert_batch('hr_added_deductions', $data);
+  }
+
+  function insert_philhealth1($add_deduct) {
+    return $this->db->insert('hr_added_deductions', $add_deduct);
+  }
+
+  function check_if_loa_already_added1($loa_id) {
+    $query = $this->db->get_where('hr_added_loa_fees', ['loa_id' => $loa_id]);
+    if ($query->num_rows() > 0) {
+      return $query->row(); // Return the fetched row
+    }else{
+      return false;
+    }
+  }
+
+  function check_if_done_created_new_loa1($loa_id) {
+    $this->db->select('reffered')
+      ->from('loa_requests')
+      ->where('loa_id', $loa_id);
+    return $this->db->get()->row_array();
+  }
+
+  function check_if_status_cancelled1($loa_id) {
+    $this->db->select('status')
+      ->where('status', 'Referred')
+      ->where('loa_id', $loa_id)
+      ->group_by('loa_id');
+    $query = $this->db->get('performed_loa_info');
+
+    if ($query->num_rows() > 0) {
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  function _set_loa_status_completed2($loa_id) {
+    $this->db->set('completed', '')
+      ->where('status', 'Billed')
+      ->where('loa_id', $loa_id);
+    return $this->db->update('loa_requests');
+  }
+
+  function _set_loa_status_completed1($loa_id) {
+    $this->db->set('completed', '')
+      ->where('status', 'Billed')
+      ->where('loa_id', $loa_id);
+    return $this->db->update('loa_requests');
+  }
 // END============================================================
 
 //LEDGER============================================================
-var $ledger1 = 'members';
-var $ledger2 = 'billing';
-var $column_order_ledger = ['member_id', 'first_name', 'emp_type', 'status', 'business_unit', 'dept_name']; 
-var $column_search_ledger= ['member_id', 'first_name', 'middle_name', 'last_name', 'suffix', 'emp_type', 'status', 'business_unit', 'dept_name', 'CONCAT(first_name, " ",last_name)', 'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)'];
-var $order_ledger = ['emp_no' => 'desc']; // default order 
+  var $ledger1 = 'members';
+  var $ledger2 = 'billing';
+  var $column_order_ledger = ['member_id', 'first_name', 'emp_type', 'status', 'business_unit', 'dept_name']; 
+  var $column_search_ledger= ['member_id', 'first_name', 'middle_name', 'last_name', 'suffix', 'emp_type', 'status', 'business_unit', 'dept_name', 'CONCAT(first_name, " ",last_name)', 'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)'];
+  var $order_ledger = ['emp_no' => 'desc'];
+  private function _get_datatables_query_ledger($status) {
+    $this->db->group_by('emp_no');
+    $this->db->from($this->ledger1 . ' as tbl_1');
+    $this->db->join($this->ledger2 . ' as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
+    $this->db->where('status',$status);
 
-private function _get_datatables_query_ledger($status) {
-  $this->db->group_by('emp_no');
-  $this->db->from($this->ledger1 . ' as tbl_1');
-  $this->db->join($this->ledger2 . ' as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
-  $this->db->where('status',$status);
-
-  $i = 0;
-  foreach ($this->column_search_ledger as $item) {
-    if (isset($_POST['search']['value']) && !empty($_POST['search']['value'])) { // check if search value is set and not empty
-      if ($i === 0) {
-        $this->db->group_start(); // start where clause group
-        $this->db->like($item, $_POST['search']['value']);
-      } else {
-        $this->db->or_like($item, $_POST['search']['value']);
+    $i = 0;
+    foreach ($this->column_search_ledger as $item) {
+      if (isset($_POST['search']['value']) && !empty($_POST['search']['value'])) {
+        if ($i === 0) {
+          $this->db->group_start(); // start where clause group
+          $this->db->like($item, $_POST['search']['value']);
+        } else {
+          $this->db->or_like($item, $_POST['search']['value']);
+        }
+        if (count($this->column_search_ledger) - 1 == $i)
+          $this->db->group_end(); // end where clause group
       }
-      if (count($this->column_search_ledger) - 1 == $i)
-        $this->db->group_end(); // end where clause group
+      $i++;
     }
-    $i++;
+
+    if (isset($_POST['order'])) {
+      $column_order_index = $_POST['order']['0']['column'];
+      $column_order_dir = $_POST['order']['0']['dir'];
+      $column_order = $this->column_order_ledger[$column_order_index];
+      $this->db->order_by($column_order, $column_order_dir);
+    } else if (isset($this->order_ledger)) {
+      $this->db->order_by(key($this->order_ledger), $this->order_ledger[key($this->order_ledger)]);
+    }
   }
 
-  if (isset($_POST['order'])) {
-    $column_order_index = $_POST['order']['0']['column'];
-    $column_order_dir = $_POST['order']['0']['dir'];
-    $column_order = $this->column_order_ledger[$column_order_index];
-    $this->db->order_by($column_order, $column_order_dir);
-  } else if (isset($this->order_ledger)) {
-    $this->db->order_by(key($this->order_ledger), $this->order_ledger[key($this->order_ledger)]);
+  function get_datatables_ledger($status) {
+    $this->_get_datatables_query_ledger($status);
+    if (isset($_POST['length']) && $_POST['length'] != -1) { 
+      $this->db->limit($_POST['length'], $_POST['start']);
+    }
+    $query = $this->db->get();
+    return $query->result_array();
   }
-}
 
-function get_datatables_ledger($status) {
-  $this->_get_datatables_query_ledger($status);
-  if (isset($_POST['length']) && $_POST['length'] != -1) { 
-    $this->db->limit($_POST['length'], $_POST['start']);
+  function count_all_ledger($status) {
+    $this->db->from($this->ledger2);
+    $this->db->where('status', $status);
+    return $this->db->count_all_results();
   }
-  $query = $this->db->get();
-  return $query->result_array();
-}
 
-function count_all_ledger($status) {
-  $this->db->from($this->ledger2);
-  $this->db->where('status', $status);
-  return $this->db->count_all_results();
-}
+  function count_filtered_ledger($status) {
+    $this->_get_datatables_query_ledger($status);
+    $query = $this->db->get();
+  }
 
-function count_filtered_ledger($status) {
-  $this->_get_datatables_query_ledger($status);
-  $query = $this->db->get();
-}
+  var $ledger_tbl1 = 'billing';
+  var $ledger_tbl2 = 'payment_details';
+  var $ledger_tbl3 = 'loa_requests';
+  var $ledger_tbl4 = 'noa_requests';
+  var $ledger_tbl5 = 'members';
+  var $ledger_tbl6 = 'max_benefit_limits';
+  var $column_order_ledger2 = ['first_name', 'max_benefit_limit', 'acc_number', 'check_num', 'bank','check_date','amount_paid','supporting_file','status']; 
+  var $column_search_ledger2= ['first_name', 'middle_name', 'last_name', 'suffix', 'emp_type', 'status', 'business_unit', 'dept_name', 'CONCAT(first_name, " ",last_name)', 'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)'];
+  var $order_ledger2 = ['billing_id' => 'desc'];
 
-var $ledger_tbl1 = 'billing';
-var $ledger_tbl2 = 'payment_details';
-var $ledger_tbl3 = 'loa_requests';
-var $ledger_tbl4 = 'noa_requests';
-var $ledger_tbl5 = 'members';
-var $ledger_tbl6 = 'max_benefit_limits';
-var $column_order_ledger2 = ['first_name', 'max_benefit_limit', 'acc_number', 'check_num', 'bank','check_date','amount_paid','supporting_file','status']; 
-var $column_search_ledger2= ['first_name', 'middle_name', 'last_name', 'suffix', 'emp_type', 'status', 'business_unit', 'dept_name', 'CONCAT(first_name, " ",last_name)', 'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)'];
-var $order_ledger2 = ['billing_id' => 'desc'];
+  private function _get_datatables_query_ledger2($status,$emp_id) {
+    $this->db->from($this->ledger_tbl1 . ' as tbl_1');
+    $this->db->join($this->ledger_tbl2 . ' as tbl_2', 'tbl_1.details_no = tbl_2.details_no');
+    $this->db->join($this->ledger_tbl3 . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id','left');
+    $this->db->join($this->ledger_tbl4 . ' as tbl_4', 'tbl_1.noa_id = tbl_4.noa_id','left');
+    $this->db->join($this->ledger_tbl5 . ' as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id');
+    $this->db->join($this->ledger_tbl6 . ' as tbl_6', 'tbl_1.emp_id = tbl_6.emp_id');
+    $this->db->where('tbl_1.status',$status);
+    $this->db->where('tbl_1.emp_id',$emp_id);
 
-private function _get_datatables_query_ledger2($status,$emp_id) {
-  // $this->db->group_by('emp_no');
-  $this->db->from($this->ledger_tbl1 . ' as tbl_1');
-  $this->db->join($this->ledger_tbl2 . ' as tbl_2', 'tbl_1.details_no = tbl_2.details_no');
-  $this->db->join($this->ledger_tbl3 . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id','left');
-  $this->db->join($this->ledger_tbl4 . ' as tbl_4', 'tbl_1.noa_id = tbl_4.noa_id','left');
-  $this->db->join($this->ledger_tbl5 . ' as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id');
-  $this->db->join($this->ledger_tbl6 . ' as tbl_6', 'tbl_1.emp_id = tbl_6.emp_id');
-  $this->db->where('tbl_1.status',$status);
-  $this->db->where('tbl_1.emp_id',$emp_id);
-
-  $i = 0;
-  foreach ($this->column_search_ledger2 as $item) {
-    if (isset($_POST['search']['value']) && !empty($_POST['search']['value'])) { // check if search value is set and not empty
-      if ($i === 0) {
-        $this->db->group_start(); // start where clause group
-        $this->db->like($item, $_POST['search']['value']);
-      } else {
-        $this->db->or_like($item, $_POST['search']['value']);
+    $i = 0;
+    foreach ($this->column_search_ledger2 as $item) {
+      if (isset($_POST['search']['value']) && !empty($_POST['search']['value'])) { // check if search value is set and not empty
+        if ($i === 0) {
+          $this->db->group_start(); // start where clause group
+          $this->db->like($item, $_POST['search']['value']);
+        } else {
+          $this->db->or_like($item, $_POST['search']['value']);
+        }
+        if (count($this->column_search_ledger2) - 1 == $i)
+          $this->db->group_end(); // end where clause group
       }
-      if (count($this->column_search_ledger2) - 1 == $i)
-        $this->db->group_end(); // end where clause group
+      $i++;
     }
-    $i++;
+
+    if (isset($_POST['order'])) {
+      $column_order_index = $_POST['order']['0']['column'];
+      $column_order_dir = $_POST['order']['0']['dir'];
+      $column_order = $this->column_order_ledger2[$column_order_index];
+      $this->db->order_by($column_order, $column_order_dir);
+    } else if (isset($this->order_ledger2)) {
+      $this->db->order_by(key($this->order_ledger2), $this->order_ledger2[key($this->order_ledger2)]);
+    }
+  }
+  function get_datatables_ledger2($status,$emp_id) {
+    $this->_get_datatables_query_ledger2($status,$emp_id);
+    if (isset($_POST['length']) && $_POST['length'] != -1) { 
+      $this->db->limit($_POST['length'], $_POST['start']);
+    }
+    $query = $this->db->get();
+    return $query->result_array();
   }
 
-  if (isset($_POST['order'])) {
-    $column_order_index = $_POST['order']['0']['column'];
-    $column_order_dir = $_POST['order']['0']['dir'];
-    $column_order = $this->column_order_ledger2[$column_order_index];
-    $this->db->order_by($column_order, $column_order_dir);
-  } else if (isset($this->order_ledger2)) {
-    $this->db->order_by(key($this->order_ledger2), $this->order_ledger2[key($this->order_ledger2)]);
+  function count_all_ledger2($status) {
+    $this->db->from($this->ledger2);
+    $this->db->where('status', $status);
+    return $this->db->count_all_results();
   }
-}
-function get_datatables_ledger2($status,$emp_id) {
-  $this->_get_datatables_query_ledger2($status,$emp_id);
-  if (isset($_POST['length']) && $_POST['length'] != -1) { 
-    $this->db->limit($_POST['length'], $_POST['start']);
+
+  function count_filtered_ledger2($status,$emp_id) {
+    $this->_get_datatables_query_ledger2($status,$emp_id);
+    $query = $this->db->get();
   }
-  $query = $this->db->get();
-  return $query->result_array();
-}
-
-function count_all_ledger2($status) {
-  $this->db->from($this->ledger2);
-  $this->db->where('status', $status);
-  return $this->db->count_all_results();
-}
-
-function count_filtered_ledger2($status,$emp_id) {
-  $this->_get_datatables_query_ledger2($status,$emp_id);
-  $query = $this->db->get();
-}
 
 //END==================================================
 
 //Bar =================================================
-public function bar_pending(){
-  $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Pending' ");
-  return $query->num_rows(); 
-}
+  public function bar_pending(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Pending' ");
+    return $query->num_rows(); 
+  }
 
-public function bar_approved(){
-  $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Approved' ");
-  return $query->num_rows(); 
-} 
-public function bar_completed(){
-  $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Completed' ");
-  return $query->num_rows(); 
-} 
-public function bar_referral(){
-  $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Referral' ");
-  return $query->num_rows(); 
-}
-public function bar_expired(){
-  $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Expired' ");
-  return $query->num_rows(); 
-} 
-public function bar_billed(){
-  $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Billed' ");
-  return $query->num_rows(); 
-} 
-public function bar_pending_noa(){
-  $query = $this->db->query("SELECT status FROM noa_requests WHERE status='Pending' ");
-  return $query->num_rows(); 
-} 
-public function bar_approved_noa(){
-  $query = $this->db->query("SELECT status FROM noa_requests WHERE status='Approved' ");
-  return $query->num_rows(); 
-} 
-public function bar_initial_noa(){
-  $query = $this->db->query("SELECT status FROM initial_billing WHERE status='Initial' ");
-  return $query->num_rows(); 
-} 
-public function bar_billed_noa(){
-  $query = $this->db->query("SELECT status FROM noa_requests WHERE status='Billed' ");
-  return $query->num_rows(); 
-} 
+  public function bar_approved(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Approved' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_completed(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Completed' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_referral(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Referral' ");
+    return $query->num_rows(); 
+  }
+  public function bar_expired(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Expired' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_billed(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Billed' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_pending_noa(){
+    $query = $this->db->query("SELECT status FROM noa_requests WHERE status='Pending' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_approved_noa(){
+    $query = $this->db->query("SELECT status FROM noa_requests WHERE status='Approved' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_initial_noa(){
+    $query = $this->db->query("SELECT status FROM initial_billing WHERE status='Initial' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_billed_noa(){
+    $query = $this->db->query("SELECT status FROM noa_requests WHERE status='Billed' ");
+    return $query->num_rows(); 
+  } 
 //End =================================================
 
 }

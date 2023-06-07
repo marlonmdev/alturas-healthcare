@@ -51,38 +51,33 @@
     <li class="sidebar-item">
       <a href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list" class="sidebar-link">
         <i class="mdi mdi-note-outline"></i>NOA Request List
-        <!-- <?php
+        <?php
           $total2 = $bar5 + $bar6;
           if ($total2 > 0) {
             echo '<sup style="background-color: red; color: white; border-radius: 50%; padding: 8px">' . $total2 . '</sup>';
           }
-        ?> -->
+        ?>
       </a>
     </li>
   </ul>
 </li>
 
-<li class="sidebar-item <?php echo $this->uri->segment(2) == 'loa' ? 'selected' : ''; ?>">
-  <a class="sidebar-link sidebar-link" href="<?php echo base_url(); ?>healthcare-coordinator/loa_controller/view_healthcare_advance" aria-expanded="false">
-    <i class="mdi mdi-file-document"></i>HealthCare Advance
-    <?php
-      $total = $bar + $bar1 + $bar2 + $bar3 + $bar4;
-      if ($total > 0) {
-        echo '<sup style="background-color: red; color: white; border-radius: 50%; padding: 7px">' . $total . '</sup>';
-      }
-    ?>
+<li class="sidebar-item <?php echo $this->uri->segment(2) == 'personal-charges' ? 'selected' : ''; ?>">
+  <a class="sidebar-link" href="<?php echo base_url(); ?>healthcare-coordinator/healthcare_advance/view_healthcare_advance_pending" aria-expanded="false">
+    <i class="mdi mdi-receipt"></i>
+    <span class="hide-menu ls-1">Healthacare Advance</span>
   </a>
 </li>
 
 <li class="sidebar-item <?php echo $this->uri->segment(2) == 'bill' ? 'selected' : ''; ?>">
   <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
     <i class="mdi mdi-file-check"></i>Billing
-    <!-- <?php
+    <?php
       $total = $bar_Billed + $bar_Initial + $bar_Billed2;
       if ($total > 0) {
         echo '<sup style="background-color: red; color: white; border-radius: 50%; padding: 7px">'.$total.'</sup>';
       }
-    ?> -->
+    ?>
   </a>
 
   <ul aria-expanded="false" class="collapse first-level">

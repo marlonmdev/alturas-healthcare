@@ -168,6 +168,22 @@ class Loa_ho_controller extends CI_Controller
 		endforeach;
 		$med_serv = implode(' ', $ct_array);
 
+		$paid_on = '';
+		$bill = $this->loa_model->get_bill_info($row['loa_id']);
+		if(!empty($bill)){
+			$billed_on = date('F d, Y', strtotime($bill['billed_on']));
+			$paid = $this->loa_model->get_paid_date($bill['details_no']);
+
+			if(!empty($paid)){
+				$paid_on = date('F d, Y', strtotime($paid['date_add']));
+			}else{
+				$paid_on = '';
+			}
+
+		}else{
+			$billed_on = '';
+		}
+
 		$response = [
 			'status' => 'success',
 			'token' => $this->security->get_csrf_hash(),
@@ -206,9 +222,137 @@ class Loa_ho_controller extends CI_Controller
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
+			'billed_on' => $billed_on,
+			'paid_on' => $paid_on
 		];
 		echo json_encode($response);
     }
+
+	function get_billed_loa() {
+		$this->security->get_csrf_hash();
+		$status = ['Billed', 'Payment', 'Payable'];
+        $list = $this->Loa_model->get_billed_datatables($status);
+        $cost_types = $this->Loa_model->db_get_cost_types();
+			$data = [];
+			foreach ($list as $loa) {
+				$ct_array = $row = [];
+				$loa_id = $this->myhash->hasher($loa['loa_id'], 'encrypt');
+
+				$full_name = $loa['first_name'] . ' ' . $loa['middle_name'] . ' ' . $loa['last_name'] . ' ' . $loa['suffix'];
+
+				$custom_loa_no = 	'<mark class="bg-primary text-white">'.$loa['loa_no'].'</mark>';
+
+				$custom_date = date("m/d/Y", strtotime($loa['request_date']));
+
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-info">Billed</span></div>';
+
+				$custom_actions = '<a href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+
+				// initialize multiple varibles at once
+				$view_file = $short_med_services = '';
+				if ($loa['loa_request_type'] === 'Consultation') {
+					// if request is consultation set the view file and medical services to None
+					$view_file = $short_med_services = 'None';
+				} else {
+					// convert into array members selected cost types/med_services using PHP explode
+					$selected_cost_types = explode(';', $loa['med_services']);
+					// loop through all the cost types from DB
+					foreach ($cost_types as $cost_type) :
+						if (in_array($cost_type['ctype_id'], $selected_cost_types)) :
+							array_push($ct_array, $cost_type['item_description']);
+						endif;
+					endforeach;
+					// convert array to string and add comma as a separator using PHP implode
+					$med_services = implode(', ', $ct_array);
+					// if medical services are too long for displaying to the table shorten it and add the ... characters at the end 
+					$short_med_services = strlen($med_services) > 35 ? substr($med_services, 0, 35) . "..." : $med_services;
+					// link to the file attached during loa request
+					$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
+				}
+
+				// this data will be rendered to the datatable
+				$row[] = $custom_loa_no;
+				$row[] = $full_name;
+				$row[] = $loa['loa_request_type'];
+				$row[] = $short_med_services;
+				$row[] = $view_file;
+				$row[] = $custom_date;
+				$row[] = $custom_status;
+				$row[] = $custom_actions;
+				$data[] = $row;
+			}
+
+			$output = [
+				"draw" => $_POST['draw'],
+				"recordsTotal" => $this->Loa_model->count_all_billed($status),
+				"recordsFiltered" => $this->Loa_model->count_filtered_billed($status),
+				"data" => $data,
+			];
+			echo json_encode($output);
+	}
+
+	function get_paid_loa() {
+		$this->security->get_csrf_hash();
+		$status = 'Paid';
+        $list = $this->Loa_model->get_datatables($status);
+        $cost_types = $this->Loa_model->db_get_cost_types();
+			$data = [];
+			foreach ($list as $loa) {
+				$ct_array = $row = [];
+				$loa_id = $this->myhash->hasher($loa['loa_id'], 'encrypt');
+
+				$full_name = $loa['first_name'] . ' ' . $loa['middle_name'] . ' ' . $loa['last_name'] . ' ' . $loa['suffix'];
+
+				$custom_loa_no = 	'<mark class="bg-primary text-white">'.$loa['loa_no'].'</mark>';
+
+				$custom_date = date("m/d/Y", strtotime($loa['request_date']));
+
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $loa['status'] . '</span></div>';
+
+				$custom_actions = '<a href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+
+				// initialize multiple varibles at once
+				$view_file = $short_med_services = '';
+				if ($loa['loa_request_type'] === 'Consultation') {
+					// if request is consultation set the view file and medical services to None
+					$view_file = $short_med_services = 'None';
+				} else {
+					// convert into array members selected cost types/med_services using PHP explode
+					$selected_cost_types = explode(';', $loa['med_services']);
+					// loop through all the cost types from DB
+					foreach ($cost_types as $cost_type) :
+						if (in_array($cost_type['ctype_id'], $selected_cost_types)) :
+							array_push($ct_array, $cost_type['item_description']);
+						endif;
+					endforeach;
+					// convert array to string and add comma as a separator using PHP implode
+					$med_services = implode(', ', $ct_array);
+					// if medical services are too long for displaying to the table shorten it and add the ... characters at the end 
+					$short_med_services = strlen($med_services) > 35 ? substr($med_services, 0, 35) . "..." : $med_services;
+					// link to the file attached during loa request
+					$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
+				}
+
+				// this data will be rendered to the datatable
+				$row[] = $custom_loa_no;
+				$row[] = $full_name;
+				$row[] = $loa['loa_request_type'];
+				$row[] = $short_med_services;
+				$row[] = $view_file;
+				$row[] = $custom_date;
+				$row[] = $custom_status;
+				$row[] = $custom_actions;
+				$data[] = $row;
+			}
+
+			$output = [
+				"draw" => $_POST['draw'],
+				"recordsTotal" => $this->Loa_model->count_all($status),
+				"recordsFiltered" => $this->Loa_model->count_filtered($status),
+				"data" => $data,
+			];
+			echo json_encode($output);
+	}
 
 	function get_completed_loa_info() {
 		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');

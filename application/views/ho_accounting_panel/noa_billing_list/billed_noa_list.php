@@ -10,7 +10,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">Head Office Accounting</li>
                     <li class="breadcrumb-item active" aria-current="page">
-                    Approved NOA
+                    Billed NOA
                     </li>
                 </ol>
                 </nav>
@@ -27,7 +27,7 @@
                
                 <li class="nav-item">
                     <a
-                    class="nav-link active"
+                    class="nav-link"
                     href="<?php echo base_url(); ?>head-office-accounting/noa-request-list/noa-approved"
                     role="tab">
                         <span class="hidden-sm-up"></span>
@@ -37,7 +37,7 @@
                 
                 <li class="nav-item">
                     <a
-                    class="nav-link"
+                    class="nav-link active"
                     href="<?php echo base_url(); ?>head-office-accounting/noa-request-list/noa-billed"
                     role="tab">
                         <span class="hidden-sm-up"></span>
@@ -74,7 +74,7 @@
              <div class="card shadow">
                 <div class="card-body">
                     <div class="table-responsive">  
-                        <?php include 'view_approved_noa_details.php'; ?>
+                        <?php include 'view_billed_noa_details.php'; ?>
                         <table id="approvedNoaTable" class="table table-striped" style="width:100%">
                             <thead style="background-color:#00538C">
                                 <tr>
@@ -109,7 +109,7 @@
 
         // Load data for the table's content from an Ajax source
         ajax: {
-            url: `${baseUrl}head-office-accounting/noa-request-list/noa-approved/fetch`,
+            url: `${baseUrl}head-office-accounting/noa-request-list/noa-billed/fetch`,
             type: "POST",
             // passing the token as data so that requests will be allowed
             data: function(data) {
@@ -163,23 +163,15 @@
           percentage,
           request_date,
           req_status,
+          billed_on,
         } = res;
 
         $("#viewNoaModal").modal("show");
-        switch (req_status) {
-          case 'Pending':
-            $('#noa-status').html('<strong class="text-warning">[' + req_status + ']</strong>');
-            break;
-          case 'Approved':
-            $('#noa-status').html('<strong class="text-success">[' + req_status + ']</strong>');
-            break;
-          case 'Disapproved':
-            $('#noa-status').html('<strong class="text-danger">[' + req_status + ']</strong>');
-            break;
-        }
+        $('#noa-status').html('<strong class="text-warning">[Billed]</strong>');
         $('#noa-no').html(noa_no);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
+        $('#billed-on').html(billed_on);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);

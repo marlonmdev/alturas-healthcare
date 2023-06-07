@@ -60,7 +60,7 @@
                   ><span class="hide-menu ls-1">NOA</span>
                 </a>
               </li>
-
+<!-- 
               <li class="sidebar-item">
                 <?php echo ($this->uri->segment(3) == 'reports') ? 'selected' : '' ; ?>
                 <a
@@ -70,7 +70,7 @@
                   ><i class="mdi mdi-file-chart"></i
                   ><span class="hide-menu ls-1">Reports</span>
                 </a>
-              </li>
+              </li> -->
 
               <li class="sidebar-item">
                 <a

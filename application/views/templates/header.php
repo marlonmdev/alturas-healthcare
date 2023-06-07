@@ -102,14 +102,14 @@
           <div class="navbar-header">
             <!-- Logo -->
             <?php $homepage = base_url().$user_role.'/dashboard'; ?>
-            <a class="navbar-brand" href="<?= $homepage ?>">
+            <a class="navbar-brand ps-4 ms-4" href="<?= $homepage ?>">
               <!-- Logo icon -->
               <b class="align-middle ps-md-2 ps-lg-2 ps-sm-0 ps-xs-0">
                 <img
-                  src="<?php echo base_url(); ?>assets/images/AhcLogo2.png"
+                  src="<?php echo base_url(); ?>assets/images/HC_logo.png"
                   alt="Logo"
                   class="light-logo"
-                  width="180"
+                  width="90"
                   height="auto"
                 />
               </b>

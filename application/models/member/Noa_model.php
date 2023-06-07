@@ -115,6 +115,35 @@ class Noa_model extends CI_Model {
     return $this->db->get()->result_array();
   }
 
+  function get_paid_noa($emp_id) {
+    $this->db->select('*')
+             ->from('noa_requests as tbl_1')
+             ->join('healthcare_providers as tbl_2', 'tbl_1.hospital_id = tbl_2.hp_id')
+             ->where('tbl_1.status', 'Paid')
+             ->where('tbl_1.emp_id', $emp_id)
+             ->order_by('noa_id', 'DESC');
+    return $this->db->get()->result_array();
+  }
+
+  function db_get_billed_noa($emp_id) {
+    $status = ['Billed', 'Payable', 'Payment'];
+    $this->db->select('*')
+             ->from('noa_requests as tbl_1')
+             ->join('healthcare_providers as tbl_2', 'tbl_1.hospital_id = tbl_2.hp_id')
+             ->where_in('tbl_1.status', $status)
+             ->where('tbl_1.emp_id', $emp_id)
+             ->order_by('noa_id', 'DESC');
+    return $this->db->get()->result_array();
+  }
+
+  function gt_bill_info($noa_id) {
+    return $this->db->get_where('billing', ['noa_id' => $noa_id])->row_array();
+  }
+
+  function get_paid_date($details_no) {
+    return $this->db->get_where('payment_details', ['details_no' => $details_no])->row_array();
+  }
+
   function db_get_disapproved_noa($emp_id) {
     $this->db->select('*')
              ->from('noa_requests as tbl_1')

@@ -2,12 +2,12 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">PENDING REQUEST</h4>
+        <h4 class="page-title ls-2">BILLED REQUEST</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Member</li>
-              <li class="breadcrumb-item active" aria-current="page">Pending</li>
+              <li class="breadcrumb-item active" aria-current="page">Billed</li>
             </ol>
           </nav>
         </div>
@@ -18,10 +18,9 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
-
         <ul class="nav nav-tabs mb-4" role="tablist">
           <li class="nav-item">
-            <a class="nav-link active" href="<?php echo base_url(); ?>member/requested-noa/pending" role="tab">
+            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-noa/pending" role="tab">
               <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">PENDING</span>
             </a>
@@ -42,7 +41,7 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-noa/billed" role="tab">
+            <a class="nav-link active" href="<?php echo base_url(); ?>member/requested-noa/billed" role="tab">
               <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">BILLED</span>
             </a>
@@ -59,7 +58,7 @@
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover" id="memberPendingNoa">
+              <table class="table table-hover" id="memberbilledNoa">
                 <thead style="background-color:#00538C">
                   <tr>
                     <th class="fw-bold" style="color: white">NOA NO.</th>
@@ -76,11 +75,13 @@
             </div>
           </div>
         </div>
-        <?php include 'view_noa_details.php'; ?>
+        <?php include 'view_billed_noa_details.php'; ?>
       </div>
     </div>
   </div>
 </div>
+
+
 
 
 <script>
@@ -88,9 +89,9 @@
   const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
 
   $(document).ready(function() {
-    $("#memberPendingNoa").DataTable({
+    $("#memberbilledNoa").DataTable({
       ajax: {
-        url: `${baseUrl}member/requested-noa/pending/fetch`,
+        url: `${baseUrl}member/requested-noa/billed/fetch`,
         dataSrc: function(data) {
           if (data == "") {
             return [];
@@ -109,9 +110,27 @@
     });
   });
 
+  const saveAsImage = () => {
+    // Get the div element you want to save as an image
+    const element = document.querySelector("#printableDiv");
+    // Use html2canvas to take a screenshot of the element
+    html2canvas(element)
+      .then(function(canvas) {
+        // Convert the canvas to an image data URL
+        const imgData = canvas.toDataURL("image/png");
+        // Create a temporary link element to download the image
+        const link = document.createElement("a");
+        link.download = `noa_${fileName}.png`;
+        link.href = imgData;
+
+        // Click the link to download the image
+        link.click();
+      });
+  }
+
   const viewNoaInfoModal = (req_id) => {
     $.ajax({
-      url: `${baseUrl}member/requested-noa/view/pending/${req_id}`,
+      url: `${baseUrl}member/requested-noa/view/approved/${req_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);
@@ -134,27 +153,28 @@
           request_date,
           req_status,
           work_related,
-          percentage
+          approved_by,
+          approved_on,
+          percentage,
+          billed_on
         } = res;
 
         $("#viewNoaModal").modal("show");
 
-        let rstat = '';
-        if(req_status == 'Pending'){
-          req_stat = `<strong class="text-warning">[${req_status}]</strong>`;
-        }else{
-          req_stat = `<strong class="text-cyan">[${req_status}]</strong>`;
-        }
-
         $('#noa-no').html(noa_no);
-        $('#loa-status').html(req_stat);
-        $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
+        $('#noa-status').html('<strong class="text-success">[Billed]</strong>');
+        $('#approved-by').html(approved_by);
+        $('#approved-on').html(approved_on);
+        $('#full-name').html(first_name + ' ' + middle_name + ' ' + last_name + ' ' + suffix);
         $('#date-of-birth').html(date_of_birth);
         $('#age').html(age);
         $('#hospital-name').html(hospital_name);
         $('#admission-date').html(admission_date);
         $('#chief-complaint').html(chief_complaint);
+        $('#work-related').html(work_related);
         $('#request-date').html(request_date);
+        $('#billed-on').html(billed_on);
+
         if(work_related == 'Yes'){ 
 					if(percentage == ''){
 					  wpercent = '100% W-R';
@@ -185,81 +205,6 @@
 					}
 			   }
         $('#percentage').html(wpercent+', '+nwpercent);
-      }
-    });
-  }
-
-  const saveAsImage = () => {
-    // Get the div element you want to save as an image
-    const element = document.querySelector("#printableDiv");
-    // Use html2canvas to take a screenshot of the element
-    html2canvas(element)
-      .then(function(canvas) {
-        // Convert the canvas to an image data URL
-        const imgData = canvas.toDataURL("image/png");
-        // Create a temporary link element to download the image
-        const link = document.createElement("a");
-        link.download = `noa_${fileName}.png`;
-        link.href = imgData;
-
-        // Click the link to download the image
-        link.click();
-      });
-  }
-
-  const cancelPendingNoa = (noa_id) => {
-    $.confirm({
-      title: '<strong>Confirm!</strong>',
-      content: 'Are you sure to delete NOA Request?',
-      type: 'red',
-      buttons: {
-        confirm: {
-          text: 'Yes',
-          btnClass: 'btn-red',
-          action: function() {
-            $.ajax({
-              type: 'GET',
-              url: 'pending/cancel/' + noa_id,
-              data: {
-                noa_id: noa_id
-              },
-              dataType: "json",
-              success: function(response) {
-                const {
-                  token,
-                  status,
-                  message
-                } = response;
-                if (status === 'success') {
-                  swal({
-                    title: 'Success',
-                    text: message,
-                    timer: 3000,
-                    showConfirmButton: false,
-                    type: 'success'
-                  });
-                  $("#memberPendingNoa").DataTable().ajax.reload();
-                } else {
-                  swal({
-                    title: 'Failed',
-                    text: message,
-                    timer: 3000,
-                    showConfirmButton: false,
-                    type: 'error'
-                  });
-                  $("#memberPendingNoa").DataTable().ajax.reload();
-                }
-              }
-            });
-          }
-        },
-        cancel: {
-          btnClass: 'btn-dark',
-          action: function() {
-            // close dialog
-          }
-        },
-
       }
     });
   }

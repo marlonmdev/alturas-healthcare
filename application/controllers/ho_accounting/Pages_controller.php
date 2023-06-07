@@ -55,6 +55,22 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
     }
 
+	function view_billed_loa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/loa_billing_list/billed_loa_list.php', $hc_provider);
+		$this->load->view('templates/footer');
+	}
+
+	function view_paid_loa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/loa_billing_list/paid_loa_list.php', $hc_provider);
+		$this->load->view('templates/footer');
+	}
+
     function approved_noa_requests() {
         $data['user_role'] = $this->session->userdata('user_role');
 		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
@@ -63,13 +79,21 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
     }
 
-    function completed_noa_requests() {
+    function view_billed_noa() {
         $data['user_role'] = $this->session->userdata('user_role');
 		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
 		$this->load->view('templates/header', $data);
-		$this->load->view('ho_accounting_panel/noa_billing_list/completed_noa_list.php', $hc_provider);
+		$this->load->view('ho_accounting_panel/noa_billing_list/billed_noa_list.php', $hc_provider);
 		$this->load->view('templates/footer');
     }
+
+	function view_paid_noa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/noa_billing_list/paid_noa_list.php', $hc_provider);
+		$this->load->view('templates/footer');
+	}
 
 	function show_payment_history_form() {
 		$data['user_role'] = $this->session->userdata('user_role'); 

@@ -210,6 +210,10 @@ class Loa_model extends CI_Model {
       return $this->db->get_where('billing', ['loa_id' => $loa_id])->row_array();
   }
 
+  function get_paid_date($details_no) {
+    return $this->db->get_where('payment_details', ['details_no' => $details_no])->row_array();
+  }
+
   function db_get_member_mbl($emp_id){
     $query = $this->db->get_where('max_benefit_limits', ['emp_id' => $emp_id]);
     return $query->row_array();

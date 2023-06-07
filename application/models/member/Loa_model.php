@@ -64,71 +64,35 @@ class Loa_model extends CI_Model {
   }
   // End of server-side processing datatables
 
-   // Start of server-side processing datatables
-   var $table_billed = 'loa_requests';
-   var $column_order_billed = ['loa_no', 'request_date', 'hcare_provider', 'loa_request_type']; //set column field database for datatable orderable
-   var $column_search_billed = ['loa_no', 'request_date', 'expiration_date', 'hp_name', 'loa_request_type', 'med_services']; //set column field database for datatable searchable 
-   var $order_billed = ['loa_id' => 'desc']; // default order 
- 
-   private function _get_billed_datatables_query($emp_id) {
-     $this->db->from($this->table_billed . ' as tbl_1');
-     $this->db->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id');
-     $this->db->where('tbl_1.status', 'Payable');
-     $this->db->where('tbl_1.status', 'Payment');
-     $this->db->where('tbl_1.status', 'Billed');
-     $this->db->where('tbl_1.emp_id', $emp_id);
-     $i = 0;
-     // loop column 
-     foreach ($this->column_search_billed as $item) {
-       // if datatable send POST for search
-       if ($_POST['search']['value']) {
-         // first loop
-         if ($i === 0) {
-           $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
-           $this->db->like($item, $_POST['search']['value']);
-         } else {
-           $this->db->or_like($item, $_POST['search']['value']);
-         }
- 
-         if (count($this->column_search_billed) - 1 == $i) //last loop
-           $this->db->group_end(); //close bracket
-       }
-       $i++;
-     }
- 
-     // here order processing
-     if (isset($_POST['order'])) {
-       $this->db->order_by($this->column_order_billed[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
-     } else if (isset($this->order_billed)) {
-       $order = $this->order_billed;
-       $this->db->order_by(key($order), $order[key($order)]);
-     }
-   }
- 
    function get_billed_datatables($emp_id) {
-     $this->_get_billed_datatables_query($emp_id);
-     if ($_POST['length'] != -1)
-       $this->db->limit($_POST['length'], $_POST['start']);
-     $query = $this->db->get();
-     return $query->result_array();
+    $status = ['Billed', 'Payable', 'Payment'];
+    $this->db->select('*')
+             ->from('loa_requests as tbl_1')
+             ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
+             ->where_in('tbl_1.status', $status)
+             ->where('tbl_1.emp_id', $emp_id)
+             ->order_by('loa_id', 'DESC');
+    return $this->db->get()->result_array();
+   }
+
+   function get_paid_datatables($emp_id) {
+    $this->db->select('*')
+             ->from('loa_requests as tbl_1')
+             ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
+             ->where('tbl_1.status', 'Paid')
+             ->where('tbl_1.emp_id', $emp_id)
+             ->order_by('loa_id', 'DESC');
+    return $this->db->get()->result_array();
    }
  
-   function count_billed_filtered($emp_id) {
-     $this->_get_billed_datatables_query($emp_id);
-     $query = $this->db->get();
-     return $query->num_rows();
-   }
- 
-   function count_all_billed($emp_id) {
-     $this->db->from($this->table_billed)
-              ->where('emp_id', $emp_id);
-    $this->db->where('tbl_1.status', 'Payable');
-    $this->db->where('tbl_1.status', 'Payment');
-    $this->db->where('tbl_1.status', 'Billed');
-     return $this->db->count_all_results();
-   }
-   // End of server-side processing datatables
- 
+   function get_bill_info($loa_id) {
+    return $this->db->get_where('billing', ['loa_id' => $loa_id])->row_array();
+  }
+
+  function get_paid_date($details_no) {
+    return $this->db->get_where('payment_details', ['details_no' => $details_no])->row_array();
+  }
+
   function db_get_max_loa_id() {
     $this->db->select_max('loa_id');
     $query = $this->db->get('loa_requests');

@@ -10,7 +10,7 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item">Head Office Accounting</li>
             <li class="breadcrumb-item active" aria-current="page">
-            Approved LOA
+            Paid LOA
             </li>
         </ol>
         </nav>
@@ -28,7 +28,7 @@
                
                 <li class="nav-item">
                     <a
-                    class="nav-link active"
+                    class="nav-link"
                     href="<?php echo base_url(); ?>head-office-accounting/loa-request-list/loa-approved"
                     role="tab"
                     ><span class="hidden-sm-up"></span>
@@ -56,10 +56,9 @@
                     >
                 </li>
 
-                
                 <li class="nav-item">
                     <a
-                    class="nav-link"
+                    class="nav-link active"
                     href="<?php echo base_url(); ?>head-office-accounting/loa-request-list/loa-paid"
                     role="tab"
                     ><span class="hidden-sm-up"></span>
@@ -87,7 +86,7 @@
             <div class="card shadow">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <?php include 'view_approved_loa_details.php'; ?>
+                        <?php include 'view_paid_loa_details.php'; ?>
                         <table id="approvedLoaTable" class="table table-striped">
                             <thead style="background-color:#00538C">
                                 <tr>
@@ -122,7 +121,7 @@
 
             // Load data for the table's content from an Ajax source
             ajax: {
-                url: `${baseUrl}head-office-accounting/loa-request-list/loa-approved/fetch`,
+                url: `${baseUrl}head-office-accounting/loa-request-list/loa-paid/fetch`,
                 type: "POST",
                 // passing the token as data so that requests will be allowed
                 data: function(data) {
@@ -189,7 +188,9 @@
             work_related,
             percentage,
             approved_by,
-            approved_on
+            approved_on,
+            billed_on,
+            paid_on
             } = res;
 
             $("#viewLoaModal").modal("show");
@@ -199,6 +200,8 @@
             $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
             $('#approved-by').html(approved_by);
             $('#approved-on').html(approved_on);
+            $('#billed-on').html(billed_on);
+            $('#paid-on').html(paid_on);
             $('#member-mbl').html(member_mbl);
             $('#remaining-mbl').html(remaining_mbl);
             $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);

@@ -30,6 +30,10 @@
                   <td class="fw-bold ls-1" id="a-billed-date"></td>
                 </tr>
                 <tr>
+                  <td class="fw-bold ls-1">Paid On :</td>
+                  <td class="fw-bold ls-1" id="a-paid-date"></td>
+                </tr>
+                <tr>
                   <td class="fw-bold ls-1">Member's Maximum Benefit Limit :</td>
                   <td class="fw-bold ls-1">&#8369;<span id="member-mbl"></span></td>
                 </tr>

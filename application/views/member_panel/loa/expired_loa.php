@@ -68,6 +68,14 @@
               <span class="hidden-xs-down fs-5 font-bold">BILLED</span>
             </a>
           </li>
+
+          
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/paid" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">PAID</span>
+            </a>
+          </li>
         </ul>
 
         <div class="card shadow">
@@ -79,7 +87,7 @@
                     <th class="fw-bold" style="color: white">LOA NO.</th>
                     <th class="fw-bold" style="color: white">HEALTHCARE PROVIDER</th>
                     <th class="fw-bold" style="color: white">TYPE OF REQUEST</th>
-                    <th class="fw-bold" style="color: white">DATE OF EXPIRATION</th>
+                    <th class="fw-bold" style="color: white">DATE OF REQUEST</th>
                     <th class="fw-bold" style="color: white">RX FILE</th>
                     <th class="fw-bold" style="color: white">STATUS</th>
                     <th class="fw-bold" style="color: white">ACTION</th>

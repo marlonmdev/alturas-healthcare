@@ -2,12 +2,12 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">DISAPPROVED REQUEST</h4>
+        <h4 class="page-title ls-2">PAID REQUEST</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Member</li>
-              <li class="breadcrumb-item active" aria-current="page">Disapproved</li>
+              <li class="breadcrumb-item active" aria-current="page">Paid</li>
             </ol>
           </nav>
         </div>
@@ -18,8 +18,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
-
-       <ul class="nav nav-tabs mb-4" role="tablist">
+        <ul class="nav nav-tabs mb-4" role="tablist">
           <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/pending" role="tab">
               <span class="hidden-sm-up"></span>
@@ -28,14 +27,14 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/approved" role="tab">
+            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/approved"role="tab">
               <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">APPROVED</span>
             </a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link active" href="<?php echo base_url(); ?>member/requested-loa/disapproved" role="tab">
+            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/disapproved" role="tab">
               <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">DISAPPROVED</span>
             </a>
@@ -69,9 +68,8 @@
             </a>
           </li>
 
-          
           <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/paid" role="tab">
+            <a class="nav-link active" href="<?php echo base_url(); ?>member/requested-loa/paid" role="tab">
               <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">PAID</span>
             </a>
@@ -81,7 +79,7 @@
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover" id="memberDisapprovedLoa">
+              <table class="table table-hover" id="memberApprovedLoa">
                 <thead style="background-color:#00538C">
                   <tr>
                     <th class="fw-bold" style="color: white">LOA NO.</th>
@@ -101,20 +99,21 @@
         </div>
 
       </div>
-      <?php include 'view_disapproved_loa_details.php'; ?>
     </div>
   </div>
+  <?php include 'view_paid_loa_detail.php'; ?>
 </div>
 
+  
 
 <script>
   const baseUrl = `<?php echo base_url(); ?>`;
   const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
 
   $(document).ready(function() {
-    $("#memberDisapprovedLoa").DataTable({
+    $("#memberApprovedLoa").DataTable({
       ajax: {
-        url: `${baseUrl}member/requested-loa/disapproved/fetch`,
+        url: `${baseUrl}member/requested-loa/paid/fetch`,
         dataSrc: function(data) {
           if (data == "") {
             return [];
@@ -128,10 +127,11 @@
       fixedHeader: true,
       columnDefs: [{
         // "targets": [5, 6, 7], // 6th and 7th column / numbering column
-        "targets": [4, 5, 6],
+         "targets": [], 
         "orderable": false, //set not orderable
       }, ],
     });
+
   });
 
   const viewImage = (path) => {
@@ -165,7 +165,7 @@
       });
   }
 
-  const viewDisapprovedLoaInfo = (req_id) => {
+  const viewBilledLoaInfo = (req_id) => {
     $.ajax({
       url: `${baseUrl}member/requested-loa/view/${req_id}`,
       type: "GET",
@@ -176,9 +176,10 @@
           status,
           token,
           loa_no,
-          disapproved_by,
-          disapprove_reason,
-          disapproved_on,
+          approved_by,
+          approved_on,
+          billed_on,
+          paid_on,
           first_name,
           middle_name,
           last_name,
@@ -210,16 +211,17 @@
           percentage
         } = res;
 
-        $("#viewLoaModal").modal("show");
+        $("#viewAppLoaModal").modal("show");
 
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
 
         $('#loa-no').html(loa_no);
-        $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
-        $('#disapproved-by').html(disapproved_by);
-        $('#disapproved-on').html(disapproved_on);
-        $('#disapprove-reason').html(disapprove_reason);
+        $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
+        $('#approved-by').html(approved_by);
+        $('#approved-on').html(approved_on);
+        $('#billed-date').html(billed_on);
+        $('#paid-date').html(paid_on);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
         $('#date-of-birth').html(date_of_birth);
         $('#age').html(age);
@@ -271,8 +273,10 @@
 					 
 					}
 			   }
-        $('#percentage').html(wpercent+', '+nwpercent);
+        $('#a-percentage').html(wpercent+', '+nwpercent);
       }
     });
   }
+
+
 </script>

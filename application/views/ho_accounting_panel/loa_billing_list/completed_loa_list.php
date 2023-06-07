@@ -44,6 +44,27 @@
                         <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
                         >
                     </li>
+
+                    <li class="nav-item">
+                        <a
+                        class="nav-link"
+                        href="<?php echo base_url(); ?>head-office-accounting/loa-request-list/loa-billed"
+                        role="tab"
+                        ><span class="hidden-sm-up"></span>
+                        <span class="hidden-xs-down fs-5 font-bold">Billed</span></a
+                        >
+                    </li>
+
+                    
+                    <li class="nav-item">
+                        <a
+                        class="nav-link"
+                        href="<?php echo base_url(); ?>head-office-accounting/loa-request-list/loa-paid"
+                        role="tab"
+                        ><span class="hidden-sm-up"></span>
+                        <span class="hidden-xs-down fs-5 font-bold">Paid</span></a
+                        >
+                    </li>
                 </ul>
                 <div class="col-lg-5 ps-5 pb-3">
                     <div class="input-group">

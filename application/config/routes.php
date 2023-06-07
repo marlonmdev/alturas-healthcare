@@ -160,7 +160,7 @@ $route['healthcare-provider/patient/fetch-lis-of-soa'] = 'healthcare_provider/pa
 $route['healthcare-provider/billing/bill-noa/upload-pdf/(:any)'] = 'healthcare_provider/billing_controller/upload_noa_pdf_bill_form';
 $route['healthcare-provider/billing/bill-noa/upload-pdf/(:any)/submit'] = 'healthcare_provider/billing_controller/submit_noa_pdf_bill';
 $route['healthcare-provider/initial_billing/bill-noa/upload-pdf/(:any)/submit'] = 'healthcare_provider/billing_controller/submit_initial_noa_pdf_bill';
-$route['healthcare-provider/fetch_initial_billings/fetch/(:any)'] = 'healthcare_provider/billing_controller/fetch_initial_billing';
+$route['healthcare-provider/fetch_initial_billing/fetch/(:any)'] = 'healthcare_provider/billing_controller/fetch_initial_billing';
 $route['healthcare-provider/billing/bill-noa/upload-pdf/(:any)/success'] = 'healthcare_provider/billing_controller/pdf_billing_success';
 $route['healthcare-provider/billing/bill-noa/manual/(:any)']  = 'healthcare_provider/billing_controller/bill_patient_noa';
 $route['healthcare-provider/billing/bill-noa/submit/(:any)'] = 'healthcare_provider/billing_controller/noa_final_billing';
@@ -811,8 +811,15 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 	$route['healthcare-coordinator/loa/billed/consultation_fees/(:any)'] = 'healthcare_coordinator/loa_controller/consultation_fees';
 	$route['healthcare-coordinator/loa/billed/update_consultation_fees'] = 'healthcare_coordinator/loa_controller/update_consultation_fees';
 	$route['healthcare-coordinator/loa/billed/consultation_fees1/(:any)'] = 'healthcare_coordinator/loa_controller/consultation_fees1';
+	$route['healthcare-coordinator/loa/billed/submit_consultation'] = 'healthcare_coordinator/loa_controller/submit_consultation';
 	$route['healthcare-coordinator/loa/billed/diagnostic_fees/(:any)'] = 'healthcare_coordinator/loa_controller/diagnostic_fees';
 	$route['healthcare-coordinator/loa/billed/update_diagnostic_fees'] = 'healthcare_coordinator/loa_controller/update_diagnostic_fees';
+	$route['healthcare-coordinator/loa/billed/diagnostic_fees1/(:any)'] = 'healthcare_coordinator/loa_controller/diagnostic_fees1';
+	$route['healthcare-coordinator/loa/billed/submit_diagnostic'] = 'healthcare_coordinator/loa_controller/submit_diagnostic';
+	//end
+
+	//Healthcare Advance
+	$route['healthcare-coordinator/loa_controller/view_healthcare_advance'] = 'healthcare_coordinator/pages_controller/view_healthcare_advance';
 	//end
 //END=====================================================================================================
 
@@ -825,15 +832,17 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 	$route['head-office-iad/transaction/search_by_name'] = 'ho_iad/transaction_controller/search_by_name';
 	$route['head-office-iad/transaction/(:any)/view_receipt/(:any)'] = 'ho_iad/transaction_controller/view_receipt';
 	//end
+
 	//Payment Details
 	$route['head-office-iad/transaction/payment-details/(:any)'] = 'ho_iad/transaction_controller/view_payment_details';
-	// $route['head-office-iad/transaction/view_pd/(:any)'] = 'ho_iad/transaction_controller/view_pd';
 	//end
+
 	//Account Setting
 	$route['head-office-iad/transaction/account_setting'] = 'ho_iad/transaction_controller/account_settings';
 	$route['head-office-iad/transaction/update_password'] = 'ho_iad/transaction_controller/update_password';
 	$route['head-office-iad/transaction/update_username'] = 'ho_iad/transaction_controller/update_username';
 	//end
+
 	//Members
 	$route['head-office-iad/transaction/members'] = 'ho_iad/transaction_controller/members';
 	$route['head-office-iad/transaction/fetch_all_members'] = 'ho_iad/transaction_controller/fetch_all_members';

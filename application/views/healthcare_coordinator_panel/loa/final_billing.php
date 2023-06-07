@@ -32,13 +32,6 @@
               <span class="hidden-xs-down fs-5 font-bold">FOR PAYMENT</span>
             </a>
           </li>
-
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/history" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">HISTORY</span>
-            </a>
-          </li> -->
         </ul>
 
         <form id="billedForm" method="POST" action="<?php echo base_url(); ?>healthcare-coordinator/loa/billed/submit_final_billing">
@@ -450,7 +443,7 @@
     return xhr.status == "200" ? true: false;
   }
 
-  const viewCoordinatorBill = (loa_id) => {
+  const viewCoordinatorBill = (loa_id) =>{
     $('#viewCoordinatorBillModal').modal('show');
     $.ajax({
       url: `${baseUrl}healthcare-coordinator/loa/billing/fetch/${loa_id}`,
@@ -470,17 +463,17 @@
           
         if(bill.request_type == 'Consultation'){
           let services = parseFloat(bill.total_services);
-          service_table += ' <tr> ' +
-                                '<td class="text-center ls-1">Consultation</td>' +
-                                '<td class="text-center ls-1">'+services.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
-                            '</tr>' ;
+          service_table +='<tr>' +
+                              '<td class="text-center ls-1">Consultation</td>' +
+                              '<td class="text-center ls-1">'+services.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
+                          '</tr>';
         }else{
           $.each(service, function(index, item){
             let op_price = parseFloat(item.op_price);
-            service_table += ' <tr> ' +
-                                '<td class="text-center ls-1">'+item.item_description+'</td>' +
-                                '<td class="text-center ls-1">'+op_price.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
-                              '</tr>' ;
+            service_table +='<tr>' +
+                              '<td class="text-center ls-1">'+item.item_description+'</td>' +
+                              '<td class="text-center ls-1">'+op_price.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
+                            '</tr>' ;
           });
         }
          

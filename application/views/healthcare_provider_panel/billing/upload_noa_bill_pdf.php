@@ -35,6 +35,7 @@
                 </div>
             </form> 
         </div>
+        
         <div class="row">
             <div class="col-12 mb-3">
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -131,7 +132,7 @@
                                     </label>
                                     <input type="file" class="form-control" name="Prescription" id="Prescription" accept="image/jpeg,image/png">
                                     <div class="invalid-feedback fs-6">
-                                        PDF File is required
+                                    Prescription Image is required
                                     </div>
                                 </div>
 
@@ -161,11 +162,25 @@
             </form> 
             </div>
             <div class="tab-pane fade" id="initial_bill" role="tabpanel">
-            <div id="initial_bill_history">
-                        <!-- Content for the "initial_bill" tab pane -->
+            <input type="hidden" id="i_token" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+            <!-- Content for the "initial_bill" tab pane -->
             <form  action="<?php echo base_url();?>healthcare-provider/initial_billing/bill-noa/upload-pdf/<?= $noa_id ?>/submit" id="initialpdfBillingForm" enctype="multipart/form-data" class="needs-validation" novalidate>
             <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
             <input type="hidden" name="billing-no" value="<?= $billing_no ?>">
+            <div class="row">
+            <div class="col-lg-8"></div> <!-- Empty column to create space on the left side -->
+            <div class="col-lg-4">
+                <div class="input-group">
+                    <div class="input-group-append">
+                        <span class="input-group-text text-white bg-dark ls-1 ms-2" title="Initial bill As Of">
+                            <i class="mdi mdi-calendar-range"></i>
+                        </span>
+                    </div>
+                    <input type="date" class="form-control" name="initial-date" id="initial-date" title="Initial bill As Of" oninput="validateDateRange()" placeholder="Start Date" onchange="displayValue()" required>
+                </div>
+            </div>
+        </div>
+
             <div class="card">
                 <div class="card-body shadow">
                     <div class="row mt-3">
@@ -233,19 +248,19 @@
             </div>
         </form>
 
-                    <div id="initial_bill_history">
+                    <div class="col-lg-12" id="initial_bill_history">
                         <label class="fw-bold fs-5 ls-1 ps-3" id="initial_btn_label">
                                 <i class="mdi mdi-asterisk text-danger ms-1"></i> Initial Billing History
                             </label>
                             <div class="card shadow">
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <table class="table table-hover" id="initial_bill_table">
+                                        <table class="table table-hover w-100" id="initial_bill_table">
                                             <thead style="background-color: #00538C; color: white;">
                                                 <tr>
                                                     <th class="fw-bold" style="color: white;">BILLING NO</th>
                                                     <th class="fw-bold" style="color: white;">FILE NAME</th>
-                                                    <th class="fw-bold" style="color: white;">DATE UPLOADED</th>
+                                                    <th class="fw-bold" style="color: white;">BILLING DATE</th>
                                                     <th class="fw-bold" style="color: white;">INITIAL  BILL</th>
                                                     <th class="fw-bold" style="color: white;">VIEW</th>
                                                 </tr>
@@ -258,7 +273,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -270,19 +284,25 @@
 
 <script>
     const baseUrl = `<?php echo base_url(); ?>`;
-    var re_upload = '<?= isset($re_upload)?$re_upload : ""?>';
-    var prev_billing = '<?= isset($prev_billing)?$prev_billing:"" ?>';
+    const admission_date = '<?= isset($admission_date) ? $admission_date : null ?>';
+    var re_upload = '<?= isset($re_upload)?$re_upload : false?>';
+    var prev_billing = '<?= isset($prev_billing) ? $prev_billing : null ?>';
     var noa_no = '<?= $noa_no ?>';
-
-    // console.log("base url",baseUrl);
+    var noa_id = "<?php echo $noa_id; ?>";  
+    var initial_net_bill = "";
+    // console.log("admission_date",admission_date);
     const mbl = parseFloat($('#remaining-balance').val().replace(/,/g, ''));
     let net_bill = 0;
     let pdfPreview = document.getElementById('pdf-viewer');
-//    console.log("re upload",re_upload);
-//    console.log("noa no",noa_no);
-//    console.log("pdf",prev_billing);
-       
-        let pdfinput = "";
+    const form = document.querySelector('#pdfBillingForm');
+    let hospital_charges ="";
+    let attending_doctors ="";
+    
+    if(re_upload){
+        $('#initial_tab').hide();
+    }
+
+    let pdfinput = "";
     const  previewPdfFile = (pdf_input) => {
         pdfinput = pdf_input;
         $('#viewPDFBillModal').modal('show');
@@ -306,21 +326,18 @@
         reader.readAsDataURL(pdfFile);
     };
 
-
-    const form = document.querySelector('#pdfBillingForm');
-    let hospital_charges ="";
-    let attending_doctors ="";
-
     $(document).ready(function(){
-
+       
         read_pdf(true);
-
+        $('#Prescription').hide();
         $('#final_tab').on('click',function(){
             $('#pdfBillingForm')[0].reset();
             read_pdf(true);
+           
         });
         $('#initial_tab').on('click',function(){
             $('#initialpdfBillingForm')[0].reset();
+            $('#initial-net-bill').val(initial_net_bill);
             read_pdf(false);
         });
 
@@ -364,46 +381,19 @@
                 $('#Prescription').prop('required',true);
                 $('#Prescription').prop('disabled',false);
                 $('#med-services-div').show();
+                $('#Prescription').show();
             }else{
                 $('#med-services').prop('disabled',true);
                 $('#med-services').prop('required',false);
                 $('#Prescription').prop('required',false);
                 $('#Prescription').prop('disabled',true);
                 $('#med-services-div').hide();
+                $('#Prescription').hide();
             }   
         });
-        // $('#med-services-wrapper').on('change', function() {
-        //     var prices = [];
-            
-        //     $('#med-services option:selected').each(function() {
-        //       var price = $(this).data('price');
-        //       var value = $(this).val();
-        //       if (typeof price !== 'undefined') {
-        //         prices.push(price);
-        //         // console.log("price", price);
-        //         console.log("value", value);
-        //       }
-        //     });
-
-        //     total = prices.reduce(function(acc, val) {
-        //       return acc + val;
-        //     }, 0);
-            
-        //     $("#remaining_mbl").val(mbl);
-        //     console.log("total", total);
-            
-        //     // if (total > mbl) {
-        //     //   total = prices.reduce(function(acc, val) {
-        //     //     return acc + val;
-        //     //   }, 0);
-
-        //       console.log("final", total);
-        //       $('#net_bill').val(total);
-        //       // }
-        //   });
-        var noa_id = "<?php echo $noa_id; ?>";
-        console.log("noa id",noa_id);
-        // console.log("token",'<?php echo $this->security->get_csrf_hash(); ?>');
+       
+        
+        
         // $('#final_diagnosis').prop("hidden",true);
         $('#initial_bill_table').DataTable({
             processing: true,
@@ -411,14 +401,14 @@
             searching: false,
             order: [],
             ajax: {
-                url: `${baseUrl}healthcare-provider/fetch_initial_billings/fetch/${noa_id}`,
+                url: `${baseUrl}healthcare-provider/fetch_initial_billing/fetch/${noa_id}`,
                 type: "POST",
                 data: function (d) {
                     d.token = '<?php echo $this->security->get_csrf_hash(); ?>';
-                },
-                beforeSend: function(xhr) {
-                    xhr.setRequestHeader('X-CSRF-Token', '<?php echo $this->security->get_csrf_hash(); ?>');
                 }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log("AJAX Error: " + textStatus + "\n" + errorThrown);
             },
             responsive: true,
             fixedHeader: true,
@@ -427,59 +417,12 @@
                 var columnData = dataTable.column(3).data(); // Assuming column 4 is index 3
                 var firstIndex = columnData[0];
                 if (dataTable.rows().count() !== 0) {
-                    $('#initial-net-bill').val(firstIndex);
+                    initial_net_bill =firstIndex;
+                    // $('#initial-net-bill').val(firstIndex);
+                //    console.log("first index",firstIndex);
                 }
             }
         });
-
-      
-        
-        // var forms = document.getElementById('pdfBillingForm');
-        
-        // var final_action = baseUrl + 'healthcare-provider/billing/bill-noa/upload-pdf/' + noa_id + '/submit';
-        // var initial_action = baseUrl + 'healthcare-provider/initial_billing/bill-noa/upload-pdf/' + noa_id + '/submit';
-    
-        // forms.action = initial_action;
-
-
-        // $('.dropdown-item').click(function() {
-        //     // location.reload();
-        //     form.reset();
-            
-        //     var selectedText = $(this).text();
-        //     $('.btn.dropdown-toggle').text(selectedText);
-        //     $('#net_bill_label').text(selectedText);
-        //     var div = document.getElementById("final_diagnosis");
-        //     var inputs = div.getElementsByTagName("input");
-            
-
-        //     if(selectedText==="Initial Billing"){
-        //         $('#initial_bill_holder').prop("hidden",false);
-        //         $('#initial_bill_history').prop("hidden",false);
-        //         $('#final_diagnosis').prop("hidden",true);
-        //         $('#Rinal-diagnosis').prop("disabled",true);
-        //         $('#Medical-Abstract').prop("disabled",true);
-        //         $('#Operation').prop("disabled",true);
-                
-        //         for (var i = 0; i < inputs.length; i++) {
-        //         inputs[i].disabled = true;
-        //         }
-        //         $('#initial_btn_label').html('<i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Initial Billing');
-        //         forms.action = initial_action;
-        //     }else{
-        //         $('#initial_bill_holder').prop("hidden",true);
-        //         $('#initial_bill_history').prop("hidden",true);
-        //         $('#final_diagnosis').prop("hidden",false);
-        //         $('#Rinal-diagnosis').prop("disabled",false);
-        //         $('#Medical-Abstract').prop("disabled",false);
-        //         $('#initial_btn_label').html('<i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Final Billing');
-        //         forms.action = final_action;
-        //         for (var i = 0; i < inputs.length; i++) {
-        //         inputs[i].disabled = false;
-        //         }
-        //     }
-        // });
-
 
         //submit the form
         $('#pdfBillingForm').submit(function(event){
@@ -557,7 +500,7 @@
                             }).then(function() {
                                 location.reload();
                         });
-        
+                
                     }else{
                         swal({
                             title: 'Failed',
@@ -670,8 +613,8 @@
                             if(is_final){
                                 document.getElementsByName("net-bill")[0].value = match[1];
                             }else{
-                                document.getElementsByName("initial-net-bill")[0].value = match[1];
-                                // console.log('initil',match[1]);
+                                document.getElementsByName("initial-net-bill")[0]   .value = match[1];
+                                //console.log('initil',match[1]);
                             }
                 
                             } else {
@@ -786,6 +729,47 @@
                     }
                 }
             
+                const validateDateRange = () => {
+                    const billed_date = document.querySelector('#initial-date');
+                    const endDateInput =Date('m-y-d');
+                    const b_Date = new Date(billed_date.value);
+                    const year = b_Date.getFullYear();
+                    const month = String(b_Date.getMonth() + 1).padStart(2, '0');
+                    const day = String(b_Date.getDate()).padStart(2, '0');
+
+                    const final_date = year+month+day;
+                    // console.log('final date',final_date-admission_date);
+                    if (final_date >= admission_date && (final_date-admission_date)<=1) {
+                        console.log('final date',b_Date);
+                        return; // Don't do anything if either input is empty
+                    }
+                    else{
+                            // alert('End date must be greater than or equal to the start date');
+                            swal({
+                                title: 'Failed',
+                                text: 'Please be aware that the selected date may be either before or one day after the admission date. Take this into consideration when choosing the date.',
+                                showConfirmButton: true,
+                                type: 'error'
+                            });
+                            billed_date.value = '';
+                            return;
+                        }          
+                }
+
+                                
+                const displayValue = () => {
+
+                const billed_date = new Date(document.querySelector('#initial-date').value);
+                const options = { month: 'long', day: '2-digit', year: 'numeric' };
+                const formattedStartDate = billed_date.toLocaleDateString('en-US', options);
+            
+                const bDate = document.querySelector('#b-date');
+
+                if(document.querySelector('#initial-date').value){
+                    }else{
+                        bDate.textContent = '';
+                    }
+                }
 
 
 </script>

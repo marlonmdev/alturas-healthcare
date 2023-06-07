@@ -1055,7 +1055,7 @@ function get_billed_for_charging($bill_no) {
 }
 //end billing for charging datatable
 
-//FINAL BILLING
+//FINAL BILLING==================================================
 function db_get_cost_types_by_hpID($hp_id, $loa_id){
   $this->db->select('*')
     ->from('performed_loa_info as tbl_1')
@@ -1067,23 +1067,13 @@ function db_get_cost_types_by_hpID($hp_id, $loa_id){
   return $query->result_array();
 }
 
-function db_get_hr_added_deductions($hp_id, $loa_id){
+function get_cost_types_by_hp($hp_id){
   $this->db->select('*')
-    ->from('performed_loa_info as tbl_1')
-    ->join('cost_types as tbl_2', 'tbl_1.ctype_id = tbl_2.ctype_id')
-    ->where('tbl_1.status', 'Performed')
-    ->where('tbl_1.loa_id', $loa_id)
-    ->where('tbl_2.hp_id', $hp_id);
+    ->from('cost_types')
+    ->where('hp_id', $hp_id);
   $query = $this->db->get();
   return $query->result_array();
 }
-
-function db_get_hr_added_deductions1($loa_id) {
-  $this->db->select('*')
-    ->from('hr_added_deductions')
-    ->where('loa_id', $loa_id);
-  return $this->db->get()->result_array();
-} 
 
 function db_get_hr_add_charges_fee($loa_id) {
   $this->db->select('*')
@@ -1092,21 +1082,100 @@ function db_get_hr_add_charges_fee($loa_id) {
   return $this->db->get()->result_array();
 } 
 
-function db_get_hr_added_loa_fees($loa_id){
+function db_get_hr_added_loa_fees($loa_id) {
   $this->db->select('*')
     ->from('hr_added_loa_fees')
     ->where('loa_id', $loa_id);
   return $this->db->get()->row_array();
+} 
+
+function db_get_hr_added_deductions1($loa_id) {
+  $this->db->select('*')
+    ->from('hr_added_deductions')
+    ->where('loa_id', $loa_id);
+  return $this->db->get()->result_array();
+} 
+
+function insert_added_loa_fees1($post_data) {
+  return $this->db->insert('hr_added_loa_fees', $post_data);
 }
 
-// function get_deduction($loa_id){
+function insert_service_fee1($postData) {
+  return $this->db->insert_batch('hr_added_service_fee', $postData);
+}
+
+function insert_deductions2($data) {
+  return $this->db->insert_batch('hr_added_deductions', $data);
+}
+
+function insert_philhealth1($add_deduct) {
+  return $this->db->insert('hr_added_deductions', $add_deduct);
+}
+
+function check_if_loa_already_added1($loa_id) {
+  $query = $this->db->get_where('hr_added_loa_fees', ['loa_id' => $loa_id]);
+  if ($query->num_rows() > 0) {
+    return $query->row(); // Return the fetched row
+  }else{
+    return false;
+  }
+}
+
+function check_if_done_created_new_loa1($loa_id) {
+  $this->db->select('reffered')
+    ->from('loa_requests')
+    ->where('loa_id', $loa_id);
+  return $this->db->get()->row_array();
+}
+
+function check_if_status_cancelled1($loa_id) {
+  $this->db->select('status')
+    ->where('status', 'Referred')
+    ->where('loa_id', $loa_id)
+    ->group_by('loa_id');
+  $query = $this->db->get('performed_loa_info');
+
+  if ($query->num_rows() > 0) {
+    return true;
+  }else{
+    return false;
+  }
+}
+
+function _set_loa_status_completed2($loa_id) {
+  $this->db->set('completed', '')
+    ->where('status', 'Billed')
+    ->where('loa_id', $loa_id);
+  return $this->db->update('loa_requests');
+}
+
+function _set_loa_status_completed1($loa_id) {
+  $this->db->set('completed', '')
+    ->where('status', 'Billed')
+    ->where('loa_id', $loa_id);
+  return $this->db->update('loa_requests');
+}
+
+// function db_get_hr_added_loa_fees($loa_id){
+//   $this->db->select('*')
+//     ->from('hr_added_loa_fees')
+//     ->where('loa_id', $loa_id);
+//   return $this->db->get()->row_array();
+// }
+
+// function db_get_hr_added_deductions1($loa_id){
 //     $this->db->select('*')
 //             ->from('hr_added_deductions')
 //             ->where('loa_id', $loa_id);
 //             // ->where('deduct_id', $deduct_id);
 //     return $this->db->get()->row_array();
 //   }
-//END
+
+  
+ // function db_get_hr_added_deductions1($loa_id) {
+ //    return $this->db->get_where('hr_added_deductions', ['loa_id' => $loa_id])->result_array();
+ //  }
+// END============================================================
 
 //LEDGER============================================================
 var $ledger1 = 'members';

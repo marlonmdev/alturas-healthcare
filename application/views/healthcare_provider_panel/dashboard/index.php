@@ -153,6 +153,8 @@
                   showConfirmButton: false,
                   type: 'error'
                 });
+                $("#search-form-1")[0].reset();
+                
               }else if(res.status == 'success'){
                 $("#mbr-profile-div").removeClass('d-none');
                 // if member exist populate member profile with dynamic data 
@@ -451,17 +453,20 @@
             switch(req_status){
                 case 'Pending':
                     $('#loa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
+                    if(rx_file.length){$("#p-documents").hide();}
                 break;
                 case 'Approved':
                     $('#loa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>APPROVED DATE: <strong><span class="text-primary">${approved_on}</span></strong></h6>`); 
                     $('#loa_details_1').append(`<h6>APPROVED BY: <strong><span class="text-primary">${approved_by}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>EXPIRATION DATE: <strong><span class="text-primary">${expiration}</span></strong></h6>`); 
+                    if(rx_file.length){$("#p-documents").hide();}
                 break;
                 case 'Disapproved':
                     $('#loa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>DISAPPROVED DATE: <strong><span class="text-primary">${disapproved_on}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>DISAPPROVED BY: <strong><span class="text-primary">${disapproved_by}</span></strong></h6>`); 
+                    if(rx_file.length){$("#p-documents").hide();}
                     $("#p-disaproved").show();
                     $('#disaproved').text(disapprove_reason);
                 break;
@@ -481,6 +486,7 @@
                     $('#loa_details_2').append(`<h6>APPROVED DATE: <strong><span class="text-primary">${approved_on}</span></strong></h6>`);
                     $('#loa_details_1').append(`<h6>APPROVED BY: <strong><span class="text-primary">${approved_by}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>EXPIRATION DATE: <strong><span class="text-primary">${expiration}</span></strong></h6>`); 
+                    if(rx_file.length){$("#p-documents").hide();}
                 break;
                 case 'Billed' || 'Payment' || 'Payable':
                     $('#loa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
@@ -574,9 +580,6 @@
                     $('#noa_details_2').append(`<h6>APPROVED DATE: <strong><span class="text-primary">${approved_on}</span></strong></h6>`); 
                     $('#noa_details_1').append(`<h6>APPROVED BY: <strong><span class="text-primary">${approved_by}</span></strong></h6>`); 
                     $('#noa_details_2').append(`<h6>EXPIRATION DATE: <strong><span class="text-primary">${expiration}</span></strong></h6>`); 
-                    // $("#p_disaproved").hide();
-                    // $("#p_documents").hide();
-                    // $("#p_physician").hide();
                 break;
                 case 'Disapproved':
                     $('#noa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 

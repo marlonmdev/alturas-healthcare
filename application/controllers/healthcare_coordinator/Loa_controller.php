@@ -2578,6 +2578,7 @@ class Loa_controller extends CI_Controller {
 				'hp_id' => $this->input->post('hp-id', TRUE),
 				'request_type' => $this->input->post('request-type', TRUE),
 				'medicines' => $this->input->post('medicines', TRUE),
+				'service_fee' => $this->input->post('service-fee', TRUE),
 				'total_services' => $this->input->post('total-bill', TRUE),
 				'total_deductions' => $total_deductions,
 				'total_net_bill' => $this->input->post('net-bill', TRUE),
@@ -2843,7 +2844,6 @@ class Loa_controller extends CI_Controller {
 		$loa = $this->loa_model->get_all_completed_loa($loa_id);
 		$data['user_role'] = $this->session->userdata('user_role');
 
-		// var_dump(md5($this->uri->segment(5)));
 		$data['emp_id'] = $loa['emp_id'];
 		$data['full_name'] = $loa['first_name'] .' '. $loa['middle_name'] .' '. $loa['last_name'] .' '. $loa['suffix'];
 		$data['loa_no'] = $loa['loa_no'];
@@ -2856,20 +2856,6 @@ class Loa_controller extends CI_Controller {
 		$data['request_type'] = $loa['loa_request_type'];
 		$data['max_benefit_limit'] = number_format($loa['max_benefit_limit'],2);
 		$data['remaining_balance'] = number_format($loa['remaining_balance'],2);
-
-// 		$data['emp_id'] = $loa['emp_id'] ?? '';
-// $data['full_name'] = ($loa['first_name'] ?? '') .' '. ($loa['middle_name'] ?? '') .' '. ($loa['last_name'] ?? '') .' '. ($loa['suffix'] ?? '');
-// $data['loa_no'] = $loa['loa_no'] ?? '';
-// $data['hc_provider'] = $loa['hp_name'] ?? '';
-// $data['hp_id'] = $loa['hp_id'] ?? '';
-// $data['loa_id'] = $loa['loa_id'] ?? '';
-// $data['health_card_no'] = $loa['health_card_no'] ?? '';
-// $data['work_related'] = $loa['work_related'] ?? '';
-// $data['med_services'] = $loa['med_services'] ?? '';
-// $data['request_type'] = $loa['loa_request_type'] ?? '';
-// $data['max_benefit_limit'] = number_format($loa['max_benefit_limit'] ?? 0, 2);
-// $data['remaining_balance'] = number_format($loa['remaining_balance'] ?? 0, 2);
-
 		$data['bar'] = $this->loa_model->bar_pending();
 		$data['bar1'] = $this->loa_model->bar_approved();
 		$data['bar2'] = $this->loa_model->bar_completed();
@@ -2960,7 +2946,6 @@ class Loa_controller extends CI_Controller {
 
         if ($bill['loa_request_type'] == 'Consultation') {
         	if(!$exists){
-
         		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/consultation_fees1/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Service Fee"><i class="mdi mdi-pen fs-2 text-warning"></i></a>';
         	}else{
         		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/consultation_fees/'. $loa_id . '" data-bs-toggle="tooltip" title="Edit Service Fee"><i class="mdi mdi-pen fs-2 text-warning"></i></a>';
@@ -2968,7 +2953,7 @@ class Loa_controller extends CI_Controller {
          
         }else if ($bill['loa_request_type'] == 'Diagnostic Test') {
         	if(!$exists){
-        		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/add-loa-fees/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Service Fee"><i class="mdi mdi-pen fs-2 text-warning"></i></a>';
+        		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/diagnostic_fees1/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Service Fee"><i class="mdi mdi-pen fs-2 text-warning"></i></a>';
         	}else{
         		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/diagnostic_fees/'. $loa_id . '" data-bs-toggle="tooltip" title="Edit Service Fee"><i class="mdi mdi-pen fs-2 text-warning"></i></a>';
         	} 
@@ -3187,13 +3172,143 @@ class Loa_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
+	function submit_consultation() {
+		$token = $this->security->get_csrf_hash();
+		$data['user_role'] = $this->session->userdata('user_role');
+		$loa_id =  $this->input->post('loa-id', TRUE);
+		$total_deduct =  $this->input->post('total-deduction', TRUE);
+		
+		if($total_deduct != ''){
+			$total_deductions = $this->input->post('total-deduction', TRUE);
+		}else{
+			$total_deductions = 0;
+		}
+		//insert_added_loa_fees
+			$post_data = [
+				'emp_id' => $this->input->post('emp-id', TRUE),
+				'loa_id' => $this->input->post('loa-id', TRUE),
+				'hp_id' => $this->input->post('hp-id', TRUE),
+				'request_type' => $this->input->post('request-type', TRUE),
+				'medicines' => $this->input->post('medicines', TRUE),
+				'service_fee' => $this->input->post('service-fee', TRUE),
+				'total_services' => $this->input->post('total-bill', TRUE),
+				'total_deductions' => $total_deductions,
+				'total_net_bill' => $this->input->post('net-bill', TRUE),
+				'added_by' => $this->session->userdata('fullname'),
+				'added_on' => date('Y-m-d')
+			];
+
+		$inserted = $this->loa_model->insert_added_loa_fees1($post_data);
+		//insert service fees
+		$req_type = $this->input->post('request-type', TRUE);
+		if($req_type == 'Diagnostic Test'){
+
+			$ctype_id = $this->input->post('ctype-id', TRUE);
+			$service_fee = $this->input->post('service-fee', TRUE);
+			$quantity = $this->input->post('quantity', TRUE);
+			$postData = [];
+			for($i = 0; $i < count($ctype_id); $i++){
+	
+				$postData[] = [
+					'loa_id' => $this->input->post('loa-id', TRUE),
+					'ctype_id' => $ctype_id[$i],
+					'service_fee' => $service_fee[$i],
+					'quantity' => $quantity[$i],
+					'added_on' => date('Y-m-d')
+				];
+	
+			}
+			$this->loa_model->insert_service_fee1($postData);
+		}
+		
+		//insert loa deductions
+		$deduct_name = $this->input->post('deduction-name', TRUE);
+		$deduct_amount = $this->input->post('deduction-amount', TRUE);
+		if($deduct_amount > 0){
+			$data = [];
+			for($x = 0; $x < count($deduct_name); $x++){
+				$data[] = [
+					'emp_id' => $this->input->post('emp-id', TRUE),
+					'loa_id' => $this->input->post('loa-id', TRUE),
+					'deduction_name' => $deduct_name[$x],
+					'deduction_amount' => $deduct_amount[$x],
+					'added_on' => date('Y-m-d'),
+					'added_by' => $this->session->userdata('fullname')
+				];
+			}
+			$this->loa_model->insert_deductions2($data);
+		}
+		
+		//insert philhealth deduction
+		$philhealth_deduct = $this->input->post('philhealth-deduction', TRUE);
+		if($philhealth_deduct > 0){
+			$add_deduct = [
+				'emp_id' => $this->input->post('emp-id', TRUE),
+				'loa_id' => $this->input->post('loa-id', TRUE),
+				'deduction_name' => 'Philhealth Benefits',
+				'deduction_amount' => $this->input->post('philhealth-deduction', TRUE),
+				'added_on' => date('Y-m-d'),
+				'added_by' => $this->session->userdata('fullname')
+			];
+			$this->loa_model->insert_philhealth1($add_deduct);
+		}
+		$existing = $this->loa_model->check_if_loa_already_added1($loa_id);
+		$resched = $this->loa_model->check_if_done_created_new_loa1($loa_id);
+		$rescheduled = $this->loa_model->check_if_status_cancelled1($loa_id);
+		if($rescheduled){
+			if($existing && $resched['reffered'] == 1){
+				$this->loa_model->_set_loa_status_completed2($loa_id);
+			}
+		}else{
+			if($existing){
+				$this->loa_model->_set_loa_status_completed1($loa_id);
+			}
+		}
+
+		//Insert Charge Fee
+	  $charge_name = $this->input->post('charge-name', TRUE);
+		$charge_amount = $this->input->post('charge-amount', TRUE);
+		if($charge_amount > 0){
+			$data1 = [];
+			for($x = 0; $x < count($charge_name); $x++){
+				$data1[] = [
+					'emp_id' => $this->input->post('emp-id', TRUE),
+					'loa_id' => $this->input->post('loa-id', TRUE),
+					'charge_name' => $charge_name[$x],
+					'charge_amount' => $charge_amount[$x],
+					'added_on' => date('Y-m-d'),
+					'added_by' => $this->session->userdata('fullname')
+				];
+			}
+			$this->loa_model->insert_charge($data1);
+		}
+		//end
+		
+		
+		if($inserted){
+			echo json_encode([
+				'token' => $token,
+				'status' => 'success',
+				'message' => 'Data Added Successfully!'
+			]);
+		}else{
+			echo json_encode([
+				'token' => $token,
+				'status' => 'failed',
+				'message' => 'Data Insertion Failed!'
+			]);
+		}
+	}
+
 	function diagnostic_fees() {
 		$token = $this->security->get_csrf_hash();
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$loa = $this->loa_model->get_all_completed_loa($loa_id);
 
 		$data['user_role'] = $this->session->userdata('user_role');
-		$data['cost_types'] = $this->loa_model->db_get_cost_types_by_hpID($loa['hcare_provider'], $loa_id);
+		// $data['cost_types'] = $this->loa_model->db_get_cost_types_by_hpID($loa['hcare_provider'], $loa_id);
+		$data['cost_types'] = $this->loa_model->get_cost_types_by_hp($loa['hcare_provider'], $loa_id);
+		$data['loa'] = $loa;
 		$data['deduction'] = $this->loa_model->db_get_hr_added_deductions1($loa_id);
 		$data['charge'] = $this->loa_model->db_get_hr_add_charges_fee($loa_id);
 		$data['fees'] = $this->loa_model->db_get_hr_added_loa_fees($loa_id);
@@ -3317,6 +3432,172 @@ class Loa_controller extends CI_Controller {
 	    ];
 	  }
 	  echo json_encode($response);
+	}
+
+	function diagnostic_fees1() {
+		$token = $this->security->get_csrf_hash();
+		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$loa = $this->loa_model->get_all_completed_loa($loa_id);
+
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['cost_types'] = $this->loa_model->get_cost_types_by_hp($loa['hcare_provider'], $loa_id);
+		$data['loa'] = $loa;
+		$data['emp_id'] = $loa['emp_id'];
+		$data['full_name'] = $loa['first_name'] .' '. $loa['middle_name'] .' '. $loa['last_name'] .' '. $loa['suffix'];
+		$data['loa_no'] = $loa['loa_no'];
+		$data['hc_provider'] = $loa['hp_name'];
+		$data['hp_id'] = $loa['hp_id'];
+		$data['loa_id'] = $loa['loa_id'];
+		$data['health_card_no'] = $loa['health_card_no'];
+		$data['work_related'] = $loa['work_related'];
+		$data['med_services'] = $loa['med_services'];
+		$data['request_type'] = $loa['loa_request_type'];
+		$data['max_benefit_limit'] = number_format($loa['max_benefit_limit'],2);
+		$data['remaining_balance'] = number_format($loa['remaining_balance'],2);
+		// $data['fees'] = $this->loa_model->db_get_hr_added_loa_fees($loa_id);
+
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
+	
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/loa/insert_diagnostic_fees.php');
+		$this->load->view('templates/footer');
+	}
+
+	function submit_diagnostic() {
+		$token = $this->security->get_csrf_hash();
+		$data['user_role'] = $this->session->userdata('user_role');
+		$loa_id =  $this->input->post('loa-id', TRUE);
+		$total_deduct =  $this->input->post('total-deduction', TRUE);
+		
+		if($total_deduct != ''){
+			$total_deductions = $this->input->post('total-deduction', TRUE);
+		}else{
+			$total_deductions = 0;
+		}
+		//insert_added_loa_fees
+		$post_data = [
+			'emp_id' => $this->input->post('emp-id', TRUE),
+			'loa_id' => $this->input->post('loa-id', TRUE),
+			'hp_id' => $this->input->post('hp-id', TRUE),
+			'request_type' => $this->input->post('request-type', TRUE),
+			'medicines' => $this->input->post('medicines', TRUE),
+			'total_services' => $this->input->post('total-bill', TRUE),
+			'total_deductions' => $total_deductions,
+			'total_net_bill' => $this->input->post('net-bill', TRUE),
+			'added_by' => $this->session->userdata('fullname'),
+			'added_on' => date('Y-m-d')
+		];
+		$inserted = $this->loa_model->insert_added_loa_fees($post_data);
+		//end
+
+		//insert service fees
+		$req_type = $this->input->post('request-type', TRUE);
+		if($req_type == 'Diagnostic Test'){
+			$ctype_id = $this->input->post('ctype-id', TRUE);
+			$service_fee = $this->input->post('service-fee', TRUE);
+			$quantity = $this->input->post('quantity', TRUE);
+			$postData = [];
+			for($i = 0; $i < count($ctype_id); $i++){
+				$postData[] = [
+					'loa_id' => $this->input->post('loa-id', TRUE),
+					'ctype_id' => $ctype_id[$i],
+					'service_fee' => $service_fee[$i],
+					'quantity' => $quantity[$i],
+					'added_on' => date('Y-m-d')
+				];
+			}
+			$this->loa_model->insert_service_fee($postData);
+		}
+		//end
+		
+		//insert loa deductions
+		$deduct_name = $this->input->post('deduction-name', TRUE);
+		$deduct_amount = $this->input->post('deduction-amount', TRUE);
+		if($deduct_amount > 0){
+			$data = [];
+			for($x = 0; $x < count($deduct_name); $x++){
+				$data[] = [
+					'emp_id' => $this->input->post('emp-id', TRUE),
+					'loa_id' => $this->input->post('loa-id', TRUE),
+					'deduction_name' => $deduct_name[$x],
+					'deduction_amount' => $deduct_amount[$x],
+					'added_on' => date('Y-m-d'),
+					'added_by' => $this->session->userdata('fullname')
+				];
+			}
+			$this->loa_model->insert_deductions($data);
+		}
+		//end
+		
+		//insert philhealth deduction
+		$philhealth_deduct = $this->input->post('philhealth-deduction', TRUE);
+		if($philhealth_deduct > 0){
+			$add_deduct = [
+				'emp_id' => $this->input->post('emp-id', TRUE),
+				'loa_id' => $this->input->post('loa-id', TRUE),
+				'deduction_name' => 'Philhealth Benefits',
+				'deduction_amount' => $this->input->post('philhealth-deduction', TRUE),
+				'added_on' => date('Y-m-d'),
+				'added_by' => $this->session->userdata('fullname')
+			];
+			$this->loa_model->insert_philhealth($add_deduct);
+		}
+		$existing = $this->loa_model->check_if_loa_already_added($loa_id);
+		$resched = $this->loa_model->check_if_done_created_new_loa($loa_id);
+		$rescheduled = $this->loa_model->check_if_status_cancelled($loa_id);
+		if($rescheduled){
+			if($existing && $resched['reffered'] == 1){
+				$this->loa_model->_set_loa_status_completed($loa_id);
+			}
+		}else{
+			if($existing){
+				$this->loa_model->_set_loa_status_completed($loa_id);
+			}
+		}
+		//end
+
+		//Insert Charge Fee
+	  $charge_name = $this->input->post('charge-name', TRUE);
+		$charge_amount = $this->input->post('charge-amount', TRUE);
+		if($charge_amount > 0){
+			$data1 = [];
+			for($x = 0; $x < count($charge_name); $x++){
+				$data1[] = [
+					'emp_id' => $this->input->post('emp-id', TRUE),
+					'loa_id' => $this->input->post('loa-id', TRUE),
+					'charge_name' => $charge_name[$x],
+					'charge_amount' => $charge_amount[$x],
+					'added_on' => date('Y-m-d'),
+					'added_by' => $this->session->userdata('fullname')
+				];
+			}
+			$updated = $this->loa_model->insert_charge($data1);
+		}
+		//end
+		
+		
+		if($inserted){
+			echo json_encode([
+				'token' => $token,
+				'status' => 'success',
+				'message' => 'Data Added Successfully!'
+			]);
+		}else{
+			echo json_encode([
+				'token' => $token,
+				'status' => 'failed',
+				'message' => 'Data Insertion Failed!'
+			]);
+		}
 	}
 
 	//END===============================================================

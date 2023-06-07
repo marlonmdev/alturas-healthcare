@@ -62,6 +62,18 @@
   </ul>
 </li>
 
+<li class="sidebar-item <?php echo $this->uri->segment(2) == 'loa' ? 'selected' : ''; ?>">
+  <a class="sidebar-link sidebar-link" href="<?php echo base_url(); ?>healthcare-coordinator/loa_controller/view_healthcare_advance" aria-expanded="false">
+    <i class="mdi mdi-file-document"></i>HealthCare Advance
+    <?php
+      $total = $bar + $bar1 + $bar2 + $bar3 + $bar4;
+      if ($total > 0) {
+        echo '<sup style="background-color: red; color: white; border-radius: 50%; padding: 7px">' . $total . '</sup>';
+      }
+    ?>
+  </a>
+</li>
+
 <li class="sidebar-item <?php echo $this->uri->segment(2) == 'bill' ? 'selected' : ''; ?>">
   <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
     <i class="mdi mdi-file-check"></i>Billing

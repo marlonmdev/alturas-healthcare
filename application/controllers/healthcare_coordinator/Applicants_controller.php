@@ -191,7 +191,6 @@ class Applicants_controller extends CI_Controller {
 						'remaining_balance' => $current_mbl,
 						'start_date' => date('Y-m-d'),
 					];
-
 					$has_MBL = $this->applicants_model->db_insert_max_benefit_limit($post_data);
 					if (!$has_MBL) {
 						$response = [

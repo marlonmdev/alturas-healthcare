@@ -1,9 +1,9 @@
-<div class="modal fade" id="viewLoaModal" tabindex="-1" data-bs-backdrop="static">
+<div class="modal fade" id="viewAppLoaModal" tabindex="-1" data-bs-backdrop="static">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <section id="printableDiv">
         <div class="modal-header">
-          <h4 class="modal-title ls-2">LOA #: <span id="a-loa-no" class="text-primary"></span> <span id="loa-status"></span></h4>
+          <h4 class="modal-title ls-2">LOA #: <span id="loa-no" class="text-primary"></span> <span id="loa-status"></span></h4>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -12,7 +12,7 @@
               <h4><strong>PATIENT DETAILS</strong></h4>
             </div>
             <div class="row">
-              <table class="table table-bordered table-striped table-hover table-responsive table-sm">
+              <table class="table table-bordered table-hover table-striped table-responsive table-sm">
                 <tr>
                   <td class="fw-bold ls-1">Requested On :</td>
                   <td class="fw-bold ls-1" id="request-date"></td>
@@ -27,19 +27,11 @@
                 </tr>
                 <tr>
                   <td class="fw-bold ls-1">Billed On :</td>
-                  <td class="fw-bold ls-1" id="a-billed-date"></td>
-                </tr>
-                <tr>
-                  <td class="fw-bold ls-1">Member's Maximum Benefit Limit :</td>
-                  <td class="fw-bold ls-1">&#8369;<span id="member-mbl"></span></td>
-                </tr>
-                <tr>
-                  <td class="fw-bold ls-1">Member's Remaining MBL :</td>
-                  <td class="fw-bold ls-1">&#8369;<span id="remaining-mbl"></span></td>
+                  <td class="fw-bold ls-1" id="billed-date"></td>
                 </tr>
                 <tr>
                   <td class="fw-bold ls-1">Percentage :</td>
-                  <td class="fw-bold ls-1" id="percentage"></td>
+                  <td class="fw-bold ls-1" id="a-percentage"></td>
                 </tr>
                 <tr>
                   <td class="fw-bold ls-1">Healthcard Number :</td>
@@ -131,7 +123,7 @@
         </div>
       </section>
       <div class="modal-footer">
-        <button class="btn btn-dark ls-1 me-2" id="saveImage-btn" onclick="saveAsImage()"><i class="mdi mdi-file-image"></i> Save as Image</button>
+        <button class="btn btn-dark ls-1 me-2" onclick="saveAsImage()"><i class="mdi mdi-file-image"></i> Save as Image</button>
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
       </div>
     </div>

@@ -2,12 +2,12 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">DISAPPROVED REQUEST</h4>
+        <h4 class="page-title ls-2">PAID REQUEST</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-              <li class="breadcrumb-item">Member</li>
-              <li class="breadcrumb-item active" aria-current="page">Disapproved</li>
+              <li class="breadcrumb-item">Company Doctor</li>
+              <li class="breadcrumb-item active" aria-current="page">Paid</li>
             </ol>
           </nav>
         </div>
@@ -18,79 +18,101 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
-
-       <ul class="nav nav-tabs mb-4" role="tablist">
+        <ul class="nav nav-tabs mb-4" role="tablist">
           <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/pending" role="tab">
+            <a class="nav-link" href="<?php echo base_url(); ?>company-doctor/loa/requests-list" role="tab">
               <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">PENDING</span>
             </a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/approved" role="tab">
+            <a class="nav-link" href="<?php echo base_url(); ?>company-doctor/loa/requests-list/approved" role="tab">
               <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">APPROVED</span>
             </a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link active" href="<?php echo base_url(); ?>member/requested-loa/disapproved" role="tab">
+            <a class="nav-link" href="<?php echo base_url(); ?>company-doctor/loa/requests-list/disapproved" role="tab">
               <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">DISAPPROVED</span>
             </a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/completed" role="tab">
+            <a class="nav-link" href="<?php echo base_url(); ?>company-doctor/loa/requests-list/completed" role="tab">
               <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">COMPLETED</span>
             </a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/expired" role="tab">
+            <a class="nav-link"  href="<?php echo base_url(); ?>company-doctor/loa/requests-list/referral" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">REFERRAL</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>company-doctor/loa/requests-list/expired" role="tab">
               <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">EXPIRED</span>
             </a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/cancelled" role="tab">
+            <a class="nav-link" href="<?php echo base_url(); ?>company-doctor/loa/requests-list/cancelled" role="tab">
               <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">CANCELLED</span>
             </a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/billed" role="tab">
+            <a class="nav-link" href="<?php echo base_url(); ?>company-doctor/loa/requests-list/billed" role="tab">
               <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">BILLED</span>
             </a>
           </li>
 
-          
           <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/paid" role="tab">
+            <a class="nav-link active" href="<?php echo base_url(); ?>company-doctor/loa/requests-list/paid" role="tab">
               <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">PAID</span>
             </a>
           </li>
         </ul>
 
+        <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text bg-dark text-white">
+                <i class="mdi mdi-filter"></i>
+              </span>
+            </div>
+            <select class="form-select fw-bold" name="billed-hospital-filter" id="billed-hospital-filter">
+              <option value="">Select Hospital</option>
+              <?php foreach($hcproviders as $option) : ?>
+                <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+        </div>
+
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover" id="memberDisapprovedLoa">
+              <table class="table table-hover table-responsive" id="paidLoaTable">
                 <thead style="background-color:#00538C">
                   <tr>
-                    <th class="fw-bold" style="color: white">LOA NO.</th>
-                    <th class="fw-bold" style="color: white">HEALTHCARE PROVIDER</th>
-                    <th class="fw-bold" style="color: white">TYPE OF REQUEST</th>
-                    <th class="fw-bold" style="color: white">DATE OF REQUEST</th>
-                    <th class="fw-bold" style="color: white">RX FILE</th>
-                    <th class="fw-bold" style="color: white">STATUS</th>
-                    <th class="fw-bold" style="color: white">ACTION</th>
+                    <th class="" style="color: white">LOA NO.</th>
+                    <th class="" style="color: white">NAME OF PATIENT</th>
+                    <th class="" style="color: white">TYPE OF REQUEST</th>
+                    <th class="" style="color: white">HEALTHCARE PROVIDER</th>
+                    <th class="" style="color: white">RX FILE</th>
+                    <th class="" style="color: white">DATE OF REQUEST</th>
+                    <th class="" style="color: white">STATUS</th>
+                    <th class="" style="color: white">ACTION</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -99,75 +121,66 @@
             </div>
           </div>
         </div>
-
+        <?php include 'view_paid_loa_details.php'; ?>
       </div>
-      <?php include 'view_disapproved_loa_details.php'; ?>
     </div>
   </div>
 </div>
 
-
 <script>
-  const baseUrl = `<?php echo base_url(); ?>`;
-  const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
+    const baseUrl = `<?php echo base_url(); ?>`;
+    const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
 
-  $(document).ready(function() {
-    $("#memberDisapprovedLoa").DataTable({
-      ajax: {
-        url: `${baseUrl}member/requested-loa/disapproved/fetch`,
-        dataSrc: function(data) {
-          if (data == "") {
-            return [];
-          } else {
-            return data.data;
-          }
-        }
-      },
-      order: [],
-      responsive: true,
-      fixedHeader: true,
-      columnDefs: [{
-        // "targets": [5, 6, 7], // 6th and 7th column / numbering column
-        "targets": [4, 5, 6],
-        "orderable": false, //set not orderable
-      }, ],
+    $(document).ready(function() {
+
+        let paidTable = $('#paidLoaTable').DataTable({
+            processing: true, //Feature control the processing indicator.
+            serverSide: true, //Feature control DataTables' server-side processing mode.
+            order: [], //Initial no order.
+
+            // Load data for the table's content from an Ajax source
+            ajax: {
+                url: `${baseUrl}company-doctor/loa/requests-list/paid/fetch`,
+                type: "POST",
+                // passing the token as data so that requests will be allowed
+                data: function(data) {
+                    data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
+                    data.filter = $('#billed-hospital-filter').val();
+                }
+            },
+
+            //Set column definition initialisation properties.
+            columnDefs: [{
+                "targets": [4, 6, 7], // numbering column
+                "orderable": false, //set not orderable
+            }, ],
+            responsive: true,
+            fixedHeader: true,
+        });
+
+        $('#billed-hospital-filter').change(function(){
+            paidTable.draw();
+        });
+
+
     });
-  });
 
-  const viewImage = (path) => {
-    let item = [{
-      src: path, // path to image
-      title: 'Attached RX File' // If you skip it, there will display the original image name
-    }];
-    // define options (if needed)
-    let options = {
-      index: 0 // this option means you will start at first image
-    };
-    // Initialize the plugin
-    let photoviewer = new PhotoViewer(item, options);
-  }
+    const viewImage = (path) => {
+        let item = [{
+            src: path, // path to image
+            title: 'Attached RX File' // If you skip it, there will display the original image name
+        }];
+        // define options (if needed)
+        let options = {
+            index: 0 // this option means you will start at first image
+        };
+        // Initialize the plugin
+        let photoviewer = new PhotoViewer(item, options);
+    }
 
-  const saveAsImage = () => {
-    // Get the div element you want to save as an image
-    const element = document.querySelector("#printableDiv");
-    // Use html2canvas to take a screenshot of the element
-    html2canvas(element)
-      .then(function(canvas) {
-        // Convert the canvas to an image data URL
-        const imgData = canvas.toDataURL("image/png");
-        // Create a temporary link element to download the image
-        const link = document.createElement("a");
-        link.download = `loa_${fileName}.png`;
-        link.href = imgData;
-
-        // Click the link to download the image
-        link.click();
-      });
-  }
-
-  const viewDisapprovedLoaInfo = (req_id) => {
+    const viewPaidLoaInfo = (req_id) => {
     $.ajax({
-      url: `${baseUrl}member/requested-loa/view/${req_id}`,
+      url: `${baseUrl}company-doctor/loa/requests-list/view/${req_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);
@@ -176,9 +189,8 @@
           status,
           token,
           loa_no,
-          disapproved_by,
-          disapprove_reason,
-          disapproved_on,
+          member_mbl,
+          remaining_mbl,
           first_name,
           middle_name,
           last_name,
@@ -207,19 +219,26 @@
           rx_file,
           req_status,
           work_related,
-          percentage
+          percentage,
+          approved_by,
+          approved_on,
+          billed_on,
+          paid_on
         } = res;
 
         $("#viewLoaModal").modal("show");
 
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
-
-        $('#loa-no').html(loa_no);
-        $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
-        $('#disapproved-by').html(disapproved_by);
-        $('#disapproved-on').html(disapproved_on);
-        $('#disapprove-reason').html(disapprove_reason);
+        
+        $('#a-loa-no').html(loa_no);
+        $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
+        $('#approved-by').html(approved_by);
+        $('#approved-on').html(approved_on);
+        $('#a-billed-date').html(billed_on);
+        $('#a-paid-date').html(paid_on);
+        $('#member-mbl').html(member_mbl);
+        $('#remaining-mbl').html(remaining_mbl);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
         $('#date-of-birth').html(date_of_birth);
         $('#age').html(age);
@@ -230,6 +249,7 @@
         $('#home-address').html(home_address);
         $('#city-address').html(city_address);
         $('#email').html(email);
+
         $('#contact-person').html(contact_person);
         $('#contact-person-addr').html(contact_person_addr);
         $('#contact-person-no').html(contact_person_no);
@@ -242,6 +262,7 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
+        
         if(work_related == 'Yes'){ 
 					if(percentage == ''){
 					  wpercent = '100% W-R';

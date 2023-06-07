@@ -1,4 +1,4 @@
-          <div class="modal fade" id="viewNoaModal" tabindex="-1" data-bs-backdrop="static">
+<div class="modal fade" id="viewNoaModal" tabindex="-1" data-bs-backdrop="static">
             <div class="modal-dialog modal-lg">
               <div class="modal-content">
                 <section id="printableDiv">
@@ -10,7 +10,7 @@
                   <div class="modal-body">
                     <div class="container">
                       <div class="row text-center">
-                        <h4><strong>NOA REQUEST DETAILS</strong></h4>
+                        <h4><strong>PATIENT DETAILS</strong></h4>
                       </div>
                       <div class="row">
                         <table class="table table-bordered table-striped table-hover table-responsive table-sm">
@@ -27,16 +27,20 @@
                             <td class="fw-bold ls-1" id="approved-on"></td>
                           </tr>
                           <tr>
+                            <td class="fw-bold ls-1">Billed On :</td>
+                            <td class="fw-bold ls-1" id="billed-date"></td>
+                          </tr>
+                          <tr>
                             <td class="fw-bold ls-1">Member's Maximum Benefit Limit :</td>
-                            <td class="fw-bold ls-1">&#8369; <span id="member-mbl"></span></td>
+                            <td class="fw-bold ls-1">&#8369;<span id="member-mbl"></span></td>
                           </tr>
                           <tr>
                             <td class="fw-bold ls-1">Member's Remaining MBL :</td>
-                            <td class="fw-bold ls-1">&#8369; <span id="remaining-mbl"></span></td>
+                            <td class="fw-bold ls-1">&#8369;<span id="remaining-mbl"></span></td>
                           </tr>
                           <tr>
-                            <td class="fw-bold ls-1">Work-Related :</td>
-                            <td class="fw-bold ls-1" id="work-related"></td>
+                            <td class="fw-bold ls-1">Percentage :</td>
+                            <td class="fw-bold ls-1" id="percentage"></td>
                           </tr>
                           <tr>
                             <td class="fw-bold ls-1">Full Name :</td>
@@ -62,15 +66,11 @@
                             <td class="fw-bold ls-1">Chief Complaint :</td>
                             <td class="fw-bold ls-1" id="chief-complaint"></td>
                           </tr>
-                          <tr>
-                            <td class="fw-bold ls-1">Work-Related :</td>
-                            <td class="fw-bold ls-1" id="work-related"></td>
-                          </tr>
                         </table>
                       </div>
                     </div>
                   </div>
-                </div>
+                </section>
                 <div class="modal-footer">
                   <button class="btn btn-dark ls-1 me-2" onclick="saveAsImage()"><i class="mdi mdi-file-image"></i> Save as Image</button>
                   <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>

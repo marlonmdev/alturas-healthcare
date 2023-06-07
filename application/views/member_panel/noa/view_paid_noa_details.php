@@ -26,6 +26,14 @@
                   <td class="fw-bold ls-1" id="approved-on"></td>
                 </tr>
                 <tr>
+                  <td class="fw-bold ls-1">Billed On :</td>
+                  <td class="fw-bold ls-1" id="billed-on"></td>
+                </tr>
+                <tr>
+                  <td class="fw-bold ls-1">Paid On :</td>
+                  <td class="fw-bold ls-1" id="paid-on"></td>
+                </tr>
+                <tr>
                   <td class="fw-bold ls-1">Percentage :</td>
                   <td class="fw-bold ls-1" id="percentage"></td>
                 </tr>
@@ -53,7 +61,6 @@
                   <td class="fw-bold ls-1">Chief Complaint :</td>
                   <td class="fw-bold ls-1" id="chief-complaint"></td>
                 </tr>
-                
               </table>
             </div>
           </div>

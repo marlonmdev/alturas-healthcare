@@ -74,6 +74,13 @@
               <span class="hidden-xs-down fs-5 font-bold">BILLED</span>
             </a>
           </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>company-doctor/loa/requests-list/paid" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">PAID</span>
+            </a>
+          </li>
         </ul>
 
         <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
@@ -224,7 +231,7 @@
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
         
         $('#a-loa-no').html(loa_no);
-        $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
+        $('#loa-status').html(`<strong class="text-success">[Billed]</strong>`);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
         $('#a-billed-date').html(billed_on);

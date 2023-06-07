@@ -131,6 +131,13 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
+	function view_paid_loa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/loa/paid_loa');
+		$this->load->view('templates/footer');
+	}
+
 	function pending_requested_noa() {
 		$emp_id = $this->session->userdata('emp_id');
 		$data['user_role'] = $this->session->userdata('user_role');
@@ -159,6 +166,20 @@ class Pages_controller extends CI_Controller {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
 		$this->load->view('member_panel/noa/completed_noa');
+		$this->load->view('templates/footer');
+	}
+
+	function view_billed_noa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/noa/billed_noa');
+		$this->load->view('templates/footer');
+	}
+
+	function view_paid_noa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/noa/paid_noa');
 		$this->load->view('templates/footer');
 	}
 

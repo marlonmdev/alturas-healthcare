@@ -22,7 +22,7 @@
             <div class="row d-flex align-items-center justify-content-center h-100" id="login-div">
                 <div class="col-sm-8 col-md-6 col-lg-4 col-xl-4">
                     <div class="text-center">
-                        <img src="<?= base_url() ?>assets/images/AhcLogo.png" class="img-fluid mx-auto" alt="Logo" width="400" height="auto">
+                        <img src="<?= base_url() ?>assets/images/HC_logo.png" class="img-fluid mx-auto" alt="Logo" width="330" height="auto">
                     </div>
                     <div class="mb-3">
                         <h5 class="text-center"><strong><span class="text-dark opacity-75">Login to your Account</span></strong></h5>

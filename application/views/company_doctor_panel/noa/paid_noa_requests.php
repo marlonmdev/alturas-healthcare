@@ -5,12 +5,12 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">APPROVED REQUEST</h4>
+        <h4 class="page-title ls-2">BILLED REQUEST</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Company Doctor</li>
-              <li class="breadcrumb-item active" aria-current="page">Approved</li>
+              <li class="breadcrumb-item active" aria-current="page">Billed</li>
             </ol>
           </nav>
         </div>
@@ -34,7 +34,7 @@
           </li>
           <li class="nav-item">
             <a
-              class="nav-link active"
+              class="nav-link"
               href="<?php echo base_url(); ?>company-doctor/noa/requests-list/approved"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -50,7 +50,7 @@
               <span class="hidden-xs-down fs-5 font-bold">DISAPPROVED</span></a
             >
           </li>
-          <li class="nav-item">
+         <li class="nav-item">
             <a
               class="nav-link"
               href="<?php echo base_url(); ?>company-doctor/noa/requests-list/billed"
@@ -61,7 +61,7 @@
           </li>
           <li class="nav-item">
             <a
-              class="nav-link"
+              class="nav-link active"
               href="<?php echo base_url(); ?>company-doctor/noa/requests-list/paid"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -89,7 +89,7 @@
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover" id="approvedNoaTable">
+              <table class="table table-hover" id="paidNoaTable">
                 <thead style="background-color:#00538C">
                   <tr>
                     <th class="fw-bold" style="color: white">NOA NO.</th>
@@ -108,7 +108,7 @@
           </div>
         </div>
 
-        <?php include 'view_approved_noa_details.php'; ?>
+        <?php include 'view_paid_noa_details.php'; ?>
 
       </div>
       <!-- End Row  -->  
@@ -124,14 +124,14 @@
 
   $(document).ready(function() {
 
-    let approvedTable = $('#approvedNoaTable').DataTable({
+    let approvedTable = $('#paidNoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
 
       // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}company-doctor/noa/requests-list/approved/fetch`,
+        url: `${baseUrl}company-doctor/noa/requests-list/paid/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: function(data) {
@@ -174,7 +174,7 @@
       });
   }
 
-  const viewApprovedNoaInfo = (req_id) => {
+  const viewPaidNoaInfo = (req_id) => {
     $.ajax({
       url: `${baseUrl}company-doctor/noa/requests-list/view/${req_id}`,
       type: "GET",
@@ -204,7 +204,9 @@
           approved_by,
           approved_on,
           expiry_date,
-          percentage
+          percentage,
+          billed_on,
+          paid_on
         } = res;
 
         $("#viewNoaModal").modal("show");
@@ -233,7 +235,8 @@
         $('#admission-date').html(admission_date);
         $('#chief-complaint').html(chief_complaint);
         $('#request-date').html(request_date);
-        $('#expiry-date').html(expiry_date);
+        $('#billed-date').html(billed_on);
+        $('#paid-date').html(paid_on);
         if(work_related == 'Yes'){ 
 					if(percentage == ''){
 					  wpercent = '100% W-R';

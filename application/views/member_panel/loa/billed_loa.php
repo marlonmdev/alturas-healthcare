@@ -67,6 +67,13 @@
               <span class="hidden-xs-down fs-5 font-bold">BILLED</span>
             </a>
           </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/paid" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">PAID</span>
+            </a>
+          </li>
         </ul>
 
         <div class="card shadow">
@@ -78,7 +85,7 @@
                     <th class="fw-bold" style="color: white">LOA NO.</th>
                     <th class="fw-bold" style="color: white">HEALTHCARE PROVIDER</th>
                     <th class="fw-bold" style="color: white">TYPE OF REQUEST</th>
-                    <th class="fw-bold" style="color: white">DATE OF EXPIRATION</th>
+                    <th class="fw-bold" style="color: white">DATE OF REQUEST</th>
                     <th class="fw-bold" style="color: white">RX FILE</th>
                     <th class="fw-bold" style="color: white">STATUS</th>
                     <th class="fw-bold" style="color: white">ACTION</th>
@@ -93,9 +100,8 @@
 
       </div>
     </div>
-    <?php include 'request_loa_cancellation.php'; ?>
   </div>
-  <?php include 'view_approved_loa_detail.php'; ?>
+  <?php include 'view_billed_loa_detail.php'; ?>
 </div>
 
   
@@ -121,7 +127,7 @@
       fixedHeader: true,
       columnDefs: [{
         // "targets": [5, 6, 7], // 6th and 7th column / numbering column
-         "targets": [4, 5, 6], 
+         "targets": [], 
         "orderable": false, //set not orderable
       }, ],
     });
@@ -159,7 +165,7 @@
       });
   }
 
-  const viewApprovedLoaInfo = (req_id) => {
+  const viewBilledLoaInfo = (req_id) => {
     $.ajax({
       url: `${baseUrl}member/requested-loa/view/${req_id}`,
       type: "GET",
@@ -172,7 +178,7 @@
           loa_no,
           approved_by,
           approved_on,
-          expiry_date,
+          billed_on,
           first_name,
           middle_name,
           last_name,
@@ -210,10 +216,10 @@
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
 
         $('#loa-no').html(loa_no);
-        $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
+        $('#loa-status').html(`<strong class="text-success">[Billed]</strong>`);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
-        $('#expiry-date').html(expiry_date);
+        $('#billed-date').html(billed_on);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
         $('#date-of-birth').html(date_of_birth);
         $('#age').html(age);
@@ -270,73 +276,5 @@
     });
   }
 
-  // const requestLoaCancellation = (loa_id, loa_no, hp_id) => {
-  //   $("#loaCancellationModal").modal("show");
-
-  //   $('#cancellation-reason').val('');
-  //   $('#cancellation-reason').removeClass('is-invalid');
-  //   $('#cancellation-reason-error').html('');
-
-  //   $('#cur-loa-id').val(loa_id);
-  //   $('#cur-loa-no').val(loa_no);
-  //   $('#cur-hp-id').val(hp_id);
-  //   $("#loaCancellationForm").attr("action", `${baseUrl}member/requested-loa/approve/cancel-request/${loa_id}`);
-  // }
-
-  $(document).ready(function() {
-    $('#loaCancellationForm').submit(function(event) {
-      const nextPage = `${baseUrl}member/requested-loa/cancelled-requests`;
-      event.preventDefault();
-      $.ajax({
-        type: "post",
-        url: $(this).attr('action'),
-        data: $(this).serialize(),
-        dataType: "json",
-        success: function(response) {
-          const {
-            token,
-            status,
-            message,
-            cancellation_reason_error
-          } = response;
-          switch (status) {
-            case 'error':
-              // is-invalid class is a built in classname for errors in bootstrap
-              if (cancellation_reason_error !== '') {
-                $('#cancellation-reason-error').html(cancellation_reason_error);
-                $('#cancellation-reason').addClass('is-invalid');
-              } else {
-                $('#cancellation-reason-error').html('');
-                $('#cancellation-reason').removeClass('is-invalid');
-              }
-              break;
-            case 'save-error':
-              swal({
-                title: 'Failed',
-                text: message,
-                timer: 3000,
-                showConfirmButton: false,
-                type: 'error'
-              });
-              break;
-            case 'success':
-              swal({
-                title: 'Success',
-                text: message,
-                timer: 3000,
-                showConfirmButton: false,
-                type: 'success'
-              });
-              $('#loaCancellationModal').modal('hide');
-              $("#memberApprovedLoa").DataTable().ajax.reload();
-              // setTimeout(function() {
-              //   window.location.href = nextPage;
-              // }, 3200);
-              break;
-          }
-        }
-      });
-    });
-  });
 
 </script>

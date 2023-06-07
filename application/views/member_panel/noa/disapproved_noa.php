@@ -40,12 +40,19 @@
             </a>
           </li>
 
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-noa/completed" role="tab">
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-noa/billed" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">COMPLETED</span>
+              <span class="hidden-xs-down fs-5 font-bold">BILLED</span>
             </a>
-          </li> -->
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-noa/paid" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">PAID</span>
+            </a>
+          </li>
         </ul>
 
         <div class="card shadow">

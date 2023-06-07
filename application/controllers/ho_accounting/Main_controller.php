@@ -1879,14 +1879,21 @@ class Main_controller extends CI_Controller {
 		}else{
 			$business_u = '';
 		}
-		
+
+		// $imagePath = base_url().'assets/images/HC_logo.png';
+		// $imageWidth = 50;
+		// $imageHeight = 0;
+		// $imageX = 50;
+		// $imageY = 50;
+
+		// $pdf->Image($imagePath, $imageX, $imageY, $imageWidth, $imageHeight);
 		$title =  '<h3>ALTURAS HEALTHCARE SYSTEM</h3>
             <h3>Billing Summary Details</h3>
 			'.$date.'
             <h3>'.$hospital.'</h3>
 			'.$business_u.'<br>';
 
-
+		
 		$PDFdata = '<table style="border:.5px solid #000; padding:3px" class="table table-bordered">';
 		$PDFdata .= ' <thead>
 						<tr class="border-secondary">

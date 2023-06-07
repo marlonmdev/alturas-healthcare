@@ -453,20 +453,21 @@
             switch(req_status){
                 case 'Pending':
                     $('#loa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
-                    if(rx_file.length){$("#p-documents").hide();}
+                    if(rx_file.length){$("#p-documents").show();}
                 break;
                 case 'Approved':
                     $('#loa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>APPROVED DATE: <strong><span class="text-primary">${approved_on}</span></strong></h6>`); 
                     $('#loa_details_1').append(`<h6>APPROVED BY: <strong><span class="text-primary">${approved_by}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>EXPIRATION DATE: <strong><span class="text-primary">${expiration}</span></strong></h6>`); 
-                    if(rx_file.length){$("#p-documents").hide();}
+                    if(rx_file.length){$("#p-documents").show();}
+                    if(attending_doctors.length != 0 || attending_physician.length != 0){ $("#p-physician").show();}
                 break;
                 case 'Disapproved':
                     $('#loa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>DISAPPROVED DATE: <strong><span class="text-primary">${disapproved_on}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>DISAPPROVED BY: <strong><span class="text-primary">${disapproved_by}</span></strong></h6>`); 
-                    if(rx_file.length){$("#p-documents").hide();}
+                    if(rx_file.length){$("#p-documents").show();}
                     $("#p-disaproved").show();
                     $('#disaproved').text(disapprove_reason);
                 break;
@@ -478,15 +479,20 @@
                     $("#p-documents").show();
                     $("#p-physician").show(); 
                 break;
-                case 'Refered':
+                case 'Reffered':
                     $('#loa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
+                    $('#loa_details_2').append(`<h6>APPROVED DATE: <strong><span class="text-primary">${approved_on}</span></strong></h6>`); 
+                    $('#loa_details_1').append(`<h6>APPROVED BY: <strong><span class="text-primary">${approved_by}</span></strong></h6>`); 
+                    $('#loa_details_2').append(`<h6>EXPIRATION DATE: <strong><span class="text-primary">${expiration}</span></strong></h6>`); 
+                    if(rx_file.length){$("#p-documents").show();} 
+                    if(attending_doctors.length != 0 || attending_physician.length != 0){ $("#p-physician").show();}
                 break;
                 case 'Expired':
                     $('#loa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>APPROVED DATE: <strong><span class="text-primary">${approved_on}</span></strong></h6>`);
                     $('#loa_details_1').append(`<h6>APPROVED BY: <strong><span class="text-primary">${approved_by}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>EXPIRATION DATE: <strong><span class="text-primary">${expiration}</span></strong></h6>`); 
-                    if(rx_file.length){$("#p-documents").hide();}
+                    if(rx_file.length){$("#p-documents").show();}
                 break;
                 case 'Billed' || 'Payment' || 'Payable':
                     $('#loa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 

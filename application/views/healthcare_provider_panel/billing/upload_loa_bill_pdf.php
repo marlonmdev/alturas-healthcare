@@ -17,7 +17,7 @@
 
     <div class="container-fluid" id="container-div">
       <div class="col-12 mb-4 mt-0">
-        <form method="POST" action="<?php echo base_url(); ?>healthcare-provider/billing/search">
+        <form method="POST" id="go-back" action="<?php echo base_url(); ?>healthcare-provider/billing/search">
           <div class="input-group">
             <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
             <input type="hidden" name="healthcard_no" value="<?= $healthcard_no ?>">
@@ -170,7 +170,9 @@
                             showConfirmButton: false,
                             type: 'success'
                             }).then(function() {
-                              window.location.href = `${baseUrl}healthcare-provider/billing/bill-loa/upload-pdf/${billing_id}/success`;
+                              $('#go-back').submit();
+                              // window.location.href = `${baseUrl}healthcare-provider/billing/search`;
+                              // window.location.href = `${baseUrl}healthcare-provider/billing/bill-loa/upload-pdf/${billing_id}/success`;
                         });
           }else{
             swal({

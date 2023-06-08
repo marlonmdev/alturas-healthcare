@@ -176,7 +176,7 @@
                             <i class="mdi mdi-calendar-range"></i>
                         </span>
                     </div>
-                    <input type="date" class="form-control" name="initial-date" id="initial-date" title="Initial bill As Of" oninput="validateDateRange()" placeholder="Billing Date"  required>
+                    <input type="date" class="form-control" name="initial-date" id="initial-date" title="Initial bill As Of" onchange="validateDateRange()" placeholder="Billing Date"  required>
                 </div>
             </div>
         </div>
@@ -290,6 +290,7 @@
     var noa_no = '<?= $noa_no ?>';
     var noa_id = "<?php echo $noa_id; ?>";  
     var initial_net_bill = "";
+    var initial_net_bill_date = 0;
     // console.log("admission_date",admission_date);
     const mbl = parseFloat($('#remaining-balance').val().replace(/,/g, ''));
     let net_bill = 0;
@@ -420,10 +421,20 @@
                 var dataTable = $('#initial_bill_table').DataTable();
                 var columnData = dataTable.column(3).data(); // Assuming column 4 is index 3
                 var firstIndex = columnData[0];
+
+                var initial_date = dataTable.column(2).data(); // Assuming column 4 is index 3
+                var date = initial_date[0];
                 if (dataTable.rows().count() !== 0) {
-                    initial_net_bill =firstIndex;
-                    // $('#initial-net-bill').val(firstIndex);
-                //    console.log("first index",firstIndex);
+
+                    const b_Date = new Date(date);
+                    const year = b_Date.getFullYear();
+                    const month = String(b_Date.getMonth() + 1).padStart(2, '0');
+                    const day = String(b_Date.getDate()).padStart(2, '0');
+
+                    initial_net_bill = firstIndex;
+                    initial_net_bill_date = year+month+day;
+                    console.log("initial date",year+month+day);
+
                 }
             }
         });
@@ -785,6 +796,7 @@
                 }
             
                 const validateDateRange = () => {
+
                     const billed_date = document.querySelector('#initial-date');
                     const endDateInput =Date('m-y-d');
                     const b_Date = new Date(billed_date.value);
@@ -794,11 +806,12 @@
 
                     const final_date = year+month+day;
                     // console.log('final date',final_date-admission_date);
-                    if (final_date >= admission_date && (final_date-admission_date)<=1) {
-                        console.log('final date',b_Date);
+                    if(initial_net_bill_date){
+                        console.log(final_date-initial_net_bill_date);
+                        if( final_date-initial_net_bill_date == 1 ){
                         return; // Don't do anything if either input is empty
-                    }
-                    else{
+                        }
+                        else{
                             // alert('End date must be greater than or equal to the start date');
                             swal({
                                 title: 'Failed',
@@ -808,7 +821,28 @@
                             });
                             billed_date.value = '';
                             return;
-                        }          
+                        }   
+                    }else{
+                        console.log(final_date-admission_date);
+                        if( final_date-admission_date == 0 ){
+                           
+                            return; // Don't do anything if either input is empty
+                        }
+                        else{
+                                // alert('End date must be greater than or equal to the start date');
+                                swal({
+                                    title: 'Failed',
+                                    text: 'Please be aware that the selected date may be either before or one day after the admission date. Take this into consideration when choosing the date.',
+                                    showConfirmButton: true,
+                                    type: 'error'
+                                });
+                                billed_date.value = '';
+                                return;
+                            }
+                    }
+
+                       
+                       
                 }
 
                                 

@@ -1482,7 +1482,8 @@ class Billing_controller extends CI_Controller {
         $config['allowed_types'] = 'pdf';
         $config['encrypt_name'] = TRUE;
         $this->load->library('upload', $config);
-        if($initial_date->length){
+        // var_dump("initial date", $initial_date);
+        if(empty($initial_date)){
             $response = [
                 'status'  => 'save-error',
                 'message' => 'Invalid Date'
@@ -1737,7 +1738,7 @@ class Billing_controller extends CI_Controller {
         // var_dump("noa_id",$noa_id);
         $data = [];
         foreach ($list as $noa) {
-            $date_uploaded = date("m/d/Y", strtotime($noa['date_uploaded']));
+            $date_uploaded = date("Y/m/d", strtotime($noa['date_uploaded']));
             $custom_billing_no = '<mark class="bg-primary text-white">' . $noa['billing_no'] . '</mark>';
             $file_name = $noa['pdf_bill'];
             $initial_bill = number_format($noa['initial_bill']);

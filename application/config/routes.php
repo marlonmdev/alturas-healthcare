@@ -111,7 +111,8 @@ $route['member/personal-charges/disapproved/fetch'] = 'member/pcharges_controlle
 
 // End of Member Routes
 //======================================================================================================
-
+// HC Front Desk
+//  $route['hc-provider-front-desk/dashboard'] = 'healthcare_provider/pages_controller';
  
 //======================================================================================================
 // Start of HealthCare Provider (Hospital, Clinics, and Laboratories Users) Routes

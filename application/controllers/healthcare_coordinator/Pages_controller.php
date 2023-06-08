@@ -228,8 +228,9 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('healthcare_coordinator_panel/loa/request_loa_form');
 		$this->load->view('templates/footer');
 	}
-
-
+	//==================================================
+	//Letter of Authorization
+	//==================================================
 	function view_pending_loa_list() {
 		$this->load->model('healthcare_coordinator/loa_model');
 		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
@@ -248,6 +249,9 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('healthcare_coordinator_panel/loa/pending_loa_requests');
 		$this->load->view('templates/footer');
 	}
+	//==================================================
+	//End
+	//==================================================
 
 	function view_approved_loa_list() {
 		$this->load->model('healthcare_coordinator/loa_model');

@@ -1,5 +1,5 @@
 <div class="modal fade" id="tagPersonalChargeModal" tabindex="-1" data-bs-backdrop="static">
-            <div class="modal-dialog modal-lg" style="width:650px ">
+            <div class="modal-dialog modal-lg">
               <div class="modal-content">
                 <div class="modal-header">
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">

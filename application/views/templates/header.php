@@ -102,7 +102,7 @@
           <div class="navbar-header">
             <!-- Logo -->
             <?php $homepage = base_url().$user_role.'/dashboard'; ?>
-            <a class="navbar-brand ps-4 ms-4" href="<?= $homepage ?>">
+            <a class="navbar-brand" href="<?= $homepage ?>">
               <!-- Logo icon -->
               <b class="align-middle ps-md-2 ps-lg-2 ps-sm-0 ps-xs-0">
                 <img
@@ -262,6 +262,10 @@
                     case "healthcare-provider":
                       include "healthcare_provider_links.php";
                       break;
+                    case "hc-provider-front-desk":
+                      include "healthcare_provider_links.php";
+                      hideli();
+                      break;
                     case "head-office-accounting":
                       include "ho_accounting_links.php";
                       break;
@@ -277,3 +281,13 @@
         <!-- End Sidebar scroll-->
       </aside>
       <!-- End Left Sidebar  -->
+      <script>
+        const hideli = () => {
+          const billing = document.querySelector("#hc-billing-tab");
+          const list_soa_tab = document.querySelector("#hc-list-soa-tab");
+          const list_patient_tab = document.querySelector("#hc-list-patient-tab");
+          billing.style.display = "none";
+          list_soa_tab.style.display = "none";
+          list_patient_tab.style.display = "none";
+        }
+      </script>

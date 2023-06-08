@@ -140,13 +140,17 @@
       src: path, // path to image
       title: 'Attached RX File' // If you skip it, there will display the original image name
     }];
-    // define options (if needed)
+    
+    // Define options (if needed)
     let options = {
-      index: 0 // this option means you will start at first image
+      index: 0, // this option means you will start at the first image
+      fullscreen: true // set fullscreen mode to true
     };
+    
     // Initialize the plugin
     let photoviewer = new PhotoViewer(item, options);
-  }
+  };
+
 
   const cancelPendingLoa = (loa_id) => {
     $.confirm({

@@ -22,24 +22,24 @@
 <li class="sidebar-item <?php echo $this->uri->segment(2) == 'loa' ? 'selected' : ''; ?>">
   <a class="sidebar-link sidebar-link" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list" aria-expanded="false">
     <i class="mdi mdi-file-document"></i>LOA 
-    <!-- <?php
+    <?php
       $total = $bar + $bar1 + $bar2 + $bar3 + $bar4;
       if ($total > 0) {
         echo '<sup style="background-color: red; color: white; border-radius: 50%; padding: 7px">' . $total . '</sup>';
       }
-    ?> -->
+    ?>
   </a>
 </li>
 
 <li class="sidebar-item <?php echo $this->uri->segment(2) == 'noa' ? 'selected' : ''; ?>">
   <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
     <i class="mdi mdi-file-chart"></i>NOA
-    <!-- <?php
+    <?php
       $total2 = $bar5 + $bar6;
       if ($total2 > 0) {
         echo '<sup style="background-color: red; color: white; border-radius: 50%; padding: 8px">' . $total2 . '</sup>';
       }
-    ?> -->
+    ?>
   </a>
   <ul aria-expanded="false" class="collapse first-level">
     <li class="sidebar-item">

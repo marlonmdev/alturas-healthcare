@@ -43,6 +43,7 @@
                 <option value="member">Member</option>
                 <option value="healthcare-coordinator">Healthcare Coordinator</option>
                 <option value="healthcare-provider">Healthcare Provider</option>
+                <option value="hc-provider-front-desk">Healthcare Provider Front Desk</option>
                 <option value="company-doctor">Company Doctor</option>
                 <option value="super-admin">Super Admin</option>
                 <option value="head-office-accounting">Head Office Accounting</option>
@@ -401,7 +402,7 @@
     const dsg_hcare_prov = document.querySelector('#dsgHcareProvDiv');
     if (role_input === '') {
       dsg_hcare_prov.className = 'd-none';
-    } else if (role_input === "healthcare-provider") {
+    } else if (role_input === "healthcare-provider" || role_input === "hc-provider-front-desk") {
       document.querySelector('#full-name').value = '';
       document.querySelector('#username').value = '';
       document.querySelector('#password').value = '';

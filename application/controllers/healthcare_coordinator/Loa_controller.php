@@ -452,7 +452,6 @@ class Loa_controller extends CI_Controller {
 		];
 		echo json_encode($output);
 	}
-
 	function fetch_all_disapproved_loa() {
 		$this->security->get_csrf_hash();
 		$status = 'Disapproved';
@@ -1938,6 +1937,17 @@ class Loa_controller extends CI_Controller {
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$loa = $this->loa_model->get_all_approved_loa($loa_id);
 		$existing = $this->loa_model->check_loa_no($loa_id);
+
+		$data['bar'] = $this->loa_model->bar_pending();
+			$data['bar1'] = $this->loa_model->bar_approved();
+			$data['bar2'] = $this->loa_model->bar_completed();
+			$data['bar3'] = $this->loa_model->bar_referral();
+			$data['bar4'] = $this->loa_model->bar_expired();
+			$data['bar_Billed'] = $this->loa_model->bar_billed();
+			$data['bar5'] = $this->loa_model->bar_pending_noa();
+			$data['bar6'] = $this->loa_model->bar_approved_noa();
+			$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+			$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 		
 		if(!$existing){
 			$data['user_role'] = $this->session->userdata('user_role');
@@ -1996,10 +2006,11 @@ class Loa_controller extends CI_Controller {
 			$loa_info['bar_Initial'] = $this->loa_model->bar_initial_noa();
 			$loa_info['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 			
-			if($loa['loa_request_type'] == 'Consultation'){
-				$loa_info['loa_data'] = $this->loa_model->get_consultation_data($loa_id);
-				$view_page ='edit_tag_complete_consultation.php';
-			}else if($loa['loa_request_type'] == 'Diagnostic Test'){
+			// if($loa['loa_request_type'] == 'Consultation'){
+			// 	$loa_info['loa_data'] = $this->loa_model->get_consultation_data($loa_id);
+			// 	$view_page ='edit_tag_complete_consultation.php';
+			// }else
+			 if($loa['loa_request_type'] == 'Diagnostic Test'){
 				$view_page ='edit_tagged_loa_to_complete.php';
 			}
 			$this->load->view('templates/header', $loa_info);

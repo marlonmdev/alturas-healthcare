@@ -126,20 +126,21 @@
                     <div class="row pe-2" id="printableDiv">
                         <div id="billing-table">
                             <div class="card-body">
-                                <div class="text-center pt-3">
+                                <!-- <div class="text-center pt-3">
                                     <h4>ALTURAS HEALTHCARE SYSTEM</h4>
                                     <h4>Billing Summary Details</h4>
                                     <h5><span id="b-bu-units"></span></h5>
                                     <h5><span id="b-payment-no"></span></h5>
-                                </div>
-                                <div class="pt-3 pb-2">
+                                </div> -->
+                                <!-- <div class="pt-3 pb-2">
                                     <span class="fw-bold fs-5 ps-2" id="b-hospital"></span><br>
                                     <span class="fw-bold fs-5 ps-2 pt-1" id="b-date"></span>
-                                </div>
-                                <div class="pt-2">
-                                    <table class="table table-sm" id="billedTable">
+                                </div> -->
+                                <div class="pt-4">
+                                    <table class="table table-sm border" id="billedTable">
                                         <thead>
                                             <tr class="border-secondary border-2 border-0 border-top border-bottom">
+                                                <!-- <th class="fw-bold ls-2"><strong>Requested On</strong></th> -->
                                                 <th class="fw-bold ls-2"><strong>Billing No</strong></th>
                                                 <th class="fw-bold ls-2"><strong>LOA/NOA #</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Patient Name</strong></th>
@@ -152,7 +153,7 @@
                                                 <th class="fw-bold ls-2"><strong>Total Payable</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Personal Charge</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Remaining MBL</strong></th>
-                                                <th></th>
+                                                
                                             </tr>
                                         </thead>
                                         <tbody class="pt-2" id="billing-tbody" >

@@ -263,8 +263,7 @@
                       include "healthcare_provider_links.php";
                       break;
                     case "hc-provider-front-desk":
-                      include "healthcare_provider_links.php";
-                      hideli();
+                      include "hc_provider_front_desk_links.php";
                       break;
                     case "head-office-accounting":
                       include "ho_accounting_links.php";
@@ -281,13 +280,4 @@
         <!-- End Sidebar scroll-->
       </aside>
       <!-- End Left Sidebar  -->
-      <script>
-        const hideli = () => {
-          const billing = document.querySelector("#hc-billing-tab");
-          const list_soa_tab = document.querySelector("#hc-list-soa-tab");
-          const list_patient_tab = document.querySelector("#hc-list-patient-tab");
-          billing.style.display = "none";
-          list_soa_tab.style.display = "none";
-          list_patient_tab.style.display = "none";
-        }
-      </script>
+     

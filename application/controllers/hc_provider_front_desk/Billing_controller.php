@@ -12,7 +12,7 @@ class Billing_controller extends CI_Controller {
         $this->load->model('ho_accounting/list_model');
         $user_role = $this->session->userdata('user_role');
         $logged_in = $this->session->userdata('logged_in');
-        if ($logged_in !== true && $user_role !== 'healthcare-provider') {
+        if ($logged_in !== true && $user_role !== 'hc-provider-front-desk') {
             redirect(base_url());
         }
     } 
@@ -339,7 +339,7 @@ class Billing_controller extends CI_Controller {
     function billing_search_member() {
         $data['user_role'] = $this->session->userdata('user_role');
         $this->load->view('templates/header', $data);
-        $this->load->view('healthcare_provider_panel/billing/search_member');
+        $this->load->view('hc_provider_front_desk_panel/billing/search_member');
         $this->load->view('templates/footer');
     }
 
@@ -376,7 +376,7 @@ class Billing_controller extends CI_Controller {
             ]);
 
             $this->load->view('templates/header', $data);
-            $this->load->view('healthcare_provider_panel/billing/search_member_result');
+            $this->load->view('hc_provider_front_desk_panel/billing/search_member_result');
             $this->load->view('templates/footer');
         }
     }
@@ -413,7 +413,7 @@ class Billing_controller extends CI_Controller {
             ]);
 
             $this->load->view('templates/header', $data);
-            $this->load->view('healthcare_provider_panel/billing/search_member_result');
+            $this->load->view('hc_provider_front_desk_panel/billing/search_member_result');
             $this->load->view('templates/footer');
         }
     }
@@ -450,7 +450,7 @@ class Billing_controller extends CI_Controller {
         }
 
         $this->load->view('templates/header', $data);
-        $this->load->view('healthcare_provider_panel/billing/'.$view_page);
+        $this->load->view('hc_provider_front_desk_panel/billing/'.$view_page);
         $this->load->view('templates/footer');
     }
 
@@ -634,7 +634,7 @@ class Billing_controller extends CI_Controller {
         $data['roomboards'] = $this->billing_model->get_billing_room_boards($bill['billing_no']);
         $data['deductions'] = $this->billing_model->get_billing_deductions($bill['billing_no']);
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_provider_panel/billing/billing_success');
+		$this->load->view('hc_provider_front_desk_panel/billing/billing_success');
 		$this->load->view('templates/footer');
     }
 
@@ -663,7 +663,7 @@ class Billing_controller extends CI_Controller {
         $data['rooms'] = $this->billing_model->get_hospital_room_types($noa['hospital_id']);
 
         $this->load->view('templates/header', $data);
-        $this->load->view('healthcare_provider_panel/billing/bill_patient_noa');
+        $this->load->view('hc_provider_front_desk_panel/billing/bill_patient_noa');
         $this->load->view('templates/footer');
     }
     function re_upload_bill_patient() {
@@ -691,7 +691,7 @@ class Billing_controller extends CI_Controller {
         $data['rooms'] = $this->billing_model->get_hospital_room_types($noa['hospital_id']);
 
         $this->load->view('templates/header', $data);
-        $this->load->view('healthcare_provider_panel/billing/bill_patient_noa');
+        $this->load->view('hc_provider_front_desk_panel/billing/bill_patient_noa');
         $this->load->view('templates/footer');
     }
 
@@ -769,7 +769,7 @@ class Billing_controller extends CI_Controller {
         $data['roomboards'] = $this->billing_model->get_billing_room_boards($bill['billing_no']);
         $data['deductions'] = $this->billing_model->get_billing_deductions($bill['billing_no']);
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_provider_panel/billing/billing_success');
+		$this->load->view('hc_provider_front_desk_panel/billing/billing_success');
 		$this->load->view('templates/footer');
     }
 
@@ -1005,7 +1005,7 @@ class Billing_controller extends CI_Controller {
         $view_page = $bill['billing_type'] == 'Manual Billing' ? 'billing_receipt' : 'pdf_billing_receipt'; 
 
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_provider_panel/billing/'.$view_page);
+		$this->load->view('hc_provider_front_desk_panel/billing/'.$view_page);
 		$this->load->view('templates/footer');
     }
 
@@ -1021,7 +1021,7 @@ class Billing_controller extends CI_Controller {
         $data['billing_no'] = 'BLN-' . strtotime(date('Y-m-d h:i:s'));
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_provider_panel/billing/upload_loa_bill_pdf');
+		$this->load->view('hc_provider_front_desk_panel/billing/upload_loa_bill_pdf');
 		$this->load->view('templates/footer');
 	}
 
@@ -1203,7 +1203,7 @@ class Billing_controller extends CI_Controller {
         $data['user_role'] = $this->session->userdata('user_role');
         $data['bill'] = $bill = $this->billing_model->get_billing_info($billing_id);
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_provider_panel/billing/pdf_billing_success');
+		$this->load->view('hc_provider_front_desk_panel/billing/pdf_billing_success');
 		$this->load->view('templates/footer');
     }
 
@@ -1228,7 +1228,7 @@ class Billing_controller extends CI_Controller {
         
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_provider_panel/billing/upload_noa_bill_pdf');
+		$this->load->view('hc_provider_front_desk_panel/billing/upload_noa_bill_pdf');
 		$this->load->view('templates/footer');
 	}
 
@@ -1252,7 +1252,7 @@ class Billing_controller extends CI_Controller {
             $data['prev_billing'] = $mbl_by_bill_no['pdf_bill'];
             $data['net_bill'] = $mbl_by_bill_no['net_bill'];
             $this->load->view('templates/header', $data);
-            $this->load->view('healthcare_provider_panel/billing/upload_loa_bill_pdf');
+            $this->load->view('hc_provider_front_desk_panel/billing/upload_loa_bill_pdf');
             $this->load->view('templates/footer');
         }
         if($type == 'noa'){
@@ -1277,7 +1277,7 @@ class Billing_controller extends CI_Controller {
             }
             $data['user_role'] = $this->session->userdata('user_role');
             $this->load->view('templates/header', $data);
-            $this->load->view('healthcare_provider_panel/billing/upload_noa_bill_pdf');
+            $this->load->view('hc_provider_front_desk_panel/billing/upload_noa_bill_pdf');
             $this->load->view('templates/footer');
         }
      

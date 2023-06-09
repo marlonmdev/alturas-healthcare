@@ -95,7 +95,7 @@
     </div>
     <script>
       const base_url = `<?php echo base_url(); ?>`;
-
+      const frondesk = `<?=$this->uri->segment(1)?>`;
       $(document).ready(function(){
 
         $('#viewLoaModal').on('hidden.bs.modal', function() {

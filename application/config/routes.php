@@ -112,7 +112,7 @@ $route['member/personal-charges/disapproved/fetch'] = 'member/pcharges_controlle
 // End of Member Routes
 //======================================================================================================
 // HC Front Desk
-//  $route['hc-provider-front-desk/dashboard'] = 'healthcare_provider/pages_controller';
+ $route['hc-provider-front-desk/dashboard'] = 'hc_provider_front_desk/pages_controller';
  
 //======================================================================================================
 // Start of HealthCare Provider (Hospital, Clinics, and Laboratories Users) Routes
@@ -121,6 +121,9 @@ $route['healthcare-provider/dashboard'] = 'healthcare_provider/pages_controller'
 // Search Member
 $route['healthcare-provider/search-member/healthcard'] = 'healthcare_provider/search_controller/search_member_by_healthcard';
 $route['healthcare-provider/search-member/name'] = 'healthcare_provider/search_controller/search_member_by_name';
+// provider front desk
+$route['hc-provider-front-desk/search-member/healthcard'] = 'hc_provider_front_desk/search_controller/search_member_by_healthcard';
+$route['hc-provider-front-desk/search-member/name'] = 'hc_provider_front_desk/search_controller/search_member_by_name';
 // $route['healthcare-provider/search-member/healthcard'] = 'healthcare_provider/search_controller/search_by_healthcard';
 // $route['healthcare-provider/search-member/name'] = 'healthcare_provider/search_controller/search_by_name';
 $route['healthcare-provider/history/get_loa_noa'] = 'healthcare_provider/search_controller/get_loa_noa';
@@ -214,6 +217,47 @@ $route['healthcare-provider/noa-requests/billed/fetch'] = 'healthcare_provider/n
 // NOA modal view
 $route['healthcare-provider/noa-requests/view/(:any)'] = 'healthcare_provider/noa_controller/get_noa_info';
 
+// LOA Pages hc-provider-front-desk hc_provider_front_desk
+$route['hc-provider-front-desk/loa-requests/pending'] = 'hc_provider_front_desk/pages_controller/pending_loa_requests';
+$route['hc-provider-front-desk/loa-requests/approved'] = 'hc_provider_front_desk/pages_controller/approved_loa_requests';
+$route['hc-provider-front-desk/loa-requests/disapproved'] = 'hc_provider_front_desk/pages_controller/disapproved_loa_requests';
+$route['hc-provider-front-desk/loa-requests/completed'] = 'hc_provider_front_desk/pages_controller/completed_loa_requests';
+$route['hc-provider-front-desk/loa-requests/billed'] = 'hc_provider_front_desk/pages_controller/billed_loa_requests';
+
+// LOA Datatables fetch data routes hc_provider_front_desk
+$route['hc-provider-front-desk/loa-requests/pending/fetch'] = 'hc_provider_front_desk/loa_controller/fetch_pending_loa_requests';
+$route['hc-provider-front-desk/loa-requests/approved/fetch'] = 'hc_provider_front_desk/loa_controller/fetch_approved_loa_requests';
+$route['hc-provider-front-desk/loa/requested-loa/generate-printable-loa/(:any)'] = 'hc_provider_front_desk/loa_controller/generate_printable_loa';
+$route['hc-provider-front-desk/loa-requests/disapproved/fetch'] = 'hc_provider_front_desk/loa_controller/fetch_disapproved_loa_requests';
+$route['hc-provider-front-desk/loa-requests/completed/fetch'] = 'hc_provider_front_desk/loa_controller/fetch_completed_loa_requests';
+$route['hc-provider-front-desk/loa-requests/billed/fetch'] = 'hc_provider_front_desk/loa_controller/fetch_billed_loa_requests';
+
+// LOA modal view hc_provider_front_desk
+$route['hc-provider-front-desk/loa-requests/pending/view/(:any)'] = 'hc_provider_front_desk/loa_controller/get_pending_loa_info';
+$route['hc-provider-front-desk/loa-requests/approved/view/(:any)'] = 'hc_provider_front_desk/loa_controller/get_approved_loa_info';
+$route['hc-provider-front-desk/loa-requests/disapproved/view/(:any)'] = 'hc_provider_front_desk/loa_controller/get_disapproved_loa_info';
+$route['hc-provider-front-desk/loa-requests/completed/view/(:any)'] = 'hc_provider_front_desk/loa_controller/get_completed_loa_info';
+$route['hc-provider-front-desk/loa-requests/billed/view/(:any)'] = 'hc_provider_front_desk/loa_controller/get_billed_loa_info';
+
+
+// NOA Pages hc_provider_front_desk 
+$route['hc-provider-front-desk/noa-requests/pending'] = 'hc_provider_front_desk/pages_controller/pending_noa_requests';
+$route['hc-provider-front-desk/noa-requests/approved'] = 'hc_provider_front_desk/pages_controller/approved_noa_requests';
+$route['hc-provider-front-desk/noa-requests/disapproved'] = 'hc_provider_front_desk/pages_controller/disapproved_noa_requests';
+$route['hc-provider-front-desk/noa-requests/completed'] = 'hc_provider_front_desk/pages_controller/completed_noa_requests';
+$route['hc-provider-front-desk/noa-requests/billed'] = 'hc_provider_front_desk/pages_controller/billed_noa_requests';
+
+// Noa Datatables fetch data routes hc_provider_front_desk
+$route['hc-provider-front-desk/noa-requests/pending/fetch'] = 'hc_provider_front_desk/noa_controller/fetch_pending_noa_requests';
+$route['hc-provider-front-desk/noa-requests/approved/fetch'] = 'hc_provider_front_desk/noa_controller/fetch_approved_noa_requests';
+$route['hc-provider-front-desk/noa/requested-noa/generate-printable-noa/(:any)'] = 'hc_provider_front_desk/noa_controller/generate_printable_noa';
+$route['hc-provider-front-desk/noa-requests/disapproved/fetch'] = 'hc_provider_front_desk/noa_controller/fetch_disapproved_noa_requests';
+$route['hc-provider-front-desk/noa-requests/completed/fetch'] = 'hc_provider_front_desk/noa_controller/fetch_completed_noa_requests';
+$route['hc-provider-front-desk/noa-requests/billed/fetch'] = 'hc_provider_front_desk/noa_controller/fetch_billed_noa_requests';
+
+// NOA modal view hc_provider_front_desk
+$route['hc-provider-front-desk/noa-requests/view/(:any)'] = 'hc_provider_front_desk/noa_controller/get_noa_info';
+
 //Soa
 $route['healthcare-provider/soa/create-soa'] = 'healthcare_provider/Soa_controller/soaCreate';
 $route['healthcare-provider/soa/reprint-soa'] = 'healthcare_provider/Soa_controller/soaRequest';
@@ -245,6 +289,13 @@ $route['healthcare-provider/patient/view_information/(:any)'] = 'healthcare_prov
 $route['healthcare-provider/patient/fetch_all_patient_loa'] = 'healthcare_provider/patient_controller/fetch_all_patient_loa';
 $route['healthcare-provider/patient/fetch_all_patient_noa'] = 'healthcare_provider/patient_controller/fetch_all_patient_noa';
 $route['healthcare-provider/patient/get_takehome_meds'] = 'healthcare_provider/noa_controller/get_takehome_meds';
+// hc-provider-front-desk List of Patient Routes 
+$route['hc-provider-front-desk/patient/design'] = 'hc_provider_front_desk/patient_controller/design';
+$route['hc-provider-front-desk/patient/fetch_all_patient/(:any)'] = 'hc_provider_front_desk/patient_controller/fetch_all_patient';
+$route['hc-provider-front-desk/patient/view_information/(:any)'] = 'hc_provider_front_desk/patient_controller/view_information';
+$route['hc-provider-front-desk/patient/fetch_all_patient_loa'] = 'hc_provider_front_desk/patient_controller/fetch_all_patient_loa';
+$route['hc-provider-front-desk/patient/fetch_all_patient_noa'] = 'hc_provider_front_desk/patient_controller/fetch_all_patient_noa';
+$route['hc-provider-front-desk/patient/get_takehome_meds'] = 'hc_provider_front_desk/noa_controller/get_takehome_meds';
 
 
 // $route['head-office-iad/transaction/members'] = 'ho_iad/transaction_controller/members';
@@ -255,6 +306,10 @@ $route['healthcare-provider/patient/get_takehome_meds'] = 'healthcare_provider/n
 $route['healthcare-provider/account-settings'] = 'healthcare_provider/account_controller/account_settings';
 $route['healthcare-provider/account-settings/password/update'] = 'healthcare_provider/account_controller/update_account_password';
 $route['healthcare-provider/account-settings/username/update'] = 'healthcare_provider/account_controller/update_account_username';
+// HealthCare Provider User Account Routes hc-provider-front-desk
+$route['hc-provider-front-desk/account-settings'] = 'hc_provider_front_desk/account_controller/account_settings';
+$route['hc-provider-front-desk/account-settings/password/update'] = 'hc_provider_front_desk/account_controller/update_account_password';
+$route['hc-provider-front-desk/account-settings/username/update'] = 'hc_provider_front_desk/account_controller/update_account_username';
 
 // End of HealthCare Provider (Hospital, Clinics, and Laboratories Users) Routes
 //====================================================================================================

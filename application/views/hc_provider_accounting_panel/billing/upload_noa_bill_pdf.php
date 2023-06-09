@@ -291,7 +291,6 @@
     var noa_id = "<?php echo $noa_id; ?>";  
     var initial_net_bill = "";
     var initial_net_bill_date = 0;
-    var patient_name ="<?= $patient_name ?>";
     // console.log("admission_date",admission_date);
     const mbl = parseFloat($('#remaining-balance').val().replace(/,/g, ''));
     let net_bill = 0;
@@ -612,73 +611,40 @@
 
                             hospital_charges = result_2;
                             attending_doctors = get_doctors(finalResult);
-                           
+
                             console.log("doctors",attending_doctors);
                             // console.log("final doctors", result_3);
                             console.log("hospital charges", hospital_charges);
                             console.log("patient name", result_3);
-                            //this check if the patient name is equal to the member name
-                            if (patient_name.length) {
-                                console.log("member name", patient_name);
-                                const names = patient_name.toLowerCase().split(' ').filter(Boolean);
-
-                                let removedElement ="";
-                                
-                                if(names[names.length-1] === ".jr"){
-                                   removedElement = names.splice(names.length-2, 1);
-                                }else{
-                                    removedElement = names.splice(names.length-1, 1);
-                                }
-                                const mem_name = removedElement + ", " + names.join(' ');
-                                console.log("final name",mem_name);
-                                if(mem_name !== result_3){
-                                    $('#upload-btn').prop('disabled',true);
-                                    $.alert({
-                                            title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
-                                            content: `<div style='font-size: 16px; color: #333;'>The uploaded PDF bill does not match the member's name. Please ensure that you have uploaded the correct PDF bill for your account.</div>`,
-                                            type: "red",
-                                            buttons: {
-                                            ok: {
-                                                text: "OK",
-                                                btnClass: "btn-danger",
-                                            },
-                                        },
-                                    });
-                                }
-                            }
-
-                            const regex = /please pay for this amount\s*\.*\s*([\d,\.]+)/i;
+                        
+                        const regex = /please pay for this amount\s*\.*\s*([\d,\.]+)/i;
                         // const regex = /subtotal\s*\.{26}\s*\(([\d,\.]+)\)/i;
                             const match = finalResult.match(regex);
                             console.log("match",match);
                             if (match) {
-                                subtotalValue = parseFloat(match[1].replace(/,/g, ""));
-                                net_bill=subtotalValue;
-                                if(is_final){
-                                    document.getElementsByName("net-bill")[0].value = match[1];
-                                }else{
-                                    document.getElementsByName("initial-net-bill")[0]   .value = match[1];
-                                    //console.log('initil',match[1]);
-                                }
+                            subtotalValue = parseFloat(match[1].replace(/,/g, ""));
+                            net_bill=subtotalValue;
+                            if(is_final){
+                                document.getElementsByName("net-bill")[0].value = match[1];
+                            }else{
+                                document.getElementsByName("initial-net-bill")[0]   .value = match[1];
+                                //console.log('initil',match[1]);
+                            }
                 
                             } else {
-                                console.log("please pay for this amount is not found");
-                                $('#upload-btn').prop('disabled',true);
-                                setTimeout(function() {
-                                            $.alert({
-                                                title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Warning</h3>`,
-                                                content: "<div style='font-size: 16px; color: #333;'>The uploaded PDF Bill name is not the same to the members name.</div>",
-                                                type: "red",
-                                                buttons: {
-                                                    ok: {
-                                                        text: "OK",
-                                                        btnClass: "btn-danger",
-                                                    },
-                                                },
-                                            });
-                                        }, 1000); // Delay of 2000 milliseconds (2 seconds)
+                            console.log("please pay for this amount is not found");
+                            $.alert({
+                                    title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
+                                    content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it appears that there was an issue with the uploaded PDF. Please review the PDF file and try again.</div>",
+                                    type: "red",
+                                    buttons: {
+                                    ok: {
+                                        text: "OK",
+                                        btnClass: "btn-danger",
+                                    },
+                                },
+                            });
                             }
-
                             console.log("netbill",net_bill);
                             console.log("mbl",mbl);
 

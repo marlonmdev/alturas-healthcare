@@ -8,7 +8,7 @@ class Search_controller extends CI_Controller {
         $this->load->model('healthcare_provider/search_model');
         $user_role = $this->session->userdata('user_role');
         $logged_in = $this->session->userdata('logged_in');
-        if ($logged_in !== true && $user_role !== 'hc-provider-front-desk') {
+        if ($logged_in !== true && $user_role !== 'hc-provider-accounting') {
             redirect(base_url());
         }
     }
@@ -159,7 +159,7 @@ class Search_controller extends CI_Controller {
 		$data['noa'] = $this->noa_model->get_noa_history($hp_id,$member['emp_id']);
 		$data['hp_id'] = $hp_id;
 		$this->load->view('templates/header', $data);
-		$this->load->view('hc_provider_front_desk_panel/patient/patient_profile');
+		$this->load->view('hc_provider_accounting_panel/patient/patient_profile');
 		$this->load->view('templates/footer');
     }
     function search_by_healthcard(){
@@ -172,7 +172,7 @@ class Search_controller extends CI_Controller {
 		$data['noa'] = $this->noa_model->get_noa_history($hp_id,$member['emp_id']);
 		$data['hp_id'] = $hp_id;
 		$this->load->view('templates/header', $data);
-		$this->load->view('hc_provider_front_desk_panel/patient/patient_profile');
+		$this->load->view('hc_provider_accountin_panel/patient/patient_profile');
 		$this->load->view('templates/footer');
 
     }

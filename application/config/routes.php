@@ -113,6 +113,8 @@ $route['member/personal-charges/disapproved/fetch'] = 'member/pcharges_controlle
 //======================================================================================================
 // HC Front Desk
  $route['hc-provider-front-desk/dashboard'] = 'hc_provider_front_desk/pages_controller';
+// HC Accounting
+ $route['hc-provider-accounting/dashboard'] = 'hc_provider_accounting/pages_controller';
  
 //======================================================================================================
 // Start of HealthCare Provider (Hospital, Clinics, and Laboratories Users) Routes
@@ -124,6 +126,9 @@ $route['healthcare-provider/search-member/name'] = 'healthcare_provider/search_c
 // provider front desk
 $route['hc-provider-front-desk/search-member/healthcard'] = 'hc_provider_front_desk/search_controller/search_member_by_healthcard';
 $route['hc-provider-front-desk/search-member/name'] = 'hc_provider_front_desk/search_controller/search_member_by_name';
+// provider accounting
+$route['hc-provider-accounting/search-member/healthcard'] = 'hc_provider_accounting/search_controller/search_member_by_healthcard';
+$route['hc-provider-accounting/search-member/name'] = 'hc_provider_accounting/search_controller/search_member_by_name';
 // $route['healthcare-provider/search-member/healthcard'] = 'healthcare_provider/search_controller/search_by_healthcard';
 // $route['healthcare-provider/search-member/name'] = 'healthcare_provider/search_controller/search_by_name';
 $route['healthcare-provider/history/get_loa_noa'] = 'healthcare_provider/search_controller/get_loa_noa';
@@ -160,6 +165,8 @@ $route['healthcare-provider/patient_history/noa/(:any)'] = 'healthcare_provider/
 //SOA LIST
 $route['healthcare-provider/patient_soa/soa-list'] = 'healthcare_provider/patient_controller/list_of_soa';
 $route['healthcare-provider/patient/fetch-lis-of-soa'] = 'healthcare_provider/patient_controller/fetch_lis_of_soa';
+$route['hc-provider-accounting/patient_soa/soa-list'] = 'hc_provider_accounting/patient_controller/list_of_soa';
+$route['hc-provider-accounting/patient/fetch-lis-of-soa'] = 'hc_provider_accounting/patient_controller/fetch_lis_of_soa';
 // NOA Billing
 $route['healthcare-provider/billing/bill-noa/upload-pdf/(:any)'] = 'healthcare_provider/billing_controller/upload_noa_pdf_bill_form';
 $route['healthcare-provider/billing/bill-noa/upload-pdf/(:any)/submit'] = 'healthcare_provider/billing_controller/submit_noa_pdf_bill';
@@ -255,8 +262,48 @@ $route['hc-provider-front-desk/noa-requests/disapproved/fetch'] = 'hc_provider_f
 $route['hc-provider-front-desk/noa-requests/completed/fetch'] = 'hc_provider_front_desk/noa_controller/fetch_completed_noa_requests';
 $route['hc-provider-front-desk/noa-requests/billed/fetch'] = 'hc_provider_front_desk/noa_controller/fetch_billed_noa_requests';
 
-// NOA modal view hc_provider_front_desk
-$route['hc-provider-front-desk/noa-requests/view/(:any)'] = 'hc_provider_front_desk/noa_controller/get_noa_info';
+// NOA modal view hc_provider_accounting
+$route['hc-provider-accounting/noa-requests/view/(:any)'] = 'hc_provider_accounting/noa_controller/get_noa_info';
+// LOA Pages hc-provider-accounting hc_provider_accounting
+$route['hc-provider-accounting/loa-requests/pending'] = 'hc_provider_accounting/pages_controller/pending_loa_requests';
+$route['hc-provider-accounting/loa-requests/approved'] = 'hc_provider_accounting/pages_controller/approved_loa_requests';
+$route['hc-provider-accounting/loa-requests/disapproved'] = 'hc_provider_accounting/pages_controller/disapproved_loa_requests';
+$route['hc-provider-accounting/loa-requests/completed'] = 'hc_provider_accounting/pages_controller/completed_loa_requests';
+$route['hc-provider-accounting/loa-requests/billed'] = 'hc_provider_accounting/pages_controller/billed_loa_requests';
+
+// LOA Datatables fetch data routes hc_provider_accounting
+$route['hc-provider-accounting/loa-requests/pending/fetch'] = 'hc_provider_accounting/loa_controller/fetch_pending_loa_requests';
+$route['hc-provider-accounting/loa-requests/approved/fetch'] = 'hc_provider_accounting/loa_controller/fetch_approved_loa_requests';
+$route['hc-provider-accounting/loa/requested-loa/generate-printable-loa/(:any)'] = 'hc_provider_accounting/loa_controller/generate_printable_loa';
+$route['hc-provider-accounting/loa-requests/disapproved/fetch'] = 'hc_provider_accounting/loa_controller/fetch_disapproved_loa_requests';
+$route['hc-provider-accounting/loa-requests/completed/fetch'] = 'hc_provider_accounting/loa_controller/fetch_completed_loa_requests';
+$route['hc-provider-accounting/loa-requests/billed/fetch'] = 'hc_provider_accounting/loa_controller/fetch_billed_loa_requests';
+
+// LOA modal view hc_provider_accounting
+$route['hc-provider-accounting/loa-requests/pending/view/(:any)'] = 'hc_provider_accounting/loa_controller/get_pending_loa_info';
+$route['hc-provider-accounting/loa-requests/approved/view/(:any)'] = 'hc_provider_accounting/loa_controller/get_approved_loa_info';
+$route['hc-provider-accounting/loa-requests/disapproved/view/(:any)'] = 'hc_provider_accounting/loa_controller/get_disapproved_loa_info';
+$route['hc-provider-accounting/loa-requests/completed/view/(:any)'] = 'hc_provider_accounting/loa_controller/get_completed_loa_info';
+$route['hc-provider-accounting/loa-requests/billed/view/(:any)'] = 'hc_provider_accounting/loa_controller/get_billed_loa_info';
+
+
+// NOA Pages hc_provider_accounting 
+$route['hc-provider-accounting/noa-requests/pending'] = 'hc_provider_accounting/pages_controller/pending_noa_requests';
+$route['hc-provider-accounting/noa-requests/approved'] = 'hc_provider_accounting/pages_controller/approved_noa_requests';
+$route['hc-provider-accounting/noa-requests/disapproved'] = 'hc_provider_accounting/pages_controller/disapproved_noa_requests';
+$route['hc-provider-accounting/noa-requests/completed'] = 'hc_provider_accounting/pages_controller/completed_noa_requests';
+$route['hc-provider-accounting/noa-requests/billed'] = 'hc_provider_accounting/pages_controller/billed_noa_requests';
+
+// Noa Datatables fetch data routes hc_provider_accounting
+$route['hc-provider-accounting/noa-requests/pending/fetch'] = 'hc_provider_accounting/noa_controller/fetch_pending_noa_requests';
+$route['hc-provider-accounting/noa-requests/approved/fetch'] = 'hc_provider_accounting/noa_controller/fetch_approved_noa_requests';
+$route['hc-provider-accounting/noa/requested-noa/generate-printable-noa/(:any)'] = 'hc_provider_accounting/noa_controller/generate_printable_noa';
+$route['hc-provider-accounting/noa-requests/disapproved/fetch'] = 'hc_provider_accounting/noa_controller/fetch_disapproved_noa_requests';
+$route['hc-provider-accounting/noa-requests/completed/fetch'] = 'hc_provider_accounting/noa_controller/fetch_completed_noa_requests';
+$route['hc-provider-accounting/noa-requests/billed/fetch'] = 'hc_provider_accounting/noa_controller/fetch_billed_noa_requests';
+
+// NOA modal view hc_provider_accounting
+$route['hc-provider-accounting/noa-requests/view/(:any)'] = 'hc_provider_accounting/noa_controller/get_noa_info';
 
 //Soa
 $route['healthcare-provider/soa/create-soa'] = 'healthcare_provider/Soa_controller/soaCreate';
@@ -310,6 +357,10 @@ $route['healthcare-provider/account-settings/username/update'] = 'healthcare_pro
 $route['hc-provider-front-desk/account-settings'] = 'hc_provider_front_desk/account_controller/account_settings';
 $route['hc-provider-front-desk/account-settings/password/update'] = 'hc_provider_front_desk/account_controller/update_account_password';
 $route['hc-provider-front-desk/account-settings/username/update'] = 'hc_provider_front_desk/account_controller/update_account_username';
+// HealthCare Provider User Account Routes hc-provider-accounting
+$route['hc-provider-accounting/account-settings'] = 'hc_provider_accounting/account_controller/account_settings';
+$route['hc-provider-accounting/account-settings/password/update'] = 'hc_provider_accounting/account_controller/update_account_password';
+$route['hc-provider-accounting/account-settings/username/update'] = 'hc_provider_accounting/account_controller/update_account_username';
 
 // End of HealthCare Provider (Hospital, Clinics, and Laboratories Users) Routes
 //====================================================================================================

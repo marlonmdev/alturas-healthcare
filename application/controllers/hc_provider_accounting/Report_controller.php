@@ -11,7 +11,7 @@ class Report_controller extends CI_Controller {
         $this->load->model('healthcare_provider/Member_profile_model');
         $user_role = $this->session->userdata('user_role');
         $logged_in = $this->session->userdata('logged_in');
-        if ($logged_in !== true && $user_role !== 'hc-provider-front-desk') {
+        if ($logged_in !== true && $user_role !== 'hc-provider-accounting') {
             redirect(base_url());
         }
     }
@@ -29,7 +29,7 @@ class Report_controller extends CI_Controller {
         $data['loa_pending_count'] = count($loaPendingCount);
         $data['noa_pending_count'] = count($noaPendingCount);
         $this->load->view('templates/header', $data);
-        $this->load->view('hc_provider_front_desk_panel/report/reportList.php');
+        $this->load->view('hc_provider_accounting_panel/report/reportList.php');
         $this->load->view('templates/footer');
     }
 }

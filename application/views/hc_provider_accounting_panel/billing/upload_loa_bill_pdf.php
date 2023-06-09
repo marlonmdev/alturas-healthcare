@@ -266,41 +266,9 @@
 
                             hospital_charges = result_2;
                             attending_doctors = get_doctors(finalResult);
-                            
-                            const matches_3 = finalResult.match(patient_pattern);
-                            const result_3 = matches_3 ? matches_3[1] : null;
 
                             console.log("doctors", attending_doctors);
                             console.log("hospital charges", hospital_charges);
-
-                            if (patient_name.length) {
-                                console.log("member name", patient_name);
-                                const names = patient_name.toLowerCase().split(' ').filter(Boolean);
-
-                                let removedElement ="";
-                                
-                                if(names[names.length-1] === ".jr"){
-                                   removedElement = names.splice(names.length-2, 1);
-                                }else{
-                                    removedElement = names.splice(names.length-1, 1);
-                                }
-                                const mem_name = removedElement + ", " + names.join(' ');
-                                console.log("final name",mem_name);
-                                if(mem_name !== result_3){
-                                    $('#upload-btn').prop('disabled',true);
-                                    $.alert({
-                                            title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
-                                            content: `<div style='font-size: 16px; color: #333;'>The uploaded PDF bill does not match the member's name. Please ensure that you have uploaded the correct PDF bill for your account.</div>`,
-                                            type: "red",
-                                            buttons: {
-                                            ok: {
-                                                text: "OK",
-                                                btnClass: "btn-danger",
-                                            },
-                                        },
-                                    });
-                                }
-                            }
                         
                         const regex = /please pay for this amount\s*\.*\s*([\d,\.]+)/i;
                         // const regex = /subtotal\s*\.{26}\s*\(([\d,\.]+)\)/i;

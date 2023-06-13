@@ -77,11 +77,14 @@
                         <th style="color: white">LOA NO.</th>
                         <th style="color: white">NAME OF PATIENT</th>
                         <th style="color: white">TYPE OF REQUEST</th>
+                        <th style="color: white">REQUEST DATE</th>
+                        <th style="color: white">BILLED DATE</th>
                         <th style="color: white">COORDINATOR BILL</th>
                         <th style="color: white">VIEW BILL</th>
                         <th style="color: white">HOSPITAL BILL</th>
                         <th style="color: white">VIEW BILL</th>
                         <th style="color: white">VARIANCE</th> 
+                        <th style="color: white">STATUS</th> 
                         <th style="color: white">ACTION</th> 
                       </tr>
                     </thead>

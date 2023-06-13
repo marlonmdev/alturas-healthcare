@@ -136,7 +136,7 @@
                                     <span class="fw-bold fs-5 ps-2" id="b-hospital"></span><br>
                                     <span class="fw-bold fs-5 ps-2 pt-1" id="b-date"></span>
                                 </div> -->
-                                <div class="pt-4">
+                                <div class="pt-4 table-responsive">
                                     <table class="table table-sm border" id="billedTable">
                                         <thead>
                                             <tr class="border-secondary border-2 border-0 border-top border-bottom">

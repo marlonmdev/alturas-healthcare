@@ -140,12 +140,12 @@
   </a>
 
   <ul aria-expanded="false" class="collapse first-level">
-    <li class="sidebar-item">
+    <!-- <li class="sidebar-item">
       <a href="JavaScript:void(0)" onclick="showManagersKeyMBLModal()" class="sidebar-link">
         <i class="mdi mdi-account-key"></i>
         <span class="hide-menu ls-1">Reset MBL</span>
       </a>
-    </li>
+    </li> -->
 
     <li class="sidebar-item">
       <a href="<?php echo base_url(); ?>healthcare-coordinator/setup/healthcare-providers" class="sidebar-link">

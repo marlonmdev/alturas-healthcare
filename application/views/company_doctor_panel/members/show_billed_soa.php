@@ -34,7 +34,7 @@
                 <span class="fs-5">Member's Fullname : <span class="fw-bold fs-4"><?php echo $member['first_name'].' '. $member['middle_name'].' '.$member['last_name'].' '.$member['suffix'];?></span></span><br>
                 <span class="fs-5 pt-1">Business Unit : <span class="fw-bold fs-4"><?php echo $member['business_unit'];?></span></span>
           </div>
-          <div class="ps-4 pe-4 pt-3 pb-4" style="justify-content:center">
+          <div class="ps-4 pe-4 pt-3 pb-4 table-responsive" style="justify-content:center">
             <table class="table table-stripped table-sm">
               <th class="fw-bold">#</th>
               <th class="fw-bold">File Name</th>
@@ -47,20 +47,20 @@
                 foreach($file as $files) : 
                 if(!empty($files['pdf_bill'])) : 
                  if($files['status'] == 'Billed') {
-                  $status = 'Billed';
+                  $status = '<span class="badge round-pill bg-warning">Billed</span>';
                  }else  if($files['status'] == 'Payable'){
-                  $status = 'Billed';
+                  $status = '<span class="badge round-pill bg-warning">Billed</span>';
                  }else  if($files['status'] == 'Payment'){
-                  $status = 'Billed';
+                  $status = '<span class="badge round-pill bg-warning">Billed</span>';
                  }else if($files['status'] == 'Paid'){
-                  $status = 'Paid';
+                  $status = '<span class="badge round-pill bg-success">Paid</span>';
                  }
                 ?>
                 <tr>
                   <td><?php echo $number++; ?></td>
                   <td class="fs-5"><?php echo $files['pdf_bill']; ?></td>
                   <td class="fs-5"><?php echo date('F d, Y', strtotime($files['billed_on'])); ?></td>
-                  <td class="fs-5"><span class="badge round-pill bg-success"><?php echo $status; ?></span></td>
+                  <td class="fs-5"><?php echo $status; ?></td>
                   <td class="fs-5"><a href="JavaScript:void(0)" onclick="viewPDFSOA('<?php echo $files['pdf_bill']?>')" data-bs-toggle="tooltip"><i class="mdi mdi-file-pdf text-danger fs-3" title="View SOA"></i></a></td>
                 </tr>
                 <?php 

@@ -613,7 +613,7 @@ class Loa_controller extends CI_Controller {
 		$data['bar3'] = $this->loa_model->bar_referral();
 		$data['bar4'] = $this->loa_model->bar_expired();
 		$data['bar_Billed'] = $this->loa_model->bar_billed();
-		$status = 'Reffered';
+		$status = 'Referred';
 		$list = $this->loa_model->get_datatables($status);
 		$data = [];
 		foreach ($list as $loa) {
@@ -1426,7 +1426,7 @@ class Loa_controller extends CI_Controller {
 	function get_completed_loa_info() {
 		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$this->load->model('healthcare_coordinator/loa_model');
-		$row = $this->loa_model->db_get_loa_details($loa_id);
+		$row = $this->loa_model->db_get_loa_detail($loa_id);
 		$doctor_name = "";
 		if ($row['approved_by']) {
 			$doc = $this->loa_model->db_get_doctor_by_id($row['approved_by']);
@@ -2435,7 +2435,7 @@ class Loa_controller extends CI_Controller {
 			'work_related' => $loa['work_related'],
 			'percentage' => $loa['percentage'],
 			'expiration_date' => $expired_on,
-			'status' => 'Reffered',
+			'status' => 'Referred',
 		];
 
 		$inserted = $this->loa_model->db_insert_loa_request($post_data);

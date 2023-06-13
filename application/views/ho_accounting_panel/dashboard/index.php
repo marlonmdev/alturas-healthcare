@@ -96,60 +96,60 @@
     <!-- End Wrapper -->
     </div>
 <script>
-      <?php
-        // foreach($paid_count as $bill){
+      // <?php
+      //   // foreach($paid_count as $bill){
 
-            $dataPoints = array( 
-              // array("label"=>,"sg", "y"=>23.3),
-              array("label"=>$hp_name, "y"=>$paid_count),
-              array("label"=>"IE", "y"=>8.47),
-              array("label"=>"Safari", "y"=>6.08),
-              array("label"=>"Edge", "y"=>4.29),
-              array("label"=>"Others", "y"=>4.59)
-            );
-            ?>
+      //       $dataPoints = array( 
+      //         // array("label"=>,"sg", "y"=>23.3),
+      //         array("label"=>$hp_name, "y"=>$paid_count),
+      //         array("label"=>"IE", "y"=>8.47),
+      //         array("label"=>"Safari", "y"=>6.08),
+      //         array("label"=>"Edge", "y"=>4.29),
+      //         array("label"=>"Others", "y"=>4.59)
+      //       );
+      //       ?>
      
 
-      window.onload = function() {
+      // window.onload = function() {
       
-      var chart = new CanvasJS.Chart("chartContainer", {
-        animationEnabled: true,
-        title: {
-          text: "Paid Bill in every Healthcare Provider"
-        },
-        subtitles: [{
-          text: "   "
-        }],
-        data: [{
-          type: "pie",
-          yValueFormatString: "#,##0.00\"%\"",
-          indexLabel: "{label} ({y})",
-          dataPoints: <?php echo json_encode($dataPoints, JSON_NUMERIC_CHECK); ?>
-        }]
-      });
-      chart.render();
+      // var chart = new CanvasJS.Chart("chartContainer", {
+      //   animationEnabled: true,
+      //   title: {
+      //     text: "Paid Bill in every Healthcare Provider"
+      //   },
+      //   subtitles: [{
+      //     text: "   "
+      //   }],
+      //   data: [{
+      //     type: "pie",
+      //     yValueFormatString: "#,##0.00\"%\"",
+      //     indexLabel: "{label} ({y})",
+      //     dataPoints: <?php echo json_encode($dataPoints, JSON_NUMERIC_CHECK); ?>
+      //   }]
+      // });
+      // chart.render();
 
-      var chartCol = new CanvasJS.Chart("chartBarContainer", {
-      theme: "light1", // "light2", "dark1", "dark2"
-      animationEnabled: false, // change to true		
-      title:{
-        text: "Basic Column Chart"
-      },
-      data: [
-      {
-          // Change type to "bar", "area", "spline", "pie",etc.
-          type: "column",
-          dataPoints: [
-            { label: "apple",  y: 10  },
-            { label: "orange", y: 15  },
-            { label: "banana", y: 25  },
-            { label: "mango",  y: 30  },
-            { label: "grape",  y: 28  }
-          ]
-        }
-        ]
-      });
-      chartCol.render();
+      // var chartCol = new CanvasJS.Chart("chartBarContainer", {
+      // theme: "light1", // "light2", "dark1", "dark2"
+      // animationEnabled: false, // change to true		
+      // title:{
+      //   text: "Basic Column Chart"
+      // },
+      // data: [
+      // {
+      //     // Change type to "bar", "area", "spline", "pie",etc.
+      //     type: "column",
+      //     dataPoints: [
+      //       { label: "apple",  y: 10  },
+      //       { label: "orange", y: 15  },
+      //       { label: "banana", y: 25  },
+      //       { label: "mango",  y: 30  },
+      //       { label: "grape",  y: 28  }
+      //     ]
+      //   }
+      //   ]
+      // });
+      // chartCol.render();
         
-      }
+      // }
 </script>

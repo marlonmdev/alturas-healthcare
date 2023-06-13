@@ -78,10 +78,10 @@
                                     <?php else : ?>
                                         <option value="Performed">Performed</option>
                                     <?php endif; ?>
-                                    <?php if($loa['status'] == 'Reffered') : ?>
-                                        <option value="Reffered" selected>Refferal</option>
+                                    <?php if($loa['status'] == 'Referred') : ?>
+                                        <option value="Referred" selected>Refferal</option>
                                     <?php else :?>
-                                        <option value="Reffered">Refferal</option>
+                                        <option value="Referred">Refferal</option>
                                     <?php endif; ?>
                                     <?php if($loa['status'] == 'Cancelled') : ?>
                                         <option value="Cancelled" selected>Cancelled</option>
@@ -425,7 +425,7 @@
         for (let i = 0; i < statusElements.length; i++) {
             const status = statusElements[i].value;
 
-            if (status === 'Reffered') {
+            if (status === 'Referred') {
             input_date[i].value = '';
             input_time[i].value = '';
             physician_fname[i].value = '';

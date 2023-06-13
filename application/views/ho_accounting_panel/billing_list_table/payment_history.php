@@ -39,7 +39,7 @@
         <br>
         <div class="card bg-light">
             <div class="card-body">
-                <div class="">
+                <div class=" table-responsive">
                     <table class="table table-hover" id="billedTable">
                         <thead style="background-color:#00538C">
                             <tr>

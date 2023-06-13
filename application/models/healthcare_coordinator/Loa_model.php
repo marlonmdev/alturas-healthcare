@@ -519,7 +519,7 @@ function db_get_cost_types_by_hp_ID($hp_id) {
     $this->db->select('*')
             ->from('loa_requests as tbl_1')
             ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
-            ->where('tbl_1.status', 'Reffered')
+            ->where('tbl_1.status', 'Referred')
             ->where('tbl_1.loa_id', $loa_id)
             ->order_by('loa_id', 'DESC');
     return $this->db->get()->row_array();
@@ -918,7 +918,7 @@ function db_get_cost_types_by_hp_ID($hp_id) {
             ->join('cost_types as tbl_2', 'tbl_1.ctype_id = tbl_2.ctype_id')
             ->where('tbl_1.loa_id', $loa_id)
             ->where('tbl_2.hp_id', $hp_id)
-            ->where('tbl_1.status', 'Reffered');
+            ->where('tbl_1.status', 'Referred');
     return $this->db->get()->result_array();
   }
 

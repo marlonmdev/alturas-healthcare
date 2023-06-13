@@ -51,7 +51,7 @@
 
         <div class="card shadow">
           <div class="card-body">
-            <div class="">
+            <div class=" table-responsive">
               <table class="table table-striped table-hover" id="memberPersonalCharges">
                 <thead style="background-color:#00538C">
                   <tr>

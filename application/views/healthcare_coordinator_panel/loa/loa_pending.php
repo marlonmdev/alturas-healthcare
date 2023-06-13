@@ -339,13 +339,19 @@
 					 
 					}
 			   }
-        $('#percentage').html(wpercent+', '+nwpercent);
+         if(work_related == ''){
+          $('#percent_tr').hide();
+         }else{
+          $('#percent_tr').show();
+          $('#percentage').html(wpercent+', '+nwpercent);
+         }
       }
     });
   }
 
   const showTagChargeType = (loa_id) => {
     $("#viewChargeTypeModal").modal("show");
+    $("#viewChargeTypeModal").find("form")[0].reset();
     $('#loa-id').val(loa_id);
     $('#charge-type').val('');
   }

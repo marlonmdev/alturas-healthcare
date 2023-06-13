@@ -122,6 +122,10 @@
                           <td class="fw-bold ls-1">Member's Remaining MBL :</td>
                           <td class="fw-bold ls-1">&#8369;<span id="remaining-mbl"></span></td>
                         </tr>
+                        <tr id="percent_tr">
+                          <td class="fw-bold ls-1">Percentage :</td>
+                          <td class="fw-bold ls-1" id="p-percentage"></td>
+                        </tr>
                         <tr>
                           <td class="fw-bold ls-1">Full Name :</td>
                           <td class="fw-bold ls-1" id="full-name"></td>
@@ -309,10 +313,9 @@
 
   const showTagChargeType = (noa_id) => {
     $("#viewChargeTypeModal").modal("show");
+    $("#viewChargeTypeModal").find("form")[0].reset();
     $('#noa-id').val(noa_id);
     $('#charge-type').val('');
-    // $( ".wr" ).hide();
-    // $( ".nwr" ).hide();
   }
 
   function viewNoaInfo(noa_id) {
@@ -392,7 +395,12 @@
 					 
 					}
 			   }
-        $('#percentage').html(wpercent+', '+nwpercent);
+         if(work_related == ''){
+          $('#percent_tr').hide();
+         }else{
+          $('#percent_tr').show();
+          $('#p-percentage').html(wpercent+', '+nwpercent);
+         }
       }
     });
   }

@@ -9,14 +9,15 @@ class Reset_MBL_controller extends CI_Controller {
 
     }
 
-    function yearly_reset_mbl() {
+    function index() {
+        $this->security->get_csrf_hash();
         // inserting the mbl history
         $history = $this->members_model->db_get_mbl_history();
         foreach($history as $mbl){
             $post_data = [
                 'emp_id' => $mbl['emp_id'],
-                'max_benefit_limit' => $mbl['max_benefit_limit '],
-                'used_mbl' => $mbl['used_mbl '],
+                'max_benefit_limit' => $mbl['max_benefit_limit'],
+                'used_mbl' => $mbl['used_mbl'],
                 'remaining_balance' => $mbl['remaining_balance'],
                 'start_date' => $mbl['start_date'],
                 'end_date' => date('Y-m-d'),

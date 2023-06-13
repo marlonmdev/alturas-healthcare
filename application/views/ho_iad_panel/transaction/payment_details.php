@@ -48,7 +48,7 @@
               <input type="text" class="form-control text-dark fs-5" id="bank" readonly>
             </div>
             <div class="row col-lg-4 pb-3 pt-2">
-              <label class=" text-dark fw-bold ms-2 fs-5">Amount Paid :</label>
+              <label class=" text-dark fw-bold ms-2 fs-5">Check Amount :</label>
             </div>
             <div class="col-lg-8">
               <input type="number" class="form-control text-dark fs-5" id="amount-paid" readonly>

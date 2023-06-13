@@ -29,45 +29,45 @@
         <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
         <div class="col-lg-4">
           <label class="fw-bold">Member's Name : </label>
-          <input class="form-control fw-bold text-danger" name="member-name" value="<?php echo $full_name ?>" readonly>
+          <input class="form-control fw-bold text-info" name="member-name" value="<?php echo $full_name ?>" readonly>
           <input type="hidden" name="emp-id" value="<?php echo $emp_id ?>">
         </div>
 
         <div class="col-lg-4">
           <label class="fw-bold">Healthcard Number : </label>
-          <input class="form-control fw-bold text-danger" name="healthcard-no" value="<?php echo $health_card_no ?>" readonly>
+          <input class="form-control fw-bold text-info" name="healthcard-no" value="<?php echo $health_card_no ?>" readonly>
         </div>
 
         <div class="col-lg-4">
           <label class="fw-bold">LOA Number : </label>
-          <input class="form-control fw-bold text-danger" name="loa-no" value="<?php echo $loa_no ?>" readonly>
+          <input class="form-control fw-bold text-info" name="loa-no" value="<?php echo $loa_no ?>" readonly>
           <input type="hidden" name="loa-id" value="<?php echo $loa_id ?>">
         </div>
 
         <div class="col-lg-4 pt-3">
           <label class="fw-bold">Healthcare Provider : </label>
-          <input class="form-control fw-bold text-danger" name="hc-provider" value="<?php echo $hc_provider ?>" readonly>
+          <input class="form-control fw-bold text-info" name="hc-provider" value="<?php echo $hc_provider ?>" readonly>
           <input type="hidden" name="hp-id" value="<?php echo $hp_id ?>">
         </div>
 
         <div class="col-lg-4 pt-3">
           <label class="fw-bold">Work-Related : </label>
-          <input class="form-control fw-bold text-danger" name="work-related" value="<?php echo $work_related ?>" readonly>
+          <input class="form-control fw-bold text-info" name="work-related" value="<?php echo $work_related ?>" readonly>
         </div>        
       </div><hr>
 
       <div class="row pb-2">
         <div class="col-lg-4 pt-3">
           <label class="fw-bold">LOA Request Type : </label>
-          <input class="form-control fw-bold" name="request-type" value="<?php echo $request_type ?>" readonly>
+          <input class="form-control fw-bold text-info" name="request-type" value="<?php echo $request_type ?>" readonly>
         </div>
         <div class="col-lg-2 pt-3">
           <label class="fw-bold">Quantity : </label>
-          <input class="form-control fw-bold" type="number" name="quantity" id="quantity" value="1" min="1" oninput="calculateDiagnosticTestBilling()">
+          <input class="form-control fw-bold text-info" type="number" name="quantity" id="quantity" value="1" min="1" oninput="calculateDiagnosticTestBilling()">
         </div>
         <div class="col-lg-2 pt-3">
           <label class="fw-bold">Service Fee : </label>
-          <input class="form-control fw-bold" name="service-fee" id="service-fee" type="number" oninput="calculateDiagnosticTestBilling()" required>
+          <input class="form-control fw-bold text-info" name="service-fee" id="service-fee" type="number" oninput="calculateDiagnosticTestBilling()" required>
         </div>
       </div><hr>
 
@@ -84,7 +84,7 @@
           <label class="form-label ls-1">PhilHealth</label> <span class="text-muted">(optional)</span>
           <div class="input-group mb-3">
             <span class="input-group-text bg-success text-white">&#8369;</span>
-            <input type="number" class="input-deduction form-control fw-bold ls-1" id="deduct-philhealth" name="philhealth-deduction" placeholder="Deduction Amount" oninput="calculateDiagnosticTestBilling(`<?php echo $remaining_balance ?>`)" min="0">
+            <input type="number" class="input-deduction form-control fw-bold ls-1 text-info" id="deduct-philhealth" name="philhealth-deduction" placeholder="Deduction Amount" oninput="calculateDiagnosticTestBilling(`<?php echo $remaining_balance ?>`)" min="0">
             <span class="text-danger fw-bold deduction-msg"></span>
           </div>
         </div>
@@ -228,7 +228,7 @@
 
         /* Creating a new input field with the name deduction_name[] */
         html_code += `<div class="col-md-3">
-                        <input type="text" name="deduction-name[]" class="form-control fw-bold ls-1" placeholder="*Enter Deduction Name" required/>
+                        <input type="text" name="deduction-name[]" class="form-control fw-bold ls-1 text-info" placeholder="*Enter Deduction Name" required/>
                         <div class="invalid-feedback">
                             Deduction name and amount is required
                         </div>
@@ -240,7 +240,7 @@
                             <div class="input-group mb-3">
                                 <span class="input-group-text bg-success text-white">&#8369;</span>
 
-                                <input type="number" name="deduction-amount[]" class="deduction-amount form-control fw-bold ls-1" placeholder="*Deduction Amount" oninput="calculateDiagnosticTestBilling()" required/>
+                                <input type="number" name="deduction-amount[]" class="deduction-amount form-control fw-bold ls-1 text-info" placeholder="*Deduction Amount" oninput="calculateDiagnosticTestBilling()" required/>
 
                                 <span class="other-deduction-msg text-danger fw-bold"></span>
                             </div>

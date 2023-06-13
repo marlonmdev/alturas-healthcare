@@ -19,7 +19,7 @@
         </div>
 
         <div class="row justify-content-center pt-2">
-          <h6 class="text-center ls-1">MEDICAL SERVICE/S</h6>
+          <h6 class="text-center ls-1">CHARGES</h6>
           <table class="table table-sm">
             <thead>
               <tr class="border-secondary border-2 border-0 border-top border-bottom">

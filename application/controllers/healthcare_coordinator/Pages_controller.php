@@ -246,12 +246,9 @@ class Pages_controller extends CI_Controller {
 		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
 		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_coordinator_panel/loa/pending_loa_requests');
+		$this->load->view('healthcare_coordinator_panel/loa/loa_pending');
 		$this->load->view('templates/footer');
 	}
-	//==================================================
-	//End
-	//==================================================
 
 	function view_approved_loa_list() {
 		$this->load->model('healthcare_coordinator/loa_model');
@@ -268,7 +265,7 @@ class Pages_controller extends CI_Controller {
 		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
 		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_coordinator_panel/loa/approved_loa_requests');
+		$this->load->view('healthcare_coordinator_panel/loa/loa_approved');
 		$this->load->view('templates/footer');
 	}
 
@@ -287,9 +284,16 @@ class Pages_controller extends CI_Controller {
 		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
 		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_coordinator_panel/loa/disapproved_loa_requests');
+		$this->load->view('healthcare_coordinator_panel/loa/loa_disapproved');
 		$this->load->view('templates/footer');
 	}
+	//==================================================
+	//End
+	//==================================================
+
+	
+
+	
 
 	function view_expired_loa_list() {
 		$this->load->model('healthcare_coordinator/loa_model');
@@ -371,7 +375,7 @@ class Pages_controller extends CI_Controller {
 		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
 		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_coordinator_panel/loa/completed_loa_requests');
+		$this->load->view('healthcare_coordinator_panel/loa/loa_completed');
 		$this->load->view('templates/footer');
 	}
 

@@ -29,7 +29,7 @@ class Report_controller extends CI_Controller {
         $data['loa_pending_count'] = count($loaPendingCount);
         $data['noa_pending_count'] = count($noaPendingCount);
         $this->load->view('templates/header', $data);
-        $this->load->view('hc_provider_front_desk/report/reportList.php');
+        $this->load->view('hc_provider_front_desk_panel/report/reportList.php');
         $this->load->view('templates/footer');
     }
 }

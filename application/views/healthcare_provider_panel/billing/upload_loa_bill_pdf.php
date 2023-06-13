@@ -110,8 +110,13 @@
   var re_upload = '<?= isset($re_upload)?$re_upload : ""?>';
   var prev_billing = '<?= isset($prev_billing)?$prev_billing:"" ?>';
   var loa_no = '<?= $loa_no ?>';
+  var patient_name ="<?= $patient_name ?>";
+  const form = document.querySelector('#pdfBillingForm');
+  let hospital_charges ="";
+  let attending_doctors ="";
+  let is_valid_name = true;
+  let is_valid_noa = true;
 
-    
   const previewPdfFile = () => {
     let pdfFileInput = document.getElementById('pdf-file');
     let pdfPreview = document.getElementById('pdf-preview');
@@ -131,11 +136,6 @@
     }
   }
   
- 
-
-  const form = document.querySelector('#pdfBillingForm');
-  let hospital_charges ="";
-  let attending_doctors ="";
   $(document).ready(function(){
     $('#pdfBillingForm').submit(function(event){
       event.preventDefault();
@@ -209,7 +209,7 @@
                         .then(function(page) {
                         return page.getTextContent();
                         })
-                        .then(function(textContent) {
+                        .then(function(textContent) { 
                         const sortedItems = textContent.items
                             .map(function(item) {
                             return {text: item.str.toLowerCase(), x: item.transform[4], y: item.transform[5]};
@@ -256,6 +256,7 @@
                             console.log(finalResult);
                             console.log("final result",finalResult);
                             const pattern = /attending doctor\(s\):\s(.*?)\sregistry date:/si;
+                            const patient_pattern = /patient name:\s(.*?)\admission no:/si;
                             const doc_pattern = /hospital charges(.*?)please pay for this amount/si;
 
                             // const matches_1 = finalResult.match(pattern);
@@ -266,42 +267,53 @@
 
                             hospital_charges = result_2;
                             attending_doctors = get_doctors(finalResult);
+                            
+                            const matches_3 = finalResult.match(patient_pattern);
+                            const result_3 = matches_3 ? matches_3[1] : null;
 
                             console.log("doctors", attending_doctors);
                             console.log("hospital charges", hospital_charges);
-                        
-                        const regex = /please pay for this amount\s*\.*\s*([\d,\.]+)/i;
-                        // const regex = /subtotal\s*\.{26}\s*\(([\d,\.]+)\)/i;
-                            const match = finalResult.match(regex);
-                            console.log("match",match);
-                            if (match) {
-                            subtotalValue = parseFloat(match[1].replace(/,/g, ""));
-                            net_bill=subtotalValue;
-                            document.getElementsByName("net-bill")[0].value = match[1];
-                           
-                            } else {
-                            console.log("please pay for this amount is not found");
-                            $.alert({
-                                    title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
-                                    content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it appears that there was an issue with the uploaded PDF. Please review the PDF file and try again.</div>",
-                                    type: "red",
-                                    buttons: {
-                                    ok: {
-                                        text: "OK",
-                                        btnClass: "btn-danger",
-                                    },
-                                },
-                            });
-                            }
-                            console.log("netbill",net_bill);
-                            console.log("mbl",mbl);
 
-                            const valid_loa = /registry no:/i;
+                            if (patient_name.length) {
+                                console.log("member name", patient_name);
+                                const names = patient_name.toLowerCase().split(' ').filter(Boolean);
+
+                                let removedElement ="";
+                                
+                                if(names[names.length-1] === ".jr"){
+                                   removedElement = names.splice(names.length-2, 1);
+                                }else{
+                                    removedElement = names.splice(names.length-1, 1);
+                                }
+                                const mem_name = removedElement + ", " + names.join(' ');
+                                console.log("final name",mem_name);
+                                if(mem_name !== result_3){
+                                  is_valid_name = false;
+                                    // $('#upload-btn').prop('disabled',true);
+                                    $.alert({
+                                            title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
+                                            content: `<div style='font-size: 16px; color: #333;'>The uploaded PDF bill does not match the member's name. Please ensure that you have uploaded the correct PDF bill.</div>`,
+                                            type: "red",
+                                            buttons: {
+                                            ok: {
+                                                text: "OK",
+                                                btnClass: "btn-danger",
+                                            },
+                                        },
+                                    });
+                                }else{
+                                  is_valid_name = true;
+                                }
+                            }
+
+                        //validate noa 
+                        const valid_loa = /registry no:/i;
                             const invalid_loa = /admission no:/i;
                             if(finalResult.match(invalid_loa) && !finalResult.match(valid_loa)){
-                            $('#upload-btn').prop('disabled',true);
-                            setTimeout(function() {
-                                $.alert({
+                              is_valid_noa = false;
+                              $('#upload-btn').prop('disabled',true);
+                              setTimeout(function() {
+                                  $.alert({
                                                 title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>ERROR</h3>`,
                                                 content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it appears that your uploaded PDF is an NOA (Notice of Admission) instead of  an LOA (Letter of Authorization). Thank you for your understanding.</div>",
                                                 type: "red",
@@ -314,8 +326,23 @@
                                             });
                                         }, 1000); // Delay of 2000 milliseconds (2 seconds)
                             }else{
-                            $('#upload-btn').prop('disabled',false);
-                            if(parseFloat(net_bill)>mbl){
+                              is_valid_noa = true;
+                            }
+
+                        const regex = /please pay for this amount\s*\.*\s*([\d,\.]+)/i;
+                        // const regex = /subtotal\s*\.{26}\s*\(([\d,\.]+)\)/i;
+                            const match = finalResult.match(regex);
+                            console.log("match",match);
+                            if (match) {
+                              subtotalValue = parseFloat(match[1].replace(/,/g, ""));
+                              net_bill=subtotalValue;
+                              document.getElementsByName("net-bill")[0].value = match[1];
+
+                              if(is_valid_name && is_valid_noa){
+                                    $('#upload-btn').prop('disabled',false);
+                                }
+
+                              if(parseFloat(net_bill)>mbl){
                               // $('#upload-btn').prop('disabled',true);
                                             setTimeout(function() {
                                             $.alert({
@@ -331,7 +358,24 @@
                                             });
                                         }, 1000); // Delay of 2000 milliseconds (2 seconds)
                                 }
+
+                            } else {
+                            console.log("please pay for this amount is not found");
+                            $('#upload-btn').prop('disabled',true);
+                            $.alert({
+                                    title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
+                                    content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it appears that there was an issue with the uploaded PDF. Please review the PDF file and try again.</div>",
+                                    type: "red",
+                                    buttons: {
+                                    ok: {
+                                        text: "OK",
+                                        btnClass: "btn-danger",
+                                    },
+                                },
+                            });
                             }
+                            console.log("netbill",net_bill);
+                            console.log("mbl",mbl);
                         });
                         
                     }, function(error) {

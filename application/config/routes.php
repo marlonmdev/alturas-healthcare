@@ -396,10 +396,10 @@ $route['healthcare-coordinator/setup/company-doctors'] = 'healthcare_coordinator
 $route['healthcare-coordinator/setup/cost-types'] = 'healthcare_coordinator/pages_controller/view_all_cost_types';
 $route['healthcare-coordinator/setup/room-types'] = 'healthcare_coordinator/pages_controller/view_all_room_types';
 $route['healthcare-coordinator/loa/request-loa'] = 'healthcare_coordinator/pages_controller/view_request_loa_form';
-$route['healthcare-coordinator/loa/requests-list'] = 'healthcare_coordinator/pages_controller/view_pending_loa_list';
-$route['healthcare-coordinator/loa/requests-list/approved'] = 'healthcare_coordinator/pages_controller/view_approved_loa_list';
-$route['healthcare-coordinator/loa/requests-list/disapproved'] = 'healthcare_coordinator/pages_controller/view_disapproved_loa_list';
-$route['healthcare-coordinator/loa/requests-list/completed'] = 'healthcare_coordinator/pages_controller/view_completed_loa_list';
+
+
+
+
 $route['healthcare-coordinator/loa/requests-list/expired'] = 'healthcare_coordinator/pages_controller/view_expired_loa_list';
 $route['healthcare-coordinator/loa/requests-list/cancelled'] = 'healthcare_coordinator/pages_controller/view_cancelled_loa_list';
 
@@ -502,7 +502,7 @@ $route['healthcare-coordinator/loa/approved-cancellation/fetch'] = 'healthcare_c
 $route['healthcare-coordinator/loa/requested-loa/update-loa/(:any)'] = 'healthcare_coordinator/loa_controller/view_tag_loa_completed';
 $route['healthcare-coordinator/loa/cancellation-requests/disapprove/(:any)'] = 'healthcare_coordinator/loa_controller/set_cancellation_disapproved';
 $route['healthcare-coordinator/loa/disapproved-cancellation/fetch'] = 'healthcare_coordinator/loa_controller/fetch_disapproved_cancellations';
-$route['healthcare-coordinator/loa-requests/approved/performed-loa-info/submit'] = 'healthcare_coordinator/loa_controller/submit_performed_loa_info';
+$route['healthcare-coordinator/loa-requests/approved/performed-loa-info/submit'] = 'healthcare_coordinator/loa_controller/submit_performed_diagnostic';
 $route['healthcare-coordinator/loa-requests/approved/performed-loa-info/edit'] = 'healthcare_coordinator/loa_controller/submit_edited_loa_info';
 $route['healthcare-coordinator/loa/performed-loa-info/view/(:any)'] = 'healthcare_coordinator/loa_controller/fetch_performed_loa_info';
 $route['healthcare-coordinator/loa-requests/approved/performed-loa-consultation/submit'] = 'healthcare_coordinator/loa_controller/submit_performed_consultation';
@@ -514,7 +514,8 @@ $route['healthcare-coordinator/loa/requests-list/cancel-request/(:any)'] = 'heal
 $route['healthcare-coordinator/loa/requested-loa/create_new_loa/(:any)/(:any)'] = 'healthcare_coordinator/loa_controller/create_rescheduled_to_new_loa';
 $route['healthcare-coordinator/loa/requested-loa/submit'] = 'healthcare_coordinator/loa_controller/submit_rescheduled_loa_services';
 $route['healthcare-coordinator/loa/rescheduled-loa/update-loa/(:any)'] = 'healthcare_coordinator/loa_controller/tag_resched_to_complete';
-$route['healthcare-coordinator/loa/performed-loa-info/submit'] = 'healthcare_coordinator/loa_controller/submit_added_loa_fees';
+$route['healthcare-coordinator/loa/performed-loa-info/submit'] = 'healthcare_coordinator/loa_controller/submit_consultation_fees';
+$route['healthcare-coordinator/loa/performed-loa-info/submit1'] = 'healthcare_coordinator/loa_controller/submit_diagnostic_fees';
 $route['healthcare-coordinator/loa/requested-loa/match_with_billing/(:any)'] = 'healthcare_coordinator/loa_controller/match_loa_with_billing';
 $route['healthcare-coordinator/loa/requests-list/billed/fetch'] = 'healthcare_coordinator/loa_controller/fetch_billed_loa';
 
@@ -809,9 +810,13 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 //=============================================================================================
 //COORDINATOR
 //=============================================================================================
-	//Letter
-
-	//END
+	//Letter of Authorization
+		//[pending]
+		$route['healthcare-coordinator/loa/requests-list'] = 'healthcare_coordinator/pages_controller/view_pending_loa_list';
+		$route['healthcare-coordinator/loa/requests-list/approved'] = 'healthcare_coordinator/pages_controller/view_approved_loa_list';
+		$route['healthcare-coordinator/loa/requests-list/disapproved'] = 'healthcare_coordinator/pages_controller/view_disapproved_loa_list';
+		$route['healthcare-coordinator/loa/requests-list/completed'] = 'healthcare_coordinator/pages_controller/view_completed_loa_list';
+	//End
 
 	//Final Billing
 	$route['healthcare-coordinator/loa/billed/datatable_final_billing'] = 'healthcare_coordinator/loa_controller/datatable_final_billing';

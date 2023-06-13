@@ -923,6 +923,7 @@ class Loa_controller extends CI_Controller {
 		}
 
 		$data = [
+			'performed_fees'  => 'Approved',
 			'status'          => 'Approved',
 			'approved_by'     => $approved_by,
 			'approved_on'     => $approved_on,

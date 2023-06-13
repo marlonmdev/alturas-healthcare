@@ -46,13 +46,6 @@
               <span class="hidden-xs-down fs-5 font-bold">EXPIRED</span>
             </a>
           </li>
-
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/completed" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">COMPLETED</span>
-            </a>
-          </li> -->
         </ul>
 
         <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
@@ -82,8 +75,8 @@
                     <th class="fw-bold" style="color: white">DATE OF REQUEST</th>
                     <th class="fw-bold" style="color: white">STATUS</th>
                     <th class="fw-bold" style="color: white">ACTION</th>
-                  </tr>
                 </thead>
+                  </tr>
                 <tbody>
                 </tbody>
               </table>
@@ -91,13 +84,13 @@
           </div>
         </div>
 
-        <!-- View NOA Details Modal -->
+        <!-- Disapproved Modal-->
         <div class="modal fade" id="viewNoaModal" tabindex="-1" data-bs-backdrop="static">
           <div class="modal-dialog modal-lg">
             <div class="modal-content">
               <section id="printableDiv">
-                <div class="modal-header">
-                  <h4 class="modal-title ls-2">NOA #: <span id="noa-no" class="text-primary"></span> <span id="noa-status"></span></h4>
+                <div class="modal-header" style="background-color:#00538c">
+                  <h4 class="modal-title ls-2" style="color:#fff">NOA #: <span id="noa-no" class="text-warning"></span> <span id="noa-status"></span></h4>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                   </button>
                 </div>

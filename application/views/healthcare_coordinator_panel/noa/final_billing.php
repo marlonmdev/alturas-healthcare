@@ -90,7 +90,7 @@
                       <th style="color: white">PERSONAL CHARGE</th>
                       <th style="color: white">VIEW SOA</th>
                       <th style="color: white">HOSPITAL BILL</th>
-                      <th style="color: white">MBL EXCESS</th>
+                      <th style="color: white">STATUS</th>
                     </tr>
                   </thead>
                   <tbody id="billed-tbody">

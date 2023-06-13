@@ -2076,10 +2076,6 @@ class Loa_controller extends CI_Controller {
 			$loa_info['request_type'] = $loa['loa_request_type'];
 			$loa_info['approved_on'] = $loa['approved_on'];
 			$loa_info['expired_on'] = $loa['expiration_date'];
-<<<<<<< HEAD
-
-=======
->>>>>>> 62cc9eca8254108554a4fd317eaf893017ce89fc
 			$loa_info['bar'] = $this->loa_model->bar_pending();
 			$loa_info['bar1'] = $this->loa_model->bar_approved();
 			$loa_info['bar2'] = $this->loa_model->bar_completed();
@@ -2090,21 +2086,12 @@ class Loa_controller extends CI_Controller {
 			$loa_info['bar6'] = $this->loa_model->bar_approved_noa();
 			$loa_info['bar_Initial'] = $this->loa_model->bar_initial_noa();
 			$loa_info['bar_Billed2'] = $this->loa_model->bar_billed_noa();
-<<<<<<< HEAD
 
 			
 			if($loa['loa_request_type'] == 'Consultation'){
 				$loa_info['loa_data'] = $this->loa_model->get_consultation_data($loa_id);
 				$view_page ='edit_tag_complete_consultation.php';
 			}else if($loa['loa_request_type'] == 'Diagnostic Test'){
-=======
-			
-			// if($loa['loa_request_type'] == 'Consultation'){
-			// 	$loa_info['loa_data'] = $this->loa_model->get_consultation_data($loa_id);
-			// 	$view_page ='edit_tag_complete_consultation.php';
-			// }else
-			 if($loa['loa_request_type'] == 'Diagnostic Test'){
->>>>>>> 62cc9eca8254108554a4fd317eaf893017ce89fc
 				$view_page ='edit_tagged_loa_to_complete.php';
 			}
 			$this->load->view('templates/header', $loa_info);
@@ -3404,22 +3391,89 @@ class Loa_controller extends CI_Controller {
 
 
 	// FINAL BILLING====================================================
+	// function datatable_final_billing() {
+ //    $token = $this->security->get_csrf_hash();
+ //    $status = 'Billed';
+ //    $billing = $this->loa_model->get_billed_datatables($status);
+ //   // var_dump("billing",$billing['loa_id']);
+ //    $data = [];
+
+ //    foreach ($billing as $bill) {
+ //      $row = [];
+ //      if ($bill['done_matching'] != 1) {
+ //      	//var_dump("billing",$bill['tbl1_loa_id']);
+ //        $loa_id = $this->myhash->hasher($bill['tbl1_loa_id'], 'encrypt');
+ //        //$loa_id = $this->myhash->hasher($bill['loa_id'], 'encrypt');
+
+ //        $fullname = $bill['first_name'] . ' ' . $bill['middle_name'] . ' ' . $bill['last_name'] . ' ' . $bill['suffix'];
+ //        $coordinator_bill = '<a href="JavaScript:void(0)" onclick="viewCoordinatorBill(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Coordinator Billing"><i class="mdi mdi-eye fs-2 text-info"></i></a>';
+ //        $pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf fs-2 text-info"></i></a>';
+ //        $variance = $bill['net_bill'] - $bill['total_net_bill'];
+ //        if ($variance > 0) {
+ //          $net_variance = '<span class="text-danger">' . number_format($variance, 2, '.', ',') . '</span>';
+ //        }else{
+ //          $net_variance = number_format($variance, 2, '.', ',');
+ //        }
+
+ //        $custom_actions = '';
+
+ //        $exists = $this->loa_model->check_if_loa_already_added($bill['loa_id']);
+
+
+ //        if ($bill['loa_request_type'] == 'Consultation') {
+ //        	if(!$exists){
+ //        		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/consultation_fees1/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Service Fee"><i class="mdi mdi-pen fs-2 text-warning"></i></a>';
+ //        	}else{
+ //        		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/consultation_fees/'. $loa_id . '" data-bs-toggle="tooltip" title="Edit Service Fee"><i class="mdi mdi-pen fs-2 text-warning"></i></a>';
+ //        	}
+         
+ //        }else if ($bill['loa_request_type'] == 'Diagnostic Test') {
+ //        	if(!$exists){
+ //        		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/diagnostic_fees1/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Service Fee"><i class="mdi mdi-pen fs-2 text-warning"></i></a>';
+ //        	}else{
+ //        		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/diagnostic_fees/'. $loa_id . '" data-bs-toggle="tooltip" title="Edit Service Fee"><i class="mdi mdi-pen fs-2 text-warning"></i></a>';
+ //        	} 
+ //        }
+
+ //        $custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $loa_id . '\', \'' . $bill['loa_no'] . '\')" data-bs-toggle="tooltip" title="Re-Upload File"><i class="mdi mdi-key-plus fs-2 text-danger"></i></a>';
+
+ //        $row[] = $bill['loa_no'];
+ //        $row[] = $fullname;
+ //        $row[] = $bill['loa_request_type'];
+ //        $row[] = date("F d, Y", strtotime($bill['request_date']));
+ //        $row[] = date("F d, Y", strtotime($bill['billed_on']));
+ //        $row[] = number_format($bill['total_net_bill'], 2, '.', ',');
+ //        $row[] = $coordinator_bill;
+ //        $row[] = number_format($bill['net_bill'], 2, '.', ',');
+ //        $row[] = $pdf_bill;
+ //        $row[] = $net_variance;
+ //        $row[] = $custom_actions;
+ //        $data[] = $row;
+ //      }
+ //    }
+ //    $output = [
+ //      "draw" => $_POST['draw'],
+ //      "data" => $data,
+ //    ];
+ //    echo json_encode($output);
+ //    // var_dump($output);
+	// }
+
 	function datatable_final_billing() {
     $token = $this->security->get_csrf_hash();
-    $status = 'Billed';
-    $billing = $this->loa_model->get_billed_datatables($status);
-   // var_dump("billing",$billing['loa_id']);
+    // $status = 'Billed';
+    $billing = $this->loa_model->get_billed_datatables();
     $data = [];
 
     foreach ($billing as $bill) {
       $row = [];
       if ($bill['done_matching'] != 1) {
-      	//var_dump("billing",$bill['tbl1_loa_id']);
         $loa_id = $this->myhash->hasher($bill['tbl1_loa_id'], 'encrypt');
-        //$loa_id = $this->myhash->hasher($bill['loa_id'], 'encrypt');
-
         $fullname = $bill['first_name'] . ' ' . $bill['middle_name'] . ' ' . $bill['last_name'] . ' ' . $bill['suffix'];
         $coordinator_bill = '<a href="JavaScript:void(0)" onclick="viewCoordinatorBill(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Coordinator Billing"><i class="mdi mdi-eye fs-2 text-info"></i></a>';
+        $request_date=date("F d, Y", strtotime($bill['tbl1_request_date']));
+        $billed_date=date("F d, Y", strtotime($bill['billed_on']));
+        $custom_status = '<span class="badge rounded-pill bg-success">' . $bill['tbl1_status'] . '</span>';
         $pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf fs-2 text-info"></i></a>';
         $variance = $bill['net_bill'] - $bill['total_net_bill'];
         if ($variance > 0) {
@@ -3429,10 +3483,7 @@ class Loa_controller extends CI_Controller {
         }
 
         $custom_actions = '';
-
         $exists = $this->loa_model->check_if_loa_already_added($bill['loa_id']);
-
-
         if ($bill['loa_request_type'] == 'Consultation') {
         	if(!$exists){
         		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/consultation_fees1/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Service Fee"><i class="mdi mdi-pen fs-2 text-warning"></i></a>';
@@ -3453,11 +3504,14 @@ class Loa_controller extends CI_Controller {
         $row[] = $bill['loa_no'];
         $row[] = $fullname;
         $row[] = $bill['loa_request_type'];
+        $row[] = $request_date;
+        $row[] = $billed_date;
         $row[] = number_format($bill['total_net_bill'], 2, '.', ',');
         $row[] = $coordinator_bill;
         $row[] = number_format($bill['net_bill'], 2, '.', ',');
         $row[] = $pdf_bill;
         $row[] = $net_variance;
+        $row[] = $custom_status;
         $row[] = $custom_actions;
         $data[] = $row;
       }
@@ -3467,7 +3521,6 @@ class Loa_controller extends CI_Controller {
       "data" => $data,
     ];
     echo json_encode($output);
-    // var_dump($output);
 	}
 
 	function submit_final_billing() {

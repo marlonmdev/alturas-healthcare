@@ -110,7 +110,7 @@
   var re_upload = '<?= isset($re_upload)?$re_upload : ""?>';
   var prev_billing = '<?= isset($prev_billing)?$prev_billing:"" ?>';
   var loa_no = '<?= $loa_no ?>';
-
+  var patient_name ="<?= $patient_name ?>";
     
   const previewPdfFile = () => {
     let pdfFileInput = document.getElementById('pdf-file');
@@ -256,9 +256,10 @@
                             console.log(finalResult);
                             console.log("final result",finalResult);
                             const pattern = /attending doctor\(s\):\s(.*?)\sregistry date:/si;
+                            const patient_pattern = /patient name:\s(.*?)\registry no:/si;
                             const doc_pattern = /hospital charges(.*?)please pay for this amount/si;
 
-                            // const matches_1 = finalResult.match(pattern);
+                            // const matches_1 = finalResult.match(pattern); 
                             // const result_1 = matches_1 ? matches_1[1] : null;
 
                             const matches_2 = finalResult.match(doc_pattern);

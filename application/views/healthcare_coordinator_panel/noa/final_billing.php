@@ -79,6 +79,8 @@
                       <th style="color: white">NAME OF PATIENT</th>
                       <th style="color: white">MBL REMAINING BALANCE</th>
                       <th style="color: white">WORK RELATED</th>
+                      <th style="color: white">REQUEST DATE</th>
+                      <th style="color: white">BILLED DATE</th>
                       <th style="color: white">COMPANY CHARGE</th>
                       <th style="color: white">PERSONAL CHARGE</th>
                       <th style="color: white">VIEW SOA</th>

@@ -341,6 +341,9 @@ class Main_controller extends CI_Controller {
 
 				if (!empty($result)) {
 					foreach ($result as $row) {
+						$total_paid = floatval($row['company_charge'] + $row['cash_advance']);
+						$this->List_model->insert_total_paid($row['billing_id'], $total_paid);
+
 						$loa_id = $row['loa_id'];
 						$noa_id = $row['noa_id'];
 					
@@ -1012,11 +1015,27 @@ class Main_controller extends CI_Controller {
 			$hospital_bill = number_format(floatval($pay['net_bill']),2, '.',',');
 			$company_charge = number_format(floatval($pay['company_charge']),2, '.',',');
 
+			// if($pay['personal_charge'] != 0){
+			// 	$approved = $this->List_model->get_approved_advance($pay['billing_id']);
+			// 	if(!$approved){
+			// 		$approved_advance = 0;
+			// 		$personal_charge = $pay['personal_charge'];
+			// 	}else{
+			// 		$approved_advance = $approved['approved_amount'];
+			// 		$personal_charge = floatval($pay['personal_charge'] - $approved['approved_amount']);
+			// 	}
+			// }else{
+			// 	$approved_advance = 0;
+			// 	$personal_charge = 0;
+
+			// }
+
 			// if(floatval($payable) > floatval($pay['net_bill'])){
 			// 	$action = '<a href="JavaScript:void(0)" onclick="adjustHAdvance(\''.$pay['billing_no']. '\',\''.$no.'\', \''.$fullname.'\', \''.$cash_advance.'\',\''.$hospital_bill.'\',\''.$company_charge.'\')" data-bs-toggle="tooltip" title="Adjust Healthcare Advance"><i class="mdi mdi-table-edit fs-3"></i></a>';
 			// }else{
 			// 	$action = '';
 			// }
+
 			// $row[] = date('F d, Y', strtotime($pay['request_date']));
 			$row[] = $pay['billing_no'];
 			$row[] = $loa_noa;
@@ -1332,7 +1351,7 @@ class Main_controller extends CI_Controller {
 
 				$row[] = $consolidated;
 				$row[] = $date;
-				$row[] = $hp_name;
+				$row[] = $hp_name; 	
 				$row[] = $status;
 				$row[] = $action_customs;
 				$data[] = $row;
@@ -1666,22 +1685,24 @@ class Main_controller extends CI_Controller {
 		
 		foreach($details as $bill){
 			$row = [];
-			
-			if($bill['loa_id'] != ''){
-				$loa_noa = $bill['loa_no'];
 
-			}else if($bill['noa_id'] != ''){
-				$loa_noa = $bill['noa_no'];
-			}
-			$total = floatval($bill['company_charge']) + floatval($bill['cash_advance']);
+			if($bill['company_charge'] || $bill['cash_advance'] != ''){
+				if($bill['loa_id'] != ''){
+					$loa_noa = $bill['loa_no'];
 
-			$row[] = $bill['billing_no'];
-			$row[] = $loa_noa;
-			$row[] = number_format($bill['company_charge'], 2, '.', ',');
-			$row[] = number_format($bill['cash_advance'], 2, '.', ','); 
-			$row[] = number_format($total, 2, '.', ',');
-			$row[] = '<span class="bg-danger text-white badge rounded-pill">Unpaid</span>';
-			$data[] = $row;
+				}else if($bill['noa_id'] != ''){
+					$loa_noa = $bill['noa_no'];
+				}
+				$total = floatval($bill['company_charge']) + floatval($bill['cash_advance']);
+
+				$row[] = $bill['billing_no'];
+				$row[] = $loa_noa;
+				$row[] = number_format($bill['company_charge'], 2, '.', ',');
+				$row[] = number_format($bill['cash_advance'], 2, '.', ','); 
+				$row[] = number_format($total, 2, '.', ',');
+				$row[] = '<span class="bg-danger text-white badge rounded-pill">Unpaid</span>';
+				$data[] = $row;
+			}	
 		}
 		$output = [
 			"draw" => $_POST['draw'],
@@ -1855,7 +1876,7 @@ class Main_controller extends CI_Controller {
 		}
 		$billed = $this->List_model->get_print_billed_loa_noa($hp,$start,$end,$bu);
 		$hospital = $this->List_model->db_get_hp_name($hp_id);
-		$pdf = new TCPDF();
+		$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
 		$user = $this->session->userdata('fullname');
 		
@@ -1879,20 +1900,16 @@ class Main_controller extends CI_Controller {
 		}else{
 			$business_u = '';
 		}
-		$x = 10; 
-		$y = 10; 
-		$width = 100; 
-		$height = 0;
-		
-		$imagePath = '<div><img src="'.base_url().'/assets/images/HC_logo.png"></div>';
-		
+
+		// $imagePath = '<img src="'.base_url().'assets/images/HC_logo.png">';
+		$imagePath = base_url().'assets/images/HC_logo.png';
+		// echo $imagePath;
 		$title =  '<h3>ALTURAS HEALTHCARE SYSTEM</h3>
             <h3>Billing Summary Details</h3>
 			'.$date.'
             <h3>'.$hospital.'</h3>
 			'.$business_u.'<br>';
 
-		
 		$PDFdata = '<table style="border:.5px solid #000; padding:3px" class="table table-bordered">';
 		$PDFdata .= ' <thead>
 						<tr class="border-secondary">
@@ -2029,12 +2046,16 @@ class Main_controller extends CI_Controller {
 		$pdf->setTitle('Billing Report');
 		$pdf->setFont('times', '', 10);
 		$pdf->AddPage('L');
-		$pdf->Image($imagePath, $x, $y, $width, $height);
+		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+		$x = 10;
+		$y = 10;
+		$width = 100;
+		$height = 0;
+		// $pdf->Image($imagePath, $x, $y, $width, $height);
 		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'C', true);
 		$pdf->lastPage();
-
-		$pdfname = 'bill_'.uniqid();
+		$pdfname = 'BILL_'.$hospital .'_'.time();
 		$pdf->Output($pdfname.'.pdf', 'I');
 	}
 
@@ -2242,7 +2263,7 @@ class Main_controller extends CI_Controller {
 		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'C', true);
 		$pdf->lastPage();
 
-		$pdfname = 'bill_'.uniqid();
+		$pdfname = 'BILL_'.$hospital .'_'.time();
 		$pdf->Output($pdfname.'.pdf', 'I');
 	}
 
@@ -2267,13 +2288,13 @@ class Main_controller extends CI_Controller {
 		$billed = $this->List_model->get_for_payment_bills($payment_no['payment_no']);
 		$hospital = $this->List_model->db_get_hp_name($hp_id);
 		$pdf = new TCPDF(); 
-
+	
 		$title =  '<h3>ALTURAS HEALTHCARE SYSTEM</h3>
             <h3>For Payment Summary Details</h3>
 			'.$date.'
             <h3>'.$hospital['hp_name'].'</h3>
 			<h3>'.$payment_no['payment_no'].'</h3><br>';
-			
+			$hospital = $hospital['hp_name']; 
 
 		$PDFdata = '<table style="border:.5px solid #000; padding:3px" class="table table-bordered">';
 		$PDFdata .= ' <thead>
@@ -2422,7 +2443,7 @@ class Main_controller extends CI_Controller {
 		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'C', true);
 		$pdf->lastPage();
 
-		$pdfname = 'bill_'.uniqid();
+		$pdfname = 'BILL_'.$hospital .'_'.time();
 		$pdf->Output($pdfname.'.pdf', 'I');
 	}
 
@@ -2453,6 +2474,8 @@ class Main_controller extends CI_Controller {
 			'.$date.'
 			<h3>'.$hospital['hp_name'].'</h3>
 			<h3>'.$payment_no['payment_no'].'</h3><br>';
+
+		$hospital = $hospital['hp_name']; 
 			
 
 		$PDFdata = '<table style="border:.5px solid #000; padding:3px" class="table table-bordered">';
@@ -2602,7 +2625,7 @@ class Main_controller extends CI_Controller {
 		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'C', true);
 		$pdf->lastPage();
 
-		$pdfname = 'bill_'.uniqid();
+		$pdfname = 'PAID_BILL_'.$hospital .'_'.time();
 		$pdf->Output($pdfname.'.pdf', 'I');
 	}
 

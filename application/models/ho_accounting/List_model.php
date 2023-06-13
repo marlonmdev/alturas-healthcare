@@ -264,6 +264,12 @@ class List_model extends CI_Model{
         $this->db->where('payment_no', $payment_no);
         return $this->db->get('billing')->result_array();
     }
+
+    function insert_total_paid($billing_id, $total_paid) {
+        $this->db->set('total_paid_amount',$total_paid)
+                ->where('billing_id',$billing_id);
+        return $this->db->update('billing');
+    }
     
     function set_loa_status($loa_id) {
         $this->db->set('status', 'Paid')
@@ -505,6 +511,7 @@ class List_model extends CI_Model{
        $this->db->join($this->table_6_billed . ' as tbl_6', 'tbl_1.emp_id = tbl_6.emp_id');
        $this->db->where('tbl_1.done_matching', '1');
        $this->db->where('tbl_1.status', 'Payable');
+       $this->db->order_by('tbl_1.billing_id','asc');
 
       if($this->input->post('hp_id')){
         $this->db->like('tbl_1.hp_id', $this->input->post('hp_id'));
@@ -530,6 +537,14 @@ class List_model extends CI_Model{
        return $query->result_array();
    }
     // end datatable
+
+    function get_approved_advance($billing_id) {
+        $this->db->select('approved_amount')
+                ->from('cash_advance')
+                ->where('billing_id',$billing_id)
+                ->where('status','Approved');
+        return $this->db->get()->row_array();
+    }
 
     function get_business_units() {
         return $this->db->get('locate_business_unit')->result_array();
@@ -681,7 +696,6 @@ class List_model extends CI_Model{
         return $total_sum;
     }
     
-
     function get_print_billed_loa_noa($hp_id,$start_date,$end_date,$bu_filter) {
         $this->db->select('*')
                 ->from('billing as tbl_1')
@@ -783,10 +797,10 @@ class List_model extends CI_Model{
        $this->db->from($this->details_table_1 . ' as tbl_1')
                 ->join($this->details_table_2 . ' as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id', 'left')
                 ->join($this->details_table_3 . ' as tbl_3', 'tbl_1.noa_id = tbl_3.noa_id', 'left')
-               ->join($this->details_table_5 . ' as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
-               ->where('tbl_1.emp_id', $this->input->post('emp_id'))
-               ->where('tbl_1.status', 'Paid')
-               ->order_by('tbl_1.billing_id', 'desc');
+                ->join($this->details_table_5 . ' as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
+                ->where('tbl_1.emp_id', $this->input->post('emp_id'))
+                ->where('tbl_1.status', 'Paid')
+                ->order_by('tbl_1.billing_id', 'desc');
        }
    
        function get_charging_details() {

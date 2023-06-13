@@ -77,11 +77,14 @@
                         <th style="color: white">LOA NO.</th>
                         <th style="color: white">NAME OF PATIENT</th>
                         <th style="color: white">TYPE OF REQUEST</th>
+                        <th style="color: white">REQUEST DATE</th>
+                        <th style="color: white">BILLED DATE</th>
                         <th style="color: white">COORDINATOR BILL</th>
                         <th style="color: white">VIEW BILL</th>
                         <th style="color: white">HOSPITAL BILL</th>
                         <th style="color: white">VIEW BILL</th>
                         <th style="color: white">VARIANCE</th> 
+                        <th style="color: white">STATUS</th> 
                         <th style="color: white">ACTION</th> 
                       </tr>
                     </thead>
@@ -453,6 +456,7 @@
         let bill = data.bill;
         let service = data.service;
         let deduction = data.deduction;
+        let charge = data.charge;
         let deduction_table = '';
         let service_table = '';
         let fullname = '';
@@ -462,11 +466,20 @@
         hp_name += bill.hp_name;
           
         if(bill.request_type == 'Consultation'){
-          let services = parseFloat(bill.total_services);
+          let services = parseFloat(bill.service_fee);
           service_table +='<tr>' +
-                              '<td class="text-center ls-1">Consultation</td>' +
+                              '<td class="text-center ls-1">Consultation Fee</td>' +
                               '<td class="text-center ls-1">'+services.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
                           '</tr>';
+
+          $.each(charge, function(index, item){
+            let charge_amount = parseFloat(item.charge_amount);
+            service_table +='<tr>'+
+                              '<td class="text-center ls-1">'+item.charge_name+'</td>' +
+                              '<td class="text-center ls-1">'+charge_amount.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
+                            '</tr>';
+          });
+
         }else{
           $.each(service, function(index, item){
             let op_price = parseFloat(item.op_price);
@@ -475,6 +488,18 @@
                               '<td class="text-center ls-1">'+op_price.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
                             '</tr>' ;
           });
+          $.each(charge, function(index, item){
+            let charge_amount = parseFloat(item.charge_amount);
+            service_table +='<tr>'+
+                              '<td class="text-center ls-1">'+item.charge_name+'</td>' +
+                              '<td class="text-center ls-1">'+charge_amount.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
+                            '</tr>';
+          });
+          let services = parseFloat(bill.medicines);
+          service_table +='<tr>' +
+                              '<td class="text-center ls-1">Medicine/s</td>' +
+                              '<td class="text-center ls-1">'+services.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
+                          '</tr>';
         }
          
         let total_services = parseFloat(bill.total_services);
@@ -495,11 +520,10 @@
 
         $.each(deduction, function(index, item){
           let deduction_amount = parseFloat(item.deduction_amount);
-
           deduction_table += '<tr>'+
                                 '<td class="text-center ls-1">'+item.deduction_name+'</td>' +
                                 '<td class="text-center ls-1">'+deduction_amount.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
-                               '</tr>';
+                              '</tr>';
           });
 
           let total_deductions = parseFloat(bill.total_deductions);

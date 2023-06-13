@@ -354,28 +354,43 @@
         } = res;
 
         $("#viewExpiredLoaModal").modal("show");
+        const ed = expiry_date !== '' ? expiry_date : 'None';
+        const db = date_of_birth !== '' ? date_of_birth : 'None';
+        const ag = age !== '' ? age : 'None';
+        const gndr = gender !== '' ? gender : 'None';
+        const bt = blood_type !== '' ? blood_type : 'None';
+        const pn = philhealth_no !== '' ? philhealth_no : 'None';
+        const ha = home_address !== '' ? home_address : 'None';
+        const ca = city_address !== '' ? city_address : 'None';
+        const cn = contact_no !== '' ? contact_no : 'None';
+        const em = email !== '' ? email : 'None';
+        const cp = contact_person !== '' ? contact_person : 'None';
+        const cpa = contact_person_addr !== '' ? contact_person_addr : 'None';
+        const cpn = contact_person_no !== '' ? contact_person_no : 'None';
+
+
         const med_serv = med_services !== '' ? med_services : 'None';
-        const at_physician = attending_physician !== '' ? attending_physician : 'None';
+        const ap = attending_physician !== '' ? attending_physician : 'None';
         $('#loa-no').html(loa_no);
         $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
-        $('#expiry-date').html(expiry_date);
+        $('#expiry-date').html(ed);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
-        $('#date-of-birth').html(date_of_birth);
-        $('#age').html(age);
-        $('#gender').html(gender);
-        $('#philhealth-no').html(philhealth_no);
-        $('#blood-type').html(blood_type);
-        $('#contact-no').html(contact_no);
-        $('#home-address').html(home_address);
-        $('#city-address').html(city_address);
-        $('#email').html(email);
-        $('#contact-person').html(contact_person);
-        $('#contact-person-addr').html(contact_person_addr);
-        $('#contact-person-no').html(contact_person_no);
+        $('#date-of-birth').html(db);
+        $('#age').html(ag);
+        $('#gender').html(gndr);
+        $('#philhealth-no').html(pn);
+        $('#blood-type').html(bt);
+        $('#contact-no').html(cn);
+        $('#home-address').html(ha);
+        $('#city-address').html(ca);
+        $('#email').html(em);
+        $('#contact-person').html(cp);
+        $('#contact-person-addr').html(cpa);
+        $('#contact-person-no').html(cpn);
         $('#healthcare-provider').html(healthcare_provider);
         $('#loa-request-type').html(loa_request_type);
         $('#loa-med-services').html(med_serv);
@@ -384,7 +399,7 @@
         $('#request-date').html(request_date);
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
-        $('#attending-physician').html(at_physician);
+        $('#attending-physician').html(ap);
         if(work_related == 'Yes'){ 
 					if(percentage == ''){
 					  wpercent = '100% W-R';

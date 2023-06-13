@@ -395,30 +395,79 @@ class Noa_controller extends CI_Controller {
  	//END==================================================================
 
  	//FINAL BILLING========================================================
- 	function final_billing() {
+ // 	function final_billing() {
+	// 	$token = $this->security->get_csrf_hash(); 
+	// 	$status = 'Billed';
+	// 	$billing = $this->noa_model->get_final_datatables($status);
+
+	// 	$data = array();
+	// 	foreach ($billing as $bill){
+	// 		$row = array();
+	// 		$loa_id = $this->myhash->hasher($bill['loa_id'], 'encrypt');
+	// 		$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
+	// 		$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i></a>';
+	// 		$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $bill['status'] . '</span></div>';
+
+	// 		$row[] = $bill['noa_no'];
+	// 		$row[] = $fullname;
+	// 		$row[] = '₱' . number_format($bill['after_remaining_bal'], 2, '.', ',');
+	// 		$workRelated = $bill['work_related'] . ' (' . $bill['percentage'] . '%)';
+	// 		$row[] = $workRelated;
+	// 		$row[] = '₱' . number_format($bill['company_charge'], 2, '.', ',');
+	// 		$row[] = '₱' . number_format($bill['personal_charge'], 2, '.', ',');
+	// 		$row[] = $pdf_bill;
+	// 		$netBill = '₱' . number_format($bill['net_bill'], 2, '.', ',');
+	// 		$row[] = $netBill;
+	// 		$row[] = $custom_status;
+	// 		$data[] = $row;
+	// 	}
+
+	// 	$output = [
+	// 		"draw" => $_POST['draw'],
+	// 		"data" => $data,
+	// 	];
+
+	// 	echo json_encode($output);
+	// }
+
+	function final_billing() {
 		$token = $this->security->get_csrf_hash(); 
-		$status = 'Billed';
-		$billing = $this->noa_model->get_final_datatables($status);
+		// $status = 'Billed';
+		$billing = $this->noa_model->get_final_datatables();
 
 		$data = array();
 		foreach ($billing as $bill){
 			$row = array();
 			$loa_id = $this->myhash->hasher($bill['loa_id'], 'encrypt');
 			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
-			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i></a>';
+			$request_date=date("F d, Y", strtotime($bill['tbl1_request_date']));
+        // $billed_date=date("F d, Y", strtotime($bill['billed_on']));
+        if (empty($bill['billed_on'])) {
+    			$billed_date = "No Billing Date Yet";
+				}else{
+    			$billed_date = date("F d, Y", strtotime($bill['billed_on']));
+				}
+			// $pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i></a>';
+				if (empty($bill['pdf_bill'])) {
+    			$pdf_bill = 'SOA has not been uploaded yet';
+				}else{
+    			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i></a>';
+				}
+			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $bill['tbl1_status'] . '</span></div>';
 
 			$row[] = $bill['noa_no'];
 			$row[] = $fullname;
-			$row[] = '₱' . number_format($bill['before_remaining_bal'], 2, '.', ',');
-			$workRelated = $bill['work_related'] . ' (' . $bill['percentage'] . '%)';
+			$row[] = '₱' . number_format($bill['after_remaining_bal'], 2, '.', ',');
+			$workRelated = $bill['tbl1_work_related'] . ' (' . $bill['percentage'] . '%)';
 			$row[] = $workRelated;
+			$row[] = $request_date;
+			$row[] = $billed_date;
 			$row[] = '₱' . number_format($bill['company_charge'], 2, '.', ',');
 			$row[] = '₱' . number_format($bill['personal_charge'], 2, '.', ',');
 			$row[] = $pdf_bill;
 			$netBill = '₱' . number_format($bill['net_bill'], 2, '.', ',');
 			$row[] = $netBill;
-			$total = '₱' . number_format($bill['after_remaining_bal'], 2, '.', ',');
-			$row[] = '₱' .number_format($total, 2, '.', ',');
+			$row[] = $custom_status;
 			$data[] = $row;
 		}
 

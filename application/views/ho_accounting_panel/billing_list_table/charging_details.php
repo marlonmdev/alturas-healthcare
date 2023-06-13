@@ -41,7 +41,7 @@
         <br>
         <div class="card bg-light">
             <div class="card-body">
-                <div class="">
+                <div class=" table-responsive">
                     <table class="table table-hover" id="detailsTable">
                         <thead style="background-color:#17a1d4">
                             <tr>

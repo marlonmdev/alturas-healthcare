@@ -150,11 +150,11 @@ class Transaction_controller extends CI_Controller {
 	}
 
 	function view_payment_details(){
-		$payment_no = $this->uri->segment(4);
+		$billing_id = $this->uri->segment(4);
 		$token = $this->security->get_csrf_hash();
 		$data['user_role'] = $this->session->userdata('user_role');
-		$billing = $this->transaction_model->get_billing_by_payment_no($payment_no);
-		$payment_details = $this->transaction_model->get_paymentdetails_by_payment_no($payment_no);
+		$billing = $this->transaction_model->get_billing_by_payment_no($billing_id);
+		$payment_details = $this->transaction_model->get_paymentdetails_by_payment_no($billing['details_no']);
 
 		if($billing['loa_id'] != ''){
 			$request_type = 'LOA';

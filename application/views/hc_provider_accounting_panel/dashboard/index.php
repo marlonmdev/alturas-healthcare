@@ -20,7 +20,7 @@
           </div>
         </div>
         <!-- End Bread crumb and right sidebar toggle -->
-
+        
         <!-- Start of Container fluid  -->
         <div class="container-fluid">
           <div class="row">
@@ -86,11 +86,12 @@
               <?php include 'view_pdf_bill_modal.php'; ?>
               
           </div>
-          
+         
         <!-- End Container fluid  --> 
         </div>
       <!-- End Page wrapper  -->
       </div>
+      
     <!-- End Wrapper -->
     </div>
     <script>

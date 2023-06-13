@@ -9,7 +9,7 @@
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
-              <li class="breadcrumb-item active" aria-current="page">Consultation Fee</li>
+              <li class="breadcrumb-item active" aria-current="page">Edit Consultation Fee</li>
             </ol>
           </nav>
         </div>
@@ -126,6 +126,24 @@
           <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addNewDeduction()"><i class="mdi mdi-plus-circle"></i> Add Deduction</button>
         </div>    
       </div>
+
+      <?php 
+        foreach ($deduction as $deductions):
+      ?>
+        <div class="row pb-4">
+          <div class="col-lg-4">
+            <label class="fw-bold pt-2">Deduction Name : </label>
+            <input class="form-control fw-bold text-info" name="deduction_name[]" value="<?php echo $deductions['deduction_name'] ?>" readonly>
+          </div>
+
+          <div class="col-lg-4">
+            <label class="fw-bold pt-2">Amount : </label>
+            <input class="form-control fw-bold text-info d_amount" name="deduction_amount[]" value="<?php echo $deductions['deduction_amount'] ?>" readonly>
+          </div>
+        </div>
+      <?php 
+        endforeach;
+      ?>
       <div id="dynamic-deduction"></div><hr>
 
       <div class="row">
@@ -324,8 +342,9 @@
 
     philhealth = deduct_philhealth.value > 0 ? parseFloat(deduct_philhealth.value) : 0; // Ensure the value is a number
     other_deduction = calculateOtherDeductions();
+    let deduction = totaldeduction();
 
-    total_deductions = parseFloat(philhealth) + parseFloat(other_deduction);
+    total_deductions = parseFloat(philhealth) + parseFloat(other_deduction) + parseFloat(deduction);
     net_bill_amount = parseFloat(final_services) - parseFloat(total_deductions);
 
     input_total_deduction.value = total_deductions.toFixed(2); // No need for parseFloat() since total_deductions is already a number
@@ -382,6 +401,17 @@
     }
     
     return total_charge;
+  }
+
+  const totaldeduction = () => {
+    let total_deduction = 0;
+    const deduction = document.querySelectorAll('.d_amount');
+
+    for (let i = 0; i < deduction.length; i++) {
+      total_deduction+= parseFloat(deduction[i].value);
+    }
+    
+    return total_deduction;
   }
 </script>
 

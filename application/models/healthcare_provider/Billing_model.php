@@ -210,7 +210,16 @@ class Billing_model extends CI_Model {
 
     }
 
-    
+    function get_billing_by_emp_id ($emp_id){
+        $this->db->select('*')
+        ->where('emp_id', $emp_id)
+        ->order_by('billing_id', 'desc')
+        ->limit(1);
+
+        $query = $this->db->get('billing');
+        return $query->row_array();
+    }
+
     function get_billing($billing_no){
         $query = $this->db->get_where('billing', array('billing_no' => $billing_no));
         return $query->row_array();

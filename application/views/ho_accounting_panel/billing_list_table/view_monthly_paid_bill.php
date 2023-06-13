@@ -59,7 +59,7 @@
                   <input type="hidden" id="p-start-date" value="<?php echo $pay['startDate'];?>">
                   <input type="hidden" id="p-end-date" value="<?php echo $pay['endDate'];?>">
 
-                  <div class="table">
+                  <div class="table table-responsive">
                     <table class="table table-hover table-responsive" id="paidTable">
                       <thead style="background-color:#eddcb7">
                         <tr>

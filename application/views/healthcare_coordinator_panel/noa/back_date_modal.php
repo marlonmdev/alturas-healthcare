@@ -16,7 +16,7 @@
                 <input type="hidden" name="noa-id" id="bd-noa-id">
 
                 <div class="mb-3">
-                  <input type="text" class="form-control text-danger fw-bold ls-1" name="noa-no" id="bd-noa-no" readonly>
+                  <input type="hidden" class="form-control text-danger fw-bold ls-1" name="noa-no" id="bd-noa-no" readonly>
                 </div>   
 
                 <div class="mb-3">

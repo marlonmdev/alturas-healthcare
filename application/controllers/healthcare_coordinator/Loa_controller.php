@@ -2076,7 +2076,10 @@ class Loa_controller extends CI_Controller {
 			$loa_info['request_type'] = $loa['loa_request_type'];
 			$loa_info['approved_on'] = $loa['approved_on'];
 			$loa_info['expired_on'] = $loa['expiration_date'];
+<<<<<<< HEAD
 
+=======
+>>>>>>> 62cc9eca8254108554a4fd317eaf893017ce89fc
 			$loa_info['bar'] = $this->loa_model->bar_pending();
 			$loa_info['bar1'] = $this->loa_model->bar_approved();
 			$loa_info['bar2'] = $this->loa_model->bar_completed();
@@ -2087,12 +2090,21 @@ class Loa_controller extends CI_Controller {
 			$loa_info['bar6'] = $this->loa_model->bar_approved_noa();
 			$loa_info['bar_Initial'] = $this->loa_model->bar_initial_noa();
 			$loa_info['bar_Billed2'] = $this->loa_model->bar_billed_noa();
+<<<<<<< HEAD
 
 			
 			if($loa['loa_request_type'] == 'Consultation'){
 				$loa_info['loa_data'] = $this->loa_model->get_consultation_data($loa_id);
 				$view_page ='edit_tag_complete_consultation.php';
 			}else if($loa['loa_request_type'] == 'Diagnostic Test'){
+=======
+			
+			// if($loa['loa_request_type'] == 'Consultation'){
+			// 	$loa_info['loa_data'] = $this->loa_model->get_consultation_data($loa_id);
+			// 	$view_page ='edit_tag_complete_consultation.php';
+			// }else
+			 if($loa['loa_request_type'] == 'Diagnostic Test'){
+>>>>>>> 62cc9eca8254108554a4fd317eaf893017ce89fc
 				$view_page ='edit_tagged_loa_to_complete.php';
 			}
 			$this->load->view('templates/header', $loa_info);

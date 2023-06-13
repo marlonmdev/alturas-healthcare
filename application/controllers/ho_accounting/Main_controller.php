@@ -1012,12 +1012,12 @@ class Main_controller extends CI_Controller {
 			$hospital_bill = number_format(floatval($pay['net_bill']),2, '.',',');
 			$company_charge = number_format(floatval($pay['company_charge']),2, '.',',');
 
-			if(floatval($payable) > floatval($pay['net_bill'])){
-				$action = '<a href="JavaScript:void(0)" onclick="adjustHAdvance(\''.$pay['billing_no']. '\',\''.$no.'\', \''.$fullname.'\', \''.$cash_advance.'\',\''.$hospital_bill.'\',\''.$company_charge.'\')" data-bs-toggle="tooltip" title="Adjust Healthcare Advance"><i class="mdi mdi-table-edit fs-3"></i></a>';
-			}else{
-				$action = '';
-			}
-
+			// if(floatval($payable) > floatval($pay['net_bill'])){
+			// 	$action = '<a href="JavaScript:void(0)" onclick="adjustHAdvance(\''.$pay['billing_no']. '\',\''.$no.'\', \''.$fullname.'\', \''.$cash_advance.'\',\''.$hospital_bill.'\',\''.$company_charge.'\')" data-bs-toggle="tooltip" title="Adjust Healthcare Advance"><i class="mdi mdi-table-edit fs-3"></i></a>';
+			// }else{
+			// 	$action = '';
+			// }
+			// $row[] = date('F d, Y', strtotime($pay['request_date']));
 			$row[] = $pay['billing_no'];
 			$row[] = $loa_noa;
 			$row[] = $fullname;
@@ -1030,7 +1030,7 @@ class Main_controller extends CI_Controller {
 			$row[] = number_format($payable,2, '.',',');
 			$row[] = number_format($pay['personal_charge'],2, '.',',');
 			$row[] = number_format($pay['after_remaining_bal'],2, '.',',');
-			$row[] = $action;
+			// $row[] = $action;
 			$data[] = $row;
 		}
 		$output = [
@@ -1483,7 +1483,7 @@ class Main_controller extends CI_Controller {
 
 				$check = $this->List_model->get_check_details($bill['details_no']);
 
-				$action_customs .= '<a href="javascript:void(0)" onclick="viewImage(\''.base_url().'uploads/paymentDetails/'.$check['supporting_file'].'\')" data-bs-toggle="tooltip" title="View Check"><i class="mdi mdi-image fs-2 pe-2 text-danger"></i></a>';
+				$action_customs .= '<a href="javascript:void(0)" onclick="viewImage(\''.base_url().'uploads/paymentDetails/'.$check['supporting_file'].'\')" data-bs-toggle="tooltip" title="View CV"><i class="mdi mdi-image fs-2 pe-2 text-danger"></i></a>';
 
 				$row[] = $consolidated;
 				$row[] = $date;
@@ -1879,14 +1879,13 @@ class Main_controller extends CI_Controller {
 		}else{
 			$business_u = '';
 		}
-
-		// $imagePath = base_url().'assets/images/HC_logo.png';
-		// $imageWidth = 50;
-		// $imageHeight = 0;
-		// $imageX = 50;
-		// $imageY = 50;
-
-		// $pdf->Image($imagePath, $imageX, $imageY, $imageWidth, $imageHeight);
+		$x = 10; 
+		$y = 10; 
+		$width = 100; 
+		$height = 0;
+		
+		$imagePath = '<div><img src="'.base_url().'/assets/images/HC_logo.png"></div>';
+		
 		$title =  '<h3>ALTURAS HEALTHCARE SYSTEM</h3>
             <h3>Billing Summary Details</h3>
 			'.$date.'
@@ -2030,6 +2029,7 @@ class Main_controller extends CI_Controller {
 		$pdf->setTitle('Billing Report');
 		$pdf->setFont('times', '', 10);
 		$pdf->AddPage('L');
+		$pdf->Image($imagePath, $x, $y, $width, $height);
 		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'C', true);
 		$pdf->lastPage();

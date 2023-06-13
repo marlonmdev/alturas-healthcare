@@ -102,9 +102,9 @@
           <div class="navbar-header">
             <!-- Logo -->
             <?php $homepage = base_url().$user_role.'/dashboard'; ?>
-            <a class="navbar-brand ps-4 ms-4" href="<?= $homepage ?>">
+            <a class="navbar-brand" href="<?= $homepage ?>">
               <!-- Logo icon -->
-              <b class="align-middle ps-md-2 ps-lg-2 ps-sm-0 ps-xs-0">
+              <b class="align-middles ps-md-2 ps-lg-2 ps-sm-0 ps-xs-0">
                 <img
                   src="<?php echo base_url(); ?>assets/images/HC_logo.png"
                   alt="Logo"
@@ -262,6 +262,12 @@
                     case "healthcare-provider":
                       include "healthcare_provider_links.php";
                       break;
+                    case "hc-provider-front-desk":
+                      include "hc_provider_front_desk_links.php";
+                      break;
+                    case "hc-provider-accounting":
+                      include "hc_provider_accounting_links.php";
+                      break;
                     case "head-office-accounting":
                       include "ho_accounting_links.php";
                       break;
@@ -277,3 +283,4 @@
         <!-- End Sidebar scroll-->
       </aside>
       <!-- End Left Sidebar  -->
+     

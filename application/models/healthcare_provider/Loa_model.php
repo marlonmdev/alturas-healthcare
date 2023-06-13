@@ -16,6 +16,10 @@ class Loa_model extends CI_Model{
         $this->db->from($this->table_1 . ' as tbl_1');
         $this->db->join($this->table_2 . ' as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id');
         $this->db->where('status', $status);
+        if($status === "Billed"){
+            $this->db->or_where('status','Payment');
+            $this->db->or_where('status','Payable');
+        }
         $this->db->where('hcare_provider', $hp_id);
         $i = 0;
         // loop column 

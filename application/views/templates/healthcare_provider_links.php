@@ -28,7 +28,7 @@
   </a>
 </li>
 
-<li class="sidebar-item <?php echo $this->uri->segment(2) == "billing" ? "selected" : ""; ?>" onclick="toggleSelected(this)">
+<li id="hc-billing-tab" class="sidebar-item <?php echo $this->uri->segment(2) == "billing" ? "selected" : ""; ?>" onclick="toggleSelected(this)">
   <a
     class="sidebar-link has-arrow"
     href="javascript:void(0)"
@@ -52,14 +52,14 @@
   </ul>
 </li>
 
-<li class="sidebar-item <?php echo $this->uri->segment(2) == 'patient_soa' ? 'selected' : ""; ?>" onclick="toggleSelected(this)">
+<li id="hc-list-soa-tab" class="sidebar-item <?php echo $this->uri->segment(2) == 'patient_soa' ? 'selected' : ""; ?>" onclick="toggleSelected(this)">
   <a class="sidebar-link sidebar-link" href="<?php echo base_url(); ?>healthcare-provider/patient_soa/soa-list" aria-expanded="false">
     <i class="mdi mdi-account-multiple"></i>
     <span class="hide-menu ls-1">List of Soa</span>
   </a>
 </li>
 
-<li class="sidebar-item <?php echo $this->uri->segment(2) == 'patient' ? 'selected' : ""; ?>" onclick="toggleSelected(this)">
+<li id="hc-list-patient-tab" class="sidebar-item <?php echo $this->uri->segment(2) == 'patient' ? 'selected' : ""; ?>" onclick="toggleSelected(this)">
   <a class="sidebar-link sidebar-link" href="<?php echo base_url(); ?>healthcare-provider/patient/design" aria-expanded="false">
     <i class="mdi mdi-account-multiple"></i>
     <span class="hide-menu ls-1">List of Patient</span>

@@ -163,6 +163,11 @@
                         window.location.href = next_page;
                     }, 500);   
                     break;
+                case 'hc-provider-front-desk':
+                    setTimeout(function () {
+                        window.location.href = next_page;
+                    }, 500);   
+                    break;
                 default:
                     $.ajax({
                         url: `${baseUrl}check-all/approved-requests/expired/update`,

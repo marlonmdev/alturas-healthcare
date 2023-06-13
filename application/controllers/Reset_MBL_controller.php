@@ -15,8 +15,8 @@ class Reset_MBL_controller extends CI_Controller {
         foreach($history as $mbl){
             $post_data = [
                 'emp_id' => $mbl['emp_id'],
-                'max_benefit_limit' => $mbl['max_benefit_limit '],
-                'used_mbl' => $mbl['used_mbl '],
+                'max_benefit_limit' => $mbl['max_benefit_limit'],
+                'used_mbl' => $mbl['used_mbl'],
                 'remaining_balance' => $mbl['remaining_balance'],
                 'start_date' => $mbl['start_date'],
                 'end_date' => date('Y-m-d'),
@@ -73,6 +73,5 @@ class Reset_MBL_controller extends CI_Controller {
 		}
 		return $max_benefit_limit;
 	}
-
 
 }

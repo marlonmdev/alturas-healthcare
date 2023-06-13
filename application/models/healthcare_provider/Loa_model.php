@@ -167,7 +167,7 @@ class Loa_model extends CI_Model{
     }
     
 
-    function db_get_loa_info($loa_id) {
+    function db_get_loa_info($loa_id) { 
         $this->db->select('*')
                  ->from('loa_requests as tbl_1')
                  ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')

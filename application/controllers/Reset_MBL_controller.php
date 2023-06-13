@@ -9,7 +9,8 @@ class Reset_MBL_controller extends CI_Controller {
 
     }
 
-    function yearly_reset_mbl() {
+    function index() {
+        $this->security->get_csrf_hash();
         // inserting the mbl history
         $history = $this->members_model->db_get_mbl_history();
         foreach($history as $mbl){

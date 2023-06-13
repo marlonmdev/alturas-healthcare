@@ -341,6 +341,9 @@ class Main_controller extends CI_Controller {
 
 				if (!empty($result)) {
 					foreach ($result as $row) {
+						$total_paid = floatval($row['company_charge'] + $row['cash_advance']);
+						$this->List_model->insert_total_paid($row['billing_id'], $total_paid);
+
 						$loa_id = $row['loa_id'];
 						$noa_id = $row['noa_id'];
 					
@@ -1682,7 +1685,7 @@ class Main_controller extends CI_Controller {
 		
 		foreach($details as $bill){
 			$row = [];
-			
+
 			if($bill['company_charge'] || $bill['cash_advance'] != ''){
 				if($bill['loa_id'] != ''){
 					$loa_noa = $bill['loa_no'];

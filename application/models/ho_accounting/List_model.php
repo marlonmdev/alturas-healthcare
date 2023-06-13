@@ -264,6 +264,12 @@ class List_model extends CI_Model{
         $this->db->where('payment_no', $payment_no);
         return $this->db->get('billing')->result_array();
     }
+
+    function insert_total_paid($billing_id, $total_paid) {
+        $this->db->set('total_paid_amount',$total_paid)
+                ->where('billing_id',$billing_id);
+        return $this->db->update('billing');
+    }
     
     function set_loa_status($loa_id) {
         $this->db->set('status', 'Paid')
@@ -690,7 +696,6 @@ class List_model extends CI_Model{
         return $total_sum;
     }
     
-
     function get_print_billed_loa_noa($hp_id,$start_date,$end_date,$bu_filter) {
         $this->db->select('*')
                 ->from('billing as tbl_1')

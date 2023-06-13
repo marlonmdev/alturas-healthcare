@@ -30,14 +30,7 @@
           <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/for_payment" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">BILLING STATEMENT</span>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/for_payment" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">HISTORY</span>
+              <span class="hidden-xs-down fs-5 font-bold">FOR PAYMENT</span>
             </a>
           </li>
         </ul>
@@ -86,11 +79,13 @@
                       <th style="color: white">NAME OF PATIENT</th>
                       <th style="color: white">MBL REMAINING BALANCE</th>
                       <th style="color: white">WORK RELATED</th>
+                      <th style="color: white">REQUEST DATE</th>
+                      <th style="color: white">BILLED DATE</th>
                       <th style="color: white">COMPANY CHARGE</th>
                       <th style="color: white">PERSONAL CHARGE</th>
                       <th style="color: white">VIEW SOA</th>
                       <th style="color: white">HOSPITAL BILL</th>
-                      <th style="color: white">MBL EXCESS</th>
+                      <th style="color: white">STATUS</th>
                     </tr>
                   </thead>
                   <tbody id="billed-tbody">

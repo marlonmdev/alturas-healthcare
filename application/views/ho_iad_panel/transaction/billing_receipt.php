@@ -186,23 +186,30 @@
                   <table class="table table-bordered">
                     <tr class="border-2 border-secondary">
                       <td>
-                        <span class="text-secondary me-2">Total Bill:</span>
-                        <span class="text-info fw-bold fs-4 ls-1">
-                          <?= '&#8369;'.number_format($bill['total_bill'], 2) ?>
-                        </span>
-                      </td>
-
-                      <td>
-                        <span class="text-secondary me-2">Total Deduction:</span>
-                        <span class="text-info fw-bold fs-4 ls-1">
-                          <?= '&#8369;'.number_format($bill['total_deduction'], 2) ?>
-                        </span>
-                      </td>
-
-                      <td>
                         <span class="text-secondary me-2">Net Bill:</span>
                         <span class="text-info fw-bold fs-4 ls-1">
                           <?= '&#8369;'.number_format($bill['net_bill'], 2) ?>
+                        </span>
+                      </td>
+
+                      <td>
+                        <span class="text-secondary me-2">Company Charge:</span>
+                        <span class="text-info fw-bold fs-4 ls-1">
+                          <?= '&#8369;'.number_format($bill['company_charge'], 2) ?>
+                        </span>
+                      </td>
+
+                      <td>
+                        <span class="text-secondary me-2">Cash Advance:</span>
+                        <span class="text-info fw-bold fs-4 ls-1">
+                          <?= '&#8369;'.number_format($bill['cash_advance'], 2) ?>
+                        </span>
+                      </td>
+
+                      <td>
+                        <span class="text-secondary me-2">Personal Charge:</span>
+                        <span class="text-info fw-bold fs-4 ls-1">
+                          <?= '&#8369;'.number_format($bill['personal_charge'], 2) ?>
                         </span>
                       </td>
                     </tr>
@@ -211,16 +218,9 @@
                   <table>
                     <tr class="border-secondary border-2 border-0 border-top border-bottom">
                       <td class="text-center">
-                        <span class="text-secondary me-2">Company Charge:</span>
+                        <span class="text-secondary me-2">Total Payable :</span>
                         <span class="text-danger fw-bold fs-3 ls-1">
-                          <?= '&#8369;'.number_format($bill['company_charge'], 2) ?>
-                        </span>
-                      </td>
-
-                      <td>
-                        <span class="text-secondary me-2">Personal Charge:</span>
-                        <span class="text-danger fw-bold fs-3 ls-1">
-                          <?= '&#8369;'.number_format($bill['personal_charge'], 2) ?>
+                          <?= '&#8369;'.number_format(floatval($bill['company_charge'] + $bill['cash_advance']), 2) ?>
                         </span>
                       </td>
                     </tr>
@@ -229,50 +229,13 @@
                 </div>
               </div>
             </div>
+            <div class="col-lg-6 pt-4" style="width:100%;height:100%;">
+                <iframe src="<?php echo base_url(); ?>uploads/pdf_bills/<?php echo $bill['pdf_bill'];?>" style="width:100%;height:580px;"></iframe><br>
 
-            <div class="container mt-4 mb-4">
-              <div class="row">
-                <div class="col-12 d-flex justify-content-end align-items-end">
-                  <button class="btn btn-outline-info btn-lg ls-1 me-3" onclick="saveAsImage()"><i class="mdi mdi-file-image"></i> Save as Image</button>
-                  <button class="btn btn-outline-danger btn-lg ls-1" onclick="printDiv('#printableDiv')"><i class="mdi mdi-printer"></i> Print Receipt</button>
-                </div>
-              </div>
             </div>
-
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-<script>
-  const baseUrl = `<?php echo base_url(); ?>`;
-  const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
-
-  const saveAsImage = () => {
-    // Get the div element you want to save as an image
-    const element = document.querySelector("#printableDiv");
-    // Use html2canvas to take a screenshot of the element
-    html2canvas(element)
-      .then(function(canvas) {
-        // Convert the canvas to an image data URL
-        const imgData = canvas.toDataURL("image/png");
-        // Create a temporary link element to download the image
-        const link = document.createElement("a");
-        link.download = `receipt_${fileName}.png`;
-        link.href = imgData;
-
-        // Click the link to download the image
-        link.click();
-      });
-  }
-  
-  const printDiv = (layer) => {
-    $(layer).printThis({
-      importCSS: true,
-      copyTagClasses: true,
-      copyTagStyles: true,
-      removeInline: false,
-    });
-  }
-</script>

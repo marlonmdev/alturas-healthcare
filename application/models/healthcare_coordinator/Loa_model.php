@@ -1120,45 +1120,97 @@ function db_get_cost_types_by_hp_ID($hp_id) {
 
 
    // Start of server-side processing datatables
-   var $table_1_billed = 'billing';
-   var $table_2_billed = 'loa_requests';
-   var $table_3_billed = 'hr_added_loa_fees';
-   var $column_order_billed = ['loa_no', 'first_name', 'loa_request_type', 'hp_name', null, 'request_date']; //set column field database for datatable orderable
-   var $column_search_billed = ['loa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'loa_request_type', 'med_services', 'emp_id', 'health_card_no', 'hp_name', 'request_date', 'CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)']; //set column field database for datatable searchable 
-   var $order_billed = ['loa_id' => 'desc']; // default order 
+  //  var $table_1_billed = 'billing';
+  //  var $table_2_billed = 'loa_requests';
+  //  var $table_3_billed = 'hr_added_loa_fees';
+  //  var $column_order_billed = ['loa_no', 'first_name', 'loa_request_type', 'hp_name', null, 'request_date']; //set column field database for datatable orderable
+  //  var $column_search_billed = ['loa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'loa_request_type', 'med_services', 'emp_id', 'health_card_no', 'hp_name', 'request_date', 'CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)']; //set column field database for datatable searchable 
+  //  var $order_billed = ['loa_id' => 'desc']; // default order 
  
-   private function _get_billed_datatables_query($status) {
-    $this->db->select('tbl_1.loa_id as tbl1_loa_id, tbl_1.*, tbl_2.*, tbl_3.*');
-     $this->db->from($this->table_1_billed . ' as tbl_1');
-     $this->db->join($this->table_2_billed . ' as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id');
+  //  private function _get_billed_datatables_query($status) {
+  //   $this->db->select('tbl_1.loa_id as tbl1_loa_id, tbl_1.*, tbl_2.*, tbl_3.*');
+  //    $this->db->from($this->table_1_billed . ' as tbl_1');
+  //    $this->db->join($this->table_2_billed . ' as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id');
     
-       $this->db->join($this->table_3_billed . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id', 'left');
+  //      $this->db->join($this->table_3_billed . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id', 'left');
 
-     $this->db->where('tbl_1.status', $status);
+  //    $this->db->where('tbl_1.status', $status);
+      
+  //   if($this->input->post('filter')){
+  //      $this->db->like('tbl_1.hp_id', $this->input->post('filter'));
+  //   }
+
+  //   // if ($this->input->post('startDate')) {
+  //   //   $startDate = date('Y-m-d', strtotime($this->input->post('startDate')));
+  //   //   $this->db->where('tbl_1.billed_on >=', $startDate);
+  //   // }
+
+  //   // if ($this->input->post('endDate')){
+  //   //   $endDate = date('Y-m-d', strtotime($this->input->post('endDate')));
+  //   //   $this->db->where('tbl_1.billed_on <=', $endDate);
+  //   // }
+
+  //    if ($this->input->post('startDate')) {
+  //     $startDate = date('Y-m-d', strtotime($this->input->post('startDate')));
+  //     $this->db->where('tbl_2.request_date >=', $startDate);
+  //   }
+
+  //   if ($this->input->post('endDate')){
+  //     $endDate = date('Y-m-d', strtotime($this->input->post('endDate')));
+  //     $this->db->where('tbl_2.request_date <=', $endDate);
+  //   }
+  // }
+ 
+  //  function get_billed_datatables($status) {
+  //    $this->_get_billed_datatables_query($status);
+  //    if ($_POST['length'] != -1)
+  //      $this->db->limit($_POST['length'], $_POST['start']);
+  //    $query = $this->db->get();
+  //    return $query->result_array();
+  //  }
+    // End of server-side processing datatables
+
+//Final Billing
+  var $table_1_billed = 'loa_requests';
+  var $table_2_billed = 'billing';
+  var $table_3_billed = 'hr_added_loa_fees';
+  var $column_order_billed = ['loa_no', 'first_name', 'loa_request_type', 'hp_name', null, 'request_date'];
+  var $column_search_billed = ['loa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'loa_request_type', 'med_services', 'emp_id', 'health_card_no', 'hp_name', 'request_date', 'CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)'];
+  var $order_billed = ['loa_id' => 'desc'];
+ 
+  private function _get_billed_datatables_query() {
+    $this->db->select('tbl_1.loa_id as tbl1_loa_id, tbl_1.status as tbl1_status, tbl_1.request_date as tbl1_request_date,tbl_1.*, tbl_2.*, tbl_3.*');
+
+    $this->db->from($this->table_1_billed . ' as tbl_1');
+    $this->db->join($this->table_2_billed . ' as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id','left');
+    $this->db->join($this->table_3_billed . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id', 'left');
+    $this->db->where('tbl_1.status','Completed');
+    $this->db->or_where('tbl_1.status','Billed');
+    $this->db->or_where('tbl_1.status','Approved');
       
     if($this->input->post('filter')){
-       $this->db->like('tbl_1.hp_id', $this->input->post('filter'));
+      $this->db->like('tbl_2.hp_id', $this->input->post('filter'));
     }
 
     if ($this->input->post('startDate')) {
       $startDate = date('Y-m-d', strtotime($this->input->post('startDate')));
-      $this->db->where('tbl_1.billed_on >=', $startDate);
+      $this->db->where('tbl_2.request_date >=', $startDate);
     }
 
     if ($this->input->post('endDate')){
       $endDate = date('Y-m-d', strtotime($this->input->post('endDate')));
-      $this->db->where('tbl_1.billed_on <=', $endDate);
+      $this->db->where('tbl_2.request_date <=', $endDate);
     }
   }
  
-   function get_billed_datatables($status) {
-     $this->_get_billed_datatables_query($status);
-     if ($_POST['length'] != -1)
-       $this->db->limit($_POST['length'], $_POST['start']);
-     $query = $this->db->get();
-     return $query->result_array();
-   }
-    // End of server-side processing datatables
+  function get_billed_datatables() {
+    $this->_get_billed_datatables_query();
+    if ($_POST['length'] != -1)
+      $this->db->limit($_POST['length'], $_POST['start']);
+    $query = $this->db->get();
+    return $query->result_array();
+  }
+//End
 
     function get_total_hp_net_bill($hp_id, $start_date, $end_date) {
       $this->db->select_sum('net_bill')

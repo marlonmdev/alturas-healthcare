@@ -311,7 +311,7 @@ class Noa_model extends CI_Model {
   var $order_final=['noa_no' => 'desc'];
 
   private function _get_final_datatables_query() {
-    $this->db->select('tbl_1.status as tbl1_status,tbl_1.*, tbl_2.*, tbl_3.*');
+    $this->db->select('tbl_1.status as tbl1_status, tbl_1.work_related as tbl1_work_related,tbl_1.*, tbl_2.*, tbl_3.*');
     $this->db->from($this->table1_final . ' as tbl_1');
     $this->db->join($this->table2_final . ' as tbl_2', 'tbl_1.noa_id = tbl_2.noa_id', 'left');
     $this->db->join($this->table3_final . ' as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id', 'left');

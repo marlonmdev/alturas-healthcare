@@ -439,7 +439,6 @@ class Noa_controller extends CI_Controller {
 		foreach ($billing as $bill){
 			$row = array();
 			$loa_id = $this->myhash->hasher($bill['loa_id'], 'encrypt');
-			// $loa_id = $this->myhash->hasher($bill['tbl1_noa_id'], 'encrypt');
 			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
 			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i></a>';
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $bill['tbl1_status'] . '</span></div>';
@@ -447,7 +446,7 @@ class Noa_controller extends CI_Controller {
 			$row[] = $bill['noa_no'];
 			$row[] = $fullname;
 			$row[] = '₱' . number_format($bill['after_remaining_bal'], 2, '.', ',');
-			$workRelated = $bill['work_related'] . ' (' . $bill['percentage'] . '%)';
+			$workRelated = $bill['tbl1_work_related'] . ' (' . $bill['percentage'] . '%)';
 			$row[] = $workRelated;
 			$row[] = '₱' . number_format($bill['company_charge'], 2, '.', ',');
 			$row[] = '₱' . number_format($bill['personal_charge'], 2, '.', ',');

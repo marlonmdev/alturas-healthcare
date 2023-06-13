@@ -29,7 +29,7 @@
           <li class="nav-item">
             <a class="nav-link active" href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/for_payment" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">BILLING STATEMENT</span>
+              <span class="hidden-xs-down fs-5 font-bold">FOR PAYMENT</span>
             </a>
           </li>
         </ul>

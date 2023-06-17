@@ -67,6 +67,20 @@ class Members_model extends CI_Model {
     return $query->row_array();
   }
 
+  function get_employee_files($emp_id) {
+    return $this->db->get_where('billing',['emp_id' => $emp_id])->result_array();
+  }
+
+  function get_employee_files_loa($emp_id){
+    return $this->db->get_where('loa_requests',['emp_id' => $emp_id])->result_array();
+
+  }
+
+  function get_employee_files_noa($emp_id){
+    return $this->db->get_where('noa_requests',['emp_id' => $emp_id])->result_array();
+
+  }
+
   function db_get_hc_member_details() {
     return $this->db->get('members')->result_array();
   }

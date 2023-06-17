@@ -2,7 +2,7 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">REQUESTED FOR HEALTHCARE ADVANCE</h4>
+        <h4 class="page-title ls-2">HEALTHCARE ADVANCE REQUESTS</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -57,6 +57,7 @@
                   <tr>
                     <th class="fw-bold" style="color: white">#</th>
                     <th class="fw-bold" style="color: white">BILLING #</th>
+                    <th class="fw-bold" style="color: white">PERSONAL CHARGE</th>
                     <th class="fw-bold" style="color: white">REQUESTED AMOUNT</th>
                     <th class="fw-bold" style="color: white">REQUESTED ON</th>
                     <th class="fw-bold" style="color: white">STATUS</th>

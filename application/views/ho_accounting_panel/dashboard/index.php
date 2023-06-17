@@ -31,7 +31,7 @@
                     <p>Billed</p>
                   </div>
                   <div class="icon">
-                    <i class="mdi mdi-file-document" aria-hidden="true"></i>
+                    <i class="mdi mdi-file-check" aria-hidden="true"></i>
                   </div>
                   <a href="<?php echo base_url() ?>head-office-accounting/bill/billing-list/billed-loa-noa" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
@@ -40,7 +40,7 @@
               <div class="col-lg-3 col-sm-6">
                 <div class="card-box bg-green">
                   <div class="inner">
-                    <h3><?php echo $payment_count; ?></h3>
+                    <h3><i class="mdi mdi-view-dashboard"></i></h3>
                     <p>Payment History</p>
                   </div>
                   <div class="icon">
@@ -53,13 +53,13 @@
               <div class="col-lg-3 col-sm-6">
                 <div class="card-box bg-orange">
                   <div class="inner">
-                    <h3><?php echo $loa_count; ?></h3>
-                    <p>Approved LOA Requests</p>
+                    <h3><i class="mdi mdi-view-dashboard"></i></h3>
+                    <p>Business Unit Charging</p>
                   </div>
                   <div class="icon">
-                    <i class="mdi mdi-file-document" aria-hidden="true"></i>
+                    <i class="mdi mdi-file" aria-hidden="true"></i>
                   </div>
-                  <a href="<?php echo base_url() ?>head-office-accounting/loa-request-list/loa-approved" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                  <a href="<?php echo base_url() ?>head-office-accounting/charging/business-unit" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
               </div>
               

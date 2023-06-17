@@ -4,6 +4,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Pcharges_model extends CI_Model {
 
 	function submit_ha_request($billing_id) {
+		$personal_charge = floatval(str_replace(',','',$this->input->post('personal_charge')));
+		$requested_amount = floatval(str_replace(',','',$this->input->post('requested_amount')));
+
+		$this->db->set('personal_charge', $personal_charge);
+		$this->db->set('excess_amount', $requested_amount);
 		$this->db->set('status','For Advance');
 		$this->db->set('requested_on',date('Y-m-d'));
 		$this->db->where('billing_id',$billing_id);

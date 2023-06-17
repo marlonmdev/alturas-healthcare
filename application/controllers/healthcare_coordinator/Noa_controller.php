@@ -137,9 +137,16 @@ class Noa_controller extends CI_Controller {
 			$custom_actions .= '<a class="me-2" href="' . $view_url . '" data-bs-toggle="tooltip" title="Edit NOA" readonly><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a>';
 
 			$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Tag NOA Charge Type"><i class="mdi mdi-tag-plus fs-2 text-primary"></i></a>';
-
+			
+			if($noa['spot_report_file'] && $noa['incident_report_file'] != ''){
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $noa_id . '\',\'' . $noa['work_related'] . '\',\'' . $noa['percentage'] . '\',\'' . $noa['spot_report_file'] . '\',\'' . $noa['incident_report_file'] . '\')" data-bs-toggle="tooltip" title="View Uploaded Reports"><i class="mdi mdi-teamviewer fs-2 text-warning"></i></a>';
+			}else{
+				$custom_actions .= '';
+			}
+			
 			$custom_actions .= '<a href="Javascript:void(0)" onclick="cancelNoaRequest(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Delete NOA"><i class="mdi mdi-delete-circle fs-2 text-danger"></i></a>';
 
+			
 			// shorten name of values from db if its too long for viewing and add ...
 			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];
 
@@ -186,6 +193,12 @@ class Noa_controller extends CI_Controller {
 
 			$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/noa/requested-noa/generate-printable-noa/' . $noa_id . '" data-bs-toggle="tooltip" title="Print NOA"><i class="mdi mdi-printer fs-2 text-primary pe-2"></i></a>';
 
+			
+			if($noa['spot_report_file'] && $noa['incident_report_file'] != ''){
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $noa_id . '\',\'' . $noa['work_related'] . '\',\'' . $noa['percentage'] . '\',\'' . $noa['spot_report_file'] . '\',\'' . $noa['incident_report_file'] . '\')" data-bs-toggle="tooltip" title="View Uploaded Reports"><i class="mdi mdi-teamviewer fs-2 text-warning"></i></a>';
+			}else{
+				$custom_actions .= '';
+			}
 			// shorten name of values from db if its too long for viewing and add ...
 			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];
 
@@ -1080,7 +1093,8 @@ class Noa_controller extends CI_Controller {
 		}
 	}
 
-	function set_charge_type(){
+	function set_charge_type()
+	{
 		$token = $this->security->get_csrf_hash();
 		$noa_id = $this->myhash->hasher($this->input->post('noa-id'), 'decrypt');
 		$charge_type = $this->input->post('charge-type', TRUE);
@@ -1089,31 +1103,78 @@ class Noa_controller extends CI_Controller {
 		$this->form_validation->set_rules('charge-type', 'Charge Type', 'required');
 		if ($this->form_validation->run() == FALSE) {
 			$response = [
-				'token' => $token, 
+				'token' => $token,
 				'status' => 'error',
 				'charge_type_error' => form_error('charge-type'),
 			];
 			echo json_encode($response);
-		}else{
-			$updated = $this->noa_model->db_update_noa_charge_type($noa_id, $charge_type, $percentage);
+		} else {
+			$config['allowed_types'] = 'pdf|jpeg|jpg|png|gif|svg';
+			$config['encrypt_name'] = TRUE;
+			$this->load->library('upload', $config);
 
-			if (!$updated) {
-				$response = [
-					'token' => $token, 
-					'status' => 'save-error', 
-					'message' => 'Save Failed'
-				];
-			} else {
-				$response = [
-					'token' => $token, 
-					'status' => 'success', 
-					'message' => 'Saved Successfully'
-				];
+			$uploaded_files = array();
+			$error_occurred = FALSE;
+
+			// Define the upload paths for each file
+			$file_paths = array(
+				'spot-report' => './uploads/spot_reports/',
+				'incident-report' => './uploads/incident_reports/',
+			);
+
+			// Iterate over each file input and perform the upload
+			$file_inputs = array('spot-report', 'incident-report');
+			foreach ($file_inputs as $input_name) {
+				$config['upload_path'] = $file_paths[$input_name];
+				$this->upload->initialize($config);
+
+				if (!$this->upload->do_upload($input_name)) {
+					// Handle upload error
+					$error_occurred = TRUE;
+					break;
+				}
+
+				$uploaded_files[$input_name] = $this->upload->data();
 			}
-			echo json_encode($response);
-		}
 
+			if ($error_occurred) {
+				// Handle upload error response
+				$response = [
+					'token' => $token,
+					'status' => 'upload-error',
+					'message' => 'File upload failed',
+				];
+				echo json_encode($response);
+			} else {
+				$data = [
+					'work_related' => $charge_type,
+					'percentage' => $percentage,
+					'spot_report_file' => isset($uploaded_files['spot-report']) ? $uploaded_files['spot-report']['file_name'] : '',
+					'incident_report_file' => isset($uploaded_files['incident-report']) ? $uploaded_files['incident-report']['file_name'] : '',
+					'date_uploaded' => date('Y-m-d')
+
+				];
+
+				$updated = $this->noa_model->db_update_noa_charge_type($noa_id, $data);
+
+				if (!$updated) {
+					$response = [
+						'token' => $token,
+						'status' => 'save-error',
+						'message' => 'Save Failed',
+					];
+				} else {
+					$response = [
+						'token' => $token,
+						'status' => 'success',
+						'message' => 'Saved Successfully',
+					];
+				}
+				echo json_encode($response);
+			}
+		}
 	}
+
 
 	function backdate_expired_noa(){
 		$noa_id = $this->myhash->hasher($this->input->post('noa-id', TRUE), 'decrypt');

@@ -40,6 +40,12 @@
                 $member_id = $this->myhash->hasher($member['member_id'], 'encrypt');
             ?>
             <div class="col-md-2 ps-3 pt-3 pb-4">
+                <a href="<?php echo base_url(); ?>company-doctor/members/incident-spot-reports/<?php echo $emp_id;?>/<?php echo $member_id;?>" class="btn btn-primary btn-lg bg-light border border-light text-dark">
+                    <img src="<?php echo base_url(); ?>assets/images/blank-yellow-folder.png" alt="Button Image" class="img-fluid" width="200" height="auto">
+                   <span class="fs-5">Incident/Spot Reports</span>
+                </a>
+            </div>
+            <div class="col-md-2 ps-3 pt-3 pb-4">
                 <a href="<?php echo base_url(); ?>company-doctor/members/final-diagnosis/<?php echo $emp_id;?>/<?php echo $member_id;?>" class="btn btn-primary btn-lg bg-light border border-light text-dark">
                     <img src="<?php echo base_url(); ?>assets/images/blank-yellow-folder.png" alt="Button Image" class="img-fluid" width="200" height="auto">
                    <span class="fs-5">Diagnosis/Operation</span>

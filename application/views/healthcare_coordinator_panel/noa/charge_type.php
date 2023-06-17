@@ -1,5 +1,5 @@
 <div class="modal fade" id="viewChargeTypeModal" tabindex="-1" data-bs-backdrop="static">
-          <div class="modal-dialog modal-sm">
+          <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
                 <h4 class="modal-title ls-2">Charge Type</h4>
@@ -13,39 +13,36 @@
                     <div class="row mb-3">
                       <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
                       <input type="hidden" name="noa-id" id="noa-id">
-                      <select class="form-select chargetype fs-5" name="charge-type">
-                        <option value="">Please select...</option>
-                        <option value="Yes">Work related</option>
-                        <option value="No">Non-work related</option>
-                      </select>
-                      <em id="charge-type-error" class="text-danger"></em>
-                    </div>
-
-                    <!-- <div class="form-group row pt-4">
-                      <div class="wr" id="percentage">
-                        <div id="med-services-wrapper">
-                          <div class="mb-3 fs-5">
-                            <label class="colored-label">Enter Percentage (work-related)</label>
-                            <input type="text" class="form-control" name="wr_percentage">
-                          </div>
-                        </div>
-                        <em id="wpercentage-error" class="text-danger"></em>
+                      <div class="col-6 pt-3">
+                        <label class="colored-label fs-5">Select :</label>
+                        <select class="form-select chargetype fs-5" name="charge-type">
+                          <option value="">Select Charge Type...</option>
+                          <option value="Yes">Work related</option>
+                          <option value="No">Non-work related</option>
+                        </select>
+                        <em id="charge-type-error" class="text-danger"></em>
                       </div>
-                    </div> -->
-
-                    <div class="form-group row pt-4">
-                      <div class="nwr" id="percentage">
-                        <div id="med-services-wrapper">
-                          <div class="mb-3 fs-5">
-                            <label class="colored-label ls-1">Enter Percentage</label>
-                            <input type="text" class="form-control" name="percentage" min="0" max="100" step="0.01" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="2">
+                      <div class="mb-2 pt-3 fs-5 ls-1 col-6">
+                        <label class="colored-label">Enter Percentage</label>
+                        <div class="input-group">
+                          <input type="number" class="form-control" name="percentage" min="0" max="100" step="0.01" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="2">
+                          <div class="input-group-append">
+                            <span class="input-group-text">%</span>
                           </div>
                         </div>
-                        <em id="med-services-error" class="text-danger"></em>
                       </div>
                     </div>
 
-                    <div class="row mb-2">
+                    <div class="col">
+                      <label class="fs-5 colored-label">Spot Report :</label>
+                      <input type="file" accept=".pdf, image/*" class="form-control" name="spot-report"  id="spot-report" onchange="previewFile('spot-report')">
+                    </div>   
+                    <div class="col pt-3 pb-3">
+                      <label class="fs-5 colored-label">Incident Report :</label>
+                        <input type="file" accept=".pdf, image/*" class="form-control" name="incident-report" id="incident-report" onchange="previewFile('incident-report')">
+                    </div> 
+
+                    <div class="row mb-2 pt-3">
                       <div class="col-12 text-center">
                         <button type="submit" class="btn btn-info ls-1 me-2">SUBMIT</button>
                         <button type="button" class="btn btn-danger ls-1" data-bs-dismiss="modal">CANCEL</button>

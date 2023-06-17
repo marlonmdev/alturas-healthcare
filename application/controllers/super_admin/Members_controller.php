@@ -84,6 +84,8 @@ class Members_controller extends CI_Controller {
 
 			$custom_actions .= '<a href="Javascript:void(0)" data-bs-toggle="tooltip" title="Update Profile Photo" onclick="showUpdateProfilePhoto(\'' . $member_id . '\', \'' . $full_name . '\', \'' . $member['photo'] . '\', \'' . $photo_status . '\', \'' . $member['gender'] . '\')"><i class="mdi mdi-account-edit fs-2 text-success"></i></a>';
 
+			$custom_actions .= '<a href="' . base_url() . 'super-admin/member/view/files/' . $member_id . '"  data-bs-toggle="tooltip" title="View Files"><i class="mdi mdi-file-multiple fs-2 text-danger ps-2"></i></a>';
+
 			// this data will be rendered to the datatable
 			$row[] = $member['member_id'];
 			$row[] = $full_name;
@@ -103,6 +105,70 @@ class Members_controller extends CI_Controller {
 			"data" => $data,
 		];
 		echo json_encode($output);
+	}
+
+	function fetch_healthcard_id_members() {
+		$this->security->get_csrf_hash();
+		$approval_status = 'Done';
+		$list = $this->members_model->get_datatables($approval_status);
+		$data = [];
+		foreach ($list as $member) {
+			$row = [];
+			$member_id = $this->myhash->hasher($member['member_id'], 'encrypt');
+			$emp_id = $this->myhash->hasher($member['emp_id'], 'encrypt');
+
+			$full_name = $member['first_name'] . ' ' . $member['middle_name'] . ' ' . $member['last_name'] . ' ' . $member['suffix'];
+			$view_url = base_url() . 'super-admin/members/view/' . $member_id;
+
+			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $member['approval_status'] . '</span></div>';
+
+			$custom_actions = '<a class="me-2" href="' . $view_url . '" data-bs-toggle="tooltip" title="View Member Profile"><i class="mdi mdi-account-card-details fs-2 text-info"></i></a>';
+
+			$custom_actions .= '<a class="me-2" href="JavaScript:void(0)" onclick="viewMemberID(\''.$emp_id.'\')" data-bs-toggle="tooltip" title="View Member ID"><i class="mdi mdi-image fs-2 text-cyan"></i></a>';
+
+			/* This is checking if the image file exists in the directory. */
+			$file_path = './uploads/profile_pics/' . $member['photo'];
+			$photo_status = file_exists($file_path) ? 'Exist' : 'Not Found';
+
+		
+
+			// this data will be rendered to the datatable
+			$row[] = $member['member_id'];
+			$row[] = $full_name;
+			$row[] = $member['emp_type'];
+			$row[] = $member['current_status'];
+			$row[] = $member['business_unit'];
+			$row[] = $member['dept_name'];
+			$row[] = $custom_status;
+			$row[] = $custom_actions;
+			$data[] = $row;
+		}
+
+		$output = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->members_model->count_all($approval_status),
+			"recordsFiltered" => $this->members_model->count_filtered($approval_status),
+			"data" => $data,
+		];
+		echo json_encode($output);
+	}
+
+	function view_healthcard_id() {
+		$data = [];
+		$token = $this->security->get_csrf_hash();
+		$emp_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$image = $this->members_model->get_healthcard($emp_id);
+		
+			$front = base_url(). 'uploads/scanned_healthcard_id/'. $image['front_healthcard_id'];
+			$back = base_url(). 'uploads/scanned_healthcard_id/'. $image['back_healthcard_id'];
+
+			$data = [
+				'token' => $token,
+				'front_id' => $front,
+				'back_id' => $back
+			];
+		
+		echo json_encode($data);
 	}
 
 	private function _hash_password($password) {

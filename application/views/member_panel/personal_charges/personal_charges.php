@@ -57,7 +57,7 @@
                   <tr>
                     <th class="fw-bold" style="color: white">#</th>
                     <th class="fw-bold" style="color: white">BILLING #</th>
-                    <th class="fw-bold" style="color: white">CHARGE AMOUNT</th>
+                    <th class="fw-bold" style="color: white">PERSONAL CHARGE</th>
                     <th class="fw-bold" style="color: white">ADDED ON</th>
                     <th class="fw-bold" style="color: white">STATUS</th>
                     <th class="fw-bold" style="color: white">ACTION</th>
@@ -112,6 +112,7 @@
     const form = document.querySelector('#tagHealthcareAdvanceForm');
     $('#tagHealthcareAdvanceForm').submit(function(event){
       const personal_charge = document.querySelector('#tag-personal-charge').value;
+      const requested_amount = document.querySelector('#tag-request-amount').value;
       const billing_id = document.querySelector('#tag-billing-id').value;
 
       event.preventDefault();
@@ -137,6 +138,7 @@
                             data: {
                                 'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
                                 'personal_charge' : personal_charge,
+                                'requested_amount': requested_amount,
                                 'billing_id' : billing_id,
                             },
                             dataType: "json",
@@ -255,5 +257,6 @@
     $("#tagPersonalChargeModal").modal("show");
     $('#tag-personal-charge').val(personal_charge);
     $('#tag-billing-id').val(billing_id);
+    $('#tag-request-amount').val(personal_charge);
   }
 </script>

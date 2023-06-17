@@ -41,9 +41,9 @@
                       <thead>
                         <tr>
 													<th class="fw-bold">Billing #</th>
-                          <th class="fw-bold">Total Billing</th>
 													<th class="fw-bold">Transaction Date</th>
 													<th class="fw-bold">Request Type</th>
+                          <th class="fw-bold">Total Billing</th>
 													<th class="fw-bold">Action</th>
                         </tr>
                       </thead>
@@ -51,13 +51,13 @@
                         <?php
                           if (!empty($billing)) :
                             foreach ($billing as $bill) :
-                              if($bill['status'] == 'Paid'){
+                              if($bill['status'] == 'Billed'){
                         ?>
                           <tr>
                             <td class="fw-bold"><mark class="bg-primary text-white ls-1"><?= $bill['billing_no'] ?></mark></td>
-                            <td class="fw-bold"> <?= '&#8369;'.number_format(floatval($bill['company_charge'] + $bill['cash_advance']), 2) ?></td>
                             <td class="fw-bold"><?= date("m/d/Y", strtotime($bill['billed_on'])) ?></td>
                             <td class="fw-bold"><?= !empty($bill['loa_id']) ? 'LOA' : 'NOA '?></td>
+                            <td class="fw-bold"> <?= '&#8369;'.number_format(floatval($bill['company_charge'] + $bill['cash_advance']), 2) ?></td>
 
                             <?php
                               $req_type = !empty($bill['loa_id']) ? 'loa' : 'noa';

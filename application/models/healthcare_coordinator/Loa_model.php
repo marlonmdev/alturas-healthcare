@@ -638,11 +638,7 @@ function db_get_cost_types_by_hp_ID($hp_id) {
     return $query->row_array();
   }
 
-  function db_update_loa_charge_type($loa_id, $charge_type, $percentage) {
-    $data = [
-      'work_related' => $charge_type,
-      'percentage' => $percentage
-    ];
+  function db_update_loa_charge_type($loa_id, $data) {
     $this->db->where('loa_id', $loa_id);
     return $this->db->update('loa_requests', $data);
   }

@@ -325,6 +325,8 @@ class Members_controller extends CI_Controller {
 
 			$custom_actions = '<a href="' . $view_url . '" data-bs-toggle="tooltip" title="View Member Profile"><i class="mdi mdi-account-card-details fs-2 text-info"></i></a>';
 
+			$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/members/view/files/' . $member_id . '"  data-bs-toggle="tooltip" title="View Files"><i class="mdi mdi-file-multiple fs-2 text-danger ps-2"></i></a>';
+
 			$emp_id = $this->myhash->hasher($member['emp_id'], 'encrypt');
 			$custom_view = '<a class="fw-bold ps-4" href="JavaScript:void(0)" onclick="viewImage(\''.$emp_id.'\')">View ID</a>';
 

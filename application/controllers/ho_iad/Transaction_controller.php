@@ -154,7 +154,7 @@ class Transaction_controller extends CI_Controller {
 		$token = $this->security->get_csrf_hash();
 		$data['user_role'] = $this->session->userdata('user_role');
 		$billing = $this->transaction_model->get_billing_by_payment_no($billing_id);
-		$payment_details = $this->transaction_model->get_paymentdetails_by_payment_no($billing['details_no']);
+		$payment_details = $this->transaction_model->get_paymentdetails($billing['details_no']);
 
 		if($billing['loa_id'] != ''){
 			$request_type = 'LOA';
@@ -354,13 +354,8 @@ class Transaction_controller extends CI_Controller {
 
 				$hp_name = '<span>'.$bill['hp_name'].'</span>';
 
-				if(!empty($bill['audited_by'])){
-					$status = '<span class="text-center badge rounded-pill bg-success">Audited</span>'; 
-				}else{
-					$status = '<span class="text-center badge rounded-pill bg-info">Billed</span>'; 
-				}
+				$status = '<span class="text-center badge rounded-pill bg-warning">Billed</span>'; 
 				
-
 				$payment_no = $this->myhash->hasher($bill['payment_no'], 'encrypt');
 
 				$action_customs = '<a href="'.base_url().'head-office-iad/biling/for-audit-list/'.$bill['payment_no'].'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
@@ -400,16 +395,55 @@ class Transaction_controller extends CI_Controller {
 
 				$hp_name = '<span>'.$bill['hp_name'].'</span>';
 
-				if(!empty($bill['audited_by'])){
-					$status = '<span class="text-center badge rounded-pill bg-success">Audited</span>'; 
-				}else{
-					$status = '<span class="text-center badge rounded-pill bg-info">Billed</span>'; 
-				}
-				
+				$status = '<span class="text-center badge rounded-pill bg-info">Audited</span>'; 
 
 				$payment_no = $this->myhash->hasher($bill['payment_no'], 'encrypt');
 
 				$action_customs = '<a href="'.base_url().'head-office-iad/biling/audited-list/'.$bill['payment_no'].'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
+
+				$row[] = $consolidated;
+				$row[] = $date;
+				$row[] = $hp_name;
+				$row[] = $status;
+				$row[] = $action_customs;
+				$data[] = $row;
+				$unique_bills[] = $bill_id; // add unique bill id to array
+			}
+		}
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
+
+		echo json_encode($output);
+	}
+
+	function fetch_paid_bill() {
+		$token = $this->security->get_csrf_hash();
+		$billing = $this->transaction_model->fetch_paid_bills();
+		$data = [];
+		$unique_bills = []; // initialize array to store unique bills
+		foreach($billing as $bill) {
+			$bill_id = $bill['payment_no'] . '_' . $bill['hp_id']; // concatenate payment_no and hp_id to create unique id
+			if (!in_array($bill_id, $unique_bills)) { // check if bill with this id has already been added
+				$row = [];
+
+				$consolidated = '<span>Consolidated Bill with the Payment No. <span class="fw-bold">'.$bill['payment_no'].'</span></span>';
+
+				$date = '<span>'.date('F d, Y', strtotime($bill['startDate'])).' to '.date('F d, Y', strtotime($bill['endDate'])).'</span>';
+
+				$hp_name = '<span>'.$bill['hp_name'].'</span>';
+
+				$status = '<span class="text-center badge rounded-pill bg-success">Paid</span>'; 
+				
+
+				$payment_no = $this->myhash->hasher($bill['payment_no'], 'encrypt');
+
+				$action_customs = '<a href="'.base_url().'head-office-iad/biling/paid-list/'.$bill['payment_no'].'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
+
+				$check = $this->transaction_model->get_paymentdetails($bill['details_no']);
+
+				$action_customs .= '<a href="JavaScript:void(0)" onclick="viewCheckVoucher(\''.$check['supporting_file'].'\')" data-bs-toggle="tooltip" title="View Check Voucher"><i class="mdi mdi-file-pdf fs-2 pe-2 text-danger"></i></a>';
 
 				$row[] = $consolidated;
 				$row[] = $date;

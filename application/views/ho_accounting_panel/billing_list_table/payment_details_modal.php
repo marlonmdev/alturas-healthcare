@@ -90,7 +90,7 @@
                             <label class=" text-dark fw-bold ms-2 fs-5">Supporting Document ( CV ): </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="file" accept=".jpg, .jpeg, .png" class="form-control text-dark fs-5" name="supporting-docu" id="supporting-docu">
+                            <input type="file" class="form-control text-dark fs-5" accept=".pdf, image/*" name="supporting-docu" id="supporting-docu" onchange="previewPdfFile('supporting-docu')">
                             <span id="file-error" class="text-danger"></span>
                         </div>
 

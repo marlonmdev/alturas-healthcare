@@ -10,38 +10,65 @@
                     <ol class="breadcrumb">
                     <li class="breadcrumb-item">Head Office Accounting</li>
                     <li class="breadcrumb-item active" aria-current="page">
-                        Business Unit Charging
+                        Unpaid Charge
                     </li>
                     </ol>
                 </nav>
             </div>
         </div>
         </div>
-    </div><hr>
+    </div>
     <!-- End Bread crumb and right sidebar toggle -->
     <div class="container-fluid">
         <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
-        <div class="col-lg-5 ps-5 pb-2">
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text bg-dark text-white">
-                    <i class="mdi mdi-filter"></i>
-                    </span>
-                </div>
-                <select class="form-select fw-bold" name="charging-bu-filter" id="charging-bu-filter">
-                    <option value="">Select Business Units...</option>
-                    <?php
-                        // Sort the business units alphabetically
-                        $sorted_bu = array_column($bu, 'business_unit');
-                        asort($sorted_bu);
-                        
-                        foreach($sorted_bu as $bu) :
-                    ?>
-                    <option value="<?php echo $bu; ?>"><?php echo $bu; ?></option>
-                    <?php endforeach; ?>
-                </select>
+       <div class="row">
+            <div class="col-lg-12 pb-1">
+                <ul class="nav nav-tabs mb-4" role="tablist"> 
+                    <li class="nav-item">
+                        <a
+                            class="nav-link active"
+                            href="<?php echo base_url(); ?>head-office-accounting/charging/business-unit"
+                            role="tab"
+                            ><span class="hidden-sm-up"></span>
+                            <span class="hidden-xs-down fs-5 font-bold">Unpaid Charge</span></a
+                        >
+                    </li>
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            href="<?php echo base_url(); ?>head-office-accounting/charging/business-unit/paid"
+                            role="tab"
+                            ><span class="hidden-sm-up"></span>
+                            <span class="hidden-xs-down fs-5 font-bold">Paid Charge</span></a
+                        >
+                    </li>
+                </ul>
             </div>
-        </div>
+            <div class="col-lg-5 ps-5 pb-2">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text bg-dark text-white">
+                        <i class="mdi mdi-filter"></i>
+                        </span>
+                    </div>
+                    <select class="form-select fw-bold" name="charging-bu-filter" id="charging-bu-filter" onchange="displayTagBtn()">
+                        <option value="">Select Business Units...</option>
+                        <?php
+                            // Sort the business units alphabetically
+                            $sorted_bu = array_column($bu, 'business_unit');
+                            asort($sorted_bu);
+                            
+                            foreach($sorted_bu as $bu) :
+                        ?>
+                        <option value="<?php echo $bu; ?>"><?php echo $bu; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-3 pt-1">
+                <button class="btn btn-danger btn-sm" type="button" id="print-btn" onclick="printBUCharging()"><i class="mdi mdi-printer"></i> Print</button>
+            </div>
+       </div>
         <br>
         <div class="card bg-light">
             <div class="card-body">
@@ -69,7 +96,7 @@
                             <td><span class="fw-bold fs-5" id="total-advance"></span></td>
                             <td><span class="fw-bold fs-5" id="total-payable"></span></td>
                             <td></td>
-                            <td></td>
+                            <td><a href="JavaScript:void(0)" id="tag-paid-btn" onclick="tagChargeAsPaid()" class="text-white btn btn-success btn-sm" style="display:none" title="tag as paid"><i class="mdi mdi-tag"></i> PAID</a></td>
                         </tfoot>
                     </table>
                 </div>
@@ -146,7 +173,40 @@
             $('#total-advance').html(sumColumn2.toLocaleString('PHP', { minimumFractionDigits: 2 }));
             $('#total-payable').html(sumColumn3.toLocaleString('PHP', { minimumFractionDigits: 2 }));
         });
-
             
         });
+
+        const printBUCharging = () => {
+            const bu_filters = document.querySelector('#charging-bu-filter').value;
+
+            if(bu_filters != ''){
+                bu_filter = bu_filters;
+            }else{
+                bu_filter = 'none';
+            }
+            const type = 'unpaid';
+
+            var base_url = `${baseUrl}`;
+            var win = window.open(base_url + "printBUCharge/pdfBUCharging/" + btoa(bu_filter) + "/" + btoa(type), '_blank');
+        }
+
+        const displayTagBtn = () => {
+            const filter = document.querySelector('#charging-bu-filter');
+            const anchor = document.querySelector('#tag-paid-btn');
+
+            if(filter != ''){
+                anchor.style.display = "block";
+            }else{
+                anchor.style.display = "none";
+            }
+        }
+
+        const tagChargeAsPaid = () => {
+            $.ajax({
+                url: `${baseUrl}head-office-accounting/charging/business-units/tag-as-paid`,
+                type: 'POST',
+                dataType: 'json',
+
+            });
+        }
     </script>

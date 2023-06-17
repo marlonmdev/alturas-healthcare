@@ -72,6 +72,7 @@ class Pcharges_controller extends CI_Controller {
 			// this data will be rendered to the datatable
 			$row[] = $pcharge['billing_id'];
 			$row[] = $pcharge['billing_no'];
+			$row[] = number_format($pcharge['personal_charge'],2,'.',',');
 			$row[] = number_format($pcharge['excess_amount'],2,'.',',');
 			$row[] = $added_on;
 			$row[] = $custom_status;

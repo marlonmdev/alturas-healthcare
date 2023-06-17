@@ -6,7 +6,7 @@
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-              <li class="breadcrumb-item">Healthcare Coordinator</li>
+              <li class="breadcrumb-item">Head Office Accounting</li>
               <li class="breadcrumb-item active" aria-current="page">Paid</li>
             </ol>
           </nav>
@@ -49,20 +49,6 @@
             </ul>
         </div>
 
-        <!-- <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text bg-dark text-white"><i class="mdi mdi-filter"></i></span>
-            </div>
-            <select class="form-select fw-bold" name="matched-hospital-filter" id="matched-hospital-filter">
-              <option value="">Select Hospital</option>
-              <?php foreach($hc_provider as $option) : ?>
-                <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
-              <?php endforeach; ?>
-            </select>
-          </div>
-        </div> -->
-
         <div class="card shadow">
           <div class="card-body">
             <div class="">
@@ -81,6 +67,7 @@
                 </tbody>
               </table>
             </div>
+            <?php include 'view_check_voucher.php';?>
           </div>
         </div>
       </div>
@@ -88,7 +75,7 @@
   </div>
 </div>
 <script>
-
+  const baseUrl = '<?php echo base_url();?>'
   $(document).ready(function() {
     let matchedTable = $('#matchedLoaTable').DataTable({
       processing: true,
@@ -120,18 +107,41 @@
     });
   });
 
-  const viewImage = (path) => {
-    let item = [{
-      src: path, // path to image
-      title: 'Attached Check Voucher' // If you skip it, there will display the original image name
-    }];
-    // define options (if needed)
-    let options = {
-      index: 0 // this option means you will start at first image
-    };
-    // Initialize the plugin
-    let photoviewer = new PhotoViewer(item, options);
-  }
+  const viewCheckVoucher = (pdf_check_v) => {
+        $('#viewCVModal').modal('show');
+        $('#cancel').hide();
+        let pdfFile = `${baseUrl}uploads/paymentDetails/${pdf_check_v}`;
+        let fileExists = checkFileExists(pdfFile);
+
+        if(fileExists){
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', pdfFile, true);
+        xhr.responseType = 'blob';
+
+        xhr.onload = function(e) {
+            if (this.status == 200) {
+            let blob = this.response;
+            let reader = new FileReader();
+
+            reader.onload = function(event) {
+                let dataURL = event.target.result;
+                let iframe = document.querySelector('#pdf-cv-viewer');
+                iframe.src = dataURL;
+            };
+            reader.readAsDataURL(blob);
+            }
+        };
+        xhr.send();
+        }
+    }
+
+    const checkFileExists = (fileUrl) => {
+        let xhr = new XMLHttpRequest();
+        xhr.open('HEAD', fileUrl, false);
+        xhr.send();
+
+        return xhr.status == "200" ? true: false;
+    }
 
 
 </script>

@@ -75,5 +75,4 @@ class Reset_MBL_controller extends CI_Controller {
 		return $max_benefit_limit;
 	}
 
-
 }

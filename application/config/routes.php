@@ -11,7 +11,8 @@ $route['logout'] = 'auth_controller/logout';
 $route['update-member-tnc'] = 'auth_controller/set_member_tnc';
 $route['read-member-tnc'] = 'auth_controller/read_member_tnc'; 
 // $route['import/members'] = 'masterfile_controller';
-
+//reset mbl
+$route['ewdfsasdfsadfdssdaf4gegwwrerhtyuj5dgvbx7cvzdfaef_sdfupdatemembermbl'] = 'Reset_MBL_controller';
 // Import Members Data Routes
 // $route['import/members'] = 'import_controller';
 // $route['members/import'] = 'import_controller/import_csv_to_database';

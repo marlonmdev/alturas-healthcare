@@ -65,7 +65,7 @@
 <li class="sidebar-item <?php echo $this->uri->segment(2) == 'personal-charges' ? 'selected' : ''; ?>">
   <a class="sidebar-link" href="<?php echo base_url(); ?>healthcare-coordinator/healthcare_advance/view_healthcare_advance_pending" aria-expanded="false">
     <i class="mdi mdi-receipt"></i>
-    <span class="hide-menu ls-1">Healthacare Advance</span>
+    <span class="hide-menu ls-1">Healthcare Advance</span>
   </a>
 </li>
 

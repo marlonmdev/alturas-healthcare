@@ -4,7 +4,7 @@
     <div class="page-breadcrumb">
       <div class="row">
         <div class="col-12 d-flex no-block align-items-center">
-          <h4 class="page-title ls-2">Members</h4>
+          <h4 class="page-title ls-2"><i class="mdi mdi-account-multiple-plus"></i> Members</h4>
           <div class="ms-auto text-end">
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
@@ -40,7 +40,16 @@
                         href="<?php echo base_url(); ?>super-admin/members/approved"
                         role="tab"
                         ><span class="hidden-sm-up"></span>
-                        <span class="hidden-xs-down fs-5 font-bold">Approved</span></a
+                        <span class="hidden-xs-down fs-5 font-bold">Approved Members</span></a
+                    >
+                    </li>
+                    <li class="nav-item">
+                    <a
+                        class="nav-link"
+                        href="<?php echo base_url(); ?>super-admin/members/approved/healthcard-id"
+                        role="tab"
+                        ><span class="hidden-sm-up"></span>
+                        <span class="hidden-xs-down fs-5 font-bold">Healthcard IDs</span></a
                     >
                     </li>
                 </ul>

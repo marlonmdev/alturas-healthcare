@@ -271,7 +271,7 @@
                             const patient_pattern = /patient name:\s(.*?)\admission no:/si;
                             const doc_pattern = /hospital charges(.*?)please pay for this amount/si;
 
-                            // const matches_1 = finalResult.match(pattern);
+                            // const matches_1 = finalResult.match(pattern); 
                             // const result_1 = matches_1 ? matches_1[1] : null;
 
                             const matches_2 = finalResult.match(doc_pattern);

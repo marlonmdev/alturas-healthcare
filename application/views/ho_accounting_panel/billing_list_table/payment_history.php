@@ -58,6 +58,7 @@
                 </div>
             </div>
         </div>
+        <?php include 'view_check_voucher.php'; ?>
     </div> 
 </div>
  <?php include 'view_payment_details.php' ?>
@@ -133,23 +134,46 @@
                     $('#amount-paid').val(parseFloat(amount_paid).toFixed(2));
                     $('#textbox').val(covered_loa_no);
                     $('#c-billed-date').val(billed_date);
-                    $('#supporting-docu').attr('src', check_image);
+                    // $('#supporting-docu').attr('src', check_image);
                 }
             });
         }
 
-        function viewImage(path) {
-        let item = [{
-            src: path, // path to image
-            title: 'Attached Check File' // If you skip it, there will display the original image name
-        }];
-        // define options (if needed)
-        let options = {
-            index: 0 // this option means you will start at first image
+        const viewCheckVoucher = (pdf_check_v) => {
+        $('#viewCVModal').modal('show');
+        $('#cancel').hide();
+        let pdfFile = `${baseUrl}uploads/paymentDetails/${pdf_check_v}`;
+        let fileExists = checkFileExists(pdfFile);
+
+        if(fileExists){
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', pdfFile, true);
+        xhr.responseType = 'blob';
+
+        xhr.onload = function(e) {
+            if (this.status == 200) {
+            let blob = this.response;
+            let reader = new FileReader();
+
+            reader.onload = function(event) {
+                let dataURL = event.target.result;
+                let iframe = document.querySelector('#pdf-cv-viewer');
+                iframe.src = dataURL;
+            };
+            reader.readAsDataURL(blob);
+            }
         };
-        // Initialize the plugin
-        let photoviewer = new PhotoViewer(item, options);
+        xhr.send();
+        }
     }
 
-          
+    const checkFileExists = (fileUrl) => {
+        let xhr = new XMLHttpRequest();
+        xhr.open('HEAD', fileUrl, false);
+        xhr.send();
+
+        return xhr.status == "200" ? true: false;
+    }
+
+
     </script>

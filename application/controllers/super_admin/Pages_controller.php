@@ -5,6 +5,7 @@ class Pages_controller extends CI_Controller {
 
 	function __construct() {
 		parent::__construct();
+		$this->load->model('super_admin/members_model');
 		$user_role = $this->session->userdata('user_role');
 		$logged_in = $this->session->userdata('logged_in');
 		if ($logged_in !== true && $user_role !== 'super-admin') {
@@ -51,6 +52,79 @@ class Pages_controller extends CI_Controller {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
 		$this->load->view('super_admin_panel/members/approved_members');
+		$this->load->view('templates/footer');
+	}
+
+	function view_all_done_healthcard_id() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('super_admin_panel/members/healthcard_id_approved_members');
+		$this->load->view('templates/footer');
+	}
+
+	function view_member_files() {
+		$member_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['member'] = $this->members_model->db_get_member_details($member_id);
+		$data['hcproviders'] = $this->members_model->db_get_healthcare_providers();
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('super_admin_panel/members/view_employee_files');
+		$this->load->view('templates/footer');
+	}
+
+	function view_diagnosis_files() {
+		$data['emp_id'] = $emp_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$data['member_id'] = $member_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['file'] = $this->members_model->get_employee_files($emp_id);
+		$data['member'] = $this->members_model->db_get_member_details($member_id);
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('super_admin_panel/members/show_member_files');
+		$this->load->view('templates/footer');
+	}
+
+	function view_medical_abstract() {
+		$data['emp_id'] = $emp_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$data['member_id'] = $member_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['file'] = $this->members_model->get_employee_files($emp_id);
+		$data['member'] = $this->members_model->db_get_member_details($member_id);
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('super_admin_panel/members/show_medical_abstract');
+		$this->load->view('templates/footer');
+	}
+
+	function view_take_home_meds() {
+		$data['emp_id'] = $emp_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$data['member_id'] = $member_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['file'] = $this->members_model->get_employee_files($emp_id);
+		$data['member'] = $this->members_model->db_get_member_details($member_id);
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('super_admin_panel/members/show_take_home_meds');
+		$this->load->view('templates/footer');
+	}
+
+	function view_billed_soa() {
+		$data['emp_id'] = $emp_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$data['member_id'] = $member_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['file'] = $this->members_model->get_employee_files($emp_id);
+		$data['member'] = $this->members_model->db_get_member_details($member_id);
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('super_admin_panel/members/show_billed_soa');
+		$this->load->view('templates/footer');
+	}
+
+	function view_incident_spot_reports() {
+		$data['emp_id'] = $emp_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$data['member_id'] = $member_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['file_loa'] = $this->members_model->get_employee_files_loa($emp_id);
+		$data['file_noa'] = $this->members_model->get_employee_files_noa($emp_id);
+		$data['member'] = $this->members_model->db_get_member_details($member_id);
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('super_admin_panel/members/show_incident_spot_reports');
 		$this->load->view('templates/footer');
 	}
 

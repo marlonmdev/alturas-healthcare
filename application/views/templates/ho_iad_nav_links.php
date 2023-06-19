@@ -25,12 +25,12 @@
   </a>
 </li>
 
-<li class="sidebar-item <?php echo $this->uri->segment(3) == 'members' ? 'selected' : ''; ?>">
+<!-- <li class="sidebar-item <?php echo $this->uri->segment(3) == 'members' ? 'selected' : ''; ?>">
   <a class="sidebar-link sidebar-link" href="<?php echo base_url(); ?>head-office-iad/transaction/members" aria-expanded="false">
     <i class="mdi mdi-account-multiple"></i>
     <span class="hide-menu ls-1">Employee Member</span>
   </a>
-</li>
+</li> -->
 
 <li class="sidebar-item <?php echo $this->uri->segment(3) == 'account_setting' ? 'selected' : ''; ?>">
   <a class="sidebar-link sidebar-link" href="<?php echo base_url(); ?>head-office-iad/transaction/account_setting" aria-expanded="false">

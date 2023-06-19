@@ -5,6 +5,8 @@ class Pages_controller extends CI_Controller {
 
 	function __construct() {
 		parent::__construct();
+		$this->load->model('healthcare_coordinator/members_model');
+		$this->load->model('healthcare_coordinator/loa_model');
 		$user_role = $this->session->userdata('user_role');
 		$logged_in = $this->session->userdata('logged_in');
 		if ($logged_in !== true && $user_role !== 'healthcare-coordinator') {
@@ -111,6 +113,132 @@ class Pages_controller extends CI_Controller {
 		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_coordinator_panel/members/healthcard_id_monitoring');
+		$this->load->view('templates/footer');
+	}
+
+	function view_member_files() {
+		$this->load->model('healthcare_coordinator/loa_model');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$member_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['member'] = $this->members_model->db_get_member_details($member_id);
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/members/viewing_member_files');
+		$this->load->view('templates/footer');
+	}
+
+	function view_final_diagnosis() {
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
+		$data['emp_id'] = $emp_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$data['member_id'] = $member_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['file'] = $this->members_model->get_employee_files($emp_id);
+		$data['member'] = $this->members_model->db_get_member_details($member_id);
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/members/show_member_files');
+		$this->load->view('templates/footer');
+	}
+
+	function view_medical_abstract() {
+		$data['emp_id'] = $emp_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$data['member_id'] = $member_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['file'] = $this->members_model->get_employee_files($emp_id);
+		$data['member'] = $this->members_model->db_get_member_details($member_id);
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/members/show_medical_abstract');
+		$this->load->view('templates/footer');
+	}
+
+	function view_take_home_meds() {
+		$data['emp_id'] = $emp_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$data['member_id'] = $member_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['file'] = $this->members_model->get_employee_files($emp_id);
+		$data['member'] = $this->members_model->db_get_member_details($member_id);
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/members/show_take_home_meds');
+		$this->load->view('templates/footer');
+	}
+
+	function view_billed_soa() {
+		$data['emp_id'] = $emp_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$data['member_id'] = $member_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['file'] = $this->members_model->get_employee_files($emp_id);
+		$data['member'] = $this->members_model->db_get_member_details($member_id);
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/members/show_billed_soa');
+		$this->load->view('templates/footer');
+	}
+
+	function view_incident_spot_reports() {
+		$data['emp_id'] = $emp_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$data['member_id'] = $member_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['file_loa'] = $this->members_model->get_employee_files_loa($emp_id);
+		$data['file_noa'] = $this->members_model->get_employee_files_noa($emp_id);
+		$data['member'] = $this->members_model->db_get_member_details($member_id);
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/members/show_incident_spot_reports');
 		$this->load->view('templates/footer');
 	}
 

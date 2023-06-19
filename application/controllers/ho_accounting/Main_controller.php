@@ -297,14 +297,14 @@ class Main_controller extends CI_Controller {
 			]);
 		}else{
 			$config['upload_path'] = './uploads/paymentDetails/';
-			$config['allowed_types'] = 'jpg|jpeg|png';
+			$config['allowed_types'] = 'pdf|jpeg|jpg|png|gif|svg';
 			$config['encrypt_name'] = TRUE;
 			$this->load->library('upload', $config);
 			if(!$this->upload->do_upload('supporting-docu')){
 				echo json_encode([
 					'token' => $token,
 					'status' => 'error',
-					'message' => 'Image upload failed!'
+					'message' => 'PDF upload failed!'
 				]);
 			}else{
 				$uploadData = $this->upload->data();
@@ -341,6 +341,9 @@ class Main_controller extends CI_Controller {
 
 				if (!empty($result)) {
 					foreach ($result as $row) {
+						$total_paid = floatval($row['company_charge'] + $row['cash_advance']);
+						$this->List_model->insert_total_paid($row['billing_id'], $total_paid);
+
 						$loa_id = $row['loa_id'];
 						$noa_id = $row['noa_id'];
 					
@@ -698,7 +701,7 @@ class Main_controller extends CI_Controller {
 	
 				$custom_actions = '<a class="text-info fw-bold ls-1 fs-4" href="JavaScript:void(0)" onclick="viewPaymentInfo(\'' . $details_id . '\',\'' . base_url() . 'uploads/paymentDetails/' . $payment['supporting_file'] . '\')"  data-bs-toggle="tooltip"><u><i class="mdi mdi-view-list fs-3" title="View Payment Details"></i></u></a>';
 	
-				// $custom_actions .= '<a class="text-success fw-bold ls-1 ps-2 fs-4" href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/paymentDetails/' . $payment['supporting_file'] . '\')" data-bs-toggle="tooltip"><u><i class="mdi mdi-file-image fs-3" title="View Proof"></i></u></a>';
+				$custom_actions .= '<a class="text-success fw-bold ls-1 ps-2 fs-4" href="javascript:void(0)" onclick="viewCheckVoucher(\'' . $payment['supporting_file'] . '\')" data-bs-toggle="tooltip"><u><i class="mdi mdi-file-pdf fs-3" title="View Proof"></i></u></a>';
 	
 				$row[] = $custom_details_no;
 				$row[] = $payment['acc_number'];
@@ -1499,7 +1502,7 @@ class Main_controller extends CI_Controller {
 
 				$check = $this->List_model->get_check_details($bill['details_no']);
 
-				$action_customs .= '<a href="javascript:void(0)" onclick="viewImage(\''.base_url().'uploads/paymentDetails/'.$check['supporting_file'].'\')" data-bs-toggle="tooltip" title="View CV"><i class="mdi mdi-image fs-2 pe-2 text-danger"></i></a>';
+				$action_customs .= '<a href="javascript:void(0)" onclick="viewCheckVoucher(\''.$check['supporting_file'].'\')" data-bs-toggle="tooltip" title="View CV"><i class="mdi mdi-file-pdf fs-2 pe-2 text-danger"></i></a>';
 
 				$row[] = $consolidated;
 				$row[] = $date;
@@ -1673,6 +1676,55 @@ class Main_controller extends CI_Controller {
 	
 		echo json_encode($output);
 	}
+
+	function fetch_bu_paid_charge() {
+		$token = $this->security->get_csrf_hash();
+		$charge = $this->List_model->get_paid_charging_for_report();
+		$data = [];
+	
+		$healthCardTotals = []; // Store totals for each health_card_no
+	
+		foreach ($charge as $bill) {
+			$health_card_no = $bill['health_card_no'];
+			// Check if the health_card_no already has a total calculated
+			if (!isset($healthCardTotals[$health_card_no])) {
+				$healthCardTotals[$health_card_no] = [
+					'company_charge' => 0,
+					'cash_advance' => 0,
+					'total_paid' => 0,
+					'fullname' => $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'],
+					'business_unit' => $bill['business_unit'],
+					'emp_id' => $bill['emp_id']
+				];
+			}
+	
+			// Update totals for the current health_card_no
+			$healthCardTotals[$health_card_no]['company_charge'] += floatval($bill['company_charge']);
+			$healthCardTotals[$health_card_no]['cash_advance'] += floatval($bill['cash_advance']);
+			$healthCardTotals[$health_card_no]['total_paid'] += (floatval($bill['company_charge']) + floatval($bill['cash_advance']));
+		}
+	
+		// Create data array with unique health_card_no and their totals
+		foreach ($healthCardTotals as $health_card_no => $totals) {
+			$row = [];
+			$row[] = $health_card_no;
+			$row[] = $totals['fullname'];
+			$row[] = $totals['business_unit'];
+			$row[] = number_format($totals['company_charge'], 2, '.', ',');
+			$row[] = number_format($totals['cash_advance'], 2, '.', ',');
+			$row[] = number_format($totals['total_paid'], 2, '.', ',');
+			$row[] = '<span class="bg-success text-white badge rounded-pill">'.$bill['bu_charging_status'].'</span>';
+			$row[] = '<a href="' . base_url() . 'head-office-accounting/charging/member/paid/'. $totals['emp_id'] .'" data-bs-toggle="tooltip" title="View Details"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
+			$data[] = $row;
+		}
+	
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
+	
+		echo json_encode($output);
+	}
 	
 
 	function fetch_charging_details() {
@@ -1682,8 +1734,8 @@ class Main_controller extends CI_Controller {
 		
 		foreach($details as $bill){
 			$row = [];
-			
-			if($bill['company_charge'] || $bill['cash_advance'] != ''){
+
+			if($bill['company_charge'] && $bill['cash_advance'] != ''){
 				if($bill['loa_id'] != ''){
 					$loa_noa = $bill['loa_no'];
 
@@ -1698,6 +1750,40 @@ class Main_controller extends CI_Controller {
 				$row[] = number_format($bill['cash_advance'], 2, '.', ','); 
 				$row[] = number_format($total, 2, '.', ',');
 				$row[] = '<span class="bg-danger text-white badge rounded-pill">Unpaid</span>';
+				$data[] = $row;
+			}	
+		}
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
+	
+		echo json_encode($output);
+	}
+
+	function fetch_paid_charging_details() {
+		$token = $this->security->get_csrf_hash();
+		$details = $this->List_model->get_paid_charging_details();
+		$data = [];
+		
+		foreach($details as $bill){
+			$row = [];
+
+			if($bill['company_charge'] && $bill['cash_advance'] != ''){
+				if($bill['loa_id'] != ''){
+					$loa_noa = $bill['loa_no'];
+
+				}else if($bill['noa_id'] != ''){
+					$loa_noa = $bill['noa_no'];
+				}
+				$total = floatval($bill['company_charge']) + floatval($bill['cash_advance']);
+
+				$row[] = $bill['billing_no'];
+				$row[] = $loa_noa;
+				$row[] = number_format($bill['company_charge'], 2, '.', ',');
+				$row[] = number_format($bill['cash_advance'], 2, '.', ','); 
+				$row[] = number_format($total, 2, '.', ',');
+				$row[] = '<span class="bg-success text-white badge rounded-pill">'.$bill['bu_charging_status'].'</span>';
 				$data[] = $row;
 			}	
 		}
@@ -2039,16 +2125,11 @@ class Main_controller extends CI_Controller {
 
 		$PDFdata .= '</table><br><br><br>';
 
-		$pdf->setPrintHeader(false);
+		$pdf->setPrintHeader(true);
 		$pdf->setTitle('Billing Report');
 		$pdf->setFont('times', '', 10);
 		$pdf->AddPage('L');
-		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-		$x = 10;
-		$y = 10;
-		$width = 100;
-		$height = 0;
-		// $pdf->Image($imagePath, $x, $y, $width, $height);
+		$pdf->SetHeaderData('assets/images/HC_logo.PNG', 32, '' . '', 'Cash With Order Monitoring Report');
 		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'C', true);
 		$pdf->lastPage();
@@ -2626,7 +2707,151 @@ class Main_controller extends CI_Controller {
 		$pdf->Output($pdfname.'.pdf', 'I');
 	}
 
-	
+	function print_bu_charging($business_unit,$type){
+		$this->security->get_csrf_hash();
+		$this->load->library('tcpdf_library');
+		$pdf = new TCPDF();
+
+		$business_unit =  base64_decode($business_unit);
+		$type =  base64_decode($type);
+
+		if($business_unit != 'none'){
+			$bu_unit = $business_unit; 
+		}else{
+			$bu_unit = '';
+		}
+// check kung idli sunod ang data sa billing
+		if($type == 'unpaid'){
+			$charging = $this->List_model->get_bu_charging($bu_unit);
+		}else if($type == 'paid'){
+			$charging = $this->List_model->get_paid_bu_charging($bu_unit);
+		}
+
+		$title =  '<h3>ALTURAS HEALTHCARE SYSTEM</h3>
+            <h3>Business Unit Charging</h3>
+			<h3>'.$bu_unit.'</h3><br>';
+
+		$PDFdata = '<table style="border:.5px solid #000; padding:3px" class="table table-bordered">';
+		$PDFdata .= ' <thead>
+						<tr class="border-secondary">
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Healthcard No.</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Employee`s Name</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Billing No.</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Company Charge</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Healthcare Advance</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Total Charge</strong></th>
+							
+						</tr>
+					</thead>';
+
+		$previousHealthCardNo = '';
+		$previousFullName = '';
+		$totalPayableSum = 0;
+		
+		foreach ($charging as $charge) {
+			if ($charge['company_charge'] && $charge['cash_advance'] != '') {
+
+				$currentHealthCardNo = $charge['health_card_no'];
+				$currentFullName = $charge['first_name'] . ' ' . $charge['middle_name'] . ' ' . $charge['last_name'] . ' ' . $charge['suffix'];
+		
+				$total_payable = floatval($charge['company_charge'] + $charge['cash_advance']);
+		
+				$healthCardNo = ($currentHealthCardNo !== $previousHealthCardNo) ? $currentHealthCardNo : '';
+				$fullName = ($currentFullName !== $previousFullName) ? $currentFullName : '';
+		
+				$PDFdata .= ' <tbody>
+								<tr>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">' . $healthCardNo . '</td>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">' . $fullName . '</td>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">' . $charge['billing_no'] . '</td>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">' . number_format($charge['company_charge'],2,'.',',') . '</td>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">' . number_format($charge['cash_advance'],2,'.',',') . '</td>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">' . number_format($total_payable, 2, '.', ',') . '</td>
+								</tr>
+							</tbody>';
+		
+				$previousHealthCardNo = $currentHealthCardNo;
+				$previousFullName = $currentFullName;
+
+				$totalPayableSum += $total_payable;
+			}
+		}
+
+		// $previousHealthCardNo = '';
+		// $previousFullName = '';
+		// $totalPayableSum = 0;
+		// $sumByHealthCard = [];
+
+		// foreach ($charging as $index => $charge) {
+		// 	if ($charge['company_charge'] && $charge['cash_advance'] != '') {
+
+		// 		$currentHealthCardNo = $charge['health_card_no'];
+		// 		$currentFullName = $charge['first_name'] . ' ' . $charge['middle_name'] . ' ' . $charge['last_name'] . ' ' . $charge['suffix'];
+
+		// 		$total_payable = floatval($charge['company_charge'] + $charge['cash_advance']);
+
+		// 		$healthCardNo = ($currentHealthCardNo !== $previousHealthCardNo) ? $currentHealthCardNo : '';
+		// 		$fullName = ($currentFullName !== $previousFullName) ? $currentFullName : '';
+
+		// 		$currentKey = $currentHealthCardNo . '_' . $currentFullName;
+		// 		if (!isset($sumByHealthCard[$currentKey])) {
+		// 			$sumByHealthCard[$currentKey] = 0;
+		// 		}
+		// 		$sumByHealthCard[$currentKey] += $total_payable;
+
+		// 		$PDFdata .= '<tr>
+		// 						<td class="fs-5" style="border:.5px solid #000; padding:1px">' . $healthCardNo . '</td>
+		// 						<td class="fs-5" style="border:.5px solid #000; padding:1px">' . $fullName . '</td>
+		// 						<td class="fs-5" style="border:.5px solid #000; padding:1px">' . $charge['billing_no'] . '</td>
+		// 						<td class="fs-5" style="border:.5px solid #000; padding:1px">' . number_format($charge['company_charge'], 2, '.', ',') . '</td>
+		// 						<td class="fs-5" style="border:.5px solid #000; padding:1px">' . number_format($charge['cash_advance'], 2, '.', ',') . '</td>
+		// 						<td class="fs-5" style="border:.5px solid #000; padding:1px">' . number_format($total_payable, 2, '.', ',') . '</td>';
+
+		// 						if ($index === count($charging) - 1 || ($currentHealthCardNo !== $charging[$index + 1]['health_card_no'] || $currentFullName !== ($charging[$index + 1]['first_name'] . ' ' . $charging[$index + 1]['middle_name'] . ' ' . $charging[$index + 1]['last_name'] . ' ' . $charging[$index + 1]['suffix'])) || ($currentHealthCardNo !== $charging[$index + 1]['health_card_no'] && $currentFullName !== ($charging[$index + 1]['first_name'] . ' ' . $charging[$index + 1]['middle_name'] . ' ' . $charging[$index + 1]['last_name'] . ' ' . $charging[$index + 1]['suffix']))){
+		// 							$sum = isset($sumByHealthCard[$currentKey]) ? $sumByHealthCard[$currentKey] : 0;
+		// 							$PDFdata .= '<td class="fs-5" style="border:.5px solid #000; padding:1px">' . number_format($sum, 2, '.', ',') . '</td>';
+		// 						} else {
+		// 							$PDFdata .= '<td class="fs-5" style="border:.5px solid #000; padding:1px"></td>';
+		// 						}
+						
+		// 						$PDFdata .= '</tr>';
+						
+		// 						$previousHealthCardNo = $currentHealthCardNo;
+		// 						$previousFullName = $currentFullName;
+						
+		// 						$totalPayableSum += $total_payable;
+		// 					}
+		// 				}
+						
+		// 		$PDFdata .= '</tbody>';
+						
+				
+		
+	$PDFdata .= '<tfoot>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td class="fw-bold">TOTAL</td>
+						<td>'.number_format($totalPayableSum,2,'.',',').'</td>
+					</tr>
+				</tfoot>';
+
+		$PDFdata .= '</table>';
+
+		$pdf->setPrintHeader(false);
+		$pdf->setTitle('Business Unit Charging Report');
+		$pdf->setFont('times', '', 10);
+		$pdf->AddPage('L');
+		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'C', true);
+		$pdf->lastPage();
+
+		$pdfname = 'Charging_'.$business_unit .'_'.time();
+		$pdf->Output($pdfname.'.pdf', 'I');
+	}
+
 	
 }
 

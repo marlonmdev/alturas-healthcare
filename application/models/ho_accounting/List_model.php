@@ -264,6 +264,12 @@ class List_model extends CI_Model{
         $this->db->where('payment_no', $payment_no);
         return $this->db->get('billing')->result_array();
     }
+
+    function insert_total_paid($billing_id, $total_paid) {
+        $this->db->set('total_paid_amount',$total_paid)
+                ->where('billing_id',$billing_id);
+        return $this->db->update('billing');
+    }
     
     function set_loa_status($loa_id) {
         $this->db->set('status', 'Paid')
@@ -690,7 +696,6 @@ class List_model extends CI_Model{
         return $total_sum;
     }
     
-
     function get_print_billed_loa_noa($hp_id,$start_date,$end_date,$bu_filter) {
         $this->db->select('*')
                 ->from('billing as tbl_1')
@@ -765,7 +770,8 @@ class List_model extends CI_Model{
        private function _get_get_charging_for_report_query() {
        $this->db->from($this->charge_table_1 . ' as tbl_1')
                ->join($this->charge_table_5 . ' as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
-               ->where('tbl_1.status', 'Paid');
+               ->where('tbl_1.status', 'Paid')
+               ->where('tbl_1.bu_charging_status', '');
    
             if($this->input->post('filter')){
                 $this->db->like('tbl_5.business_unit', $this->input->post('filter'));
@@ -774,6 +780,27 @@ class List_model extends CI_Model{
    
        function get_charging_for_report() {
        $this->_get_get_charging_for_report_query();
+       if ($_POST['length'] != -1)
+           $this->db->limit($_POST['length'], $_POST['start']);
+       $query = $this->db->get();
+       return $query->result_array();
+       }
+
+       var $paid_charge_table_1 = 'billing';
+       var $paid_charge_table_5 = 'members';
+       private function _get_paid_charging_for_report_query() {
+       $this->db->from($this->paid_charge_table_1 . ' as tbl_1')
+               ->join($this->paid_charge_table_5 . ' as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
+               ->where('tbl_1.status', 'Paid')
+               ->where('tbl_1.bu_charging_status', 'Paid');
+   
+            if($this->input->post('filter')){
+                $this->db->like('tbl_5.business_unit', $this->input->post('filter'));
+            }
+       }
+   
+       function get_paid_charging_for_report() {
+       $this->_get_paid_charging_for_report_query();
        if ($_POST['length'] != -1)
            $this->db->limit($_POST['length'], $_POST['start']);
        $query = $this->db->get();
@@ -795,6 +822,7 @@ class List_model extends CI_Model{
                 ->join($this->details_table_5 . ' as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
                 ->where('tbl_1.emp_id', $this->input->post('emp_id'))
                 ->where('tbl_1.status', 'Paid')
+                ->where('tbl_1.bu_charging_status', '')
                 ->order_by('tbl_1.billing_id', 'desc');
        }
    
@@ -804,6 +832,29 @@ class List_model extends CI_Model{
            $this->db->limit($_POST['length'], $_POST['start']);
        $query = $this->db->get();
        return $query->result_array();
+       }
+
+       var $paid_details_table_1 = 'billing';
+       var $padi_details_table_2 = 'loa_requests';
+       var $paid_details_table_3 = 'noa_requests';
+       var $paid_details_table_5 = 'members';
+       private function _get_paid_details_for_report_query() {
+       $this->db->from($this->paid_details_table_1 . ' as tbl_1')
+                ->join($this->padi_details_table_2 . ' as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id', 'left')
+                ->join($this->paid_details_table_3 . ' as tbl_3', 'tbl_1.noa_id = tbl_3.noa_id', 'left')
+                ->join($this->paid_details_table_5 . ' as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
+                ->where('tbl_1.emp_id', $this->input->post('emp_id'))
+                ->where('tbl_1.status', 'Paid')
+                ->where('tbl_1.bu_charging_status', 'Paid')
+                ->order_by('tbl_1.billing_id', 'desc');
+       }
+
+       function get_paid_charging_details() {
+        $this->_get_paid_details_for_report_query();
+        if ($_POST['length'] != -1)
+            $this->db->limit($_POST['length'], $_POST['start']);
+        $query = $this->db->get();
+        return $query->result_array();
        }
 
        function get_for_payment_bills($payment_no) {
@@ -951,6 +1002,27 @@ class List_model extends CI_Model{
     function get_billing_services($billing_no){
         $query = $this->db->get_where('billing_services', ['billing_no' => $billing_no]);
         return $query->result_array();
+     }
+
+     function get_bu_charging($business_unit) {
+        $this->db->select('*')
+                ->from('billing as tbl_1')
+                ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+                ->where('tbl_1.status', 'Paid')
+                ->where('tbl_1.bu_charging_status', '')
+                ->where('tbl_2.business_unit', $business_unit);
+        return $this->db->get()->result_array();
+
+     }
+
+     function get_paid_bu_charging($business_unit) {
+        $this->db->select('*')
+                ->from('billing as tbl_1')
+                ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+                ->where('tbl_1.status', 'Paid')
+                ->where('tbl_1.bu_charging_status', 'Paid')
+                ->where('tbl_2.business_unit', $business_unit);
+        return $this->db->get()->result_array();
      }
 
 

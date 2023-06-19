@@ -94,13 +94,13 @@
                         <div class="col-lg-8">
                             <textarea class="form-control text-dark fs-5" id="textbox" value="" readonly></textarea>
                         </div>
-
+<!-- 
                         <div class="col-lg-8 pt-2">
-                            <label class="fw-bold text-dark fs-5">Check Voucher Image:</label>
+                            <label class="fw-bold text-dark fs-5">Attached Check Voucher:</label>
                             <div class="image-container">
                                 <img src="" id="supporting-docu" alt="Voucher Image">
                             </div>
-                        </div>
+                        </div> -->
 
                     </div>
                 </div>

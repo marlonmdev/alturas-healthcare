@@ -339,6 +339,13 @@ class Loa_controller extends CI_Controller {
 
 			$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="Tag LOA Charge Type"><i class="mdi mdi-tag-plus fs-2 text-primary"></i></a>';
 
+			if($loa['spot_report_file'] && $loa['incident_report_file'] != ''){
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $loa_id . '\',\'' . $loa['work_related'] . '\',\'' . $loa['percentage'] . '\',\'' . $loa['spot_report_file'] . '\',\'' . $loa['incident_report_file'] . '\')" data-bs-toggle="tooltip" title="View Uploaded Reports"><i class="mdi mdi-teamviewer fs-2 text-warning"></i></a>';
+			}else{
+				$custom_actions .= '';
+			}
+			
+
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
 			if ($loa['loa_request_type'] === 'Consultation') {
@@ -392,6 +399,12 @@ class Loa_controller extends CI_Controller {
 
 			$custom_actions = '<a class="me-1" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
+			if($loa['spot_report_file'] && $loa['incident_report_file'] != ''){
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $loa_id . '\',\'' . $loa['work_related'] . '\',\'' . $loa['percentage'] . '\',\'' . $loa['spot_report_file'] . '\',\'' . $loa['incident_report_file'] . '\')" data-bs-toggle="tooltip" title="View Uploaded Reports"><i class="mdi mdi-teamviewer fs-2 text-warning"></i></a>';
+			}else{
+				$custom_actions .= '';
+			}
+			
 			$custom_actions .= '<a class="me-1" href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Print LOA"><i class="mdi mdi-printer fs-2 text-primary"></i></a>';
 
 			$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Performed"><i class="mdi mdi-playlist-check fs-2 text-success"></i></a>';
@@ -1721,7 +1734,8 @@ class Loa_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	function set_charge_type(){
+	function set_charge_type()
+	{
 		$token = $this->security->get_csrf_hash();
 		$loa_id = $this->myhash->hasher($this->input->post('loa-id'), 'decrypt');
 		$charge_type = $this->input->post('charge-type', TRUE);
@@ -1730,30 +1744,77 @@ class Loa_controller extends CI_Controller {
 		$this->form_validation->set_rules('charge-type', 'Charge Type', 'required');
 		if ($this->form_validation->run() == FALSE) {
 			$response = [
-				'token' => $token, 
+				'token' => $token,
 				'status' => 'error',
 				'charge_type_error' => form_error('charge-type'),
 			];
 			echo json_encode($response);
-		}else{
-			$updated = $this->loa_model->db_update_loa_charge_type($loa_id, $charge_type, $percentage);
+		} else {
+			$config['allowed_types'] = 'pdf|jpeg|jpg|png|gif|svg';
+			$config['encrypt_name'] = TRUE;
+			$this->load->library('upload', $config);
 
-			if (!$updated) {
-				$response = [
-					'token' => $token, 
-					'status' => 'save-error', 
-					'message' => 'Save Failed'
-				];
-			} else {
-				$response = [
-					'token' => $token, 
-					'status' => 'success', 
-					'message' => 'Saved Successfully'
-				];
+			$uploaded_files = array();
+			$error_occurred = FALSE;
+
+			// Define the upload paths for each file
+			$file_paths = array(
+				'spot-report' => './uploads/spot_reports/',
+				'incident-report' => './uploads/incident_reports/',
+			);
+
+			// Iterate over each file input and perform the upload
+			$file_inputs = array('spot-report', 'incident-report');
+			foreach ($file_inputs as $input_name) {
+				$config['upload_path'] = $file_paths[$input_name];
+				$this->upload->initialize($config);
+
+				if (!$this->upload->do_upload($input_name)) {
+					// Handle upload error
+					$error_occurred = TRUE;
+					break;
+				}
+
+				$uploaded_files[$input_name] = $this->upload->data();
 			}
-			echo json_encode($response);
+
+			if ($error_occurred) {
+				// Handle upload error response
+				$response = [
+					'token' => $token,
+					'status' => 'upload-error',
+					'message' => 'File upload failed',
+				];
+				echo json_encode($response);
+			} else {
+				$data = [
+					'work_related' => $charge_type,
+					'percentage' => $percentage,
+					'spot_report_file' => isset($uploaded_files['spot-report']) ? $uploaded_files['spot-report']['file_name'] : '',
+					'incident_report_file' => isset($uploaded_files['incident-report']) ? $uploaded_files['incident-report']['file_name'] : '',
+					'date_uploaded' => date('Y-m-d')
+				];
+
+				$updated = $this->loa_model->db_update_loa_charge_type($loa_id, $data);
+
+				if (!$updated) {
+					$response = [
+						'token' => $token,
+						'status' => 'save-error',
+						'message' => 'Save Failed',
+					];
+				} else {
+					$response = [
+						'token' => $token,
+						'status' => 'success',
+						'message' => 'Saved Successfully',
+					];
+				}
+				echo json_encode($response);
+			}
 		}
 	}
+
 
 	function generate_printable_loa() {
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
@@ -3401,8 +3462,18 @@ class Loa_controller extends CI_Controller {
 				}else{
     			$billed_date = date("F d, Y", strtotime($bill['billed_on']));
 				}
+<<<<<<< HEAD
         $custom_status = '<span class="badge rounded-pill bg-success">' . $bill['tbl1_status'] . '</span>';
 
+=======
+				if($bill['tbl1_status'] !== 'Billed'){
+					$custom_status = '<span class="badge rounded-pill bg-warning">' . $bill['tbl1_status'] . '</span>';
+				}else{
+					$custom_status = '<span class="badge rounded-pill bg-success">' . $bill['tbl1_status'] . '</span>';
+				}
+        
+        // $pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf fs-2 text-info"></i></a>';
+>>>>>>> f5421131f708e7b124352e81046dc5587de00f02
         if (empty($bill['pdf_bill'])) {
     			$pdf_bill = 'Waiting for SOA';
 				}else{

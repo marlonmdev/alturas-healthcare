@@ -22,7 +22,7 @@
 
         <!-- Start of Container fluid  -->
         <div class="container-fluid">
-          <div class="row">
+          <div class="row ps-3">
             <div class="row shadow">
               <div class="col-lg-3 col-sm-6">
                 <div class="card-box bg-cyan">
@@ -31,7 +31,7 @@
                     <p>Billed</p>
                   </div>
                   <div class="icon">
-                    <i class="mdi mdi-file-document" aria-hidden="true"></i>
+                    <i class="mdi mdi-file-check" aria-hidden="true"></i>
                   </div>
                   <a href="<?php echo base_url() ?>head-office-accounting/bill/billing-list/billed-loa-noa" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
@@ -40,7 +40,7 @@
               <div class="col-lg-3 col-sm-6">
                 <div class="card-box bg-green">
                   <div class="inner">
-                    <h3><?php echo $payment_count; ?></h3>
+                    <h3><i class="mdi mdi-view-dashboard"></i></h3>
                     <p>Payment History</p>
                   </div>
                   <div class="icon">
@@ -53,13 +53,13 @@
               <div class="col-lg-3 col-sm-6">
                 <div class="card-box bg-orange">
                   <div class="inner">
-                    <h3><?php echo $loa_count; ?></h3>
-                    <p>Approved LOA Requests</p>
+                    <h3><i class="mdi mdi-view-dashboard"></i></h3>
+                    <p>Business Unit Charging</p>
                   </div>
                   <div class="icon">
-                    <i class="mdi mdi-file-document" aria-hidden="true"></i>
+                    <i class="mdi mdi-file" aria-hidden="true"></i>
                   </div>
-                  <a href="<?php echo base_url() ?>head-office-accounting/loa-request-list/loa-approved" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                  <a href="<?php echo base_url() ?>head-office-accounting/charging/business-unit" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
               </div>
               
@@ -76,17 +76,6 @@
                 </div>
               </div>
             </div>
-           
-            <div class="row pt-3 pb-3">
-              <div class="col-lg-6 col-sm-6 pb-2 shadow"><br>
-                <div class="pt-3" id="chartContainer" style="height: 370px; width: 100%;"></div>
-              </div>
-              
-              <div class="col-lg-6 col-sm-6 shadow"><br>
-                <div class="pt-3" id="chartBarContainer" style="height: 370px; width: 100%;"></div>
-              </div>
-            </div>
-            
 
           </div>
         <!-- End Container fluid  -->
@@ -95,61 +84,3 @@
       </div>
     <!-- End Wrapper -->
     </div>
-<script>
-      // <?php
-      //   // foreach($paid_count as $bill){
-
-      //       $dataPoints = array( 
-      //         // array("label"=>,"sg", "y"=>23.3),
-      //         array("label"=>$hp_name, "y"=>$paid_count),
-      //         array("label"=>"IE", "y"=>8.47),
-      //         array("label"=>"Safari", "y"=>6.08),
-      //         array("label"=>"Edge", "y"=>4.29),
-      //         array("label"=>"Others", "y"=>4.59)
-      //       );
-      //       ?>
-     
-
-      // window.onload = function() {
-      
-      // var chart = new CanvasJS.Chart("chartContainer", {
-      //   animationEnabled: true,
-      //   title: {
-      //     text: "Paid Bill in every Healthcare Provider"
-      //   },
-      //   subtitles: [{
-      //     text: "   "
-      //   }],
-      //   data: [{
-      //     type: "pie",
-      //     yValueFormatString: "#,##0.00\"%\"",
-      //     indexLabel: "{label} ({y})",
-      //     dataPoints: <?php echo json_encode($dataPoints, JSON_NUMERIC_CHECK); ?>
-      //   }]
-      // });
-      // chart.render();
-
-      // var chartCol = new CanvasJS.Chart("chartBarContainer", {
-      // theme: "light1", // "light2", "dark1", "dark2"
-      // animationEnabled: false, // change to true		
-      // title:{
-      //   text: "Basic Column Chart"
-      // },
-      // data: [
-      // {
-      //     // Change type to "bar", "area", "spline", "pie",etc.
-      //     type: "column",
-      //     dataPoints: [
-      //       { label: "apple",  y: 10  },
-      //       { label: "orange", y: 15  },
-      //       { label: "banana", y: 25  },
-      //       { label: "mango",  y: 30  },
-      //       { label: "grape",  y: 28  }
-      //     ]
-      //   }
-      //   ]
-      // });
-      // chartCol.render();
-        
-      // }
-</script>

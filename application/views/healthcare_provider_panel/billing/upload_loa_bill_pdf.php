@@ -116,7 +116,7 @@
   let attending_doctors ="";
   let is_valid_name = true;
   let is_valid_noa = true;
-
+  let is_valid_netbill = true;
   const previewPdfFile = () => {
     let pdfFileInput = document.getElementById('pdf-file');
     let pdfPreview = document.getElementById('pdf-preview');
@@ -137,6 +137,18 @@
   }
   
   $(document).ready(function(){
+
+    $('#viewPDFBillModal').on('hidden.bs.modal', function (e) {
+            is_valid_name = true;
+            is_valid_noa = true;
+            is_valid_netbill = true;
+            if(is_valid_name || is_valid_noa || is_valid_netbill){
+                window.location.reload();
+                // $('#pdfBillingForm')[0].reset();
+                // $('#initialpdfBillingForm')[0].reset();
+            }
+      });
+
     $('#pdfBillingForm').submit(function(event){
       event.preventDefault();
 
@@ -259,7 +271,7 @@
                             const patient_pattern = /patient name:\s(.*?)\admission no:/si;
                             const doc_pattern = /hospital charges(.*?)please pay for this amount/si;
 
-                            // const matches_1 = finalResult.match(pattern);
+                            // const matches_1 = finalResult.match(pattern); 
                             // const result_1 = matches_1 ? matches_1[1] : null;
 
                             const matches_2 = finalResult.match(doc_pattern);
@@ -334,6 +346,7 @@
                             const match = finalResult.match(regex);
                             console.log("match",match);
                             if (match) {
+                              is_valid_netbill = true;
                               subtotalValue = parseFloat(match[1].replace(/,/g, ""));
                               net_bill=subtotalValue;
                               document.getElementsByName("net-bill")[0].value = match[1];
@@ -360,6 +373,7 @@
                                 }
 
                             } else {
+                              is_valid_netbill = false;
                             console.log("please pay for this amount is not found");
                             $('#upload-btn').prop('disabled',true);
                             $.alert({

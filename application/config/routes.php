@@ -11,7 +11,8 @@ $route['logout'] = 'auth_controller/logout';
 $route['update-member-tnc'] = 'auth_controller/set_member_tnc';
 $route['read-member-tnc'] = 'auth_controller/read_member_tnc'; 
 // $route['import/members'] = 'masterfile_controller';
-
+//reset mbl
+$route['ewdfsasdfsadfdssdaf4gegwwrerhtyuj5dgvbx7cvzdfaef_sdfupdatemembermbl'] = 'Reset_MBL_controller';
 // Import Members Data Routes
 // $route['import/members'] = 'import_controller';
 // $route['members/import'] = 'import_controller/import_csv_to_database';
@@ -39,6 +40,7 @@ $route['member/hmo-policy'] = 'member/pages_controller/hmo_policy';
 $route['member/healthcare-providers'] = 'member/pages_controller/healthcare_providers';
 $route['member/request-loa'] = 'member/pages_controller/request_loa_form';
 $route['member/request-noa'] = 'member/pages_controller/request_noa_form';
+$route['member/request-emergency-loa'] = 'member/pages_controller/request_emergency_loa_form';
 $route['member/requested-loa/pending'] = 'member/pages_controller/pending_requested_loa';
 $route['member/requested-loa/approved'] = 'member/pages_controller/approved_requested_loa';
 $route['member/requested-loa/disapproved'] = 'member/pages_controller/disapproved_requested_loa';
@@ -49,6 +51,10 @@ $route['member/requested-noa/pending'] = 'member/pages_controller/pending_reques
 $route['member/requested-noa/approved'] = 'member/pages_controller/approved_requested_noa';
 $route['member/requested-noa/disapproved'] = 'member/pages_controller/disapproved_requested_noa';
 $route['member/requested-noa/completed'] = 'member/pages_controller/completed_requested_noa';
+$route['member/requested-emergency-loa/pending'] = 'member/pages_controller/pending_requested_emergency_loa';
+$route['member/requested-emergency-loa/approved'] = 'member/pages_controller/approved_requested_emergency_loa';
+$route['member/requested-emergency-loa/disapproved'] = 'member/pages_controller/disapproved_requested_emergency_loa';
+$route['member/requested-emergency-loa/completed'] = 'member/pages_controller/completed_requested_emergency_loa';
 $route['member/personal-charges'] = 'member/pages_controller/unpaid_personal_charges';
 $route['member/personal-charges/paid'] = 'member/pages_controller/paid_personal_charges';
 $route['member/profile'] = 'member/pages_controller/user_profile';
@@ -57,6 +63,8 @@ $route['member/personal-charges/disapproved'] = 'member/pages_controller/view_di
 $route['member/requested-loa/billed'] = 'member/pages_controller/view_billed_loa';
 $route['member/requested-noa/billed'] = 'member/pages_controller/view_billed_noa';
 $route['member/requested-noa/paid'] = 'member/pages_controller/view_paid_noa';
+$route['member/requested-emergency-loa/billed'] = 'member/pages_controller/view_billed_emergency_loa';
+$route['member/requested-emergency-loa/paid'] = 'member/pages_controller/view_paid_emergency_loa';
 $route['member/requested-loa/paid'] = 'member/pages_controller/view_paid_loa';
 
 // Member User Account Routes
@@ -100,6 +108,23 @@ $route['member/requested-noa/update/(:any)'] = 'member/noa_controller/update_noa
 $route['member/requested-noa/generate-printable-noa/(:any)'] = 'member/noa_controller/generate_printable_noa';
 $route['member/requested-noa/billed/fetch'] = 'member/noa_controller/fetch_billed_noa';
 $route['member/requested-noa/paid/fetch'] = 'member/noa_controller/fetch_paid_noa';
+
+// Member emergency LOA Routes
+$route['member/request-emergency-loa/submit'] = 'member/emergency_loa/submit_noa_request';
+$route['member/requested-emergency-loa/pending/fetch'] = 'member/emergency_loa/fetch_pending_noa';
+$route['member/requested-emergency-loa/approved/fetch'] = 'member/emergency_loa/fetch_approved_noa';
+$route['member/requested-emergency-loa/disapproved/fetch'] = 'member/emergency_loa/fetch_disapproved_noa';
+$route['member/requested-emergency-loa/completed/fetch'] = 'member/emergency_loa/fetch_completed_noa';
+$route['member/requested-emergency-loa/view/pending/(:any)'] = 'member/emergency_loa/get_pending_noa_info';
+$route['member/requested-emergency-loa/view/approved/(:any)'] = 'member/emergency_loa/get_approved_noa_info';
+$route['member/requested-emergency-loa/view/disapproved/(:any)'] = 'member/emergency_loa/get_disapproved_noa_info';
+$route['member/requested-emergency-loa/view/completed/(:any)'] = 'member/emergency_loa/get_completed_noa_info';
+$route['member/requested-emergency-loa/pending/cancel/(:any)'] = 'member/emergency_loa/cancel_noa_request';
+$route['member/requested-emergency-loa/edit/(:any)'] = 'member/emergency_loa/edit_noa_request';
+$route['member/requested-emergency-loa/update/(:any)'] = 'member/emergency_loa/update_noa_request';
+$route['member/requested-emergency-loa/generate-printable-emergency-loa/(:any)'] = 'member/emergency_loa/generate_printable_noa';
+$route['member/requested-emergency-loa/billed/fetch'] = 'member/emergency_loa/fetch_billed_noa';
+$route['member/requested-emergency-loa/paid/fetch'] = 'member/emergency_loa/fetch_paid_noa';
 
 // Member Personal Charges Routes
 $route['member/personal-charges/unpaid/fetch'] = 'member/pcharges_controller/fetch_unpaid_personal_charges';
@@ -176,6 +201,7 @@ $route['healthcare-provider/billing/bill-noa/upload-pdf/(:any)/success'] = 'heal
 $route['healthcare-provider/billing/bill-noa/manual/(:any)']  = 'healthcare_provider/billing_controller/bill_patient_noa';
 $route['healthcare-provider/billing/bill-noa/submit/(:any)'] = 'healthcare_provider/billing_controller/noa_final_billing';
 $route['healthcare-provider/billing/bill-noa/success/(:any)'] = 'healthcare_provider/billing_controller/noa_billing_success';
+$route['healthcare-provider/billing/final-soa/submit'] = 'healthcare_provider/billing_controller/upload_final_soa';
 
 $route['healthcare-provider/billing/billing-person/finalBilling']  = 'healthcare_provider/billing_controller/billing3NoaReview';
 $route['healthcare-provider/billing/billing-person/finish']['post']  = 'healthcare_provider/billing_controller/billing5Final';
@@ -344,11 +370,6 @@ $route['hc-provider-front-desk/patient/fetch_all_patient_loa'] = 'hc_provider_fr
 $route['hc-provider-front-desk/patient/fetch_all_patient_noa'] = 'hc_provider_front_desk/patient_controller/fetch_all_patient_noa';
 $route['hc-provider-front-desk/patient/get_takehome_meds'] = 'hc_provider_front_desk/noa_controller/get_takehome_meds';
 
-
-// $route['head-office-iad/transaction/members'] = 'ho_iad/transaction_controller/members';
-// $route['head-office-iad/transaction/fetch_all_members'] = 'ho_iad/transaction_controller/fetch_all_members';
-// $route['head-office-iad/transaction/view_information/(:any)'] = 'ho_iad/transaction_controller/view_information';
-
 // HealthCare Provider User Account Routes
 $route['healthcare-provider/account-settings'] = 'healthcare_provider/account_controller/account_settings';
 $route['healthcare-provider/account-settings/password/update'] = 'healthcare_provider/account_controller/update_account_password';
@@ -409,12 +430,16 @@ $route['head-office-accounting/bill/for-payment-details/fetch'] = 'ho_accounting
 $route['head-office-accounting/bill/paid-bill/fetch'] = 'ho_accounting/main_controller/fetch_paid_bills';
 $route['head-office-accounting/reports/paid'] = 'ho_accounting/main_controller/fetch_paid_bill_report';
 $route['head-office-accounting/charging/business-units/fetch'] = 'ho_accounting/main_controller/fetch_bu_charging';
+$route['head-office-accounting/charging/paid/business-units/fetch'] = 'ho_accounting/main_controller/fetch_bu_paid_charge';
 $route['head-office-accounting/charging/business-units/details/fetch'] = 'ho_accounting/main_controller/fetch_charging_details';
+$route['head-office-accounting/charging/business-units/details/paid/fetch'] = 'ho_accounting/main_controller/fetch_paid_charging_details';
 
 $route['print/pdfbilling/(:any)/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_bills/$1/$2/$3/$4';
 $route['printforpayment/pdfbilling/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_forPayment/$1/$2/$3/$4/$5';
 $route['printpayment/pdfbilling/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_payment/$1/$2/$3';
 $route['printpaid/pdfbilling/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_paid/$1/$2/$3';
+$route['printBUCharge/pdfBUCharging/(:any)/(:any)'] = 'ho_accounting/main_controller/print_bu_charging/$1/$2';
+$route['printBUCharge/pdfBUPaidCharging/(:any)/(:any)'] = 'ho_accounting/main_controller/print_bu_charging/$1/$2';
 
 //Pages
 $route['head-office-accounting/billing-list'] = 'ho_accounting/TableList';
@@ -439,7 +464,9 @@ $route['head-office-accounting/reports'] = 'ho_accounting/Pages_controller/view_
 $route['head-office-accounting/reports/cash-advance'] = 'ho_accounting/Pages_controller/view_cash_advances';
 $route['head-office-accounting/reports/charging'] = 'ho_accounting/Pages_controller/view_charging';
 $route['head-office-accounting/charging/business-unit'] = 'ho_accounting/Pages_controller/view_bu_charging';
+$route['head-office-accounting/charging/business-unit/paid'] = 'ho_accounting/Pages_controller/view_paid_bu_charging';
 $route['head-office-accounting/charging/member/(:any)'] = 'ho_accounting/Pages_controller/view_charging_details';
+$route['head-office-accounting/charging/member/paid/(:any)'] = 'ho_accounting/Pages_controller/view_paid_charging_details';
 $route['head-office-accounting/loa-request-list/loa-billed'] = 'ho_accounting/Pages_controller/view_billed_loa';
 $route['head-office-accounting/loa-request-list/loa-paid'] = 'ho_accounting/Pages_controller/view_paid_loa';
 $route['head-office-accounting/noa-request-list/noa-billed'] = 'ho_accounting/Pages_controller/view_billed_noa';
@@ -539,6 +566,7 @@ $route['healthcare-coordinator/noa/billed/final_billing'] = 'healthcare_coordina
 $route['healthcare-coordinator/bill/noa-requests/for_payment'] = 'healthcare_coordinator/pages_controller/billing_statement';
 
 $route['healthcare-coordinator/setup/reset-mbl/(:any)'] = 'healthcare_coordinator/pages_controller/view_reset_mbl';
+$route['healthcare-coordinator/members/view/files/(:any)'] = 'healthcare_coordinator/pages_controller/view_member_files';
 
 
 // HealthCare Coordinator User Account Routes
@@ -729,6 +757,7 @@ $route['company-doctor/members/final-diagnosis/(:any)/(:any)'] = 'company_doctor
 $route['company-doctor/members/medical-abstract/(:any)/(:any)'] = 'company_doctor/pages_controller/view_medical_abstract';
 $route['company-doctor/members/take-home-meds/(:any)/(:any)'] = 'company_doctor/pages_controller/view_take_home_meds';
 $route['company-doctor/members/soa/(:any)/(:any)'] = 'company_doctor/pages_controller/view_billed_soa';
+$route['company-doctor/members/incident-spot-reports/(:any)/(:any)'] = 'company_doctor/pages_controller/view_incident_spot_reports';
 $route['company-doctor/loa/requests-list/billed'] = 'company_doctor/pages_controller/view_billed_loa_list';
 $route['company-doctor/noa/requests-list/billed'] = 'company_doctor/pages_controller/view_billed_noa_list';
 $route['company-doctor/noa/requests-list/paid'] = 'company_doctor/pages_controller/view_paid_noa_list';
@@ -787,6 +816,7 @@ $route['super-admin/dashboard'] = 'super_admin/pages_controller';
 $route['super-admin/healthcare-providers'] = 'super_admin/pages_controller/view_healthcare_providers';
 $route['super-admin/members'] = 'super_admin/pages_controller/view_all_pending_members';
 $route['super-admin/members/approved'] = 'super_admin/pages_controller/view_all_approved_members';
+$route['super-admin/members/approved/healthcard-id'] = 'super_admin/pages_controller/view_all_done_healthcard_id';
 $route['super-admin/accounts'] = 'super_admin/pages_controller/view_all_accounts';
 $route['super-admin/accounts/register'] = 'super_admin/pages_controller/register_account_form';
 $route['super-admin/setup/healthcare-providers'] = 'super_admin/pages_controller/view_all_healthcare_providers';
@@ -805,6 +835,12 @@ $route['super-admin/noa/requests-list/approved'] = 'super_admin/pages_controller
 $route['super-admin/noa/requests-list/disapproved'] = 'super_admin/pages_controller/view_disapproved_noa_list';
 $route['super-admin/noa/requests-list/completed'] = 'super_admin/pages_controller/view_completed_noa_list';
 $route['super-admin/noa/request-noa'] = 'super_admin/pages_controller/request_noa_form';
+$route['super-admin/member/view/files/(:any)'] = 'super_admin/pages_controller/view_member_files';
+$route['super-admin/members/final-diagnosis/(:any)/(:any)'] = 'super_admin/pages_controller/view_diagnosis_files';
+$route['super-admin/members/medical-abstract/(:any)/(:any)'] = 'super_admin/pages_controller/view_medical_abstract';
+$route['super-admin/members/take-home-meds/(:any)/(:any)'] = 'super_admin/pages_controller/view_take_home_meds';
+$route['super-admin/members/soa/(:any)/(:any)'] = 'super_admin/pages_controller/view_billed_soa';
+$route['super-admin/members/incident-spot-reports/(:any)/(:any)'] = 'super_admin/pages_controller/view_incident_spot_reports';
 
 // Super Admin User Account Routes
 $route['super-admin/account-settings'] = 'super_admin/account_controller/account_settings';
@@ -819,8 +855,10 @@ $route['super-admin/members/pending/update/profile-picture'] = 'super_admin/appl
 // Super Admin Members Routes
 $route['super-admin/members/pending/fetch'] = 'super_admin/members_controller/fetch_all_pending_members';
 $route['super-admin/members/approved/fetch'] = 'super_admin/members_controller/fetch_all_approved_members';
+$route['super-admin/members/approved/healthcard-id/fetch'] = 'super_admin/members_controller/fetch_healthcard_id_members';
 $route['super-admin/members/view/(:any)'] = 'super_admin/members_controller/view_member_info';
 $route['super-admin/members/update/profile-picture'] = 'super_admin/members_controller/update_profile_pic';
+$route['super-admin/members/helthcard/view-id/(:any)'] = 'super_admin/members_controller/view_healthcard_id';
 // $route['super-admin/members/user-account/create'] = 'super_admin/members_controller/create_member_user_account';
 $route['super-admin/member/search'] = 'super_admin/search_controller/search_autocomplete';
 
@@ -922,6 +960,11 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 		$route['healthcare-coordinator/loa/requests-list/approved'] = 'healthcare_coordinator/pages_controller/view_approved_loa_list';
 		$route['healthcare-coordinator/loa/requests-list/disapproved'] = 'healthcare_coordinator/pages_controller/view_disapproved_loa_list';
 		$route['healthcare-coordinator/loa/requests-list/completed'] = 'healthcare_coordinator/pages_controller/view_completed_loa_list';
+		$route['healthcare-coordinator/members/final-diagnosis/(:any)/(:any)'] = 'healthcare_coordinator/pages_controller/view_final_diagnosis';
+		$route['healthcare-coordinator/members/medical-abstract/(:any)/(:any)'] = 'healthcare_coordinator/pages_controller/view_medical_abstract';
+		$route['healthcare-coordinator/members/take-home-meds/(:any)/(:any)'] = 'healthcare_coordinator/pages_controller/view_take_home_meds';
+		$route['healthcare-coordinator/members/soa/(:any)/(:any)'] = 'healthcare_coordinator/pages_controller/view_billed_soa';
+		$route['healthcare-coordinator/members/incident-spot-reports/(:any)/(:any)'] = 'healthcare_coordinator/pages_controller/view_incident_spot_reports';
 	//End
 
 	//Final Billing
@@ -959,78 +1002,42 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 //END
 //=============================================================================================
 
+// IAD=====================================================================================================
+$route['head-office-iad/dashboard'] = 'ho_iad/pages_controller';
+$route['head-office-iad/biling/audit'] = 'ho_iad/pages_controller/view_billing_list';
+$route['head-office-iad/biling/for-audit-list/(:any)'] = 'ho_iad/pages_controller/view_for_audit';
+$route['head-office-iad/biling/audited'] = 'ho_iad/pages_controller/view_audited';
+$route['head-office-iad/biling/audited-list/(:any)'] = 'ho_iad/pages_controller/view_audited_list';
+$route['head-office-iad/biling/paid'] = 'ho_iad/pages_controller/view_paid_bill';
+$route['head-office-iad/biling/paid-list/(:any)'] = 'ho_iad/pages_controller/view_paid_list';
 
-//=============================================================================================
-//IAD
-//=============================================================================================
-	$route['head-office-iad/dashboard'] = 'ho_iad/pages_controller';
-	//Summary of Billing
-	$route['head-office-iad/transaction/search'] = 'ho_iad/transaction_controller/search';
-	$route['head-office-iad/transaction/search_by_id']  = 'ho_iad/transaction_controller/search_by_id';
-	$route['head-office-iad/transaction/search_by_healthcard']  = 'ho_iad/transaction_controller/search_by_healthcard';
-	$route['head-office-iad/transaction/search_by_name'] = 'ho_iad/transaction_controller/search_by_name';
-	$route['head-office-iad/transaction/(:any)/view_receipt/(:any)'] = 'ho_iad/transaction_controller/view_receipt';
-	//end
-
-	//Payment Details
-	$route['head-office-iad/transaction/payment-details/(:any)'] = 'ho_iad/transaction_controller/view_payment_details';
-	//end
-
-	//Account Setting
-	$route['head-office-iad/transaction/account_setting'] = 'ho_iad/transaction_controller/account_settings';
-	$route['head-office-iad/transaction/update_password'] = 'ho_iad/transaction_controller/update_password';
-	$route['head-office-iad/transaction/update_username'] = 'ho_iad/transaction_controller/update_username';
-	//end
-
-	//Members
-	$route['head-office-iad/transaction/members'] = 'ho_iad/transaction_controller/members';
-	$route['head-office-iad/transaction/fetch_all_members'] = 'ho_iad/transaction_controller/fetch_all_members';
-	$route['head-office-iad/transaction/view_information/(:any)'] = 'ho_iad/transaction_controller/view_information';
-	//end
-//=============================================================================================
-//END
-//=============================================================================================
-
-
-
-
-
-
-
-//IAD=====================================================================================================
-// $route['head-office-iad/dashboard'] = 'ho_iad/pages_controller';
-// $route['head-office-iad/biling/audit'] = 'ho_iad/pages_controller/view_billing_list';
-// $route['head-office-iad/biling/for-audit-list/(:any)'] = 'ho_iad/pages_controller/view_for_audit';
-// $route['head-office-iad/biling/audited'] = 'ho_iad/pages_controller/view_audited';
-// $route['head-office-iad/biling/audited-list/(:any)'] = 'ho_iad/pages_controller/view_audited_list';
-
-//Summary of Billing
-// $route['head-office-iad/transaction/search'] = 'ho_iad/transaction_controller/search';
-// $route['head-office-iad/transaction/search_by_id']  = 'ho_iad/transaction_controller/search_by_id';
-// $route['head-office-iad/transaction/search_by_healthcard']  = 'ho_iad/transaction_controller/search_by_healthcard';
-// $route['head-office-iad/transaction/search_by_name'] = 'ho_iad/transaction_controller/search_by_name';
-// $route['head-office-iad/transaction/(:any)/view_receipt/(:any)'] = 'ho_iad/transaction_controller/view_receipt';
-// $route['head-office-iad/biling/for-audit/fetch'] = 'ho_iad/transaction_controller/fetch_for_payment_bill';
-// $route['head-office-iad/biling/audit/fetch'] = 'ho_iad/transaction_controller/fetch_payment_bill';
-// $route['head-office-iad/biling/submit-audited'] = 'ho_iad/transaction_controller/submit_audited';
-// $route['head-office-iad/biling/audited/fetch'] = 'ho_iad/transaction_controller/fetch_audited_bill';
-// //end
-//Payment Details
-// $route['head-office-iad/transaction/payment-details/(:any)'] = 'ho_iad/transaction_controller/view_payment_details';
-// $route['head-office-iad/transaction/view_pd/(:any)'] = 'ho_iad/transaction_controller/view_pd';
+// Summary of Billing
+$route['head-office-iad/transaction/search'] = 'ho_iad/transaction_controller/search';
+$route['head-office-iad/transaction/search_by_id']  = 'ho_iad/transaction_controller/search_by_id';
+$route['head-office-iad/transaction/search_by_healthcard']  = 'ho_iad/transaction_controller/search_by_healthcard';
+$route['head-office-iad/transaction/search_by_name'] = 'ho_iad/transaction_controller/search_by_name';
+$route['head-office-iad/transaction/(:any)/view_receipt/(:any)'] = 'ho_iad/transaction_controller/view_receipt';
+$route['head-office-iad/biling/for-audit/fetch'] = 'ho_iad/transaction_controller/fetch_for_payment_bill';
+$route['head-office-iad/biling/audit/fetch'] = 'ho_iad/transaction_controller/fetch_payment_bill';
+$route['head-office-iad/biling/submit-audited'] = 'ho_iad/transaction_controller/submit_audited';
+$route['head-office-iad/biling/audited/fetch'] = 'ho_iad/transaction_controller/fetch_audited_bill';
+$route['head-office-iad/biling/paid/fetch'] = 'ho_iad/transaction_controller/fetch_paid_bill';
 //end
-//Account Setting
-// $route['head-office-iad/transaction/account_setting'] = 'ho_iad/transaction_controller/account_settings';
-// $route['head-office-iad/transaction/update_password'] = 'ho_iad/transaction_controller/update_password';
-// $route['head-office-iad/transaction/update_username'] = 'ho_iad/transaction_controller/update_username';
-//end
-//Members
-// $route['head-office-iad/transaction/members'] = 'ho_iad/transaction_controller/members';
-// $route['head-office-iad/transaction/fetch_all_members'] = 'ho_iad/transaction_controller/fetch_all_members';
-// $route['head-office-iad/transaction/view_information/(:any)'] = 'ho_iad/transaction_controller/view_information';
-//end
-//IAD======================================================================================================
-
+// Payment Details
+$route['head-office-iad/transaction/payment-details/(:any)'] = 'ho_iad/transaction_controller/view_payment_details';
+$route['head-office-iad/transaction/view_pd/(:any)'] = 'ho_iad/transaction_controller/view_pd';
+// end
+// Account Setting
+$route['head-office-iad/transaction/account_setting'] = 'ho_iad/transaction_controller/account_settings';
+$route['head-office-iad/transaction/update_password'] = 'ho_iad/transaction_controller/update_password';
+$route['head-office-iad/transaction/update_username'] = 'ho_iad/transaction_controller/update_username';
+// end
+// Members
+$route['head-office-iad/transaction/members'] = 'ho_iad/transaction_controller/members';
+$route['head-office-iad/transaction/fetch_all_members'] = 'ho_iad/transaction_controller/fetch_all_members';
+$route['head-office-iad/transaction/view_information/(:any)'] = 'ho_iad/transaction_controller/view_information';
+// end
+// IAD======================================================================================================
 // $route['head-office-accounting/billing-list/closed/fetch'] = 'ho_accounting/main_controller/fetch_closed';
 // $route['head-office-accounting/billing-list/view-employee-payment/(:any)'] = 'ho_accounting/main_controller/view_employee_payment';
 
@@ -1046,6 +1053,8 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 // $route['qrcode/read'] = 'home/read_qrcode';
 // $route['codes/generate'] = 'qrcode_controller/generate';
 
+$route['get-hmo/details/cash_advance'] 	= 'Api_controller/get_hmo_CA_data';
+$route['get-hmo/details/update_apprv']	= 'Api_controller/update_incorp_apprv';
 
 $route['404_override'] = 'auth_controller/page_not_found';
 $route['translate_uri_dashes'] = FALSE;

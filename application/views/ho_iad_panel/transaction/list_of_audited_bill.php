@@ -38,6 +38,16 @@
                         <span class="hidden-xs-down fs-5 font-bold">Audited</span></a
                     >
                 </li>
+
+                <li class="nav-item">
+                    <a
+                        class="nav-link"
+                        href="<?php echo base_url(); ?>head-office-iad/biling/paid"
+                        role="tab"
+                        ><span class="hidden-sm-up"></span>
+                        <span class="hidden-xs-down fs-5 font-bold">Paid Bill</span></a
+                    >
+                </li>
             </ul>
         </div>
 

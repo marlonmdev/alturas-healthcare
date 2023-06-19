@@ -24,10 +24,10 @@ class Transaction_model extends CI_Model {
 		return $query->row();
 	}
 	function get_billing_status($emp_id, $hcare_provider_id){
-		$this->db->select('billing_id, billing_no, emp_id, billed_on,payment_no,loa_id,noa_id,status,total_bill')
-						->from('billing')
-						->where('emp_id', $emp_id)
-						->order_by('loa_id', 'DESC');
+		$this->db->select('*')
+				->from('billing')
+				->where('emp_id', $emp_id)
+				->order_by('loa_id', 'DESC');
 		return $this->db->get()->result_array();
 	}
   function get_member_noa($emp_id, $hcare_provider_id){
@@ -58,7 +58,7 @@ class Transaction_model extends CI_Model {
 	}
 
 	function get_billing_info($id){
-		$this->db->select('tbl_1.billing_id, tbl_1.billing_no, tbl_1.emp_id, tbl_1.hp_id, tbl_1.total_bill, tbl_1.total_deduction, tbl_1.net_bill, tbl_1.company_charge, tbl_1.personal_charge, tbl_1.before_remaining_bal, tbl_1.after_remaining_bal, tbl_1.billed_by, tbl_1.billed_on, tbl_2.health_card_no, tbl_2.first_name, tbl_2.middle_name, tbl_2.last_name, tbl_2.suffix, tbl_3.hp_name')
+		$this->db->select('*')
 					->from('billing as tbl_1')
 					->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
 					->join('healthcare_providers as tbl_3', 'tbl_1.hp_id = tbl_3.hp_id')
@@ -144,7 +144,7 @@ class Transaction_model extends CI_Model {
 		$this->db->group_by('emp_no');
 		$this->db->from($this->table1 . ' as tbl_1');
     $this->db->join($this->table2 . ' as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
-    $this->db->where('status', $approval_status);
+    $this->db->where('tbl_2.status', $approval_status);
     $i = 0;
 
     foreach ($this->column_search as $item) {
@@ -213,12 +213,13 @@ class Transaction_model extends CI_Model {
 	//END ====================================================================================
 
 
-	function get_billing_by_payment_no($payment_no){
-		$query = $this->db->get_where('billing', ['payment_no' => $payment_no]);
+	function get_billing_by_payment_no($billing_id){
+		$query = $this->db->get_where('billing', ['billing_id' => $billing_id]);
 		return $query->row_array();
 	}
-	function get_paymentdetails_by_payment_no($payment_no){
-		$query = $this->db->get_where('payment_details', ['payment_no' => $payment_no]);
+	
+	function get_paymentdetails($details_no){
+		$query = $this->db->get_where('payment_details', ['details_no' => $details_no]);
 		return $query->row_array();
 	}
 
@@ -238,6 +239,15 @@ class Transaction_model extends CI_Model {
 				->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
 				->join('monthly_payable as tbl_3', 'tbl_1.payment_no = tbl_3.payment_no')
 				->where('tbl_3.status', 'Audited');
+		return $this->db->get()->result_array();
+	}
+
+	function fetch_paid_bills() {
+		$this->db->select('*')
+				->from('billing as tbl_1')
+				->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
+				->join('monthly_payable as tbl_3', 'tbl_1.payment_no = tbl_3.payment_no')
+				->where('tbl_3.status', 'Paid');
 		return $this->db->get()->result_array();
 	}
 
@@ -294,6 +304,13 @@ class Transaction_model extends CI_Model {
 				->where('payment_no', $this->input->post('payment_no'));
 		return $this->db->update('monthly_payable');
 	}
+
+	function db_get_company_doctors() {
+		$this->db->select('*')
+				 ->from('company_doctors as t1')
+				 ->join('user_accounts as t2', 't1.doctor_id = t2.doctor_id');
+		return $this->db->get()->result_array();
+	  }
 
 
     

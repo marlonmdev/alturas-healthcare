@@ -6,7 +6,7 @@
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-              <li class="breadcrumb-item">Healthcare Coordinator</li>
+              <li class="breadcrumb-item">Head Office Accounting</li>
               <li class="breadcrumb-item active" aria-current="page">For Payment Billing</li>
             </ol>
           </nav>
@@ -86,6 +86,7 @@
     </div>
     <?php include 'payment_details_modal.php'; ?>
   </div>
+  <?php include 'view_check_voucher.php';?>
 </div>
 <script>
  function redirectPage(route, seconds){
@@ -300,7 +301,23 @@
         }
 
     });
-    
-
   }
+
+  let pdfinput = "";
+    const  previewPdfFile = (pdf_input) => {
+        pdfinput = pdf_input;
+        let pdfFileInput = document.getElementById(pdf_input);
+        let pdfFile = pdfFileInput.files[0];
+        let reader = new FileReader();
+        if(pdfFile){
+            $('#viewCVModal').modal('show');
+            reader.onload = function(event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-cv-viewer');
+            iframe.src = dataURL;
+        };
+            reader.readAsDataURL(pdfFile);
+        }
+
+    };
 </script>

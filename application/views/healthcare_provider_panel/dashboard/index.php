@@ -78,9 +78,7 @@
             </div>
            
               <?php include "search_member_form.php"; ?>
-              <div id="searchedMemberContainer">
-                <?php include "searched_member_profile.php"; ?>
-              </div>
+              <?php include "searched_member_profile.php"; ?>
               <?php include 'view_loa_history.php'; ?>
               <?php include 'view_noa_history.php'; ?>
               <?php include 'view_pdf_bill_modal.php'; ?>
@@ -120,9 +118,9 @@
             $("#search-by-name").addClass('d-none');
             $("#search-by-healthcard").removeClass('d-none is-invalid is-valid');
             $("#healthcard-no").focus();
+
         $("#search-select").on('change', function(){
-          document.getElementById("searchedMemberContainer").innerHTML = "";
-        
+          $("#mbr-profile-div").addClass('d-none');
           if($(this).val() == "healthcard"){
             $("#search-form-1")[0].reset();
             $("#search-by-name").addClass('d-none');
@@ -131,9 +129,6 @@
             $("#search-form-2")[0].reset();
             $("#search-by-healthcard").addClass('d-none');
             $("#search-by-name").removeClass('d-none is-invalid is-valid');
-          }else{
-            $("#search-by-healthcard").addClass('d-none');
-            $("#search-by-name").addClass('d-none');
           }
         });
 
@@ -284,9 +279,12 @@
           });
         });
 
+          
           const get_loa = () =>{
           const emp_id = $("#s-emp-id").val();
           const hp_id = document.querySelector('#hp-id').value;
+          var loa_table = $('#loa_table').DataTable();
+          loa_table.destroy();  
           $('#loa_table').DataTable({ 
               lengthMenu: [5, 10, 25, 50],
               processing: true,
@@ -309,6 +307,8 @@
           const get_noa = () =>{
             const emp_id = $("#s-emp-id").val();
             const hp_id = document.querySelector('#hp-id').value;
+            var noa_table = $('#noa_table').DataTable();
+            noa_table.destroy();  
             $('#noa_table').DataTable({ 
             lengthMenu: [5, 10, 25, 50],
             processing: true,

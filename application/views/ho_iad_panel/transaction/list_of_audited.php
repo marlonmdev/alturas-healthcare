@@ -25,7 +25,7 @@
     <div class="row">
       <div class="col-6 pb-2">
           <div class="input-group">
-              <a href="<?php echo base_url(); ?>head-office-iad/biling/audited" type="submit" class="btn btn-info" data-bs-toggle="tooltip" title="Click to Go Back">
+              <a href="JavaScript:void(0)" onclick="goback()" class="btn btn-info" data-bs-toggle="tooltip" title="Click to Go Back">
                   <strong class="ls-2" style="vertical-align:middle">
                       <i class="mdi mdi-arrow-left-bold"></i> Go Back
                   </strong>
@@ -188,6 +188,10 @@
         xhr.send();
 
         return xhr.status == "200" ? true: false;
+    }
+
+    const goback = () => {
+      window.history.back();
     }
 
 

@@ -17,9 +17,16 @@
                                 <div class="col-3 pt-1">
                                     <span class="fw-bold fs-5">Personal Charge : </span>
                                 </div>
-                                
                                 <div class="col-4">
                                     <input class="form-control fs-5 fw-bold" id="tag-personal-charge" readonly >
+                                </div><br>
+                            </div>
+                            <div class="row pt-3 pb-3" style="justify-content:center">
+                                <div class="col-3 pt-1">
+                                    <span class="fw-bold fs-5">Amount to Request : </span>
+                                </div>
+                                <div class="col-4">
+                                    <input class="form-control fs-5 fw-bold" id="tag-request-amount" >
                                 </div>
                             </div>
                         </div>

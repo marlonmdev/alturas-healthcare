@@ -234,4 +234,16 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('company_doctor_panel/members/show_billed_soa');
 		$this->load->view('templates/footer');
 	}
+
+	function view_incident_spot_reports() {
+		$data['emp_id'] = $emp_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$data['member_id'] = $member_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['file_loa'] = $this->members_model->get_employee_files_loa($emp_id);
+		$data['file_noa'] = $this->members_model->get_employee_files_noa($emp_id);
+		$data['member'] = $this->members_model->db_get_member_details($member_id);
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('company_doctor_panel/members/show_incident_spot_reports');
+		$this->load->view('templates/footer');
+	}
 }

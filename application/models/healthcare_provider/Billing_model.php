@@ -369,4 +369,9 @@ class Billing_model extends CI_Model {
         return $this->db->insert('soa_textfile', $data);
     }
 
+    function _set_loa_status_completed($loa_id) {
+        $this->db->set('completed', '0')
+                ->where('loa_id', $loa_id);
+        return $this->db->update('loa_requests');
+      }
 }

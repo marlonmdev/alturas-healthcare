@@ -1111,7 +1111,7 @@ class Billing_controller extends CI_Controller {
                         'remaining_balance'      => $result_charge['remaining_balance']
                     ];
             $personal_charge = floatval(str_replace(',', '', $result_charge['personal_charge']));
-
+            
             
                     // var_dump("personal",$check_bill);
                     // var_dump("billing no",$billing_no);
@@ -1146,6 +1146,7 @@ class Billing_controller extends CI_Controller {
                 }
             }else{
                 $inserted = $this->billing_model->insert_billing($data);
+                $inserted = $this->billing_model->_set_loa_status_completed($loa_id);
                 if(!$inserted){
                     $response = [
                        'status'  => 'save-error',

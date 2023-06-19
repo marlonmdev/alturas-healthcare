@@ -2,7 +2,7 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <a href="#" onclick="goBack()" type="submit" class="btn btn-outline-dark" data-bs-toggle="tooltip" title="Click to Go Back">
+        <a href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/billed" type="submit" class="btn btn-outline-dark" data-bs-toggle="tooltip" title="Click to Go Back">
           <strong class="ls-2" style="vertical-align:middle"><i class="mdi mdi-arrow-left-bold"></i> Back</strong>
         </a>
         <div class="ms-auto text-end">
@@ -24,7 +24,7 @@
       </div>
     <hr style="color:red">
                 
-    <form id="performedLoaInfo" method="post" action="<?php echo base_url();?>healthcare-coordinator/loa-requests/approved/performed-loa-info/submit" class="needs-validation" novalidate>
+    <form id="performedLoaInfo" method="post" action="<?php echo base_url();?>healthcare-coordinator/loa/billed/diagnostic_schedule_submit" class="needs-validation" novalidate>
       <div class="row">
         <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
         <input type="hidden" name="hp-id" value="<?php echo $hp_id ?>">
@@ -174,7 +174,7 @@
                             });
                             // $('#performedLoaInfo')[0].reset();
                             setTimeout(function () {
-                                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed';
+                                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/billed';
                             }, 2600);
                             
                         break;
@@ -189,7 +189,7 @@
                             });
                             // $('#performedLoaConsultInfo')[0].reset();
                             setTimeout(function () {
-                                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed';
+                                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/billed';
                             }, 2600);
                             
                         break;
@@ -503,7 +503,8 @@
             }
         }
     }
-    const goBack = () => {
-      window.history.back();
-    }
 </script>
+
+
+
+

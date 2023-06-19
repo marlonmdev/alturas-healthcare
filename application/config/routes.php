@@ -927,10 +927,16 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 	//Final Billing
 	$route['healthcare-coordinator/loa/billed/datatable_final_billing'] = 'healthcare_coordinator/loa_controller/datatable_final_billing';
 	$route['healthcare-coordinator/loa/billed/submit_final_billing'] = 'healthcare_coordinator/loa_controller/submit_final_billing';
+
+	$route['healthcare-coordinator/loa/billed/consultation_schedule/(:any)'] = 'healthcare_coordinator/loa_controller/consultation_schedule';
+	$route['healthcare-coordinator/loa/billed/consultation_schedule_submit'] = 'healthcare_coordinator/loa_controller/consultation_schedule_submit';
 	$route['healthcare-coordinator/loa/billed/consultation_fees/(:any)'] = 'healthcare_coordinator/loa_controller/consultation_fees';
 	$route['healthcare-coordinator/loa/billed/update_consultation_fees'] = 'healthcare_coordinator/loa_controller/update_consultation_fees';
 	$route['healthcare-coordinator/loa/billed/consultation_fees1/(:any)'] = 'healthcare_coordinator/loa_controller/consultation_fees1';
 	$route['healthcare-coordinator/loa/billed/submit_consultation'] = 'healthcare_coordinator/loa_controller/submit_consultation';
+
+	$route['healthcare-coordinator/loa/billed/diagnostic_schedule/(:any)'] = 'healthcare_coordinator/loa_controller/diagnostic_schedule';
+	$route['healthcare-coordinator/loa/billed/diagnostic_schedule_submit'] = 'healthcare_coordinator/loa_controller/diagnostic_schedule_submit';
 	$route['healthcare-coordinator/loa/billed/diagnostic_fees/(:any)'] = 'healthcare_coordinator/loa_controller/diagnostic_fees';
 	$route['healthcare-coordinator/loa/billed/update_diagnostic_fees'] = 'healthcare_coordinator/loa_controller/update_diagnostic_fees';
 	$route['healthcare-coordinator/loa/billed/diagnostic_fees1/(:any)'] = 'healthcare_coordinator/loa_controller/diagnostic_fees1';

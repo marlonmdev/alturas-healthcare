@@ -8,7 +8,7 @@ class Noa_model extends CI_Model {
   var $table_2 = 'healthcare_providers';
   var $column_order = ['tbl_1.noa_no', 'tbl_1.first_name', 'tbl_1.admission_date', 'tbl_2.hp_name', 'tbl_1.request_date', null, null]; //set column field database for datatable orderable
   var $column_search = ['tbl_1.noa_no', 'tbl_1.emp_id', 'tbl_1.health_card_no', 'tbl_1.first_name', 'tbl_1.middle_name', 'tbl_1.last_name', 'tbl_1.suffix', 'tbl_1.admission_date', 'tbl_2.hp_name', 'tbl_1.request_date', 'CONCAT(tbl_1.first_name, " ",tbl_1.last_name)',   'CONCAT(tbl_1.first_name, " ",tbl_1.last_name, " ", tbl_1.suffix)', 'CONCAT(tbl_1.first_name, " ",tbl_1.middle_name, " ",tbl_1.last_name)', 'CONCAT(tbl_1.first_name, " ",tbl_1.middle_name, " ",tbl_1.last_name, " ", tbl_1.suffix)']; //set column field database for datatable searchable 
-  var $order = ['tbl_1.noa_id' => 'desc']; // default order 
+  var $order = ['tbl_1.noa_id' => 'asc']; // default order 
 
   private function _get_datatables_query($status) {
     $this->db->from($this->table_1 . ' as tbl_1');
@@ -315,30 +315,58 @@ class Noa_model extends CI_Model {
     $this->db->from($this->table1_final . ' as tbl_1');
     $this->db->join($this->table2_final . ' as tbl_2', 'tbl_1.noa_id = tbl_2.noa_id', 'left');
     $this->db->join($this->table3_final . ' as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id', 'left');
-    $this->db->where('tbl_1.status','Approved');
-    $this->db->or_where('tbl_1.status','Billed');
+    // $this->db->where('tbl_1.status','Approved');
+    // $this->db->or_where('tbl_1.status','Billed');
+    $this->db->where_in('tbl_1.status', ['Approved', 'Billed']);
 
-    $i = 0;
-    if($this->input->post('filter')){
-      $this->db->like('tbl_2.hp_id', $this->input->post('filter'));
+    // $i = 0;
+    // if($this->input->post('filter')){
+    //   $this->db->like('tbl_2.hp_id', $this->input->post('filter'));
+    // }
+
+    // if ($this->input->post('startDate')) {
+    //   $startDate = date('Y-m-d', strtotime($this->input->post('startDate')));
+    //   $this->db->where('tbl_2.request_date >=', $startDate);
+    // }
+
+    // if ($this->input->post('endDate')){
+    //   $endDate = date('Y-m-d', strtotime($this->input->post('endDate')));
+    //   $this->db->where('tbl_2.request_date <=', $endDate);
+    // }
+
+    $filter = $this->input->post('filter');
+    if (!empty($filter)) {
+      $this->db->like('tbl_1.hospital_id', $filter);
     }
 
-    if ($this->input->post('startDate')) {
-      $startDate = date('Y-m-d', strtotime($this->input->post('startDate')));
-      $this->db->where('tbl_2.request_date >=', $startDate);
+    $startDate = $this->input->post('startDate');
+    if (!empty($startDate)) {
+        $startDate = date('Y-m-d', strtotime($startDate));
+        $this->db->where('tbl_1.request_date >=', $startDate);
     }
 
-    if ($this->input->post('endDate')){
-      $endDate = date('Y-m-d', strtotime($this->input->post('endDate')));
-      $this->db->where('tbl_2.request_date <=', $endDate);
+    $endDate = $this->input->post('endDate');
+    if (!empty($endDate)) {
+        $endDate = date('Y-m-d', strtotime($endDate));
+        $this->db->where('tbl_1.request_date <=', $endDate);
     }
   }
 
  
   function get_final_datatables() {
-    $this->_get_final_datatables_query();
-    if ($_POST['length'] != -1)
-    $this->db->limit($_POST['length'], $_POST['start']);
+    // $this->_get_final_datatables_query();
+    // if ($_POST['length'] != -1)
+    // $this->db->limit($_POST['length'], $_POST['start']);
+    // $query = $this->db->get();
+    // return $query->result_array();
+     $this->_get_final_datatables_query();
+    $length = $this->input->post('length');
+    $start = $this->input->post('start');
+
+    if ($length != -1) {
+        $this->db->limit($length, $start);
+    }
+
     $query = $this->db->get();
     return $query->result_array();
   }

@@ -2,12 +2,12 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">CHECKING OF BILLING</h4>
+        <!-- <h4 class="page-title ls-2">CHECKING OF BILLING</h4> -->
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
-              <li class="breadcrumb-item active" aria-current="page">Matching</li>
+              <li class="breadcrumb-item active" aria-current="page">Checking</li>
             </ol>
           </nav>
         </div>
@@ -202,7 +202,58 @@
     </div>
   </div>
 </div>
+<!-- End -->
 
+<!-- Guarantee Letter -->
+<div class="modal fade pt-4" id="GuaranteeLetter" tabindex="-1" data-bs-backdrop="static">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title ls-2">UPLOAD GUARANTEE LETTER</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body">
+        <form method="post" action="<?= base_url() ?>healthcare-coordinator/members/approved/insert-hc-id" id="insertScannedIdForm" enctype="multipart/form-data">
+          <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
+          <input type="hidden" name="emp-id" id="emp-id">
+                        
+          <div class="col-lg-8 pt-1">
+            <input type="hidden" class="form-control text-danger fs-5 fw-bold" name="emp-name" id="emp-name" placeholder="Employee Name" readonly>
+          </div>
+                        
+          <div class="row pt-5">
+            <div class="col-lg-5 offset-1">
+              <div class="form-group">
+                <label for="letter">Upload File:</label>
+                <input type="file" class="form-control-file dropify" name="letter" id="letter" accept=".jpg, .jpeg, .png, .gif, .pdf" data-max-file-size="5M" onchange="showPreview(this)">
+              </div>
+              <span id="front-id-error" class="text-danger"></span>
+            </div>
+          </div><br>
+          
+          <div class="row pt-3">
+            <div class="col-lg-5 offset-1">
+              <div id="preview" style="display: none;">
+                <h6>Preview:</h6>
+                <div id="image-preview" class="mb-3"></div>
+                <p id="pdf-preview" class="mb-0"></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="row pt-3">
+            <div class="col-sm-12 mb-sm-0 d-flex justify-content-end">
+              <button type="submit" class="btn btn-primary me-2"><i class="mdi mdi-content-save"></i> UPLOAD</button>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="mdi mdi-close-box"></i> CANCEL</button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- End -->
 
   
@@ -241,7 +292,7 @@
     });
 
     billedTable.on('draw.dt', function() {
-      let columnIdx = 7;
+      let columnIdx = 9;
       let intValue = 0;
       let count =0;
       let rows = billedTable.rows().nodes();
@@ -275,6 +326,7 @@
         $('#proceed-btn').prop('disabled', true);
       }
     });
+
 
     $('#billed-hospital-filter').change(function(){
       billedTable.draw();
@@ -633,5 +685,64 @@
     $("#backDateModal").modal("show");
     $('#bd-loa-id').val(loa_id);
     $('#bd-loa-no').html(loa_no);
+  }
+
+  function checkHospitalSelection() {
+    let selectedHospital = document.getElementById('billed-hospital-filter').value;
+    if (selectedHospital === '') {
+      console.log('Please select a hospital');
+      return;
+    }
+  }
+
+  function GuaranteeLetter(loa_id) {
+    $.ajax({
+      url: `${baseUrl}healthcare-coordinator/loa/pending/view/${loa_id}`,
+      type: "GET",
+      success: function(response) {
+        const res = JSON.parse(response);
+        const {
+          status,
+          token,
+        } = res;
+
+        $("#GuaranteeLetter").modal("show");
+
+
+      }
+    });
+  }
+
+
+  function showPreview(input) {
+    const preview = document.getElementById('preview');
+    const imagePreview = document.getElementById('image-preview');
+    const pdfPreview = document.getElementById('pdf-preview');
+
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function(e) {
+        if (file.type.startsWith('image')) {
+          // Display Image preview
+          const imageUrl=URL.createObjectURL(file);
+          imagePreview.innerHTML=`<a href="${imageUrl}" target="_blank">View Image</a>`;
+          imagePreview.style.display = 'block';
+          pdfPreview.style.display = 'none';
+        } else if (file.type === 'application/pdf') {
+          // Display PDF preview
+          const pdfUrl = URL.createObjectURL(file);
+          pdfPreview.innerHTML = `<a href="${pdfUrl}" target="_blank">View PDF</a>`;
+          pdfPreview.style.display = 'block';
+          imagePreview.style.display = 'none';
+        }
+      };
+
+      reader.readAsDataURL(file);
+      preview.style.display = 'block';
+    } else {
+      preview.style.display = 'none';
+    }
   }
 </script>

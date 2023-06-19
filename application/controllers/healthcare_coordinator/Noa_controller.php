@@ -541,7 +541,6 @@ class Noa_controller extends CI_Controller {
 			}else if($bill['month'] == '05'){
 				$month = 'May';
 			}else if($bill['month'] == '06'){
-				$row[] = $bill['hp_name'];
 				$month = 'June';
 			}else if($bill['month'] == '07'){
 				$month = 'July';

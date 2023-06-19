@@ -310,7 +310,7 @@ class Pages_controller extends CI_Controller {
 		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
 		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_coordinator_panel/loa/expired_loa_requests');
+		$this->load->view('healthcare_coordinator_panel/loa/loa_expired');
 		$this->load->view('templates/footer');
 	}
 
@@ -329,7 +329,7 @@ class Pages_controller extends CI_Controller {
 		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
 		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_coordinator_panel/loa/cancelled_loa_requests');
+		$this->load->view('healthcare_coordinator_panel/loa/loa_cancelled');
 		$this->load->view('templates/footer');
 	}
 
@@ -394,7 +394,7 @@ class Pages_controller extends CI_Controller {
 		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
 		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_coordinator_panel/loa/referred_loa_requests');
+		$this->load->view('healthcare_coordinator_panel/loa/loa_referral');
 		$this->load->view('templates/footer');
 	}
 

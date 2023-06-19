@@ -16,7 +16,7 @@
                   aria-expanded="false"
                   >
                   <i class="mdi mdi-book-open-page-variant"></i>
-                  <span class="hide-menu ls-1">Healthcare Policy</span>
+                  <span class="hide-menu ls-1">Terms And Conditions</span>
                 </a>
               </li>
 
@@ -30,6 +30,33 @@
                   <span class="hide-menu ls-1">Healthcare Providers</span>
                 </a>
               </li>
+
+              <!-- <li class="sidebar-item 
+              <?php echo $this->uri->segment(2) == 'requested-noa' ? 'selected' : ''; ?>
+              ">
+                <a
+                  class="sidebar-link has-arrow"
+                  href="javascript:void(0)"
+                  aria-expanded="false"
+                  >
+                  <i class="mdi mdi-file-chart"></i>
+                  <span class="hide-menu ls-1">Emergency NOA</span>
+                </a>
+                <ul aria-expanded="false" class="collapse first-level">
+                  <li class="sidebar-item">
+                    <a href="<?php echo base_url(); ?>member/request-noa" class="sidebar-link"
+                      ><i class="mdi mdi-note-plus"></i
+                      ><span class="hide-menu ls-1">Request Emergency NOA</span>
+                    </a>
+                  </li>
+                  <li class="sidebar-item">
+                    <a href="<?php echo base_url(); ?>member/requested-noa/pending" class="sidebar-link"
+                      ><i class="mdi mdi-note-outline"></i
+                      ><span class="hide-menu ls-1">Requested Emergency NOA</span>
+                    </a>
+                  </li>
+                </ul>
+              </li> -->
 
               <li class="sidebar-item 
               <?php echo $this->uri->segment(2) == 'requested-loa' ? 'selected' : ''; ?>

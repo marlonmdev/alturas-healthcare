@@ -1499,7 +1499,7 @@ class Billing_controller extends CI_Controller {
         $noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
         $billing_no = $this->input->post('billing-no', TRUE);
         $net_b = $this->input->post('initial-net-bill', TRUE);
-        $initial_date = $this->input->post('initial-date',TRUE);
+        // $initial_date = $this->input->post('initial-date',TRUE);
         $net_bill = floatval(str_replace(',', '', $net_b));
         $hospitalBillData = $_POST['hospital_bill_data'];
         
@@ -1510,14 +1510,15 @@ class Billing_controller extends CI_Controller {
         $config['encrypt_name'] = TRUE;
         $this->load->library('upload', $config);
         // var_dump("initial date", $initial_date);
-        if(empty($initial_date)){
-            $response = [
-                'status'  => 'save-error',
-                'message' => 'Invalid Date'
-            ];
+        // if(empty($initial_date)){
+        //     $response = [
+        //         'status'  => 'save-error',
+        //         'message' => 'Invalid Date'
+        //     ];
 
-        }
-        else if (!$this->upload->do_upload('pdf-file-initial')) {
+        // }
+        // else 
+        if (!$this->upload->do_upload('pdf-file-initial')) {
             $response = [
                 'status'  => 'save-error',
                 'message' => 'PDF Bill Upload Failed'
@@ -1544,7 +1545,7 @@ class Billing_controller extends CI_Controller {
                 'personal_charge'       => floatval(str_replace(',', '', $result_charge['personal_charge'])),
                 'pdf_bill'              => $pdf_file,
                 'uploaded_by'           => $this->session->userdata('fullname'),
-                'date_uploaded'         => $initial_date,
+                'date_uploaded'         => date('Y-m-d'),
                 'status'                => 'Initial',
             ];    
             
@@ -1834,6 +1835,41 @@ class Billing_controller extends CI_Controller {
 		];
 		echo json_encode($output);
 	}
+
+    function upload_final_soa(){
+
+        $this->security->get_csrf_hash();
+        $billing_no = $this->input->post('billing-no', TRUE);
+
+        $config['upload_path'] = './uploads/final_soa/';
+        $config['allowed_types'] = 'pdf';
+        $config['encrypt_name'] = TRUE;
+        $this->load->library('upload', $config);
+    
+        if (!$this->upload->do_upload('finalsoa')) {
+            $response = [
+                'status'  => 'save-error',
+                'message' => 'PDF Bill Upload Failed'
+            ];
+        } else {
+            $upload_data = $this->upload->data();
+            $pdf_file = $upload_data['file_name'];
+            $inserted = $this->billing_model->update_billing(['final_soa' => $pdf_file],$billing_no);
+    
+            if(!$inserted){
+                $response = [
+                   'status'  => 'save-error',
+                   'message' => 'Final SOA Upload Failed'
+                ];
+            }else{
+                $response = [
+                        'status'     => 'success',
+                        'message'    => 'Final SOA Uploaded Successfully'
+                    ];   
+            }
+        }
+        echo json_encode($response);
+    }
     
 }
  

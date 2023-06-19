@@ -3478,7 +3478,12 @@ class Loa_controller extends CI_Controller {
 				}else{
     			$billed_date = date("F d, Y", strtotime($bill['billed_on']));
 				}
-        $custom_status = '<span class="badge rounded-pill bg-success">' . $bill['tbl1_status'] . '</span>';
+				if($bill['tbl1_status'] !== 'Billed'){
+					$custom_status = '<span class="badge rounded-pill bg-warning">' . $bill['tbl1_status'] . '</span>';
+				}else{
+					$custom_status = '<span class="badge rounded-pill bg-success">' . $bill['tbl1_status'] . '</span>';
+				}
+        
         // $pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf fs-2 text-info"></i></a>';
         if (empty($bill['pdf_bill'])) {
     			$pdf_bill = 'SOA has not been uploaded yet';

@@ -453,7 +453,12 @@ class Noa_controller extends CI_Controller {
 				}else{
     			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i></a>';
 				}
-			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $bill['tbl1_status'] . '</span></div>';
+			if($bill['tbl1_status'] !== 'Billed'){
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $bill['tbl1_status'] . '</span></div>';
+			}else{
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $bill['tbl1_status'] . '</span></div>';
+			}
+			
 
 			$row[] = $bill['noa_no'];
 			$row[] = $fullname;

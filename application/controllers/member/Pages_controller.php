@@ -228,4 +228,62 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
+	// emergency loa 
+	function request_emergency_loa_form() {
+		$this->load->model('member/mbl_model');
+		$emp_id = $this->session->userdata('emp_id');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hospitals'] = $this->noa_model->db_get_all_hospitals();
+		$data['member'] = $this->loa_model->db_get_member_infos($emp_id);
+		$data['costtypes'] = $this->noa_model->db_get_all_cost_types();
+		$data['mbl'] = $this->mbl_model->get_member_mbl($emp_id);
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/emergency_loa/request_noa_form',$data);
+		$this->load->view('templates/footer');
+	}
+
+	function pending_requested_emergency_loa() {
+		$emp_id = $this->session->userdata('emp_id');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hospitals'] = $this->noa_model->db_get_all_hospitals();
+		$data['member'] = $this->loa_model->db_get_member_infos($emp_id);
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/emergency_loa/pending_noa');
+		$this->load->view('templates/footer');
+	}
+
+	function approved_requested_emergency_loa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/noa/approved_noa');
+		$this->load->view('templates/footer');
+	}
+
+	function disapproved_requested_emergency_loa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/noa/disapproved_noa');
+		$this->load->view('templates/footer');
+	}
+
+	function completed_requested_emergency_loa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/noa/completed_noa');
+		$this->load->view('templates/footer');
+	}
+
+	function view_billed_emergency_loa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/noa/billed_noa');
+		$this->load->view('templates/footer');
+	}
+
+	function view_paid_emergency_loa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/noa/paid_noa');
+		$this->load->view('templates/footer');
+	}
 }

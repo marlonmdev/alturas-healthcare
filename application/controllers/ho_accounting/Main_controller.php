@@ -2042,16 +2042,11 @@ class Main_controller extends CI_Controller {
 
 		$PDFdata .= '</table><br><br><br>';
 
-		$pdf->setPrintHeader(false);
+		$pdf->setPrintHeader(true);
 		$pdf->setTitle('Billing Report');
 		$pdf->setFont('times', '', 10);
 		$pdf->AddPage('L');
-		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-		$x = 10;
-		$y = 10;
-		$width = 100;
-		$height = 0;
-		// $pdf->Image($imagePath, $x, $y, $width, $height);
+		$pdf->SetHeaderData('assets/images/HC_logo.PNG', 32, '' . '', 'Cash With Order Monitoring Report');
 		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'C', true);
 		$pdf->lastPage();

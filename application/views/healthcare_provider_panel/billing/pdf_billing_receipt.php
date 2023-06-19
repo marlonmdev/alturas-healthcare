@@ -103,20 +103,8 @@
 
                     </div>
                   </div>
-
-                  <div class="container mt-4 mb-4">
-                    <div class="row">
-                      <div class="col-12 d-flex justify-content-center align-items-center">
-                        <button class="btn btn-outline-info btn-lg ls-1 me-3" onclick="saveAsImage()">
-                          <i class="mdi mdi-file-image"></i> Save as Image
-                        </button>
-                        <button class="btn btn-outline-danger btn-lg ls-1 me-2" onclick="printDiv('#printableDiv')">
-                          <i class="mdi mdi-printer"></i> Print Receipt
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
+                  
+                <br>
                 </div>
 
                 <div class="row">
@@ -129,6 +117,7 @@
 
             </div>
           </div>
+
       </div>
     </div>
 </div>

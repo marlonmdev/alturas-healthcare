@@ -169,7 +169,7 @@
             <input type="hidden" name="billing-no" value="<?= $billing_no ?>">
             <div class="row">
             <div class="col-lg-8"></div> <!-- Empty column to create space on the left side -->
-            <div class="col-lg-4">
+            <!-- <div class="col-lg-4">
                 <div class="input-group">
                     <div class="input-group-append">
                         <span class="input-group-text text-white bg-dark ls-1 ms-2" title="Initial bill As Of">
@@ -178,7 +178,7 @@
                     </div>
                     <input type="date" class="form-control" name="initial-date" id="initial-date" title="Initial bill As Of" onchange="validateDateRange()" placeholder="Billing Date"  required>
                 </div>
-            </div>
+            </div> -->
         </div>
 
             <div class="card">
@@ -402,6 +402,16 @@
             }   
         });
        
+        $('#viewPDFBillModal').on('hidden.bs.modal', function (e) {
+            is_valid_name = true;
+            is_valid_noa = true;
+            is_valid_netbill = true;
+            if(is_valid_name || is_valid_noa || is_valid_netbill){
+                window.location.reload();
+                // $('#pdfBillingForm')[0].reset();
+                // $('#initialpdfBillingForm')[0].reset();
+            }
+        });
         
         
         // $('#final_diagnosis').prop("hidden",true);
@@ -641,7 +651,7 @@
                                     // $('#upload-btn').prop('disabled',true);
                                     $.alert({
                                             title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
-                                            content: `<div style='font-size: 16px; color: #333;'>The uploaded PDF bill does not match the member's name. Please ensure that you have uploaded the correct PDF bill for your account.</div>`,
+                                            content: `<div style='font-size: 16px; color: #333;'>The uploaded PDF bill does not match the member's name. Please ensure that you have uploaded the correct PDF bill.</div>`,
                                             type: "red",
                                             buttons: {
                                             ok: {
@@ -682,12 +692,16 @@
                             const regex = /please pay for this amount\s*\.*\s*([\d,\.]+)/i;
                             const match = finalResult.match(regex);
                             console.log("match",match);
+
                             if (match) {
+                                is_valid_netbill = true;
                                 subtotalValue = parseFloat(match[1].replace(/,/g, ""));
                                 net_bill=subtotalValue;
+
                                 if(is_valid_name && is_valid_noa){
                                     $('#upload-btn').prop('disabled',false);
                                 }
+
                                 if(is_final){
                                     console.log("netbill",net_bill);
                                     console.log("mbl",mbl);
@@ -706,7 +720,7 @@
                                                 },
                                             });
                                         }, 1000); // Delay of 2000 milliseconds (2 seconds)
-                                }
+                                    }
                                 }else{
                                     document.getElementsByName("initial-net-bill")[0]   .value = match[1];
                                     //console.log('initil',match[1]);
@@ -714,7 +728,7 @@
                 
                             } else {
                                 console.log("please pay for this amount is not found");
-
+                                is_valid_netbill = false;
                                 $('#upload-btn').prop('disabled',true);
                                 setTimeout(function() {
                                             $.alert({

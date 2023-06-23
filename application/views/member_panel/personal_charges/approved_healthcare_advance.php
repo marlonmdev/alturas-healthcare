@@ -20,6 +20,7 @@
       <div class="col-lg-12">
 
         <ul class="nav nav-tabs mb-4" role="tablist">
+          
           <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url(); ?>member/personal-charges" role="tab">
               <span class="hidden-sm-up"></span>

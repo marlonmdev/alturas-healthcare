@@ -383,4 +383,31 @@ class Billing_model extends CI_Model {
                 ->where('loa_id', $loa_id);
         return $this->db->update('loa_requests');
       }
+
+    function db_get_max_billing_id() {
+        $this->db->select_max('billing_id');
+        $query = $this->db->get('billing');
+        return $query->row_array();
+    }
+
+    function check_billing_loa($loa_id){
+        $this->db->where('loa_id', $loa_id);
+        $count = $this->db->count_all_results('billing');
+        if($count!=0){
+            return true;
+        }else{
+            return false;
+        }
+        // return $query->num_rows();
+    }
+    function check_billing_noa($noa_id){
+        $this->db->where('noa_id', $noa_id);
+        $count = $this->db->count_all_results('billing');
+        if($count!=0){
+            return true;
+        }else{
+            return false;
+        }
+        // return $query->num_rows();
+    }
 }

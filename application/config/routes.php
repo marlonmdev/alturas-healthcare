@@ -66,6 +66,8 @@ $route['member/requested-noa/paid'] = 'member/pages_controller/view_paid_noa';
 $route['member/requested-emergency-loa/billed'] = 'member/pages_controller/view_billed_emergency_loa';
 $route['member/requested-emergency-loa/paid'] = 'member/pages_controller/view_paid_emergency_loa';
 $route['member/requested-loa/paid'] = 'member/pages_controller/view_paid_loa';
+$route['member/mbl-history/loa'] = 'member/pages_controller/loa_mbl_history';
+$route['member/mbl-history/noa'] = 'member/pages_controller/noa_mbl_history';
 
 // Member User Account Routes
 $route['member/account-settings'] = 'member/account_controller/account_settings';
@@ -134,6 +136,12 @@ $route['member/personal-charges/view/details/(:any)'] = 'member/pcharges_control
 $route['member/personal-charges/approved/fetch'] = 'member/pcharges_controller/fetch_approved_advances';
 $route['member/personal-charges/disapproved/fetch'] = 'member/pcharges_controller/fetch_disapproved_advances';
 
+// Member Mbl History
+$route['member/mbl-history/loa/fetch'] = 'member/mbl_history/fetch_loa_mbl_history';
+$route['member/mbl-history/noa/fetch'] = 'member/mbl_history/fetch_noa_mbl_history';
+$route['member/mbl-history/loa-noa/billed/fetch'] = 'member/mbl_history/fetch_loa_noa_mbl_history';
+$route['member/mbl-history/loa/(:any)'] = 'member/mbl_history/get_loa_history_info';
+$route['member/mbl-history/noa/(:any)'] = 'member/mbl_history/get_noa_history_info';
 // End of Member Routes
 //======================================================================================================
 // HC Front Desk

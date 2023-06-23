@@ -49,7 +49,6 @@ class Loa_model extends CI_Model{
         }
     }
 
-    
     function get_datatables($status, $hp_id) {
         $this->_get_datatables_query($status, $hp_id);
         if ($_POST['length'] != -1)
@@ -276,6 +275,14 @@ class Loa_model extends CI_Model{
                     ->where('status', $emp_id)
                     ->where('hcare_provider', $hp_id);
             return $this->db->count_all_results();
+        }
+
+        function get_loa_op_price($ctype_id) {
+            $this->db->select('op_price')
+                 ->from('cost_types')
+                 ->where('ctype_id', $ctype_id);
+            $query = $this->db->get();
+            return $query->row_array();
         }
     // End of server-side processing datatables
 

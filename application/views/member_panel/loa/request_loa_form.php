@@ -135,7 +135,7 @@
 
                 <div class="col-sm-3 mb-2">
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i>MBL Balance</label>
-                  <input type="number" class="form-control" name="remaining_mbl" id="remaining_mbl" value="<?= $mbl['remaining_balance'] ?>" disabled>
+                  <input type="text" class="form-control" name="remaining_mbl" id="remaining_mbl" value="<?= $mbl ?>" disabled>
                 </div>
                 
               </div>
@@ -249,8 +249,14 @@
   $(document).ready(function() {
 
     $("#remaining_mbl").css("border-color", "default");
-    if($('#remaining_mbl').val()==0){
+   
+    if( parseFloat($('#remaining_mbl').val().replace(',', ''))<1){
       $("#remaining_mbl").css("border-color", "red");
+      $("#submit").prop('disabled',true);
+      $("#healthcare-provider").prop('disabled',true);
+      $("#chief-complaint").prop('disabled',true);
+      $("#requesting-physician").prop('disabled',true);
+      $("#tags-input").prop('disabled',true);
     }
 
     $('#healthcare-provider').on('change', function(){

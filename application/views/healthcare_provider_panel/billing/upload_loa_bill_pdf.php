@@ -82,8 +82,18 @@
                         </div>
                     </div>
 
+                    <div class="col-lg-6">
+                                    <label class="fw-bold fs-5 ls-1" id="">
+                                        <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Itemized Billing 
+                                    </label>
+                                    <input type="file" class="form-control" name="itemize-pdf-file" id="itemize-pdf-file" accept="application/pdf" onchange="previewPdfFile()" required>
+                                    <div class="invalid-feedback fs-6">
+                                        PDF File is required
+                                    </div>
+                                </div>
+
             <div class="row">
-              <div class="d-flex justify-content-center align-items-center mt-2">
+              <div class="d-flex justify-content-center align-items-center mt-4">
                 <button type="submit" class="btn btn-info text-white btn-lg ls-2 me-3" id="upload-btn"><i class="mdi mdi-upload me-1"></i>UPLOAD</button>
                 <button type="button" class="btn btn-dark text-white btn-lg ls-2" id="clear-btn">CLEAR</button>
               </div>
@@ -114,6 +124,8 @@
   const form = document.querySelector('#pdfBillingForm');
   let hospital_charges ="";
   let attending_doctors ="";
+  let final_charges = {};
+  let json_final_charges = {};
   let is_valid_name = true;
   let is_valid_noa = true;
   let is_valid_netbill = true;
@@ -138,16 +150,17 @@
   
   $(document).ready(function(){
 
-    $('#viewPDFBillModal').on('hidden.bs.modal', function (e) {
-            is_valid_name = true;
-            is_valid_noa = true;
-            is_valid_netbill = true;
-            if(is_valid_name || is_valid_noa || is_valid_netbill){
-                window.location.reload();
-                // $('#pdfBillingForm')[0].reset();
-                // $('#initialpdfBillingForm')[0].reset();
-            }
-      });
+    // $('#viewPDFBillModal').on('hidden.bs.modal', function (e) {
+           
+    //         if(!is_valid_noa || !is_valid_netbill || !is_valid_name){
+    //             window.location.reload();
+    //             // $('#pdfBillingForm')[0].reset();
+    //             // $('#initialpdfBillingForm')[0].reset();
+    //         }
+    //         is_valid_name = true;
+    //         is_valid_noa = true;
+    //         is_valid_netbill = true;
+    //   });
 
     $('#pdfBillingForm').submit(function(event){
       event.preventDefault();
@@ -164,6 +177,7 @@
       // }
       formData.append('hospital_bill_data', hospital_charges);
       formData.append('attending_doctors', attending_doctors);
+      formData.append('json_final_charges', json_final_charges);
       $.ajax({
         type: 'POST',
         url: $(this).attr('action'),
@@ -249,7 +263,7 @@
                         console.log(error);
                         });
 
-                    promises.push(promise);
+                        promises.push(promise);
                     }
                     
                     Promise.all(promises)
@@ -265,10 +279,10 @@
                             return (result = result + '\n' + item.text.replace(pattern, ''));
                             }, '').trim();
 
-                            console.log(finalResult);
                             console.log("final result",finalResult);
+
                             const pattern = /attending doctor\(s\):\s(.*?)\sregistry date:/si;
-                            const patient_pattern = /patient name:\s(.*?)\admission no:/si;
+                            const patient_pattern = /patient name:\s(.*?)\admission no.:/si;
                             const doc_pattern = /hospital charges(.*?)please pay for this amount/si;
 
                             // const matches_1 = finalResult.match(pattern); 
@@ -282,12 +296,28 @@
                             
                             const matches_3 = finalResult.match(patient_pattern);
                             const result_3 = matches_3 ? matches_3[1] : null;
-
+                            console.log('final text',final_text(finalResult));
+                            get_all_services(final_text(finalResult));
+                            
+                            get_all_services(final_text(finalResult),'rooms','rooms');
+                            get_all_services(final_text(finalResult),'emergency room & e-cart','emergency_room_e_cart');
+                            get_all_services(final_text(finalResult),'central supply room','central_supply_room');
+                            get_all_services(final_text(finalResult),'admitting','admitting');
+                            get_all_services(final_text(finalResult),'floor iii north nursing unit & e-cart','floor_iii_north_nursing_unit_e_cart');
+                            get_all_services(final_text(finalResult),'laboratory','laboratory');
+                            get_all_services(final_text(finalResult),'pharmacy','pharmacy');
+                            json_final_charges = JSON.stringify(final_charges);
+                            console.log("data",final_charges);
+                            console.log("JSON",json_final_charges);
+                            get_medicine(final_text(finalResult));
+                            // final_text(finalResult);
+                            // get_rooms(finalResult);
+                            // get_emergency_rooms(finalResult);
                             console.log("doctors", attending_doctors);
                             console.log("hospital charges", hospital_charges);
 
                             if (patient_name.length) {
-                                console.log("member name", patient_name);
+                                console.log("patient name", result_3);
                                 const names = patient_name.toLowerCase().split(' ').filter(Boolean);
 
                                 let removedElement ="";
@@ -323,7 +353,7 @@
                             const invalid_loa = /admission no:/i;
                             if(finalResult.match(invalid_loa) && !finalResult.match(valid_loa)){
                               is_valid_noa = false;
-                              $('#upload-btn').prop('disabled',true);
+                              // $('#upload-btn').prop('disabled',true);
                               setTimeout(function() {
                                   $.alert({
                                                 title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>ERROR</h3>`,
@@ -333,7 +363,9 @@
                                                     ok: {
                                                         text: "OK",
                                                         btnClass: "btn-danger",
+                                                        // window.location.reload();
                                                     },
+                                                    
                                                 },
                                             });
                                         }, 1000); // Delay of 2000 milliseconds (2 seconds)
@@ -351,7 +383,7 @@
                               net_bill=subtotalValue;
                               document.getElementsByName("net-bill")[0].value = match[1];
 
-                              if(is_valid_name && is_valid_noa){
+                              if(is_valid_noa){
                                     $('#upload-btn').prop('disabled',false);
                                 }
 
@@ -366,6 +398,7 @@
                                                     ok: {
                                                         text: "OK",
                                                         btnClass: "btn-danger",
+                                                        // window.location.reload();
                                                     },
                                                 },
                                             });
@@ -373,9 +406,10 @@
                                 }
 
                             } else {
-                              is_valid_netbill = false;
+
+                            is_valid_netbill = false;
                             console.log("please pay for this amount is not found");
-                            $('#upload-btn').prop('disabled',true);
+                            // $('#upload-btn').prop('disabled',true);
                             $.alert({
                                     title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
                                     content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it appears that there was an issue with the uploaded PDF. Please review the PDF file and try again.</div>",
@@ -388,6 +422,7 @@
                                 },
                             });
                             }
+
                             console.log("netbill",net_bill);
                             console.log("mbl",mbl);
                         });
@@ -399,6 +434,126 @@
         if(this.files[0])
         reader.readAsArrayBuffer(this.files[0]);
       });
+
+      const get_deduction = (lines) => {
+        const regex = /philhealth benefits\s*\.*\s*([\d,\.]+)/i;
+        let include = false;
+                let include2 = true;
+
+                const liness = lines.split("\n");
+                const filteredLines = liness.filter((line) => {
+                    if (include) {
+                    return true;
+                    }
+                    if (/\btotal\b/i.test(line)) {
+                    include = true;
+                    }
+                    return false;
+                });
+
+                const result = filteredLines.join("\n");
+
+                if(result){
+                    const lin = result.split("\n");
+              
+                    const doctors = lin.filter(line => {
+
+                        if (include2) {
+                          
+                            if (/\bsubtotal\b/i.test(line)) {
+                                include2 = false;
+                                return false;
+                            }
+                            return true;
+
+                            }
+                            
+                            return false;
+                        });
+
+                        const doc = doctors.join("\n");
+                        
+                        const excludedTerms = ["gross", "discount", "vat", "professional fee"];
+
+                        const pattern = new RegExp("\\b(" + excludedTerms.join("|") + "|\\d{1,3}(?:,\\d{3})*(?:\\.\\d+)?)\\b", "gi");
+                        const excludedDoc = doc.replace(pattern, "");
+                        
+                        const pattern1 = /\n(\S+)/g;
+                        const modifiedDoc1 = excludedDoc.replace(pattern1, ' $1');
+
+                        const pattern2 = /^(.*\S)(\s*)$/gm;
+                        const modifiedDoc2 = modifiedDoc1.replace(pattern2, '$1;$2');
+                        
+                        return modifiedDoc2.replace(/\s+/g, ' ');
+                }
+
+      }
+
+      const get_medicine = (result) => {
+                    const line1 = result.split("\n"); // Split input into an array of lines
+                    const data1 = line1.map(line => line.split(/\s{3,}/)); 
+                    console.log(data1);
+                    let include = true;
+      
+                    const lin = result.split("\n");
+              
+                    const texts = lin.filter(line => {
+
+                        if (include) {
+
+                            if (/\btotal\b/i.test(line)) {
+                                return false;
+                            }
+                            return true;
+
+                            }
+
+                            return false;
+                        });
+
+                        const text = texts.join("\n");
+                        let pushedArrays = [];
+                        const liness = text.split("\n"); // Split input into an array of lines
+                        const data = liness.map(line => line.split(/\s{3,}/)); // Split each line into an array of values
+                        let x = 0;
+                        let = pushedarr = [];
+                        const outputArray = data.map((arr, index) => {
+                        const currentLength = arr.length;
+                        const nextLength = index + 1 < data.length ? data[index + 1].length : 0;
+
+                        if (index === 0) {
+                          pushedarr = arr;
+                          return arr;
+                        } else {
+
+                          let appendedArray = [];
+
+                          if(currentLength === 1) {
+                              pushedarr = data[index];
+                          }
+
+                          // console.log("push",pushedarr);
+
+                          if (currentLength === 5) {
+                            appendedArray = [pushedarr[0], ...arr];
+                            pushedarr = [pushedarr[0],data[index - 1][0]];
+                            // console.log("data index1",data[index - 1][0]);
+                            // console.log("appendedArray1",appendedArray);
+                          } else if (currentLength === 4) {
+                            appendedArray = [pushedarr[0],pushedarr[1], data[index - 1][1], ...arr];
+                            // console.log("data index2",data[index - 1][0], data[index - 1][1]);
+                            // console.log("appendedArray2",appendedArray);
+                          } else {
+                            appendedArray = arr;
+                          }
+                            return appendedArray;
+
+                        }
+                         
+                      });
+
+                        console.log("medicine",outputArray);
+      }
 
       const get_doctors = (lines) => {
                 let include = false;
@@ -421,14 +576,18 @@
                     const lin = result.split("\n");
               
                     const doctors = lin.filter(line => {
+
                         if (include2) {
+
                             if (/\bsubtotal\b/i.test(line)) {
                                 include2 = false;
                                 return false;
                             }
                             return true;
-                        }
-                        return false;
+
+                            }
+                            
+                            return false;
                         });
 
                         const doc = doctors.join("\n");
@@ -447,80 +606,146 @@
                         return modifiedDoc2.replace(/\s+/g, ' ');;
                 }
 
-            };
-      // const viewPDFBill = (pdf_bill) => {
+            }
 
-      //               let pdfFile = `${baseUrl}uploads/pdf_bills/${pdf_bill}`;
-      //               let fileExists = checkFileExists(pdfFile);
-      //               if(fileExists){
-      //               let xhr = new XMLHttpRequest();
-      //               xhr.open('GET', pdfFile, true);
-      //               xhr.responseType = 'blob';
+      const get_all_services = (lines,pattern,obj_name) => {
 
-      //               xhr.onload = function(e) {
-      //                   if (this.status == 200) {
-      //                   let blob = this.response;
-      //                   let reader = new FileReader();
+                let include = false;
+                let include2 = true;
 
-      //                   reader.onload = function(event) {
-      //                       let dataURL = event.target.result;
-      //                       let iframe = document.querySelector('#view_pdf');
-      //                       iframe.src = dataURL;
-      //                   };
-      //                   reader.readAsDataURL(blob);
-      //                   }
-      //               };
-      //               xhr.send();
-      //               }
-      //           }
+                const liness = lines.split("\n");
+                const filteredLines = liness.filter((line) => {
+                    if (include) {
+                    return true;
+                    }
+                    if (new RegExp("\\b" + pattern + "\\b", "i").test(line)) {
+                    include = true;
+                    }
+                    return false;
+                });
 
-      //           const checkFileExists = (fileUrl) => {
-      //               let xhr = new XMLHttpRequest();
-      //               xhr.open('HEAD', fileUrl, false);
-      //               xhr.send();
+                const result = filteredLines.join("\n");
 
-      //               return xhr.status == "200" ? true: false;
-      //           }
+                if(result){
+                    const lin = result.split("\n");
+              
+                    const texts = lin.filter(line => {
 
-      //           if(re_upload){
-      //               viewPDFBill(prev_billing);
-      //               $('#pdf-file').val("asdfdfas");
-      //           }
+                        if (include2) {
+
+                            if (/\btotal\b/i.test(line)) {
+                                return false;
+                            }
+
+                            if (!/\s{3,}/i.test(line)) {
+                                include2 = false;
+                                return false;
+                            }
+                            
+                            return true;
+
+                            }
+                            
+                            return false;
+                        });
+
+                        const text = texts.join("\n");
+                        
+                        console.log("results",text);
+
+                        const liness = text.split("\n"); // Split input into an array of lines
+                        const data = liness.map(line => line.split(/\s{3,}/)); // Split each line into an array of values
+                        // const data = liness.map(line => line.split(/\s{3,}/)); // Split each line into an array of values
+
+                        // console.log("data", data); // Output the result
+                        // final_charges[obj_name] = data;
+                        final_charges[obj_name] = data;
+                      
+                }
+                     
+          }
+
+      const get_services = (lines,pattern,obj_name) => {
+
+                let include = false;
+                let include2 = true;
+
+                const liness = lines.split("\n");
+                const filteredLines = liness.filter((line) => {
+                    if (include) {
+                    return true;
+                    }
+                    if (new RegExp("\\b" + pattern + "\\b", "i").test(line)) {
+                    include = true;
+                    }
+                    return false;
+                });
+
+                const result = filteredLines.join("\n");
+
+                if(result){
+                    const lin = result.split("\n");
+              
+                    const texts = lin.filter(line => {
+
+                        if (include2) {
+
+                            if (/\btotal\b/i.test(line)) {
+                                include2 = false;
+                                return false;
+                            }
+                            return true;
+
+                            }
+                            
+                            return false;
+                        });
+
+                        const text = texts.join("\n");
+                        
+                        console.log("results",text);
+
+                        const liness = text.split("\n"); // Split input into an array of lines
+                        const data = liness.map(line => line.split(/\s{3,}/)); // Split each line into an array of values
+                        // console.log("data", data); // Output the result
+                        // final_charges[obj_name] = data;
+                        final_charges[obj_name] = data;
+                      
+                }
+            }
+
+      const final_text = (text) => {
+
+        var searchTerms = [
+          "ramiro community hospital",
+          "0139 c. gallares street",
+          "tel. no(s):",
+          "patient name:",
+          "hospitalization plan:",
+          "attending doctor(s):",
+          "patient address:",
+          "room no.:",
+          "date   description",
+          "labesores, marian cacayan",
+          "billing clerk",
+          // Add more search terms as needed
+        ];
+
+        var lines = text.split("\n");
+        var modifiedLines = lines.filter(function(line) {
+          for (var i = 0; i < searchTerms.length; i++) {
+            if (line.includes(searchTerms[i])) {
+                return false;
+              }
+            }
+            return true;
+          });
+
+        var modifiedText = modifiedLines.join("\n");
+        return modifiedText;
+        // console.log("final text",modifiedText);
+      }
+      
   });
-
-  // function hospital_bills(finalResult){
-  //       const pattern = /hospital charges(.*?)please pay for this amount/si;
-  //       const matches = finalResult.match(pattern);
-  //       const result = matches ? matches[1] : null;
-  //       console.log(result);
-
-        // let bills = [];
-        // const lines = result.split("\n");
-        // for (let i = 0; i < lines.length; i++) {
-        //   const line = lines[i];
-        //   const matches = line.match(/^(.*?)(\s+\S+(?=\s|$))?$/);
-
-        //   if (matches !== null) {
-        //     let beforeLastGroup = matches[1] || "";
-        //     let lastGroup = matches[2] ? matches[2].trim() : '0';
-
-        //     // let suffix = 1;
-        //     // while (bills.some(item => item.text === beforeLastGroup)) {
-        //     //   beforeLastGroup = `${beforeLastGroup}_${suffix}`;
-        //     //   suffix++;
-        //     // }
-        //     lastGroup = lastGroup.replace(/[^0-9.-]/g, '');
-        //     if (/\S/.test(beforeLastGroup)) {
-        //       console.log(`Line ${i + 1}:`);
-        //       console.log(`Before last group: ${beforeLastGroup}`);
-        //       console.log(`Last group: ${lastGroup}`);
-        //       console.log("");
-        //       bills.push({ beforeLastGroup,lastGroup});
-        //     }
-        //   }
-        // }
-        // console.log(bills);   
-        // hospital_charges = bills;  
-  // }
 
 </script>

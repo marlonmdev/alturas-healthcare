@@ -118,7 +118,7 @@
                         $('#amount-paid').val(parseFloat(amount_paid).toFixed(2));
                         $('#textbox').val(covered_loa_no);
                         $('#c-billed-date').val(billed_date);
-                        $('#supporting-docu').attr('src', check_image);
+                        // $('#supporting-docu').attr('src', check_image);
                     }
                 });
             }

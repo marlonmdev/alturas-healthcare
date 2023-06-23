@@ -17,13 +17,14 @@ class Pages_controller extends CI_Controller {
 
 	function index() {
 		$this->load->model('member/count_model');
-		$this->load->model('member/mbl_model');
+		$this->load->model('member/history_model');
 		$emp_id = $this->session->userdata('emp_id');
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['pending_loa_count'] = $this->count_model->count_all_pending_loa($emp_id);
 		$data['pending_noa_count'] = $this->count_model->count_all_pending_noa($emp_id);
 		$data['doctors'] = $this->get_model->db_get_company_doctors();
-		$data['mbl'] = $this->mbl_model->get_member_mbl($emp_id);
+		$data['mbl'] = $this->history_model->get_member_mbl($emp_id);
+		$data['emp_id'] = $emp_id;
 		$this->load->view('templates/header', $data);
 		$this->load->view('member_panel/dashboard/index');
 		$this->load->view('templates/footer');   
@@ -59,7 +60,29 @@ class Pages_controller extends CI_Controller {
 		$data['costtypes'] = $this->loa_model->db_get_cost_types();
 		$data['member'] = $this->loa_model->db_get_member_infos($emp_id);
 		$data['pending'] = $this->loa_model->db_get_status_pending($emp_id);
-		$data['mbl'] = $this->loa_model->db_get_mbl($emp_id);
+		$mbl = $this->loa_model->db_get_mbl($emp_id);
+		$get_pac_loa = $this->loa_model->get_pac_loa($emp_id);
+
+		$med_services = 0;
+    
+        foreach ($get_pac_loa as $loa) :
+			// var_dump("loa",$loa);
+			$exploded_med_services = explode(";", $loa['med_services']);
+			foreach ($exploded_med_services as $ctype_id) :
+				$cost_type = $this->loa_model->get_loa_op_price($ctype_id);
+					// var_dump(floatval($cost_type['op_price']));
+					//var_dump("ctype_id",$ctype_id);
+					if($loa['loa_request_type'] != 'Consultation'){
+						$med_services += floatval($cost_type['op_price']);
+					}else{
+						$med_services+= 500;
+					}
+			endforeach;
+
+        endforeach;
+
+		$data['mbl'] =  number_format((floatval($mbl['remaining_balance'])-floatval($med_services)),2);
+		//var_dump($data['mbl']);
 		$this->load->view('templates/header', $data);
 		$this->load->view('member_panel/loa/request_loa_form',$data);
 		$this->load->view('templates/footer');
@@ -67,13 +90,13 @@ class Pages_controller extends CI_Controller {
 
 
 	function request_noa_form() {
-		$this->load->model('member/mbl_model');
+		$this->load->model('member/history_model');
 		$emp_id = $this->session->userdata('emp_id');
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['hospitals'] = $this->noa_model->db_get_all_hospitals();
 		$data['member'] = $this->loa_model->db_get_member_infos($emp_id);
 		$data['costtypes'] = $this->noa_model->db_get_all_cost_types();
-		$data['mbl'] = $this->mbl_model->get_member_mbl($emp_id);
+		$data['mbl'] = $this->history_model->get_member_mbl($emp_id);
 		$this->load->view('templates/header', $data);
 		$this->load->view('member_panel/noa/request_noa_form',$data);
 		$this->load->view('templates/footer');
@@ -214,10 +237,10 @@ class Pages_controller extends CI_Controller {
 	function user_profile() {
 		$emp_id = $this->session->userdata('emp_id');
 		$this->load->model('member/account_model');
-		$this->load->model('member/mbl_model');
+		$this->load->model('member/history_model');
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['member'] = $member = $this->account_model->db_get_user_details($emp_id);
-		$data['mbl'] = $this->mbl_model->get_member_mbl($emp_id);
+		$data['mbl'] = $this->history_model->get_member_mbl($emp_id);
 
 		/* This is checking if the image file exists in the directory. */
 		$file_path = './uploads/profile_pics/' . $member['photo'];
@@ -228,15 +251,32 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
+	// mbl history
+	function loa_mbl_history() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['emp_id'] = $this->session->userdata('emp_id');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/mbl_history/loa_mbl_history');
+		$this->load->view('templates/footer');
+	}
+
+	function noa_mbl_history() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['emp_id'] = $this->session->userdata('emp_id');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/mbl_history/noa_mbl_history');
+		$this->load->view('templates/footer');
+	}
+
 	// emergency loa 
 	function request_emergency_loa_form() {
-		$this->load->model('member/mbl_model');
+		$this->load->model('member/history_model');
 		$emp_id = $this->session->userdata('emp_id');
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['hospitals'] = $this->noa_model->db_get_all_hospitals();
 		$data['member'] = $this->loa_model->db_get_member_infos($emp_id);
 		$data['costtypes'] = $this->noa_model->db_get_all_cost_types();
-		$data['mbl'] = $this->mbl_model->get_member_mbl($emp_id);
+		$data['mbl'] = $this->history_model->get_member_mbl($emp_id);
 		$this->load->view('templates/header', $data);
 		$this->load->view('member_panel/emergency_loa/request_noa_form',$data);
 		$this->load->view('templates/footer');

@@ -168,6 +168,13 @@ var searchTerms = [
   "date   description",
   "labesores, marian cacayan",
   "billing clerk",
+  // "emportant",
+  // "the statement of account",
+  // "hospital reserves",
+  // "incurred which",
+  // "(philhealth and/or hmo)",
+  // "hospital reserves",
+
   // Add more search terms as needed
 ];
 
@@ -177,6 +184,9 @@ var modifiedLines = lines.filter(function(line) {
     if (line.includes(searchTerms[i])) {
         return false;
       }
+    // if (line.includes(searchTerms[11])) {
+    //     break;
+    //   }
     }
     return true;
   });
@@ -188,55 +198,7 @@ return modifiedText;
   
 const get_deduction = (lines) => {
         const regex = /philhealth benefits\s*\.*\s*([\d,\.]+)/i;
-        let include = false;
-                let include2 = true;
-
-                const liness = lines.split("\n");
-                const filteredLines = liness.filter((line) => {
-                    if (include) {
-                    return true;
-                    }
-                    if (/\btotal\b/i.test(line)) {
-                    include = true;
-                    }
-                    return false;
-                });
-
-                const result = filteredLines.join("\n");
-
-                if(result){
-                    const lin = result.split("\n");
-              
-                    const doctors = lin.filter(line => {
-
-                        if (include2) {
-                          
-                            if (/\bsubtotal\b/i.test(line)) {
-                                include2 = false;
-                                return false;
-                            }
-                            return true;
-
-                            }
-                            
-                            return false;
-                        });
-
-                        const doc = doctors.join("\n");
-                        
-                        const excludedTerms = ["gross", "discount", "vat", "professional fee"];
-
-                        const pattern = new RegExp("\\b(" + excludedTerms.join("|") + "|\\d{1,3}(?:,\\d{3})*(?:\\.\\d+)?)\\b", "gi");
-                        const excludedDoc = doc.replace(pattern, "");
-                        
-                        const pattern1 = /\n(\S+)/g;
-                        const modifiedDoc1 = excludedDoc.replace(pattern1, ' $1');
-
-                        const pattern2 = /^(.*\S)(\s*)$/gm;
-                        const modifiedDoc2 = modifiedDoc1.replace(pattern2, '$1;$2');
-                        
-                        return modifiedDoc2.replace(/\s+/g, ' ');
-                }
+       
 
       }
 

@@ -1148,7 +1148,9 @@ class Billing_controller extends CI_Controller {
             $check_bill = $this->billing_model->check_re_upload_billing($billing_no);
             $get_prev_mbl_by_bill_no = $this->billing_model->get_billing($billing_no);
             $get_prev_mbl = $this->billing_model->get_prev_mbl($billing_no,$loa['emp_id']);
-            $result_charge = $this->get_personal_and_company_charge("loa",$loa_id,$net_bill,($check_bill !=0)? true : false, ($get_prev_mbl !=null)?$get_prev_mbl['after_remaining_bal']:$get_prev_mbl_by_bill_no['before_remaining_bal'],($old_billing !=null)? $old_billing['after_remaining_bal'] : null);
+            $result_charge = $this->get_personal_and_company_charge("loa",$loa_id,$net_bill,($check_bill !=0)? true : false,
+             ($get_prev_mbl !=null)?$get_prev_mbl['after_remaining_bal']:$get_prev_mbl_by_bill_no['before_remaining_bal'],
+             ($old_billing !=null)? $old_billing['after_remaining_bal'] : null);
             $existed = $this->billing_model->check_billing_loa($loa_id);
             $bill_no = $this->billing_model->get_billing_no($loa_id);
             $data = [

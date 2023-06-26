@@ -35,10 +35,6 @@
                   <td class="fw-bold ls-1" id="cancelled-by"></td>
                 </tr>
                 <tr>
-                  <td class="fw-bold ls-1">Reason for Cancellation :</td>
-                  <td class="fw-bold ls-1" id="cancellation-reason"></td>
-                </tr>
-                <tr>
                   <td class="fw-bold ls-1">Work Related :</td>
                   <td class="fw-bold ls-1" id="work_related"></td>
                 </tr>
@@ -138,6 +134,10 @@
                 <tr>
                   <td class="fw-bold ls-1">Attending Physician :</td>
                   <td class="fw-bold ls-1" id="attending-physician"></td>
+                </tr>
+                <tr>
+                  <td class="fw-bold ls-1">Reason for Cancellation :</td>
+                  <td class="fw-bold ls-1" id="cancellation-reason" style="color:red"></td>
                 </tr>
               </table>
             </div>

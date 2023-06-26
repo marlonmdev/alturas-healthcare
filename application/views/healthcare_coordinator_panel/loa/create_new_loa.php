@@ -64,7 +64,7 @@
           <label class="fw-bold fs-5">Previous LOA Number : </label>
           <input class="form-control fw-bold text-danger" type="text" name="loa-num" id="loa-num" value="<?php echo $loa_no ?>" readonly>
         </div> 
-      </div>
+      </div><hr>
 
       <label class="fw-bold fs-5">Previous Medical Service/s : </label>
       <?php foreach($resched_services as $med_services) : ?>
@@ -94,9 +94,19 @@
 
         <div class="col-lg-6 form-group row">
           <div class="col-lg-12 col-sm-12 mb-2 pt-2" id="med-services-div">
-            <label class="colored-label fs-5"> Select Medical Service/s : </label><br>
+            <label class="colored-label fs-5"></label><br>
             <div id="med-services-wrapper"></div>
             <em id="med-services-error" class="text-danger"></em>
+          </div>
+        </div>
+
+        <div class="form-group referralfile">
+          <div class="col-sm-12 mb-4">
+            <label class="colored-label mb-1"><i class="mdi mdi-asterisk text-danger"></i>Referral from Doctor</label>
+            <!-- <div id="rx-file-wrapper"> -->
+              <input type="file" class="dropify" name="referralfile" id="referralfile" data-height="300" data-max-file-size="5M" accept=".jpg, .jpeg, .png, .pdf">
+            <!-- </div> -->
+            <em id="rx-file-error" class="text-danger"></em>
           </div>
         </div>
       </div>
@@ -118,24 +128,32 @@
 
 <script>
   const baseUrl = "<?= base_url() ?>";
-
   $(document).ready(function() {
 
     $('#coordinatorLoaRequestForm').submit(function(event) {
       event.preventDefault();
-      let $data = $(this).serialize();
+      // let $data = $(this).serialize();
+      // const LetterForm = $('#coordinatorLoaRequestForm')[0];
+      // const formdata = new FormData(LetterForm);
+      let $data = new FormData($(this)[0]);
       $.ajax({
-        type: "POST",
+        // type: "POST",
+        // url: $(this).attr('action'),
+        // data: $data,
+        // dataType: "json",
+        type: "post",
         url: $(this).attr('action'),
+        // data: formdata,
         data: $data,
         dataType: "json",
+        processData: false,
+        contentType: false,
         success: function(response) {
           const {
             status,
             message,
           } = response;
           switch (status) {
-            
             case 'failed':
               swal({
                 title: 'Failed',
@@ -144,7 +162,7 @@
                 showConfirmButton: false,
                 type: 'error'
               });
-              break;
+            break;
             case 'success':
               swal({
                 title: 'Success',
@@ -156,48 +174,43 @@
               setTimeout(function() {
                 window.location.href = `${baseUrl}healthcare-coordinator/loa/requests-list/rescheduled`;
               }, 3200);
-              break;
+            break;
           }
         },
       })
     });
 
     $('#healthcare-provider').on('change', function(){
-        const hp_id = $(this).val();
-        const token = `<?php echo $this->security->get_csrf_hash(); ?>`;
+      const hp_id = $(this).val();
+      const token = `<?php echo $this->security->get_csrf_hash(); ?>`;
 
-        if(hp_id != ''){
-          $.ajax({
-              url: `${baseUrl}healthcare-coordinator/get-services/${hp_id}`,
-              type: "GET",
-              dataType: "json",
-              success:function(response){
-
-                $('#med-services-wrapper').empty();                
-
-                $('#med-services-wrapper').append(response);
-
-                $(".chosen-select").chosen({
-                  width: "100%",
-                  no_results_text: "Oops, nothing found!"
-                }); 
-              }
-          });
-        }
-      });
-
-});
+      if(hp_id != ''){
+        $.ajax({
+          url: `${baseUrl}healthcare-coordinator/get-services/${hp_id}`,
+          type: "GET",
+          dataType: "json",
+          success:function(response){
+            $('#med-services-wrapper').empty();                
+            $('#med-services-wrapper').append(response);
+            $(".chosen-select").chosen({
+              width: "100%",
+              no_results_text: "Oops, nothing found!"
+            }); 
+          }
+        });
+      }
+    });
+  });
 
 const showHcSelection = () => {
-    const selected_hc = document.querySelector('.provider');
-    const new_provider = document.querySelector('.change-provider');
-    const hp_id = document.querySelector('#hp-id');
-
-    selected_hc.style.display = 'none';
-    new_provider.style.display = 'block';
-    selected_hc.value = '';
-    hp_id.value = '';
+  const selected_hc = document.querySelector('.provider');
+  const new_provider = document.querySelector('.change-provider');
+  const hp_id = document.querySelector('#hp-id');
+ 
+  selected_hc.style.display = 'none';
+  new_provider.style.display = 'block';
+  selected_hc.value = '';
+  hp_id.value = '';
+  
 }
-
-
 </script>

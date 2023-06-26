@@ -53,18 +53,20 @@
         <div class="col-lg-4 pt-3">
           <label class="fw-bold">Work-Related : </label>
           <input class="form-control fw-bold text-info" name="work-related" value="<?php echo $work_related ?>" readonly>
-        </div>        
-      </div><hr>
+        </div>   
 
-      <div class="row pb-2">
         <div class="col-lg-4 pt-3">
           <label class="fw-bold">LOA Request Type : </label>
           <input class="form-control fw-bold text-info" name="request-type" value="<?php echo $request_type ?>" readonly>
-        </div>
-        <div class="col-lg-2 pt-3">
+        </div>     
+      </div><hr>
+
+      <div class="row pb-2">
+        
+        <!-- <div class="col-lg-2 pt-3">
           <label class="fw-bold">Quantity : </label>
           <input class="form-control fw-bold text-info" type="number" name="quantity" id="quantity" value="1" min="1" oninput="calculateDiagnosticTestBilling()">
-        </div>
+        </div> -->
         <div class="col-lg-2 pt-3">
           <label class="fw-bold">Service Fee : </label>
           <input class="form-control fw-bold text-info" name="service-fee" id="service-fee" type="number" oninput="calculateDiagnosticTestBilling()" required>
@@ -259,25 +261,48 @@
     }
 
     const calculateDiagnosticTestBilling = (remaining_balance) => {
-        let total_deductions = 0;
-        let net_bill_amount = 0;
-        const deduct_philhealth = document.querySelector('#deduct-philhealth');
-        const total_bill = document.querySelector('#total-bill');
-        const net_bill = document.querySelector('#net-bill');
-        const input_total_deduction = document.querySelector('#total-deduction');
+      let total_deductions = 0;
+      let net_bill_amount = 0;
+      const deduct_philhealth = document.querySelector('#deduct-philhealth');
+      const total_bill = document.querySelector('#total-bill');
+      const net_bill = document.querySelector('#net-bill');
+      const input_total_deduction = document.querySelector('#total-deduction');
 
-        total_services = totalServices();
-        total_bill.value = parseFloat(total_services).toFixed(2);
-        
-        philhealth = deduct_philhealth.value > 0 ? deduct_philhealth.value : 0 ;
-        other_deduction = calculateOtherDeductions();
+      total_services = totalServices();
+      total_bill.value = parseFloat(total_services).toFixed(2);
+      
+      philhealth = deduct_philhealth.value > 0 ? deduct_philhealth.value : 0 ;
+      other_deduction = calculateOtherDeductions();
 
-        total_deductions = parseFloat(philhealth) + parseFloat(other_deduction);
-        net_bill_amount = parseFloat(total_services) - parseFloat(total_deductions);
+      total_deductions = parseFloat(philhealth) + parseFloat(other_deduction);
+      net_bill_amount = parseFloat(total_services) - parseFloat(total_deductions);
 
-        input_total_deduction.value = parseFloat(total_deductions).toFixed(2);
-        net_bill.value = parseFloat(net_bill_amount).toFixed(2);
+      input_total_deduction.value = parseFloat(total_deductions).toFixed(2);
+      net_bill.value = parseFloat(net_bill_amount).toFixed(2);
     }
+
+    // const calculateDiagnosticTestBilling = () => {
+    //   let total_deductions = 0;
+    //   let net_bill_amount = 0;
+    //   const deduct_philhealth = document.querySelector('#deduct-philhealth');
+    //   const total_bill = document.querySelector('#total-bill');
+    //   const net_bill = document.querySelector('#net-bill');
+    //   const input_total_deduction = document.querySelector('#total-deduction');
+
+    //   const service_fee_input = document.querySelector('#service-fee');
+    //   const service_fee_value = parseFloat(service_fee_input.value.replace(/,/g, ''));
+
+    //   total_bill.value = service_fee_value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    //   philhealth = deduct_philhealth.value > 0 ? deduct_philhealth.value : 0;
+    //   other_deduction = calculateOtherDeductions();
+
+    //   total_deductions = parseFloat(philhealth) + parseFloat(other_deduction);
+    //   net_bill_amount = parseFloat(service_fee_value) - parseFloat(total_deductions);
+
+    //   input_total_deduction.value = total_deductions.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    //   net_bill.value = net_bill_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    // }
 
     const removeDeduction = (remove_btn) => {
         count--;
@@ -293,9 +318,9 @@
     const totalServices = () => {
         let total_services = 0;
         const services_fee = document.querySelector('#service-fee');
-        const quantity = document.querySelector('#quantity');
-
-        total_services += services_fee.value * quantity.value;
+        // const quantity = document.querySelector('#quantity');
+        // total_services += services_fee.value * quantity.value;
+        total_services += services_fee.value;
    
         return total_services;
     }
@@ -315,4 +340,7 @@
     const goBack = () => {
       window.history.back();
     }
+
+
+    
 </script>

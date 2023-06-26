@@ -1532,10 +1532,10 @@ class Billing_controller extends CI_Controller {
     
             $get_prev_mbl_by_bill_no = $this->billing_model->get_billing($billing_no);
             $get_prev_mbl = $this->billing_model->get_prev_mbl($billing_no,$noa_info['emp_id']);
-            $old_billing = $this->billing_model->get_billing_by_emp_id($noa['emp_id']);
+            $old_billing = $this->billing_model->get_billing_by_emp_id($noa_info['emp_id']);
             $check_bill = $this->billing_model->check_re_upload_billing($billing_no);
             $result_charge = $this->get_personal_and_company_charge("noa",$noa_id,$net_bill,($check_bill !=0)? true : false, ($get_prev_mbl !=null)?$get_prev_mbl['after_remaining_bal']:$get_prev_mbl_by_bill_no['before_remaining_bal'],($old_billing !=null)? $old_billing['after_remaining_bal'] : null);
-            // var_dump($net_bill);
+            var_dump($result_charge);
             $data = [
                 'billing_no'            => $billing_no,
                 'emp_id'                => $noa_info['emp_id'],

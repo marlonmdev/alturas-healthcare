@@ -1,8 +1,4 @@
-
-
-<!-- Start of Page Wrapper -->
 <div class="page-wrapper">
-  <!-- Bread crumb and right sidebar toggle -->
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
@@ -20,8 +16,7 @@
       </div>
     </div>
   </div>
-  <!-- End Bread crumb and right sidebar toggle -->
-  <!-- Start of Container fluid  -->
+
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
@@ -30,6 +25,7 @@
 
             <form method="post" action="<?= base_url() ?>member/request-noa/submit" enctype="multipart/form-data" class="mt-2" id="memberNoaRequestForm">
               <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
+              <input type="hidden" class="form-control" name="type_request" id="type_request" value="Admission">
 
               <div class="form-group row">
                 <div class="col-sm-7 mb-2">
@@ -97,20 +93,16 @@
                 </div>
               </div>
             </form>
-            <!-- End of Form -->
           </div>
-          <!-- End of Card Body -->
         </div>
-        <!-- End of Card -->
       </div>
-      <!-- End Row  -->  
     </div>
-  <!-- End Container fluid  -->
   </div>
-<!-- End Page wrapper  -->
 </div>
-<!-- End Wrapper -->
-</div>
+
+
+
+
 
 <script type="text/javascript">
   const baseUrl = `<?php echo base_url(); ?>`;

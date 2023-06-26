@@ -714,6 +714,7 @@ $route['healthcare-coordinator/setup/company-doctors/update'] = 'healthcare_coor
 // * setup for cost types
 $route['healthcare-coordinator/setup/cost-types/fetch'] = 'healthcare_coordinator/setup_controller/fetch_all_cost_types';
 $route['healthcare-coordinator/setup/cost-types/register/submit'] = 'healthcare_coordinator/setup_controller/register_cost_type';
+$route['healthcare-coordinator/setup/cost-types/edit_cost_type/(:any)'] = 'healthcare_coordinator/setup_controller/get_cost_type_info';
 $route['healthcare-coordinator/setup/cost-types/delete/(:any)'] = 'healthcare_coordinator/setup_controller/delete_cost_type';
 $route['healthcare-coordinator/setup/cost-types/edit/(:any)'] = 'healthcare_coordinator/setup_controller/get_cost_type_info';
 $route['healthcare-coordinator/setup/cost-types/update'] = 'healthcare_coordinator/setup_controller/update_cost_type';
@@ -721,6 +722,8 @@ $route['healthcare-coordinator/setup/cost-types/update'] = 'healthcare_coordinat
 $route['healthcare-coordinator/setup/room-types/fetch'] = 'healthcare_coordinator/setup_controller/fetch_room_types';
 $route['healthcare-coordinator/setup/room-types/register/submit'] = 'healthcare_coordinator/setup_controller/register_room_type';
 $route['healthcare-coordinator/setup/room-types/edit/(:any)'] = 'healthcare_coordinator/setup_controller/get_room_type_info';
+$route['healthcare-coordinator/setup/cost-types/edit/(:any)'] = 'healthcare_coordinator/setup_controller/get_cost_type_info';
+
 $route['healthcare-coordinator/setup/room-types/update'] = 'healthcare_coordinator/setup_controller/update_room_type';
 $route['healthcare-coordinator/setup/room-types/delete/(:any)'] = 'healthcare_coordinator/setup_controller/delete_room_type';
 
@@ -955,7 +958,6 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 //COORDINATOR
 //=============================================================================================
 	//Letter of Authorization
-		//[pending]
 		$route['healthcare-coordinator/loa/requests-list'] = 'healthcare_coordinator/pages_controller/view_pending_loa_list';
 		$route['healthcare-coordinator/loa/requests-list/approved'] = 'healthcare_coordinator/pages_controller/view_approved_loa_list';
 		$route['healthcare-coordinator/loa/requests-list/disapproved'] = 'healthcare_coordinator/pages_controller/view_disapproved_loa_list';
@@ -965,6 +967,11 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 		$route['healthcare-coordinator/members/take-home-meds/(:any)/(:any)'] = 'healthcare_coordinator/pages_controller/view_take_home_meds';
 		$route['healthcare-coordinator/members/soa/(:any)/(:any)'] = 'healthcare_coordinator/pages_controller/view_billed_soa';
 		$route['healthcare-coordinator/members/incident-spot-reports/(:any)/(:any)'] = 'healthcare_coordinator/pages_controller/view_incident_spot_reports';
+	//End
+
+	//Emergency LOA
+		$route['healthcare-coordinator/emergency_loa/pending/view_pending'] = 'healthcare_coordinator/pages_controller/view_emergency_loa_pending';
+		$route['healthcare-coordinator/emergency_loa/pending/emergency_loa_datatable_pending'] = 'healthcare_coordinator/pages_controller/emergency_loa_datatable_pending';
 	//End
 
 	//Final Billing
@@ -977,6 +984,7 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 	$route['healthcare-coordinator/loa/billed/update_consultation_fees'] = 'healthcare_coordinator/loa_controller/update_consultation_fees';
 	$route['healthcare-coordinator/loa/billed/consultation_fees1/(:any)'] = 'healthcare_coordinator/loa_controller/consultation_fees1';
 	$route['healthcare-coordinator/loa/billed/submit_consultation'] = 'healthcare_coordinator/loa_controller/submit_consultation';
+	$route['healthcare-coordinator/loa/billed/submit_letter'] = 'healthcare_coordinator/loa_controller/submit_letter';
 
 	$route['healthcare-coordinator/loa/billed/diagnostic_schedule/(:any)'] = 'healthcare_coordinator/loa_controller/diagnostic_schedule';
 	$route['healthcare-coordinator/loa/billed/diagnostic_schedule_submit'] = 'healthcare_coordinator/loa_controller/diagnostic_schedule_submit';

@@ -27,15 +27,17 @@
               <table class="table table-hover table-responsive" id="ledgertable">
                 <thead class="fs-5"style="background-color:#00538C">
                   <tr>
-                    <th class="fw-bold" style="color: white;">NAME OF PATIENT</th>
-                    <th class="fw-bold" style="color: white;">MBL</th>
+                    <!-- <th class="fw-bold" style="color: white;">NAME OF PATIENT</th> -->
+                    <!-- <th class="fw-bold" style="color: white;">MBL</th> -->
                     <th class="fw-bold" style="color: white;">ACCOUNT NAME</th>
-                    <th class="fw-bold" style="color: white;">ACCOUNT NUMBER</th>
-                    <th class="fw-bold" style="color: white;">CHEQUE NUMBER</th>
+                    <th class="fw-bold" style="color: white;">PAYMENT #</th>
+                    <th class="fw-bold" style="color: white;">ACCOUNT #</th>
+                    <th class="fw-bold" style="color: white;">CHEQUE #</th>
                     <th class="fw-bold" style="color: white;">BANK</th>
                     <th class="fw-bold" style="color: white;">CHEQUE DATE</th>
                     <th class="fw-bold" style="color: white;">AMOUNT</th>
-                    <th class="fw-bold" style="color: white;">SUPPORTING DOCUMENT (CV)</th>
+                    <th class="fw-bold" style="color: white;">REMAINING BALANCE</th>
+                    <!-- <th class="fw-bold" style="color: white;">SUPPORTING DOCUMENT (CV)</th> -->
                     <th class="fw-bold" style="color: white;">REMARK</th>
                     <th class="fw-bold" style="color: white;">PURPOSE</th>
                   </tr>
@@ -96,14 +98,14 @@
             <td class="fw-bold ls-1">Chief Complaint:</td>
             <td class="fw-bold ls-1" id="chief_complaint"></td>
           </tr>
-          <tr>
+          <!-- <tr>
             <td class="fw-bold ls-1">Work Related:</td>
             <td class="fw-bold ls-1" id="work_related"></td>
           </tr>
           <tr>
             <td class="fw-bold ls-1">Percentage:</td>
             <td class="fw-bold ls-1" id="percentage"></td>
-          </tr>
+          </tr> -->
         </table>
         
         <!-- Add more patient details as needed -->
@@ -147,49 +149,38 @@
     iframe.src = baseUrl + 'uploads/paymentDetails/' + pdfFile;
   }
 
-  const viewRecords = (loa_id,noa_id) => {
-    $.ajax({
-      url: `${baseUrl}healthcare-coordinator/loa_controller/view_record`,
-      type:"GET",
-      data : {
-        'loa_id' : loa_id,
-        'noa_id' : noa_id
-      },
-      success:function(response){
-        const res=JSON.parse(response);
-        const base_url=window.location.origin;
-        const{
-          status,
-          token,
-          first_name,
-          middle_name,
-          last_name,
-          suffix,
-          loa_request_type,
-          request_date,
-          chief_complaint,
-          work_related,
-          percentage,
-          attending_physician,
-          rx_file,
-          healthcare_provider,
-          med_services,
-        }=res;
-        $('#recordmodal').modal('show');
-        const type_request = loa_request_type !== '' ? loa_request_type : 'None';
+  const viewRecords = (loa_id, noa_id) => {
+  $.ajax({
+    url: `${baseUrl}healthcare-coordinator/loa_controller/view_record`,
+    type: "GET",
+    data: {
+      'loa_id': loa_id,
+      'noa_id': noa_id
+    },
+    success: function(response) {
+      const res = JSON.parse(response);
+      $('#recordmodal').modal('show');
+      $('#m-loa-id').val(loa_id);
+      $('#m-noa-id').val(noa_id);
+      $('#name_patient').html(`${res.first_name} ${res.middle_name} ${res.last_name} ${res.suffix}`);
+      $('#date_request').html(res.request_date);
+      $('#chief_complaint').html(res.chief_complaint);
+      // $('#work_related').html(res.work_related);
+      // $('#percentage').html(res.percentage + '%');
 
-        $('#m-loa-id').val(loa_id);
-        $('#m-noa-id').val(noa_id);
-        $('#name_patient').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
-        $('#type_request').html(type_request);
-        $('#date_request').html(request_date);
-        $('#chief_complaint').html(chief_complaint);
-        $('#work_related').html(work_related);
-        // $('#percentage').html(percentage);
-        $('#percentage').html(percentage + '%');
-
-      }
-    });
-  }
+      let type = res.loa_request_type || res.type_request || 'None';
+      $('#type_request').html(type);
+    }
+  });
+}
 
 </script>
+
+<style>
+  .modal-header{
+    background-color:#00538c
+  }
+  .modal-title{
+    color:#fff;
+  }
+</style>

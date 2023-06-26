@@ -25,10 +25,11 @@
                 <thead class="fs-6">
                   <tr>
                     <th style="background-color: #00538C; color: white;">NAME OF PATIENT</th>
-                    <th style="background-color: #00538C; color: white;">TYPE OF EMPLOYMENT</th>
-                    <th style="background-color: #00538C; color: white;">STATUS</th>
                     <th style="background-color: #00538C; color: white;">BUSINESS UNIT</th>
                     <th style="background-color: #00538C; color: white;">DEPARTMENT</th>
+                    <th style="background-color: #00538C; color: white;">TYPE OF EMPLOYMENT</th>
+                    <th style="background-color: #00538C; color: white;">MAXIMUM BENEFIT LIMIT</th>
+                    <th style="background-color: #00538C; color: white;">STATUS</th>
                     <th style="background-color: #00538C; color: white;">ACTION</th>
                   </tr>
                 </thead>

@@ -402,16 +402,16 @@
             }   
         });
        
-        $('#viewPDFBillModal').on('hidden.bs.modal', function (e) {
-            is_valid_name = true;
-            is_valid_noa = true;
-            is_valid_netbill = true;
-            if(is_valid_name || is_valid_noa || is_valid_netbill){
-                window.location.reload();
-                // $('#pdfBillingForm')[0].reset();
-                // $('#initialpdfBillingForm')[0].reset();
-            }
-        });
+        // $('#viewPDFBillModal').on('hidden.bs.modal', function (e) {
+        //     is_valid_name = true;
+        //     is_valid_noa = true;
+        //     is_valid_netbill = true;
+        //     if(is_valid_name || is_valid_noa || is_valid_netbill){
+        //         window.location.reload();
+        //         // $('#pdfBillingForm')[0].reset();
+        //         // $('#initialpdfBillingForm')[0].reset();
+        //     }
+        // });
         
         
         // $('#final_diagnosis').prop("hidden",true);

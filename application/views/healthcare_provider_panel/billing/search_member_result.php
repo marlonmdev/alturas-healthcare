@@ -20,7 +20,7 @@
     </div>
     <!-- End Bread crumb and right sidebar toggle -->
     <!-- Container fluid  -->
-    <div class="container-fluid">
+    <div class="container-fluid"> 
         <div class="mb-3">
             <a href="<?php echo base_url(); ?>healthcare-provider/billing" class="btn btn-outline-dark" data-bs-toggle="tooltip" title="Click to Go Back">
                 <strong class="ls-2" style="vertical-align:middle">

@@ -219,7 +219,7 @@ class Patient_controller extends CI_Controller {
 			}
 
 			$payable = floatval($pay['company_charge'] + floatval($pay['cash_advance']));
-			$letter = '<a href="JavaScript:void(0)" onclick="viewLetter(\'' . $pay['guarantee_letter'] . '\')" data-bs-toggle="tooltip" title="View Guarantee Letter"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			$letter = '<a href="JavaScript:void(0)" onclick="viewPDFsoa(\'' . $pay['guarantee_letter'] . '\',\'' .null . '\',\'' . null . '\')" data-bs-toggle="tooltip" title="View Guarantee Letter"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 			$custom_action = '<a href="JavaScript:void(0)" onclick="upload_final_soa(\'' . $pay['billing_no'] . '\')" data-bs-toggle="tooltip" title="Upload Final SOA"><i class="mdi mdi-upload fs-2 text-danger"></i></a>';
 			
 			$dis_letter = '<a href="JavaScript:void(0)"  data-bs-toggle="tooltip" title="No Uploaded Guarantee Letter"><i class="mdi mdi-information fs-2 text-muted"></i></a>';
@@ -240,7 +240,7 @@ class Patient_controller extends CI_Controller {
 			$row[] = number_format($pay['personal_charge'],2, '.',',');
 			$row[] = number_format($pay['company_charge'],2, '.',',');
 			$row[] = number_format($pay['cash_advance'],2, '.',',');
-			$row[] =($pay['cash_advance']!=0) ? 'Approved': '';
+			$row[] =($pay['cash_advance']>0) ? 'Approved': '';
 			$row[] = number_format($payable,2, '.',',');
 			$row[] =(isset($pay['guarantee_letter'])) ? $letter : $dis_letter;
 			$row[] =(isset($pay['guarantee_letter']) && !isset($pay['final_soa'])) ? $custom_action : $dis_custom_action;

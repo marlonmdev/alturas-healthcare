@@ -2119,7 +2119,7 @@ class Loa_controller extends CI_Controller {
 				$view_page ='schedule_diagnostic.php';
 			}
 			$this->load->view('templates/header', $data);
-			$this->load->view('healthcare_coordinator_panel/loa/'.$view_page.'');
+			$this->load->view('healthcare_coordinator_panel/loa/'.$view_page);
 			$this->load->view('templates/footer');
 
 		}else{
@@ -3555,12 +3555,17 @@ class Loa_controller extends CI_Controller {
 				}else{
     			$billed_date = date("F d, Y", strtotime($bill['billed_on']));
 				}
+<<<<<<< HEAD
 				if($bill['tbl1_status'] !== 'Billed'){
 					$custom_status = '<span class="badge rounded-pill bg-warning">' . $bill['tbl1_status'] . '</span>';
 				}else{
 					$custom_status = '<span class="badge rounded-pill bg-success">' . $bill['tbl1_status'] . '</span>';
 				}
         
+=======
+        $custom_status = '<span class="badge rounded-pill bg-success">' . $bill['tbl1_status'] . '</span>';
+
+>>>>>>> df5fe5f1304038f0607b559e233f533ca84afc0c
         if (empty($bill['pdf_bill'])) {
     			$pdf_bill = 'Waiting for SOA';
 				}else{

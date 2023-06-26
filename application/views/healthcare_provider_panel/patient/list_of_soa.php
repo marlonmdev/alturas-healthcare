@@ -171,40 +171,10 @@
 </style>
 <script>
 
-  
-// const printDiv = (layer) => {
-//     $(layer).printThis({
-//         importCSS: true,
-//         copyTagClasses: true,
-//         copyTagStyles: true,
-//         removeInline: false,
-//     });
-//     };
-
   const baseUrl = "<?php echo base_url(); ?>";
 
  $(document).ready(function(){
   let billedTable = datatable_t();
-    // billedTable.on('draw.dt', function() {
-    // let columnIdx = 10;
-    // let sum = 0;
-    // let rows = billedTable.rows().nodes();
-    // if ($('#paidTable').DataTable().data().length > 0) {
-    //         // The table is not empty
-    //         rows.each(function(index, row) {
-    //             let rowData = billedTable.row(row).data();
-    //             let columnValue = rowData[columnIdx];
-    //             let pattern = /-?[\d,]+(\.\d+)?/g;
-    //             let matches = columnValue.match(pattern);
-    //             if (matches && matches.length > 0) {
-    //                 let numberString = matches[0].replace(',', '');
-    //                 let intValue = parseInt(numberString);
-    //                 sum += intValue;
-    //             }
-    //         });
-    //     }
-    //     $('#pd-total-bill').html(sum.toLocaleString('PHP', { minimumFractionDigits: 2 }));
-    // });
 
     $('#print').on('click',function(){
       billedTable.destroy();

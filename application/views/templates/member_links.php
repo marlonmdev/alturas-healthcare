@@ -31,7 +31,7 @@
                 </a>
               </li>
 
-              <!-- <li class="sidebar-item 
+              <li class="sidebar-item 
               <?php echo $this->uri->segment(2) == 'requested-noa' ? 'selected' : ''; ?>
               ">
                 <a
@@ -40,23 +40,23 @@
                   aria-expanded="false"
                   >
                   <i class="mdi mdi-file-chart"></i>
-                  <span class="hide-menu ls-1">Emergency NOA</span>
+                  <span class="hide-menu ls-1">Emergency LOA</span>
                 </a>
                 <ul aria-expanded="false" class="collapse first-level">
                   <li class="sidebar-item">
                     <a href="<?php echo base_url(); ?>member/request-noa" class="sidebar-link"
                       ><i class="mdi mdi-note-plus"></i
-                      ><span class="hide-menu ls-1">Request Emergency NOA</span>
+                      ><span class="hide-menu ls-1">Request Emergency LOA</span>
                     </a>
                   </li>
                   <li class="sidebar-item">
                     <a href="<?php echo base_url(); ?>member/requested-noa/pending" class="sidebar-link"
                       ><i class="mdi mdi-note-outline"></i
-                      ><span class="hide-menu ls-1">Requested Emergency NOA</span>
+                      ><span class="hide-menu ls-1">Requested Emergency LOA</span>
                     </a>
                   </li>
                 </ul>
-              </li> -->
+              </li>
 
               <li class="sidebar-item 
               <?php echo $this->uri->segment(2) == 'requested-loa' ? 'selected' : ''; ?>
@@ -121,6 +121,19 @@
                   >
                   <i class="mdi mdi-receipt"></i>
                   <span class="hide-menu ls-1">Personal Charges</span>
+                </a>
+              </li>
+
+              <li class="sidebar-item 
+              <?php echo $this->uri->segment(2) == 'mbl-history' ? 'selected' : ''; ?>
+              ">
+                <a
+                  class="sidebar-link"
+                  href="<?php echo base_url(); ?>member/mbl-history/loa"
+                  aria-expanded="false"
+                  >
+                  <i class="mdi mdi-receipt"></i>
+                  <span class="hide-menu ls-1">MBL History</span>
                 </a>
               </li>
               

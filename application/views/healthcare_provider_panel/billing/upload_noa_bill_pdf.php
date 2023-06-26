@@ -37,6 +37,7 @@
         </div>
         
         <div class="row">
+            
             <div class="col-12 mb-3">
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
@@ -45,7 +46,29 @@
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="initial_tab" data-bs-toggle="tab" data-bs-target="#initial_bill" type="button" role="tab" aria-controls="profile" aria-selected="false"><strong>Initial Bill</strong></button>
                     </li>
-                </ul>
+                    <div class="col-5">
+</div>
+                            <div class="row ">
+                                <div class="col-lg-6">
+                                <!-- <label class="form-label fs-5 ls-1">Remaining MBL Balance</label> -->
+                                    <div class="input-group mb-3">
+                                    <label class="form-label fs-5 ls-1 pt-1">MBL Balance</label>
+                                        <span class="input-group-text bg-cyan text-white ms-2">&#8369;</span>
+                                        <input type="text" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="<?= number_format($remaining_balance) ?>"  readonly>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                <!-- <label class="form-label fs-5 ls-1" id="net_bill_label">Final Bill</label> -->
+                                    <div class="input-group mb-3">
+                                    <label class="form-label fs-5 ls-1 pt-1" id="net_bill_label">Final Bill</label>
+                                        <span class="input-group-text bg-cyan text-white ms-2">&#8369;</span>
+                                        <input type="text" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" value="0.00" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                    </ul>
+                
             </div>
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="final_bill" role="tabpanel">
@@ -53,6 +76,7 @@
                     <form action="<?php echo base_url();?>healthcare-provider/billing/bill-noa/upload-pdf/<?= $noa_id ?>/submit" id="pdfBillingForm" enctype="multipart/form-data" class="needs-validation" novalidate>
                         <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
                         <input type="hidden" name="billing-no" value="<?= $billing_no ?>">
+                        <!-- <input type="text" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" value="0.00" hidden> -->
                         <div class="card">
                             <div class="card-body shadow">
                                 <div class="row mt-3">
@@ -82,7 +106,7 @@
                             <div class="row pt-3">
                                 <div class="col-lg-6">
                                     <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
-                                        <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Initial Billing 
+                                        <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload final Billing 
                                     </label>
                                     <input type="file" class="form-control" name="pdf-file" id="pdf-file" accept="application/pdf" onchange="previewPdfFile('pdf-file')" required>
                                     <div class="invalid-feedback fs-6">
@@ -90,24 +114,18 @@
                                     </div>
                                 </div>
 
-                                <div class="col-lg-3">
-                                <label class="form-label fs-5 ls-1">Remaining MBL Balance</label>
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text bg-cyan text-white">&#8369;</span>
-                                        <input type="text" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="<?= number_format($remaining_balance) ?>"  readonly>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-3">
-                                <label class="form-label fs-5 ls-1" id="net_bill_label">Final Bill</label>
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text bg-cyan text-white">&#8369;</span>
-                                        <input type="text" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" value="0.00" readonly>
+                                <div class="col-lg-6">
+                                    <label class="fw-bold fs-5 ls-1" id="">
+                                        <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Itemized Billing 
+                                    </label>
+                                    <input type="file" class="form-control" name="itemize-pdf-file" id="itemize-pdf-file" accept="application/pdf" onchange="previewPdfFile('pdf-file')" required>
+                                    <div class="invalid-feedback fs-6">
+                                        PDF File is required
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="row " id="final_diagnosis">
+                            <div class="row  pt-3" id="final_diagnosis">
                                 <div class="col-lg-6">
                                     <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
                                         <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Final Diagnosis/Operation 
@@ -402,6 +420,7 @@
             }   
         });
        
+<<<<<<< HEAD
         // $('#viewPDFBillModal').on('hidden.bs.modal', function (e) {
         //     is_valid_name = true;
         //     is_valid_noa = true;
@@ -412,6 +431,22 @@
         //         // $('#initialpdfBillingForm')[0].reset();
         //     }
         // });
+=======
+        $('#viewPDFBillModal').on('hidden.bs.modal', function (e) {
+            
+            if(!is_valid_noa || !is_valid_netbill){
+                window.location.reload();
+                // $('#pdfBillingForm')[0].reset();
+                // $('#initialpdfBillingForm')[0].reset();
+            }
+            // console.log("is_valid_name",is_valid_name);
+            // console.log("is_valid_noa",is_valid_noa);
+            // console.log("is_valid_netbill",is_valid_netbill);
+            is_valid_name = true;
+            is_valid_noa = true;
+            is_valid_netbill = true;
+        });
+>>>>>>> df5fe5f1304038f0607b559e233f533ca84afc0c
         
         
         // $('#final_diagnosis').prop("hidden",true);
@@ -466,6 +501,7 @@
             let formData = new FormData($(this)[0]);
             formData.append('hospital_bill_data', hospital_charges);
             formData.append('attending_doctors', attending_doctors);
+            formData.append('net_bill', $('#net-bill').val());
             $.ajax({
                 type: 'POST',
                 url: $(this).attr('action'),
@@ -510,6 +546,7 @@
             let formData = new FormData($(this)[0]);
             formData.append('hospital_bill_data', hospital_charges);
             formData.append('attending_doctors', attending_doctors);
+            formData.append('net_bill', $('#net-bill').val());
             $.ajax({
                 type: 'POST',
                 url: $(this).attr('action'),
@@ -609,7 +646,6 @@
                             return (result = result + '\n' + item.text.replace(pattern, ''));
                             }, '').trim();
 
-                            console.log(finalResult);
                             console.log("final result",finalResult);
                             const pattern = /attending doctor\(s\):\s(.*?)\admission date:/si;
                             const patient_pattern = /patient name:\s(.*?)\admission no:/si;
@@ -733,7 +769,7 @@
                                 setTimeout(function() {
                                             $.alert({
                                                 title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Warning</h3>`,
-                                                content: "<div style='font-size: 16px; color: #333;'>The uploaded PDF Bill name is not the same to the members name.</div>",
+                                                content: "<div style='font-size: 16px; color: #333;'>The uploaded PDF Bill is not correct.</div>",
                                                 type: "red",
                                                 buttons: {
                                                     ok: {

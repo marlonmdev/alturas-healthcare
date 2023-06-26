@@ -1095,7 +1095,7 @@ class Billing_controller extends CI_Controller {
         $attending_doctor= $_POST['attending_doctors'];
         $jsonData = $_POST['json_final_charges'];
         $itemize_bill = json_decode($jsonData);
-         var_dump($itemize_bill);
+        //  var_dump($itemize_bill);
         // PDF File Upload
         //$config['upload_path'] = './uploads/pdf_bills/';
         $config['allowed_types'] = 'pdf';
@@ -1172,13 +1172,14 @@ class Billing_controller extends CI_Controller {
                 'attending_doctors'     => $attending_doctor,
                 're_upload'             => isset($check_bill) ? 0 : 1,
                 'request_date'          => $loa['request_date']
-            ];    
+            ];   
+
             $mbl = [
                         'used_mbl'            => $result_charge['used_mbl'],
                         'remaining_balance'      => $result_charge['remaining_balance']
                     ];
+
             $personal_charge = floatval(str_replace(',', '', $result_charge['personal_charge']));
-            
             
                     // var_dump("personal",$check_bill);
                     // var_dump("billing no",$billing_no);
@@ -1218,7 +1219,25 @@ class Billing_controller extends CI_Controller {
                         $this->billing_model->update_billing($data,$bill_no['billing_no']);
                     }else{
                         $inserted = $this->billing_model->insert_billing($data);
-                        $inserted = $this->billing_model->_set_loa_status_completed($loa_id);
+
+                        $this->billing_model->_set_loa_status_completed($loa_id);
+                        $bill_id = $this->billing_model->get_billing_id($data['billing_no'],$data['emp_id'],$data['hp_id']);
+                        foreach($itemize_bill as $items){
+                            $item = [
+                                'emp_id'        => $data['emp_id'], 
+                                'billing_id'    => $bill_id['billing_id'], 
+                                'hp_id'         => $data['hp_id'], 
+                                'labels'        => $items[0], 
+                                'discription'   => $items[2], 
+                                'qty'           => $items[3], 
+                                'unit_price'    => $items[4], 
+                                'amount'        => $items[5], 
+                                'date'          => $items[1],
+                            ];
+            
+                            $this->billing_model->itemized_bill($item);
+            
+                        }
 
                         if(!$inserted){
                             $response = [
@@ -1323,7 +1342,7 @@ class Billing_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
-	function re_upload_pdf_bill_form() {
+	function re_upload_pdf_bill_form() {    
         $loa_noa = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
         $type = $this->uri->segment(6);
         $hcare_provider_id = $this->session->userdata('dsg_hcare_prov');
@@ -1385,7 +1404,10 @@ class Billing_controller extends CI_Controller {
         $take_home_meds = $this->input->post('med-services',true);
         $hospitalBillData = $_POST['hospital_bill_data'];
         $attending_doctor= $_POST['attending_doctors'];
-        // var_dump("take home meds",$take_home_meds);
+        $jsonData = $_POST['json_final_charges'];
+        $itemize_bill = json_decode($jsonData);
+
+        //  var_dump("items",$itemize_bill);
         // $hospitalBillArray = json_decode($hospitalBillData, true);
         //var_dump($hospitalBillArray);
         // PDF File Upload
@@ -1528,6 +1550,25 @@ class Billing_controller extends CI_Controller {
                     }else{
                         $inserted = $this->billing_model->insert_billing($data);
                         $personal_charge = floatval(str_replace(',', '', $result_charge['personal_charge']));
+
+                        $bill_id = $this->billing_model->get_billing_id($data['billing_no'],$data['emp_id'],$data['hp_id']);
+                        foreach($itemize_bill as $items){
+                            $item = [
+                                'emp_id'        => $data['emp_id'], 
+                                'billing_id'    => $bill_id['billing_id'], 
+                                'hp_id'         => $data['hp_id'], 
+                                'labels'        => $items[0], 
+                                'discription'   => $items[2], 
+                                'qty'           => $items[3], 
+                                'unit_price'    => $items[4], 
+                                'amount'        => $items[5], 
+                                'date'          => $items[1],
+                            ];
+            
+                            $this->billing_model->itemized_bill($item);
+            
+                        }
+
                     if(!$inserted){
                         $response = [
                         'status'  => 'save-error',

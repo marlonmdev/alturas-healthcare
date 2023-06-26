@@ -44,13 +44,13 @@
                 </a>
                 <ul aria-expanded="false" class="collapse first-level">
                   <li class="sidebar-item">
-                    <a href="<?php echo base_url(); ?>member/request-noa" class="sidebar-link"
+                    <a href="<?php echo base_url(); ?>member/request-emergency-loa" class="sidebar-link"
                       ><i class="mdi mdi-note-plus"></i
                       ><span class="hide-menu ls-1">Request Emergency LOA</span>
                     </a>
                   </li>
                   <li class="sidebar-item">
-                    <a href="<?php echo base_url(); ?>member/requested-noa/pending" class="sidebar-link"
+                    <a href="<?php echo base_url(); ?>member/requested-emergency-loa/pending" class="sidebar-link"
                       ><i class="mdi mdi-note-outline"></i
                       ><span class="hide-menu ls-1">Requested Emergency LOA</span>
                     </a>

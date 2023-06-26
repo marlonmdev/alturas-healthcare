@@ -410,4 +410,17 @@ class Billing_model extends CI_Model {
         }
         // return $query->num_rows();
     }
+
+    function get_billing_id($billing_no,$emp_id,$hp_id){
+        $this->db->select('*')
+        ->where('billing_no', $billing_no)
+        ->where('emp_id', $emp_id)
+        ->where('hp_id', $hp_id);
+        $query = $this->db->get('billing');
+        return $query->row_array();
+    }
+
+    function itemized_bill($data) {
+        return $this->db->insert('itemized_bill', $data);
+    }
 }

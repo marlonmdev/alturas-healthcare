@@ -118,7 +118,7 @@
                                     <label class="fw-bold fs-5 ls-1" id="">
                                         <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Itemized Billing 
                                     </label>
-                                    <input type="file" class="form-control" name="itemize-pdf-file" id="itemize-pdf-file" accept="application/pdf" onchange="previewPdfFile('pdf-file')" required>
+                                    <input type="file" class="form-control" name="itemize-pdf-file" id="itemize-pdf-file" accept="application/pdf" onchange="previewPdfFile('itemize-pdf-file')" required>
                                     <div class="invalid-feedback fs-6">
                                         PDF File is required
                                     </div>
@@ -320,7 +320,7 @@
     let is_valid_name = true;
     let is_valid_noa = true;
     let is_valid_netbill = true;
-
+    let json_final_charges = {};
     
     if(re_upload){
         $('#initial_tab').hide();
@@ -368,7 +368,7 @@
             $('#initial-net-bill').val(initial_net_bill);
             read_pdf(false);
         });
-
+        
         $('#clear-btn').on('click', function(){
             $('#pdfBillingForm')[0].reset();
         });
@@ -488,6 +488,7 @@
             let formData = new FormData($(this)[0]);
             formData.append('hospital_bill_data', hospital_charges);
             formData.append('attending_doctors', attending_doctors);
+            formData.append('json_final_charges', json_final_charges);
             formData.append('net_bill', $('#net-bill').val());
             $.ajax({
                 type: 'POST',
@@ -574,7 +575,8 @@
         const read_pdf = (is_final) =>{
        // console.log("is_final",is_final);
         //extract pdf text and git the net bill
-        let pdfFileInput = (is_final) ? document.getElementById('pdf-file') : document.getElementById('pdf-file-initial');
+        ['pdf-file','itemize-pdf-file'].forEach(function(pdfid) {
+        let pdfFileInput = (is_final) ? document.getElementById(pdfid) : document.getElementById('pdf-file-initial');
         let subtotalValue = 0;
         pdfFileInput.addEventListener('change', function() {
         let reader = new FileReader();
@@ -635,24 +637,27 @@
 
                             console.log("final result",finalResult);
                             const pattern = /attending doctor\(s\):\s(.*?)\admission date:/si;
-                            const patient_pattern = /patient name:\s(.*?)\admission no:/si;
-                            const doc_pattern = /hospital charges(.*?)please pay for this amount/si;
+                            const patient_pattern = /patient name:\s(.*?)\admission no/si;
+                           
 
                             const matches_1 = finalResult.match(pattern);
                             const result_1 = matches_1 ? matches_1[1] : null;
-
-                            const matches_2 = finalResult.match(doc_pattern);
-                            const result_2 = matches_2 ? matches_2[1] : null;
+                            
 
                             const matches_3 = finalResult.match(patient_pattern);
                             const result_3 = matches_3 ? matches_3[1] : null;
-
-                            hospital_charges = result_2;
-                            attending_doctors = get_doctors(finalResult);
+                            
                            
-                            console.log("doctors",attending_doctors);
+                            
+                            console.log('final text',final_text(finalResult));
+                            get_all_item(final_text(finalResult));
+                            
+                            json_final_charges = JSON.stringify( get_all_item(final_text(finalResult)));
+                           
+                            // console.log("data",final_charges);
+                            console.log("JSON",json_final_charges);
+                            
                             // console.log("final doctors", result_3);
-                            console.log("hospital charges", hospital_charges);
                             console.log("patient name", result_3);
 
                             //this check if the patient name is equal to the member name
@@ -712,6 +717,15 @@
                             }
 
                             //validate amount payable
+                        if(pdfid === 'pdf-file'){
+
+                            const doc_pattern = /hospital charges(.*?)please pay for this amount/si;
+                            const matches_2 = finalResult.match(doc_pattern);
+                            const result_2 = matches_2 ? matches_2[1] : null;
+                            hospital_charges = result_2;
+                            console.log("hospital charges", hospital_charges);
+                            attending_doctors = get_doctors(finalResult);
+                            console.log("doctors", attending_doctors);
                             const regex = /please pay for this amount\s*\.*\s*([\d,\.]+)/i;
                             const match = finalResult.match(regex);
                             console.log("match",match);
@@ -767,6 +781,7 @@
                                             });
                                         }, 1000); // Delay of 2000 milliseconds (2 seconds)
                             }
+                            }
 
                         });
                         
@@ -779,6 +794,7 @@
                 }
                 
                 });
+            });
 
             }
 
@@ -930,6 +946,103 @@
                        
                 }
 
+                const final_text = (text) => {
+
+                var searchTerms = [
+                "ramiro community hospital",
+                "0139 c. gallares street",
+                "tel. no(s):",
+                "patient name:",
+                "hospitalization plan:",
+                "attending doctor(s):",
+                "patient address:",
+                "room no.:",
+                "date   description",
+                "labesores, marian cacayan",
+                "billing clerk",
+                // Add more search terms as needed
+                ];
+
+                var lines = text.split("\n");
+                var modifiedLines = lines.filter(function(line) {
+                for (var i = 0; i < searchTerms.length; i++) {
+                    if (line.includes(searchTerms[i])) {
+                        return false;
+                    }
+                    }
+                    return true;
+                });
+
+                var modifiedText = modifiedLines.join("\n");
+                return modifiedText;
+                // console.log("final text",modifiedText);
+                }
+
+                const get_all_item = (result) => {
+                    const line1 = result.split("\n"); // Split input into an array of lines
+                    const data1 = line1.map(line => line.split(/\s{3,}/)); 
+                    console.log(data1);
+                    let include = true;
+      
+                    const lin = result.split("\n");
+              
+                    const texts = lin.filter(line => {
+
+                        if (include) {
+
+                            if (/\btotal\b/i.test(line)) {
+                                return false;
+                            }
+                            return true;
+
+                            }
+
+                            return false;
+                        });
+
+                        const text = texts.join("\n");
+                        let pushedArrays = [];
+                        const liness = text.split("\n"); // Split input into an array of lines
+                        const data = liness.map(line => line.split(/\s{3,}/)); // Split each line into an array of values
+                        let x = 0;
+      
+                        let id_length_1 = 0;
+                        let id_length_5 = 0;
+                        const outputArray = data.map((arr, index) => {
+                        const currentLength = arr.length;
+                        const nextLength = index + 1 < data.length ? data[index + 1].length : 0;
+
+                        if (index === 0) {
+                          
+                          id_length_1 = index;
+                          return arr;
+                        } else {
+
+                          let appendedArray = [];
+
+                          if(currentLength === 1) {
+                              id_length_1 = index;
+                          }
+
+                        
+                          if (currentLength === 5) {
+                            appendedArray = [data[id_length_1][0], ...arr];
+                            id_length_5 = index;
+                           
+                          } else if (currentLength === 4) {
+                            appendedArray = [data[id_length_1][0],data[id_length_5][0], ...arr];
+                            
+                          } else {
+                            appendedArray = arr;
+                          }
+                            return appendedArray;
+
+                        }
+                         
+                      });
+                        // console.log("medicine",outputArray.filter(arr => arr.length !== 1));
+                        return outputArray.filter(arr => arr.length !== 1);
+      }
                                 
                 // const displayValue = () => {
 

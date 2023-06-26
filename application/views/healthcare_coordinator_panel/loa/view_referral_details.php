@@ -31,10 +31,6 @@
                   <td class="fw-bold ls-1" id="requested-by"></td>
                 </tr>
                 <tr>
-                  <td class="fw-bold ls-1">Reason for Referral : </td>
-                  <td class="fw-bold ls-1" id="reason_referral"></td>
-                </tr>
-                <tr>
                   <td class="fw-bold ls-1">Work Related :</td>
                   <td class="fw-bold ls-1" id="work_related"></td>
                 </tr>
@@ -130,6 +126,10 @@
                   <td class="fw-bold ls-1">Requesting Physician :</td>
                   <td class="fw-bold ls-1" id="requesting-physician"></td>
                 </tr>
+                <!-- <tr>
+                  <td class="fw-bold ls-1">Reason for Referral : </td>
+                  <td class="fw-bold ls-1" id="reason_referral" style="color:red"></td>
+                </tr> -->
               </table>
             </div>
           </div>

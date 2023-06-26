@@ -209,38 +209,31 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title ls-2">UPLOAD GUARANTEE LETTER</h4>
+        <h4 class="modal-title ls-2">GUARANTEE LETTER</h4>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       
       <div class="modal-body">
-        <form method="post" action="<?= base_url() ?>healthcare-coordinator/members/approved/insert-hc-id" id="insertScannedIdForm" enctype="multipart/form-data">
+        <form method="post" action="<?php echo base_url(); ?>healthcare-coordinator/loa/billed/submit_letter" id="Letter" enctype="multipart/form-data">
           <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
           <input type="hidden" name="emp-id" id="emp-id">
+          <input type="hidden" name="billing-id" id="billing-id">
                         
           <div class="col-lg-8 pt-1">
             <input type="hidden" class="form-control text-danger fs-5 fw-bold" name="emp-name" id="emp-name" placeholder="Employee Name" readonly>
           </div>
                         
           <div class="row pt-5">
-            <div class="col-lg-5 offset-1">
+            <div class="col-lg-10 offset-1">
               <div class="form-group">
-                <label for="letter">Upload File:</label>
+                <label for="letter" style="font-size: 20px">Upload File:</label>
                 <input type="file" class="form-control-file dropify" name="letter" id="letter" accept=".jpg, .jpeg, .png, .gif, .pdf" data-max-file-size="5M" onchange="showPreview(this)">
               </div>
-              <span id="front-id-error" class="text-danger"></span>
+              <div style="font-size: 20px; text-align:center" id="image-preview" class="mb-3"></div>
+              <p style="font-size: 20px; text-align:center" id="pdf-preview" class="mb-0"></p>
+              <span id="letter_error" class="text-danger"></span>
             </div>
           </div><br>
-          
-          <div class="row pt-3">
-            <div class="col-lg-5 offset-1">
-              <div id="preview" style="display: none;">
-                <h6>Preview:</h6>
-                <div id="image-preview" class="mb-3"></div>
-                <p id="pdf-preview" class="mb-0"></p>
-              </div>
-            </div>
-          </div>
 
           <div class="row pt-3">
             <div class="col-sm-12 mb-sm-0 d-flex justify-content-end">
@@ -457,6 +450,62 @@
           }
         },
       });
+    });
+    //End
+
+    //Submit Guarantee Letter
+    $('#Letter').submit(function(event) {
+      event.preventDefault();
+
+      const LetterForm = $('#Letter')[0];
+      const formdata = new FormData(LetterForm);
+      $.ajax({
+        type: "post",
+        url: $(this).attr('action'),
+        data: formdata,
+        dataType: "json",
+        processData: false,
+        contentType: false,
+        success: function(response) {
+          const {
+            token,
+            status,
+            message,
+            
+          } = response;
+          switch (status) {
+            case 'error':
+              // is-invalid class is a built in classname for errors in bootstrap
+              if (charge_type_error !== '') {
+                $('#charge-type-error').html(charge_type_error);
+                $('#charge-type').addClass('is-invalid');
+              } else {
+                $('#charge-type-error').html('');
+                $('#charge-type').removeClass('is-invalid');
+              }
+            break;
+            case 'save-error':
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
+            
+            break;
+            case 'success':
+              swal({
+                title: 'Success',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'success'
+              });
+            break;
+          }
+        },
+      })
     });
     //End
   });
@@ -695,22 +744,9 @@
     }
   }
 
-  function GuaranteeLetter(loa_id) {
-    $.ajax({
-      url: `${baseUrl}healthcare-coordinator/loa/pending/view/${loa_id}`,
-      type: "GET",
-      success: function(response) {
-        const res = JSON.parse(response);
-        const {
-          status,
-          token,
-        } = res;
-
-        $("#GuaranteeLetter").modal("show");
-
-
-      }
-    });
+  function GuaranteeLetter(billing_id) {
+    $("#GuaranteeLetter").modal("show");
+    $('#billing-id').val(billing_id);
   }
 
 

@@ -31,6 +31,18 @@
   </a>
 </li>
 
+<li class="sidebar-item <?php echo $this->uri->segment(2) == 'emergency' ? 'selected' : ''; ?>">
+  <a class="sidebar-link sidebar-link" href="<?php echo base_url(); ?>healthcare-coordinator/emergency_loa/pending/view_pending" aria-expanded="false">
+    <i class="mdi mdi-file-document"></i>Emergency LOA 
+    <!-- <?php
+      $total = $bar + $bar1 + $bar2 + $bar3 + $bar4;
+      if ($total > 0) {
+        echo '<sup style="background-color: red; color: white; border-radius: 50%; padding: 7px">' . $total . '</sup>';
+      }
+    ?> -->
+  </a>
+</li>
+
 <li class="sidebar-item <?php echo $this->uri->segment(2) == 'noa' ? 'selected' : ''; ?>">
   <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
     <i class="mdi mdi-file-chart"></i>NOA
@@ -124,14 +136,21 @@
         </li>
       </ul>
     </li>
-    <li class="sidebar-item">
+    <!-- <li class="sidebar-item">
       <a href="<?php echo base_url(); ?>healthcare-coordinator/loa_controller/view_ledger" class="sidebar-link">
         <i class="mdi mdi-book-open-page-variant"></i>
         <span class="hide-menu ls-1">Ledger</span>
       </a>
-    </li>
+    </li> -->
   </ul>
 </li> 
+
+<li class="sidebar-item">
+  <a class="sidebar-link sidebar-link" href="<?php echo base_url(); ?>healthcare-coordinator/loa_controller/view_ledger" aria-expanded="false">
+    <i class="mdi mdi-book-open-page-variant"></i>
+    <span class="hide-menu ls-1">Ledger</span>
+  </a>
+</li>
 
 <li class="sidebar-item <?php echo $this->uri->segment(2) == 'setup' ? 'selected' : ''; ?>">
   <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">

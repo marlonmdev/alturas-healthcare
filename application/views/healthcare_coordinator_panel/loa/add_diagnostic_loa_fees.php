@@ -2,7 +2,7 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed" type="submit" class="btn btn-outline-dark" data-bs-toggle="tooltip" title="Click to Go Back">
+        <a href="#" onclick="goBack()" type="submit" class="btn btn-outline-dark" data-bs-toggle="tooltip" title="Click to Go Back">
           <strong class="ls-2" style="vertical-align:middle"><i class="mdi mdi-arrow-left-bold"></i> Back</strong>
         </a>
         <div class="ms-auto text-end">
@@ -63,7 +63,7 @@
 
       <div class="row">
         <div class="col-3  pt-2">
-          <h5 class="text-left text-danger">HOSPITAL CHARGES</h5>
+          <h5 class="text-left text-danger">CHARGES</h5>
         </div>
         <?php 
           foreach($cost_types as $cost_type) : 
@@ -164,28 +164,27 @@
 
 
 <script>
-    const form = document.querySelector('#performedLoaInfo');
-    $(document).ready(function(){
-        
-        $('#performedLoaInfo').submit(function(event){
-            event.preventDefault();
+  const form = document.querySelector('#performedLoaInfo');
+  $(document).ready(function(){
+    $('#performedLoaInfo').submit(function(event){
+      event.preventDefault();
 
-            if(!form.checkValidity()){
-                form.classLIst.add('was-validated');
-                return;
-            }
+      if(!form.checkValidity()){
+        form.classLIst.add('was-validated');
+        return;
+      }
 
-            let url = '<?php echo base_url();?>healthcare-coordinator/loa/performed-loa-info/submit1';
-            let data = $(this).serialize();
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: data,
-                dataType: 'json',
-                success: function(response) {
-                    const {
-                        token,status,message
-                    } = response;
+      let url = '<?php echo base_url();?>healthcare-coordinator/loa/performed-loa-info/submit1';
+      let data = $(this).serialize();
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: data,
+        dataType: 'json',
+        success: function(response) {
+          const {
+            token,status,message
+          } = response;
 
                     switch(status){
                        
@@ -225,17 +224,17 @@
     });
 
     const enableInput = () => {
-        const date = document.querySelector('#date');
-        const physician = document.querySelector('#physician');
-        const status = document.querySelector('#status');
+      const date = document.querySelector('#date');
+      const physician = document.querySelector('#physician');
+      const status = document.querySelector('#status');
 
-        if(status.value == 'Performed') {
-            date.removeAttribute('readonly');
-            physician.removeAttribute('readonly');
-        }else{
-            date.setAttribute('readonly', true);
-            physician.setAttribute('readonly', true);
-        }
+      if(status.value == 'Performed') {
+        date.removeAttribute('readonly');
+        physician.removeAttribute('readonly');
+      }else{
+        date.setAttribute('readonly', true);
+        physician.setAttribute('readonly', true);
+      }
     }
 
     let count = 0;
@@ -343,7 +342,7 @@
         return other_deduction;
     }
 
-
-   
-
+    const goBack = () => {
+      window.history.back();
+    }
 </script>

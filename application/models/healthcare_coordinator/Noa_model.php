@@ -261,43 +261,6 @@ class Noa_model extends CI_Model {
   //END INITIAL BILLING==============================================================================
 
   //FINAL BILLING====================================================================================
-  // var $table1_final='billing';
-  // var $table2_final='noa_requests';
-  // var $table3_final='max_benefit_limits';
-  // var $column_order_final=['noa_no', 'first_name','remaining_balance', 'net_bill'];
-  // var $column_search_final=['noa_no', 'first_name', 'middle_name', 'last_name', 'suffix','CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)'];
-  // var $order_final=['noa_no' => 'desc'];
-
-  // private function _get_final_datatables_query($status) {
-  //   $this->db->from($this->table1_final . ' as tbl_1');
-  //   $this->db->join($this->table2_final . ' as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
-  //   $this->db->join($this->table3_final . ' as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id');
-  //   $this->db->where('tbl_1.status', $status);
-
-  //   $i = 0;
-  //   if($this->input->post('filter')){
-  //     $this->db->like('tbl_1.hp_id', $this->input->post('filter'));
-  //   }
-
-  //   if ($this->input->post('startDate')) {
-  //     $startDate = date('Y-m-d', strtotime($this->input->post('startDate')));
-  //     $this->db->where('tbl_1.request_date >=', $startDate);
-  //   }
-
-  //   if ($this->input->post('endDate')){
-  //     $endDate = date('Y-m-d', strtotime($this->input->post('endDate')));
-  //     $this->db->where('tbl_1.request_date <=', $endDate);
-  //   }
-  // }
-
- 
-  // function get_final_datatables($status) {
-  //   $this->_get_final_datatables_query($status);
-  //   if ($_POST['length'] != -1)
-  //   $this->db->limit($_POST['length'], $_POST['start']);
-  //   $query = $this->db->get();
-  //   return $query->result_array();
-  // }
 
   var $table1_final='noa_requests';
   var $table2_final='billing';

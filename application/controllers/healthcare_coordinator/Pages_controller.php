@@ -415,13 +415,6 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('healthcare_coordinator_panel/loa/loa_disapproved');
 		$this->load->view('templates/footer');
 	}
-	//==================================================
-	//End
-	//==================================================
-
-	
-
-	
 
 	function view_expired_loa_list() {
 		$this->load->model('healthcare_coordinator/loa_model');
@@ -460,6 +453,34 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('healthcare_coordinator_panel/loa/loa_cancelled');
 		$this->load->view('templates/footer');
 	}
+	//==================================================
+	//End
+	//==================================================
+
+	//==================================================
+	//Emergency of LOA
+	//==================================================
+	function view_emergency_loa_pending() {
+		$this->load->model('healthcare_coordinator/loa_model');
+		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/emergency_loa/a_pending');
+		$this->load->view('templates/footer');
+	}
+	//==================================================
+	//End
+	//==================================================
 
 	function view_loa_cancellation_list() {
 		$this->load->model('healthcare_coordinator/loa_model');
@@ -607,9 +628,11 @@ class Pages_controller extends CI_Controller {
 	function fetch_ledger() {
 		$this->load->model('healthcare_coordinator/loa_model');
 		$data['emp_id'] = $this->uri->segment(4);
+		// $data['emp_id'] = $emp_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
 		
 		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
 		$data['user_role'] = $this->session->userdata('user_role');
+		// $data['list'] = $this->loa_model->db_get_all_paid();
 		$data['bar'] = $this->loa_model->bar_pending();
 		$data['bar1'] = $this->loa_model->bar_approved();
 		$data['bar2'] = $this->loa_model->bar_completed();

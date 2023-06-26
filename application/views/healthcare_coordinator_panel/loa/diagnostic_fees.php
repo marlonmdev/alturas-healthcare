@@ -63,7 +63,7 @@
 
       <div class="row">
         <div class="col-3  pt-2">
-          <h5 class="text-left text-danger">HOSPITAL CHARGES</h5>
+          <h5 class="text-left text-danger">AVAILED SERVICES</h5>
         </div>
         <?php 
           // foreach($cost_types as $cost_type) : 

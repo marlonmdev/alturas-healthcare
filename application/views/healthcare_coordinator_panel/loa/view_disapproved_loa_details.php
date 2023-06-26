@@ -27,10 +27,6 @@
                   <td class="fw-bold ls-1" id="disapproved-by"></td>
                 </tr>
                 <tr>
-                  <td class="fw-bold ls-1">Reason for Disapproval :</td>
-                  <td class="fw-bold ls-1" id="disapprove-reason"></td>
-                </tr>
-                <tr>
                   <td class="fw-bold ls-1">Work Related :</td>
                   <td class="fw-bold ls-1" id="work_related"></td>
                 </tr>
@@ -130,6 +126,10 @@
                 <tr>
                   <td class="fw-bold ls-1">Attending Physician :</td>
                   <td class="fw-bold ls-1" id="attending-physician"></td>
+                </tr>
+                <tr>
+                  <td class="fw-bold ls-1">Reason for Disapproval :</td>
+                  <td class="fw-bold ls-1" id="disapprove-reason" style="color:red"></td>
                 </tr>
               </table>
             </div>

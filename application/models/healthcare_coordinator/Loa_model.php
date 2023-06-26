@@ -678,6 +678,13 @@ class Loa_model extends CI_Model {
     return $this->db->update('billing');
   }
 
+  function db_update_letter($billing_id, $guarantee_letter, $upload_on) {
+    $this->db->where('billing_id', $billing_id)
+            ->set('guarantee_letter', $guarantee_letter)
+            ->set('guarantee_uploaded_on', $upload_on);
+    return $this->db->update('billing');
+  }
+
   function db_cancel_loa($loa_id) {
     $this->db->where('loa_id', $loa_id)
              ->delete('loa_requests');
@@ -1255,17 +1262,22 @@ function db_get_cost_types_by_hp_ID($hp_id) {
     }
   }
 
-  // function check_status($loa_id) {
-  //   $this->db->where('loa_id', $loa_id);
-  //   $this->db->where('status', 'Completed');
-  //   $query = $this->db->get('loa_requests');
-    
+  // function check_if_guarantee_letter_already_added($loa_id) {
+  //   $query = $this->db->get_where('billing', ['loa_id' => $loa_id]);
   //   if ($query->num_rows() > 0) {
-  //     return $query->row(); // Return the fetched row
+  //       return $query->row(); // Return the fetched row
   //   } else {
-  //     return false;
+  //       return false;
   //   }
   // }
+
+
+  function check_if_guarantee_letter_already_added($loa_id) {
+    $this->db->select('guarantee_letter')
+            ->from('billing')
+            ->where('loa_id', $loa_id);
+    return $this->db->get()->row_array();
+  }
 
   function insert_deductions($data) {
     return $this->db->insert_batch('hr_added_deductions', $data);
@@ -1345,10 +1357,19 @@ function db_get_cost_types_by_hp_ID($hp_id) {
   function insert_for_payment_consolidated($data) {
     return $this->db->insert('monthly_payable', $data);
   }
-  function update_loa_request_status() {
-    $data = array('status' => 'Payable');
-    $this->db->where('status', 'Billed');
-    $this->db->update('loa_requests', $data);
+  // function update_loa_request_status() {
+  //   $data = array('status' => 'Payable');
+  //   $this->db->where('status', 'Billed');
+  //   $this->db->update('loa_requests', $data);
+  // }
+
+  function update_loa_request_status($hp_id, $start_date, $end_date) {
+    $this->db->set('status', 'Payable')
+            ->where('status', 'Billed')
+            ->where('hcare_provider', $hp_id)
+            ->where('request_date >=', $start_date)
+            ->where('request_date <=', $end_date);
+    return $this->db->update('loa_requests');
   }
 
   function fetch_for_payment_bill($status) {
@@ -1501,7 +1522,7 @@ function db_get_cost_types_by_hp_ID($hp_id) {
       $endDate = date('Y-m-d', strtotime($endDate));
       $this->db->where('tbl_1.request_date <=', $endDate);
     }
-}
+  }
 
 public function get_billed_datatables() {
     $this->_get_billed_datatables_query();
@@ -1906,6 +1927,7 @@ function get_billed_for_charging($bill_no) {
 //LEDGER============================================================
   var $ledger1 = 'members';
   var $ledger2 = 'billing';
+  var $ledger3 = 'max_benefit_limits';
   var $column_order_ledger = ['member_id', 'first_name', 'emp_type', 'status', 'business_unit', 'dept_name']; 
   var $column_search_ledger= ['member_id', 'first_name', 'middle_name', 'last_name', 'suffix', 'emp_type', 'status', 'business_unit', 'dept_name', 'CONCAT(first_name, " ",last_name)', 'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)'];
   var $order_ledger = ['emp_no' => 'desc'];
@@ -1913,6 +1935,7 @@ function get_billed_for_charging($bill_no) {
     $this->db->group_by('emp_no');
     $this->db->from($this->ledger1 . ' as tbl_1');
     $this->db->join($this->ledger2 . ' as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
+    $this->db->join($this->ledger3 . ' as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id');
     $this->db->where('status',$status);
 
     $i = 0;
@@ -2023,6 +2046,23 @@ function get_billed_for_charging($bill_no) {
     $this->_get_datatables_query_ledger2($status,$emp_id);
     $query = $this->db->get();
   }
+
+  // function db_get_all_paid() {
+  //   $this->db->select('*')
+  //            ->from('billing as tbl_1')
+  //            ->join('payment_details as tbl_2', 'tbl_1.details_no = tbl_2.details_no')
+  //            ->where('tbl_1.status', 'Paid')
+  //            ->order_by('loa_id', 'DESC');
+  //   return $this->db->get()->result_array();
+  // }
+
+  // function db_get_all_paid() {
+  //   $this->db->select('*')
+  //     ->from('billing as tbl_1')
+  //     ->join('payment_details as tbl_2', 'tbl_1.details_no = tbl_2.details_no','left')
+  //     ->where('tbl_1.status','Paid');
+  //   return $this->db->get()->result_array();
+  // }
 
 //END==================================================
 

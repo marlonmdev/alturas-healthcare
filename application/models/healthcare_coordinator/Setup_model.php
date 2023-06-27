@@ -278,6 +278,17 @@ class Setup_model extends CI_Model {
 		return $this->db->affected_rows() > 0 ? true : false;
 	}
 
+	function db_update_cost_type($ctype_id, $post_data) {
+		$this->db->where('ctype_id', $ctype_id);
+		return $this->db->update('cost_types', $post_data);
+	}
+
+	function db_delete_cost_type($ctype_id) {
+		$this->db->where('ctype_id', $ctype_id)
+		         ->delete('cost_types');
+		return $this->db->affected_rows() > 0 ? true : false;
+	}
+
 	//Bar =================================================
 	public function bar_pending(){
 	  $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Pending' ");

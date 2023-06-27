@@ -445,7 +445,6 @@ class Noa_controller extends CI_Controller {
 
 	function final_billing() {
 		$token = $this->security->get_csrf_hash(); 
-		// $status = 'Billed';
 		$billing = $this->noa_model->get_final_datatables();
 
 		$data = array();
@@ -454,19 +453,37 @@ class Noa_controller extends CI_Controller {
 			$loa_id = $this->myhash->hasher($bill['loa_id'], 'encrypt');
 			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
 			$request_date=date("F d, Y", strtotime($bill['tbl1_request_date']));
-        // $billed_date=date("F d, Y", strtotime($bill['billed_on']));
-        if (empty($bill['billed_on'])) {
-    			$billed_date = "No Billing Date Yet";
-				}else{
-    			$billed_date = date("F d, Y", strtotime($bill['billed_on']));
+
+      if (empty($bill['billed_on'])) {
+  			$billed_date = "No Billing Date Yet";
+			}else{
+  			$billed_date = date("F d, Y", strtotime($bill['billed_on']));
+			}
+
+			if (empty($bill['pdf_bill'])) {
+  			$pdf_bill = 'Waiting for SOA';
+			}else{
+  			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i></a>';
+			}
+
+			if($bill['tbl1_status'] !== 'Billed'){
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $bill['tbl1_status'] . '</span></div>';
+			}else{
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $bill['tbl1_status'] . '</span></div>';
+			}
+
+			$custom_actions = '';
+			if($bill['tbl1_status'] == 'Billed'){
+				if ($bill['guarantee_letter'] =='') {
+	  			$custom_actions = '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $bill['billing_id'] . '\')" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-2 text-info"></i></a>';
+	  		}else{
+					$custom_actions .= '<i class="mdi mdi-reply fs-2 text-secondary" title="Guarantee Letter Already Sent"></i>';
 				}
-			// $pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i></a>';
-				if (empty($bill['pdf_bill'])) {
-    			$pdf_bill = 'SOA has not been uploaded yet';
-				}else{
-    			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i></a>';
-				}
-			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $bill['tbl1_status'] . '</span></div>';
+			}else if($bill['tbl1_status'] == 'Approved'){
+				$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/noa/requests-list/approved/" data-bs-toggle="tooltip" title="Back to NOA"><i class="mdi mdi-pen fs-2 text-danger"></i></a>';
+			}
+
+			
 
 			$row[] = $bill['noa_no'];
 			$row[] = $fullname;
@@ -481,6 +498,7 @@ class Noa_controller extends CI_Controller {
 			$netBill = '₱' . number_format($bill['net_bill'], 2, '.', ',');
 			$row[] = $netBill;
 			$row[] = $custom_status;
+			$row[] = $custom_actions;
 			$data[] = $row;
 		}
 
@@ -554,7 +572,6 @@ class Noa_controller extends CI_Controller {
 			}else if($bill['month'] == '05'){
 				$month = 'May';
 			}else if($bill['month'] == '06'){
-				$row[] = $bill['hp_name'];
 				$month = 'June';
 			}else if($bill['month'] == '07'){
 				$month = 'July';
@@ -770,27 +787,34 @@ class Noa_controller extends CI_Controller {
 			'token' => $this->security->get_csrf_hash(),
 			'noa_id' => $row['noa_id'],
 			'noa_no' => $row['noa_no'],
+			'req_status' => $row['work_related'] != '' ? 'for Approval': $row['status'],
+			'request_date' => date("F d, Y", strtotime($row['request_date'])),
+			'admission_date' => date("F d, Y", strtotime($row['admission_date'])),
+			'mbl' => number_format($row['max_benefit_limit'], 2),
+			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 			'health_card_no' => $row['health_card_no'],
-			'requesting_company' => $row['requesting_company'],
 			'first_name' => $row['first_name'],
 			'middle_name' => $row['middle_name'],
 			'last_name' => $row['last_name'],
 			'suffix' => $row['suffix'],
 			'date_of_birth' => date("F d, Y", strtotime($row['date_of_birth'])),
 			'age' => $age,
+			'gender' => $row['gender'],
+			'blood_type' => $row['blood_type'],
+			'philhealth_no' => $row['philhealth_no'],
+			'home_address' => $row['home_address'],
+			'city_address' => $row['city_address'],
+			'contact_no' => $row['contact_no'],
+			'email' => $row['email'],
+			'contact_person' => $row['contact_person'],
+			'contact_person_addr' => $row['contact_person_addr'],
+			'contact_person_no' => $row['contact_person_no'],
 			'hospital_name' => $row['hp_name'],
-			'admission_date' => date("F d, Y", strtotime($row['admission_date'])),
 			'chief_complaint' => $row['chief_complaint'],
-			// Full Month Date Year Format (F d Y)
-			'request_date' => date("F d, Y", strtotime($row['request_date'])),
-			'req_status' => $row['work_related'] != '' ? 'for Approval': $row['status'],
-			'work_related' => $row['work_related'],
-			'percentage' => $row['percentage'],
-			'member_mbl' => number_format($row['max_benefit_limit'], 2),
-			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		];
 		echo json_encode($response);
 	}
+
 
 	function get_approved_noa_info() {
 		$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
@@ -814,32 +838,39 @@ class Noa_controller extends CI_Controller {
 			'token' => $this->security->get_csrf_hash(),
 			'noa_id' => $row['noa_id'],
 			'noa_no' => $row['noa_no'],
+			'req_status' => $row['status'],
+			'request_date' => date("F d, Y", strtotime($row['request_date'])),
+			'admission_date' => date("F d, Y", strtotime($row['admission_date'])),
+			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
+			'approved_by' => $doctor_name,
+			'expiry_date' => $row['expiration_date'] ? date("F d, Y", strtotime($row['expiration_date'])) : 'None',
+			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
+			'mbl' => number_format($row['max_benefit_limit'], 2),
+			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 			'health_card_no' => $row['health_card_no'],
-			'requesting_company' => $row['requesting_company'],
 			'first_name' => $row['first_name'],
 			'middle_name' => $row['middle_name'],
 			'last_name' => $row['last_name'],
 			'suffix' => $row['suffix'],
 			'date_of_birth' => date("F d, Y", strtotime($row['date_of_birth'])),
 			'age' => $age,
+			'gender' => $row['gender'],
+			'blood_type' => $row['blood_type'],
+			'philhealth_no' => $row['philhealth_no'],
+			'home_address' => $row['home_address'],
+			'city_address' => $row['city_address'],
+			'contact_no' => $row['contact_no'],
+			'email' => $row['email'],
+			'contact_person' => $row['contact_person'],
+			'contact_person_addr' => $row['contact_person_addr'],
+			'contact_person_no' => $row['contact_person_no'],
 			'hospital_name' => $row['hp_name'],
-			'admission_date' => date("F d, Y", strtotime($row['admission_date'])),
 			'chief_complaint' => $row['chief_complaint'],
-			// Full Month Date Year Format (F d Y)
-			'request_date' => date("F d, Y", strtotime($row['request_date'])),
-			'work_related' => $row['work_related'],
-			'req_status' => $row['status'],
-			'work_related' => $row['work_related'],
-			'percentage' => $row['percentage'],
-			'approved_by' => $doctor_name,
-			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
-			'expiry_date' => $row['expiration_date'] ? date("F d, Y", strtotime($row['expiration_date'])) : 'None',
-			'member_mbl' => number_format($row['max_benefit_limit'], 2),
-			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		];
 		echo json_encode($response);
 	}
-
+	
 	function get_disapproved_noa_info() {
 		$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$row = $this->noa_model->db_get_noa_info($noa_id);
@@ -862,30 +893,39 @@ class Noa_controller extends CI_Controller {
 			'token' => $this->security->get_csrf_hash(),
 			'noa_id' => $row['noa_id'],
 			'noa_no' => $row['noa_no'],
+			'req_status' => $row['status'],
+			'request_date' => date("F d, Y", strtotime($row['request_date'])),
+			'admission_date' => date("F d, Y", strtotime($row['admission_date'])),
+			'disapproved_on' => date("F d, Y", strtotime($row['disapproved_on'])),
+			'disapproved_by' => $doctor_name,
+			'disapprove_reason' => $row['disapprove_reason'],
+			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
+			'mbl' => number_format($row['max_benefit_limit'], 2),
+			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 			'health_card_no' => $row['health_card_no'],
-			'requesting_company' => $row['requesting_company'],
 			'first_name' => $row['first_name'],
 			'middle_name' => $row['middle_name'],
 			'last_name' => $row['last_name'],
 			'suffix' => $row['suffix'],
 			'date_of_birth' => date("F d, Y", strtotime($row['date_of_birth'])),
 			'age' => $age,
+			'gender' => $row['gender'],
+			'blood_type' => $row['blood_type'],
+			'philhealth_no' => $row['philhealth_no'],
+			'home_address' => $row['home_address'],
+			'city_address' => $row['city_address'],
+			'contact_no' => $row['contact_no'],
+			'email' => $row['email'],
+			'contact_person' => $row['contact_person'],
+			'contact_person_addr' => $row['contact_person_addr'],
+			'contact_person_no' => $row['contact_person_no'],
 			'hospital_name' => $row['hp_name'],
-			'admission_date' => date("F d, Y", strtotime($row['admission_date'])),
 			'chief_complaint' => $row['chief_complaint'],
-			// Full Month Date Year Format (F d Y)
-			'request_date' => date("F d, Y", strtotime($row['request_date'])),
-			'req_status' => $row['status'],
-			'work_related' => $row['work_related'],
-			'percentage' => $row['percentage'],
-			'disapproved_by' => $doctor_name,
-			'disapprove_reason' => $row['disapprove_reason'],
-			'disapproved_on' => date("F d, Y", strtotime($row['approved_on'])),
-			'member_mbl' => number_format($row['max_benefit_limit'], 2),
-			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		];
 		echo json_encode($response);
 	}
+
 
 	function get_expired_noa_info() {
 		$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
@@ -909,27 +949,35 @@ class Noa_controller extends CI_Controller {
 			'token' => $this->security->get_csrf_hash(),
 			'noa_id' => $row['noa_id'],
 			'noa_no' => $row['noa_no'],
+			'req_status' => $row['status'],
+			'request_date' => date("F d, Y", strtotime($row['request_date'])),
+			'admission_date' => date("F d, Y", strtotime($row['admission_date'])),
+			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
+			'approved_by' => $doctor_name,
+			'expiry_date' => $row['expiration_date'] ? date("F d, Y", strtotime($row['expiration_date'])) : 'None',
+			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
+			'mbl' => number_format($row['max_benefit_limit'], 2),
+			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 			'health_card_no' => $row['health_card_no'],
-			'requesting_company' => $row['requesting_company'],
-			'first_name' => $row['first_name'], 
+			'first_name' => $row['first_name'],
 			'middle_name' => $row['middle_name'],
 			'last_name' => $row['last_name'],
 			'suffix' => $row['suffix'],
 			'date_of_birth' => date("F d, Y", strtotime($row['date_of_birth'])),
 			'age' => $age,
+			'gender' => $row['gender'],
+			'blood_type' => $row['blood_type'],
+			'philhealth_no' => $row['philhealth_no'],
+			'home_address' => $row['home_address'],
+			'city_address' => $row['city_address'],
+			'contact_no' => $row['contact_no'],
+			'email' => $row['email'],
+			'contact_person' => $row['contact_person'],
+			'contact_person_addr' => $row['contact_person_addr'],
+			'contact_person_no' => $row['contact_person_no'],
 			'hospital_name' => $row['hp_name'],
-			'admission_date' => date("F d, Y", strtotime($row['admission_date'])),
 			'chief_complaint' => $row['chief_complaint'],
-			// Full Month Date Year Format (F d Y)
-			'request_date' => date("F d, Y", strtotime($row['request_date'])),
-			'req_status' => $row['status'],
-			'work_related' => $row['work_related'],
-			'percentage' => $row['percentage'],
-			'approved_by' => $doctor_name,
-			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
-			'expiry_date' => $row['expiration_date'] ? date("F d, Y", strtotime($row['expiration_date'])) : 'None',
-			'member_mbl' => number_format($row['max_benefit_limit'], 2),
-			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		];
 		echo json_encode($response);
 	}

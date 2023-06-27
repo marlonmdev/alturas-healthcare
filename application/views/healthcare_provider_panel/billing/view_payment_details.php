@@ -100,10 +100,10 @@
                         <div class="col-lg-8">
                             <textarea class="form-control text-dark fs-5" id="textbox" value="" readonly></textarea>
                         </div>
-                        <div class="col-lg-8 pt-2">
+                        <!-- <div class="col-lg-8 pt-2">
                             <label class="fw-bold text-dark fs-5">Check Image : </label>
                             <img src="" id="supporting-docu" style="width: 750px;height: 250px;">
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>

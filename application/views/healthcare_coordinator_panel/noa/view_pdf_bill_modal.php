@@ -2,7 +2,7 @@
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
-        <span class="fw-bold fs-4">Statement of Account of NOA # : [ <span class="text-info fw-bold" id="pdf-loa-no"></span> ]</span>
+        <span class="fw-bold fs-4">Statement of Account of NOA # : [ <span class="text-warning fw-bold" id="pdf-loa-no"></span> ]</span>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">

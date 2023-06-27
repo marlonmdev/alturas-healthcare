@@ -388,7 +388,7 @@ class Billing_controller extends CI_Controller {
             $data['hp_name'] = $hp_name = $this->billing_model->get_healthcare_provider($hcare_provider_id);
             $data['loa_requests'] = $this->billing_model->get_member_loa($member['emp_id'], $hcare_provider_id);
             $data['noa_requests'] = $this->billing_model->get_member_noa($member['emp_id'], $hcare_provider_id);
-
+            $data['re_upload_requests'] = $this->billing_model->get_re_upload_requests($hcare_provider_id,$member['emp_id']);
             /* This is checking if the image file exists in the directory. */
             $file_path = './uploads/profile_pics/' . $member['photo'];
             $data['member_photo_status'] = file_exists($file_path) ? 'Exist' : 'Not Found';
@@ -1044,8 +1044,14 @@ class Billing_controller extends CI_Controller {
         $data['healthcard_no'] = $loa['health_card_no'];
         $data['remaining_balance'] = $mbl['remaining_balance'];
         $data['patient_name'] = $loa['first_name'].' '. $loa['middle_name'].' '. $loa['last_name'].' '.$loa['suffix'];
-        $data['billing_no'] = 'BLN-' . strtotime(date('Y-m-d h:i:s'));
+        // $data['billing_no'] = 'BLN-' . strtotime(date('Y-m-d h:i:s'));
 		$data['user_role'] = $this->session->userdata('user_role');
+        $result = $this->billing_model->db_get_max_billing_id();
+		$max_billing_id = !$result ? 0 : $result['billing_id'];
+		$add_billing = $max_billing_id + 1;
+		$current_year = date('Y').date('m').date('d');
+		// call function loa_number
+		$data['billing_no'] = $this->billing_number($add_billing, 3, 'BLN-'.$current_year);
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_provider_panel/billing/upload_loa_bill_pdf');
 		$this->load->view('templates/footer');
@@ -1087,23 +1093,54 @@ class Billing_controller extends CI_Controller {
         $net_bill = floatval(str_replace(',','',$net_b));
         $hospitalBillData = $_POST['hospital_bill_data'];
         $attending_doctor= $_POST['attending_doctors'];
-       
-        // $hospitalBillArray = json_decode($hospitalBillData, true);
-        //var_dump($hospitalBillArray);
-
+        $jsonData = $_POST['json_final_charges'];
+        $itemize_bill = json_decode($jsonData);
+        //  var_dump($itemize_bill);
         // PDF File Upload
-        $config['upload_path'] = './uploads/pdf_bills/';
+        //$config['upload_path'] = './uploads/pdf_bills/';
         $config['allowed_types'] = 'pdf';
         $config['encrypt_name'] = TRUE;
         $this->load->library('upload', $config);
 
-        if (!$this->upload->do_upload('pdf-file')) {
+        // if (!$this->upload->do_upload('pdf-file') && !$this->upload->do_upload('itemize-pdf-file')) {
+        //     $response = [
+        //         'status'  => 'save-error',
+        //         'message' => 'PDF Bill Upload Failed'
+        //     ];
+
+        // } 
+
+        $uploaded_files = array();
+        $error_occurred = FALSE;
+        // Define the upload paths for each file
+            $file_paths = array(
+                'pdf-file' => './uploads/pdf_bills/',
+                'itemize-pdf-file' => './uploads/itemize_bills/',
+            );
+    
+        // Iterate over each file input and perform the upload
+            $file_inputs = array('pdf-file','itemize-pdf-file');
+
+            foreach ($file_inputs as $input_name) {
+               
+                $config['upload_path'] = $file_paths[$input_name];
+                $this->upload->initialize($config);
+
+                if (!$this->upload->do_upload($input_name)) {
+                    $error_occurred = TRUE;
+                } else {
+                    $uploaded_files[$input_name] = $this->upload->data();
+                }
+            }
+
+            
+        if ($error_occurred) {
             $response = [
                 'status'  => 'save-error',
                 'message' => 'PDF Bill Upload Failed'
             ];
-
-        } else {
+        }
+        else {
             $upload_data = $this->upload->data();
             $pdf_file = $upload_data['file_name'];
             $loa = $this->billing_model->get_loa_to_bill($loa_id);
@@ -1111,9 +1148,13 @@ class Billing_controller extends CI_Controller {
             $check_bill = $this->billing_model->check_re_upload_billing($billing_no);
             $get_prev_mbl_by_bill_no = $this->billing_model->get_billing($billing_no);
             $get_prev_mbl = $this->billing_model->get_prev_mbl($billing_no,$loa['emp_id']);
-            $result_charge = $this->get_personal_and_company_charge("loa",$loa_id,$net_bill,($check_bill !=0)? true : false, ($get_prev_mbl !=null)?$get_prev_mbl['after_remaining_bal']:$get_prev_mbl_by_bill_no['before_remaining_bal'],($old_billing !=null)? $old_billing['after_remaining_bal'] : null);
+            $result_charge = $this->get_personal_and_company_charge("loa",$loa_id,$net_bill,($check_bill !=0)? true : false,
+             ($get_prev_mbl !=null)?$get_prev_mbl['after_remaining_bal']:$get_prev_mbl_by_bill_no['before_remaining_bal'],
+             ($old_billing !=null)? $old_billing['after_remaining_bal'] : null);
+            $existed = $this->billing_model->check_billing_loa($loa_id);
+            $bill_no = $this->billing_model->get_billing_no($loa_id);
             $data = [
-                'billing_no'            => $billing_no,
+                'billing_no'            => ($existed)? $bill_no['billing_no'] : $billing_no,
                 'billing_type'          => 'PDF Billing',
                 'emp_id'                => $loa['emp_id'],
                 'loa_id'                => $loa_id,
@@ -1124,7 +1165,8 @@ class Billing_controller extends CI_Controller {
                 'personal_charge'       => floatval(str_replace(',', '', $result_charge['personal_charge'])),
                 'before_remaining_bal'  => floatval(str_replace(',', '', $result_charge['previous_mbl'])),
                 'after_remaining_bal'   => floatval(str_replace(',', '', $result_charge['remaining_balance'])),
-                'pdf_bill'              => $pdf_file,
+                'pdf_bill'              => (isset($uploaded_files['pdf-file']))? $uploaded_files['pdf-file']['file_name'] : null,
+                'itemized_bill'         => (isset($uploaded_files['itemize-pdf-file']))? $uploaded_files['itemize-pdf-file']['file_name'] : null,
                 'billed_by'             => $this->session->userdata('fullname'),
                 'billed_on'             => date('Y-m-d'),
                 'status'                => 'Billed',
@@ -1132,13 +1174,14 @@ class Billing_controller extends CI_Controller {
                 'attending_doctors'     => $attending_doctor,
                 're_upload'             => isset($check_bill) ? 0 : 1,
                 'request_date'          => $loa['request_date']
-            ];    
+            ];   
+
             $mbl = [
                         'used_mbl'            => $result_charge['used_mbl'],
                         'remaining_balance'      => $result_charge['remaining_balance']
                     ];
-            $personal_charge = floatval(str_replace(',', '', $result_charge['personal_charge']));
 
+            $personal_charge = floatval(str_replace(',', '', $result_charge['personal_charge']));
             
                     // var_dump("personal",$check_bill);
                     // var_dump("billing no",$billing_no);
@@ -1172,44 +1215,69 @@ class Billing_controller extends CI_Controller {
                     }
                 }
             }else{
-                $inserted = $this->billing_model->insert_billing($data);
-                if(!$inserted){
-                    $response = [
-                       'status'  => 'save-error',
-                       'message' => 'PDF Bill Upload Failed'
-                    ];
-                }else{
-                    $billing_id = $this->billing_model->get_billing($billing_no);
-
-                    if($personal_charge>0){
-                        $advances = ['emp_id'                => $loa['emp_id'],
-                                    'billing_id'            => $billing_id['billing_id'],
-                                    'hp_id'                =>$this->session->userdata('dsg_hcare_prov'),
-                                    'excess_amount'       => floatval(str_replace(',', '', $result_charge['personal_charge'])),
-                                    'date_added'             => date('Y-m-d'),
-                                    'status'                => 'Pending'];
-                        $this->billing_model->insert_cash_advance($advances);
-                    }
-                    $this->billing_model->update_member_remaining_balance($loa['emp_id'], $mbl);
-                    $existing = $this->billing_model->check_if_loa_already_added($loa_id);
-                    $resched = $this->billing_model->check_if_done_created_new_loa($loa_id);
-                    $rescheduled = $this->billing_model->check_if_status_cancelled($loa_id);
-                }
-                    
-
-                if($rescheduled){   
-                    if($existing && $resched['reffered'] == 1){
-                        $this->billing_model->set_completed_value($loa_id);
-                    }
-                }else{
-                    if($existing){
-                        $this->billing_model->set_completed_value($loa_id);
-                    }
-                }
                 
+                    // var_dump("existed",$existed);
+                    if($existed){
+                        $this->billing_model->update_billing($data,$bill_no['billing_no']);
+                    }else{
+                        $inserted = $this->billing_model->insert_billing($data);
+
+                        $this->billing_model->_set_loa_status_completed($loa_id);
+                        $bill_id = $this->billing_model->get_billing_id($data['billing_no'],$data['emp_id'],$data['hp_id']);
+                        foreach($itemize_bill as $items){
+                            $item = [
+                                'emp_id'        => $data['emp_id'], 
+                                'billing_id'    => $bill_id['billing_id'], 
+                                'hp_id'         => $data['hp_id'], 
+                                'labels'        => $items[0], 
+                                'discription'   => $items[2], 
+                                'qty'           => $items[3], 
+                                'unit_price'    => $items[4], 
+                                'amount'        => $items[5], 
+                                'date'          => $items[1],
+                            ];
             
-                $type = 'LOA';
-                $this->update_request_status($type, $loa_id);
+                            $this->billing_model->itemized_bill($item);
+            
+                        }
+
+                        if(!$inserted){
+                            $response = [
+                               'status'  => 'save-error',
+                               'message' => 'PDF Bill Upload Failed'
+                            ];
+                        }else{
+                            $billing_id = $this->billing_model->get_billing($billing_no);
+        
+                            if($personal_charge>0){
+                                $advances = ['emp_id'                => $loa['emp_id'],
+                                            'billing_id'            => $billing_id['billing_id'],
+                                            'hp_id'                =>$this->session->userdata('dsg_hcare_prov'),
+                                            'excess_amount'       => floatval(str_replace(',', '', $result_charge['personal_charge'])),
+                                            'date_added'             => date('Y-m-d'),
+                                            'status'                => 'Pending'];
+                                $this->billing_model->insert_cash_advance($advances);
+                            }
+                            $this->billing_model->update_member_remaining_balance($loa['emp_id'], $mbl);
+                            $existing = $this->billing_model->check_if_loa_already_added($loa_id);
+                            $resched = $this->billing_model->check_if_done_created_new_loa($loa_id);
+                            $rescheduled = $this->billing_model->check_if_status_cancelled($loa_id);
+                        }
+                            
+        
+                        if($rescheduled){   
+                            if($existing && $resched['reffered'] == 1){
+                                $this->billing_model->set_completed_value($loa_id);
+                            }
+                        }else{
+                            if($existing){
+                                $this->billing_model->set_completed_value($loa_id);
+                            }
+                        }
+                       
+                    }
+                    $type = 'LOA';
+                    $this->update_request_status($type, $loa_id);
             }
 
                 
@@ -1234,11 +1302,27 @@ class Billing_controller extends CI_Controller {
 		$this->load->view('templates/footer');
     }
 
+    function billing_number($input, $pad_len = 7, $prefix = null) {
+		if ($pad_len <= strlen($input))
+			trigger_error('<strong>$pad_len</strong> cannot be less than or equal to the length of <strong>$input</strong> to generate invoice number', E_USER_ERROR);
+		if (is_string($prefix))
+			return sprintf("%s%s", $prefix, str_pad($input, $pad_len, "0", STR_PAD_LEFT));
+
+		return str_pad($input, $pad_len, "0", STR_PAD_LEFT);
+	}
+
 	function upload_noa_pdf_bill_form() {
         $noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
         $noa = $this->billing_model->get_noa_to_bill($noa_id);
         $mbl = $this->billing_model->get_member_mbl($noa['emp_id']);
         $hcare_provider_id = $this->session->userdata('dsg_hcare_prov');
+        $result = $this->billing_model->db_get_max_billing_id();
+		$max_billing_id = !$result ? 0 : $result['billing_id'];
+		$add_billing = $max_billing_id + 1;
+		$current_year = date('Y').date('m').date('d');
+		// call function loa_number
+		$billing_no = $this->billing_number($add_billing, 3, 'BLN-'.$current_year);
+
         $initial = $this->initial_billing_model->get_initial_billing_no($noa_id, $hcare_provider_id, "Initial");
         $data['noa_id'] = $this->uri->segment(5);
         $data['noa_no'] = $noa['noa_no'];
@@ -1249,7 +1333,8 @@ class Billing_controller extends CI_Controller {
             $data['billing_no'] = $initial->billing_no;
             $data['admission_date'] = intval(str_replace('-', '', $initial->date_uploaded));
         }else{
-            $data['billing_no'] = 'BLN-' . strtotime(date('Y-m-d h:i:s'));
+            // $data['billing_no'] = 'BLN-' . strtotime(date('Y-m-d h:i:s'));
+            $data['billing_no'] = $billing_no;
             $data['admission_date'] = intval(str_replace('-', '', $noa['admission_date']));
         }
         
@@ -1259,7 +1344,7 @@ class Billing_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
-	function re_upload_pdf_bill_form() {
+	function re_upload_pdf_bill_form() {    
         $loa_noa = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
         $type = $this->uri->segment(6);
         $hcare_provider_id = $this->session->userdata('dsg_hcare_prov');
@@ -1282,6 +1367,7 @@ class Billing_controller extends CI_Controller {
             $this->load->view('healthcare_provider_panel/billing/upload_loa_bill_pdf');
             $this->load->view('templates/footer');
         }
+
         if($type == 'noa'){
             $noa = $this->billing_model->get_noa_to_bill($loa_noa);
             $prv_mbl = $this->billing_model->get_prev_mbl( $bill_number['billing_no'],$noa['emp_id']);
@@ -1314,12 +1400,16 @@ class Billing_controller extends CI_Controller {
         $this->security->get_csrf_hash();
         $noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
         $billing_no = $this->input->post('billing-no', TRUE);
-        $net_b = $this->input->post('net-bill', TRUE);
+        $net_b = $_POST['net_bill'];
+        // var_dump('net bill', $net_b);
         $net_bill = floatval(str_replace(',','',$net_b));
         $take_home_meds = $this->input->post('med-services',true);
         $hospitalBillData = $_POST['hospital_bill_data'];
         $attending_doctor= $_POST['attending_doctors'];
-        // var_dump("take home meds",$take_home_meds);
+        $jsonData = $_POST['json_final_charges'];
+        $itemize_bill = json_decode($jsonData);
+
+        //  var_dump("items",$itemize_bill);
         // $hospitalBillArray = json_decode($hospitalBillData, true);
         //var_dump($hospitalBillArray);
         // PDF File Upload
@@ -1335,13 +1425,14 @@ class Billing_controller extends CI_Controller {
         // Define the upload paths for each file
             $file_paths = array(
                 'pdf-file' => './uploads/pdf_bills/',
+                'itemize-pdf-file' => './uploads/itemize_bills/',
                 'Final-Diagnosis' => './uploads/final_diagnosis/',
                 'Medical-Abstract' => './uploads/medical_abstract/',
                 'Prescription' => './uploads/prescription/'
             );
     
         // Iterate over each file input and perform the upload
-            $file_inputs = array('pdf-file', 'Final-Diagnosis', 'Medical-Abstract', 'Prescription');
+            $file_inputs = array('pdf-file','itemize-pdf-file', 'Final-Diagnosis', 'Medical-Abstract', 'Prescription');
             foreach ($file_inputs as $input_name) {
                 if ($input_name === 'Medical-Abstract' && empty($_FILES[$input_name]['name'])) {
                     // Skip the 'Medical-Abstract' field if it is empty
@@ -1388,10 +1479,10 @@ class Billing_controller extends CI_Controller {
             $get_prev_mbl = $this->billing_model->get_prev_mbl($billing_no,$noa['emp_id']);
            
             $result_charge = $this->get_personal_and_company_charge("noa",$noa_id,$net_bill,($check_bill !=0)? true : false, ($get_prev_mbl !=null)?$get_prev_mbl['after_remaining_bal']:$get_prev_mbl_by_bill_no['before_remaining_bal'],($old_billing !=null)? $old_billing['after_remaining_bal'] : null);
-            // var_dump("check bill",$check_bill);
-            // var_dump("prev mbl",$get_prev_mbl);
+            $existed = $this->billing_model->check_billing_noa($noa_id);
+            $bill_no = $this->billing_model->get_billing_no($noa_id);
             $data = [
-                'billing_no'            => $billing_no,
+                'billing_no'            => ($existed) ?  $bill_no['billing_no'] : $billing_no,
                 'billing_type'          => 'PDF Billing',
                 'emp_id'                => $noa['emp_id'],
                 'noa_id'                => $noa_id,
@@ -1404,6 +1495,7 @@ class Billing_controller extends CI_Controller {
                 'before_remaining_bal'  => floatval(str_replace(',', '', $result_charge['previous_mbl'])),
                 'after_remaining_bal'   => floatval(str_replace(',', '', $result_charge['remaining_balance'])),
                 'pdf_bill'              => isset($uploaded_files['pdf-file']) ? $uploaded_files['pdf-file']['file_name'] : $get_prev_mbl_by_bill_no['pdf_bil'],
+                'itemized_bill'         => isset($uploaded_files['itemize-pdf-file']) ? $uploaded_files['itemize-pdf-file']['file_name'] : $get_prev_mbl_by_bill_no['itemize-pdf-file'],
                 'final_diagnosis_file'  => isset($uploaded_files['Final-Diagnosis']) ? $uploaded_files['Final-Diagnosis']['file_name'] : $get_prev_mbl_by_bill_no['final_diagnosis_file'],
                 'medical_abstract_file' => isset($uploaded_files['Medical-Abstract']) ? $uploaded_files['Medical-Abstract']['file_name'] : $get_prev_mbl_by_bill_no['medical_abstract_file'],
                 'prescription_file'     => isset($uploaded_files['Prescription']) ? $uploaded_files['Prescription']['file_name'] : $get_prev_mbl_by_bill_no['prescription_file'],
@@ -1454,31 +1546,56 @@ class Billing_controller extends CI_Controller {
                 }
 
             }else{
-                $inserted = $this->billing_model->insert_billing($data);
-                
-                    $personal_charge = floatval(str_replace(',', '', $result_charge['personal_charge']));
-                if(!$inserted){
-                    $response = [
-                    'status'  => 'save-error',
-                    'message' => 'PDF Bill Upload Failed'
-                    ];
-                } else{
-                    $billing_id = $this->billing_model->get_billing($billing_no);
+                    // var_dump("existed",$existed);   
+                    if($existed){
+                        $this->billing_model->update_billing($data,$bill_no['billing_no']);
+                    }else{
+                        $inserted = $this->billing_model->insert_billing($data);
+                        $personal_charge = floatval(str_replace(',', '', $result_charge['personal_charge']));
 
-                    if($personal_charge>0){
-                        $advances = ['emp_id'                => $noa['emp_id'],
-                                    'billing_id'            => $billing_id['billing_id'],
-                                    'hp_id'                =>$this->session->userdata('dsg_hcare_prov'),
-                                    'excess_amount'       => floatval(str_replace(',', '', $result_charge['personal_charge'])),
-                                    'date_added'             => date('Y-m-d'),
-                                    'status'                => 'Pending'];
-                        $this->billing_model->insert_cash_advance($advances);
+                        $bill_id = $this->billing_model->get_billing_id($data['billing_no'],$data['emp_id'],$data['hp_id']);
+                        foreach($itemize_bill as $items){
+                            $item = [
+                                'emp_id'        => $data['emp_id'], 
+                                'billing_id'    => $bill_id['billing_id'], 
+                                'hp_id'         => $data['hp_id'], 
+                                'labels'        => $items[0], 
+                                'discription'   => $items[2], 
+                                'qty'           => $items[3], 
+                                'unit_price'    => $items[4], 
+                                'amount'        => $items[5], 
+                                'date'          => $items[1],
+                            ];
+            
+                            $this->billing_model->itemized_bill($item);
+            
+                        }
+
+                    if(!$inserted){
+                        $response = [
+                        'status'  => 'save-error',
+                        'message' => 'PDF Bill Upload Failed'
+                        ];
+                    } else{
+                        $billing_id = $this->billing_model->get_billing($billing_no);
+
+                        if($personal_charge>0){
+                            $advances = ['emp_id'                => $noa['emp_id'],
+                                        'billing_id'            => $billing_id['billing_id'],
+                                        'hp_id'                =>$this->session->userdata('dsg_hcare_prov'),
+                                        'excess_amount'       => floatval(str_replace(',', '', $result_charge['personal_charge'])),
+                                        'date_added'             => date('Y-m-d'),
+                                        'status'                => 'Pending'];
+                            $this->billing_model->insert_cash_advance($advances);
+                        }
+                        $this->billing_model->update_member_remaining_balance($noa['emp_id'], $mbl);
+                    }  
+                    
+                   
                     }
-                    $this->billing_model->update_member_remaining_balance($noa['emp_id'], $mbl);
-                }  
-                
-                $type = 'NOA';
-                $this->update_request_status($type, $noa_id);
+
+                    $type = 'NOA';
+                    $this->update_request_status($type, $noa_id);
             }
 
             
@@ -1491,7 +1608,7 @@ class Billing_controller extends CI_Controller {
             ];   
         }
 
-        echo json_encode($response);
+     echo json_encode($response);
 	}
 
     function submit_initial_noa_pdf_bill() { 
@@ -1499,7 +1616,7 @@ class Billing_controller extends CI_Controller {
         $noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
         $billing_no = $this->input->post('billing-no', TRUE);
         $net_b = $this->input->post('initial-net-bill', TRUE);
-        $initial_date = $this->input->post('initial-date',TRUE);
+        // $initial_date = $this->input->post('initial-date',TRUE);
         $net_bill = floatval(str_replace(',', '', $net_b));
         $hospitalBillData = $_POST['hospital_bill_data'];
         
@@ -1510,14 +1627,15 @@ class Billing_controller extends CI_Controller {
         $config['encrypt_name'] = TRUE;
         $this->load->library('upload', $config);
         // var_dump("initial date", $initial_date);
-        if(empty($initial_date)){
-            $response = [
-                'status'  => 'save-error',
-                'message' => 'Invalid Date'
-            ];
+        // if(empty($initial_date)){
+        //     $response = [
+        //         'status'  => 'save-error',
+        //         'message' => 'Invalid Date'
+        //     ];
 
-        }
-        else if (!$this->upload->do_upload('pdf-file-initial')) {
+        // }
+        // else 
+        if (!$this->upload->do_upload('pdf-file-initial')) {
             $response = [
                 'status'  => 'save-error',
                 'message' => 'PDF Bill Upload Failed'
@@ -1530,10 +1648,10 @@ class Billing_controller extends CI_Controller {
     
             $get_prev_mbl_by_bill_no = $this->billing_model->get_billing($billing_no);
             $get_prev_mbl = $this->billing_model->get_prev_mbl($billing_no,$noa_info['emp_id']);
-            $old_billing = $this->billing_model->get_billing_by_emp_id($noa['emp_id']);
+            $old_billing = $this->billing_model->get_billing_by_emp_id($noa_info['emp_id']);
             $check_bill = $this->billing_model->check_re_upload_billing($billing_no);
             $result_charge = $this->get_personal_and_company_charge("noa",$noa_id,$net_bill,($check_bill !=0)? true : false, ($get_prev_mbl !=null)?$get_prev_mbl['after_remaining_bal']:$get_prev_mbl_by_bill_no['before_remaining_bal'],($old_billing !=null)? $old_billing['after_remaining_bal'] : null);
-            // var_dump($net_bill);
+            var_dump($result_charge);
             $data = [
                 'billing_no'            => $billing_no,
                 'emp_id'                => $noa_info['emp_id'],
@@ -1544,7 +1662,7 @@ class Billing_controller extends CI_Controller {
                 'personal_charge'       => floatval(str_replace(',', '', $result_charge['personal_charge'])),
                 'pdf_bill'              => $pdf_file,
                 'uploaded_by'           => $this->session->userdata('fullname'),
-                'date_uploaded'         => $initial_date,
+                'date_uploaded'         => date('Y-m-d'),
                 'status'                => 'Initial',
             ];    
             
@@ -1765,7 +1883,7 @@ class Billing_controller extends CI_Controller {
         // var_dump("noa_id",$noa_id);
         $data = [];
         foreach ($list as $noa) {
-            $date_uploaded = date("Y/", strtotime($noa['date_uploaded']));
+            $date_uploaded = date("Y-m-d", strtotime($noa['date_uploaded']));
             $custom_billing_no = '<mark class="bg-primary text-white">' . $noa['billing_no'] . '</mark>';
             $file_name = $noa['pdf_bill'];
             $initial_bill = number_format($noa['initial_bill']);
@@ -1834,6 +1952,41 @@ class Billing_controller extends CI_Controller {
 		];
 		echo json_encode($output);
 	}
+
+    function upload_final_soa(){
+
+        $this->security->get_csrf_hash();
+        $billing_no = $this->input->post('billing-no', TRUE);
+
+        $config['upload_path'] = './uploads/final_soa/';
+        $config['allowed_types'] = 'pdf';
+        $config['encrypt_name'] = TRUE;
+        $this->load->library('upload', $config);
+    
+        if (!$this->upload->do_upload('finalsoa')) {
+            $response = [
+                'status'  => 'save-error',
+                'message' => 'PDF Bill Upload Failed'
+            ];
+        } else {
+            $upload_data = $this->upload->data();
+            $pdf_file = $upload_data['file_name'];
+            $inserted = $this->billing_model->update_billing(['final_soa' => $pdf_file],$billing_no);
+    
+            if(!$inserted){
+                $response = [
+                   'status'  => 'save-error',
+                   'message' => 'Final SOA Upload Failed'
+                ];
+            }else{
+                $response = [
+                        'status'     => 'success',
+                        'message'    => 'Final SOA Uploaded Successfully'
+                    ];   
+            }
+        }
+        echo json_encode($response);
+    }
     
 }
  

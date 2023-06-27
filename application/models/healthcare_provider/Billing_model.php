@@ -378,4 +378,49 @@ class Billing_model extends CI_Model {
         return $this->db->insert('soa_textfile', $data);
     }
 
+    function _set_loa_status_completed($loa_id) {
+        $this->db->set('completed', '0')
+                ->where('loa_id', $loa_id);
+        return $this->db->update('loa_requests');
+      }
+
+    function db_get_max_billing_id() {
+        $this->db->select_max('billing_id');
+        $query = $this->db->get('billing');
+        return $query->row_array();
+    }
+
+    function check_billing_loa($loa_id){
+        $this->db->where('loa_id', $loa_id);
+        $count = $this->db->count_all_results('billing');
+        if($count!=0){
+            return true;
+        }else{
+            return false;
+        }
+        // return $query->num_rows();
+    }
+    function check_billing_noa($noa_id){
+        $this->db->where('noa_id', $noa_id);
+        $count = $this->db->count_all_results('billing');
+        if($count!=0){
+            return true;
+        }else{
+            return false;
+        }
+        // return $query->num_rows();
+    }
+
+    function get_billing_id($billing_no,$emp_id,$hp_id){
+        $this->db->select('*')
+        ->where('billing_no', $billing_no)
+        ->where('emp_id', $emp_id)
+        ->where('hp_id', $hp_id);
+        $query = $this->db->get('billing');
+        return $query->row_array();
+    }
+
+    function itemized_bill($data) {
+        return $this->db->insert('itemized_bill', $data);
+    }
 }

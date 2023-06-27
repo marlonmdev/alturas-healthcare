@@ -23,7 +23,10 @@ class Api_controller extends CI_Controller {
       $data['approved_amount']      = $_POST['approved_amount'];
       $data['excess_amount']        = $_POST['excess_amount'];
       $data['billing_id']           = $_POST['billing_id']; 
+
+      
       $this->Api_model->update_apprv($data);
+      $this->Api_model->update_billing($data);
    
       $data['html'] ='success';
       echo json_encode($data);

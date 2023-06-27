@@ -50,7 +50,7 @@ class Noa_controller extends CI_Controller {
 			);
 			echo json_encode($response);
 			exit();
-		} else {
+		}else{
 			// check if the selected hospital exist from database
 			$hospital_id = $this->input->post('hospital-name');
 			$hp_exist = $this->noa_model->db_check_hospital_exist($hospital_id);
@@ -58,7 +58,7 @@ class Noa_controller extends CI_Controller {
 				$response = array('status' => 'save-error', 'message' => 'Hospital Does Not Exist');
 				echo json_encode($response);
 				exit();
-			} else {
+			}else{
 				// select the max noa_id from DB
 				$result = $this->noa_model->db_get_max_noa_id();
 				$max_noa_id = !$result ? 0 : $result['noa_id'];
@@ -83,6 +83,7 @@ class Noa_controller extends CI_Controller {
 					'request_date' => date("Y-m-d"),
 					'status' => $default_status,
 					'requested_by' => $emp_id,
+					'type_request' => $inputPost['type_request'],
 				);
 
 				$saved = $this->noa_model->db_insert_noa_request($post_data);

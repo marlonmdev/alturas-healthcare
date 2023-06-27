@@ -37,6 +37,7 @@
         </div>
         
         <div class="row">
+            
             <div class="col-12 mb-3">
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
@@ -45,7 +46,29 @@
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="initial_tab" data-bs-toggle="tab" data-bs-target="#initial_bill" type="button" role="tab" aria-controls="profile" aria-selected="false"><strong>Initial Bill</strong></button>
                     </li>
-                </ul>
+                    <div class="col-5">
+</div>
+                            <div class="row ">
+                                <div class="col-lg-6">
+                                <!-- <label class="form-label fs-5 ls-1">Remaining MBL Balance</label> -->
+                                    <div class="input-group mb-3">
+                                    <label class="form-label fs-5 ls-1 pt-1">MBL Balance</label>
+                                        <span class="input-group-text bg-cyan text-white ms-2">&#8369;</span>
+                                        <input type="text" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="<?= number_format($remaining_balance) ?>"  readonly>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                <!-- <label class="form-label fs-5 ls-1" id="net_bill_label">Final Bill</label> -->
+                                    <div class="input-group mb-3">
+                                    <label class="form-label fs-5 ls-1 pt-1" id="net_bill_label">Final Bill</label>
+                                        <span class="input-group-text bg-cyan text-white ms-2">&#8369;</span>
+                                        <input type="text" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" value="0.00" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                    </ul>
+                
             </div>
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="final_bill" role="tabpanel">
@@ -53,6 +76,7 @@
                     <form action="<?php echo base_url();?>healthcare-provider/billing/bill-noa/upload-pdf/<?= $noa_id ?>/submit" id="pdfBillingForm" enctype="multipart/form-data" class="needs-validation" novalidate>
                         <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
                         <input type="hidden" name="billing-no" value="<?= $billing_no ?>">
+                        <!-- <input type="text" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" value="0.00" hidden> -->
                         <div class="card">
                             <div class="card-body shadow">
                                 <div class="row mt-3">
@@ -82,7 +106,7 @@
                             <div class="row pt-3">
                                 <div class="col-lg-6">
                                     <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
-                                        <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Initial Billing 
+                                        <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload final Billing 
                                     </label>
                                     <input type="file" class="form-control" name="pdf-file" id="pdf-file" accept="application/pdf" onchange="previewPdfFile('pdf-file')" required>
                                     <div class="invalid-feedback fs-6">
@@ -90,24 +114,18 @@
                                     </div>
                                 </div>
 
-                                <div class="col-lg-3">
-                                <label class="form-label fs-5 ls-1">Remaining MBL Balance</label>
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text bg-cyan text-white">&#8369;</span>
-                                        <input type="text" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="<?= number_format($remaining_balance) ?>"  readonly>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-3">
-                                <label class="form-label fs-5 ls-1" id="net_bill_label">Final Bill</label>
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text bg-cyan text-white">&#8369;</span>
-                                        <input type="text" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" value="0.00" readonly>
+                                <div class="col-lg-6">
+                                    <label class="fw-bold fs-5 ls-1" id="">
+                                        <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Itemized Billing 
+                                    </label>
+                                    <input type="file" class="form-control" name="itemize-pdf-file" id="itemize-pdf-file" accept="application/pdf" onchange="previewPdfFile('itemize-pdf-file')" required>
+                                    <div class="invalid-feedback fs-6">
+                                        PDF File is required
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="row " id="final_diagnosis">
+                            <div class="row  pt-3" id="final_diagnosis">
                                 <div class="col-lg-6">
                                     <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
                                         <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Final Diagnosis/Operation 
@@ -169,7 +187,7 @@
             <input type="hidden" name="billing-no" value="<?= $billing_no ?>">
             <div class="row">
             <div class="col-lg-8"></div> <!-- Empty column to create space on the left side -->
-            <div class="col-lg-4">
+            <!-- <div class="col-lg-4">
                 <div class="input-group">
                     <div class="input-group-append">
                         <span class="input-group-text text-white bg-dark ls-1 ms-2" title="Initial bill As Of">
@@ -178,7 +196,7 @@
                     </div>
                     <input type="date" class="form-control" name="initial-date" id="initial-date" title="Initial bill As Of" onchange="validateDateRange()" placeholder="Billing Date"  required>
                 </div>
-            </div>
+            </div> -->
         </div>
 
             <div class="card">
@@ -302,7 +320,7 @@
     let is_valid_name = true;
     let is_valid_noa = true;
     let is_valid_netbill = true;
-
+    let json_final_charges = {};
     
     if(re_upload){
         $('#initial_tab').hide();
@@ -350,7 +368,7 @@
             $('#initial-net-bill').val(initial_net_bill);
             read_pdf(false);
         });
-
+        
         $('#clear-btn').on('click', function(){
             $('#pdfBillingForm')[0].reset();
         });
@@ -402,6 +420,33 @@
             }   
         });
        
+<<<<<<< HEAD
+        // $('#viewPDFBillModal').on('hidden.bs.modal', function (e) {
+        //     is_valid_name = true;
+        //     is_valid_noa = true;
+        //     is_valid_netbill = true;
+        //     if(is_valid_name || is_valid_noa || is_valid_netbill){
+        //         window.location.reload();
+        //         // $('#pdfBillingForm')[0].reset();
+        //         // $('#initialpdfBillingForm')[0].reset();
+        //     }
+        // });
+=======
+        $('#viewPDFBillModal').on('hidden.bs.modal', function (e) {
+            
+            if(!is_valid_noa || !is_valid_netbill){
+                window.location.reload();
+                // $('#pdfBillingForm')[0].reset();
+                // $('#initialpdfBillingForm')[0].reset();
+            }
+            // console.log("is_valid_name",is_valid_name);
+            // console.log("is_valid_noa",is_valid_noa);
+            // console.log("is_valid_netbill",is_valid_netbill);
+            is_valid_name = true;
+            is_valid_noa = true;
+            is_valid_netbill = true;
+        });
+>>>>>>> df5fe5f1304038f0607b559e233f533ca84afc0c
         
         
         // $('#final_diagnosis').prop("hidden",true);
@@ -456,6 +501,8 @@
             let formData = new FormData($(this)[0]);
             formData.append('hospital_bill_data', hospital_charges);
             formData.append('attending_doctors', attending_doctors);
+            formData.append('json_final_charges', json_final_charges);
+            formData.append('net_bill', $('#net-bill').val());
             $.ajax({
                 type: 'POST',
                 url: $(this).attr('action'),
@@ -500,6 +547,7 @@
             let formData = new FormData($(this)[0]);
             formData.append('hospital_bill_data', hospital_charges);
             formData.append('attending_doctors', attending_doctors);
+            formData.append('net_bill', $('#net-bill').val());
             $.ajax({
                 type: 'POST',
                 url: $(this).attr('action'),
@@ -540,7 +588,8 @@
         const read_pdf = (is_final) =>{
        // console.log("is_final",is_final);
         //extract pdf text and git the net bill
-        let pdfFileInput = (is_final) ? document.getElementById('pdf-file') : document.getElementById('pdf-file-initial');
+        ['pdf-file','itemize-pdf-file'].forEach(function(pdfid) {
+        let pdfFileInput = (is_final) ? document.getElementById(pdfid) : document.getElementById('pdf-file-initial');
         let subtotalValue = 0;
         pdfFileInput.addEventListener('change', function() {
         let reader = new FileReader();
@@ -599,27 +648,29 @@
                             return (result = result + '\n' + item.text.replace(pattern, ''));
                             }, '').trim();
 
-                            console.log(finalResult);
                             console.log("final result",finalResult);
                             const pattern = /attending doctor\(s\):\s(.*?)\admission date:/si;
-                            const patient_pattern = /patient name:\s(.*?)\admission no:/si;
-                            const doc_pattern = /hospital charges(.*?)please pay for this amount/si;
+                            const patient_pattern = /patient name:\s(.*?)\admission no/si;
+                           
 
                             const matches_1 = finalResult.match(pattern);
                             const result_1 = matches_1 ? matches_1[1] : null;
-
-                            const matches_2 = finalResult.match(doc_pattern);
-                            const result_2 = matches_2 ? matches_2[1] : null;
+                            
 
                             const matches_3 = finalResult.match(patient_pattern);
                             const result_3 = matches_3 ? matches_3[1] : null;
-
-                            hospital_charges = result_2;
-                            attending_doctors = get_doctors(finalResult);
+                            
                            
-                            console.log("doctors",attending_doctors);
+                            
+                            console.log('final text',final_text(finalResult));
+                            get_all_item(final_text(finalResult));
+                            
+                            json_final_charges = JSON.stringify( get_all_item(final_text(finalResult)));
+                           
+                            // console.log("data",final_charges);
+                            console.log("JSON",json_final_charges);
+                            
                             // console.log("final doctors", result_3);
-                            console.log("hospital charges", hospital_charges);
                             console.log("patient name", result_3);
 
                             //this check if the patient name is equal to the member name
@@ -641,7 +692,7 @@
                                     // $('#upload-btn').prop('disabled',true);
                                     $.alert({
                                             title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
-                                            content: `<div style='font-size: 16px; color: #333;'>The uploaded PDF bill does not match the member's name. Please ensure that you have uploaded the correct PDF bill for your account.</div>`,
+                                            content: `<div style='font-size: 16px; color: #333;'>The uploaded PDF bill does not match the member's name. Please ensure that you have uploaded the correct PDF bill.</div>`,
                                             type: "red",
                                             buttons: {
                                             ok: {
@@ -679,15 +730,28 @@
                             }
 
                             //validate amount payable
+                        if(pdfid === 'pdf-file'){
+
+                            const doc_pattern = /hospital charges(.*?)please pay for this amount/si;
+                            const matches_2 = finalResult.match(doc_pattern);
+                            const result_2 = matches_2 ? matches_2[1] : null;
+                            hospital_charges = result_2;
+                            console.log("hospital charges", hospital_charges);
+                            attending_doctors = get_doctors(finalResult);
+                            console.log("doctors", attending_doctors);
                             const regex = /please pay for this amount\s*\.*\s*([\d,\.]+)/i;
                             const match = finalResult.match(regex);
                             console.log("match",match);
+
                             if (match) {
+                                is_valid_netbill = true;
                                 subtotalValue = parseFloat(match[1].replace(/,/g, ""));
                                 net_bill=subtotalValue;
+
                                 if(is_valid_name && is_valid_noa){
                                     $('#upload-btn').prop('disabled',false);
                                 }
+
                                 if(is_final){
                                     console.log("netbill",net_bill);
                                     console.log("mbl",mbl);
@@ -706,7 +770,7 @@
                                                 },
                                             });
                                         }, 1000); // Delay of 2000 milliseconds (2 seconds)
-                                }
+                                    }
                                 }else{
                                     document.getElementsByName("initial-net-bill")[0]   .value = match[1];
                                     //console.log('initil',match[1]);
@@ -714,12 +778,12 @@
                 
                             } else {
                                 console.log("please pay for this amount is not found");
-
+                                is_valid_netbill = false;
                                 $('#upload-btn').prop('disabled',true);
                                 setTimeout(function() {
                                             $.alert({
                                                 title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Warning</h3>`,
-                                                content: "<div style='font-size: 16px; color: #333;'>The uploaded PDF Bill name is not the same to the members name.</div>",
+                                                content: "<div style='font-size: 16px; color: #333;'>The uploaded PDF Bill is not correct.</div>",
                                                 type: "red",
                                                 buttons: {
                                                     ok: {
@@ -729,6 +793,7 @@
                                                 },
                                             });
                                         }, 1000); // Delay of 2000 milliseconds (2 seconds)
+                            }
                             }
 
                         });
@@ -742,6 +807,7 @@
                 }
                 
                 });
+            });
 
             }
 
@@ -893,6 +959,103 @@
                        
                 }
 
+                const final_text = (text) => {
+
+                var searchTerms = [
+                "ramiro community hospital",
+                "0139 c. gallares street",
+                "tel. no(s):",
+                "patient name:",
+                "hospitalization plan:",
+                "attending doctor(s):",
+                "patient address:",
+                "room no.:",
+                "date   description",
+                "labesores, marian cacayan",
+                "billing clerk",
+                // Add more search terms as needed
+                ];
+
+                var lines = text.split("\n");
+                var modifiedLines = lines.filter(function(line) {
+                for (var i = 0; i < searchTerms.length; i++) {
+                    if (line.includes(searchTerms[i])) {
+                        return false;
+                    }
+                    }
+                    return true;
+                });
+
+                var modifiedText = modifiedLines.join("\n");
+                return modifiedText;
+                // console.log("final text",modifiedText);
+                }
+
+                const get_all_item = (result) => {
+                    const line1 = result.split("\n"); // Split input into an array of lines
+                    const data1 = line1.map(line => line.split(/\s{3,}/)); 
+                    console.log(data1);
+                    let include = true;
+      
+                    const lin = result.split("\n");
+              
+                    const texts = lin.filter(line => {
+
+                        if (include) {
+
+                            if (/\btotal\b/i.test(line)) {
+                                return false;
+                            }
+                            return true;
+
+                            }
+
+                            return false;
+                        });
+
+                        const text = texts.join("\n");
+                        let pushedArrays = [];
+                        const liness = text.split("\n"); // Split input into an array of lines
+                        const data = liness.map(line => line.split(/\s{3,}/)); // Split each line into an array of values
+                        let x = 0;
+      
+                        let id_length_1 = 0;
+                        let id_length_5 = 0;
+                        const outputArray = data.map((arr, index) => {
+                        const currentLength = arr.length;
+                        const nextLength = index + 1 < data.length ? data[index + 1].length : 0;
+
+                        if (index === 0) {
+                          
+                          id_length_1 = index;
+                          return arr;
+                        } else {
+
+                          let appendedArray = [];
+
+                          if(currentLength === 1) {
+                              id_length_1 = index;
+                          }
+
+                        
+                          if (currentLength === 5) {
+                            appendedArray = [data[id_length_1][0], ...arr];
+                            id_length_5 = index;
+                           
+                          } else if (currentLength === 4) {
+                            appendedArray = [data[id_length_1][0],data[id_length_5][0], ...arr];
+                            
+                          } else {
+                            appendedArray = arr;
+                          }
+                            return appendedArray;
+
+                        }
+                         
+                      });
+                        // console.log("medicine",outputArray.filter(arr => arr.length !== 1));
+                        return outputArray.filter(arr => arr.length !== 1);
+      }
                                 
                 // const displayValue = () => {
 

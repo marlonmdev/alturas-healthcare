@@ -27,13 +27,20 @@ class Api_model extends CI_Model {
     $date_prcs	= date("Y-m-d");
     $this->db->set('approved_amount',$approved_amount);
     $this->db->set('date_approved',$date_prcs);
-    $this->db->set('disapproved_on','Approved');
+    $this->db->set('ebm_status','Approved');
     $this->db->where('emp_id',$emp_id);
     $this->db->where('billing_id',$billing_id);
     $this->db->update('cash_advance');
-    
-    
+  
   }
 
-  
+  //update cash advance in billing table
+  function update_billing($data) {
+    $this->db->set('cash_advance', $data['cash_advance']);
+    $this->db->set('personal_charge', $data['excess_amount']-$data['cash_advance']);
+    $this->db->where('billing_id', $data['billing_id']);
+    $this->db->where('emp_id', $data['emp_id']);
+    return $this->db->update('billing'); 
+  }
+
 }

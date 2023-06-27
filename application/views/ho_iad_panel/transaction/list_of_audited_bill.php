@@ -109,58 +109,5 @@
       fixedHeader: true,
     });
   });
- const tagDoneAudit = (payment_no) => {
-    $.confirm({
-            title: '<strong>Confirmation!</strong>',
-            content: '<span class="fs-5">Are you sure it`s already Audited?</span>',
-            type: 'blue',
-            buttons: {
-                confirm: {
-                    text: 'Yes',
-                    btnClass: 'btn-blue',
-                    action: function(){
 
-                        $.ajax({
-                            url: '<?php echo base_url();?>head-office-iad/biling/submit-audited',
-                            method: "POST",
-                            data: {
-                                'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
-                                'payment_no' : payment_no,
-                            },
-                            dataType: "json",
-                            success: function(response){
-                                const { 
-                                    token,status,message
-                                } = response;
-
-                                if(status == 'success'){
-                                    swal({
-                                        title: 'Success',
-                                        text: message,
-                                        timer: 3000,
-                                        showConfirmButton: true,
-                                        type: 'success'
-                                    });
-                                }
-                                if(status == 'error'){
-                                    swal({
-                                        title: 'Error',
-                                        text: message,
-                                        timer: 3000,
-                                        showConfirmButton: true,
-                                        type: 'error'
-                                    });
-                                }
-                            }
-                        }); 
-                    },
-                },
-                cancel: {
-                    btnClass: 'btn-dark',
-                    action: function() {
-                    }
-                },
-            }
-        });
- }
 </script>

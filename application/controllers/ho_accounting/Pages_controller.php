@@ -215,6 +215,14 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
+	function view_bu_for_payment() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bu'] = $this->List_model->get_business_units();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/bu_for_payment_charges.php');
+		$this->load->view('templates/footer');
+	}
+
 	function view_paid_bu_charging() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['bu'] = $this->List_model->get_business_units();
@@ -232,13 +240,23 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
-	function view_paid_charging_details() {
+	function fetch_acc_ledger() {
 		$data['user_role'] = $this->session->userdata('user_role');
-		$data['emp_id'] = $empId = $this->uri->segment(5);
-		$data['member'] = $this->List_model->get_member_info($empId);
+		$data['bu'] = $this->List_model->get_business_units();
+		$data['paid'] = $this->List_model->get_year_paid();
 		$this->load->view('templates/header', $data);
-		$this->load->view('ho_accounting_panel/billing_list_table/charging_paid_details.php');
+		$this->load->view('ho_accounting_panel/billing_list_table/ledger_paid.php');
 		$this->load->view('templates/footer');
 	}
 
+	function fetch_mbl_ledger() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bu'] = $this->List_model->get_business_units();
+		$data['paid'] = $this->List_model->get_year_paid();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/ledger_mbl.php');
+		$this->load->view('templates/footer');
+	}
+
+	
 }

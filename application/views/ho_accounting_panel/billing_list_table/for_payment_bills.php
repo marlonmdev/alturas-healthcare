@@ -320,4 +320,14 @@
         }
 
     };
+
+    const validateNumberInputs = () => {
+        const number_input = document.querySelector('#amount-paid');
+        number_input.addEventListener('input', function(event) {
+            if (this.value < 0) {
+                this.value = '';
+            }
+        });
+    }
+
 </script>

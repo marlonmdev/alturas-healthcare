@@ -408,13 +408,21 @@ $route['head-office-accounting/charging/business-units/fetch'] = 'ho_accounting/
 $route['head-office-accounting/charging/paid/business-units/fetch'] = 'ho_accounting/main_controller/fetch_bu_paid_charge';
 $route['head-office-accounting/charging/business-units/details/fetch'] = 'ho_accounting/main_controller/fetch_charging_details';
 $route['head-office-accounting/charging/business-units/details/paid/fetch'] = 'ho_accounting/main_controller/fetch_paid_charging_details';
+$route['head-office-accounting/biling/loa-noa-details/fetch/(:any)'] = 'ho_accounting/main_controller/fetch_loa_noa_details';
+$route['head-office-accounting/charging/tag-to-collect'] = 'ho_accounting/main_controller/tag_to_collect_bu_charges';
+$route['head-office-accounting/charging/receivables/fetch'] = 'ho_accounting/main_controller/fetch_receivables_charge';
+$route['head-office-accounting/charging/bu-receivables/fetch/(:any)/(:any)'] = 'ho_accounting/main_controller/view_bu_receivables_details';
+$route['head-office-accounting/charging/bu-tag-as-paid'] = 'ho_accounting/main_controller/tag_as_paid_charging';
+$route['head-office-accounting/ledger/fetch'] = 'ho_accounting/main_controller/fetch_ledger_yearly';
+$route['head-office-accounting/ledger/mbl/fetch'] = 'ho_accounting/main_controller/fetch_ledger_mbl';
+
 
 $route['print/pdfbilling/(:any)/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_bills/$1/$2/$3/$4';
 $route['printforpayment/pdfbilling/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_forPayment/$1/$2/$3/$4/$5';
 $route['printpayment/pdfbilling/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_payment/$1/$2/$3';
 $route['printpaid/pdfbilling/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_paid/$1/$2/$3';
 $route['printBUCharge/pdfBUCharging/(:any)/(:any)'] = 'ho_accounting/main_controller/print_bu_charging/$1/$2';
-$route['printBUCharge/pdfBUPaidCharging/(:any)/(:any)'] = 'ho_accounting/main_controller/print_bu_charging/$1/$2';
+$route['printBUCharge/pdfReceivablesCharging/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_rcv_bu_charging/$1/$2/$3';
 
 //Pages
 $route['head-office-accounting/billing-list'] = 'ho_accounting/TableList';
@@ -439,13 +447,16 @@ $route['head-office-accounting/reports'] = 'ho_accounting/Pages_controller/view_
 $route['head-office-accounting/reports/cash-advance'] = 'ho_accounting/Pages_controller/view_cash_advances';
 $route['head-office-accounting/reports/charging'] = 'ho_accounting/Pages_controller/view_charging';
 $route['head-office-accounting/charging/business-unit'] = 'ho_accounting/Pages_controller/view_bu_charging';
+$route['head-office-accounting/charging/business-unit/for-payment'] = 'ho_accounting/Pages_controller/view_bu_for_payment';
 $route['head-office-accounting/charging/business-unit/paid'] = 'ho_accounting/Pages_controller/view_paid_bu_charging';
 $route['head-office-accounting/charging/member/(:any)'] = 'ho_accounting/Pages_controller/view_charging_details';
-$route['head-office-accounting/charging/member/paid/(:any)'] = 'ho_accounting/Pages_controller/view_paid_charging_details';
 $route['head-office-accounting/loa-request-list/loa-billed'] = 'ho_accounting/Pages_controller/view_billed_loa';
 $route['head-office-accounting/loa-request-list/loa-paid'] = 'ho_accounting/Pages_controller/view_paid_loa';
 $route['head-office-accounting/noa-request-list/noa-billed'] = 'ho_accounting/Pages_controller/view_billed_noa';
 $route['head-office-accounting/noa-request-list/noa-paid'] = 'ho_accounting/Pages_controller/view_paid_noa';
+$route['head-office-accounting/ledger'] = 'ho_accounting/Pages_controller/fetch_acc_ledger';
+$route['head-office-accounting/ledger/mbl'] = 'ho_accounting/Pages_controller/fetch_mbl_ledger';
+
 
 // LOA datatables
 $route['head-office-accounting/loa-request-list/loa-approved/fetch'] = 'ho_accounting/Loa_ho_controller/get_approved_loa';
@@ -991,6 +1002,7 @@ $route['head-office-iad/biling/audit/fetch'] = 'ho_iad/transaction_controller/fe
 $route['head-office-iad/biling/submit-audited'] = 'ho_iad/transaction_controller/submit_audited';
 $route['head-office-iad/biling/audited/fetch'] = 'ho_iad/transaction_controller/fetch_audited_bill';
 $route['head-office-iad/biling/paid/fetch'] = 'ho_iad/transaction_controller/fetch_paid_bill';
+$route['head-office-iad/biling/loa-noa-details/fetch/(:any)'] = 'ho_iad/transaction_controller/fetch_loa_noa_details';
 //end
 // Payment Details
 $route['head-office-iad/transaction/payment-details/(:any)'] = 'ho_iad/transaction_controller/view_payment_details';

@@ -126,21 +126,12 @@
                     <div class="row pe-2" id="printableDiv">
                         <div id="billing-table">
                             <div class="card-body">
-                                <!-- <div class="text-center pt-3">
-                                    <h4>ALTURAS HEALTHCARE SYSTEM</h4>
-                                    <h4>Billing Summary Details</h4>
-                                    <h5><span id="b-bu-units"></span></h5>
-                                    <h5><span id="b-payment-no"></span></h5>
-                                </div> -->
-                                <!-- <div class="pt-3 pb-2">
-                                    <span class="fw-bold fs-5 ps-2" id="b-hospital"></span><br>
-                                    <span class="fw-bold fs-5 ps-2 pt-1" id="b-date"></span>
-                                </div> -->
                                 <div class="pt-4 table-responsive">
+                                    <i class="text-danger">( Click LOA/NOA number to view details )</i>
                                     <table class="table table-sm border" id="billedTable">
                                         <thead>
                                             <tr class="border-secondary border-2 border-0 border-top border-bottom">
-                                                <!-- <th class="fw-bold ls-2"><strong>Requested On</strong></th> -->
+                                                <th class="fw-bold ls-2"><strong>#</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Billing No</strong></th>
                                                 <th class="fw-bold ls-2"><strong>LOA/NOA #</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Patient Name</strong></th>
@@ -153,7 +144,7 @@
                                                 <th class="fw-bold ls-2"><strong>Total Payable</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Personal Charge</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Remaining MBL</strong></th>
-                                                
+                                                <th class="fw-bold ls-2"><strong>SOA</strong></th>
                                             </tr>
                                         </thead>
                                         <tbody class="pt-2" id="billing-tbody" >
@@ -162,17 +153,18 @@
                                     <div class="row offset-7">
                                         <span class="ps-4 fw-bold">TOTAL PAYABLE <span class="offset-2" id="total_bill"></span></span>
                                     </div>
-                                    
                                     <br><br><br>
                                 </div>
                             </div>
                         </div> 
                     </div>  
+            <?php include 'view_pdf_bill_modal.php'; ?>
         </div>
      </div>
      <?php include 'adjust_h_advance_modal.php' ;?>
     </div>
-  
+  <?php include 'view_loa_noa_details_modal.php';?>
+
 <script>
   const baseUrl = "<?php echo base_url(); ?>";
 
@@ -211,7 +203,7 @@
     });
 
     billedTable.on('draw.dt', function() {
-        let columnIdx = 9;
+        let columnIdx = 10;
         let sum = 0;
         let rows = billedTable.rows().nodes();
 
@@ -433,13 +425,11 @@ const viewValues = () => {
                                                 showConfirmButton: false,
                                                 type: 'success'
                                             });
-                                            setTimeout(function () {
-                                                window.location.href = '<?php echo base_url();?>head-office-accounting/billing-list/for-payment';
-                                            }, 2600);
+                                            // setTimeout(function () {
+                                            //     window.location.href = '<?php echo base_url();?>head-office-accounting/billing-list/for-payment';
+                                            // }, 2600);
 
                                             if(payment_no != ''){
-                                                const paymentno = document.querySelector('#b-payment-no');
-                                                paymentno.textContent = payment_no;
                                                 printForPayment(payment_no);
                                             }
                                         }
@@ -470,6 +460,45 @@ const viewValues = () => {
     getBusinessUnits();
     getBUnits();
  }
+
+ const viewPDFBill = (pdf_bill,loa_noa_no) => {
+      $('#viewPDFBillModal').modal('show');
+      if(loa_noa_no != ''){
+        $('#pdf-loa-no').html(loa_noa_no);
+      }
+
+        let pdfFile = `${baseUrl}uploads/pdf_bills/${pdf_bill}`;
+        let fileExists = checkFileExists(pdfFile);
+
+        if(fileExists){
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', pdfFile, true);
+        xhr.responseType = 'blob';
+
+        xhr.onload = function(e) {
+            if (this.status == 200) {
+            let blob = this.response;
+            let reader = new FileReader();
+
+            reader.onload = function(event) {
+                let dataURL = event.target.result;
+                let iframe = document.querySelector('#pdf-viewer');
+                iframe.src = dataURL;
+            };
+            reader.readAsDataURL(blob);
+            }
+        };
+        xhr.send();
+        }
+    }
+
+    const checkFileExists = (fileUrl) => {
+        let xhr = new XMLHttpRequest();
+        xhr.open('HEAD', fileUrl, false);
+        xhr.send();
+
+        return xhr.status == "200" ? true: false;
+    }
 
  const viewContainer = () => {
     const report_filter = document.querySelector('#report-filter');
@@ -644,6 +673,75 @@ const viewValues = () => {
         var base_url = `${baseUrl}`;
         var win = window.open(base_url + "printforpayment/pdfbilling/" + btoa(hp_ids) + "/" + btoa(start_dates) + "/" + btoa(end_dates) + "/" + btoa(bu_filter) + "/" + btoa(payment_no), '_blank');
     }
+
+    const viewLOANOAdetails = (billing_id) => {
+    $('#viewLOANOAdetailsModal').modal('show');
+    $.ajax({
+      url: `${baseUrl}head-office-accounting/biling/loa-noa-details/fetch/${billing_id}`,
+      data: `<?php echo $this->security->get_csrf_hash(); ?>`,
+      type: 'GET',
+      success: function(response) {
+        const res = JSON.parse(response);
+        const {
+          token,
+          loa_noa_no,
+          fullname,
+          business_unit,
+          hp_name,
+          requested_on,
+          approved_on,
+          approved_by,
+          request_type,
+          percentage,
+          services,
+          admission_date,
+          billed_on,
+          billed_by,
+          billing_no,
+          net_bill,
+          personal_charge,
+          company_charge,
+          cash_advance,
+          total_payable,
+          before_remaining_bal,
+          after_remaining_bal
+        } = res;
+
+        if(request_type == 'Diagnostic Test'){
+          $('#cost-types').show();
+        }else{
+          $('#cost-types').hide();
+        }
+        if(request_type == 'NOA'){
+          $('#admitted-on').show();
+        }else{
+          $('#admitted-on').hide();
+        }
+        $('#noa-loa-no').html(loa_noa_no);
+        $('#members-fullname').html(fullname);
+        $('#member-bu').html(business_unit);
+        $('#hc-provider').html(hp_name);
+        $('#request-date').html(requested_on);
+        $('#approved-on').html(approved_on);
+        $('#approved-by').html(approved_by);
+        $('#request-type').html(request_type);
+        $('#percentage-is').html(percentage);
+        $('#med-services').html(services);
+        $('#admission-date').html(admission_date);
+        $('#billed-on').html(billed_on);
+        $('#billed-by').html(billed_by);
+        $('#billing-no').html(billing_no);
+        $('#net-bill').html(net_bill);
+        $('#personal-charge').html('-'+ personal_charge);
+        $('#company-charges').html(company_charge);
+        $('#cash-advance').html(cash_advance);
+        $('#total-payable').html(total_payable);
+        $('#totals-payable').html(total_payable);
+        $('#max-benefit').html(before_remaining_bal);
+        $('#remaining-mbl').html(after_remaining_bal);
+      }
+    });
+ }
 </script>
    
 </html>

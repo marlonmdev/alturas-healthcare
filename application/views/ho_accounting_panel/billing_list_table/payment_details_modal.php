@@ -39,7 +39,7 @@
                     <div class="row pt-2">
 
                         <div class="row col-lg-4 pb-3 pt-2">
-                            <label class=" text-dark fw-bold ms-2 fs-5">Account Number: </label>
+                            <label class=" text-dark fw-bold ms-2 fs-5"><span class="text-danger">*</span> Account Number: </label>
                         </div>
                         <div class="col-lg-8">
                             <input type="text" class="form-control text-dark fs-5" name="acc-number" id="acc-number">
@@ -47,15 +47,15 @@
                         </div>
 
                         <div class="row col-lg-4 pb-3 pt-2">
-                            <label class=" text-dark fw-bold ms-2 fs-5">Account Name: </label>
+                            <label class=" text-dark fw-bold ms-2 fs-5"><span class="text-danger">*</span> Account Name: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="text" class="form-control text-dark fs-5" name="acc-name" id="acc-name">
+                            <input type="text" class="form-control text-dark fs-5" name="acc-name" id="acc-name"  oninput="convertToUppercase(this)">
                             <span id="acc-name-error" class="text-danger"></span>
                         </div>
 
                         <div class="row col-lg-4 pb-3 pt-2">
-                            <label class=" text-dark fw-bold ms-2 fs-5">Check Number: </label>
+                            <label class=" text-dark fw-bold ms-2 fs-5"><span class="text-danger">*</span> Check Number: </label>
                         </div>
                         <div class="col-lg-8">
                             <input type="text" class="form-control text-dark fs-5" name="check-number" id="check-number">
@@ -63,7 +63,7 @@
                         </div>
                         
                         <div class="row col-lg-4 pb-3 pt-2">
-                            <label class=" text-dark fw-bold ms-2 fs-5">Check Date: </label>
+                            <label class=" text-dark fw-bold ms-2 fs-5"><span class="text-danger">*</span> Check Date: </label>
                         </div>
                         <div class="col-lg-8">
                             <input type="date" class="form-control text-dark fs-5" name="check-date" id="check-date" placeholder="Enter Date" >
@@ -71,26 +71,27 @@
                         </div>
                        
                         <div class="row col-lg-4 pb-3 pt-2">
-                            <label class=" text-dark fw-bold ms-2 fs-5">Bank: </label>
+                            <label class=" text-dark fw-bold ms-2 fs-5"><span class="text-danger">*</span> Bank: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="text" class="form-control text-dark fs-5" name="bank" id="bank">
+                            <input type="text" class="form-control text-dark fs-5" name="bank" id="bank" oninput="convertToUppercase(this)">
                             <span id="bank-error" class="text-danger"></span>
                         </div>
 
                         <div class="row col-lg-4 pb-3 pt-2">
-                            <label class=" text-dark fw-bold ms-2 fs-5">Amount Paid: </label>
+                            <label class=" text-dark fw-bold ms-2 fs-5"><span class="text-danger">*</span> Amount Paid: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="number" step="any" class="form-control text-dark fs-5" name="amount-paid" id="amount-paid">
+                            <input type="number" step="any" class="form-control text-dark fs-5" name="amount-paid" id="amount-paid" oninput="validateNumberInputs()">
                             <span id="paid-error" class="text-danger"></span>
                         </div>
 
                         <div class="row col-lg-4 pb-3 pt-2">
-                            <label class=" text-dark fw-bold ms-2 fs-5">Supporting Document ( CV ): </label>
+                            <label class=" text-dark fw-bold ms-2 fs-5"><span class="text-danger">*</span> Supporting Document (CV): </label>
                         </div>
                         <div class="col-lg-8">
                             <input type="file" class="form-control text-dark fs-5" accept=".pdf, image/*" name="supporting-docu" id="supporting-docu" onchange="previewPdfFile('supporting-docu')">
+                            <small class="text-danger">( Accepts images and pdf )</small>
                             <span id="file-error" class="text-danger"></span>
                         </div>
 
@@ -100,9 +101,32 @@
             <div class="modal-footer">
                 <button type="submit" class="btn btn-success px-3 ls-2 fs-5" id="submit-btn"><i class="mdi mdi-send"></i> SUBMIT</button>
             </div>
-        </form>    
-           
-            
+        </form>  
         </div>
     </div>
 </div>
+<script>
+    const convertToUppercase = (input) => {
+        input.value = input.value.toUpperCase();
+    }
+
+    const formatNumber = (input) => {
+        // / Remove existing commas from the input value
+        var value = input.value.replace(/,/g, '');
+
+        // Parse the input value as a number
+        var number = parseFloat(value);
+
+        // Check if the input is a valid number
+        if (!isNaN(number)) {
+            // Format the number with commas
+            var formattedNumber = number.toLocaleString();
+            
+            // Update the input value with the formatted number
+            input.value = formattedNumber;
+        } else {
+            // If the input is not a valid number, set the value to empty string
+            input.value = '';
+        }
+    }
+</script>

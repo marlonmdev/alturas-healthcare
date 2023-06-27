@@ -213,7 +213,7 @@ class Transaction_model extends CI_Model {
 	//END ====================================================================================
 
 
-	function get_billing_by_payment_no($billing_id){
+	function get_billing_by_id($billing_id){
 		$query = $this->db->get_where('billing', ['billing_id' => $billing_id]);
 		return $query->row_array();
 	}
@@ -311,6 +311,27 @@ class Transaction_model extends CI_Model {
 				 ->join('user_accounts as t2', 't1.doctor_id = t2.doctor_id');
 		return $this->db->get()->result_array();
 	  }
+
+	function get_loa_noa_billing_by_id($billing_id){
+		$this->db->select('*')
+				->from('billing as tbl_1')
+				->join('loa_requests as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id', 'left')
+				->join('noa_requests as tbl_3', 'tbl_1.noa_id = tbl_3.noa_id', 'left')
+				->join('members as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id')
+				->join('healthcare_providers as tbl_5', 'tbl_1.hp_id = tbl_5.hp_id')
+				->where('tbl_1.billing_id', $billing_id);
+		return $this->db->get()->row_array();
+	}
+
+	function get_approved_by_doctor($id) {
+		return $this->db->get_where('company_doctors',['doctor_id' => $id])->row_array();
+	}
+	
+	function db_get_cost_types() {
+		$query = $this->db->get('cost_types');
+		return $query->result_array();
+	  }
+	
 
 
     

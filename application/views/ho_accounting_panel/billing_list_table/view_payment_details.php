@@ -78,7 +78,7 @@
                             <label class=" text-dark fw-bold ms-2 fs-5">Amount Paid: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="number" class="form-control text-dark fs-5" name="amount-paid" id="amount-paid" readonly>
+                            <input type="text" class="form-control text-dark fs-5" name="amount-paid" id="amount-paid" readonly>
                         </div>
 
                         <div class="row col-lg-4 pb-3 pt-2">
@@ -94,14 +94,6 @@
                         <div class="col-lg-8">
                             <textarea class="form-control text-dark fs-5" id="textbox" value="" readonly></textarea>
                         </div>
-<!-- 
-                        <div class="col-lg-8 pt-2">
-                            <label class="fw-bold text-dark fs-5">Attached Check Voucher:</label>
-                            <div class="image-container">
-                                <img src="" id="supporting-docu" alt="Voucher Image">
-                            </div>
-                        </div> -->
-
                     </div>
                 </div>
             </div>

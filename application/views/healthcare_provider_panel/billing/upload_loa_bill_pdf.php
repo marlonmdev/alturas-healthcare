@@ -168,7 +168,20 @@ var searchTerms = [
   "date   description",
   "labesores, marian cacayan",
   "billing clerk",
-  // "emportant",
+  "please pay for",
+  "important:",
+  "statement",
+  "hospital reserves",
+  "incurred",
+  "(philhealth and/or hmo)",
+  "possible",
+  "days upon receipt",
+  "notice",
+  "billed",
+  "clave",
+  "member",
+  "page",
+  // "please pay for",
   // "the statement of account",
   // "hospital reserves",
   // "incurred which",
@@ -196,11 +209,27 @@ return modifiedText;
 // console.log("final text",modifiedText);
 }
   
-const get_deduction = (lines) => {
-        const regex = /philhealth benefits\s*\.*\s*([\d,\.]+)/i;
-       
+function validate_name(patient, member) {
+  // Remove leading and trailing spaces
+  var trimmedStr1 = patient.trim();
+  var trimmedStr2 = member.trim();
+   console.log("trimmedStr1",trimmedStr1);
+   console.log("trimmedStr2",trimmedStr2);
+  // Compare the strings
+  return trimmedStr1 === trimmedStr2;
+}
 
-      }
+const get_deduction = (text) => {
+  var lines = text.split("\n");
+  const data = lines.map(line => line.split(/\s{3,}/));
+
+  const deductions = lines.filter(line => {
+    const regex = / philhealth benefits (pf)/i;
+    return regex.test(line);
+  });
+
+  console.log("deductions", deductions);
+};
 
       const get_all_item = (result) => {
                     const line1 = result.split("\n"); // Split input into an array of lines
@@ -478,7 +507,7 @@ reader.onload = function() {
                       const result_3 = matches_3 ? matches_3[1] : null;
                       console.log('final text',final_text(finalResult));
                       get_all_item(final_text(finalResult));
-                      
+                      get_deduction(finalResult);
                       json_final_charges = JSON.stringify( get_all_item(final_text(finalResult)));
 
                       console.log("data",final_charges);
@@ -486,38 +515,8 @@ reader.onload = function() {
                      
                       
                       console.log("hospital charges", hospital_charges);
+                      console.log("patient name", result_3);
 
-                      if (patient_name.length) {
-                          console.log("patient name", result_3);
-                          const names = patient_name.toLowerCase().split(' ').filter(Boolean);
-
-                          let removedElement ="";
-                          
-                          if(names[names.length-1] === ".jr"){
-                             removedElement = names.splice(names.length-2, 1);
-                          }else{
-                              removedElement = names.splice(names.length-1, 1);
-                          }
-                          const mem_name = removedElement + ", " + names.join(' ');
-                          console.log("final name",mem_name);
-                          if(mem_name !== result_3){
-                            is_valid_name = false;
-                              // $('#upload-btn').prop('disabled',true);
-                              $.alert({
-                                      title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
-                                      content: `<div style='font-size: 16px; color: #333;'>The uploaded PDF bill does not match the member's name. Please ensure that you have uploaded the correct PDF bill.</div>`,
-                                      type: "red",
-                                      buttons: {
-                                      ok: {
-                                          text: "OK",
-                                          btnClass: "btn-danger",
-                                      },
-                                  },
-                              });
-                          }else{
-                            is_valid_name = true;
-                          }
-                      }
 
                   //validate noa 
                   const valid_loa = /registry no:/i;
@@ -542,6 +541,37 @@ reader.onload = function() {
                                   }, 1000); // Delay of 2000 milliseconds (2 seconds)
                       }else{
                         is_valid_noa = true;
+                        if (patient_name.length) {
+
+                        const names = patient_name.toLowerCase().split(' ').filter(Boolean);
+
+                        let removedElement ="";
+
+                        if(names[names.length-1] === ".jr"){
+                          removedElement = names.splice(names.length-2, 1);
+                        }else{
+                            removedElement = names.splice(names.length-1, 1);
+                        }
+                        const mem_name = removedElement + ", " + names.join(' ');
+
+                        if(!validate_name(result_3,mem_name)){
+                          is_valid_name = false;
+                            // $('#upload-btn').prop('disabled',true);
+                            $.alert({
+                                    title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
+                                    content: `<div style='font-size: 16px; color: #333;'>The uploaded PDF bill does not match the member's name. Please ensure that you have uploaded the correct PDF bill.</div>`,
+                                    type: "red",
+                                    buttons: {
+                                    ok: {
+                                        text: "OK",
+                                        btnClass: "btn-danger",
+                                    },
+                                },
+                            });
+                        }else{
+                          is_valid_name = true;
+                        }
+                        }
                       }
                   
                   if(pdfid === 'pdf-file'){

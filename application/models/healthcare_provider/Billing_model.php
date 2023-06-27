@@ -423,4 +423,7 @@ class Billing_model extends CI_Model {
     function itemized_bill($data) {
         return $this->db->insert('itemized_bill', $data);
     }
+    function benefits_deduction($data) {
+        return $this->db->insert('benefits_deductions', $data);
+    }
 }

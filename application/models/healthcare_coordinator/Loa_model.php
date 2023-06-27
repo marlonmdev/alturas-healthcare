@@ -271,7 +271,7 @@ class Loa_model extends CI_Model {
   var $disapproved_table_2 = 'healthcare_providers';
   var $disapproved_column_order = ['loa_no', 'first_name', 'loa_request_type', 'hp_name', null, 'request_date'];
   var $disapproved_column_search = ['loa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'loa_request_type', 'med_services', 'emp_id', 'health_card_no', 'hp_name', 'request_date', 'CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)'];
-  var $disapproved_order = ['loa_id' => 'desc'];
+  var $disapproved_order = ['loa_id' => 'asc'];
 
   private function _get_datatables_query_disapproved($status) {
     $this->db->from($this->disapproved_table_1 . ' as tbl_1');
@@ -528,7 +528,7 @@ class Loa_model extends CI_Model {
    var $table_2_c = 'healthcare_providers';
    var $column_order_c = ['loa_no', 'first_name', 'loa_request_type', 'hp_name', null, 'request_date']; //set column field database for datatable orderable
    var $column_search_c = ['loa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'loa_request_type', 'med_services', 'emp_id', 'health_card_no', 'hp_name', 'request_date', 'CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)']; //set column field database for datatable searchable 
-   var $order_c = ['loa_id' => 'desc']; // default order 
+   var $order_c = ['loa_id' => 'asc']; // default order 
  
    private function _get_datatables_query_c() {
      $this->db->from($this->table_1_c . ' as tbl_1');

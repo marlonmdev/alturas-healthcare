@@ -1093,8 +1093,10 @@ class Billing_controller extends CI_Controller {
         $net_bill = floatval(str_replace(',','',$net_b));
         $hospitalBillData = $_POST['hospital_bill_data'];
         $attending_doctor= $_POST['attending_doctors'];
-        $jsonData = $_POST['json_final_charges'];
-        $itemize_bill = json_decode($jsonData);
+        $jsonData_item = $_POST['json_final_charges'];
+        $jsonData_benefits = $_POST['benefits_deductions'];
+        $itemize_bill = json_decode($jsonData_item);
+        $benefits_deductions = json_decode($jsonData_benefits);
         //  var_dump($itemize_bill);
         // PDF File Upload
         //$config['upload_path'] = './uploads/pdf_bills/';
@@ -1241,6 +1243,20 @@ class Billing_controller extends CI_Controller {
                             ];
             
                             $this->billing_model->itemized_bill($item);
+            
+                        }
+
+                        foreach($benefits_deductions as $items){
+                            $item = [
+                                'emp_id'        => $data['emp_id'], 
+                                'billing_id'    => $bill_id['billing_id'], 
+                                'loa_id'         => $data['hp_id'], 
+                                'hp_id'         => $data['hp_id'], 
+                                'benefits_name'        => $items[0], 
+                                'benefits_amount'   => floatval(str_replace(array(',', '(', ')'), '', $items[1])),
+                            ];
+            
+                            $this->billing_model->benefits_deduction($item);
             
                         }
 
@@ -1409,8 +1425,10 @@ class Billing_controller extends CI_Controller {
         $take_home_meds = $this->input->post('med-services',true);
         $hospitalBillData = $_POST['hospital_bill_data'];
         $attending_doctor= $_POST['attending_doctors'];
-        $jsonData = $_POST['json_final_charges'];
-        $itemize_bill = json_decode($jsonData);
+        $jsonData_item = $_POST['json_final_charges'];
+        $jsonData_benefits = $_POST['benefits_deductions'];
+        $itemize_bill = json_decode($jsonData_item);
+        $benefits_deductions = json_decode($jsonData_benefits);
 
         //  var_dump("items",$itemize_bill);
         // $hospitalBillArray = json_decode($hospitalBillData, true);
@@ -1574,6 +1592,20 @@ class Billing_controller extends CI_Controller {
                             ];
             
                             $this->billing_model->itemized_bill($item);
+            
+                        }
+
+                        foreach($benefits_deductions as $items){
+                            $item = [
+                                'emp_id'        => $data['emp_id'], 
+                                'billing_id'    => $bill_id['billing_id'], 
+                                'loa_id'         => $data['hp_id'], 
+                                'hp_id'         => $data['hp_id'], 
+                                'benefits_name'        => $items[0], 
+                                'benefits_amount'   => floatval(str_replace(array(',', '(', ')'), '', $items[1])),
+                            ];
+            
+                            $this->billing_model->benefits_deduction($item);
             
                         }
 

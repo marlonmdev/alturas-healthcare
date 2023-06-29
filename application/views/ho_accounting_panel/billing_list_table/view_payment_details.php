@@ -88,11 +88,12 @@
                             <input type="text" class="form-control text-dark fs-5" name="c-billed-date" id="c-billed-date" readonly>
                         </div>
 
-                        <div class="row col-lg-4 pb-3 pt-2">
+                        <div class="row col-lg-4 pb-3 pt-3">
                             <label class=" text-dark fw-bold ms-2 fs-5">Covered LOA & NOA Number: </label>
                         </div>
                         <div class="col-lg-8">
-                            <textarea class="form-control text-dark fs-5" id="textbox" value="" readonly></textarea>
+                            <span class="text-danger">Click this to view Covered LOA/NOA details</span> <i class="mdi mdi-hand-pointing-right"></i> <u class="text-info"><a href="<?php echo base_url();?>head-office-accounting/bill/fetch_paid/" type="button" id="payment-link"></a></u>
+                            <textarea class="form-control text-dark fs-5" id="textbox" readonly></textarea>
                         </div>
                     </div>
                 </div>

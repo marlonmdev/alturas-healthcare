@@ -211,7 +211,10 @@ class Transaction_model extends CI_Model {
 		return $query->num_rows() > 0 ? true : false;
 	}
 	//END ====================================================================================
-
+	
+    function get_payment_nos($bill_id) {
+        return $this->db->get_where('monthly_payable', ['bill_id' => $bill_id])->row_array();
+    }
 
 	function get_billing_by_id($billing_id){
 		$query = $this->db->get_where('billing', ['billing_id' => $billing_id]);

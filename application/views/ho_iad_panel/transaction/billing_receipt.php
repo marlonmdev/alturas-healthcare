@@ -18,15 +18,15 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-12 mb-4 mt-0">
-        <form method="POST" action="<?php echo base_url(); ?>head-office-iad/transaction/search" id="search-form-1" class="needs-validation" novalidate>
+        <!-- <form method="POST" action="<?php echo base_url(); ?>head-office-iad/transaction/search" id="search-form-1" class="needs-validation" novalidate> -->
           <div class="input-group">
             <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
             <input type="hidden" name="healthcard_no" value="<?= $bill['health_card_no'] ?>">
-            <button type="submit" class="btn btn-outline-dark" data-bs-toggle="tooltip" title="Click to Go Back">
+            <button href="JavaScript:void(0)" onclick="goback()" type="button" class="btn btn-outline-dark" data-bs-toggle="tooltip" title="Click to Go Back">
               <strong class="ls-2" style="vertical-align:middle"><i class="mdi mdi-arrow-left-bold"></i> Go Back</strong>
             </button>
           </div>
-        </form>
+        <!-- </form> -->
       </div>
 
       <div class="col-md-12">
@@ -239,3 +239,8 @@
     </div>
   </div>
 </div>
+<script>
+  const goback = () => {
+    window.history.back();
+  }
+</script>

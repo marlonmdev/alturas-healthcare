@@ -4,7 +4,7 @@
     <div class="page-breadcrumb">
         <div class="row">
         <div class="col-12 d-flex no-block align-items-center">
-            <h4 class="page-title"><i class="mdi mdi-file-document-box"></i> LEDGER [Paid Bill]</h4>
+            <h4 class="page-title"><i class="mdi mdi-file-document-box"></i> LEDGER [ <span class="text-info">Paid Bill</span> ]</h4>
             <div class="ms-auto text-end">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
@@ -23,11 +23,11 @@
   <!-- Start of Container fluid  -->
   <div class="container-fluid">
     <div class="row">
-      <div class="col-lg-12">
+      <div class="col-md-12">
         <div class="row pb-2">
             <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
             <div class="row pb-2 gap-2">
-              <div class="col-lg-2 ps-5 pb-4">
+              <div class="col-md-2 ps-5 pb-4">
                   <div class="input-group">
                       <div class="input-group-prepend">
                           <span class="input-group-text bg-info text-white">
@@ -36,28 +36,12 @@
                       </div>
                       <select class="form-select fw-bold" id="selectedYear" name="selectedYear">
                           <option value="">Select Year</option>
-                          <?php
-                          $displayedYears = array(); // Array to store already displayed years
-
-                          foreach ($paid as $date) :
-                              $year = date('Y', strtotime($date['date_add']));
-
-                              // Check if the year has already been displayed
-                              if (!in_array($year, $displayedYears)) {
-                                  array_push($displayedYears, $year); // Add the year to the displayed years array
-
-                                  // Display the option with the year
-                                  ?>
-                                  <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
-                                  <?php
-                              }
-                          endforeach;
-                          ?>
+                          
                       </select>
 
                   </div>
               </div>
-              <div class="col-lg-2 ps-5 pb-2">
+              <div class="col-md-3 ps-5 pb-2">
                   <div class="input-group">
                       <div class="input-group-prepend">
                           <span class="input-group-text bg-info text-white">
@@ -82,7 +66,7 @@
 
                   </div>
               </div>
-              <div class="col-lg-4 ps-5 pb-2">
+              <div class="col-md-5 ps-5 pb-2">
                   <div class="input-group">
                       <div class="input-group-prepend">
                           <span class="input-group-text bg-info text-white">
@@ -131,14 +115,13 @@
                 </div>
               </div>
             </div>
-      </div>
-      <!-- End Row  -->  
+        </div>
+        <!-- End Row  -->  
       </div>
     <!-- End Container fluid  -->
-    </div>
+  </div>
   <!-- End Page wrapper  -->
   </div>
-
 <!-- End Wrapper -->
 
 <script>
@@ -220,5 +203,22 @@
 
     });
 
+
+      // Get the current year
+      var currentYear = new Date().getFullYear();
+
+      // Get the select element
+      var selectElement = document.getElementById('selectedYear');
+
+      // Set the initial year
+      var startYear = 2022; // Replace with your desired starting year
+
+      // Loop through years and create options
+      for (var year = currentYear; year >= startYear; year--) {
+        var option = document.createElement('option');
+        option.value = year;
+        option.text = year;
+        selectElement.appendChild(option);
+      }
 
 </script>

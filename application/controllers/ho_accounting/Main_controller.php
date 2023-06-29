@@ -749,11 +749,13 @@ class Main_controller extends CI_Controller {
 		}
 
 		$loa_noa_no = implode(',    ', $noa_loa_array);
-		
+		$bill_id = $this->myhash->hasher($payment['bill_id'], 'encrypt');
+
 			$response = [
 				'status' => 'success',
 				'token' => $this->security->get_csrf_hash(),
 				'payment_no' => $payment['payment_no'],
+				'bill_id' => $bill_id,
 				'hp_name' => $payment['hp_name'],
 				'added_on' => date("F d, Y", strtotime($payment['date_add'])),
 				'acc_number' => $payment['acc_number'],
@@ -1329,9 +1331,9 @@ class Main_controller extends CI_Controller {
 
 				$status = '<span class="text-center badge rounded-pill bg-info">Billed</span>'; 
 
-				$payment_no = $this->myhash->hasher($bill['payment_no'], 'encrypt');
+				$payment_id = $this->myhash->hasher($bill['bill_id'], 'encrypt');
 
-				$action_customs = '<a href="'.base_url().'head-office-accounting/bill/fetch_payments/'.$bill['payment_no'].'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
+				$action_customs = '<a href="'.base_url().'head-office-accounting/bill/fetch_payments/'.$payment_id.'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
 
 				$action_customs .= '<a href="javascript:void(0)" onclick="addPaymentDetails(\''.$bill['payment_no'].'\')" data-bs-toggle="tooltip" title="Add Payment Details"><i class="mdi mdi-file-document fs-2 pe-2 text-danger"></i></a>';
 
@@ -1489,9 +1491,9 @@ class Main_controller extends CI_Controller {
 
 				$status = '<span class="text-center badge rounded-pill bg-success">Paid</span>'; 
 
-				$payment_no = $this->myhash->hasher($bill['payment_no'], 'encrypt');
+				$payment_id = $this->myhash->hasher($bill['bill_id'], 'encrypt');
 
-				$action_customs = '<a href="'.base_url().'head-office-accounting/bill/fetch_paid/'.$bill['payment_no'].'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
+				$action_customs = '<a href="'.base_url().'head-office-accounting/bill/fetch_paid/'.$payment_id.'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
 
 				$check = $this->List_model->get_check_details($bill['details_no']);
 
@@ -1844,7 +1846,7 @@ class Main_controller extends CI_Controller {
 		$billing_id = unserialize(urldecode($encodedArray));
 		$details = $this->List_model->get_bu_charges_info($billing_id);
 
-		$table = '<div class="table-responsive"><table class="table table-stripped">';
+		$table = '<div class="table-responsive"><table class="table table-stripped table-responsive">';
 		$table .= ' <thead>
 						<tr>
 							<th class="fw-bold">Healthcard No.</th>
@@ -3270,7 +3272,6 @@ class Main_controller extends CI_Controller {
 	}
 	
 	function fetch_ledger_yearly() {
-		
 		$ledger = $this->List_model->get_debit_credit_yearly();
 		$data = [];
 		$fullnameData = [];
@@ -3305,7 +3306,7 @@ class Main_controller extends CI_Controller {
 			$row[] = $fullname;
 			$row[] = $totals['business_unit'];
 			$row[] = number_format($totals['total_debit'], 2, '.', ',');
-			$row[] = '';
+			$row[] = '----';
 			$data[] = $row;
 
 			$scndrow = ['','','','',number_format($totals['total_paid_amount'], 2, '.', ',')];
@@ -3321,7 +3322,95 @@ class Main_controller extends CI_Controller {
 	}
 	
 	function fetch_ledger_mbl() {
-		$this->List_model->get_ledger_mbl();
+		$filteredYear = $this->input->post('year');
+		$currentYear = date('Y');
+	
+		if ($filteredYear == $currentYear) {
+			$mbl = $this->List_model->get_ledger_mbl();
+		} else if ($filteredYear == '') {
+			$mbl = $this->List_model->get_ledger_mbl();
+		} else if ($filteredYear != $currentYear) {
+			$mbl = $this->List_model->get_ledger_history_mbl();
+		}
+	
+		$data = [];
+		$fullnameData = [];
+	
+		foreach ($mbl as $max) {
+			$healcardno = $max['health_card_no'];
+			$fullname = $max['first_name'] . ' ' . $max['middle_name'] . ' ' . $max['last_name'] . ' ' . $max['suffix'];
+			$business_unit = $max['business_unit'];
+	
+			$company_charge = floatval($max['company_charge']);
+			$mbl = floatval($max['max_benefit_limit']);
+	
+			$key = $healcardno . '_' . $fullname . '_' . $business_unit;
+	
+			if (!isset($fullnameData[$key])) {
+				$fullnameData[$key] = [
+					'date_used' => [],
+					'used_mbl' => [],
+					'max_benefit' => $max['max_benefit_limit'],
+					'remaining_mbl' => 0,
+				];
+			}
+	
+			$fullnameData[$key]['date_used'][] = $max['billed_on'];
+			$fullnameData[$key]['used_mbl'][] = $max['company_charge'];
+		}
+	
+		$previous_fullname = '';
+
+		foreach ($fullnameData as $key => $totals) {
+			[$healcardno, $fullname, $business_unit] = explode('_', $key);
+
+			$max_benefit = number_format($totals['max_benefit'], 2, '.', ',');
+
+			$dates_used = $totals['date_used'];
+			$used_mbls = $totals['used_mbl'];
+			$remaining_mbl = $totals['max_benefit'];
+
+			$num_entries = count($dates_used);
+
+			for ($i = 0; $i < $num_entries; $i++) {
+				$used_mbl = floatval($used_mbls[$i]);
+
+				if ($fullname !== $previous_fullname) {
+					$first_row = [
+						$healcardno,
+						$fullname,
+						$business_unit,
+						'----',
+						'----',
+						number_format($remaining_mbl, 2, '.', ',')
+					];
+
+					$data[] = $first_row;
+				}
+
+				$row = [
+					'',
+					'',
+					'',
+					$dates_used[$i],
+					number_format($used_mbl, 2, '.', ','),
+					number_format(max($remaining_mbl - $used_mbl, 0), 2, '.', ',')
+				];
+
+				$data[] = $row;
+
+				$remaining_mbl = max($remaining_mbl - $used_mbl, 0);
+				$previous_fullname = $fullname;
+			}
+		}
+
+	
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
+	
+		echo json_encode($output);
 	}
 	
 }

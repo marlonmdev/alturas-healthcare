@@ -18,7 +18,7 @@
 <body>
     <div class="image-background"></div>
     <section class="vh-100" id="main-content">
-        <div class="container py-5 h-100" id="form-div">
+        <div class="container py-5 h-100 scrollable" id="form-div">
             <div class="row d-flex align-items-center justify-content-center h-100" id="login-div">
                 <div class="col-sm-8 col-md-6 col-lg-4 col-xl-4">
                     <div class="text-center">
@@ -54,6 +54,12 @@
                 </div>
             </div>
         </div>
+        <style>
+             .scrollable {
+                max-height: 80vh; /* Set the maximum height for scrolling */
+                overflow-y: auto; /* Enable vertical scrolling */
+            }
+        </style>
     </section>
     <script src="<?= base_url() ?>assets/vendors/jquery/jquery.min.js"></script>
     <script src="<?= base_url() ?>assets/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>

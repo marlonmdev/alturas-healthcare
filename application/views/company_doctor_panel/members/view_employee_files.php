@@ -41,32 +41,32 @@
             ?>
             <div class="col-md-2 ps-3 pt-3 pb-4">
                 <a href="<?php echo base_url(); ?>company-doctor/members/incident-spot-reports/<?php echo $emp_id;?>/<?php echo $member_id;?>" class="btn btn-primary btn-lg bg-light border border-light text-dark">
-                    <img src="<?php echo base_url(); ?>assets/images/blank-yellow-folder.png" alt="Button Image" class="img-fluid" width="200" height="auto">
+                    <img src="<?php echo base_url(); ?>assets/images/folder-icon.png" alt="Button Image" class="img-fluid" width="200" height="auto">
                    <span class="fs-5">Incident/Spot Reports</span>
                 </a>
             </div>
             <div class="col-md-2 ps-3 pt-3 pb-4">
                 <a href="<?php echo base_url(); ?>company-doctor/members/final-diagnosis/<?php echo $emp_id;?>/<?php echo $member_id;?>" class="btn btn-primary btn-lg bg-light border border-light text-dark">
-                    <img src="<?php echo base_url(); ?>assets/images/blank-yellow-folder.png" alt="Button Image" class="img-fluid" width="200" height="auto">
+                    <img src="<?php echo base_url(); ?>assets/images/folder-icon.png" alt="Button Image" class="img-fluid" width="200" height="auto">
                    <span class="fs-5">Diagnosis/Operation</span>
                 </a>
             </div>
             <div class="col-md-2 ps-3 pt-3 pb-4">
                 <a href="<?php echo base_url(); ?>company-doctor/members/medical-abstract/<?php echo $emp_id;?>/<?php echo $member_id;?>" class="btn btn-primary btn-lg bg-light border border-light text-dark">
-                    <img src="<?php echo base_url(); ?>assets/images/blank-yellow-folder.png" alt="Button Image" class="img-fluid" width="200" height="auto">
-                   Medical Abstract
+                    <img src="<?php echo base_url(); ?>assets/images/folder-icon.png" alt="Button Image" class="img-fluid" width="200" height="auto">
+                    <span class="fs-5"> Medical Abstract</span>
                 </a>
             </div>
             <div class="col-md-2 ps-3 pt-3 pb-4">
                 <a href="<?php echo base_url(); ?>company-doctor/members/take-home-meds/<?php echo $emp_id;?>/<?php echo $member_id;?>" class="btn btn-primary btn-lg bg-light border border-light text-dark">
-                    <img src="<?php echo base_url(); ?>assets/images/blank-yellow-folder.png" alt="Button Image" class="img-fluid" width="200" height="auto">
-                   Take Home Meds
+                    <img src="<?php echo base_url(); ?>assets/images/folder-icon.png" alt="Button Image" class="img-fluid" width="200" height="auto">
+                    <span class="fs-5"> Take Home Meds</span>
                 </a>
             </div>
             <div class="col-md-2 ps-3 pt-3 pb-4">
                 <a href="<?php echo base_url(); ?>company-doctor/members/soa/<?php echo $emp_id;?>/<?php echo $member_id;?>" class="btn btn-primary btn-lg bg-light border border-light text-dark">
-                    <img src="<?php echo base_url(); ?>assets/images/blank-yellow-folder.png" alt="Button Image" class="img-fluid" width="200" height="auto">
-                   SOAs
+                    <img src="<?php echo base_url(); ?>assets/images/folder-icon.png" alt="Button Image" class="img-fluid" width="200" height="auto">
+                    <span class="fs-5">  SOAs</span>
                 </a>
             </div>
           </div>

@@ -24,7 +24,7 @@
   <div class="container-fluid">
     <div class="col-12 pb-2">
         <div class="input-group">
-            <a href="<?php echo base_url(); ?>head-office-accounting/billing-list/paid-bill" type="submit" class="btn btn-info" data-bs-toggle="tooltip" title="Click to Go Back">
+            <a href="javascript:void(0)" onclick="goback()" type="button" class="btn btn-info" data-bs-toggle="tooltip" title="Click to Go Back">
                 <strong class="ls-2" style="vertical-align:middle">
                     <i class="mdi mdi-arrow-left-bold"></i> Go Back
                 </strong>
@@ -295,6 +295,9 @@
     });
  }
 
+ const goback = () => {
+  window.history.back();
+ }
 
 
 </script>

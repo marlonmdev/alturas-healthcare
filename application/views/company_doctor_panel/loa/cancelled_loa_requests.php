@@ -253,7 +253,7 @@
                 $('#loa-no').html(loa_no);
                 $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
                 $('#cancelled-by').html(cancelled_by);
-                $('#cancellation-reason').html(cancellation_reason);
+                $('#cancellation-reason').html(`<strong class="text-danger">${cancellation_reason}</strong>`);
                 $('#cancelled-on').html(cancelled_on);
                 $('#member-mbl').html(member_mbl);
                 $('#remaining-mbl').html(remaining_mbl);

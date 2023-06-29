@@ -273,6 +273,7 @@
     <script>
       const baseUrl = `<?php echo base_url(); ?>`;
       const emp_id = `<?= $emp_id ?>`;
+
       $(document).ready(()=>{
         $('#agreed').prop('disabled', true);
         read_tnc();
@@ -289,6 +290,12 @@
           $('#view_mbl').on('click',function(){
 
             $('#mbl_modal').modal('show');
+
+            // Check if the DataTable already exists
+            if ($.fn.DataTable.isDataTable("#mbl_history_table")) {
+              // Destroy the DataTable
+              $("#mbl_history_table").DataTable().destroy();
+            }
             
             $("#mbl_history_table").DataTable({
               lengthMenu: [5,10,25,100],
@@ -336,6 +343,7 @@
               $('#loa_details_1').empty(); 
               $('#loa_details_2').empty(); 
               $('#physician').empty(); 
+              $('#mbl_modal').modal('show');
               // Additional reset logic if needed
             });
 
@@ -345,6 +353,7 @@
               $('#noa_details_1').empty(); 
               $('#noa_details_2').empty(); 
               $('#physician-noa').empty(); 
+              $('#mbl_modal').modal('show');
               // Additional reset logic if needed
             });
       });
@@ -472,7 +481,7 @@
             req_status, work_related, approved_by, approved_on,expiration,billed_on,paid_on,net_bill,paid_amount,
             disapproved_on,date_perform,attending_doctors,disapprove_reason,complaints,disapproved_by
             } = res;
-
+            $('#mbl_modal').modal('hide');
             $("#viewLoaModal").modal("show");
             $("#p-disaproved").hide();
             $("#p-documents").hide();
@@ -609,6 +618,7 @@
             disapproved_on,attending_doctors,disapprove_reason,disapproved_by
             } = res;
             // console.log("complaints",complaints);
+            $('#mbl_modal').modal('hide');
             $("#viewNoaModal").modal("show");
             $("#p_disaproved").hide();
             $("#p_documents").hide();

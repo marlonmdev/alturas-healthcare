@@ -13,7 +13,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> 
 
   <div class="container-fluid">
     <div class="row">
@@ -111,7 +111,7 @@
 
   const viewNoaInfoModal = (req_id) => {
     $.ajax({
-      url: `${baseUrl}member/requested-noa/view/pending/${req_id}`,
+      url: `${baseUrl}member/requested-emergency-loa/view/pending/${req_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);

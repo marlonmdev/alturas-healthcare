@@ -32,7 +32,7 @@
               </li>
 
               <li class="sidebar-item 
-              <?php echo $this->uri->segment(2) == 'requested-noa' ? 'selected' : ''; ?>
+              <?php echo $this->uri->segment(2) == 'request-emergency-loa' ? 'selected' : ''; ?>
               ">
                 <a
                   class="sidebar-link has-arrow"

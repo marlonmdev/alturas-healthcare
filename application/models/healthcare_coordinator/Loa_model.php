@@ -1145,6 +1145,8 @@ function db_get_cost_types_by_hp_ID($hp_id) {
             ->from('loa_requests as tbl_1')
             ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
             ->join('max_benefit_limits as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id')
+            ->join('members as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id')
+            ->join('billing as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
             ->where('tbl_1.loa_id', $loa_id);
     return $this->db->get()->row_array();
   }
@@ -1834,6 +1836,15 @@ function get_billed_for_charging($bill_no) {
     $query = $this->db->get();
     return $query->result_array();
   }
+
+  function get_itemized_bill($emp_id){
+    $this->db->select('*')
+      ->from('itemized_bill')
+      ->where('emp_id', $emp_id);
+    $query = $this->db->get();
+    return $query->result_array();
+  }
+
 
   function db_get_hr_add_charges_fee($loa_id) {
     $this->db->select('*')

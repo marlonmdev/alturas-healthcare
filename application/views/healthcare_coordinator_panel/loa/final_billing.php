@@ -78,12 +78,8 @@
                         <th style="color: white">NAME OF PATIENT</th>
                         <th style="color: white">TYPE OF REQUEST</th>
                         <th style="color: white">REQUEST DATE</th>
-                        <th style="color: white">BILLED DATE</th>
-                        <th style="color: white">COORDINATOR BILL</th>
-                        <th style="color: white">VIEW BILL</th>
                         <th style="color: white">HOSPITAL BILL</th>
                         <th style="color: white">VIEW BILL</th>
-                        <th style="color: white">VARIANCE</th> 
                         <th style="color: white">STATUS</th> 
                         <th style="color: white">ACTION</th> 
                       </tr>
@@ -284,41 +280,41 @@
       fixedHeader: true,
     });
 
-    billedTable.on('draw.dt', function() {
-      let columnIdx = 9;
-      let intValue = 0;
-      let count =0;
-      let rows = billedTable.rows().nodes();
-      if ($('#billedLoaTable').DataTable().data().length > 0) {
-        let disableButton = false;
-        rows.each(function(index, row) {
-          let rowData = billedTable.row(row).data();
-          let columnValue = rowData[columnIdx];
-          let pattern = /-?[\d,]+(\.\d+)?/g;
-          let matches = columnValue.match(pattern);
-          if (matches && matches.length > 0) {
-            let numberString = matches[0].replace(',', '');
-            intValue = parseInt(numberString);
-            console.log(intValue);
-            if (intValue > 100) {
-              disableButton = true;
-              return false;
-            }
-          }
-        });
+    // billedTable.on('draw.dt', function() {
+    //   let columnIdx = 9;
+    //   let intValue = 0;
+    //   let count =0;
+    //   let rows = billedTable.rows().nodes();
+    //   if ($('#billedLoaTable').DataTable().data().length > 0) {
+    //     let disableButton = false;
+    //     rows.each(function(index, row) {
+    //       let rowData = billedTable.row(row).data();
+    //       let columnValue = rowData[columnIdx];
+    //       let pattern = /-?[\d,]+(\.\d+)?/g;
+    //       let matches = columnValue.match(pattern);
+    //       if (matches && matches.length > 0) {
+    //         let numberString = matches[0].replace(',', '');
+    //         intValue = parseInt(numberString);
+    //         console.log(intValue);
+    //         if (intValue > 100) {
+    //           disableButton = true;
+    //           return false;
+    //         }
+    //       }
+    //     });
 
-        if (disableButton) {
-          $('#proceed-btn').prop('disabled', true);
-          console.log("disable button");
-        }else{
-          $('#proceed-btn').prop('disabled', false);
-          console.log("enable button");
-        }
-      }else{
-        console.log("The table is empty");
-        $('#proceed-btn').prop('disabled', true);
-      }
-    });
+    //     if (disableButton) {
+    //       $('#proceed-btn').prop('disabled', true);
+    //       console.log("disable button");
+    //     }else{
+    //       $('#proceed-btn').prop('disabled', false);
+    //       console.log("enable button");
+    //     }
+    //   }else{
+    //     console.log("The table is empty");
+    //     $('#proceed-btn').prop('disabled', true);
+    //   }
+    // });
 
 
     $('#billed-hospital-filter').change(function(){

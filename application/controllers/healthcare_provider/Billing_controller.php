@@ -1141,6 +1141,7 @@ class Billing_controller extends CI_Controller {
             ];
         }
         else {
+
             $upload_data = $this->upload->data();
             $pdf_file = $upload_data['file_name'];
             $loa = $this->billing_model->get_loa_to_bill($loa_id);
@@ -1148,9 +1149,11 @@ class Billing_controller extends CI_Controller {
             $check_bill = $this->billing_model->check_re_upload_billing($billing_no);
             $get_prev_mbl_by_bill_no = $this->billing_model->get_billing($billing_no);
             $get_prev_mbl = $this->billing_model->get_prev_mbl($billing_no,$loa['emp_id']);
+            $get_prev_balance = ($get_prev_mbl_by_bill_no != null) ? $get_prev_mbl_by_bill_no['before_remaining_bal'] : null;
             $result_charge = $this->get_personal_and_company_charge("loa",$loa_id,$net_bill,($check_bill !=0)? true : false,
-             ($get_prev_mbl !=null)?$get_prev_mbl['after_remaining_bal']:$get_prev_mbl_by_bill_no['before_remaining_bal'],
+             ($get_prev_mbl !=null)?$get_prev_mbl['after_remaining_bal'] :  $get_prev_balance,
              ($old_billing !=null)? $old_billing['after_remaining_bal'] : null);
+             
             $existed = $this->billing_model->check_billing_loa($loa_id);
             $bill_no = $this->billing_model->get_billing_no($loa_id);
             $data = [
@@ -1477,8 +1480,11 @@ class Billing_controller extends CI_Controller {
             $old_billing = $this->billing_model->get_billing_by_emp_id($noa['emp_id']);
             $get_prev_mbl_by_bill_no = $this->billing_model->get_billing($billing_no);
             $get_prev_mbl = $this->billing_model->get_prev_mbl($billing_no,$noa['emp_id']);
-           
-            $result_charge = $this->get_personal_and_company_charge("noa",$noa_id,$net_bill,($check_bill !=0)? true : false, ($get_prev_mbl !=null)?$get_prev_mbl['after_remaining_bal']:$get_prev_mbl_by_bill_no['before_remaining_bal'],($old_billing !=null)? $old_billing['after_remaining_bal'] : null);
+            $get_prev_balance = ($get_prev_mbl_by_bill_no != null) ? $get_prev_mbl_by_bill_no['before_remaining_bal'] : null;
+            $get_prev_meds = ($get_prev_mbl_by_bill_no != null) ? $get_prev_mbl_by_bill_no['take_home_meds'] : null;
+            $get_prev_maf = ($get_prev_mbl_by_bill_no != null) ? $get_prev_mbl_by_bill_no['medical_abstract_file'] : null;
+            $get_prev_pf = ($get_prev_mbl_by_bill_no != null) ? $get_prev_mbl_by_bill_no['prescription_file'] : null;
+            $result_charge = $this->get_personal_and_company_charge("noa",$noa_id,$net_bill,($check_bill !=0)? true : false, ($get_prev_mbl !=null)?$get_prev_mbl['after_remaining_bal']:$get_prev_balance,($old_billing !=null)? $old_billing['after_remaining_bal'] : null);
             $existed = $this->billing_model->check_billing_noa($noa_id);
             $bill_no = $this->billing_model->get_billing_no($noa_id);
             $data = [
@@ -1488,17 +1494,17 @@ class Billing_controller extends CI_Controller {
                 'noa_id'                => $noa_id,
                 'hp_id'                 => $this->session->userdata('dsg_hcare_prov'),
                 'work_related'          => $noa['work_related'],
-                'take_home_meds'        => isset($take_home_meds)?implode(',',$take_home_meds):$get_prev_mbl_by_bill_no['take_home_meds'],
+                'take_home_meds'        => isset($take_home_meds)?implode(',',$take_home_meds):$get_prev_meds,
                 'net_bill'              => $net_bill,
                 'company_charge'        => floatval(str_replace(',', '', $result_charge['company_charge'])),
                 'personal_charge'       => floatval(str_replace(',', '', $result_charge['personal_charge'])),
                 'before_remaining_bal'  => floatval(str_replace(',', '', $result_charge['previous_mbl'])),
                 'after_remaining_bal'   => floatval(str_replace(',', '', $result_charge['remaining_balance'])),
-                'pdf_bill'              => isset($uploaded_files['pdf-file']) ? $uploaded_files['pdf-file']['file_name'] : $get_prev_mbl_by_bill_no['pdf_bil'],
+                'pdf_bill'              => isset($uploaded_files['pdf-file']) ? $uploaded_files['pdf-file']['file_name'] : $get_prev_mbl_by_bill_no['pdf_bill'],
                 'itemized_bill'         => isset($uploaded_files['itemize-pdf-file']) ? $uploaded_files['itemize-pdf-file']['file_name'] : $get_prev_mbl_by_bill_no['itemize-pdf-file'],
                 'final_diagnosis_file'  => isset($uploaded_files['Final-Diagnosis']) ? $uploaded_files['Final-Diagnosis']['file_name'] : $get_prev_mbl_by_bill_no['final_diagnosis_file'],
-                'medical_abstract_file' => isset($uploaded_files['Medical-Abstract']) ? $uploaded_files['Medical-Abstract']['file_name'] : $get_prev_mbl_by_bill_no['medical_abstract_file'],
-                'prescription_file'     => isset($uploaded_files['Prescription']) ? $uploaded_files['Prescription']['file_name'] : $get_prev_mbl_by_bill_no['prescription_file'],
+                'medical_abstract_file' => isset($uploaded_files['Medical-Abstract']) ? $uploaded_files['Medical-Abstract']['file_name'] : $get_prev_maf,
+                'prescription_file'     => isset($uploaded_files['Prescription']) ? $uploaded_files['Prescription']['file_name'] : $get_prev_pf,
                 'billed_by'             => $this->session->userdata('fullname'),
                 'billed_on'             => date('Y-m-d'),
                 'status'                => 'Billed',

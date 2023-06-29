@@ -27,7 +27,7 @@
               <div class="col-lg-3 col-sm-6">
                 <div class="card-box bg-cyan">
                   <div class="inner">
-                    <h3><?php echo $billed_count; ?></h3>
+                    <h3><i class="mdi mdi-view-dashboard"></i></h3>
                     <p>Billed</p>
                   </div>
                   <div class="icon">
@@ -66,13 +66,13 @@
               <div class="col-lg-3 col-sm-6">
                 <div class="card-box bg-red">
                   <div class="inner">
-                    <h3><?php echo $noa_count; ?></h3>
-                    <p>Approved NOA Requests</p>
+                    <h3><i class="mdi mdi-view-dashboard"></i></h3>
+                    <p>Ledger</p>
                   </div>
                   <div class="icon">
                     <i class="mdi mdi-file-chart" aria-hidden="true"></i>
                   </div>
-                  <a href="<?php echo base_url() ?>head-office-accounting/noa-request-list/noa-approved" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                  <a href="<?php echo base_url() ?>head-office-accounting/ledger" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
               </div>
             </div>

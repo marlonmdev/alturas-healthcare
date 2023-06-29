@@ -32,7 +32,7 @@
               </li>
 
               <li class="sidebar-item 
-              <?php echo $this->uri->segment(2) == 'requested-noa' ? 'selected' : ''; ?>
+              <?php echo $this->uri->segment(2) == 'request-emergency-loa' ? 'selected' : ''; ?>
               ">
                 <a
                   class="sidebar-link has-arrow"
@@ -46,13 +46,13 @@
                   <li class="sidebar-item">
                     <a href="<?php echo base_url(); ?>member/request-emergency-loa" class="sidebar-link"
                       ><i class="mdi mdi-note-plus"></i
-                      ><span class="hide-menu ls-1">Request Emergency LOA</span>
+                      ><span class="hide-menu ls-1">Request Emerg LOA</span>
                     </a>
                   </li>
                   <li class="sidebar-item">
                     <a href="<?php echo base_url(); ?>member/requested-emergency-loa/pending" class="sidebar-link"
                       ><i class="mdi mdi-note-outline"></i
-                      ><span class="hide-menu ls-1">Requested Emergency LOA</span>
+                      ><span class="hide-menu ls-1">Requested Emerg LOA</span>
                     </a>
                   </li>
                 </ul>

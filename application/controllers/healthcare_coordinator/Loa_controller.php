@@ -1824,7 +1824,7 @@ class Loa_controller extends CI_Controller {
 				$response = [
 					'token' => $token,
 					'status' => 'upload-error',
-					'message' => 'File upload failed',
+					'message' => 'File Saving to Folder Failed',
 				];
 				echo json_encode($response);
 			} else {

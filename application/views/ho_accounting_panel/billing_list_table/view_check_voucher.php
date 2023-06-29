@@ -1,7 +1,7 @@
 <div class="modal fade" id="viewCVModal" tabindex="-1" data-bs-backdrop="static" style="height:100%">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header" id="header">
                 <h4>Attached Check Voucher</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>

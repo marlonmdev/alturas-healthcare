@@ -30,7 +30,16 @@
                             href="<?php echo base_url(); ?>head-office-accounting/charging/business-unit"
                             role="tab"
                             ><span class="hidden-sm-up"></span>
-                            <span class="hidden-xs-down fs-5 font-bold">Unpaid Charge</span></a
+                            <span class="hidden-xs-down fs-5 font-bold">BU Charges</span></a
+                        >
+                    </li>
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            href="<?php echo base_url(); ?>head-office-accounting/charging/business-unit/for-payment"
+                            role="tab"
+                            ><span class="hidden-sm-up"></span>
+                            <span class="hidden-xs-down fs-5 font-bold">Receivables</span></a
                         >
                     </li>
                     <li class="nav-item">
@@ -39,7 +48,7 @@
                             href="<?php echo base_url(); ?>head-office-accounting/charging/business-unit/paid"
                             role="tab"
                             ><span class="hidden-sm-up"></span>
-                            <span class="hidden-xs-down fs-5 font-bold">Paid Charge</span></a
+                            <span class="hidden-xs-down fs-5 font-bold">Paid Charges</span></a
                         >
                     </li>
                 </ul>
@@ -51,7 +60,7 @@
                         <i class="mdi mdi-filter"></i>
                         </span>
                     </div>
-                    <select class="form-select fw-bold" name="charging-bu-filter" id="charging-bu-filter" onchange="displayTagBtn()">
+                    <select class="form-select fw-bold" name="charging-bu-filter" id="charging-bu-filter">
                         <option value="">Select Business Units...</option>
                         <?php
                             // Sort the business units alphabetically
@@ -65,8 +74,8 @@
                     </select>
                 </div>
             </div>
-            <div class="col-lg-3 pt-1">
-                <button class="btn btn-danger btn-sm" type="button" id="print-btn" onclick="printBUCharging()"><i class="mdi mdi-printer"></i> Print</button>
+            <div class="col-lg-3">
+                <button class="btn btn-danger rounded-pill btn-sm fs-6" type="button" id="print-btn" onclick="forCollection()" title="tag charges for receivables"><i class="mdi mdi-printer"></i> CONSOLIDATE</button>
             </div>
        </div>
         <br>
@@ -96,7 +105,7 @@
                             <td><span class="fw-bold fs-5" id="total-advance"></span></td>
                             <td><span class="fw-bold fs-5" id="total-payable"></span></td>
                             <td></td>
-                            <td><a href="JavaScript:void(0)" id="tag-paid-btn" onclick="tagChargeAsPaid()" class="text-white btn btn-success btn-sm" style="display:none" title="tag as paid"><i class="mdi mdi-tag"></i> PAID</a></td>
+                            <td></td>
                         </tfoot>
                     </table>
                 </div>
@@ -176,7 +185,67 @@
             
         });
 
-        const printBUCharging = () => {
+        const forCollection = () => {
+            const bu_filter = document.querySelector('#charging-bu-filter').value;
+
+            $.confirm({
+                    title: '<strong>Confirmation!</strong>',
+                    content: 'Are you sure? Please review before you proceed.',
+                    type: 'blue',
+                    buttons: {
+                        confirm: {
+                            text: 'Yes',
+                            btnClass: 'btn-blue',
+                            action: function(){
+
+                                $.ajax({
+                                    url: `${baseUrl}head-office-accounting/charging/tag-to-collect`,
+                                    type: 'POST',
+                                    data: {
+                                        'token': '<?php echo $this->security->get_csrf_hash(); ?>',
+                                        'bu_filter' : bu_filter,
+                                    },
+                                    dataType: 'json',
+                                    success: function(response){
+                                        const { 
+                                            token,charging_no,status,message
+                                        } = response;
+
+                                        if(status == 'success'){
+                                            swal({
+                                                title: 'Success',
+                                                text: message,
+                                                timer: 3000,
+                                                showConfirmButton: false,
+                                                type: 'success'
+                                            });
+                                            printBUCharging(charging_no);
+                                        }
+                                        if(status == 'failed'){
+                                            swal({
+                                                title: 'Error',
+                                                text: message,
+                                                timer: 3000,
+                                                showConfirmButton: true,
+                                                type: 'error'
+                                            });
+                                        }
+                                    }
+                                });
+                            },
+                        },
+                        cancel: {
+                            btnClass: 'btn-dark',
+                            action: function() {
+                                // close dialog
+                            }
+                        },
+                    }
+                });
+           
+        }
+
+        const printBUCharging = (charging_no) => {
             const bu_filters = document.querySelector('#charging-bu-filter').value;
 
             if(bu_filters != ''){
@@ -184,29 +253,10 @@
             }else{
                 bu_filter = 'none';
             }
-            const type = 'unpaid';
 
             var base_url = `${baseUrl}`;
-            var win = window.open(base_url + "printBUCharge/pdfBUCharging/" + btoa(bu_filter) + "/" + btoa(type), '_blank');
+            var win = window.open(base_url + "printBUCharge/pdfBUCharging/" + btoa(bu_filter) + "/" + btoa(charging_no), '_blank');
         }
 
-        const displayTagBtn = () => {
-            const filter = document.querySelector('#charging-bu-filter');
-            const anchor = document.querySelector('#tag-paid-btn');
 
-            if(filter != ''){
-                anchor.style.display = "block";
-            }else{
-                anchor.style.display = "none";
-            }
-        }
-
-        const tagChargeAsPaid = () => {
-            $.ajax({
-                url: `${baseUrl}head-office-accounting/charging/business-units/tag-as-paid`,
-                type: 'POST',
-                dataType: 'json',
-
-            });
-        }
     </script>

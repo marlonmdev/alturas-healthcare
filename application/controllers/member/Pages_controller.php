@@ -73,7 +73,7 @@ class Pages_controller extends CI_Controller {
 					// var_dump(floatval($cost_type['op_price']));
 					//var_dump("ctype_id",$ctype_id);
 					if($loa['loa_request_type'] != 'Consultation'){
-						$med_services += floatval($cost_type['op_price']);
+						$med_services += floatval($cost_type['op_price']); 
 					}else{
 						$med_services+= 500;
 					}
@@ -295,35 +295,35 @@ class Pages_controller extends CI_Controller {
 	function approved_requested_emergency_loa() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
-		$this->load->view('member_panel/noa/approved_noa');
+		$this->load->view('member_panel/emergency_loa/approved_noa');
 		$this->load->view('templates/footer');
 	}
 
 	function disapproved_requested_emergency_loa() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
-		$this->load->view('member_panel/noa/disapproved_noa');
+		$this->load->view('member_panel/emergency_loa/disapproved_noa');
 		$this->load->view('templates/footer');
 	}
 
 	function completed_requested_emergency_loa() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
-		$this->load->view('member_panel/noa/completed_noa');
+		$this->load->view('member_panel/emergency_loa/completed_noa');
 		$this->load->view('templates/footer');
 	}
 
 	function view_billed_emergency_loa() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
-		$this->load->view('member_panel/noa/billed_noa');
+		$this->load->view('member_panel/emergency_loa/billed_noa');
 		$this->load->view('templates/footer');
 	}
 
 	function view_paid_emergency_loa() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
-		$this->load->view('member_panel/noa/paid_noa');
+		$this->load->view('member_panel/emergency_loa/paid_noa');
 		$this->load->view('templates/footer');
 	}
 }

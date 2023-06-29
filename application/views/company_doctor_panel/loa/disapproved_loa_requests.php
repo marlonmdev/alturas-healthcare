@@ -252,7 +252,7 @@
                 $('#loa-no').html(loa_no);
                 $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
                 $('#disapproved-by').html(disapproved_by);
-                $('#disapprove-reason').html(disapprove_reason);
+                $('#disapprove-reason').html(`<strong class="text-danger">${disapprove_reason}</strong>`);
                 $('#disapproved-on').html(disapproved_on);
                 $('#member-mbl').html(member_mbl);
                 $('#remaining-mbl').html(remaining_mbl);

@@ -124,7 +124,7 @@
   const form = document.querySelector('#pdfBillingForm');
   let hospital_charges ="";
   let attending_doctors ="";
-  let final_charges = {};
+  let benefits_deductions = {};
   let json_final_charges = {};
   let is_valid_name = true;
   let is_valid_noa = true;
@@ -168,7 +168,20 @@ var searchTerms = [
   "date   description",
   "labesores, marian cacayan",
   "billing clerk",
-  // "emportant",
+  "please pay for",
+  "important:",
+  "statement",
+  "hospital reserves",
+  "incurred",
+  "(philhealth and/or hmo)",
+  "possible",
+  "days upon receipt",
+  "notice",
+  "billed",
+  "clave",
+  "member",
+  "page",
+  // "please pay for",
   // "the statement of account",
   // "hospital reserves",
   // "incurred which",
@@ -196,16 +209,59 @@ return modifiedText;
 // console.log("final text",modifiedText);
 }
   
-const get_deduction = (lines) => {
-        const regex = /philhealth benefits\s*\.*\s*([\d,\.]+)/i;
-       
+function validate_name(patient, member) {
+  // Remove leading and trailing spaces
+  var trimmedStr1 = patient.trim();
+  var trimmedStr2 = member.trim();
+   console.log("trimmedStr1",trimmedStr1);
+   console.log("trimmedStr2",trimmedStr2);
+  // Compare the strings
+  return trimmedStr1 === trimmedStr2;
+}
 
-      }
+      const get_deduction = (text) => {
+
+        // var lines = text.split("\n");
+        const final_text = text.replace(/[()]/g, '');
+        let include = false;
+        const regex = /subtotal([\s\S]*?)total/gi;
+        const matches = text.match(regex);
+        let data = [];
+        var deductions = matches.join("\n").split("\n");
+        console.log("matches",deductions);
+        const texts = deductions.filter(line => {
+          if (/\bsubtotal\b/i.test(line)) {
+            include = true;
+            return false;
+          }
+          if (/\btotal\b/i.test(line)) {
+            include = false;
+            return false;
+          }
+
+          if (include) {
+            return true;
+          }
+
+          return false;
+        });
+
+        data = texts.map(line => line.split(/\s{3,}/));
+        const outputArray = data.map((arr, index) => {
+          if(arr.length === 1){
+            return [...arr, '0'];
+          }else{
+            return [...arr];
+          }
+        });
+        console.log("deductions",outputArray);
+        return outputArray;
+      };
 
       const get_all_item = (result) => {
-                    const line1 = result.split("\n"); // Split input into an array of lines
-                    const data1 = line1.map(line => line.split(/\s{3,}/)); 
-                    console.log(data1);
+                    // const line1 = result.split("\n"); // Split input into an array of lines
+                    // const data1 = line1.map(line => line.split(/\s{3,}/)); 
+                    // console.log("data",data1);
                     let include = true;
       
                     const lin = result.split("\n");
@@ -350,6 +406,8 @@ const get_deduction = (lines) => {
       formData.append('hospital_bill_data', hospital_charges);
       formData.append('attending_doctors', attending_doctors);
       formData.append('json_final_charges', json_final_charges);
+      formData.append('benefits_deductions', benefits_deductions);
+
       $.ajax({
         type: 'POST',
         url: $(this).attr('action'),
@@ -460,63 +518,20 @@ reader.onload = function() {
 
                       console.log("final result",finalResult);
 
-                      const pattern = /attending doctor\(s\):\s(.*?)\sregistry date:/si;
+                      // const pattern = /attending doctor\(s\):\s(.*?)\sregistry date:/si;
                       const patient_pattern = /patient name:\s(.*?)\sregistry no:/si;
-                      // const patient_pattern = /patient name:\s(.*?)\admission no/si;
-                      const doc_pattern = /hospital charges(.*?)please pay for this amount/si;
-
-                      // const matches_1 = finalResult.match(pattern); 
-                      // const result_1 = matches_1 ? matches_1[1] : null;
-
-                      const matches_2 = finalResult.match(doc_pattern);
-                      const result_2 = matches_2 ? matches_2[1] : null;
-
-                      hospital_charges = result_2;
-                      
-                      
                       const matches_3 = finalResult.match(patient_pattern);
                       const result_3 = matches_3 ? matches_3[1] : null;
+                      console.log("patient name", result_3);
+                      // const patient_pattern = /patient name:\s(.*?)\admission no/si;
+                      // const matches_1 = finalResult.match(pattern); 
+                      // const result_1 = matches_1 ? matches_1[1] : null;
                       console.log('final text',final_text(finalResult));
-                      get_all_item(final_text(finalResult));
-                      
-                      json_final_charges = JSON.stringify( get_all_item(final_text(finalResult)));
 
-                      console.log("data",final_charges);
-                      console.log("JSON",json_final_charges);
-                     
-                      
-                      console.log("hospital charges", hospital_charges);
-
-                      if (patient_name.length) {
-                          console.log("patient name", result_3);
-                          const names = patient_name.toLowerCase().split(' ').filter(Boolean);
-
-                          let removedElement ="";
-                          
-                          if(names[names.length-1] === ".jr"){
-                             removedElement = names.splice(names.length-2, 1);
-                          }else{
-                              removedElement = names.splice(names.length-1, 1);
-                          }
-                          const mem_name = removedElement + ", " + names.join(' ');
-                          console.log("final name",mem_name);
-                          if(mem_name !== result_3){
-                            is_valid_name = false;
-                              // $('#upload-btn').prop('disabled',true);
-                              $.alert({
-                                      title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
-                                      content: `<div style='font-size: 16px; color: #333;'>The uploaded PDF bill does not match the member's name. Please ensure that you have uploaded the correct PDF bill.</div>`,
-                                      type: "red",
-                                      buttons: {
-                                      ok: {
-                                          text: "OK",
-                                          btnClass: "btn-danger",
-                                      },
-                                  },
-                              });
-                          }else{
-                            is_valid_name = true;
-                          }
+                      if(pdfid !== 'pdf-file'){
+                        get_all_item(final_text(finalResult));
+                        json_final_charges = JSON.stringify(get_all_item(final_text(finalResult)));
+                        console.log("JSON item",json_final_charges);
                       }
 
                   //validate noa 
@@ -542,12 +557,50 @@ reader.onload = function() {
                                   }, 1000); // Delay of 2000 milliseconds (2 seconds)
                       }else{
                         is_valid_noa = true;
+                        if (patient_name.length) {
+
+                        const names = patient_name.toLowerCase().split(' ').filter(Boolean);
+
+                        let removedElement ="";
+
+                        if(names[names.length-1] === ".jr"){
+                          removedElement = names.splice(names.length-2, 1);
+                        }else{
+                            removedElement = names.splice(names.length-1, 1);
+                        }
+                        const mem_name = removedElement + ", " + names.join(' ');
+
+                        if(!validate_name(result_3,mem_name)){
+                          is_valid_name = false;
+                            // $('#upload-btn').prop('disabled',true);
+                            $.alert({
+                                    title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
+                                    content: `<div style='font-size: 16px; color: #333;'>The uploaded PDF bill does not match the member's name. Please ensure that you have uploaded the correct PDF bill.</div>`,
+                                    type: "red",
+                                    buttons: {
+                                    ok: {
+                                        text: "OK",
+                                        btnClass: "btn-danger",
+                                    },
+                                },
+                            });
+                        }else{
+                          is_valid_name = true;
+                        }
+                        }
                       }
                   
                   if(pdfid === 'pdf-file'){
 
+                  const doc_pattern = /hospital charges(.*?)please pay for this amount/si;
+                  const matches_2 = finalResult.match(doc_pattern);
+                  const result_2 = matches_2 ? matches_2[1] : null;
+                  hospital_charges = result_2;
+                  benefits_deductions = JSON.stringify(get_deduction(final_text(finalResult)));
                   attending_doctors = get_doctors(finalResult);
                   console.log("doctors", attending_doctors);
+                  console.log("hospital charges", hospital_charges);
+                  console.log("JSON deduction",benefits_deductions);
                   const regex = /please pay for this amount\s*\.*\s*([\d,\.]+)/i;
                   // const regex = /subtotal\s*\.{26}\s*\(([\d,\.]+)\)/i;
                       const match = finalResult.match(regex);

@@ -3,69 +3,84 @@
     <!-- Bread crumb and right sidebar toggle -->
     <div class="page-breadcrumb">
         <div class="row">
-        <div class="col-12 d-flex no-block align-items-center">
-            <h4 class="page-title"><i class="mdi mdi-format-line-style"></i> Charging Details</h4>
-            <div class="ms-auto text-end">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                    <li class="breadcrumb-item">Head Office Accounting</li>
-                    <li class="breadcrumb-item active" aria-current="page">
-                        Business Unit Charging
-                    </li>
-                    </ol>
-                </nav>
+            <div class="col-12 d-flex no-block align-items-center">
+                <h4 class="page-title"><i class="mdi mdi-format-line-style"></i> Charging Details</h4>
+                <div class="ms-auto text-end">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                        <li class="breadcrumb-item">Head Office Accounting</li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            Business Unit Charging
+                        </li>
+                        </ol>
+                    </nav>
+                </div>
             </div>
-        </div>
         </div>
     </div><hr>
     <!-- End Bread crumb and right sidebar toggle -->
     <div class="container-fluid">
         <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
         <input type="hidden" id="details-emp-id" value="<?php echo $emp_id; ?>">
-       
-        <div class="row">
-            <div class="col-4">
-                <span class="fs-5"> Member's Fullname : <span class="fw-bold fs-5"><?php echo $member['first_name'].' '.$member['middle_name'].' '.$member['last_name'].' ' .$member['suffix'];?></span></span><br>
-                <span class="fs-5 pt-2"> Business Unit : <span class="fs-5 fw-bold"><?php echo $member['business_unit'];?></span></span>
+        <div class="col-2 pb-1 offset-10">
+            <div class="input-group">
+                <a href="<?php echo base_url(); ?>head-office-accounting/charging/business-unit" type="submit" class="btn btn-info" data-bs-toggle="tooltip" title="Click to Go Back">
+                    <strong class="ls-2" style="vertical-align:middle">
+                        <i class="mdi mdi-arrow-left-bold"></i> Go Back
+                    </strong>
+                </a>
             </div>
-            <div class="col-2 pb-1 pt-3 offset-6">
-                <div class="input-group">
-                    <a href="<?php echo base_url(); ?>head-office-accounting/charging/business-unit" type="submit" class="btn btn-dark" data-bs-toggle="tooltip" title="Click to Go Back">
-                        <strong class="ls-2" style="vertical-align:middle">
-                            <i class="mdi mdi-arrow-left-bold"></i> Go Back
-                        </strong>
-                    </a>
+        </div><br>
+        <div class="row gap-4 ps-4">
+            <div class="col-3 border border shadow bg-light pt-2 ps-3 pe-2">
+                <div class="d-flex flex-column align-items-center text-center">
+                    <?php if($member['gender'] == 'Male' || $member['gender'] == 'male'): ?>
+                      <img src="<?= base_url() . 'assets/images/male_avatar.svg' ?>" alt="Member" class="img-responsive" width="150" height="auto">
+                    <?php endif; ?>
+
+                    <?php if($member['gender'] == 'Female' || $member['gender'] == 'female'): ?>
+                      <img src="<?= base_url() . 'assets/images/female_avatar.svg' ?>" alt="Member" class="img-responsive" width="150" height="auto">
+                    <?php endif; ?>
+
+                  <div class="mt-3">
+                    <p class="mb-1 fs-4 text-info"><strong> <?= $member['first_name'] . ' ' . $member['middle_name'] . ' ' . $member['last_name'] . ' ' . $member['suffix'] ?></strong></p>
+                    <p class="mb-1"><strong><?= $member['business_unit']; ?></strong></p>
+                    <p class="mb-1"><strong><?= $member['dept_name']; ?></strong></p>
+                    <p class="text-success mb-1"><strong><?= $member['position']; ?></strong></p>
+                    <p class="mb-1"><strong><?= $member['emp_type']; ?></strong></em>
+                    <p class="text-muted font-size-sm"><span class="badge rounded-pill bg-success"><strong><?= $member['current_status']; ?></strong></span></p>
+                  </div>
                 </div>
             </div>
-        </div>
-        <br>
-        <div class="card bg-light">
-            <div class="card-body">
-                <div class=" table-responsive">
-                    <table class="table table-hover" id="detailsTable">
-                        <thead style="background-color:#17a1d4">
-                            <tr>
-                                <td class="text-white">Billing No.</td>
-                                <td class="text-white">LOA/NOA No.</td>
-                                <td class="text-white">Company Charge</td>
-                                <td class="text-white">Healthcare Advance</td>
-                                <td class="text-white">Total Charge</td>
-                                <td class="text-white">Status</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td></td>
-                                <td class="fw-bold">TOTAL</td>
-                                <td><span class="fw-bold fs-5" id="total-company"></span></td>
-                                <td><span class="fw-bold fs-5" id="total-advance"></span></td>
-                                <td><span class="fw-bold fs-5" id="total-payable"></span></td>
-                                <td></td>
-                            </tr>
-                        </tfoot>
-                    </table>
+           
+            <div class="card bg-light col-8">
+                <div class="card-body">
+                    <div class=" table-responsive">
+                        <table class="table table-hover" id="detailsTable">
+                            <thead style="background-color:#17a1d4">
+                                <tr>
+                                    <td class="text-white">Billing No.</td>
+                                    <td class="text-white">LOA/NOA No.</td>
+                                    <td class="text-white">Company Charge</td>
+                                    <td class="text-white">Healthcare Advance</td>
+                                    <td class="text-white">Total Charge</td>
+                                    <td class="text-white">Status</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td class="fw-bold">TOTAL</td>
+                                    <td><span class="fw-bold fs-5" id="total-company"></span></td>
+                                    <td><span class="fw-bold fs-5" id="total-advance"></span></td>
+                                    <td><span class="fw-bold fs-5" id="total-payable"></span></td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

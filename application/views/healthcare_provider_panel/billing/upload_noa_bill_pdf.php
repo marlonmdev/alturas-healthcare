@@ -321,7 +321,7 @@
     let is_valid_noa = true;
     let is_valid_netbill = true;
     let json_final_charges = {};
-    
+    let benefits_deductions = {};
     if(re_upload){
         $('#initial_tab').hide();
         $('#final_diagnosis').hide();
@@ -420,18 +420,6 @@
             }   
         });
        
-<<<<<<< HEAD
-        // $('#viewPDFBillModal').on('hidden.bs.modal', function (e) {
-        //     is_valid_name = true;
-        //     is_valid_noa = true;
-        //     is_valid_netbill = true;
-        //     if(is_valid_name || is_valid_noa || is_valid_netbill){
-        //         window.location.reload();
-        //         // $('#pdfBillingForm')[0].reset();
-        //         // $('#initialpdfBillingForm')[0].reset();
-        //     }
-        // });
-=======
         $('#viewPDFBillModal').on('hidden.bs.modal', function (e) {
             
             if(!is_valid_noa || !is_valid_netbill){
@@ -446,7 +434,6 @@
             is_valid_noa = true;
             is_valid_netbill = true;
         });
->>>>>>> df5fe5f1304038f0607b559e233f533ca84afc0c
         
         
         // $('#final_diagnosis').prop("hidden",true);
@@ -502,6 +489,8 @@
             formData.append('hospital_bill_data', hospital_charges);
             formData.append('attending_doctors', attending_doctors);
             formData.append('json_final_charges', json_final_charges);
+            formData.append('benefits_deductions', benefits_deductions);
+
             formData.append('net_bill', $('#net-bill').val());
             $.ajax({
                 type: 'POST',
@@ -649,27 +638,23 @@
                             }, '').trim();
 
                             console.log("final result",finalResult);
-                            const pattern = /attending doctor\(s\):\s(.*?)\admission date:/si;
+                            // const pattern = /attending doctor\(s\):\s(.*?)\admission date:/si;
                             const patient_pattern = /patient name:\s(.*?)\admission no/si;
-                           
-
-                            const matches_1 = finalResult.match(pattern);
-                            const result_1 = matches_1 ? matches_1[1] : null;
-                            
-
+        
+                            // const matches_1 = finalResult.match(pattern);
+                            // const result_1 = matches_1 ? matches_1[1] : null;
+                    
                             const matches_3 = finalResult.match(patient_pattern);
                             const result_3 = matches_3 ? matches_3[1] : null;
                             
-                           
-                            
                             console.log('final text',final_text(finalResult));
-                            get_all_item(final_text(finalResult));
                             
-                            json_final_charges = JSON.stringify( get_all_item(final_text(finalResult)));
-                           
-                            // console.log("data",final_charges);
-                            console.log("JSON",json_final_charges);
-                            
+                            if(pdfid === 'pdf-file'){
+                                get_all_item(final_text(finalResult));
+                                json_final_charges = JSON.stringify( get_all_item(final_text(finalResult)));
+                                // console.log("data",final_charges);
+                                console.log("JSON",json_final_charges);
+                            }
                             // console.log("final doctors", result_3);
                             console.log("patient name", result_3);
 
@@ -687,7 +672,7 @@
                                 }
                                 const mem_name = removedElement + ", " + names.join(' ');
                                 console.log("final name",mem_name);
-                                if(mem_name !== result_3){
+                                if(!validate_name(result_3,mem_name)){
                                     is_valid_name = false;
                                     // $('#upload-btn').prop('disabled',true);
                                     $.alert({
@@ -736,9 +721,13 @@
                             const matches_2 = finalResult.match(doc_pattern);
                             const result_2 = matches_2 ? matches_2[1] : null;
                             hospital_charges = result_2;
-                            console.log("hospital charges", hospital_charges);
+                            benefits_deductions = JSON.stringify(get_deduction(final_text(finalResult)));
                             attending_doctors = get_doctors(finalResult);
+
                             console.log("doctors", attending_doctors);
+                            console.log("hospital charges", hospital_charges);
+                            console.log("JSON deduction",benefits_deductions);
+
                             const regex = /please pay for this amount\s*\.*\s*([\d,\.]+)/i;
                             const match = finalResult.match(regex);
                             console.log("match",match);
@@ -962,17 +951,30 @@
                 const final_text = (text) => {
 
                 var searchTerms = [
-                "ramiro community hospital",
-                "0139 c. gallares street",
-                "tel. no(s):",
-                "patient name:",
-                "hospitalization plan:",
-                "attending doctor(s):",
-                "patient address:",
-                "room no.:",
-                "date   description",
-                "labesores, marian cacayan",
-                "billing clerk",
+                    "ramiro community hospital",
+                    "0139 c. gallares street",
+                    "tel. no(s):",
+                    "patient name:",
+                    "hospitalization plan:",
+                    "attending doctor(s):",
+                    "patient address:",
+                    "room no.:",
+                    "date   description",
+                    "labesores, marian cacayan",
+                    "billing clerk",
+                    "please pay for",
+                    "important:",
+                    "statement",
+                    "hospital reserves",
+                    "incurred",
+                    "(philhealth and/or hmo)",
+                    "possible",
+                    "days upon receipt",
+                    "notice",
+                    "billed",
+                    "clave",
+                    "member",
+                    "page",
                 // Add more search terms as needed
                 ];
 
@@ -1057,19 +1059,54 @@
                         return outputArray.filter(arr => arr.length !== 1);
       }
                                 
-                // const displayValue = () => {
+      const get_deduction = (text) => {
 
-                // const billed_date = new Date(document.querySelector('#initial-date').value);
-                // const options = { month: 'long', day: '2-digit', year: 'numeric' };
-                // const formattedStartDate = billed_date.toLocaleDateString('en-US', options);
-            
-                // const bDate = document.querySelector('#b-date');
+            // var lines = text.split("\n");
+            const final_text = text.replace(/[()]/g, '');
+            let include = false;
+            const regex = /subtotal([\s\S]*?)total/gi;
+            const matches = text.match(regex);
+            let data = [];
+            var deductions = matches.join("\n").split("\n");
+            console.log("matches",deductions);
+            const texts = deductions.filter(line => {
+            if (/\bsubtotal\b/i.test(line)) {
+                include = true;
+                return false;
+            }
+            if (/\btotal\b/i.test(line)) {
+                include = false;
+                return false;
+            }
 
-                // if(document.querySelector('#initial-date').value){
-                //     }else{
-                //         bDate.textContent = '';
-                //     }
-                // }
+            if (include) {
+                return true;
+            }
 
+            return false;
+            });
+
+            data = texts.map(line => line.split(/\s{3,}/));
+            const outputArray = data.map((arr, index) => {
+            if(arr.length === 1){
+                return [...arr, '0'];
+            }else{
+                return [...arr];
+            }
+            });
+            console.log("deductions",outputArray);
+            return outputArray;
+        };
+
+
+            function validate_name(patient, member) {
+                // Remove leading and trailing spaces
+                var trimmedStr1 = patient.trim();
+                var trimmedStr2 = member.trim();
+                console.log("trimmedStr1",trimmedStr1);
+                console.log("trimmedStr2",trimmedStr2);
+                // Compare the strings
+                return trimmedStr1 === trimmedStr2;
+            }
 
 </script>

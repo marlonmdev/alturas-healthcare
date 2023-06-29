@@ -203,7 +203,7 @@
         $('#loa-status').html(`<strong class="text-info">[${req_status}]</strong>`);
         $('#cancelled-by').html(cancelled_by);
         $('#cancelled-on').html(cancelled_on);
-        $('#cancellation-reason').html(cancellation_reason);
+        $('#cancellation-reason').html(`<strong class="text-danger">${cancellation_reason}</strong>`);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
         $('#date-of-birth').html(date_of_birth);
         $('#age').html(age);

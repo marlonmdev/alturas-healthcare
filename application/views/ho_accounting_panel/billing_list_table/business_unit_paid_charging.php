@@ -30,7 +30,16 @@
                             href="<?php echo base_url(); ?>head-office-accounting/charging/business-unit"
                             role="tab"
                             ><span class="hidden-sm-up"></span>
-                            <span class="hidden-xs-down fs-5 font-bold">Unpaid Charge</span></a
+                            <span class="hidden-xs-down fs-5 font-bold">BU Charges</span></a
+                        >
+                    </li>
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            href="<?php echo base_url(); ?>head-office-accounting/charging/business-unit/for-payment"
+                            role="tab"
+                            ><span class="hidden-sm-up"></span>
+                            <span class="hidden-xs-down fs-5 font-bold">Receivables</span></a
                         >
                     </li>
                     <li class="nav-item">
@@ -39,7 +48,7 @@
                             href="<?php echo base_url(); ?>head-office-accounting/charging/business-unit/paid"
                             role="tab"
                             ><span class="hidden-sm-up"></span>
-                            <span class="hidden-xs-down fs-5 font-bold">Paid Charge</span></a
+                            <span class="hidden-xs-down fs-5 font-bold">Paid Charges</span></a
                         >
                     </li>
                 </ul>
@@ -65,9 +74,6 @@
                     </select>
                 </div>
             </div>
-            <div class="col-lg-3 pt-1">
-                <button class="btn btn-danger btn-sm" type="button" id="print-btn" onclick="printBUCharging()"><i class="mdi mdi-printer"></i> Print</button>
-            </div>
        </div>
         <br>
         <div class="card bg-light">
@@ -76,8 +82,8 @@
                     <table class="table table-hover" id="chargeTable">
                         <thead style="background-color:#00538C">
                             <tr>
-                                <td class="text-white">Healthcard No.</td>
-                                <td class="text-white">Member</td>
+                                <td class="text-white">Charging No.</td>
+                                <td class="text-white">Date Paid</td>
                                 <td class="text-white">Business Unit</td>
                                 <td class="text-white">Company Charge</td>
                                 <td class="text-white">Healthcare Advance</td>
@@ -91,10 +97,10 @@
                         <tfoot>
                             <td></td>
                             <td></td>
-                            <td><span class="fw-bold fs-5">TOTAL</span></td>
-                            <td><span class="fw-bold fs-5" id="total-company"></span></td>
-                            <td><span class="fw-bold fs-5" id="total-advance"></span></td>
-                            <td><span class="fw-bold fs-5" id="total-payable"></span></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                             <td></td>
                             <td></td>
                         </tfoot>
@@ -103,6 +109,7 @@
             </div>
         </div>
     </div> 
+    <?php include 'view_check_voucher.php'; ?>
 </div>
  <?php include 'view_payment_details.php' ?>
 <script>
@@ -141,53 +148,42 @@
                 chargingTable.draw();
             });
 
-                      
-        chargingTable.on('draw.dt', function() {
-            let columnIndices = [3, 4, 5]; // Array of column indices to calculate sum
-            let sums = [0, 0, 0]; // Array to store the sums for each column
-
-            if ($('#chargeTable').DataTable().data().length > 0) {
-                // The table is not empty
-                chargingTable.rows().nodes().each(function(index, row) {
-                let rowData = chargingTable.row(row).data();
-
-                columnIndices.forEach(function(columnIdx, idx) {
-                    let columnValue = rowData[columnIdx];
-                    let pattern = /-?[\d,]+(\.\d+)?/g;
-                    let matches = columnValue.match(pattern);
-
-                    if (matches && matches.length > 0) {
-                    let numberString = matches[0].replace(/,/g, '');
-                    let floatValue = parseFloat(numberString);
-                    sums[idx] += floatValue;
-                    }
-                });
-                });
-            }
-
-            let sumColumn1 = sums[0];
-            let sumColumn2 = sums[1];
-            let sumColumn3 = sums[2];
-
-            $('#total-company').html(sumColumn1.toLocaleString('PHP', { minimumFractionDigits: 2 }));
-            $('#total-advance').html(sumColumn2.toLocaleString('PHP', { minimumFractionDigits: 2 }));
-            $('#total-payable').html(sumColumn3.toLocaleString('PHP', { minimumFractionDigits: 2 }));
-        });
-            
         });
 
-        const printBUCharging = () => {
-            const bu_filters = document.querySelector('#charging-bu-filter').value;
+    const viewSupDoc = (file_name,charging_no) => {
+        $('#viewCVModal').modal('show');
+        $('#cancel').hide();
+        $('#header').html('<h4 class="text-info">Charging No. [ '+charging_no+' ]</h4>');
+        let pdfFile = `${baseUrl}uploads/bu_charges_docs/${file_name}`;
+        let fileExists = checkFileExists(pdfFile);
 
-            if(bu_filters != ''){
-                bu_filter = bu_filters;
-            }else{
-                bu_filter = 'none';
+        if(fileExists){
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', pdfFile, true);
+        xhr.responseType = 'blob';
+
+        xhr.onload = function(e) {
+            if (this.status == 200) {
+            let blob = this.response;
+            let reader = new FileReader();
+
+            reader.onload = function(event) {
+                let dataURL = event.target.result;
+                let iframe = document.querySelector('#pdf-cv-viewer');
+                iframe.src = dataURL;
+            };
+            reader.readAsDataURL(blob);
             }
-            const type = 'paid';
-
-            var base_url = `${baseUrl}`;
-            var win = window.open(base_url + "printBUCharge/pdfBUPaidCharging/" + btoa(bu_filter) + "/" + btoa(type), '_blank');
+        };
+        xhr.send();
         }
+    }
 
-    </script>
+    const checkFileExists = (fileUrl) => {
+        let xhr = new XMLHttpRequest();
+        xhr.open('HEAD', fileUrl, false);
+        xhr.send();
+
+        return xhr.status == "200" ? true: false;
+    }
+</script>

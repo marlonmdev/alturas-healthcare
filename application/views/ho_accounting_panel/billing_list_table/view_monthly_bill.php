@@ -45,7 +45,7 @@
               if($pay['startDate'] == '0000-00-00' || $pay['endDate'] == '0000-00-00'){
                 $date = '';
               }else{
-                $date = '<h6>From '.$formatedStartDate.' to '.$formatedEndDate.'</h6>';
+                $date = '<h5>From '.$formatedStartDate.' to '.$formatedEndDate.'</h5>';
               }
             ?>
                   <div class="text-center pt-4">
@@ -53,7 +53,7 @@
                         <h4>For Payment Billing Summary</h4>
                         <h5><?php echo $pay['hp_name']; ?></h5>
                         <?php echo $date; ?>
-                        <h6><?php echo $payment_no; ?></h6>
+                        <h5><?php echo $payment_no; ?></h5>
                   </div>
                 <div class="card-body">
                   <input type="hidden" id="p-hp-id" value="<?php echo $pay['hp_id'];?>">
@@ -61,9 +61,11 @@
                   <input type="hidden" id="p-end-date" value="<?php echo $pay['endDate'];?>">
 
                   <div class=" table-responsive">
+                    <i class="text-danger">( Click LOA/NOA number to view details )</i>
                     <table class="table table-hover table-responsive" id="billedLoaTable">
                       <thead style="background-color:#eddcb7">
                         <tr>
+                            <th class="fw-bold ls-2"><strong>#</strong></th>
                             <th class="fw-bold ls-2"><strong>Billing No</strong></th>
                             <th class="fw-bold ls-2"><strong>LOA/NOA #</strong></th>
                             <th class="fw-bold ls-2"><strong>Patient Name</strong></th>
@@ -82,6 +84,7 @@
                       <tbody id="billed-tbody">
                       </tbody>
                       <tfoot>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -111,6 +114,8 @@
     <?php include 'view_pdf_bill_modal.php'; ?>
   <!-- End Page wrapper  -->
   </div>
+  <?php include 'view_loa_noa_details_modal.php';?>
+
 <!-- End Wrapper -->
 
 <script>
@@ -150,7 +155,7 @@
     });
 
     billedTable.on('draw.dt', function() {
-        let columnIdx = 9;
+        let columnIdx = 10;
         let sum = 0;
         let rows = billedTable.rows().nodes();
         if ($('#billedLoaTable').DataTable().data().length > 0) {
@@ -221,6 +226,75 @@
        var base_url = `${baseUrl}`;
         var win = window.open(base_url + "printpayment/pdfbilling/" + btoa(hp_id) + "/" + btoa(start_date) + "/" + btoa(end_date), '_blank');
     }
+
+    const viewLOANOAdetails = (billing_id) => {
+    $('#viewLOANOAdetailsModal').modal('show');
+    $.ajax({
+      url: `${baseUrl}head-office-accounting/biling/loa-noa-details/fetch/${billing_id}`,
+      data: `<?php echo $this->security->get_csrf_hash(); ?>`,
+      type: 'GET',
+      success: function(response) {
+        const res = JSON.parse(response);
+        const {
+          token,
+          loa_noa_no,
+          fullname,
+          business_unit,
+          hp_name,
+          requested_on,
+          approved_on,
+          approved_by,
+          request_type,
+          percentage,
+          services,
+          admission_date,
+          billed_on,
+          billed_by,
+          billing_no,
+          net_bill,
+          personal_charge,
+          company_charge,
+          cash_advance,
+          total_payable,
+          before_remaining_bal,
+          after_remaining_bal
+        } = res;
+
+        if(request_type == 'Diagnostic Test'){
+          $('#cost-types').show();
+        }else{
+          $('#cost-types').hide();
+        }
+        if(request_type == 'NOA'){
+          $('#admitted-on').show();
+        }else{
+          $('#admitted-on').hide();
+        }
+        $('#noa-loa-no').html(loa_noa_no);
+        $('#members-fullname').html(fullname);
+        $('#member-bu').html(business_unit);
+        $('#hc-provider').html(hp_name);
+        $('#request-date').html(requested_on);
+        $('#approved-on').html(approved_on);
+        $('#approved-by').html(approved_by);
+        $('#request-type').html(request_type);
+        $('#percentage-is').html(percentage);
+        $('#med-services').html(services);
+        $('#admission-date').html(admission_date);
+        $('#billed-on').html(billed_on);
+        $('#billed-by').html(billed_by);
+        $('#billing-no').html(billing_no);
+        $('#net-bill').html(net_bill);
+        $('#personal-charge').html('-'+ personal_charge);
+        $('#company-charges').html(company_charge);
+        $('#cash-advance').html(cash_advance);
+        $('#total-payable').html(total_payable);
+        $('#totals-payable').html(total_payable);
+        $('#max-benefit').html(before_remaining_bal);
+        $('#remaining-mbl').html(after_remaining_bal);
+      }
+    });
+ }
 
 
 </script>

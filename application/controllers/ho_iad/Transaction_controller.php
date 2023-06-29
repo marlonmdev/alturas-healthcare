@@ -103,7 +103,7 @@ class Transaction_controller extends CI_Controller {
 	function search_by_name() {
 		$this->security->get_csrf_hash();
 		$first_name = $this->security->xss_clean($this->input->post('first_name'));
-		$middle_name = $this->security->xss_clean($this->input->post('last_name'));
+		$middle_name = $this->security->xss_clean($this->input->post('middle_name'));
 		$last_name = $this->security->xss_clean($this->input->post('last_name'));
 		$hcare_provider_id = $this->session->userdata('dsg_hcare_prov');
 		$member = $this->transaction_model->get_member_by_name($first_name,$middle_name, $last_name);
@@ -119,6 +119,10 @@ class Transaction_controller extends CI_Controller {
 			$data['hp_name'] = $hp_name = $this->transaction_model->get_healthcare_provider($hcare_provider_id);
 			$data['billing'] = $this->transaction_model->get_billing_status($member['emp_id'], $hcare_provider_id);
 			$data['noa_requests'] = $this->transaction_model->get_member_noa($member['emp_id'], $hcare_provider_id);
+
+			/* This is checking if the image file exists in the directory. */
+			$file_path = './uploads/profile_pics/' . $member['photo'];
+			$data['member_photo_status'] = file_exists($file_path) ? 'Exist' : 'Not Found';
 
 			$this->session->set_userdata([
 				'b_member_info'    => $member,
@@ -153,7 +157,7 @@ class Transaction_controller extends CI_Controller {
 		$billing_id = $this->uri->segment(4);
 		$token = $this->security->get_csrf_hash();
 		$data['user_role'] = $this->session->userdata('user_role');
-		$billing = $this->transaction_model->get_billing_by_payment_no($billing_id);
+		$billing = $this->transaction_model->get_billing_by_id($billing_id);
 		$payment_details = $this->transaction_model->get_paymentdetails($billing['details_no']);
 
 		if($billing['loa_id'] != ''){
@@ -356,11 +360,11 @@ class Transaction_controller extends CI_Controller {
 
 				$status = '<span class="text-center badge rounded-pill bg-warning">Billed</span>'; 
 				
-				$payment_no = $this->myhash->hasher($bill['payment_no'], 'encrypt');
+				$payment_id = $this->myhash->hasher($bill['bill_id'], 'encrypt');
 
-				$action_customs = '<a href="'.base_url().'head-office-iad/biling/for-audit-list/'.$bill['payment_no'].'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
+				$action_customs = '<a href="'.base_url().'head-office-iad/biling/for-audit-list/'.$payment_id.'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
 
-				$action_customs .= '<a href="javascript:void(0)" onclick="tagDoneAudit(\''.$bill['payment_no'].'\')" data-bs-toggle="tooltip" title="Audited"><i class="mdi mdi-checkbox-marked-circle-outline fs-2 pe-2 text-danger"></i></a>';
+				// $action_customs .= '<a href="javascript:void(0)" onclick="tagDoneAudit(\''.$bill['payment_no'].'\')" data-bs-toggle="tooltip" title="Audited"><i class="mdi mdi-checkbox-marked-circle-outline fs-2 pe-2 text-danger"></i></a>';
 
 				$row[] = $consolidated;
 				$row[] = $date;
@@ -397,9 +401,9 @@ class Transaction_controller extends CI_Controller {
 
 				$status = '<span class="text-center badge rounded-pill bg-info">Audited</span>'; 
 
-				$payment_no = $this->myhash->hasher($bill['payment_no'], 'encrypt');
+				$payment_id = $this->myhash->hasher($bill['bill_id'], 'encrypt');
 
-				$action_customs = '<a href="'.base_url().'head-office-iad/biling/audited-list/'.$bill['payment_no'].'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
+				$action_customs = '<a href="'.base_url().'head-office-iad/biling/audited-list/'.$payment_id.'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
 
 				$row[] = $consolidated;
 				$row[] = $date;
@@ -428,7 +432,7 @@ class Transaction_controller extends CI_Controller {
 			if (!in_array($bill_id, $unique_bills)) { // check if bill with this id has already been added
 				$row = [];
 
-				$consolidated = '<span>Consolidated Bill with the Payment No. <span class="fw-bold">'.$bill['payment_no'].'</span></span>';
+				$consolidated = '<span>Consolidated Paid Bill with the Payment No. <span class="fw-bold">'.$bill['payment_no'].'</span></span>';
 
 				$date = '<span>'.date('F d, Y', strtotime($bill['startDate'])).' to '.date('F d, Y', strtotime($bill['endDate'])).'</span>';
 
@@ -437,9 +441,9 @@ class Transaction_controller extends CI_Controller {
 				$status = '<span class="text-center badge rounded-pill bg-success">Paid</span>'; 
 				
 
-				$payment_no = $this->myhash->hasher($bill['payment_no'], 'encrypt');
+				$payment_id = $this->myhash->hasher($bill['bill_id'], 'encrypt');
 
-				$action_customs = '<a href="'.base_url().'head-office-iad/biling/paid-list/'.$bill['payment_no'].'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
+				$action_customs = '<a href="'.base_url().'head-office-iad/biling/paid-list/'.$payment_id.'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
 
 				$check = $this->transaction_model->get_paymentdetails($bill['details_no']);
 
@@ -467,16 +471,151 @@ class Transaction_controller extends CI_Controller {
 		$payment_no = $this->input->post('payment_no');
 		$billing = $this->transaction_model->monthly_bill_datatable($payment_no);
 		$data = [];
+		$number = 1;
 		foreach($billing as $bill){
-			$row = [];
-			$wpercent = '';
-			$nwpercent = '';
+			if($bill['company_charge'] && $bill['cash_advance'] != ''){
+				$row = [];
+				$wpercent = '';
+				$nwpercent = '';
+				$billing_id = $this->myhash->hasher($bill['billing_id'], 'encrypt');
+	
+				$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
+	
+				if($bill['loa_id'] != ''){
+					$loa_noa = '<a href="JavaScript:void(0)" class="btn text-info text-decoration-underline" onclick="viewLOANOAdetails(\''.$billing_id.'\')" data-bs-toggle="tooltip">'.$bill['loa_no'].'</a>';
+	
+					$loa = $this->transaction_model->get_loa_info($bill['loa_id']);
+					if($loa['work_related'] == 'Yes'){ 
+						if($loa['percentage'] == ''){
+						   $wpercent = '100% W-R';
+						   $nwpercent = '';
+						}else{
+						   $wpercent = $loa['percentage'].'%  W-R';
+						   $result = 100 - floatval($loa['percentage']);
+						   if($loa['percentage'] == '100'){
+							   $nwpercent = '';
+						   }else{
+							   $nwpercent = $result.'% Non W-R';
+						   }
+						  
+						}	
+				   }else if($loa['work_related'] == 'No'){
+					   if($loa['percentage'] == ''){
+						   $wpercent = '';
+						   $nwpercent = '100% Non W-R';
+						}else{
+						   $nwpercent = $loa['percentage'].'% Non W-R';
+						   $result = 100 - floatval($loa['percentage']);
+						   if($loa['percentage'] == '100'){
+							   $wpercent = '';
+						   }else{
+							   $wpercent = $result.'%  W-R';
+						   }
+						 
+						}
+				   }
+	
+				}else if($bill['noa_id'] != ''){
+					$loa_noa = '<a href="JavaScript:void(0)" class="btn text-info text-decoration-underline" onclick="viewLOANOAdetails(\''.$billing_id.'\')" data-bs-toggle="tooltip">'.$bill['noa_no'].'</a>';
+					
+					$noa = $this->transaction_model->get_noa_info($bill['noa_id']);
+					if($noa['work_related'] == 'Yes'){ 
+						if($noa['percentage'] == ''){
+						   $wpercent = '100% W-R';
+						   $nwpercent = '';
+						}else{
+						   $wpercent = $noa['percentage'].'%  W-R';
+						   $result = 100 - floatval($noa['percentage']);
+						   if($noa['percentage'] == '100'){
+							   $nwpercent = '';
+						   }else{
+							   $nwpercent = $result.'% Non W-R';
+						   }
+						  
+						}	
+				   }else if($noa['work_related'] == 'No'){
+					   if($noa['percentage'] == ''){
+						   $wpercent = '';
+						   $nwpercent = '100% Non W-R';
+						}else{
+						   $nwpercent = $noa['percentage'].'% Non W-R';
+						   $result = 100 - floatval($noa['percentage']);
+						   if($noa['percentage'] == '100'){
+							   $wpercent = '';
+						   }else{
+							   $wpercent = $result.'%  W-R';
+						   }
+						 
+						}
+				   }
+				}
+	
+				$payable = floatval($bill['company_charge'] + floatval($bill['cash_advance']));
+	
+				
+				$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-5"></i></a>';
+	
+				$row[] = $number++;
+				$row[] = $bill['billing_no'];
+				$row[] = $loa_noa;
+				$row[] = $fullname;
+				$row[] = $bill['business_unit'];
+				$row[] = number_format($bill['before_remaining_bal'],2, '.',',');
+				$row[] = $wpercent .', '.$nwpercent;
+				$row[] = number_format($bill['net_bill'], 2, '.', ',');
+				$row[] = number_format($bill['company_charge'], 2, '.', ',');
+				$row[] = number_format($bill['cash_advance'], 2, '.', ',');
+				$row[] = number_format($payable, 2, '.', ',');
+				$row[] = number_format($bill['personal_charge'], 2, '.', ',');
+				$row[] = number_format($bill['after_remaining_bal'],2, '.',',');
+				$row[] = $pdf_bill;
+				$data[] = $row;
+	
+			}
+			
+		}
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
 
-			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
+		echo json_encode($output);
+	}
 
-			if($bill['loa_id'] != ''){
-				$loa_noa = $bill['loa_no'];
-				$loa = $this->transaction_model->get_loa_info($bill['loa_id']);
+	function submit_audited() {
+		$token = $this->security->get_csrf_hash();
+		$user = $this->session->userdata('fullname');
+		$audited = $this->transaction_model->submit_audited_bill($user);
+
+		if(!$audited){
+			echo json_encode([
+				'token' => $token,
+				'status' => 'error',
+				'message' => 'Failed to Submit!',
+			]);
+		}else{
+			echo json_encode([
+				'token' => $token,
+				'status' => 'success',
+				'message' => 'Submitted Successfully!',
+			]);
+		}
+	}
+
+	function fetch_loa_noa_details() {
+		$token = $this->security->get_csrf_hash();
+		$billing_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data = $this->transaction_model->get_loa_noa_billing_by_id($billing_id);
+
+		if($data['loa_id'] != ''){
+			$request_type = $data['loa_request_type'];
+			$loa = $this->transaction_model->get_loa_info($data['loa_id']);
+			$doctor = $this->transaction_model->get_approved_by_doctor($loa['approved_by']);
+			$approved_by = $doctor['doctor_name'];
+			$requested_on = date('F d, Y',strtotime($loa['request_date']));
+			$approved_on = date('F d, Y',strtotime($loa['approved_on']));
+			$loa_noa_no = $loa['loa_no'];
+
 				if($loa['work_related'] == 'Yes'){ 
 					if($loa['percentage'] == ''){
 					   $wpercent = '100% W-R';
@@ -506,88 +645,83 @@ class Transaction_controller extends CI_Controller {
 					 
 					}
 			   }
+		}else if($data['noa_id'] != ''){
+			$noa = $this->transaction_model->get_noa_info($data['noa_id']);
+			$doctor = $this->transaction_model->get_approved_by_doctor($noa['approved_by']);
+			$approved_by = $doctor['doctor_name'];
+			$requested_on = date('F d, Y',strtotime($noa['request_date']));
+			$approved_on = date('F d, Y',strtotime($noa['approved_on']));
+			$admission_date = date('F d, Y',strtotime($noa['admission_date']));
+			$loa_noa_no = $noa['noa_no'];
+			$request_type = 'NOA';
 
-			}else if($bill['noa_id'] != ''){
-				$loa_noa = $bill['noa_no'];
-				$noa = $this->transaction_model->get_noa_info($bill['noa_id']);
-				if($noa['work_related'] == 'Yes'){ 
-					if($noa['percentage'] == ''){
-					   $wpercent = '100% W-R';
+			if($noa['work_related'] == 'Yes'){ 
+				if($noa['percentage'] == ''){
+				   $wpercent = '100% W-R';
+				   $nwpercent = '';
+				}else{
+				   $wpercent = $noa['percentage'].'%  W-R';
+				   $result = 100 - floatval($noa['percentage']);
+				   if($noa['percentage'] == '100'){
 					   $nwpercent = '';
-					}else{
-					   $wpercent = $noa['percentage'].'%  W-R';
-					   $result = 100 - floatval($noa['percentage']);
-					   if($noa['percentage'] == '100'){
-						   $nwpercent = '';
-					   }else{
-						   $nwpercent = $result.'% Non W-R';
-					   }
-					  
-					}	
-			   }else if($noa['work_related'] == 'No'){
-				   if($noa['percentage'] == ''){
+				   }else{
+					   $nwpercent = $result.'% Non W-R';
+				   }
+				  
+				}	
+		   }else if($noa['work_related'] == 'No'){
+			   if($noa['percentage'] == ''){
+				   $wpercent = '';
+				   $nwpercent = '100% Non W-R';
+				}else{
+				   $nwpercent = $noa['percentage'].'% Non W-R';
+				   $result = 100 - floatval($noa['percentage']);
+				   if($noa['percentage'] == '100'){
 					   $wpercent = '';
-					   $nwpercent = '100% Non W-R';
-					}else{
-					   $nwpercent = $noa['percentage'].'% Non W-R';
-					   $result = 100 - floatval($noa['percentage']);
-					   if($noa['percentage'] == '100'){
-						   $wpercent = '';
-					   }else{
-						   $wpercent = $result.'%  W-R';
-					   }
-					 
-					}
-			   }
+				   }else{
+					   $wpercent = $result.'%  W-R';
+				   }
+				 
+				}
+		   }
+		}
+
+		$cost_types = $this->transaction_model->db_get_cost_types();
+		// get selected medical services
+		$selected_cost_types = explode(';', $data['med_services']);
+		$ct_array = [];
+		foreach ($cost_types as $cost_type) :
+			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
+				array_push($ct_array, '[ <span class="text-info">'.$cost_type['item_description'].'</span> ]');
 			}
+		endforeach;
+		$med_serv = implode(' ', $ct_array);
 
-			$payable = floatval($bill['company_charge'] + floatval($bill['cash_advance']));
-
-			
-			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-5"></i></a>';
-
-			$row[] = $bill['billing_no'];
-			$row[] = $loa_noa;
-			$row[] = $fullname;
-			$row[] = $bill['business_unit'];
-			$row[] = number_format($bill['before_remaining_bal'],2, '.',',');
-			$row[] = $wpercent .', '.$nwpercent;
-			$row[] = number_format($bill['net_bill'], 2, '.', ',');
-			$row[] = number_format($bill['company_charge'], 2, '.', ',');
-			$row[] = number_format($bill['cash_advance'], 2, '.', ',');
-			$row[] = number_format($payable, 2, '.', ',');
-			$row[] = number_format($bill['personal_charge'], 2, '.', ',');
-			$row[] = number_format($bill['after_remaining_bal'],2, '.',',');
-			$row[] = $pdf_bill;
-			$data[] = $row;
-
-		}
-		$output = [
-			"draw" => $_POST['draw'],
-			"data" => $data,
+		$response = [
+			'loa_noa_no' => $loa_noa_no,
+			'fullname' => $data['first_name'] .' '. $data['middle_name'] .' '. $data['last_name'] .' '. $data['suffix'],
+			'business_unit' => $data['business_unit'],
+			'hp_name' => $data['hp_name'],
+			'requested_on' => $requested_on,
+			'approved_on' =>  $approved_on,
+			'approved_by' => $approved_by,
+			'request_type' => $request_type,
+			'percentage' => $wpercent .', '.$nwpercent,
+			'services' => $med_serv,
+			'admission_date' => isset($admission_date) ? $admission_date : '',
+			'billed_on' =>  date('F d, Y',strtotime($data['billed_on'])),
+			'billed_by' => $data['billed_by'],
+			'billing_no' => $data['billing_no'],
+			'net_bill' => number_format($data['net_bill'],2,'.',','),
+			'personal_charge' => number_format($data['personal_charge'],2,'.',','),
+			'company_charge' => number_format($data['company_charge'],2,'.',','),
+			'cash_advance' => number_format($data['cash_advance'],2,'.',','),
+			'total_payable' => number_format(floatval($data['cash_advance'] + $data['company_charge']),2,'.',','),
+			'before_remaining_bal' => number_format($data['before_remaining_bal'],2,'.',','),
+			'after_remaining_bal' => number_format($data['after_remaining_bal'],2,'.',','),
 		];
-
-		echo json_encode($output);
-	}
-
-	function submit_audited() {
-		$token = $this->security->get_csrf_hash();
-		$user = $this->session->userdata('fullname');
-		$audited = $this->transaction_model->submit_audited_bill($user);
-
-		if(!$audited){
-			echo json_encode([
-				'token' => $token,
-				'status' => 'error',
-				'message' => 'Failed to Submit!',
-			]);
-		}else{
-			echo json_encode([
-				'token' => $token,
-				'status' => 'success',
-				'message' => 'Submitted Successfully!',
-			]);
-		}
+		
+		echo json_encode($response);
 	}
 
 

@@ -150,9 +150,11 @@ class Pages_controller extends CI_Controller {
 	function view_payments() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
-		$data['payment_no'] = $this->uri->segment(4);
-		$data['hp_name'] =$this->List_model->get_billed_hp_name($this->uri->segment(4));
-		$data['pay'] =$this->List_model->get_billed_date($this->uri->segment(4));
+		$bill_id = $this->myhash->hasher($this->uri->segment(4),'decrypt');
+		$payment = $this->List_model->get_payment_nos($bill_id);
+		$data['payment_no'] = $payment['payment_no'];
+		$data['hp_name'] =$this->List_model->get_billed_hp_name($payment['payment_no']);
+		$data['pay'] =$this->List_model->get_billed_date($payment['payment_no']);
 		$this->load->view('templates/header', $data);
 		$this->load->view('ho_accounting_panel/billing_list_table/view_monthly_bill.php', $hc_provider);
 		$this->load->view('templates/footer');
@@ -171,9 +173,11 @@ class Pages_controller extends CI_Controller {
 	function view_monthly_paid_bill() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
-		$data['payment_no'] = $this->uri->segment(4);
-		$data['hp_name'] =$this->List_model->get_billed_hp_name($this->uri->segment(4));
-		$data['pay'] =$this->List_model->get_billed_date($this->uri->segment(4));
+		$bill_id = $this->myhash->hasher($this->uri->segment(4),'decrypt');
+		$payment = $this->List_model->get_payment_nos($bill_id);
+		$data['payment_no'] = $payment['payment_no'];
+		$data['hp_name'] =$this->List_model->get_billed_hp_name($payment['payment_no']);
+		$data['pay'] =$this->List_model->get_billed_date($payment['payment_no']);
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('ho_accounting_panel/billing_list_table/view_monthly_paid_bill.php', $hc_provider);
@@ -215,6 +219,14 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
+	function view_bu_for_payment() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bu'] = $this->List_model->get_business_units();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/bu_for_payment_charges.php');
+		$this->load->view('templates/footer');
+	}
+
 	function view_paid_bu_charging() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['bu'] = $this->List_model->get_business_units();
@@ -232,13 +244,21 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
-	function view_paid_charging_details() {
+	function fetch_acc_ledger() {
 		$data['user_role'] = $this->session->userdata('user_role');
-		$data['emp_id'] = $empId = $this->uri->segment(5);
-		$data['member'] = $this->List_model->get_member_info($empId);
+		$data['bu'] = $this->List_model->get_business_units();
 		$this->load->view('templates/header', $data);
-		$this->load->view('ho_accounting_panel/billing_list_table/charging_paid_details.php');
+		$this->load->view('ho_accounting_panel/billing_list_table/ledger_paid.php');
 		$this->load->view('templates/footer');
 	}
 
+	function fetch_mbl_ledger() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bu'] = $this->List_model->get_business_units();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/ledger_mbl.php');
+		$this->load->view('templates/footer');
+	}
+
+	
 }

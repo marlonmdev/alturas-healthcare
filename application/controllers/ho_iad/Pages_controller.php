@@ -43,8 +43,10 @@ class Pages_controller extends CI_Controller {
 	}
 
 	function view_for_audit() {
-		$data['payment_no'] = $payment_no = $this->uri->segment(4);
-		$data['pay'] = $this->transaction_model->get_billed_date($payment_no);
+		$bill_id = $this->myhash->hasher($this->uri->segment(4),'decrypt');
+		$payment = $this->transaction_model->get_payment_nos($bill_id);
+		$data['payment_no'] = $payment['payment_no'];
+		$data['pay'] = $this->transaction_model->get_billed_date($payment['payment_no']);
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
 		$this->load->view('ho_iad_panel/transaction/list_for_audit');
@@ -59,8 +61,10 @@ class Pages_controller extends CI_Controller {
 	}
 
 	function view_audited_list() {
-		$data['payment_no'] = $payment_no = $this->uri->segment(4);
-		$data['pay'] = $this->transaction_model->get_billed_date($payment_no);
+		$bill_id = $this->myhash->hasher($this->uri->segment(4),'decrypt');
+		$payment = $this->transaction_model->get_payment_nos($bill_id);
+		$data['payment_no'] = $payment['payment_no'];
+		$data['pay'] = $this->transaction_model->get_billed_date($payment['payment_no']);
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
 		$this->load->view('ho_iad_panel/transaction/list_of_audited');
@@ -75,8 +79,10 @@ class Pages_controller extends CI_Controller {
 	}
 	
 	function view_paid_list() {
-		$data['payment_no'] = $payment_no = $this->uri->segment(4);
-		$data['pay'] = $this->transaction_model->get_billed_date($payment_no);
+		$bill_id = $this->myhash->hasher($this->uri->segment(4),'decrypt');
+		$payment = $this->transaction_model->get_payment_nos($bill_id);
+		$data['payment_no'] = $payment['payment_no'];
+		$data['pay'] = $this->transaction_model->get_billed_date($payment['payment_no']);
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
 		$this->load->view('ho_iad_panel/transaction/list_of_paid');

@@ -43,7 +43,7 @@
 													<th class="fw-bold">Billing #</th>
 													<th class="fw-bold">Transaction Date</th>
 													<th class="fw-bold">Request Type</th>
-                          <th class="fw-bold">Total Billing</th>
+                          <th class="fw-bold">Total Billing  <br><small class="text-danger">(to company)</small></th>
 													<th class="fw-bold">Action</th>
                         </tr>
                       </thead>
@@ -51,7 +51,7 @@
                         <?php
                           if (!empty($billing)) :
                             foreach ($billing as $bill) :
-                              if($bill['status'] == 'Billed'){
+                              if($bill['status'] == 'Billed' || $bill['status'] == 'Payable' || $bill['status'] == 'Payment'){
                         ?>
                           <tr>
                             <td class="fw-bold"><mark class="bg-primary text-white ls-1"><?= $bill['billing_no'] ?></mark></td>
@@ -101,7 +101,7 @@
 													<th class="fw-bold">Payment #</th>
 													<th class="fw-bold">Transaction Date</th>
 													<th class="fw-bold">Request Type</th>
-                          <th class="fw-bold">Total Paid</th>
+                          <th class="fw-bold">Total Paid <br><small class="text-danger">(by company)</small></th>
 													<th class="fw-bold">Action</th>
 												</tr>
 											</thead>
@@ -117,15 +117,21 @@
                             <td class="fw-bold"><?= date("m/d/Y", strtotime($bill['billed_on'])) ?></td>
                             <td class="fw-bold"><?= !empty($bill['loa_id']) ? 'LOA' : 'NOA '?></td>
                             <td class="fw-bold"> <?= '&#8369;'.number_format(floatval($bill['company_charge'] + $bill['cash_advance']), 2) ?></td>
-
+                            <?php
+                              $req_type = !empty($bill['loa_id']) ? 'loa' : 'noa';
+                            ?>
                             <td class="fw-bold">
                               <form method="POST" action="<?= base_url() ?>head-office-iad/transaction/<?= $req_type ?>/view_payment_details/<?= $this->myhash->hasher($bill['payment_no'], 'encrypt') ?>">
                                 <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
 
                                 <input type="hidden" name="emp_id" value="<?= $bill['emp_id'] ?>">
 
+                                <?php if(floatval($bill['company_charge'] + $bill['cash_advance']) != 0) { ?>
+                                
                                 <a href="JavaScript:void(0)" onclick="viewPaymentInfo(<?= '\''. $bill['billing_id'] .'\'' ?>)" class="fw-bold ls-1 text-danger border-0" data-bs-toggle="tooltip" title="Click to view Payment Details" style="background-color: transparent;"> View Details</a>
-
+                                  <?php }else{?>
+                                    <span> Patient's Charge</span>
+                                  <?php }?>
                               </form>
                             </td>
                           </tr>

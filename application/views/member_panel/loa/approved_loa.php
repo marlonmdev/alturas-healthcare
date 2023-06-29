@@ -18,7 +18,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
-        <ul class="nav nav-tabs mb-4" role="tablist">
+        <ul class="nav nav-tabs flex-column flex-sm-row mb-4" role="tablist">
           <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/pending" role="tab">
               <span class="hidden-sm-up"></span>

@@ -1,4 +1,4 @@
-<li class="sidebar-item">
+            <li class="sidebar-item">
                 <a
                   class="sidebar-link"
                   href="<?php echo base_url(); ?>head-office-accounting/dashboard"
@@ -40,12 +40,32 @@
                 </a>
               </li>
 
+              <li class="sidebar-item <?php echo ($this->uri->segment(3) == 'ledger') ? 'selected' : '' ; ?>">
+                <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
+                  <i class="mdi mdi-file-document ls-1"></i>Ledger
+                  
+                </a>
+                <ul aria-expanded="false" class="collapse first-level">
+                  <li class="sidebar-item">
+                    <a href="<?php echo base_url(); ?>head-office-accounting/ledger" class="sidebar-link"
+                      ><i class="mdi mdi-note"></i
+                      ><span class="hide-menu ls-1">Paid Bill</span>
+                    </a>
+                  </li>
+                  <li class="sidebar-item">
+                    <a href="<?php echo base_url(); ?>head-office-accounting/ledger/mbl" class="sidebar-link">
+                      <i class="mdi mdi-note-outline ls-1"></i>Max Benefit Limit
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
               <li class="sidebar-item">
                 <a
                   class="sidebar-link"
                   href="<?php echo base_url(); ?>head-office-accounting/loa-request-list/loa-approved"
                   aria-expanded="false"
-                  ><i class="mdi mdi-file-document"></i
+                  ><i class="mdi mdi-file-multiple"></i
                   ><span class="hide-menu ls-1">LOA</span>
                 </a>
               </li>
@@ -60,8 +80,8 @@
                   ><span class="hide-menu ls-1">NOA</span>
                 </a>
               </li>
-<!-- 
-              <li class="sidebar-item">
+
+              <!-- <li class="sidebar-item">
                 <?php echo ($this->uri->segment(3) == 'reports') ? 'selected' : '' ; ?>
                 <a
                   class="sidebar-link"

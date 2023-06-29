@@ -102,11 +102,11 @@
                 url: `${baseUrl}head-office-accounting/billing-list/view-payment-details/${details_id}`,
                 success: function(response){
                     const res = JSON.parse(response);
-                    const base_url = window.location.origin;
                     const {
                         status,
                         token,
                         payment_no,
+                        bill_id,
                         hp_name,
                         added_on,
                         acc_number,
@@ -117,24 +117,25 @@
                         amount_paid,
                         billed_date,
                         covered_loa_no,
-                       
                     } = res;
            
                     $('#viewPaymentModal').modal('show');
-
                     $('#hospital_filtered').val(hp_name);
                     $('#start_date').val(added_on);
-                    // $('#end_date').val(end_date);
                     $('#payment-num').val(payment_no);
                     $('#acc-number').val(acc_number);
                     $('#acc-name').val(acc_name);
                     $('#check-number').val(check_num);
                     $('#check-date').val(check_date);
                     $('#bank').val(bank);
-                    $('#amount-paid').val(parseFloat(amount_paid).toFixed(2));
+                    $('#amount-paid').val(amount_paid);
                     $('#textbox').val(covered_loa_no);
                     $('#c-billed-date').val(billed_date);
-                    // $('#supporting-docu').attr('src', check_image);
+
+                    var paymentLink = document.getElementById('payment-link');
+                    var data = `${bill_id}`;
+                    paymentLink.innerHTML = data;
+                    paymentLink.href = "<?php echo base_url();?>head-office-accounting/bill/fetch_paid/" + data;
                 }
             });
         }

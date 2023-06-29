@@ -25,7 +25,7 @@
     <div class="row">
       <div class="col-6 pb-2">
           <div class="input-group">
-              <a href="JavaScript:void(0)" onclick="goback()" class="btn btn-info" data-bs-toggle="tooltip" title="Click to Go Back">
+              <a href="<?php echo base_url(); ?>head-office-iad/biling/audited" type="submit" class="btn btn-info" data-bs-toggle="tooltip" title="Click to Go Back">
                   <strong class="ls-2" style="vertical-align:middle">
                       <i class="mdi mdi-arrow-left-bold"></i> Go Back
                   </strong>
@@ -40,10 +40,12 @@
             <input type="hidden" name="payment-no" id="payment-no" value="<?php echo $payment_no ?>">
             <div class="card shadow" style="background-color:">
                 <div class="card-body">
-                  <div class="">
+                  <div class="table-responsive">
+                    <i class="text-danger fw-bold">( Click LOA/NOA number to view details )</i>
                     <table class="table table-hover table-responsive" id="billedAuditTable">
                       <thead style="background-color:#eddcb7">
                         <tr>
+                            <th class="fw-bold ls-2"><strong>#</strong></th>
                             <th class="fw-bold ls-2"><strong>Billing No</strong></th>
                             <th class="fw-bold ls-2"><strong>LOA/NOA #</strong></th>
                             <th class="fw-bold ls-2"><strong>Patient Name</strong></th>
@@ -70,6 +72,7 @@
                         <td></td>
                         <td></td>
                         <td></td>
+                        <td></td>
                         <td class="fw-bold">TOTAL BILL </td>
                         <td><span class="text-danger fw-bold fs-5" id="mt-total-bill"></span></td>
                         <td></td>
@@ -88,6 +91,7 @@
     <?php include 'view_pdf_bill_modal.php'; ?>
   <!-- End Page wrapper  -->
   </div>
+  <?php include 'view_loa_noa_details_modal.php';?>
 <!-- End Wrapper -->
 
 <script>
@@ -127,7 +131,7 @@
     });
 
     billedTable.on('draw.dt', function() {
-        let columnIdx = 9;
+        let columnIdx = 10;
         let sum = 0;
         let rows = billedTable.rows().nodes();
         if ($('#billedAuditTable').DataTable().data().length > 0) {
@@ -148,6 +152,74 @@
     });
 
  });
+ const viewLOANOAdetails = (billing_id) => {
+    $('#viewLOANOAdetailsModal').modal('show');
+    $.ajax({
+      url: `${baseUrl}head-office-iad/biling/loa-noa-details/fetch/${billing_id}`,
+      data: `<?php echo $this->security->get_csrf_hash(); ?>`,
+      type: 'GET',
+      success: function(response) {
+        const res = JSON.parse(response);
+        const {
+          token,
+          loa_noa_no,
+          fullname,
+          business_unit,
+          hp_name,
+          requested_on,
+          approved_on,
+          approved_by,
+          request_type,
+          percentage,
+          services,
+          admission_date,
+          billed_on,
+          billed_by,
+          billing_no,
+          net_bill,
+          personal_charge,
+          company_charge,
+          cash_advance,
+          total_payable,
+          before_remaining_bal,
+          after_remaining_bal
+        } = res;
+
+        if(request_type == 'Diagnostic Test'){
+          $('#cost-types').show();
+        }else{
+          $('#cost-types').hide();
+        }
+        if(request_type == 'NOA'){
+          $('#admitted-on').show();
+        }else{
+          $('#admitted-on').hide();
+        }
+        $('#noa-loa-no').html(loa_noa_no);
+        $('#member-fullname').html(fullname);
+        $('#member-bu').html(business_unit);
+        $('#hc-provider').html(hp_name);
+        $('#request-date').html(requested_on);
+        $('#approved-on').html(approved_on);
+        $('#approved-by').html(approved_by);
+        $('#request-type').html(request_type);
+        $('#percentage-is').html(percentage);
+        $('#med-services').html(services);
+        $('#admission-date').html(admission_date);
+        $('#billed-on').html(billed_on);
+        $('#billed-by').html(billed_by);
+        $('#billing-no').html(billing_no);
+        $('#net-bill').html(net_bill);
+        $('#personal-charge').html('-'+ personal_charge);
+        $('#company-charge').html(company_charge);
+        $('#cash-advance').html(cash_advance);
+        $('#total-payable').html(total_payable);
+        $('#totals-payable').html(total_payable);
+        $('#max-benefit').html(before_remaining_bal);
+        $('#remaining-mbl').html(after_remaining_bal);
+      }
+    });
+ }
 
  const viewPDFBill = (pdf_bill,noa_no,loa_no) => {
       $('#viewPDFBillModal').modal('show');

@@ -4,7 +4,7 @@
     <div class="page-breadcrumb">
         <div class="row">
         <div class="col-12 d-flex no-block align-items-center">
-            <h4 class="page-title"><i class="mdi mdi-file-document-box"></i> LEDGER [Max Benefit Limit]</h4>
+            <h4 class="page-title"><i class="mdi mdi-file-document-box"></i> LEDGER [ <span class="text-info">Max Benefit Limit</span> ]</h4>
             <div class="ms-auto text-end">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
@@ -23,11 +23,11 @@
   <!-- Start of Container fluid  -->
   <div class="container-fluid">
     <div class="row">
-      <div class="col-lg-12">
+      <div class="col-md-12">
         <div class="row pb-2">
             <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
             <div class="row pb-2 gap-2">
-              <div class="col-lg-2 ps-5 pb-4">
+              <div class="col-md-2 ps-5 pb-4">
                   <div class="input-group">
                       <div class="input-group-prepend">
                           <span class="input-group-text bg-info text-white">
@@ -36,28 +36,12 @@
                       </div>
                       <select class="form-select fw-bold" id="selectedYear" name="selectedYear">
                           <option value="">Select Year</option>
-                          <?php
-                          $displayedYears = array(); // Array to store already displayed years
-
-                          foreach ($paid as $date) :
-                              $year = date('Y', strtotime($date['date_add']));
-
-                              // Check if the year has already been displayed
-                              if (!in_array($year, $displayedYears)) {
-                                  array_push($displayedYears, $year); // Add the year to the displayed years array
-
-                                  // Display the option with the year
-                                  ?>
-                                  <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
-                                  <?php
-                              }
-                          endforeach;
-                          ?>
+                          
                       </select>
 
                   </div>
               </div>
-              <div class="col-lg-4 ps-5 pb-2">
+              <div class="col-md-5 ps-5 pb-2">
                   <div class="input-group">
                       <div class="input-group-prepend">
                           <span class="input-group-text bg-info text-white">
@@ -84,24 +68,16 @@
                   <table class="table table-hover table-responsive table-stripped"  id="ledgermbl">
                     <thead style="background-color:#eddcb7">
                       <tr>
-                        <th class="fw-bold">DATE PAID</th>
+                        <th class="fw-bold">HEALTHCARD NO.</th>
                         <th class="fw-bold">MEMBER NAME</th>
                         <th class="fw-bold">BUSINESS UNIT</th>
-                        <th class="fw-bold">DEBIT</th>
-                        <th class="fw-bold">CREDIT</th>
+                        <th class="fw-bold">DATE USED</th>
+                        <th class="fw-bold">USED MBL</th>
+                        <th class="fw-bold">REMAINING MBL</th>
                       </tr>
                     </thead>
                     <tbody>
                     </tbody>
-                    <tfoot>
-                      <tr>
-                          <td></td>
-                          <td></td>
-                          <td class="fw-bold">TOTALS</td>
-                          <td class="fw-bold">&#8369; <span id="total-debit"></span></td>
-                          <td class="fw-bold">&#8369; <span id="total-credit"></span></td>
-                      </tr>
-                    </tfoot>
                   </table>
                 </div>
               </div>
@@ -158,41 +134,24 @@
       ledgerTable.draw();
     });
 
-    $('#selectedMonth').change(function(){
-      ledgerTable.draw();
     });
 
-    ledgerTable.on('draw.dt', function() {
-            let columnIndices = [3, 4]; // Array of column indices to calculate sum
-            let sums = [0, 0]; // Array to store the sums for each column
+          // Get the current year
+      var currentYear = new Date().getFullYear();
 
-            if ($('#ledgermbl').DataTable().data().length > 0) {
-                // The table is not empty
-                ledgerTable.rows().nodes().each(function(index, row) {
-                let rowData = ledgerTable.row(row).data();
+      // Get the select element
+      var selectElement = document.getElementById('selectedYear');
 
-                columnIndices.forEach(function(columnIdx, idx) {
-                    let columnValue = rowData[columnIdx];
-                    let pattern = /-?[\d,]+(\.\d+)?/g;
-                    let matches = columnValue.match(pattern);
+      // Set the initial year
+      var startYear = 2022; // Replace with your desired starting year
 
-                    if (matches && matches.length > 0) {
-                    let numberString = matches[0].replace(/,/g, '');
-                    let floatValue = parseFloat(numberString);
-                    sums[idx] += floatValue;
-                    }
-                });
-                });
-            }
-
-            let sumColumn1 = sums[0];
-            let sumColumn2 = sums[1];
-
-            $('#total-debit').html(sumColumn1.toLocaleString('PHP', { minimumFractionDigits: 2 }));
-            $('#total-credit').html(sumColumn2.toLocaleString('PHP', { minimumFractionDigits: 2 }));
-        });
-
-    });
+      // Loop through years and create options
+      for (var year = currentYear; year >= startYear; year--) {
+        var option = document.createElement('option');
+        option.value = year;
+        option.text = year;
+        selectElement.appendChild(option);
+      }
 
 
 </script>

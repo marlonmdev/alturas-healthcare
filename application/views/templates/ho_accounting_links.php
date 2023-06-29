@@ -1,4 +1,4 @@
-<li class="sidebar-item">
+            <li class="sidebar-item">
                 <a
                   class="sidebar-link"
                   href="<?php echo base_url(); ?>head-office-accounting/dashboard"
@@ -42,7 +42,7 @@
 
               <li class="sidebar-item <?php echo ($this->uri->segment(3) == 'ledger') ? 'selected' : '' ; ?>">
                 <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
-                  <i class="mdi mdi-file-document"></i>Ledger
+                  <i class="mdi mdi-file-document ls-1"></i>Ledger
                   
                 </a>
                 <ul aria-expanded="false" class="collapse first-level">
@@ -54,7 +54,7 @@
                   </li>
                   <li class="sidebar-item">
                     <a href="<?php echo base_url(); ?>head-office-accounting/ledger/mbl" class="sidebar-link">
-                      <i class="mdi mdi-note-outline"></i>Max Benefit Limit
+                      <i class="mdi mdi-note-outline ls-1"></i>Max Benefit Limit
                     </a>
                   </li>
                 </ul>

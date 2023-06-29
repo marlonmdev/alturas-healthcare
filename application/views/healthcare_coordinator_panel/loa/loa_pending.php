@@ -213,6 +213,16 @@
               });
               $("#pendingLoaTable").DataTable().ajax.reload();
               break;
+            case 'upload-error':
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
+              $("#pendingLoaTable").DataTable().ajax.reload();
+              break;
             case 'success':
               swal({
                 title: 'Success',

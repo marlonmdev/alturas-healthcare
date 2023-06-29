@@ -675,6 +675,10 @@ class List_model extends CI_Model{
         return $this->db->get()->result_array();
     }
 
+    function get_payment_nos($bill_id) {
+        return $this->db->get_where('monthly_payable', ['bill_id' => $bill_id])->row_array();
+    }
+
     function get_billed_date($payment_no) {
         $this->db->select('*')
                 ->from('monthly_payable as tbl_1')
@@ -1140,9 +1144,13 @@ class List_model extends CI_Model{
             ->where('tbl_1.status', 'Paid')
             ->order_by('tbl_6.details_id', 'asc');
     
-        if ($this->input->post('year')) {
+        if ($this->input->post('year')) {  // <--comment this row if needed to display the current year paid bill if the year is empty to avoid lags
             $year = $this->input->post('year');
-            $this->db->where("YEAR(tbl_6.date_add)", $year);
+            if(!empty($year)){
+                $this->db->where("YEAR(tbl_6.date_add)", $year);
+            }else{
+                $this->db->where("YEAR(tbl_6.date_add)", date('Y'));
+            }
         }
         if ($this->input->post('month')) {
             $month = $this->input->post('month');
@@ -1152,7 +1160,7 @@ class List_model extends CI_Model{
             $bu_filter = $this->input->post('bu_filter');
             $this->db->where("tbl_5.business_unit", $bu_filter);
         }
-    }
+    }      
     
     function get_debit_credit_yearly()
     {
@@ -1164,17 +1172,13 @@ class List_model extends CI_Model{
         return $query->result_array();
     }
 
-    function get_year_paid() {
-        $this->db->select('date_add')
-                ->from('payment_details');
-        return $this->db->get()->result_array();
-    }
-
     private function fetch_mbl_ledger() {
         $this->db->from('members as tbl_1')
-            ->join('max_benefit_limits as tbl_6', 'tbl_1.emp_id = tbl_6.emp_id')
-            ->join('mbl_history as tbl_7', 'tbl_1.emp_id = tbl_7.emp_id')
-            ->order_by('tbl_1.member_id', 'asc');
+            ->join('max_benefit_limits as tbl_6', 'tbl_1.emp_id = tbl_6.emp_id', 'left')
+            ->join('billing as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id','lefxt')
+            ->where('tbl_2.company_charge !=', 0)
+            ->where('YEAR(tbl_2.billed_on)', date('Y'))
+            ->order_by('tbl_2.billing_id', 'asc');
     
         if ($this->input->post('year')) {
             $year = $this->input->post('year');
@@ -1185,7 +1189,6 @@ class List_model extends CI_Model{
             $this->db->where("tbl_1.business_unit", $bu_filter);
         }
     }
-    
 
     function get_ledger_mbl() {
         $this->fetch_mbl_ledger(); // Call the function to set up the query conditions
@@ -1195,6 +1198,35 @@ class List_model extends CI_Model{
         $query = $this->db->get();
         return $query->result_array();
     }
+    
+    private function fetch_history_mbl_ledger() {
+        $this->db->from('members as tbl_1')
+            ->join('mbl_history as tbl_6', 'tbl_1.emp_id = tbl_6.emp_id', 'left')
+            ->join('billing as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id','left')
+            ->where('tbl_2.company_charge !=', 0)
+            ->where('YEAR(tbl_2.billed_on) !=', date('Y'))
+            ->order_by('tbl_2.billing_id', 'asc');
+    
+        if ($this->input->post('year')) {
+            $year = $this->input->post('year');
+            $this->db->where("YEAR(tbl_6.start_date)", $year);
+        }
+        if ($this->input->post('bu_filter')) {
+            $bu_filter = $this->input->post('bu_filter');
+            $this->db->where("tbl_1.business_unit", $bu_filter);
+        }
+    }
+
+    function get_ledger_history_mbl() {
+        $this->fetch_history_mbl_ledger(); // Call the function to set up the query conditions
+        if (!empty($_POST['length']) && $_POST['length'] != -1) {
+            $this->db->limit($_POST['length'], $_POST['start']);
+        }
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    
     
     
 

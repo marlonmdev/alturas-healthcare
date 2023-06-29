@@ -35,7 +35,7 @@
                 <span class="fs-5 pt-1">Business Unit : <span class="fw-bold fs-4"><?php echo $member['business_unit'];?></span></span>
           </div>
           <div class="ps-4 pe-4 pt-3 pb-4 table-responsive" style="justify-content:center">
-            <table class="table table-stripped table-sm">
+            <table class="table table-stripped table-sm table-responsive">
               <th class="fw-bold">#</th>
               <th class="fw-bold">File Name</th>
               <th class="fw-bold">Added On</th>

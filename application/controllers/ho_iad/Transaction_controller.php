@@ -103,7 +103,7 @@ class Transaction_controller extends CI_Controller {
 	function search_by_name() {
 		$this->security->get_csrf_hash();
 		$first_name = $this->security->xss_clean($this->input->post('first_name'));
-		$middle_name = $this->security->xss_clean($this->input->post('last_name'));
+		$middle_name = $this->security->xss_clean($this->input->post('middle_name'));
 		$last_name = $this->security->xss_clean($this->input->post('last_name'));
 		$hcare_provider_id = $this->session->userdata('dsg_hcare_prov');
 		$member = $this->transaction_model->get_member_by_name($first_name,$middle_name, $last_name);
@@ -119,6 +119,10 @@ class Transaction_controller extends CI_Controller {
 			$data['hp_name'] = $hp_name = $this->transaction_model->get_healthcare_provider($hcare_provider_id);
 			$data['billing'] = $this->transaction_model->get_billing_status($member['emp_id'], $hcare_provider_id);
 			$data['noa_requests'] = $this->transaction_model->get_member_noa($member['emp_id'], $hcare_provider_id);
+
+			/* This is checking if the image file exists in the directory. */
+			$file_path = './uploads/profile_pics/' . $member['photo'];
+			$data['member_photo_status'] = file_exists($file_path) ? 'Exist' : 'Not Found';
 
 			$this->session->set_userdata([
 				'b_member_info'    => $member,
@@ -356,9 +360,9 @@ class Transaction_controller extends CI_Controller {
 
 				$status = '<span class="text-center badge rounded-pill bg-warning">Billed</span>'; 
 				
-				$payment_no = $this->myhash->hasher($bill['payment_no'], 'encrypt');
+				$payment_id = $this->myhash->hasher($bill['bill_id'], 'encrypt');
 
-				$action_customs = '<a href="'.base_url().'head-office-iad/biling/for-audit-list/'.$bill['payment_no'].'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
+				$action_customs = '<a href="'.base_url().'head-office-iad/biling/for-audit-list/'.$payment_id.'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
 
 				// $action_customs .= '<a href="javascript:void(0)" onclick="tagDoneAudit(\''.$bill['payment_no'].'\')" data-bs-toggle="tooltip" title="Audited"><i class="mdi mdi-checkbox-marked-circle-outline fs-2 pe-2 text-danger"></i></a>';
 
@@ -397,9 +401,9 @@ class Transaction_controller extends CI_Controller {
 
 				$status = '<span class="text-center badge rounded-pill bg-info">Audited</span>'; 
 
-				$payment_no = $this->myhash->hasher($bill['payment_no'], 'encrypt');
+				$payment_id = $this->myhash->hasher($bill['bill_id'], 'encrypt');
 
-				$action_customs = '<a href="'.base_url().'head-office-iad/biling/audited-list/'.$bill['payment_no'].'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
+				$action_customs = '<a href="'.base_url().'head-office-iad/biling/audited-list/'.$payment_id.'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
 
 				$row[] = $consolidated;
 				$row[] = $date;
@@ -437,9 +441,9 @@ class Transaction_controller extends CI_Controller {
 				$status = '<span class="text-center badge rounded-pill bg-success">Paid</span>'; 
 				
 
-				$payment_no = $this->myhash->hasher($bill['payment_no'], 'encrypt');
+				$payment_id = $this->myhash->hasher($bill['bill_id'], 'encrypt');
 
-				$action_customs = '<a href="'.base_url().'head-office-iad/biling/paid-list/'.$bill['payment_no'].'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
+				$action_customs = '<a href="'.base_url().'head-office-iad/biling/paid-list/'.$payment_id.'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
 
 				$check = $this->transaction_model->get_paymentdetails($bill['details_no']);
 

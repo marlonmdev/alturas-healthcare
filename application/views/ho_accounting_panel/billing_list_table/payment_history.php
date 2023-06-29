@@ -106,6 +106,7 @@
                         status,
                         token,
                         payment_no,
+                        bill_id,
                         hp_name,
                         added_on,
                         acc_number,
@@ -130,6 +131,11 @@
                     $('#amount-paid').val(amount_paid);
                     $('#textbox').val(covered_loa_no);
                     $('#c-billed-date').val(billed_date);
+
+                    var paymentLink = document.getElementById('payment-link');
+                    var data = `${bill_id}`;
+                    paymentLink.innerHTML = data;
+                    paymentLink.href = "<?php echo base_url();?>head-office-accounting/bill/fetch_paid/" + data;
                 }
             });
         }

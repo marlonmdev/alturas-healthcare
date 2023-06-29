@@ -26,5 +26,4 @@
 
     <script src="<?php echo base_url(); ?>assets/js/canvasjs.min.js"></script>
   </body>
-
 </html>

@@ -146,7 +146,7 @@
                 $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
                 $('#disapproved-by').html(disapproved_by);
                 $('#disapproved-on').html(disapproved_on);
-                $('#disapprove-reason').html(disapprove_reason);
+                $('#disapprove-reason').html(`<strong class="text-danger">${disapprove_reason}</strong>`);
                 $('#member-mbl').html(member_mbl);
                 $('#remaining-mbl').html(remaining_mbl);
                 $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);

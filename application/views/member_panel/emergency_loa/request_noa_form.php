@@ -6,13 +6,13 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">NOTICE OF ADMISSION</h4>
+        <h4 class="page-title ls-2">LETTER OF AUTHORIZATION</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Member</li>
               <li class="breadcrumb-item active" aria-current="page">
-                Request NOA
+              Request LOA
               </li>
             </ol>
           </nav>
@@ -28,7 +28,7 @@
         <div class="card shadow">
           <div class="card-body mt-3">
 
-            <form method="post" action="<?= base_url() ?>member/request-noa/submit" enctype="multipart/form-data" class="mt-2" id="memberNoaRequestForm">
+            <form method="post" action="<?= base_url() ?>member/request-emergency-loa/submit" enctype="multipart/form-data" class="mt-2" id="memberNoaRequestForm">
               <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
 
               <div class="form-group row">
@@ -72,7 +72,7 @@
                   <em id="hospital-name-error" class="text-danger"></em>
                 </div>
                 <div class="col-lg-4 col-sm-12 mb-2">
-                  <label class="colored-label"><i class="bx bx-health icon-red"></i> Admission Date</label>
+                  <label class="colored-label"><i class="bx bx-health icon-red"></i> Date of Visit</label>
                   <input type="text" class="form-control" name="admission-date" id="admission-date" placeholder="Select Date" style="background-color:#ffff">
                   <em id="admission-date-error" class="text-danger"></em>
                 </div>

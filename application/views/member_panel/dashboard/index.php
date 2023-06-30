@@ -217,7 +217,7 @@
 
         <!-- mbl history modal -->
         <div class="modal fade show animate__animated animate__fadeOut" id="mbl_modal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-top modal-lg">
+        <div class="modal-dialog modal-dialog-top modal-xl">
                 <div class="modal-content">
                 <div class="modal-header">
                     <h3 class="modal-title" id="exampleModalLabel">MBL History</h3> 
@@ -237,6 +237,11 @@
                               <th class="fw-bold" style="color: white">STATUS</th>
                               <th class="fw-bold" style="color: white">REQUEST DATE</th>
                               <th class="fw-bold" style="color: white">HOSPITAL BILL</th>
+                              <th class="fw-bold" style="color: white">CURRENT MBL</th>
+                              <th class="fw-bold" style="color: white">COMPANY CHARGE</th>
+                              <th class="fw-bold" style="color: white">PERSONAL CHARGE</th>
+                              <th class="fw-bold" style="color: white">CASH ADVANCE</th>
+                              <th class="fw-bold" style="color: white">REMAINING MBL</th>
                               <th class="fw-bold" style="color: white">VIEW</th>
                             </tr>
                           </thead>
@@ -249,6 +254,11 @@
                             <td></td>
                             <th class="fw-bold">TOTAL :</th>
                             <td class="fw-bold" id="total"></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                             <td></td>
                           </tfoot>
                         </table>
@@ -314,10 +324,10 @@
               },
 
               //Set column definition initialisation properties.
-              columnDefs: [{
-                "targets": [4, 5], // numbering column
-                "orderable": false, //set not orderable
-              }, ],
+              // columnDefs: [{
+              //   "targets": [4, 5], // numbering column
+              //   "orderable": false, //set not orderable
+              // }, ],
               responsive: true,
               fixedHeader: true,
 

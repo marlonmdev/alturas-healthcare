@@ -118,10 +118,15 @@ class Mbl_history extends CI_Controller {
 			$row[] = $bill['tbl1_status'];
 			$row[] = $bill['tbl1_request_date'];
             $row[] = number_format(floatval($bill['net_bill']),2);
+            $row[] = number_format(floatval($bill['before_remaining_bal']),2);
+            $row[] = number_format(floatval($bill['company_charge']),2);
+            $row[] = number_format(floatval($bill['personal_charge']),2);
+            $row[] = number_format(floatval($bill['cash_advance']),2);
+            $row[] = number_format(floatval($bill['after_remaining_bal']),2);
 			$row[] = $custom_actions;	
 			$data[] = $row;
 		}
-
+		
 		$output = array(
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->history_model->count_all_history($emp_id),

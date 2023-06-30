@@ -91,7 +91,7 @@
   $(document).ready(function() {
     $("#memberApprovedNoa").DataTable({
       ajax: {
-        url: `${baseUrl}member/requested-emergency-loa/approved/fetch`,
+        url: `${baseUrl}member/requested-emergency-loa/approved/fetch`, 
         dataSrc: function(data) {
           if (data == "") {
             return [];

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Noa_controller extends CI_Controller {
+class Emergency_loa extends CI_Controller {
 
 	function __construct() {
 		parent::__construct();

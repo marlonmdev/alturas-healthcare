@@ -534,7 +534,7 @@ reader.onload = function() {
                       //validate loa 
                       const valid_loa = /registry no:/i;
                       const invalid_loa = /admission no:/i;
-                      if(finalResult.match(invalid_loa) && !finalResult.match(valid_loa)){
+                      if(!finalResult.match(valid_loa)){
                        
                         $('#upload-btn').prop('disabled',true);
                         setTimeout(function() {

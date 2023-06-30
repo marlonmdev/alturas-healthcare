@@ -278,52 +278,7 @@ class Pages_controller extends CI_Controller {
 		$data['costtypes'] = $this->noa_model->db_get_all_cost_types();
 		$data['mbl'] = $this->history_model->get_member_mbl($emp_id);
 		$this->load->view('templates/header', $data);
-		$this->load->view('member_panel/emergency_loa/request_noa_form',$data);
-		$this->load->view('templates/footer');
-	}
-
-	function pending_requested_emergency_loa() {
-		$emp_id = $this->session->userdata('emp_id');
-		$data['user_role'] = $this->session->userdata('user_role');
-		$data['hospitals'] = $this->noa_model->db_get_all_hospitals();
-		$data['member'] = $this->loa_model->db_get_member_infos($emp_id);
-		$this->load->view('templates/header', $data);
-		$this->load->view('member_panel/emergency_loa/pending_noa');
-		$this->load->view('templates/footer');
-	}
-
-	function approved_requested_emergency_loa() {
-		$data['user_role'] = $this->session->userdata('user_role');
-		$this->load->view('templates/header', $data);
-		$this->load->view('member_panel/emergency_loa/approved_noa');
-		$this->load->view('templates/footer');
-	}
-
-	function disapproved_requested_emergency_loa() {
-		$data['user_role'] = $this->session->userdata('user_role');
-		$this->load->view('templates/header', $data);
-		$this->load->view('member_panel/emergency_loa/disapproved_noa');
-		$this->load->view('templates/footer');
-	}
-
-	function completed_requested_emergency_loa() {
-		$data['user_role'] = $this->session->userdata('user_role');
-		$this->load->view('templates/header', $data);
-		$this->load->view('member_panel/emergency_loa/completed_noa');
-		$this->load->view('templates/footer');
-	}
-
-	function view_billed_emergency_loa() {
-		$data['user_role'] = $this->session->userdata('user_role');
-		$this->load->view('templates/header', $data);
-		$this->load->view('member_panel/emergency_loa/billed_noa');
-		$this->load->view('templates/footer');
-	}
-
-	function view_paid_emergency_loa() {
-		$data['user_role'] = $this->session->userdata('user_role');
-		$this->load->view('templates/header', $data);
-		$this->load->view('member_panel/emergency_loa/paid_noa');
+		$this->load->view('member_panel/emergency_loa/request_emerg_form',$data);
 		$this->load->view('templates/footer');
 	}
 }

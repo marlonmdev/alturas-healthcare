@@ -647,7 +647,7 @@
                         
                             // validate if it is noa
                            
-                            if(finalResult.match(invalid_noa) && !finalResult.match(valid_noa)){
+                            if(!finalResult.match(valid_noa)){
                                 $('#upload-btn').prop('disabled',true);
                                 is_valid_noa = false;
                                 setTimeout(function() {

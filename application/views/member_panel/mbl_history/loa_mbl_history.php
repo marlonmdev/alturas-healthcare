@@ -48,7 +48,7 @@
                     <th class="fw-bold" style="color: white">STATUS</th>
                     <th class="fw-bold" style="color: white">REQUEST DATE</th>
                     <th class="fw-bold" style="color: white">HOSPITAL BILL</th>
-                    <th class="fw-bold" style="color: white">VIEW</th>
+                    <th class="fw-bold" style="color: white">VIEW</th> 
                   </tr>
                 </thead>
                 <tbody>
@@ -170,9 +170,9 @@
         return xhr.status == "200" ? true: false;
     }
 
-    function viewLoaHistoryInfo(loa_no) {
+    function viewLoaHistoryInfo(loa_id) {
         $.ajax({
-        url: `${baseUrl}member/mbl-history/loa/${loa_no}`,
+        url: `${baseUrl}member/mbl-history/loa/${loa_id}`,
         type: "GET",
         success: function(response) {
             const res = JSON.parse(response);

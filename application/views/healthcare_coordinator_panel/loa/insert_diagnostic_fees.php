@@ -106,55 +106,34 @@
           </tr>
         </thead>
         <tbody>
-          <!-- <?php 
-           $total = 0;
-            foreach($itemized_bill as $data){ 
-              $total += floatval(str_replace(',', '', $data['amount']));
-          ?>
-            <tr>
-              <td style="text-align:center"><?php echo $data['date'] ?></td>
-              <td><?php echo $data['labels'] ?></td>
-              <td><?php echo $data['discription'] ?></td>
-              <td style="text-align:center"><?php echo $data['qty'] ?></td>
-              <td style="text-align:center"><?php echo $data['unit_price'] ?></td>
-              <td style="text-align:center"><?php echo $data['amount'] ?></td>
-            </tr>
-
-          <?php } ?> -->
-
           <?php
-$total = 0;
-$displayedLabels = array();
+            $total = 0;
+            $displayedLabels = array();
 
-foreach ($itemized_bill as $data) {
-    $total += floatval(str_replace(',', '', $data['amount']));
+            foreach ($itemized_bill as $data) {
+              $total += floatval(str_replace(',', '', $data['amount']));
 
-    if (!in_array($data['labels'], $displayedLabels)) {
-        $displayedLabels[] = $data['labels'];
-?>
-        <tr>
-            <td style="text-align:center"><?php echo $data['date'] ?></td>
-            <td><?php echo $data['labels'] ?></td>
-            <td><?php echo $data['discription'] ?></td>
-            <td style="text-align:center"><?php echo $data['qty'] ?></td>
-            <td style="text-align:center"><?php echo $data['unit_price'] ?></td>
-            <td style="text-align:center"><?php echo $data['amount'] ?></td>
-        </tr>
-<?php
-    } else {
-?>
-        <tr>
-            <td style="text-align:center"><?php echo $data['date'] ?></td>
-            <td></td>
-            <td><?php echo $data['discription'] ?></td>
-            <td style="text-align:center"><?php echo $data['qty'] ?></td>
-            <td style="text-align:center"><?php echo $data['unit_price'] ?></td>
-            <td style="text-align:center"><?php echo $data['amount'] ?></td>
-        </tr>
-<?php
-    }
-}
-?>
+              if (!in_array($data['labels'], $displayedLabels)) {
+                $displayedLabels[] = $data['labels'];
+              ?>
+                <tr>
+                  <td style="text-align:center"><?php echo $data['date'] ?></td>
+                  <td><?php echo $data['labels'] ?></td>
+                  <td><?php echo $data['discription'] ?></td>
+                  <td style="text-align:center"><?php echo $data['qty'] ?></td>
+                  <td style="text-align:center"><?php echo $data['unit_price'] ?></td>
+                  <td style="text-align:center"><?php echo $data['amount'] ?></td>
+                </tr>
+              <?php } else { ?>
+                <tr>
+                  <td style="text-align:center"><?php echo $data['date'] ?></td>
+                  <td></td>
+                  <td><?php echo $data['discription'] ?></td>
+                  <td style="text-align:center"><?php echo $data['qty'] ?></td>
+                  <td style="text-align:center"><?php echo $data['unit_price'] ?></td>
+                  <td style="text-align:center"><?php echo $data['amount'] ?></td>
+                </tr>
+          <?php }} ?>
         </tbody>
       </table>
       <hr>
@@ -167,10 +146,16 @@ foreach ($itemized_bill as $data) {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Malasakit</td>
-            <td style="text-align:center">₱ 7,000</td>
-          </tr>
+          <?php
+            $benefits_total=0;
+            foreach ($benefits as $data) {
+              $benefits_total += floatval(str_replace(',', '', $data['benefits_amount']));
+          ?>
+            <tr>
+              <td><?php echo $data['benefits_name'] ?></td>
+              <td><?php echo $data['benefits_amount'] ?></td>
+            </tr>
+          <?php } ?>
         </tbody>
       </table>
       <hr>
@@ -178,17 +163,17 @@ foreach ($itemized_bill as $data) {
       <div class="row">
         <div class="col-4">
           <label>Hospital Charges :</label>
-          <input class="form-control text-danger" name="total-bill" id="total-bill" value="₱<?php  echo number_format ($total,2); ?>"  readonly>
+          <input class="form-control text-danger fw-bold" name="hospital_charge" value="₱<?php  echo number_format ($total,2); ?>"  readonly>
         </div>
 
         <div class="col-4">
-          <label>Less Benefits :</label>
-          <input class="form-control text-danger fw-bold" name="total-deduction" id="total-deduction" readonly>
+          <label>Total Deduction :</label>
+          <input class="form-control text-danger fw-bold" name="less_benefits" value="₱<?php  echo number_format ($benefits_total,2); ?>" readonly>
         </div>
 
         <div class="col-4">
           <label>Net Bill</label>
-          <input class="form-control text-danger fw-bold" name="net-bill" id="net-bill" value="&#8369;"  readonly>
+          <input class="form-control text-danger fw-bold" name="net_bill" value="₱<?php  echo number_format ($total-$benefits_total,2); ?>"  readonly>
         </div>    
       </div>
 

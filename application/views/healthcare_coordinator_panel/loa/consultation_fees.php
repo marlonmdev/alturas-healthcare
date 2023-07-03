@@ -63,14 +63,14 @@
 
       <div class="row">
         <div class="col-3  pt-2">
-          <h4 class="text-left text-danger">SERVICE FEE</h4>
+          <h4 class="text-left text-danger">CHARGES</h4>
         </div>     
       </div>
 
       <div class="col-4 pt-2 pb-2">
         <div class="input-group">
           <div class="input-group-append">
-            <span class="input-group-text fw-bold text-dark ls-1 ms-2">Service Fee:</span>
+            <span class="input-group-text fw-bold text-dark ls-1 ms-2">Consultation Fee:</span>
           </div>
           <input class="form-control fw-bold text-info" name="service-fee" id="service-fee" type="number" value="<?php echo $fees['service_fee'] ?>" oninput="calculateDiagnosticTestBilling(`<?php echo $remaining_balance ?>`)" required>
         </div>
@@ -87,16 +87,16 @@
 
           <div class="col-lg-4">
             <label class="fw-bold pt-2">Amount : </label>
-            <input class="form-control fw-bold text-info c_amount" name="charge_amount[]" value="<?php echo $charges['charge_amount'] ?>" readonly>
+            <input class="form-control fw-bold text-info c_amount" name="charge_amount[]" value="<?php echo number_format ($charges['charge_amount'],2) ?>" readonly>
           </div>
         </div>
       <?php 
-      endforeach;
+        endforeach;
       ?>
 
-      <div class="col-4 pt-4">
+      <div class="col-4">
         <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addfee()">
-          <i class="mdi mdi-plus-circle"></i> Add Charge Fee
+          <i class="mdi mdi-plus-circle"></i> Add Fee
         </button>
       </div>
 
@@ -123,7 +123,7 @@
         </div>
 
         <div class="col-4 pt-4">
-          <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addNewDeduction()"><i class="mdi mdi-plus-circle"></i> Add Deduction</button>
+          <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addNewDeduction()"><i class="mdi mdi-plus-circle"></i> Add Benefits</button>
         </div>    
       </div>
 
@@ -138,7 +138,7 @@
 
           <div class="col-lg-4">
             <label class="fw-bold pt-2">Amount : </label>
-            <input class="form-control fw-bold text-info d_amount" name="deduction_amount[]" value="<?php echo $deductions['deduction_amount'] ?>" readonly>
+            <input class="form-control fw-bold text-info d_amount" name="deduction_amount[]" value="<?php echo number_format ($deductions['deduction_amount'],2) ?>" readonly>
           </div>
         </div>
       <?php 
@@ -199,6 +199,19 @@
         form.classLIst.add('was-validated');
         return;
       }
+
+       $('input.deduction-amount').each(function() {
+      var value = $(this).val();
+      value = value.replace(/,/g, ''); // Remove commas
+      $(this).val(value);
+    });
+
+    // Remove commas from charge-amount fields
+    $('input.charge-amount').each(function() {
+      var value = $(this).val();
+      value = value.replace(/,/g, ''); // Remove commas
+      $(this).val(value);
+    });
 
       let url = $(this).attr('action');
       let data = $(this).serialize();
@@ -268,25 +281,25 @@
   const addNewDeduction = () => {
     const container = document.querySelector('#dynamic-deduction');
     const deduction_count = document.querySelector('#deduction-count');
-    count ++;
+    count++;
     deduction_count.value = count;
-    let html_code  = `<div class="row row-deduction" id="row${count}">`;
+    let html_code = `<div class="row row-deduction" id="row${count}">`;
 
     /* Creating a new input field with the name deduction_name[] */
     html_code += `<div class="col-md-4">
                     <input type="text" name="deduction-name[]" class="form-control fw-bold ls-1 text-info" placeholder="*Enter Deduction Name" required/>
-                    <div class="invalid-feedback"> Deduction name and amount is required</div>
+                    <div class="invalid-feedback"> Deduction name and amount are required</div>
                   </div>`;
 
     /* Creating a form input field with a name of deduction_amount[] and a class of deduction-amount. */
     html_code += `<div class="col-md-4">
                     <div class="input-group mb-3">
                       <span class="input-group-text bg-success text-white">&#8369;</span>
-                      <input type="number" name="deduction-amount[]" class="deduction-amount form-control fw-bold ls-1 text-info" placeholder="*Deduction Amount" oninput="calculateDiagnosticTestBilling()" required/>
+                      <input type="text" name="deduction-amount[]" class="deduction-amount form-control fw-bold ls-1 text-info" placeholder="*Deduction Amount" oninput="calculateDiagnosticTestBilling()" required/>
                       <span class="other-deduction-msg text-danger fw-bold"></span>
                     </div>
                   </div>`;
-        
+
     /* Adding a remove button to the html code. */
     html_code += `<div class="col-md-3">
                     <button type="button" data-id="${count}" class="btn btn-danger btn-md btn-remove" onclick="removeDeduction(this)" data-bs-toggle="tooltip" title="Click to remove Deduction"><i class="mdi mdi-close"></i></button>
@@ -295,28 +308,42 @@
     html_code += `</div>`;
 
     $('#dynamic-deduction').append(html_code);
+
+    // Add event listener for deduction-amount input field
+    const deductionAmountInputs = document.querySelectorAll('.deduction-amount');
+    deductionAmountInputs.forEach((input) => {
+      input.addEventListener('input', formatDeductionAmount);
+    });
   }
 
+  const formatDeductionAmount = (event) => {
+    const input = event.target;
+    const value = input.value.replace(/,/g, ''); // Remove existing commas
+    const formattedValue = numberWithCommas(value); // Format the number with commas
+    input.value = formattedValue;
+  }
+
+  
   const addfee = () => {
     const container = document.querySelector('#dynamic-fee');
     const deduction_count = document.querySelector('#fee-count');
-    count ++;
+    count++;
     deduction_count.value = count;
-    let html_code  = `<div class="row row-deduction1" id="row${count}">`;
+    let html_code = `<div class="row row-deduction1" id="row${count}">`;
 
     html_code += `<div class="col-md-4">
                     <input type="text" name="charge-name[]" class="form-control fw-bold ls-1 text-info" placeholder="*Enter Charge Name" required/>
-                    <div class="invalid-feedback">Deduction name and amount is required</div>
+                    <div class="invalid-feedback">Deduction name and amount are required</div>
                   </div>`;
 
     html_code += `<div class="col-md-4">
                     <div class="input-group mb-3">
                       <span class="input-group-text bg-success text-white">&#8369;</span>
-                      <input type="number" name="charge-amount[]" class="charge-amount form-control fw-bold ls-1 text-info" placeholder="*Charge Amount" oninput="calculateDiagnosticTestBilling()" required/>
+                      <input type="text" name="charge-amount[]" class="charge-amount form-control fw-bold ls-1 text-info" placeholder="*Charge Amount" oninput="calculateDiagnosticTestBilling()" required/>
                       <span class="other-deduction-msg text-danger fw-bold"></span>
                     </div>
                   </div>`;
-        
+
     html_code += `<div class="col-md-3">
                     <button type="button" data-id="${count}" class="btn btn-danger btn-md btn-remove" onclick="removeDeduction(this)" data-bs-toggle="tooltip" title="Click to remove Deduction"><i class="mdi mdi-close"></i></button>
                   </div>`;
@@ -324,6 +351,19 @@
     html_code += `</div>`;
 
     $('#dynamic-fee').append(html_code);
+
+    // Add event listener for charge-amount input field
+    const chargeAmountInputs = document.querySelectorAll('.charge-amount');
+    chargeAmountInputs.forEach((input) => {
+      input.addEventListener('input', formatChargeAmount);
+    });
+  }
+
+  const formatChargeAmount = (event) => {
+    const input = event.target;
+    const value = input.value.replace(/,/g, ''); // Remove existing commas
+    const formattedValue = numberWithCommas(value); // Format the number with commas
+    input.value = formattedValue;
   }
 
   const calculateDiagnosticTestBilling = () => {
@@ -336,19 +376,23 @@
 
     total_services = parseFloat(totalServices()) || 0; // Ensure the value is a number
     let total_charge = parseFloat(calculateCharge()) || 0; 
-    let charge = totalcharge();// Ensure the value is a number
+    let charge = totalcharge();
     final_services = charge+total_charge + total_services;
-    total_bill.value = parseFloat(final_services).toFixed(2); // No need for parseFloat() since final_services is already a number
+    total_bill.value = numberWithCommas(final_services.toFixed(2)); // Format the number with commas
 
-    philhealth = deduct_philhealth.value > 0 ? parseFloat(deduct_philhealth.value) : 0; // Ensure the value is a number
+    philhealth = deduct_philhealth.value.replace(/,/g, '') > 0 ? parseFloat(deduct_philhealth.value.replace(/,/g, '')) : 0; // Ensure the value is a number and remove commas
     other_deduction = calculateOtherDeductions();
     let deduction = totaldeduction();
 
     total_deductions = parseFloat(philhealth) + parseFloat(other_deduction) + parseFloat(deduction);
     net_bill_amount = parseFloat(final_services) - parseFloat(total_deductions);
 
-    input_total_deduction.value = total_deductions.toFixed(2); // No need for parseFloat() since total_deductions is already a number
-    net_bill.value = net_bill_amount.toFixed(2); // No need for parseFloat() since net_bill_amount is already a number
+    input_total_deduction.value = numberWithCommas(total_deductions.toFixed(2)); // Format the number with commas
+    net_bill.value = numberWithCommas(net_bill_amount.toFixed(2)); // Format the number with commas
+  }
+
+  function numberWithCommas(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 
   const removeDeduction = (remove_btn) => {
@@ -376,7 +420,8 @@
     const deduction_amount = document.querySelectorAll('.deduction-amount');
 
     for (let i = 0; i < row_deduction.length; i++) {
-      other_deduction += deduction_amount[i].value * 1;
+      const amount = deduction_amount[i].value.replace(/,/g, ''); // Remove comma separators
+      other_deduction += parseFloat(amount);
     }  
     return other_deduction;
   }
@@ -387,7 +432,8 @@
     const charge_amount = document.querySelectorAll('.charge-amount');
 
     for (let i = 0; i < row_charge.length; i++) {
-      total_charge += parseFloat(charge_amount[i].value) || 0; // Ensure the value is a number
+      const amount = charge_amount[i].value.replace(/,/g, ''); // Remove comma separators
+      total_charge += parseFloat(amount);
     }
     return total_charge;
   }
@@ -397,7 +443,8 @@
     const charge = document.querySelectorAll('.c_amount');
 
     for (let i = 0; i < charge.length; i++) {
-      total_charge += parseFloat(charge[i].value);
+      const amount = charge[i].value.replace(/,/g, ''); // Remove comma separators
+      total_charge += parseFloat(amount);
     }
     
     return total_charge;
@@ -408,11 +455,37 @@
     const deduction = document.querySelectorAll('.d_amount');
 
     for (let i = 0; i < deduction.length; i++) {
-      total_deduction+= parseFloat(deduction[i].value);
+      const amount = deduction[i].value.replace(/,/g, ''); // Remove comma separators
+      total_deduction += parseFloat(amount);
     }
-    
     return total_deduction;
   }
+
+  const submitForm = () => {
+  // Get the deduction amount input values
+  const deductionAmountInputs = document.querySelectorAll('.deduction-amount');
+  const deductionAmounts = Array.from(deductionAmountInputs).map((input) =>
+    input.value.replace(/,/g, '') // Remove comma separators
+  );
+
+  // Get the charge amount input values
+  const chargeAmountInputs = document.querySelectorAll('.charge-amount');
+  const chargeAmounts = Array.from(chargeAmountInputs).map((input) =>
+    input.value.replace(/,/g, '') // Remove comma separators
+  );
+
+  // Update the input values with the processed values
+  for (let i = 0; i < deductionAmounts.length; i++) {
+    deductionAmountInputs[i].value = deductionAmounts[i];
+  }
+
+  for (let i = 0; i < chargeAmounts.length; i++) {
+    chargeAmountInputs[i].value = chargeAmounts[i];
+  }
+
+  // Now you can proceed with the form submission
+  // Use the updated deduction and charge amounts for further processing or AJAX request
+};
 </script>
 
 

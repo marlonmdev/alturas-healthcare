@@ -1845,6 +1845,14 @@ function get_billed_for_charging($bill_no) {
     return $query->result_array();
   }
 
+  function get_benefits_deduction($emp_id){
+    $this->db->select('*')
+      ->from('benefits_deductions')
+      ->where('emp_id', $emp_id);
+    $query = $this->db->get();
+    return $query->result_array();
+  }
+
 
   function db_get_hr_add_charges_fee($loa_id) {
     $this->db->select('*')

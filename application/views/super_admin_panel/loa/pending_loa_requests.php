@@ -79,6 +79,24 @@
               <span class="hidden-xs-down fs-5 font-bold">Expired</span></a
             >
           </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="<?php echo base_url(); ?>super-admin/loa/requests-list/billed"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Billed</span></a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="<?php echo base_url(); ?>super-admin/loa/requests-list/paid"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Paid</span></a
+            >
+          </li>
         </ul>
 
         <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
@@ -221,7 +239,9 @@
           requesting_company, 
           chief_complaint,
           requesting_physician,
-          attending_physician
+          attending_physician,
+          work_related,
+          percentage
         } = res;
 
         $("#viewLoaModal").modal("show");
@@ -262,6 +282,40 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
+        if(work_related != ''){
+          if(work_related == 'Yes'){ 
+					if(percentage == ''){
+					  wpercent = '100% W-R';
+					  nwpercent = '';
+					}else{
+					   wpercent = percentage+'%  W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   nwpercent = '';
+					   }else{
+						   nwpercent = result+'% Non W-R';
+					   }
+					  
+					}	
+			   }else if(work_related == 'No'){
+				   if(percentage == ''){
+					   wpercent = '';
+					   nwpercent = '100% Non W-R';
+					}else{
+					   nwpercent = percentage+'% Non W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   wpercent = '';
+					   }else{
+						   wpercent = result+'%  W-R';
+					   }
+					 
+					}
+			   }
+            $('#percentage').html(wpercent+', '+nwpercent);
+        }else{
+            $('#percentage-info').hide();
+        }
       }
     });
   }

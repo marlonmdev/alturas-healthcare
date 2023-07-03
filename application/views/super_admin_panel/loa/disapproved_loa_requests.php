@@ -81,7 +81,24 @@
               <span class="hidden-xs-down fs-5 font-bold">Expired</span></a
             >
           </li>
-         
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="<?php echo base_url(); ?>super-admin/loa/requests-list/billed"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Billed</span></a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="<?php echo base_url(); ?>super-admin/loa/requests-list/paid"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Paid</span></a
+            >
+          </li>
         </ul>
 
         <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
@@ -249,7 +266,7 @@
                 $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
                 $('#disapproved-by').html(disapproved_by);
                 $('#disapproved-on').html(disapproved_on);
-                $('#disapprove-reason').html(disapprove_reason);
+                $('#disapprove-reason').html(`<strong class="text-danger">${disapprove_reason}</strong>`);
                 $('#member-mbl').html(member_mbl);
                 $('#remaining-mbl').html(remaining_mbl);
                 $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
@@ -274,13 +291,6 @@
                 $('#chief-complaint').html(chief_complaint);
                 $('#requesting-physician').html(requesting_physician);
                 $('#attending-physician').html(at_physician);
-                if(work_related != ''){
-                  $('#work-related-info').removeClass('d-none');
-                  $('#work-related-val').html(work_related);
-                }else{
-                  $('#work-related-info').addClass('d-none');
-                  $('#work-related-val').html('');
-                }
             }
         });
     }

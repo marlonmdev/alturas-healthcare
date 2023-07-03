@@ -6,6 +6,8 @@ class Pages_controller extends CI_Controller {
 	function __construct() {
 		parent::__construct();
 		$this->load->model('super_admin/members_model');
+		$this->load->model('super_admin/setup_model');
+		$this->load->model('super_admin/count_model');
 		$user_role = $this->session->userdata('user_role');
 		$logged_in = $this->session->userdata('logged_in');
 		if ($logged_in !== true && $user_role !== 'super-admin') {
@@ -14,7 +16,6 @@ class Pages_controller extends CI_Controller {
 	}
 
 	function index() {
-		$this->load->model('super_admin/count_model');
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['hcare_prov_count'] = $this->count_model->count_all_healthcare_providers();
 		$data['members_count'] = $this->count_model->count_all_members();
@@ -27,8 +28,6 @@ class Pages_controller extends CI_Controller {
 	}
 
 	function view_healthcare_providers() {
-		$this->load->model('super_admin/setup_model');
-		$this->load->model('super_admin/count_model');
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['hospitals_count'] = $this->count_model->count_all_hospitals();
 		$data['labs_count'] = $this->count_model->count_all_laboratories();
@@ -129,7 +128,6 @@ class Pages_controller extends CI_Controller {
 	}
 
 	function view_all_accounts() {
-		$this->load->model('super_admin/setup_model');
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['hcproviders'] = $this->setup_model->db_get_healthcare_providers();
 		$this->load->view('templates/header', $data);
@@ -138,7 +136,6 @@ class Pages_controller extends CI_Controller {
 	}
 
 	function register_account_form() {
-		$this->load->model('super_admin/setup_model');
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['default_password'] = $this->config->item('default_password');
 		$data['hcproviders'] = $this->setup_model->db_get_healthcare_providers();
@@ -162,7 +159,6 @@ class Pages_controller extends CI_Controller {
 	}
 
 	function view_all_cost_types() {
-		$this->load->model('super_admin/setup_model');
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['price_group'] = $this->setup_model->get_price_group();
 		$data['hospital'] = $this->setup_model->db_get_healthcare_providers();
@@ -172,7 +168,6 @@ class Pages_controller extends CI_Controller {
 	}
 
 	function view_all_room_types() {
-		$this->load->model('super_admin/setup_model');
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['hospital'] = $this->setup_model->rt_get_healthcare_providers();
 		$this->load->view('templates/header', $data);
@@ -181,7 +176,6 @@ class Pages_controller extends CI_Controller {
 	}
 
 	function view_request_loa_form() {
-		$this->load->model('super_admin/setup_model');
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['hcproviders'] = $this->setup_model->db_get_healthcare_providers();
 		$data['costtypes'] = $this->setup_model->db_get_all_cost_types();
@@ -194,7 +188,6 @@ class Pages_controller extends CI_Controller {
 
 	function view_pending_loa_list() {
 		$data['user_role'] = $this->session->userdata('user_role');
-		$this->load->model('super_admin/setup_model');
 		$data['hcproviders'] = $this->setup_model->db_get_healthcare_providers();
 		$this->load->view('templates/header', $data);
 		$this->load->view('super_admin_panel/loa/pending_loa_requests');
@@ -203,7 +196,6 @@ class Pages_controller extends CI_Controller {
 
 	function view_approved_loa_list() {
 		$data['user_role'] = $this->session->userdata('user_role');
-		$this->load->model('super_admin/setup_model');
 		$data['hcproviders'] = $this->setup_model->db_get_healthcare_providers();
 		$this->load->view('templates/header', $data);
 		$this->load->view('super_admin_panel/loa/approved_loa_requests');
@@ -212,7 +204,6 @@ class Pages_controller extends CI_Controller {
 
 	function view_disapproved_loa_list() {
 		$data['user_role'] = $this->session->userdata('user_role');
-		$this->load->model('super_admin/setup_model');
 		$data['hcproviders'] = $this->setup_model->db_get_healthcare_providers();
 		$this->load->view('templates/header', $data);
 		$this->load->view('super_admin_panel/loa/disapproved_loa_requests');
@@ -221,7 +212,6 @@ class Pages_controller extends CI_Controller {
 
 	function view_completed_loa_list() {
 		$data['user_role'] = $this->session->userdata('user_role');
-		$this->load->model('super_admin/setup_model');
 		$data['hcproviders'] = $this->setup_model->db_get_healthcare_providers();
 		$this->load->view('templates/header', $data);
 		$this->load->view('super_admin_panel/loa/completed_loa_requests');
@@ -230,7 +220,6 @@ class Pages_controller extends CI_Controller {
 
 	function view_cancelled_loa_list() {
 		$data['user_role'] = $this->session->userdata('user_role');
-		$this->load->model('super_admin/setup_model');
 		$data['hcproviders'] = $this->setup_model->db_get_healthcare_providers();
 		$this->load->view('templates/header', $data);
 		$this->load->view('super_admin_panel/loa/cancelled_loa_requests');
@@ -239,15 +228,29 @@ class Pages_controller extends CI_Controller {
 
 	function view_expired_loa_list() {
 		$data['user_role'] = $this->session->userdata('user_role');
-		$this->load->model('super_admin/setup_model');
 		$data['hcproviders'] = $this->setup_model->db_get_healthcare_providers();
 		$this->load->view('templates/header', $data);
 		$this->load->view('super_admin_panel/loa/expired_loa_requests');
 		$this->load->view('templates/footer');
 	}
 
+	function view_billed_loa_list() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hcproviders'] = $this->setup_model->db_get_healthcare_providers();
+		$this->load->view('templates/header', $data);
+		$this->load->view('super_admin_panel/loa/billed_loa_requests');
+		$this->load->view('templates/footer');
+	}
+
+	function view_paid_loa_list() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hcproviders'] = $this->setup_model->db_get_healthcare_providers();
+		$this->load->view('templates/header', $data);
+		$this->load->view('super_admin_panel/loa/paid_loa_requests');
+		$this->load->view('templates/footer');
+	}
+
 	function request_noa_form() {
-		$this->load->model('super_admin/setup_model');
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['hospitals'] = $this->setup_model->db_get_hospitals();
 		$data['costtypes'] = $this->setup_model->db_get_all_cost_types();

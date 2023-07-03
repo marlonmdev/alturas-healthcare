@@ -19,7 +19,7 @@
   <div class="row">
       <div class="col-6 pb-2">
           <div class="input-group">
-              <a href="<?php echo base_url(); ?>super-admin/members/approved" type="submit" class="btn btn-info" data-bs-toggle="tooltip" title="Click to Go Back">
+              <a href="JavaScript:void(0)" onclick="goBack()" type="button" class="btn btn-info" data-bs-toggle="tooltip" title="Click to Go Back">
                   <strong class="ls-2" style="vertical-align:middle">
                       <i class="mdi mdi-arrow-left-bold"></i> Go Back
                   </strong>
@@ -78,5 +78,7 @@
 </div>
 
   <script>
-
+    const goBack = () => {
+      window.history.back();
+    }
   </script>

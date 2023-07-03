@@ -12,9 +12,6 @@ class Members_model extends CI_Model {
   private function _get_datatables_query($approval_status) {
     $this->db->from($this->table);
     $this->db->where('approval_status', $approval_status);
-    if($approval_status == 'Approved'){
-      $this->db->or_where('approval_status', 'Done');
-    }
     $i = 0;
     // loop column 
     foreach ($this->column_search as $item) {

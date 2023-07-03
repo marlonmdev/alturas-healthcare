@@ -240,10 +240,10 @@ class Noa_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 
-	function fetch_all_completed_noa() {
+	function fetch_all_billed_noa() {
 		$this->security->get_csrf_hash();
-		$status = 'Closed';
-		$list = $this->noa_model->get_datatables($status);
+		$status = 'Billed';
+		$list = $this->noa_model->get_datatables_billed($status);
 		$data = [];
 		foreach ($list as $noa) {
 			$row = [];
@@ -255,7 +255,7 @@ class Noa_controller extends CI_Controller {
 
 			$custom_noa_no = '<mark class="bg-primary text-white">'.$noa['noa_no'].'</mark>';
 
-			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-info">' . $noa['status'] . '</span></div>';
+			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-info">Billed</span></div>';
 
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewClosedNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 

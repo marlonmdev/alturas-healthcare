@@ -1175,7 +1175,7 @@ class List_model extends CI_Model{
     private function fetch_mbl_ledger() {
         $this->db->from('members as tbl_1')
             ->join('max_benefit_limits as tbl_6', 'tbl_1.emp_id = tbl_6.emp_id', 'left')
-            ->join('billing as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id','lefxt')
+            ->join('billing as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id','left')
             ->where('tbl_2.company_charge !=', 0)
             ->where('YEAR(tbl_2.billed_on)', date('Y'))
             ->order_by('tbl_2.billing_id', 'asc');
@@ -1226,8 +1226,60 @@ class List_model extends CI_Model{
         return $query->result_array();
     }
 
+    function get_employee_ledger_mbl($years, $bu_unit) {
+        $this->db->from('members as tbl_1')
+                ->join('max_benefit_limits as tbl_6', 'tbl_1.emp_id = tbl_6.emp_id', 'left')
+                ->join('billing as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id','left')
+                ->where('tbl_2.company_charge !=', 0)
+                ->where('YEAR(tbl_2.billed_on)', date('Y'))
+                ->order_by('tbl_2.billing_id', 'asc');
+
+        if (!empty($years)) {
+            $this->db->where("YEAR(tbl_6.start_date)", $years);
+        }
+        if (!empty($bu_unit)) {
+            $this->db->where("tbl_1.business_unit", $bu_unit);
+        }
+        return $this->db->get()->result_array();
+       
+    }
     
-    
+    function get_employee_history_mbl($years, $bu_unit) {
+        $this->db->from('members as tbl_1')
+                ->join('mbl_history as tbl_6', 'tbl_1.emp_id = tbl_6.emp_id', 'left')
+                ->join('billing as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id','left')
+                ->where('tbl_2.company_charge !=', 0)
+                ->where('YEAR(tbl_2.billed_on) !=', date('Y'))
+                ->order_by('tbl_2.billing_id', 'asc');
+
+        if (!empty($years)) {
+            $this->db->where("YEAR(tbl_6.start_date)", $years);
+        }
+        if (!empty($bu_unit)) {
+            $this->db->where("tbl_1.business_unit", $bu_unit);
+        }
+        return $this->db->get()->result_array();
+       
+    }
+
+    function get_employee_paid_ledger($years, $months, $bu_unit) {
+        $this->db->from('billing as tbl_1')
+                ->join('members as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
+                ->join('payment_details as tbl_6', 'tbl_1.details_no = tbl_6.details_no')
+                ->where('tbl_1.status', 'Paid')
+                ->order_by('tbl_6.details_id', 'asc');
+
+        if(!empty($years)){
+            $this->db->where("YEAR(tbl_6.date_add)", $years);
+        }
+        if (!empty($months)) {
+            $this->db->where("MONTH(tbl_6.date_add)", $months);
+        }
+        if (!empty($bu_unit)) {
+            $this->db->where("tbl_5.business_unit", $bu_unit);
+        }
+        return $this->db->get()->result_array();
+    }
     
 
 

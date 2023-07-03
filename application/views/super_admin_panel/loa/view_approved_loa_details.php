@@ -26,6 +26,14 @@
                           <td class="fw-bold ls-1">Approved On :</td>
                           <td class="fw-bold ls-1" id="approved-on"></td>
                         </tr>
+                        <tr id="billed-date">
+                          <td class="fw-bold ls-1">Billed On :</td>
+                          <td class="fw-bold ls-1" id="billed-on"></td>
+                        </tr>
+                        <tr id="paid-date">
+                          <td class="fw-bold ls-1">Paid On :</td>
+                          <td class="fw-bold ls-1" id="paid-on"></td>
+                        </tr>
                         <tr>
                           <td class="fw-bold ls-1">Member's Maximum Benefit Limit :</td>
                           <td class="fw-bold ls-1">&#8369;<span id="member-mbl"></span></td>
@@ -35,8 +43,8 @@
                           <td class="fw-bold ls-1">&#8369;<span id="remaining-mbl"></span></td>
                         </tr>
                         <tr>
-                          <td class="fw-bold ls-1">Work Related :</td>
-                          <td class="fw-bold ls-1" id="work-related-val"></td>
+                          <td class="fw-bold ls-1">Percentage:</td>
+                          <td class="fw-bold ls-1" id="percentage"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Healthcard Number :</td>

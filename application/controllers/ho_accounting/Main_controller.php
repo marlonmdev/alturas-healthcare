@@ -249,9 +249,9 @@ class Main_controller extends CI_Controller {
 
 	function get_company_charge_total() {
 		$token = $this->security->get_csrf_hash();
-		$hp_id = $this->input->post('hp_id');
-		$startDate = $this->input->post('startDate');
-		$endDate = $this->input->post('endDate');
+		$hp_id = $this->input->post('hp_id', TRUE);
+		$startDate = $this->input->post('startDate', TRUE);
+		$endDate = $this->input->post('endDate', TRUE);
 		$status = 'Billed';
 		$result = $this->List_model->get_column_sum($hp_id, $startDate, $endDate, $status);
 
@@ -316,14 +316,14 @@ class Main_controller extends CI_Controller {
 
 				$data = array(
 					"details_no" => $details_no,
-					"hp_id" => $this->input->post('pd-hp-id'),
+					"hp_id" => $this->input->post('pd-hp-id', TRUE),
 					"total_hp_bill" => str_replace(',', '', $this->input->post('p-total-bill')),
-					"acc_number" => $this->input->post('acc-number'),
-					"acc_name" => $this->input->post('acc-name'),
-					"check_num" => $this->input->post('check-number'),
-					"check_date" => $this->input->post('check-date'),
-					"bank" => $this->input->post('bank'),
-					"amount_paid" => $this->input->post('amount-paid'),
+					"acc_number" => $this->input->post('acc-number', TRUE),
+					"acc_name" => $this->input->post('acc-name', TRUE),
+					"check_num" => $this->input->post('check-number', TRUE),
+					"check_date" => $this->input->post('check-date', TRUE),
+					"bank" => $this->input->post('bank', TRUE),
+					"amount_paid" => $this->input->post('amount-paid', TRUE),
 					"supporting_file" => $uploadData['file_name'],
 					"date_add" => date('Y-m-d h:i:s'),
 					"added_by" => $added_by
@@ -331,8 +331,8 @@ class Main_controller extends CI_Controller {
 				);
 				$this->List_model->add_payment_details($data);
 				$paid_by = $this->session->userdata('fullname');
-				$paid_on = $this->input->post('check-date');
-				$payment_no = $this->input->post('pd-payment-no');
+				$paid_on = $this->input->post('check-date', TRUE);
+				$payment_no = $this->input->post('pd-payment-no', TRUE);
 			
 				$this->List_model->set_details_no($payment_no,$details_no);
 				$this->List_model->set_monthly_payable($payment_no,$paid_by,$paid_on);
@@ -673,7 +673,7 @@ class Main_controller extends CI_Controller {
 
 	function get_hp_name() {
 		$token = $this->security->get_csrf_hash();
-		$hp_id = $this->input->post('hp_id');
+		$hp_id = $this->input->post('hp_id', TRUE);
 		$hc_provider = $this->List_model->db_get_hp_name($hp_id);
 
 		$response = [
@@ -800,9 +800,9 @@ class Main_controller extends CI_Controller {
 	function fetch_monthly_bill() {
 		$status = 'Billed';
 		$token = $this->security->get_csrf_hash();
-		$hp_id = $this->input->post('hp_id');
-		$month = $this->input->post('month');
-		$year = $this->input->post('year');
+		$hp_id = $this->input->post('hp_id', TRUE);
+		$month = $this->input->post('month', TRUE);
+		$year = $this->input->post('year', TRUE);
 		$converted_month = (int)$month;
 		$payable = $this->List_model->get_bill_nos($hp_id,$year,$converted_month,$status);
 
@@ -845,9 +845,9 @@ class Main_controller extends CI_Controller {
 
 	function get_total_hp_bill() {
 		$status = 'Billed';
-		$hp_id = $this->input->post('hp_id');
-		$month = $this->input->post('month');
-		$year = $this->input->post('year');
+		$hp_id = $this->input->post('hp_id', TRUE);
+		$month = $this->input->post('month', TRUE);
+		$year = $this->input->post('year', TRUE);
 		$converted_month = (int)$month;
 		$payable = $this->List_model->get_bill_nos($hp_id, $year, $converted_month, $status);
 		$total_bill = 0; // Initialize total_bill to 0
@@ -863,9 +863,9 @@ class Main_controller extends CI_Controller {
 
 	function get_total_hp_paid_bill() {
 		$status = 'Paid';
-		$hp_id = $this->input->post('hp_id');
-		$month = $this->input->post('month');
-		$year = $this->input->post('year');
+		$hp_id = $this->input->post('hp_id', TRUE);
+		$month = $this->input->post('month', TRUE);
+		$year = $this->input->post('year', TRUE);
 		$converted_month = (int)$month;
 		$payable = $this->List_model->get_bill_nos($hp_id, $year, $converted_month,$status);
 		$total_bill = 0; // Initialize total_bill to 0
@@ -880,7 +880,7 @@ class Main_controller extends CI_Controller {
 	}
 
 	function get_payment_details() {
-		$details_no = $this->input->post('details_no');
+		$details_no = $this->input->post('details_no', TRUE);
 		$check = $this->List_model->get_check_details($details_no);
 		
 		echo json_encode($check);
@@ -1356,7 +1356,7 @@ class Main_controller extends CI_Controller {
 
 	function fetch_payment_bill() {
 		$token = $this->security->get_csrf_hash();
-		$payment_no = $this->input->post('payment_no');
+		$payment_no = $this->input->post('payment_no', TRUE);
 		$billing = $this->List_model->monthly_bill_datatable($payment_no);
 		$data = [];
 		$number = 1;
@@ -1519,7 +1519,7 @@ class Main_controller extends CI_Controller {
 
 	function fetch_monthly_paid_bill() {
 		$token = $this->security->get_csrf_hash();
-		$payment_no = $this->input->post('payment_no');
+		$payment_no = $this->input->post('payment_no', TRUE);
 		$billing = $this->List_model->monthly_bill_datatable($payment_no);
 		$data = [];
 		$number = 1;
@@ -3267,7 +3267,7 @@ class Main_controller extends CI_Controller {
 		$pdf->WriteHtmlCell(0, 0, '', '', $dateGenerate, 0, 1, 0, true, 'L', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'C', true);
 		$pdf->lastPage();
-
+		$pdfname = 'Charge_'.$business_unit .'_'.date('Ymdhis');
 		$pdf->Output($pdfname.'.pdf', 'I');
 	}
 	
@@ -3300,7 +3300,8 @@ class Main_controller extends CI_Controller {
 		}
 	
 		foreach ($fullnameData as $key => $totals) {
-			[$fullname, $date_add] = explode('_', $key);
+			list($fullname, $date_add) = explode('_', $key);
+
 			$row = [];
 			$row[] = date('m/d/Y',strtotime($date_add));
 			$row[] = $fullname;
@@ -3322,7 +3323,7 @@ class Main_controller extends CI_Controller {
 	}
 	
 	function fetch_ledger_mbl() {
-		$filteredYear = $this->input->post('year');
+		$filteredYear = $this->input->post('year', TRUE);
 		$currentYear = date('Y');
 	
 		if ($filteredYear == $currentYear) {
@@ -3362,7 +3363,7 @@ class Main_controller extends CI_Controller {
 		$previous_fullname = '';
 
 		foreach ($fullnameData as $key => $totals) {
-			[$healcardno, $fullname, $business_unit] = explode('_', $key);
+			list($healcardno, $fullname, $business_unit) = explode('_', $key);
 
 			$max_benefit = number_format($totals['max_benefit'], 2, '.', ',');
 
@@ -3411,6 +3412,276 @@ class Main_controller extends CI_Controller {
 		];
 	
 		echo json_encode($output);
+	}
+
+	function print_mbl_ledger($year, $bu_filter){
+		$this->security->get_csrf_hash();
+		$this->load->library('tcpdf_library');
+		$pdf = new TCPDF();
+
+		$year =  base64_decode($year);
+		$bu_filter =  base64_decode($bu_filter);
+
+		if($year != 'none'){
+			$years = $year; 
+			$yr_header = '<h3>For the Year '.$years.'</h3>';
+		}else{
+			$years = '';
+			$yr_header = '';
+		}
+
+		if($bu_filter != 'none'){
+			$bu_unit = $bu_filter; 
+			$bu_header = '<h3>'.$bu_unit.'</h3>';
+		}else{
+			$bu_unit = '';
+			$bu_header = '';
+
+		}
+
+		if($years == date('Y') || $years ==''){
+			$mbls = $this->List_model->get_employee_ledger_mbl($years, $bu_unit);
+		}else{
+			$mbls = $this->List_model->get_employee_history_mbl($years, $bu_unit);
+		}
+
+		$title =  '<h3>ALTURAS HEALTHCARE PROGRAM</h3>
+					<h3>Max Benefit Limit Ledger</h3>
+					'.$bu_header.'
+					'.$yr_header.'<br>';
+
+		$dateGenerate = '<span>Date Generated : '.date('F d, Y').'</span><br>';
+		$PDFdata = '<table style="border:.5px solid #000; padding:3px" class="table table-bordered">';
+		$PDFdata .= ' <thead>
+						<tr class="border-secondary">
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Healthcard No.</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Member`s Name</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Business Unit</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Date Used</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Used MBL</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Remaining MBL</strong></th>
+							
+						</tr>
+					</thead>';
+		$PDFdata .= '<tbody>';
+
+		$fullnameData = [];
+	
+		foreach ($mbls as $max) {
+			$healcardno = $max['health_card_no'];
+			$fullname = $max['first_name'] . ' ' . $max['middle_name'] . ' ' . $max['last_name'] . ' ' . $max['suffix'];
+			$business_unit = $max['business_unit'];
+	
+			$company_charge = floatval($max['company_charge']);
+			$mbl = floatval($max['max_benefit_limit']);
+	
+			$key = $healcardno . '_' . $fullname . '_' . $business_unit;
+	
+			if (!isset($fullnameData[$key])) {
+				$fullnameData[$key] = [
+					'date_used' => [],
+					'used_mbl' => [],
+					'max_benefit' => $max['max_benefit_limit'],
+					'remaining_mbl' => 0,
+				];
+			}
+	
+			$fullnameData[$key]['date_used'][] = $max['billed_on'];
+			$fullnameData[$key]['used_mbl'][] = $max['company_charge'];
+		}
+	
+		$previous_fullname = '';
+
+		foreach ($fullnameData as $key => $totals) {
+			list($healcardno, $fullname, $business_unit) = explode('_', $key);
+
+			$max_benefit = number_format($totals['max_benefit'], 2, '.', ',');
+
+			$dates_used = $totals['date_used'];
+			$used_mbls = $totals['used_mbl'];
+			$remaining_mbl = $totals['max_benefit'];
+
+			$num_entries = count($dates_used);
+
+			for ($i = 0; $i < $num_entries; $i++) {
+				$used_mbl = floatval($used_mbls[$i]);
+
+				if ($fullname !== $previous_fullname) {
+					$PDFdata .= '<tr>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$healcardno.'</td>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$fullname.'</td>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$business_unit.'</td>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">----</td>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">----</td>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($remaining_mbl, 2, '.', ',').'</td>
+								</tr>';
+				}
+				$PDFdata .= '<tr>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px"></td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px"></td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px"></td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$dates_used[$i].'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($used_mbl, 2, '.', ',').'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format(max($remaining_mbl - $used_mbl, 0), 2, '.', ',').'</td>
+							</tr>';
+
+				$remaining_mbl = max($remaining_mbl - $used_mbl, 0);
+				$previous_fullname = $fullname;
+			}
+		}
+
+				
+		$PDFdata .= '</tbody></table>';
+
+		$pdf->setPrintHeader(false);
+		$pdf->setTitle('Business Unit Charging Report');
+		$pdf->setFont('times', '', 10);
+		$pdf->AddPage('L');
+		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $dateGenerate, 0, 1, 0, true, 'L', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'C', true);
+		$pdf->lastPage();
+		$pdfname = 'LedgerMbl_'.date('Ymdhis');
+		$pdf->Output($pdfname.'.pdf', 'I');
+	}
+
+	function print_paid_ledger($month, $year, $bu_filter) {
+		$this->security->get_csrf_hash();
+		$this->load->library('tcpdf_library');
+		$pdf = new TCPDF();
+
+		$month =  base64_decode($month);
+		$year =  base64_decode($year);
+		$bu_filter =  base64_decode($bu_filter);
+
+		if($month != 'none'){
+			$months = $month; 
+		}else{
+			$months = '';
+		}
+
+		if($year != 'none'){
+			$years = $year; 
+		}else{
+			$years = '';
+		}
+
+		if($bu_filter != 'none'){
+			$bu_unit = $bu_filter; 
+			$bu_header = '<h3>'.$bu_unit.'</h3>';
+		}else{
+			$bu_unit = '';
+			$bu_header = '';
+
+		}
+
+		if(!empty($years || $months)){
+			if($months == ''){
+				$monthN = '';
+				if($years != ''){
+					$yearsF = 'For the Year '.$years;
+				}else{
+					$yearsF = '';
+				}
+			}else{
+				$Numberedmonth = intval($months);
+				$timestamp = mktime(0, 0, 0, $Numberedmonth, 1);
+				$monthName = date('F', $timestamp);
+				$monthN = 'For the Month of '.$monthName;
+				$yearsF = $years;
+			}
+			$header = '<h3>'.$monthN.' '.$yearsF.'</h3>';
+		}else{
+			$header = '';
+		}
+
+		$ledger = $this->List_model->get_employee_paid_ledger($years, $months, $bu_unit);
+
+		$title =  '<h3>ALTURAS HEALTHCARE PROGRAM</h3>
+					<h3>Paid Bill Ledger</h3>
+					'.$bu_header.'
+					'.$header.'<br>';
+
+		$dateGenerate = '<span>Date Generated : '.date('F d, Y').'</span><br>';
+		$PDFdata = '<table style="border:.5px solid #000; padding:3px" class="table table-bordered">';
+		$PDFdata .= ' <thead>
+						<tr class="border-secondary">
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Date Paid</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Member`s Name</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Business Unit</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Debit</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Credit</strong></th>
+						</tr>
+					</thead>';
+
+		$fullnameData = [];
+		$totalDebit = 0;
+		$totalCredit = 0;
+		foreach ($ledger as $bill) {
+			if ($bill['company_charge'] && $bill['cash_advance'] != '') {
+				$fullname = $bill['first_name'] . ' ' . $bill['middle_name'] . ' ' . $bill['last_name'] . ' ' . $bill['suffix'];
+				$date_add = $bill['date_add'];
+
+				$company_charge = floatval($bill['company_charge']);
+				$cash_advance = floatval($bill['cash_advance']);
+				$total_paid_amount = floatval($bill['total_paid_amount']);
+	
+				$key = $fullname . '_' . $date_add;
+				if (!isset($fullnameData[$key])) {
+					$fullnameData[$key] = [
+						'total_debit' => 0,
+						'total_paid_amount' => 0,
+						'business_unit' => $bill['business_unit'],
+					];
+				}
+	
+				$fullnameData[$key]['total_debit'] += ($company_charge + $cash_advance);
+				$fullnameData[$key]['total_paid_amount'] += $total_paid_amount;
+			}
+		}
+	
+		foreach ($fullnameData as $key => $totals) {
+			list($fullname, $date_add) = explode('_', $key);
+			
+			$PDFdata .= '<tbody><tr>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.date('m/d/Y',strtotime($date_add)).'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$fullname.'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$totals['business_unit'].'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($totals['total_debit'], 2, '.', ',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">----</td>
+						</tr>';
+			$PDFdata .= '<tr>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px"></td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px"></td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px"></td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px"></td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($totals['total_paid_amount'], 2, '.', ',').'</td>
+						</tr></tbody>';
+
+			$totalDebit += floatval($totals['total_debit']);
+			$totalCredit += floatval($totals['total_paid_amount']);
+		}
+		$PDFdata .=  '<tfoot>
+						<tr>
+							<td></td>
+							<td></td>
+							<td class="fw-bold">TOTALS</td>
+							<td class="fw-bold">'.number_format($totalDebit,2,'.',',').'</td>
+							<td class="fw-bold">'.number_format($totalCredit,2,'.',',').'</td>
+						</tr>
+					</tfoot>';
+		$PDFdata .= '</table>';
+
+		$pdf->setPrintHeader(false);
+		$pdf->setTitle('Business Unit Charging Report');
+		$pdf->setFont('times', '', 10);
+		$pdf->AddPage('L');
+		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $dateGenerate, 0, 1, 0, true, 'L', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'C', true);
+		$pdf->lastPage();
+		$pdfname = 'LedgerPaid_'.date('Ymdhis');
+		$pdf->Output($pdfname.'.pdf', 'I');
 	}
 	
 }

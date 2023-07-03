@@ -11,7 +11,7 @@
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Super Admin</li>
               <li class="breadcrumb-item active" aria-current="page">
-                Completed NOA
+                Billed NOA
               </li>
             </ol>
           </nav>
@@ -57,10 +57,10 @@
             <li class="nav-item">
             <a
               class="nav-link active"
-              href="<?php echo base_url(); ?>super-admin/noa/requests-list/completed"
+              href="<?php echo base_url(); ?>super-admin/noa/requests-list/billed"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
+              <span class="hidden-xs-down fs-5 font-bold">Billed</span></a
             >
           </li>
         </ul>
@@ -68,7 +68,7 @@
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover" id="completedNoaTable">
+              <table class="table table-hover" id="billedNoaTable">
                 <thead>
                   <tr>
                     <th class="fw-bold">NOA No.</th>
@@ -175,14 +175,14 @@
 
   $(document).ready(function() {
 
-    $('#completedNoaTable').DataTable({
+    $('#billedNoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
 
       // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}super-admin/noa/requests-list/completed/fetch`,
+        url: `${baseUrl}super-admin/noa/requests-list/billed/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: {
@@ -222,7 +222,7 @@
 
   const viewCompletedNoaInfo = (req_id) => {
     $.ajax({
-      url: `${baseUrl}super-admin/noa/completed/view/${req_id}`,
+      url: `${baseUrl}super-admin/noa/billed/view/${req_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);

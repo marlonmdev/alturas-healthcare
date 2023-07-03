@@ -3,7 +3,7 @@
     <div class="modal-content">
       <section id="printableDiv">
         <div class="modal-header">
-          <h4 class="modal-title ls-2">LOA #: <span id="loa-no" class="text-primary"></span> <span id="loa-status"></span></h4>
+        <h4 class="modal-title ls-2">LOA #: <span id="loa-no" class="text-primary"></span> <span id="loa-status"></span></h4>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -40,6 +40,10 @@
                 <tr>
                   <td class="fw-bold ls-1">Healthcard Number :</td>
                   <td class="fw-bold ls-1" id="health-card-no"></td>
+                </tr>
+                <tr>
+                  <td class="fw-bold ls-1">Percentage :</td>
+                  <td class="fw-bold ls-1" id="percentage"></td>
                 </tr>
                 <tr>
                   <td class="fw-bold ls-1">Full Name :</td>

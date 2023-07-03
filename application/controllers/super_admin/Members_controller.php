@@ -126,6 +126,8 @@ class Members_controller extends CI_Controller {
 
 			$custom_actions .= '<a class="me-2" href="JavaScript:void(0)" onclick="viewMemberID(\''.$emp_id.'\')" data-bs-toggle="tooltip" title="View Member ID"><i class="mdi mdi-image fs-2 text-cyan"></i></a>';
 
+			$custom_actions .= '<a href="' . base_url() . 'super-admin/member/view/files/' . $member_id . '"  data-bs-toggle="tooltip" title="View Files"><i class="mdi mdi-file-multiple fs-2 text-danger"></i></a>';
+
 			/* This is checking if the image file exists in the directory. */
 			$file_path = './uploads/profile_pics/' . $member['photo'];
 			$photo_status = file_exists($file_path) ? 'Exist' : 'Not Found';

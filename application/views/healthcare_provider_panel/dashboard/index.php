@@ -426,7 +426,7 @@
         type: "GET",
         success: function(response) {
             const res = JSON.parse(response);
-            const base_url = window.location.origin;
+            const base_url = window.location.origin; 
             // Object Destructuring
             const { status, token, loa_no, member_mbl, remaining_mbl, first_name, middle_name,
             last_name, suffix, date_of_birth, age, gender, philhealth_no, blood_type, contact_no,

@@ -1097,7 +1097,7 @@ class Billing_controller extends CI_Controller {
         $jsonData_benefits = $_POST['benefits_deductions'];
         $itemize_bill = json_decode($jsonData_item);
         $benefits_deductions = json_decode($jsonData_benefits);
-        //  var_dump($itemize_bill);
+        // var_dump("benefits",$benefits_deductions);
         // PDF File Upload
         //$config['upload_path'] = './uploads/pdf_bills/';
         $config['allowed_types'] = 'pdf';
@@ -1255,7 +1255,7 @@ class Billing_controller extends CI_Controller {
                                 'benefits_name'        => $items[0], 
                                 'benefits_amount'   => floatval(str_replace(array(',', '(', ')'), '', $items[1])),
                             ];
-            
+                            
                             $this->billing_model->benefits_deduction($item);
             
                         }

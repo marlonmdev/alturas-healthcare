@@ -49,12 +49,6 @@
                       ><span class="hide-menu ls-1">Request Emerg LOA</span>
                     </a>
                   </li>
-                  <li class="sidebar-item">
-                    <a href="<?php echo base_url(); ?>member/requested-emergency-loa/pending" class="sidebar-link"
-                      ><i class="mdi mdi-note-outline"></i
-                      ><span class="hide-menu ls-1">Requested Emerg LOA</span>
-                    </a>
-                  </li>
                 </ul>
               </li>
 

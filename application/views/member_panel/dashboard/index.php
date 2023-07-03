@@ -217,14 +217,47 @@
 
         <!-- mbl history modal -->
         <div class="modal fade show animate__animated animate__fadeOut" id="mbl_modal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-top modal-lg">
+        <div class="modal-dialog modal-dialog-top modal-xl">
                 <div class="modal-content">
                 <div class="modal-header">
                     <h3 class="modal-title" id="exampleModalLabel">MBL History</h3> 
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-
+                <div class="row pt-2">
+                <div class="col-lg-4 ps-5 pb-3 pt-1 pb-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text text-dark fw-bold">
+                                Filter : 
+                                </span>
+                            </div>
+                            <select class="form-select fw-bold" name="filter" id="filter">
+                                <option value="">All</option>
+                                <option value="LOA">LOA</option>
+                                <option value="NOA">NOA</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 pt-1 offset-">
+                            <div class="input-group">
+                                <div class="input-group-append">
+                                    <span class="input-group-text text-dark ls-1 ms-2">
+                                        <i class="mdi mdi-calendar-range"></i>
+                                    </span>
+                                </div>
+                                <input type="date" class="form-control" name="start_date" id="start-date" oninput="validateDateRange()" placeholder="Start Date">
+                                <div class="input-group-append">
+                                    <span class="input-group-text text-dark ls-1 ms-2">
+                                        <i class="mdi mdi-calendar-range"></i>
+                                    </span>
+                                </div>
+                                <input type="date" class="form-control" name="end-date" id="end-date" oninput="validateDateRange()" placeholder="End Date">
+                                  
+                              </div>
+                        </div>
+                    </div>
+                      
                 <div class="card shadow">
                     <div class="card-body">
                       <div class=" table-responsive">
@@ -237,6 +270,11 @@
                               <th class="fw-bold" style="color: white">STATUS</th>
                               <th class="fw-bold" style="color: white">REQUEST DATE</th>
                               <th class="fw-bold" style="color: white">HOSPITAL BILL</th>
+                              <th class="fw-bold" style="color: white">CURRENT MBL</th>
+                              <th class="fw-bold" style="color: white">COMPANY CHARGE</th>
+                              <th class="fw-bold" style="color: white">PERSONAL CHARGE</th>
+                              <th class="fw-bold" style="color: white">CASH ADVANCE</th>
+                              <th class="fw-bold" style="color: white">REMAINING MBL</th>
                               <th class="fw-bold" style="color: white">VIEW</th>
                             </tr>
                           </thead>
@@ -249,6 +287,11 @@
                             <td></td>
                             <th class="fw-bold">TOTAL :</th>
                             <td class="fw-bold" id="total"></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                             <td></td>
                           </tfoot>
                         </table>
@@ -277,6 +320,23 @@
       $(document).ready(()=>{
         $('#agreed').prop('disabled', true);
         read_tnc();
+
+        $("#start-date").flatpickr({
+        dateFormat: 'Y-m-d',
+        });
+        $("#end-date").flatpickr({
+            dateFormat: 'Y-m-d',
+        });
+
+        $('#end-date').change(function(){
+          mbl_datatable();
+        });
+        $('#start-date').change(function(){
+          mbl_datatable();
+        });
+        $('#filter').change(function(){
+          mbl_datatable();
+        });
           // add a change event listener to the agreement checkbox
           $('#agreement').on('change', function() {
               // enable/disable the agreed button based on the checked state of the agreement checkbox
@@ -290,51 +350,8 @@
           $('#view_mbl').on('click',function(){
 
             $('#mbl_modal').modal('show');
-
-            // Check if the DataTable already exists
-            if ($.fn.DataTable.isDataTable("#mbl_history_table")) {
-              // Destroy the DataTable
-              $("#mbl_history_table").DataTable().destroy();
-            }
-            
-            $("#mbl_history_table").DataTable({
-              lengthMenu: [5,10,25,100],
-              processing: true, //Feature control the processing indicator. 
-              serverSide: true, //Feature control DataTables' server-side processing mode.
-              order: [], //Initial no order.
-
-              // Load data for the table's content from an Ajax source
-              ajax: {
-                url: `${baseUrl}member/mbl-history/loa-noa/billed/fetch`,
-                type: "POST",
-                // passing the token as data so that requests will be allowed
-                data: { 'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
-                                'emp_id' :  emp_id
-                      }
-              },
-
-              //Set column definition initialisation properties.
-              columnDefs: [{
-                "targets": [4, 5], // numbering column
-                "orderable": false, //set not orderable
-              }, ],
-              responsive: true,
-              fixedHeader: true,
-
-            });
-
-            $('#mbl_history_table').on('draw.dt', function() {
-              var dataTable = $('#mbl_history_table').DataTable();
-
-              var balance = 0;
-
-              dataTable.data().toArray().forEach(function (row) {
-                var value = parseFloat(row[5].replace(/,/g, ''));
-                balance += value;
-              });
-                  $('#total').text(balance.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-            });
-
+            mbl_datatable();
+           
           });
 
           $('#viewLoaModal').on('hidden.bs.modal', function() {
@@ -358,7 +375,62 @@
             });
       });
       
-     
+      const mbl_datatable = () => {
+         // Check if the DataTable already exists
+         if ($.fn.DataTable.isDataTable("#mbl_history_table")) {
+              // Destroy the DataTable
+              $("#mbl_history_table").DataTable().destroy();
+            }
+            
+            $("#mbl_history_table").DataTable({
+              lengthMenu: [5,10,25,100],
+              processing: true, //Feature control the processing indicator. 
+              serverSide: true, //Feature control DataTables' server-side processing mode.
+              order: [], //Initial no order.
+
+              // Load data for the table's content from an Ajax source
+              ajax: {
+                url: `${baseUrl}member/mbl-history/loa-noa/billed/fetch`,
+                type: "POST",
+                // passing the token as data so that requests will be allowed
+                data: { 'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
+                                'emp_id' :  emp_id,
+                                'end_date' : $('#end-date').val(),
+                                'start_date' : $('#start-date').val(),
+                                'loa_noa' :  $('#filter').val(),
+                      }
+                // data: function(data) {
+                //     data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
+                //     data.endDate = $('#end-date').val();
+                //     data.startDate = $('#start-date').val();
+                //     data.loa_noa = "NOA";
+                //     data.emp_id = emp_id;
+                // },
+              },
+
+              //Set column definition initialisation properties.
+              // columnDefs: [{
+              //   "targets": [4, 5], // numbering column
+              //   "orderable": false, //set not orderable
+              // }, ],
+              responsive: true,
+              fixedHeader: true,
+
+            });
+
+            $('#mbl_history_table').on('draw.dt', function() {
+              var dataTable = $('#mbl_history_table').DataTable();
+
+              var balance = 0;
+
+              dataTable.data().toArray().forEach(function (row) {
+                var value = parseFloat(row[5].replace(/,/g, ''));
+                balance += value;
+              });
+                  $('#total').text(balance.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            });
+
+      }
       const update_read_tnc = () => {
             $.ajax({
                 url: `${baseUrl}update-member-tnc`,
@@ -713,6 +785,33 @@
 
         });
 
+    }
+
+    const validateDateRange = () => {
+        const startDateInput = document.querySelector('#start-date');
+        const endDateInput = document.querySelector('#end-date');
+        const startDate = new Date(startDateInput.value);
+        const endDate = new Date(endDateInput.value);
+        if(startDateInput !== '' && endDateInput !== ''){
+          $('#print').prop('disabled',false);
+        }
+        if (startDateInput.value === '' || endDateInput.value === '') {
+          $('#print').prop('disabled',true);
+            return; // Don't do anything if either input is empty
+        }
+
+        if (endDate < startDate) {
+            // alert('End date must be greater than or equal to the start date');
+            $('#print').prop('disabled',true);
+            swal({
+                title: 'Failed',
+                text: 'End date must be greater than or equal to the start date',
+                showConfirmButton: true,
+                type: 'error'
+            });
+            endDateInput.value = '';
+            return;
+        }          
     }
 
     </script>

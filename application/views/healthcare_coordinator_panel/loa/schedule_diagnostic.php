@@ -77,12 +77,6 @@
                 <span class="text-danger" id="status-error"></span>
               </div>
 
-              <div class ="col-lg-4 pb-3 referralFile" style="display: none;">
-                <label class="fw-bold">Upload File:</label>
-                <input type="file" class="form-control input-referral" name="referralFile[]" id="referralFile">
-                <span class="text-danger" id="referral-error"></span>
-              </div>
-
               <div class="col-lg-2 pb-3 performed-date">
                 <label class="fw-bold">Date Performed : </label>
                 <input class="form-control input-date fw-bold" name="date[]" id="date" type="text" onchange="dateValidity();" placeholder="Select Date" style="background-color:#ffff" required>
@@ -135,16 +129,20 @@
 </div>
 
 
+
+
 <script>
   const form = document.querySelector('#performedLoaInfo');
   $(document).ready(function(){
 
     $('#performedLoaInfo').submit(function(event){
       event.preventDefault();
+
       if(!form.checkValidity()){
         form.classList.add('was-validated');
         return;
       }
+
       let url = $(this).attr('action');
       let data = $(this).serialize();
       $.ajax({
@@ -153,10 +151,7 @@
         data: data,
         dataType: 'json',
         success: function(response) {
-          const {
-            token,status,message
-          } = response;
-
+          const {token,status,message} = response;
           switch(status){
             case 'failed':
               swal({
@@ -176,10 +171,9 @@
                 showConfirmButton: false,
                 type: 'success'
               });
-
               setTimeout(function () {
                 window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed';
-              }, 2600);            
+              }, 2600);
             break;
 
             case 'complete-success':
@@ -192,7 +186,7 @@
               });
               setTimeout(function () {
                 window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed';
-              }, 2600);  
+              }, 2600); 
             break;
           }
         }
@@ -201,7 +195,7 @@
 
     $(".input-date").flatpickr({
       enableTime: false,
-      dateFormat: 'Y-m-d', 
+      dateFormat: 'Y-m-d',
     });
 
     $( '.input-time' ).flatpickr({
@@ -253,9 +247,9 @@
     const date = document.querySelectorAll('.input-date');
     const input_reason = document.querySelectorAll('.input-reason');
 
-
     for(let i = 0; i < statusElements.length; i++){
       const status = statusElements[i].value;
+
       if(status == ''){
         date[i].removeAttribute('required'); 
         physician_fname[i].removeAttribute('required');
@@ -276,11 +270,12 @@
 
     for(let i = 0; i < statusElements.length; i++){
       const status = statusElements[i].value;
+
       if(status == 'Performed') {
         date[i].setAttribute('required', true); 
         physician_fname[i].setAttribute('required', true);
         physician_mname[i].setAttribute('required', true);
-        physician_lname[i].setAttribute('required', true);;
+        physician_lname[i].setAttribute('required', true);
         reason[i].removeAttribute('required');
         reason[i].value = '';
         flatpickr(date, {
@@ -301,9 +296,10 @@
     const performTimeElements = document.querySelectorAll('.performed-time');
     const input_date = document.querySelectorAll('.input-date');
     const input_time = document.querySelectorAll('.input-time');
-    // console.log('reason',statusElements.length);
+
     for(let i = 0; i < statusElements.length; i++){
       const status = statusElements[i].value;
+
       if(status == 'Cancelled') {
         reason[i].style.display = 'block';
         performDateElements[i].style.display = 'none';
@@ -336,38 +332,38 @@
     const physician_mname = document.querySelectorAll('.mname');
     const physician_lname = document.querySelectorAll('.lname');
     const label_physician = document.querySelectorAll('.label-physician');
-    // const referralFile = document.querySelectorAll('.referralFile');
+    const input_date = document.querySelectorAll('.input-date');
+    const input_time = document.querySelectorAll('.input-time');
+    const input_reason = document.querySelectorAll('.input-reason');
 
     for (let i = 0; i < statusElements.length; i++) {
       const status = statusElements[i].value;
       if (status === 'Referred') {
+        input_date[i].value = '';
+        input_time[i].value = '';
+        physician_fname[i].value = '';
+        physician_mname[i].value = '';
+        physician_lname[i].value = '';
+        input_reason[i].value = '';
         performDateElements[i].style.display = 'none';
         performTimeElements[i].style.display = 'none';
         physician_fname[i].style.display = 'none';
         physician_mname[i].style.display = 'none';
         physician_lname[i].style.display = 'none';
         label_physician[i].style.display = 'none';
-        // referralFile[i].style.display = 'block';
-
-        // Reset values and remove 'required' attribute
-        performDateElements[i].value = '';
-        performTimeElements[i].value = '';
-        physician_fname[i].value = '';
-        physician_mname[i].value = '';
-        physician_lname[i].value = '';
-        performDateElements[i].removeAttribute('required');
-        performTimeElements[i].removeAttribute('required');
+        input_date[i].removeAttribute('required'); 
+        input_time[i].removeAttribute('required'); 
         physician_fname[i].removeAttribute('required');
         physician_mname[i].removeAttribute('required');
         physician_lname[i].removeAttribute('required');
-      } else {
+        input_reason[i].removeAttribute('required');
+      }else{
         performDateElements[i].style.display = 'block';
         performTimeElements[i].style.display = 'block';
         physician_fname[i].style.display = 'block';
         physician_mname[i].style.display = 'block';
         physician_lname[i].style.display = 'block';
         label_physician[i].style.display = 'block';
-        // referralFile[i].style.display = 'none';
       }
     }
   }
@@ -375,5 +371,4 @@
   const goBack = () => {
     window.history.back();
   }
-
 </script>

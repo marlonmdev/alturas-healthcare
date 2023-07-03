@@ -147,7 +147,7 @@
                 type: 'success'
               });
               setTimeout(function () {
-                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed';
+                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved';
               }, 2600);             
             break;
 
@@ -160,7 +160,7 @@
                 type: 'success'
               });
               setTimeout(function () {
-                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed';
+                window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved';
               }, 2600); 
             break;
           }

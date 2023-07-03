@@ -62,32 +62,33 @@
       </div><hr>
 
       <div class="row">
-        <div class="col-3  pt-2"><h4 class="text-left text-danger">SERVICE FEE</h4></div>     
+        <div class="col-3  pt-2"><h4 class="text-left text-danger">CHARGES</h4></div>     
       </div>
 
       <div class="row pb-2">
-        <div class="col-lg-2 pt-3">
-          <label class="fw-bold">Service Fee : </label>
+        <div class="col-lg-4 pt-3">
+          <label class="fw-bold">Consultation Fee : </label>
           <input class="form-control fw-bold text-info" name="service-fee" id="service-fee" type="number" oninput="calculateDiagnosticTestBilling()" required>
+        </div>
+
+        <div class="col-lg-2 pt-5">
+          <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addfee()">
+            <i class="mdi mdi-plus-circle"></i> Add Fee
+          </button>
         </div>
       </div>
 
-      <div class="col-4 pb-4 pt-4">
-        <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addfee()">
-          <i class="mdi mdi-plus-circle"></i> Add Charge Fee
-        </button>
-      </div>
       <div id="dynamic-fee"></div>
       <input type="hidden" name="fee-count" id="fee-count"><hr>
 
       <input type="hidden" name="deduction-count" id="deduction-count">
       <div class="row">
-        <div class="col-3  pt-2"><h4 class="text-left text-danger">BILLING DEDUCTIONS</h4></div>     
+        <div class="col-3  pt-2"><h4 class="text-left text-danger">BENEFITS</h4></div>     
       </div>
 
       
       <div class="row pt-3">
-        <div class="col-md-3">
+        <div class="col-md-4">
           <label class="form-label ls-1">PhilHealth</label> <span class="text-muted">(optional)</span>
           <div class="input-group mb-3">
             <span class="input-group-text bg-success text-white">&#8369;</span>
@@ -97,14 +98,14 @@
         </div>
 
         <div class="col-4 pt-4">
-          <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addNewDeduction()"><i class="mdi mdi-plus-circle"></i> Add Deduction</button>
+          <button type="button" class="btn btn-info" id="btn-other-deduction" onclick="addNewDeduction()"><i class="mdi mdi-plus-circle"></i> Add Benefits</button>
         </div>    
       </div>
       <div id="dynamic-deduction"></div><hr>
 
       <div class="row">
         <div class="col-4">
-          <label>Total Bill</label>
+          <label>Total Charges</label>
           <input class="form-control text-danger fw-bold" name="total-bill" id="total-bill" value="&#8369;"  readonly>
         </div>
 
@@ -281,6 +282,29 @@
     $('#dynamic-fee').append(html_code);
   }
 
+  // const calculateDiagnosticTestBilling = () => {
+  //   let total_deductions = 0;
+  //   let net_bill_amount = 0;
+  //   const deduct_philhealth = document.querySelector('#deduct-philhealth');
+  //   const total_bill = document.querySelector('#total-bill');
+  //   const net_bill = document.querySelector('#net-bill');
+  //   const input_total_deduction = document.querySelector('#total-deduction');
+
+  //   total_services = parseFloat(totalServices()) || 0; // Ensure the value is a number
+  //   let total_charge = parseFloat(calculateCharge()) || 0; 
+  //   final_services = total_charge + total_services;
+  //   total_bill.value = parseFloat(final_services).toFixed(2); // No need for parseFloat() since final_services is already a number
+
+  //   philhealth = deduct_philhealth.value > 0 ? parseFloat(deduct_philhealth.value) : 0; // Ensure the value is a number
+  //   other_deduction = calculateOtherDeductions();
+
+  //   total_deductions = parseFloat(philhealth) + parseFloat(other_deduction);
+  //   net_bill_amount = parseFloat(final_services) - parseFloat(total_deductions);
+
+  //   input_total_deduction.value = total_deductions.toFixed(2); // No need for parseFloat() since total_deductions is already a number
+  //   net_bill.value = net_bill_amount.toFixed(2); // No need for parseFloat() since net_bill_amount is already a number
+  // }
+
   const calculateDiagnosticTestBilling = () => {
     let total_deductions = 0;
     let net_bill_amount = 0;
@@ -292,18 +316,21 @@
     total_services = parseFloat(totalServices()) || 0; // Ensure the value is a number
     let total_charge = parseFloat(calculateCharge()) || 0; 
     final_services = total_charge + total_services;
-    total_bill.value = parseFloat(final_services).toFixed(2); // No need for parseFloat() since final_services is already a number
+    total_bill.value = numberWithCommas(final_services.toFixed(2)); // Format the number with commas
 
-    philhealth = deduct_philhealth.value > 0 ? parseFloat(deduct_philhealth.value) : 0; // Ensure the value is a number
+    philhealth = deduct_philhealth.value.replace(/,/g, '') > 0 ? parseFloat(deduct_philhealth.value.replace(/,/g, '')) : 0; // Ensure the value is a number and remove commas
     other_deduction = calculateOtherDeductions();
 
     total_deductions = parseFloat(philhealth) + parseFloat(other_deduction);
     net_bill_amount = parseFloat(final_services) - parseFloat(total_deductions);
 
-    input_total_deduction.value = total_deductions.toFixed(2); // No need for parseFloat() since total_deductions is already a number
-    net_bill.value = net_bill_amount.toFixed(2); // No need for parseFloat() since net_bill_amount is already a number
+    input_total_deduction.value = numberWithCommas(total_deductions.toFixed(2)); // Format the number with commas
+    net_bill.value = numberWithCommas(net_bill_amount.toFixed(2)); // Format the number with commas
   }
 
+  function numberWithCommas(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
 
   const removeDeduction = (remove_btn) => {
     count--;
@@ -344,4 +371,5 @@
     }
     return total_charge;
   };
+
 </script>

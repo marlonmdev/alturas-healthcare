@@ -4,12 +4,12 @@
       <div class="col-12 d-flex no-block align-items-center">
         <!-- <h4 class="page-title ls-2">CHECKING OF BILLING</h4> -->
         <div class="ms-auto text-end">
-          <nav aria-label="breadcrumb">
+          <!-- <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
               <li class="breadcrumb-item active" aria-current="page">Checking</li>
             </ol>
-          </nav>
+          </nav> -->
         </div>
       </div>
     </div>
@@ -78,12 +78,8 @@
                         <th style="color: white">NAME OF PATIENT</th>
                         <th style="color: white">TYPE OF REQUEST</th>
                         <th style="color: white">REQUEST DATE</th>
-                        <th style="color: white">BILLED DATE</th>
-                        <th style="color: white">COORDINATOR BILL</th>
-                        <th style="color: white">VIEW BILL</th>
                         <th style="color: white">HOSPITAL BILL</th>
                         <th style="color: white">VIEW BILL</th>
-                        <th style="color: white">VARIANCE</th> 
                         <th style="color: white">STATUS</th> 
                         <th style="color: white">ACTION</th> 
                       </tr>
@@ -94,19 +90,8 @@
                 </div>
 
                 <div class="row pt-4">
-                  <div class="col-lg-2 offset-6">
-                    <label>Total Coordinator Bill : </label>
-                    <input name="total-coordinator-bill" id="total-coordinator-bill" class="form-control text-center fw-bold" value="0" readonly>
-                  </div>
-
-                  <div class="col-lg-2">
-                    <label>Total Hospital Bill : </label>
-                    <input name="total-hospital-bill" id="total-hospital-bill" class="form-control text-center fw-bold" value="0"  oninput="checkTotalHospitalBill()" readonly>
-                  </div>
-
-                  <div class="col-lg-2">
-                    <label>Total Variance : </label>
-                    <input name="total-variance" id="total-variance" class="form-control text-center fw-bold" value="0" readonly>
+                  <div class="col-lg-2 offset-10">
+                    <input name="total-hospital-bill" id="total-hospital-bill" class="form-control text-align:left fw-bold" value="0"  oninput="checkTotalHospitalBill()" readonly>
                   </div>
                 </div>
               </div>
@@ -284,43 +269,6 @@
       fixedHeader: true,
     });
 
-    billedTable.on('draw.dt', function() {
-      let columnIdx = 9;
-      let intValue = 0;
-      let count =0;
-      let rows = billedTable.rows().nodes();
-      if ($('#billedLoaTable').DataTable().data().length > 0) {
-        let disableButton = false;
-        rows.each(function(index, row) {
-          let rowData = billedTable.row(row).data();
-          let columnValue = rowData[columnIdx];
-          let pattern = /-?[\d,]+(\.\d+)?/g;
-          let matches = columnValue.match(pattern);
-          if (matches && matches.length > 0) {
-            let numberString = matches[0].replace(',', '');
-            intValue = parseInt(numberString);
-            console.log(intValue);
-            if (intValue > 100) {
-              disableButton = true;
-              return false;
-            }
-          }
-        });
-
-        if (disableButton) {
-          $('#proceed-btn').prop('disabled', true);
-          console.log("disable button");
-        }else{
-          $('#proceed-btn').prop('disabled', false);
-          console.log("enable button");
-        }
-      }else{
-        console.log("The table is empty");
-        $('#proceed-btn').prop('disabled', true);
-      }
-    });
-
-
     $('#billed-hospital-filter').change(function(){
       billedTable.draw();
       getTotalBill();
@@ -446,7 +394,7 @@
               
               $("#backDateModal").modal("hide");
               $("#billedLoaTable").DataTable().ajax.reload();
-              break;
+            break;
           }
         },
       });
@@ -580,7 +528,6 @@
                               '<td class="text-center ls-1">'+charge_amount.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
                             '</tr>';
           });
-
         }else{
           $.each(service, function(index, item){
             let op_price = parseFloat(item.op_price);
@@ -625,123 +572,76 @@
                                 '<td class="text-center ls-1">'+item.deduction_name+'</td>' +
                                 '<td class="text-center ls-1">'+deduction_amount.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
                               '</tr>';
-          });
-
-          let total_deductions = parseFloat(bill.total_deductions);
-          let total_net_bill = parseFloat(bill.total_net_bill);
-          deduction_table += ' <tr>'+
-                                  '<td></td>' +
-                                  '<td class="text-center">' +
-                                    '<span class="text-dark fs-6 fw-bold ls-1 me-2">Total: '+total_deductions.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</span>' +
-                                  '</td>' +
-                              '</tr>'+
-                              '<tr>' +
-                                '<td></td>' +
-                                '<td>' +
-                                  '<span class="text-danger fs-6 fw-bold ls-1 me-2">Total Net Bill: '+total_net_bill.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</span>' +
-                                '</td>' +
-                              '</tr>';
-
-          $('#deduction-table').html(deduction_table);
-          $('#service-table').html(service_table);
-          $('#bill-fullname').html(fullname);
-          $('#bill-hp-name').html(hp_name);
-          $('#bill-loa-no').html(bill.loa_no);
-           
-        }
-      });
-    }
-
-    const getTotalBill = () => {
-      const coordinator_bill = document.querySelector('#total-coordinator-bill');
-      const hospital_bill = document.querySelector('#total-hospital-bill');
-      const variance = document.querySelector('#total-variance');
-      const hp_filter = document.querySelector('#billed-hospital-filter').value;
-      const end_date = document.querySelector('#end-date').value;
-      const start_date = document.querySelector('#start-date').value;
-      const button = document.querySelector('#proceed-btn');
-
-      $.ajax({
-        type: 'post',
-        url: `${baseUrl}healthcare-coordinator/loa/total-bill/fetch`,
-        dataType: "json",
-        data: {
-          'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
-          'hp_id' : hp_filter,
-          'startDate' : start_date,
-          'endDate' : end_date,
-        },
-        success: function(response){
-          hospital_bill.value = response.total_hospital_bill;
-          coordinator_bill.value = response.total_coordinator_bill;
-          variance.value = response.total_variance;
-        },
-      });
-    }
-
-    const enableDate = () => {
-      const hp_filter = document.querySelector('#billed-hospital-filter');
-      const start_date = document.querySelector('#start-date');
-      const end_date = document.querySelector('#end-date');
-
-      if(hp_filter != ''){
-        start_date.removeAttribute('disabled');
-        start_date.style.backgroundColor = '#ffff';
-        end_date.removeAttribute('disabled');
-        end_date.style.backgroundColor = '#ffff';
-      }else{
-        start_date.setAttribute('disabled', true);
-        start_date.value = '';
-        end_date.setAttribute('disabled', true);
-        end_date.value = '';
-      }
-    }
-
-    const validateDateRange = () => {
-      const startDateInput = document.querySelector('#start-date');
-      const endDateInput = document.querySelector('#end-date');
-      const startDate = new Date(startDateInput.value);
-      const endDate = new Date(endDateInput.value);
-
-      if (startDateInput.value === '' || endDateInput.value === '') {
-        return;
-      }
-      if (endDate < startDate) {
-        // alert('End date must be greater than or equal to the start date');
-        swal({
-          title: 'Failed',
-          text: 'End date must be greater than or equal to the start date',
-          showConfirmButton: true,
-          type: 'error'
         });
-        endDateInput.value = '';
-        return;
-      }          
-    }
-    const backDate = (loa_id, loa_no) => {
-      $('#managersKeyModal').modal('show');
-      $('#expired-loa-id').val(loa_id);
-      $('#expired-loa-no').val(loa_no);
-      $('#mgr-username').val('');
-      $('#mgr-username').removeClass('is-invalid');
-      $('#mgr-username-error').html('');
-      $('#mgr-password').val('');
-      $('#mgr-password').removeClass('is-invalid');
-      $('#mgr-password-error').html('');
-    }
+
+        let total_deductions = parseFloat(bill.total_deductions);
+        let total_net_bill = parseFloat(bill.total_net_bill);
+        deduction_table += ' <tr>'+
+                                '<td></td>' +
+                                '<td class="text-center">' +
+                                  '<span class="text-dark fs-6 fw-bold ls-1 me-2">Total: '+total_deductions.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</span>' +
+                                '</td>' +
+                            '</tr>'+
+                            '<tr>' +
+                              '<td></td>' +
+                              '<td>' +
+                                '<span class="text-danger fs-6 fw-bold ls-1 me-2">Total Net Bill: '+total_net_bill.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</span>' +
+                              '</td>' +
+                            '</tr>';
+
+        $('#deduction-table').html(deduction_table);
+        $('#service-table').html(service_table);
+        $('#bill-fullname').html(fullname);
+        $('#bill-hp-name').html(hp_name);
+        $('#bill-loa-no').html(bill.loa_no);
+           
+      }
+    });
+  }
+
+  const getTotalBill = () => {
+    const coordinator_bill = document.querySelector('#total-coordinator-bill');
+    const hospital_bill = document.querySelector('#total-hospital-bill');
+    const variance = document.querySelector('#total-variance');
+    const hp_filter = document.querySelector('#billed-hospital-filter').value;
+    const end_date = document.querySelector('#end-date').value;
+    const start_date = document.querySelector('#start-date').value;
+    const button = document.querySelector('#proceed-btn');
+
+    $.ajax({
+      type: 'post',
+      url: `${baseUrl}healthcare-coordinator/loa/total-bill/fetch`,
+      dataType: "json",
+      data: {
+        'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
+        'hp_id' : hp_filter,
+        'startDate' : start_date,
+        'endDate' : end_date,
+      },
+      success: function(response){
+        hospital_bill.value = response.total_hospital_bill;
+        coordinator_bill.value = response.total_coordinator_bill;
+        variance.value = response.total_variance;
+      },
+    });
+  }
+
+  const backDate = (loa_id, loa_no) => {
+    $('#managersKeyModal').modal('show');
+    $('#expired-loa-id').val(loa_id);
+    $('#expired-loa-no').val(loa_no);
+    $('#mgr-username').val('');
+    $('#mgr-username').removeClass('is-invalid');
+    $('#mgr-username-error').html('');
+    $('#mgr-password').val('');
+    $('#mgr-password').removeClass('is-invalid');
+    $('#mgr-password-error').html('');
+  }
 
   const showBackDateForm = (loa_id, loa_no) => {
     $("#backDateModal").modal("show");
     $('#bd-loa-id').val(loa_id);
     $('#bd-loa-no').html(loa_no);
-  }
-
-  function checkHospitalSelection() {
-    let selectedHospital = document.getElementById('billed-hospital-filter').value;
-    if (selectedHospital === '') {
-      console.log('Please select a hospital');
-      return;
-    }
   }
 
   function GuaranteeLetter(billing_id) {
@@ -781,4 +681,68 @@
       preview.style.display = 'none';
     }
   }
+
+  function enableDate() {
+    var hospitalSelect = document.getElementById("billed-hospital-filter");
+    var startDateInput = document.getElementById("start-date");
+    var endDateInput = document.getElementById("end-date");
+    var proceedButton = document.getElementById("proceed-btn");
+
+    // Enable/disable date inputs based on hospital selection
+    if (hospitalSelect.value !== "") {
+      startDateInput.disabled = false;
+      endDateInput.disabled = false;
+    } else {
+      startDateInput.disabled = true;
+      endDateInput.disabled = true;
+      startDateInput.value = "";
+      endDateInput.value = "";
+    }
+
+    // Disable "Proceed" button if any required field is empty
+    proceedButton.disabled = !isValidForm();
+  }
+
+  function validateDateRange() {
+    var startDateInput = document.getElementById("start-date");
+    var endDateInput = document.getElementById("end-date");
+    var proceedButton = document.getElementById("proceed-btn");
+
+    // Validate date range and enable/disable "Proceed" button accordingly
+    if (startDateInput.value !== "" && endDateInput.value !== "") {
+      // Perform date range validation here if needed
+
+      // Enable "Proceed" button if the date range is valid
+      proceedButton.disabled = !isValidForm();
+    }
+  }
+
+  function checkHospitalSelection() {
+    var proceedButton = document.getElementById("proceed-btn");
+    proceedButton.disabled = !isValidForm();
+  }
+
+  function checkTotalHospitalBill() {
+    var totalHospitalBillInput = document.getElementById("total-hospital-bill");
+    var proceedButton = document.getElementById("proceed-btn");
+
+    // Enable/disable "Proceed" button based on total hospital bill value
+    if (totalHospitalBillInput.value === "0") {
+      proceedButton.disabled = !isValidForm();
+    }
+  }
+
+  function isValidForm() {
+    var hospitalSelect = document.getElementById("billed-hospital-filter");
+    var startDateInput = document.getElementById("start-date");
+    var endDateInput = document.getElementById("end-date");
+
+    // Check if all required fields are filled
+    return (
+      hospitalSelect.value !== "" &&
+      startDateInput.value !== "" &&
+      endDateInput.value !== ""
+    );
+  }
+
 </script>

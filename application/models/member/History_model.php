@@ -43,14 +43,24 @@ class History_model extends CI_Model {
 		}
 		$i++;
 		}
+
+		if ($this->input->post('start_date')) {
+			$startDate = date('Y-m-d', strtotime($this->input->post('start_date')));
+			$this->db->where('tbl_1.request_date >=', $startDate);
+		}
+
+		if ($this->input->post('end_date')){
+			$endDate = date('Y-m-d', strtotime($this->input->post('end_date')));
+			$this->db->where('tbl_1.request_date <=', $endDate);
+		}
   
 		// here order processing
-		if (isset($_POST['order'])) {
-		$this->db->order_by($this->column_order_history[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
-		} else if (isset($this->order_history)) {
-		$order = $this->order_history;
-		$this->db->order_by(key($order), $order[key($order)]);
-		}
+		// if (isset($_POST['order'])) {
+		// $this->db->order_by($this->column_order_history[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+		// } else if (isset($this->order_history)) {
+		// $order = $this->order_history;
+		// $this->db->order_by(key($order), $order[key($order)]);
+		// }
 	   
 	}
   

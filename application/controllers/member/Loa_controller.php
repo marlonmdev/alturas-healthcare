@@ -93,6 +93,22 @@ class Loa_controller extends CI_Controller {
 					exit();
 				}
 				break;
+			case 'Emergency':
+				$this->form_validation->set_rules('healthcare-provider', 'HealthCare Provider', 'required');
+				$this->form_validation->set_rules('admission-date', 'Date of Visit', 'required');
+				$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[1000]');
+				if ($this->form_validation->run() == FALSE) {
+					$response = [
+						'status' => 'error',
+						'healthcare_provider_error' => form_error('healthcare-provider'),
+						'chief_complaint_error' => form_error('chief-complaint'),
+						'admission_date_error' => form_error('admission-date'),
+					];
+
+					echo json_encode($response);
+					exit();
+				}
+				break;
 			case 'Diagnostic Test Update':
 				$this->form_validation->set_rules('healthcare-provider', 'HealthCare Provider', 'required');
 				$this->form_validation->set_rules('loa-request-type', 'LOA Request Type', 'required');
@@ -175,7 +191,7 @@ class Loa_controller extends CI_Controller {
 		$physicians_tags = json_decode($this->input->post('attending-physician'), TRUE);
 		$physician_arr = [];
 		$hp_id = $this->input->post('healthcare-provider');
-		$request_type = $this->input->post('loa-request-type');
+		$request_type = $this->input->post('loa-request-type'); 
 		switch (true) {
 			case ($request_type == ''):
 				$this->loa_form_validation('Empty');
@@ -255,6 +271,22 @@ class Loa_controller extends CI_Controller {
 					}
 				}
 				break;
+				case ($request_type == 'Emergency'):
+					$this->loa_form_validation('Emergency');
+					// check if the selected healthcare provider exist from database
+					$hp_exist = $this->loa_model->db_check_healthcare_provider_exist($hp_id);
+					if (!$hp_exist) {
+						$response = [
+							'status' => 'save-error',
+							'message' => 'Invalid Healthcare Provider'
+						];
+						echo json_encode($response);
+						exit();
+					} else {
+							// Call function insert_loa
+							$this->insert_loa($input_post, "", "", "");
+					}
+				break;
 			default:
 				$response = [
 					'status' => 'save-error',
@@ -285,12 +317,13 @@ class Loa_controller extends CI_Controller {
 			'suffix' =>  $member['suffix'],
 			'hcare_provider' => $input_post['healthcare-provider'],
 			'loa_request_type' => $input_post['loa-request-type'],
-			'med_services' => implode(';', $med_services),
+			'med_services' => ($med_services!=="")?implode(';', $med_services):"",
 			'health_card_no' => $member['health_card_no'],
 			'requesting_company' => $member['company'],
 			'request_date' => date("Y-m-d"),
-			'chief_complaint' => strip_tags($input_post['chief-complaint']),
-			'requesting_physician' => ucwords($input_post['requesting-physician']),
+			'emerg_date' => (isset( $input_post['admission-date']))? $input_post['admission-date']:null,
+			'chief_complaint' => (isset($input_post['chief-complaint']))?strip_tags($input_post['chief-complaint']):"",
+			'requesting_physician' =>(isset($input_post['requesting-physician']))? ucwords($input_post['requesting-physician']):"",
 			'attending_physician' => $attending_physician,
 			'rx_file' => $rx_file,
 			'status' => 'Pending',

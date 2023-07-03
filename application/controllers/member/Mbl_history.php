@@ -20,11 +20,12 @@ class Mbl_history extends CI_Controller {
 		$emp_id = $this->input->post('emp_id');
 		$hp_id = 1;
 		$list = $this->loa_model->get_loa_datatables($emp_id, $hp_id);
-
+		// var_dump('loa',$list['tbl1_loa_id']);
 		$data = array();
 		$custom_actions = '';
 		foreach ($list as $loa){
 			$row = array(); 
+			// var_dump('loa',$loa['tbl1_loa_id']);
 			$loa_id = $this->myhash->hasher($loa['tbl1_loa_id'], 'encrypt');
 			
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaHistoryInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
@@ -101,6 +102,17 @@ class Mbl_history extends CI_Controller {
 		$data = array();
 		foreach ($list as $bill){
 			$row = array(); 
+			if($this->input->post('loa_noa') === "NOA"){
+				if($bill['loa_id']){
+				  continue;
+				}
+			  }
+
+			if($this->input->post('loa_noa') === "LOA"){
+				if($bill['noa_id']){
+				  continue;
+				}
+			  }
 
 			$loa_id = $this->myhash->hasher($bill['loa_id'], 'encrypt');
 			$noa_id = $this->myhash->hasher($bill['noa_id'], 'encrypt');
@@ -118,10 +130,15 @@ class Mbl_history extends CI_Controller {
 			$row[] = $bill['tbl1_status'];
 			$row[] = $bill['tbl1_request_date'];
             $row[] = number_format(floatval($bill['net_bill']),2);
+            $row[] = number_format(floatval($bill['before_remaining_bal']),2);
+            $row[] = number_format(floatval($bill['company_charge']),2);
+            $row[] = number_format(floatval($bill['personal_charge']),2);
+            $row[] = number_format(floatval($bill['cash_advance']),2);
+            $row[] = number_format(floatval($bill['after_remaining_bal']),2);
 			$row[] = $custom_actions;	
 			$data[] = $row;
 		}
-
+		
 		$output = array(
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->history_model->count_all_history($emp_id),
@@ -142,6 +159,8 @@ class Mbl_history extends CI_Controller {
 		}else{
 			$row = $this->loa_model->db_get_loa_info_patient($loa_id,false);
 			$isperformed = false;
+			var_dump("id",$loa_id);
+			var_dump("status",$row['tbl_1_status']);
 		}
 		
 		//  var_dump("row",$row);
@@ -158,7 +177,7 @@ class Mbl_history extends CI_Controller {
 		} else {
 			$doctor_name = "Does not exist from Database";
 		}
-
+		// var_dump("status",$row['tbl_1_status']);
 		$cost_types = $this->loa_model->db_get_cost_types();
 		// Calculate Age
 		$birthDate = date("d-m-Y", strtotime($row['date_of_birth']));

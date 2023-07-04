@@ -261,6 +261,7 @@ class Pages_controller extends CI_Controller {
 
 	function view_pending_noa_list() {
 		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hcproviders'] = $this->setup_model->db_get_healthcare_providers();
 		$this->load->view('templates/header', $data);
 		$this->load->view('super_admin_panel/noa/pending_noa_requests');
 		$this->load->view('templates/footer');
@@ -268,6 +269,7 @@ class Pages_controller extends CI_Controller {
 
 	function view_approved_noa_list() {
 		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hcproviders'] = $this->setup_model->db_get_healthcare_providers();
 		$this->load->view('templates/header', $data);
 		$this->load->view('super_admin_panel/noa/approved_noa_requests');
 		$this->load->view('templates/footer');
@@ -275,15 +277,25 @@ class Pages_controller extends CI_Controller {
 
 	function view_disapproved_noa_list() {
 		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hcproviders'] = $this->setup_model->db_get_healthcare_providers();
 		$this->load->view('templates/header', $data);
 		$this->load->view('super_admin_panel/noa/disapproved_noa_requests');
 		$this->load->view('templates/footer');
 	}
 
-	function view_completed_noa_list() {
+	function view_billed_noa_list() {
 		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hcproviders'] = $this->setup_model->db_get_healthcare_providers();
 		$this->load->view('templates/header', $data);
-		$this->load->view('super_admin_panel/noa/completed_noa_requests');
+		$this->load->view('super_admin_panel/noa/billed_noa_requests');
+		$this->load->view('templates/footer');
+	}
+
+	function view_paid_noa_list() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hcproviders'] = $this->setup_model->db_get_healthcare_providers();
+		$this->load->view('templates/header', $data);
+		$this->load->view('super_admin_panel/noa/paid_noa_requests');
 		$this->load->view('templates/footer');
 	}
 }

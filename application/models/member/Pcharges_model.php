@@ -29,6 +29,11 @@ class Pcharges_model extends CI_Model {
 		$this->db->join('billing as tbl_2','tbl_1.billing_id = tbl_2.billing_id');
 		$this->db->where('tbl_1.emp_id',$emp_id);
 		$this->db->where('tbl_1.status',$status); 
+		if ($status == 'For Advance') {
+			$this->db->group_start();
+			$this->db->or_where('tbl_1.ebm_status', ''); 
+			$this->db->group_end();
+		}
 	}
 
 	function get_requested_advance($status, $emp_id) {
@@ -46,6 +51,34 @@ class Pcharges_model extends CI_Model {
 	}
 
 	function count_all_requested($status,$emp_id) {
+		$this->db->from('cash_advance');
+		$this->db->where('emp_id', $emp_id);
+		$this->db->where('status', $status);
+		return $this->db->count_all_results();
+	}
+
+	function _get_appr_requested_datatables_query($status,$emp_id) {
+		$this->db->from('cash_advance as tbl_1');
+		$this->db->join('billing as tbl_2','tbl_1.billing_id = tbl_2.billing_id');
+		$this->db->where('tbl_1.emp_id',$emp_id);
+		$this->db->where('tbl_1.ebm_status',$status); 
+	}
+
+	function get_appr_requested_advance($status, $emp_id) {
+		$this->_get_appr_requested_datatables_query($status,$emp_id);
+		if ($_POST['length'] != -1)
+			$this->db->limit($_POST['length'], $_POST['start']);
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
+	function count_appr_requested_filtered($status,$emp_id) {
+		$this->_get_appr_requested_datatables_query($status,$emp_id);
+		$query = $this->db->get();
+		return $query->num_rows();
+	}
+
+	function count_appr_all_requested($status,$emp_id) {
 		$this->db->from('cash_advance');
 		$this->db->where('emp_id', $emp_id);
 		$this->db->where('status', $status);

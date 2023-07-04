@@ -93,7 +93,7 @@ class Pcharges_controller extends CI_Controller {
 		$token = $this->security->get_csrf_hash();
 		$status = 'Approved';
 		$emp_id = $this->session->userdata('emp_id');
-		$list = $this->pcharges_model->get_requested_advance($status, $emp_id);
+		$list = $this->pcharges_model->get_appr_requested_advance($status, $emp_id);
 		$data = [];
 		foreach ($list as $pcharge) {
 			$row = [];
@@ -130,7 +130,7 @@ class Pcharges_controller extends CI_Controller {
 		$token = $this->security->get_csrf_hash();
 		$status = 'Disapproved';
 		$emp_id = $this->session->userdata('emp_id');
-		$list = $this->pcharges_model->get_requested_advance($status, $emp_id);
+		$list = $this->pcharges_model->get_appr_requested_advance($status, $emp_id);
 		$data = [];
 		foreach ($list as $pcharge) {
 			$row = [];

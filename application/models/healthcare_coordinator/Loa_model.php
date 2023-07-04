@@ -1344,15 +1344,25 @@ function db_get_cost_types_by_hp_ID($hp_id) {
     return $this->db->get()->row_array();
   }
   
-  function set_bill_for_matched($hp_id, $start_date, $end_date, $bill_no) {
-    $this->db->set('done_matching', '1')
-            ->set('status', 'Payable')
+  // function set_bill_for_matched($hp_id, $start_date, $end_date, $bill_no) {
+  //   $this->db->set('done_matching', '1')
+  //           ->set('status', 'Payable')
+  //           ->set('bill_no', $bill_no)
+  //           ->where('status', 'Billed')
+  //           ->where('hp_id', $hp_id)
+  //           ->where('billed_on >=', $start_date)
+  //           ->where('billed_on <=', $end_date)
+  //           ->where('loa_id !=', '');
+  //   return $this->db->update('billing');
+  // }
+
+   function set_bill_for_matched($hp_id, $start_date, $end_date, $bill_no) {
+    $this->db->set('status', 'Payable')
             ->set('bill_no', $bill_no)
             ->where('status', 'Billed')
             ->where('hp_id', $hp_id)
-            ->where('billed_on >=', $start_date)
-            ->where('billed_on <=', $end_date)
-            ->where('loa_id !=', '');
+            ->where('request_date >=', $start_date)
+            ->where('request_date <=', $end_date);
     return $this->db->update('billing');
   }
 
@@ -1656,6 +1666,21 @@ function monthly_bill_datatable($bill_no) {
   $query = $this->db->get();
   return $query->result_array();
 }
+
+
+function get_monthly_bill($bill_no) {
+  $this->db->select('tbl_1.* ,tbl_2.*, tbl_4.*, tbl_2.loa_id as tbl2_loa_id, tbl_2.loa_no as tbl2_loa_no, tbl_4.first_name as tbl4_fname, tbl_4.middle_name as tbl4_mname, tbl_4.last_name as tbl4_lname, tbl_4.suffix astbl4_suffix');
+    $this->db->from($this->table_1_monthly . ' as tbl_1');
+    $this->db->join($this->table_2_monthly . ' as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id');
+    $this->db->join($this->table_3_monthly . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id', 'left');
+    $this->db->join($this->table_4_monthly . ' as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id');
+    $this->db->where('tbl_2.loa_no', $bill_no);
+    $query = $this->db->get();
+    $result = $query->row_array(); // Retrieve a single row as an associative array
+    return $result;
+    // echo $this->db->last_query();
+}
+
 // end datatable
 
 function get_matched_total_hp_bill($bill_no) {
@@ -1668,6 +1693,8 @@ function get_matched_total_hp_bill($bill_no) {
     return $sum;
 }
 
+
+
 function get_matched_total_hr_bill($bill_no) {
   $this->db->select_sum('total_net_bill')
             ->from('billing as tbl_1')
@@ -1678,6 +1705,17 @@ function get_matched_total_hr_bill($bill_no) {
     $sum = $result[0]['total_net_bill'];
     return $sum;
 }
+
+ // function get_all_approved_loa($bill_no){
+ //    $this->db->select('*')
+ //            ->from('loa_requests as tbl_1')
+ //            ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
+ //            ->where('tbl_1.loa_id', $loa_id)
+ //            // ->where('tbl_1.status', 'Approved')
+ //            ->where('tbl_1.performed_fees', 'Approved');
+ //            // ->where('tbl_1.completed', 0)
+ //    return $this->db->get()->row_array();
+ //  }
 
 //billing for charging datatable
 var $charging_table_1 = 'billing';

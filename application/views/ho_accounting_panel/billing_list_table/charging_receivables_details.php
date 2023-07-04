@@ -55,7 +55,7 @@
                 <div class="ps-2 pe-2" id="paidFormSubmit">
                     <small class="text-danger">Please upload the supporting document ( Accept Images and PDF )</small>
                     <div class="row border ps-2 pe-2 pt-4 pb-2">
-                        <div class="row col-lg-2 pb-3 pt-2">
+                        <div class="row col-lg-2 pb-3 pt-2 pe-2">
                             <label class=" text-dark fw-bold ms-2 fs-5"><span class="text-danger">*</span> Supporting Document : </label>
                         </div>
                         <div class="col-lg-5">

@@ -14,6 +14,10 @@ class Noa_model extends CI_Model {
     $this->db->from($this->table_1 . ' as tbl_1');
     $this->db->join($this->table_2 . ' as tbl_2', 'tbl_1.hospital_id = tbl_2.hp_id');
     $this->db->where('tbl_1.status', $status);
+    if($this->input->post('filter')){
+      $this->db->like('tbl_1.hospital_id', $this->input->post('filter'));
+    }
+
     $i = 0;
     // loop column 
     foreach ($this->column_search as $item) {
@@ -80,7 +84,9 @@ class Noa_model extends CI_Model {
        $this->db->or_where('status', 'Billed');
        $this->db->group_end();
      }
-   
+     if($this->input->post('filter')){
+        $this->db->like('tbl_1.hospital_id', $this->input->post('filter'));
+    }
      $i = 0;
    
      if ($this->input->post('filter')) {
@@ -199,6 +205,18 @@ class Noa_model extends CI_Model {
              ->join('members as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id')
              ->where('tbl_1.noa_id', $noa_id);
     return $this->db->get()->row_array();
+  }
+
+  function db_get_billed_noa_info($noa_id) {
+    $this->db->select('*')
+    ->from('noa_requests as tbl_1')
+    ->join('healthcare_providers as tbl_2', 'tbl_1.hospital_id = tbl_2.hp_id')
+    ->join('max_benefit_limits as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id')
+    ->join('members as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id')
+    ->join('billing as tbl_6', 'tbl_1.noa_id = tbl_6.noa_id')
+    ->join('payment_details as tbl_7', 'tbl_6.details_no = tbl_7.details_no')
+    ->where('tbl_1.noa_id', $noa_id);
+return $this->db->get()->row_array();
   }
 
   function db_get_member_details($member_id) {

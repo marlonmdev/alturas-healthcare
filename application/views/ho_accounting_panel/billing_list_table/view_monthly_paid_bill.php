@@ -256,7 +256,8 @@
           cash_advance,
           total_payable,
           before_remaining_bal,
-          after_remaining_bal
+          after_remaining_bal,
+          hospitalized_date
         } = res;
 
         if(request_type == 'Diagnostic Test'){
@@ -269,6 +270,12 @@
         }else{
           $('#admitted-on').hide();
         }
+        if(request_type == 'Emergency'){
+          $('#hospitalized-on').show();
+        }else{
+          $('#hospitalized-on').hide();
+        }
+        $('#hospitalized-date').html(hospitalized_date);
         $('#noa-loa-no').html(loa_noa_no);
         $('#members-fullname').html(fullname);
         $('#member-bu').html(business_unit);

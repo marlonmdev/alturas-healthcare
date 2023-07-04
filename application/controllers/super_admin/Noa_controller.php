@@ -240,6 +240,48 @@ class Noa_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 
+	function fetch_all_paid_noa() {
+		$this->security->get_csrf_hash();
+		$status = 'Paid';
+		$list = $this->noa_model->get_datatables($status);
+		$data = [];
+		foreach ($list as $noa) {
+			$row = [];
+			$noa_id = $this->myhash->hasher($noa['noa_id'], 'encrypt');
+			$full_name = $noa['first_name'] . ' ' . $noa['middle_name'] . ' ' . $noa['last_name'] . ' ' . $noa['suffix'];
+
+			$admission_date = date("m/d/Y", strtotime($noa['admission_date']));
+			$request_date = date("m/d/Y", strtotime($noa['request_date']));
+
+			$custom_noa_no = '<mark class="bg-primary text-white">'.$noa['noa_no'].'</mark>';
+
+			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-danger">' . $noa['status'] . '</span></div>';
+
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewPaidNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+
+			// shorten name of values from db if its too long for viewing and add ...
+			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];
+
+			// this data will be rendered to the datatable
+			$row[] = $custom_noa_no;
+			$row[] = $full_name;
+			$row[] = $admission_date;
+			$row[] = $short_hosp_name;
+			$row[] = $request_date;
+			$row[] = $custom_status;
+			$row[] = $custom_actions;
+			$data[] = $row;
+		}
+
+		$output = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->noa_model->count_all($status),
+			"recordsFiltered" => $this->noa_model->count_filtered($status),
+			"data" => $data,
+		];
+		echo json_encode($output);
+	}
+
 	function fetch_all_billed_noa() {
 		$this->security->get_csrf_hash();
 		$status = 'Billed';
@@ -257,7 +299,7 @@ class Noa_controller extends CI_Controller {
 
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-info">Billed</span></div>';
 
-			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewClosedNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewBilledNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
 			// shorten name of values from db if its too long for viewing and add ...
 			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];
@@ -311,6 +353,7 @@ class Noa_controller extends CI_Controller {
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'req_status' => $row['work_related'] != '' ? 'for Approval': $row['status'],
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		];
@@ -353,6 +396,7 @@ class Noa_controller extends CI_Controller {
 			// Full Month Date Year Format (F d Y)
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'req_status' => $row['status'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
@@ -398,6 +442,7 @@ class Noa_controller extends CI_Controller {
 			// Full Month Date Year Format (F d Y)
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'req_status' => $row['status'],
 			'disapproved_by' => $doctor_name,
 			'disapprove_reason' => $row['disapprove_reason'],
@@ -408,9 +453,9 @@ class Noa_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	function get_completed_noa_info() {
+	function get_billed_noa_info() {
 		$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
-		$row = $this->noa_model->db_get_noa_info($noa_id);
+		$row = $this->noa_model->db_get_billed_noa_info($noa_id);
 
 		$doctor_name = "";
 		if ($row['approved_by']) {
@@ -443,7 +488,10 @@ class Noa_controller extends CI_Controller {
 			'chief_complaint' => $row['chief_complaint'],
 			// Full Month Date Year Format (F d Y)
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
+			'billed_on' => date("F d, Y", strtotime($row['billed_on'])),
+			'paid_on' => date("F d, Y", strtotime($row['date_add'])),
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'req_status' => $row['status'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
@@ -527,6 +575,13 @@ class Noa_controller extends CI_Controller {
 		$data['row'] = $exist = $this->noa_model->db_get_noa_info($noa_id);
 		$data['mbl'] = $this->noa_model->db_get_member_mbl($exist['emp_id']);
 		$data['doc'] = $this->noa_model->db_get_doctor_by_id($exist['approved_by']);
+		if($exist['position_level'] <= 6){
+			$data['room_type'] = 'Payward';
+		}else if($exist['position_level'] > 6 && $exist['position_level'] < 10){
+			$data['room_type'] = 'Semi-private';
+		}else if($exist['position_level'] > 9){
+			$data['room_type'] = 'Regular Private';
+		}
 		if (!$exist) {
 			$this->load->view('pages/page_not_found');
 		} else {

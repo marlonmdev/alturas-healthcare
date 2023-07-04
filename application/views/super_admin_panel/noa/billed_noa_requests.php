@@ -54,7 +54,7 @@
               <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
             >
           </li>
-            <li class="nav-item">
+          <li class="nav-item">
             <a
               class="nav-link active"
               href="<?php echo base_url(); ?>super-admin/noa/requests-list/billed"
@@ -63,8 +63,29 @@
               <span class="hidden-xs-down fs-5 font-bold">Billed</span></a
             >
           </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="<?php echo base_url(); ?>super-admin/noa/requests-list/paid"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Paid</span></a
+            >
+          </li>
         </ul>
-
+        <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text bg-dark text-white"><i class="mdi mdi-filter"></i></span>
+            </div>
+            <select class="form-select fw-bold" name="hospital-filter" id="hospital-filter">
+              <option value="">Select Hospital</option>
+              <?php foreach($hcproviders as $option) : ?>
+                <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+        </div>
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
@@ -116,12 +137,20 @@
                           <td class="fw-bold ls-1" id="approved-on"></td>
                         </tr>
                         <tr>
+                          <td class="fw-bold ls-1">Billed On :</td>
+                          <td class="fw-bold ls-1" id="billed-on"></td>
+                        </tr>
+                        <tr>
                           <td class="fw-bold ls-1">Member's Maximum Benefit Limit :</td>
                           <td class="fw-bold ls-1">&#8369;<span id="member-mbl"></span></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Member's Remaining MBL :</td>
                           <td class="fw-bold ls-1">&#8369;<span id="remaining-mbl"></span></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Percentage :</td>
+                          <td class="fw-bold ls-1" id="percentage"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Full Name :</td>
@@ -146,10 +175,6 @@
                         <tr>
                           <td class="fw-bold ls-1">Chief Complaint :</td>
                           <td class="fw-bold ls-1" id="chief-complaint"></td>
-                        </tr>
-                        <tr>
-                          <td class="fw-bold ls-1">Work-Related :</td>
-                          <td class="fw-bold ls-1" id="work-related"></td>
                         </tr>
                       </table>
                     </div>
@@ -186,7 +211,8 @@
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: {
-          'token': '<?php echo $this->security->get_csrf_hash(); ?>'
+          'token': '<?php echo $this->security->get_csrf_hash(); ?>',
+          'filter': $('#hospital-filter').val(),
         }
       },
 
@@ -220,7 +246,7 @@
   }
 
 
-  const viewCompletedNoaInfo = (req_id) => {
+  const viewBilledNoaInfo = (req_id) => {
     $.ajax({
       url: `${baseUrl}super-admin/noa/billed/view/${req_id}`,
       type: "GET",
@@ -247,25 +273,15 @@
           admission_date,
           chief_complaint,
           work_related,
+          percentage,
           request_date,
           req_status,
+          billed_on
         } = res;
 
         $("#viewNoaModal").modal("show");
-        switch (req_status) {
-          case 'Pending':
-            $('#noa-status').html('<strong class="text-warning">[' + req_status + ']</strong>');
-            break;
-          case 'Approved':
-            $('#noa-status').html('<strong class="text-success">[' + req_status + ']</strong>');
-            break;
-          case 'Disapproved':
-            $('#noa-status').html('<strong class="text-danger">[' + req_status + ']</strong>');
-            break;
-          case 'Completed':
-            $('#noa-status').html('<strong class="text-info">[' + req_status + ']</strong>');
-            break;
-        }
+        $('#noa-status').html('<strong class="text-info">[Billed]</strong>');
+     
         $('#noa-no').html(noa_no);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
@@ -277,8 +293,39 @@
         $('#hospital-name').html(hospital_name);
         $('#admission-date').html(admission_date);
         $('#chief-complaint').html(chief_complaint);
-        $('#work-related').html(work_related);
         $('#request-date').html(request_date);
+        $('#billed-on').html(billed_on);
+
+        if(work_related == 'Yes'){ 
+					if(percentage == ''){
+					  wpercent = '100% W-R';
+					  nwpercent = '';
+					}else{
+					   wpercent = percentage+'%  W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   nwpercent = '';
+					   }else{
+						   nwpercent = result+'% Non W-R';
+					   }
+					  
+					}	
+			   }else if(work_related == 'No'){
+				   if(percentage == ''){
+					   wpercent = '';
+					   nwpercent = '100% Non W-R';
+					}else{
+					   nwpercent = percentage+'% Non W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   wpercent = '';
+					   }else{
+						   wpercent = result+'%  W-R';
+					   }
+					 
+					}
+			   }
+            $('#percentage').html(wpercent+', '+nwpercent);
       }
     });
   }

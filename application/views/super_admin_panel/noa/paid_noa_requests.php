@@ -11,7 +11,7 @@
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Super Admin</li>
               <li class="breadcrumb-item active" aria-current="page">
-                Approved NOA
+                Paid NOA
               </li>
             </ol>
           </nav>
@@ -38,7 +38,7 @@
           </li>
           <li class="nav-item">
             <a
-              class="nav-link active"
+              class="nav-link"
               href="<?php echo base_url(); ?>super-admin/noa/requests-list/approved"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -65,7 +65,7 @@
           </li>
           <li class="nav-item">
             <a
-              class="nav-link"
+              class="nav-link active"
               href="<?php echo base_url(); ?>super-admin/noa/requests-list/paid"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -89,7 +89,7 @@
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover" id="approvedNoaTable">
+              <table class="table table-hover" id="billedNoaTable">
                 <thead>
                   <tr>
                     <th class="fw-bold">NOA No.</th>
@@ -137,6 +137,14 @@
                           <td class="fw-bold ls-1" id="approved-on"></td>
                         </tr>
                         <tr>
+                          <td class="fw-bold ls-1">Billed On :</td>
+                          <td class="fw-bold ls-1" id="billed-on"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Paid On :</td>
+                          <td class="fw-bold ls-1" id="paid-on"></td>
+                        </tr>
+                        <tr>
                           <td class="fw-bold ls-1">Member's Maximum Benefit Limit :</td>
                           <td class="fw-bold ls-1">&#8369;<span id="member-mbl"></span></td>
                         </tr>
@@ -172,10 +180,6 @@
                           <td class="fw-bold ls-1">Chief Complaint :</td>
                           <td class="fw-bold ls-1" id="chief-complaint"></td>
                         </tr>
-                        <tr>
-                          <td class="fw-bold ls-1">Work-Related :</td>
-                          <td class="fw-bold ls-1" id="work-related"></td>
-                        </tr>
                       </table>
                     </div>
                   </div>
@@ -189,6 +193,7 @@
           </div>
         </div>
         <!-- End of View NOA -->
+
       </div>
     </div>
   </div>
@@ -199,14 +204,14 @@
 
   $(document).ready(function() {
 
-    $('#approvedNoaTable').DataTable({
+    $('#billedNoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
 
       // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}super-admin/noa/requests-list/approved/fetch`,
+        url: `${baseUrl}super-admin/noa/requests-list/paid/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: {
@@ -245,9 +250,9 @@
   }
 
 
-  const viewApprovedNoaInfo = (req_id) => {
+  const viewPaidNoaInfo = (req_id) => {
     $.ajax({
-      url: `${baseUrl}super-admin/noa/approved/view/${req_id}`,
+      url: `${baseUrl}super-admin/noa/billed/view/${req_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);
@@ -275,12 +280,14 @@
           percentage,
           request_date,
           req_status,
+          billed_on,
+          paid_on
         } = res;
 
         $("#viewNoaModal").modal("show");
-
+        $('#noa-status').html('<strong class="text-success">['+req_status+']</strong>');
+     
         $('#noa-no').html(noa_no);
-        $('#noa-status').html('<strong class="text-success">[' + req_status + ']</strong>');
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
         $('#member-mbl').html(member_mbl);
@@ -292,6 +299,9 @@
         $('#admission-date').html(admission_date);
         $('#chief-complaint').html(chief_complaint);
         $('#request-date').html(request_date);
+        $('#billed-on').html(billed_on);
+        $('#paid-on').html(paid_on);
+
         if(work_related == 'Yes'){ 
 					if(percentage == ''){
 					  wpercent = '100% W-R';

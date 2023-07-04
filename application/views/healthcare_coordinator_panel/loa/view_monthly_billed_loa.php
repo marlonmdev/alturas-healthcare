@@ -67,18 +67,14 @@
             <th class="fw-bold" style="color: white;font-size:12px">VIEW</th> -->
             <th class="fw-bold" style="color: white;font-size:12px">HOSPITAL BILL</th>
             <th class="fw-bold" style="color: white;font-size:12px">SOA</th>
-            <th class="fw-bold" style="color: white;font-size:12px">PATIENT RECORD</th>
+            <th class="fw-bold" style="color: white;font-size:12px">DETAILED SOA</th>
           </tr>
         </thead>
         <tbody id="billed-tbody" style="font-size: 12px"></tbody>
       </table>
     </div>
     <div class="row pt-4 pb-2">
-      <div class="col-lg-2 offset-7">
-        <label>Total Coordinator Bill : </label>
-        <input name="total-coordinator-bill" id="total-coordinator-bill" class="form-control text-center fw-bold" value="0" readonly>
-      </div>
-      <div class="col-lg-2 ">
+      <div class="col-lg-2 offset-10">
         <label>Total Hospital Bill : </label>
         <input name="total-hospital-bill" id="total-hospital-bill" class="form-control text-center fw-bold" value="0" readonly>
       </div>
@@ -90,7 +86,7 @@
 </div>
 
 <!-- Patient Record -->
-<div class="modal fade pt-4" id="patient_record_diagnostic" tabindex="-1" data-bs-backdrop="static">
+<!-- <div class="modal fade pt-4" id="patient_record_diagnostic" tabindex="-1" data-bs-backdrop="static">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -120,6 +116,21 @@
             <input class="form-control" id="patient_age" readonly>
           </div>
 
+          <div class="col-lg-4">
+            <label class="fw-bold">Percentage : </label>
+            <input class="form-control" id="percentage" readonly>
+          </div>
+
+          <div class="col-lg-4">
+            <label class="fw-bold">Hospital Provider : </label>
+            <input class="form-control" id="hospital_provider" readonly>
+          </div>
+
+          <div class="col-lg-4">
+            <label class="fw-bold">Type of Request : </label>
+            <input class="form-control" id="type_of_request" readonly>
+          </div>
+
           <div class="col-lg-12 pt-4">
             <table class="table table-bordered table-striped table-hover table-responsive table-sm ">
               <thead style="background-color:#00538c;text-align:center">
@@ -146,7 +157,7 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 <!-- End -->
 
 
@@ -215,6 +226,35 @@
     $('#pdf-loa-no').html(loa_no);
 
     let pdfFile = `${baseUrl}uploads/pdf_bills/${pdf_bill}`;
+    let fileExists = checkFileExists(pdfFile);
+
+    if(fileExists){
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', pdfFile, true);
+      xhr.responseType = 'blob';
+
+      xhr.onload = function(e) {
+        if (this.status == 200) {
+          let blob = this.response;
+          let reader = new FileReader();
+
+          reader.onload = function(event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-viewer');
+            iframe.src = dataURL;
+          };
+          reader.readAsDataURL(blob);
+        }
+      };
+      xhr.send();
+    }
+  }
+
+  const viewDetailedPDFBill = (pdf_bill,loa_no) => {
+    $('#viewPDFBillModal').modal('show');
+    $('#pdf-loa-no').html(loa_no);
+
+    let pdfFile = `${baseUrl}uploads/itemize_bills/${pdf_bill}`;
     let fileExists = checkFileExists(pdfFile);
 
     if(fileExists){
@@ -330,7 +370,7 @@
   //     success: function(response) {
   //       const res = JSON.parse(response);
   //       const {
-  //         status,token,loa_no,first_name,middle_name,last_name,suffix,home_address,date_of_birth
+  //         status,token,loa_no,first_name,middle_name,last_name,suffix,home_address,date_of_birth,percentage
   //       } = res;
 
   //       // Open the modal
@@ -347,85 +387,86 @@
   //       const ageDate = new Date(ageDiff);
   //       const age = Math.abs(ageDate.getUTCFullYear() - 1970);
   //       $('#patient_age').val(`${age}`);
+  //       $('#percentage').val(`${percentage}`);
   //     }
   //   });
   // }
 
-  const PatientRecordDiagnostic = (loa_no) => {
-    $('#patient_record_diagnostic').modal('show');
-    $.ajax({
-      url: `${baseUrl}healthcare-coordinator/loa/monthly-bill/get_data_patient_record/${loa_no}`,
-      type: 'GET',
-      dataType: 'json',
-      success: function(data){
-        let bill = data.bill;
-        let service = data.service;
-        let deduction = data.deduction;
+  // const PatientRecordDiagnostic = (loa_no) => {
+  //   $('#patient_record_diagnostic').modal('show');
+  //   $.ajax({
+  //     url: `${baseUrl}healthcare-coordinator/loa/monthly-bill/get_data_patient_record/${loa_no}`,
+  //     type: 'GET',
+  //     dataType: 'json',
+  //     success: function(data){
+  //       let bill = data.bill;
+  //       let service = data.service;
+  //       let deduction = data.deduction;
 
-        let deduction_table = '';
-        let service_table = '';
-        let fullname = '';
-        let hp_name = '';
+  //       let deduction_table = '';
+  //       let service_table = '';
+  //       let fullname = '';
+  //       let hp_name = '';
 
-        fullname += bill.first_name+' '+bill.middle_name+' '+bill.last_name+' '+bill.suffix;
-        hp_name += bill.hp_name;
+  //       fullname += bill.first_name+' '+bill.middle_name+' '+bill.last_name+' '+bill.suffix;
+  //       hp_name += bill.hp_name;
     
-        $.each(service, function(index, item){
-          let op_price = parseFloat(item.op_price);
+  //       $.each(service, function(index, item){
+  //         let op_price = parseFloat(item.op_price);
             
-          service_table += ' <tr> ' +
-                                '<td class="text-center ls-1">'+item.item_description+'</td>' +
-                                '<td class="text-center ls-1">'+op_price.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
-                            '</tr>' ;
-        });
+  //         service_table += ' <tr> ' +
+  //                               '<td class="text-center ls-1">'+item.item_description+'</td>' +
+  //                               '<td class="text-center ls-1">'+op_price.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
+  //                           '</tr>' ;
+  //       });
 
-        let total_services = parseFloat(bill.total_services);
-        if(parseFloat(bill.medicines) != ''){
-          service_table +=  '<tr>' +
-                                '<tr><td></td><td></td></tr>' +
-                                '<td class="text-center ls-1">Medicines</td>' +
-                                '<td class="text-center ls-1">'+parseFloat(bill.medicines).toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
-                            '</tr>';
-        }
-        service_table +=  '<tr>' +
-                                '<td></td>' +
-                                '<td class="text-center">' +
-                                    '<span class="text-dark fs-6 fw-bold ls-1 me-2">Total: '+total_services.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</span>' +
-                                '</td>' +
-                          '</tr>';
+  //       let total_services = parseFloat(bill.total_services);
+  //       if(parseFloat(bill.medicines) != ''){
+  //         service_table +=  '<tr>' +
+  //                               '<tr><td></td><td></td></tr>' +
+  //                               '<td class="text-center ls-1">Medicines</td>' +
+  //                               '<td class="text-center ls-1">'+parseFloat(bill.medicines).toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
+  //                           '</tr>';
+  //       }
+  //       service_table +=  '<tr>' +
+  //                               '<td></td>' +
+  //                               '<td class="text-center">' +
+  //                                   '<span class="text-dark fs-6 fw-bold ls-1 me-2">Total: '+total_services.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</span>' +
+  //                               '</td>' +
+  //                         '</tr>';
 
-        $.each(deduction, function(index, item){
-          let deduction_amount = parseFloat(item.deduction_amount);
+  //       $.each(deduction, function(index, item){
+  //         let deduction_amount = parseFloat(item.deduction_amount);
 
-          deduction_table += '<tr>'+
-                                '<td class="text-center ls-1">'+item.deduction_name+'</td>' +
-                                '<td class="text-center ls-1">'+deduction_amount.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
-                              '</tr>';
-        });
+  //         deduction_table += '<tr>'+
+  //                               '<td class="text-center ls-1">'+item.deduction_name+'</td>' +
+  //                               '<td class="text-center ls-1">'+deduction_amount.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
+  //                             '</tr>';
+  //       });
 
-        let total_deductions = parseFloat(bill.total_deductions);
-        let total_net_bill = parseFloat(bill.total_net_bill);
-        deduction_table += ' <tr>'+
-                                  '<td></td>' +
-                                  '<td class="text-center">' +
-                                      '<span class="text-dark fs-6 fw-bold ls-1 me-2">Total: '+total_deductions.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</span>' +
-                                  '</td>' +
-                            '</tr>'+
-                            '<tr>' +
-                                  '<td></td>' +
-                                  '<td>' +
-                                      '<span class="text-danger fs-6 fw-bold ls-1 me-2">Total Net Bill: '+total_net_bill.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</span>' +
-                                  '</td>' +
-                            '</tr>';
+  //       let total_deductions = parseFloat(bill.total_deductions);
+  //       let total_net_bill = parseFloat(bill.total_net_bill);
+  //       deduction_table += ' <tr>'+
+  //                                 '<td></td>' +
+  //                                 '<td class="text-center">' +
+  //                                     '<span class="text-dark fs-6 fw-bold ls-1 me-2">Total: '+total_deductions.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</span>' +
+  //                                 '</td>' +
+  //                           '</tr>'+
+  //                           '<tr>' +
+  //                                 '<td></td>' +
+  //                                 '<td>' +
+  //                                     '<span class="text-danger fs-6 fw-bold ls-1 me-2">Total Net Bill: '+total_net_bill.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</span>' +
+  //                                 '</td>' +
+  //                           '</tr>';
 
-        $('#deduction-table').html(deduction_table);
-        $('#service-table').html(service_table);
-        $('#bill-fullname').html(fullname);
-        $('#bill-hp-name').html(hp_name);
-        $('#bill-loa-no').html(bill.loa_no);
+  //       $('#deduction-table').html(deduction_table);
+  //       $('#service-table').html(service_table);
+  //       $('#bill-fullname').html(fullname);
+  //       $('#bill-hp-name').html(hp_name);
+  //       $('#bill-loa-no').html(bill.loa_no);
            
-      }
-    });
-  }
+  //     }
+  //   });
+  // }
 
 </script>

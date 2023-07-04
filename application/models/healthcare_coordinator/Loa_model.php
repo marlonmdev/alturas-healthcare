@@ -1669,7 +1669,7 @@ function monthly_bill_datatable($bill_no) {
 
 
 function get_monthly_bill($bill_no) {
-  $this->db->select('tbl_1.* ,tbl_2.*, tbl_4.*, tbl_2.loa_id as tbl2_loa_id, tbl_2.loa_no as tbl2_loa_no, tbl_4.first_name as tbl4_fname, tbl_4.middle_name as tbl4_mname, tbl_4.last_name as tbl4_lname, tbl_4.suffix astbl4_suffix');
+  $this->db->select('tbl_1.* ,tbl_2.*, tbl_4.*, tbl_2.loa_id as tbl2_loa_id, tbl_2.loa_no as tbl2_loa_no, tbl_4.first_name as tbl4_fname, tbl_4.middle_name as tbl4_mname, tbl_4.last_name as tbl4_lname, tbl_4.suffix as tbl4_suffix, tbl_2.percentage as tbl2_percentage');
     $this->db->from($this->table_1_monthly . ' as tbl_1');
     $this->db->join($this->table_2_monthly . ' as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id');
     $this->db->join($this->table_3_monthly . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id', 'left');

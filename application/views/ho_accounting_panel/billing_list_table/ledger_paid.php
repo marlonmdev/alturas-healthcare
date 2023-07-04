@@ -3,9 +3,9 @@
     <!-- Bread crumb and right sidebar toggle -->
     <div class="page-breadcrumb">
         <div class="row">
-        <div class="col-12 d-flex no-block align-items-center">
+        <div  class="col-12 d-flex no-block flex-column flex-sm-row align-items-left">
             <h4 class="page-title"><i class="mdi mdi-file-document-box"></i> LEDGER [ <span class="text-info">Paid Bill</span> ]</h4>
-            <div class="ms-auto text-end">
+            <div class="ms-auto text-end order-first order-sm-last">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                     <li class="breadcrumb-item">Head Office Accounting</li>
@@ -26,11 +26,11 @@
       <div class="col-md-12">
         <div class="row pb-2">
             <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
-            <div class="row pb-2 gap-2">
-              <div class="col-md-2 ps-5 pb-4">
+            <div class="row pb-4 gap-2">
+              <div class="col-md-2 ps-2 pb-2">
                   <div class="input-group">
                       <div class="input-group-prepend">
-                          <span class="input-group-text bg-info text-white">
+                          <span class="input-group-text text-info">
                           <i class="mdi mdi-calendar"></i>
                           </span>
                       </div>
@@ -44,7 +44,7 @@
               <div class="col-md-3 ps-5 pb-2">
                   <div class="input-group">
                       <div class="input-group-prepend">
-                          <span class="input-group-text bg-info text-white">
+                          <span class="input-group-text text-info">
                           <i class="mdi mdi-calendar"></i>
                           </span>
                       </div>
@@ -69,7 +69,7 @@
               <div class="col-md-5 ps-5 pb-2">
                   <div class="input-group">
                       <div class="input-group-prepend">
-                          <span class="input-group-text bg-info text-white">
+                          <span class="input-group-text text-info">
                           <i class="mdi mdi-filter"></i>
                           </span>
                       </div>
@@ -87,7 +87,11 @@
                       </select>
                   </div>
               </div>
+              <div class="col-md-1">
+                <button class="btn btn-danger rounded-pill" type="button" id="print-btn" onclick="printpaidledger()"><i class="mdi mdi-printer"></i> Print</button>
+              </div>
             </div>
+            
             <div class="card shadow" style="background-color:">
                 <div class="table-responsive pt-2">
                   <table class="table table-hover table-responsive table-stripped"  id="ledgertbody">
@@ -98,6 +102,7 @@
                         <th class="fw-bold">BUSINESS UNIT</th>
                         <th class="fw-bold">DEBIT</th>
                         <th class="fw-bold">CREDIT</th>
+                        <!-- <th class="fw-bold">BALANCE</th> -->
                       </tr>
                     </thead>
                     <tbody>
@@ -128,6 +133,11 @@
      const baseUrl = "<?php echo base_url(); ?>";
 
     $(document).ready(function(){
+      $("#print-btn").animate({
+        width: "100px",
+        opacity: 0.9
+      }, 1000);
+
       let ledgerTable = $('#ledgertbody').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
@@ -203,17 +213,33 @@
 
     });
 
+    const printpaidledger = () => {
+      const years = document.querySelector('#selectedYear').value;
+      const months = document.querySelector('#selectedMonth').value;
+      const bu_filters = document.querySelector('#bu-filter').value;
 
-      // Get the current year
+      if(years == ''){
+        year = 'none';
+      }else{
+        year = years;
+      }
+      if(months == ''){
+        month = 'none';
+      }else{
+        month = months;
+      }
+      if(bu_filters == ''){
+        bu_filter = 'none';
+      }else{
+        bu_filter = bu_filters;
+      }
+
+      const base_url = `${baseUrl}`;
+        window.open(base_url + "printledger/ledgerpaid/" +  btoa(month) + "/" + btoa(year) + "/" + btoa(bu_filter), '_blank');
+    }
       var currentYear = new Date().getFullYear();
-
-      // Get the select element
       var selectElement = document.getElementById('selectedYear');
-
-      // Set the initial year
-      var startYear = 2022; // Replace with your desired starting year
-
-      // Loop through years and create options
+      var startYear = 2022;
       for (var year = currentYear; year >= startYear; year--) {
         var option = document.createElement('option');
         option.value = year;

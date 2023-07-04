@@ -1,9 +1,9 @@
 <div class="page-wrapper">
   <div class="page-breadcrumb">
     <div class="row">
-      <div class="col-12 d-flex no-block align-items-center">
+      <div class="col-12 d-flex no-block flex-column flex-sm-row align-items-left">
         <h4 class="page-title ls-2">DISAPPROVED REQUEST</h4>
-        <div class="ms-auto text-end">
+        <div class="ms-auto text-end order-first order-sm-last">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Member</li>
@@ -19,64 +19,71 @@
     <div class="row">
       <div class="col-lg-12">
 
-       <ul class="nav nav-tabs mb-4" role="tablist">
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/pending" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">PENDING</span>
-            </a>
-          </li>
+      <nav class="navbar navbar-expand-md navbar-light">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/approved" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">APPROVED</span>
-            </a>
-          </li>
+          <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/pending" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| PENDING</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/approved" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| APPROVED</span>
+                </a>
+              </li>
 
-          <li class="nav-item">
-            <a class="nav-link active" href="<?php echo base_url(); ?>member/requested-loa/disapproved" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">DISAPPROVED</span>
-            </a>
-          </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="<?php echo base_url(); ?>member/requested-loa/disapproved" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 font-bold">| DISAPPROVED</span>
+                </a>
+              </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/completed" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">COMPLETED</span>
-            </a>
-          </li>
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/completed" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| COMPLETED</span>
+                </a>
+              </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/expired" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">EXPIRED</span>
-            </a>
-          </li>
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/expired" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| EXPIRED</span>
+                </a>
+              </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/cancelled" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">CANCELLED</span>
-            </a>
-          </li>
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/cancelled" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| CANCELLED</span>
+                </a>
+              </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/billed" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">BILLED</span>
-            </a>
-          </li>
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/billed" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| BILLED</span>
+                </a>
+              </li>
 
-          
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/paid" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">PAID</span>
-            </a>
-          </li>
-        </ul>
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/paid" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| PAID</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+
 
         <div class="card shadow">
           <div class="card-body">

@@ -639,8 +639,8 @@
                             const patient_pattern = /patient name:\s(.*?)\admission/si;
                             const matches_3 = finalResult.match(patient_pattern);
                             const result_3 = matches_3 ? matches_3[1] : null;
-                            const invalid_noa = /registry no:/i;
-                            const valid_noa = /admission no:/i;
+                            const invalid_noa = /registry\s{1,}no:/i;
+                            const valid_noa = /admission\s{1,}no:/i;
                             console.log("final result",finalResult);
                             console.log('final text',final_text(finalResult));
                             console.log("patient name", result_3);
@@ -1113,11 +1113,11 @@
 
             function validate_name(patient, member) {
                 // Remove leading and trailing spaces
-                var trimmedStr1 = patient.trim();
-                var trimmedStr2 = member.trim();
+                var trimmedStr1 = patient.replace(/\s/g, "");
+                var trimmedStr2 = member.replace(/\s/g, "");
                 console.log("trimmedStr1",trimmedStr1);
                 console.log("trimmedStr2",trimmedStr2);
-                // Compare the strings
+                // Compare the strings 
                 return trimmedStr1 === trimmedStr2;
             }
 

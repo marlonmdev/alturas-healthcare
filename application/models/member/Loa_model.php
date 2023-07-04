@@ -389,19 +389,19 @@ class Loa_model extends CI_Model {
 
   function db_get_loa_info_patient($loa_id,$is_performed) {
     // var_dump("passed loa id",$loa_id);
+    $query = $this->db->select('loa_request_type')
+    ->from('loa_requests')
+    ->where('loa_id', $loa_id)
+    ->get();
+    $status = $query->row()->loa_request_type;
+    
     $this->db->select('tbl_1.status as tbl_1_status, tbl_1.*, tbl_2.* ,tbl_3.*, tbl_5.*');
     $this->db->from('loa_requests as tbl_1');
     $this->db->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
     $this->db->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id');
     // $this->db->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id');
     $this->db->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id');
-    
-    $query = $this->db->select('tbl_7.status')
-    ->from('loa_requests as tbl_7')
-    ->where('tbl_7.loa_id', $loa_id)
-    ->get();
-
-    $status = $query->row()->status;
+  
     if ($status !=='Emergency') {
         $this->db->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id');
         $this->db->select('tbl_4.*');

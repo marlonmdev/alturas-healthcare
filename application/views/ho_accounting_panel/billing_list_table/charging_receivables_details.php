@@ -3,7 +3,7 @@
     <!-- Bread crumb and right sidebar toggle -->
     <div class="page-breadcrumb">
         <div class="row">
-        <div class="col-12 d-flex no-block align-items-center">
+        <div class="col-12 d-flex no-block flex-column flex-sm-row align-items-left">
             <?php if($type == 'unpaid') {
                     $header = 'Receivables Details';
             }else {
@@ -11,7 +11,7 @@
             }
                 ?>
             <h4 class="page-title"><i class="mdi mdi-format-line-style"></i> <?php echo $header; ?> [ <span class="text-info fs-5"><?php echo $charging_no; ?></span> ]</h4>
-            <div class="ms-auto text-end">
+            <div class="ms-auto text-end order-first order-sm-last">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                     <li class="breadcrumb-item">Head Office Accounting</li>
@@ -55,7 +55,7 @@
                 <div class="ps-2 pe-2" id="paidFormSubmit">
                     <small class="text-danger">Please upload the supporting document ( Accept Images and PDF )</small>
                     <div class="row border ps-2 pe-2 pt-4 pb-2">
-                        <div class="row col-lg-2 pb-3 pt-2">
+                        <div class="row col-lg-2 pb-3 pt-2 pe-2">
                             <label class=" text-dark fw-bold ms-2 fs-5"><span class="text-danger">*</span> Supporting Document : </label>
                         </div>
                         <div class="col-lg-5">

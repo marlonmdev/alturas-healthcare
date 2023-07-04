@@ -18,37 +18,44 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
+      <nav class="navbar navbar-expand-md navbar-light">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
 
-        <ul class="nav nav-tabs mb-4" role="tablist">
-          <li class="nav-item">
-            <a class="nav-link active" href="<?php echo base_url(); ?>member/personal-charges"role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Charges</span>
-            </a>
-          </li>
+          <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" href="<?php echo base_url(); ?>member/personal-charges"role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 font-bold">| Charges</span>
+                </a>
+              </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/personal-charges/paid" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Requested </span>
-            </a>
-          </li>
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/personal-charges/paid" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| Requested </span>
+                </a>
+              </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/personal-charges/approved" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Approved</span>
-            </a>
-          </li>
-          
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/personal-charges/disapproved" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Disapproved</span>
-            </a>
-          </li>
-        </ul>
-
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/personal-charges/approved" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| Approved</span>
+                </a>
+              </li>
+              
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/personal-charges/disapproved" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| Disapproved</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      
         <div class="card shadow">
           <div class="card-body">
             <div class=" table-responsive">

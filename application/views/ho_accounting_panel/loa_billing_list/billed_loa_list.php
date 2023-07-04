@@ -3,9 +3,9 @@
 <!-- Bread crumb and right sidebar toggle -->
 <div class="page-breadcrumb">
 <div class="row">
-    <div class="col-12 d-flex no-block align-items-center">
+    <div class="col-12 d-flex no-block flex-column flex-sm-row align-items-left">
     <h4 class="page-title ls-2"><i class="mdi mdi-format-list-bulleted"></i> LOA Requests</h4>
-    <div class="ms-auto text-end">
+    <div class="ms-auto text-end order-first order-sm-last">
         <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">Head Office Accounting</li>

@@ -18,43 +18,50 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
+        <nav class="navbar navbar-expand-md navbar-light">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
 
-        <ul class="nav nav-tabs mb-4" role="tablist">
-          <li class="nav-item">
-            <a class="nav-link active" href="<?php echo base_url(); ?>member/requested-noa/pending" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">PENDING</span>
-            </a>
-          </li>
+          <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" href="<?php echo base_url(); ?>member/requested-noa/pending" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 font-bold">| PENDING</span>
+                </a>
+              </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-noa/approved" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">APPROVED</span>
-            </a>
-          </li>
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-noa/approved" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| APPROVED</span>
+                </a>
+              </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-noa/disapproved" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">DISAPPROVED</span>
-            </a>
-          </li>
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-noa/disapproved" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| DISAPPROVED</span>
+                </a>
+              </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-noa/billed" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">BILLED</span>
-            </a>
-          </li>
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-noa/billed" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| BILLED</span>
+                </a>
+              </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-noa/paid" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">PAID</span>
-            </a>
-          </li>
-        </ul>
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-noa/paid" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| PAID</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
 
         <div class="card shadow">
           <div class="card-body">

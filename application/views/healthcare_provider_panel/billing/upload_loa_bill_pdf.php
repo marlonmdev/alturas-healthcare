@@ -209,8 +209,8 @@ return modifiedText;
 function validate_name(patient, member) {
   // Remove leading and trailing spaces
   if(patient!=null && patient!=null){
-    var trimmedStr1 = patient.trim();
-    var trimmedStr2 = member.trim();
+    var trimmedStr1 = patient.replace(/\s/g, "");
+    var trimmedStr2 = member.replace(/\s/g, "");
     console.log("trimmedStr1",trimmedStr1);
     console.log("trimmedStr2",trimmedStr2);
     return trimmedStr1 === trimmedStr2;
@@ -532,8 +532,8 @@ reader.onload = function() {
                       console.log('final text',final_text(finalResult));
 
                       //validate loa 
-                      const valid_loa = /registry no:/i;
-                      const invalid_loa = /admission no:/i;
+                      const valid_loa = /registry\s{1,}no:/i;
+                      const invalid_loa = /admission\s{1,}no:/i;
                       if(!finalResult.match(valid_loa)){
                        
                         $('#upload-btn').prop('disabled',true);

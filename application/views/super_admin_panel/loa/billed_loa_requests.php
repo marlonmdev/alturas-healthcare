@@ -1,29 +1,22 @@
-
-  <!-- Start of Page Wrapper -->
-  <div class="page-wrapper">
-    <!-- Bread crumb and right sidebar toggle -->
-    <div class="page-breadcrumb">
-      <div class="row">
-        <div class="col-12 d-flex no-block align-items-center">
-          <h4 class="page-title ls-2">Letter of Authorization</h4>
-          <div class="ms-auto text-end">
-            <nav aria-label="breadcrumb">
-              <ol class="breadcrumb">
-                <li class="breadcrumb-item">Super Admin</li>
-                <li class="breadcrumb-item active" aria-current="page">
-                  Completed LOA
-                </li>
-              </ol>
-            </nav>
-          </div>
+<div class="page-wrapper">
+  <div class="page-breadcrumb">
+    <div class="row">
+      <div class="col-12 d-flex no-block align-items-center">
+        <h4 class="page-title ls-2">Letter of Authorization</h4>
+        <div class="ms-auto text-end">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">Super Admin</li>
+              <li class="breadcrumb-item active" aria-current="page">Billed LOA</li>
+            </ol>
+          </nav>
         </div>
       </div>
     </div>
-    <!-- End Bread crumb and right sidebar toggle -->
+  </div>
 
-    <!-- Start of Container fluid  -->
-    <div class="container-fluid">
-      <div class="row">
+  <div class="container-fluid">
+    <div class="row">
 
       <div class="col-12">
         <ul class="nav nav-tabs mb-4" role="tablist">
@@ -54,9 +47,9 @@
               <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
             >
           </li>
-            <li class="nav-item">
+          <li class="nav-item">
             <a
-              class="nav-link active"
+              class="nav-link"
               href="<?php echo base_url(); ?>super-admin/loa/requests-list/completed"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -83,7 +76,7 @@
           </li>
           <li class="nav-item">
             <a
-              class="nav-link"
+              class="nav-link active"
               href="<?php echo base_url(); ?>super-admin/loa/requests-list/billed"
               role="tab"
               ><span class="hidden-sm-up"></span>
@@ -106,7 +99,7 @@
             <div class="input-group-prepend">
               <span class="input-group-text bg-dark text-white"><i class="mdi mdi-filter"></i></span>
             </div>
-            <select class="form-select fw-bold" name="completed-hospital-filter" id="completed-hospital-filter">
+            <select class="form-select fw-bold" name="billed-hospital-filter" id="billed-hospital-filter">
               <option value="">Select Hospital</option>
               <?php foreach($hcproviders as $option) : ?>
                 <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
@@ -118,7 +111,7 @@
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover table-responsive" id="completedLoaTable">
+              <table class="table table-hover table-responsive" id="billedLoaTable">
                 <thead>
                   <tr>
                     <th class="fw-bold">LOA No.</th>
@@ -138,7 +131,7 @@
           </div>
         </div>
 
-        <?php include 'view_completed_loa_details.php'; ?>
+        <?php include 'view_approved_loa_details.php'; ?>
 
       </div>
     </div>
@@ -149,72 +142,61 @@
   const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
 
   $(document).ready(function() {
+    let billedTable = $('#billedLoaTable').DataTable({
+      processing: true,
+      serverSide: true,
+      order: [],
 
-    let completedTable = $('#completedLoaTable').DataTable({
-      processing: true, //Feature control the processing indicator.
-      serverSide: true, //Feature control DataTables' server-side processing mode.
-      order: [], //Initial no order.
-
-      // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}super-admin/loa/requests-list/completed/fetch`,
+        url: `${baseUrl}super-admin/loa/requests-list/billed/fetch`,
         type: "POST",
-        // passing the token as data so that requests will be allowed
         data: function(data) {
           data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
-          data.filter = $('#completed-hospital-filter').val();
+          data.filter = $('#billed-hospital-filter').val();
         }
       },
 
-      //Set column definition initialisation properties.
       columnDefs: [{
-        "targets": [4, 6, 7], // numbering column
-        "orderable": false, //set not orderable
+        "targets": [4, 6, 7],
+        "orderable": false,
       }, ],
       responsive: true,
       fixedHeader: true,
     });
-    $('#completed-hospital-filter').change(function(){
-      completedTable.draw();
+
+    $('#billed-hospital-filter').change(function(){
+      billedTable.draw();
     });
 
   });
 
   const viewImage = (path) => {
     let item = [{
-      src: path, // path to image
-      title: 'Attached RX File' // If you skip it, there will display the original image name
+      src: path,
+      title: 'Attached RX File'
     }];
-    // define options (if needed)
     let options = {
-      index: 0 // this option means you will start at first image
+      index: 0
     };
-    // Initialize the plugin
     let photoviewer = new PhotoViewer(item, options);
   }
 
   const saveAsImage = () => {
-    // Get the div element you want to save as an image
     const element = document.querySelector("#printableDiv");
-    // Use html2canvas to take a screenshot of the element
     html2canvas(element)
-      .then(function(canvas) {
-        // Convert the canvas to an image data URL
-        const imgData = canvas.toDataURL("image/png");
-        // Create a temporary link element to download the image
-        const link = document.createElement("a");
-        link.download = `loa_${fileName}.png`;
-        link.href = imgData;
-
-        // Click the link to download the image
-        link.click();
-      });
+    .then(function(canvas) {
+      const imgData = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.download = `loa_${fileName}.png`;
+      link.href = imgData;
+      link.click();
+    });
   }
 
 
-  const viewCompletedLoaInfo = (req_id) => {
+    const viewBilledLoaInfo = (req_id) => {
     $.ajax({
-      url: `${baseUrl}super-admin/loa/completed/view/${req_id}`,
+      url: `${baseUrl}super-admin/loa/billed/view/${req_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);
@@ -255,15 +237,17 @@
           work_related,
           percentage,
           approved_by,
-          approved_on
+          approved_on,
+          billed_on
         } = res;
 
         $("#viewLoaModal").modal("show");
 
-        $('#loa-status').html(`<strong class="text-info">[${req_status}]</strong>`);
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
+
         $('#loa-no').html(loa_no);
+        $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
         $('#member-mbl').html(member_mbl);
@@ -290,6 +274,7 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
+        $('#billed-on').html(billed_on);
         if(work_related == 'Yes'){ 
 					if(percentage == ''){
 					  wpercent = '100% W-R';

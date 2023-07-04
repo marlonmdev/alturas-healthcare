@@ -159,8 +159,8 @@ class Mbl_history extends CI_Controller {
 		}else{
 			$row = $this->loa_model->db_get_loa_info_patient($loa_id,false);
 			$isperformed = false;
-			var_dump("id",$loa_id);
-			var_dump("status",$row['tbl_1_status']);
+			// var_dump("id",$loa_id);
+			// var_dump("status",$row['tbl_1_status']);
 		}
 		
 		//  var_dump("row",$row);
@@ -216,7 +216,7 @@ class Mbl_history extends CI_Controller {
 			'requesting_company' => $row['requesting_company'],
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'complaints' => $row['chief_complaint'],
-			'requesting_physician' => $row['doctor_name'],
+			'requesting_physician' => ($row['loa_request_type'] !== "Emergency")? $row['doctor_name'] :"",
 			'attending_physician' => $physicians,
 			'rx_file' => $row['rx_file'],
 			'pdf_bill' => isset($billing['pdf_bill'])?$billing['pdf_bill']:"",

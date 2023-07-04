@@ -25,8 +25,8 @@
                     </tr>
                     <tr class="border-secondary border-2 border-0 border-top border-bottom">
                         <td><span class="">Type of Request : <span class="fw-bold fs-5" id="request-type"></span></span></td>
-                        <td id="admitted-on"><span class="">Admission Date : <span class="fw-bold fs-5" id="admission-date"></span></span></td>
-                        <td></td>
+                        <td id="admitted-on"><span>Admission Date : <span class="fw-bold fs-5" id="admission-date"></span></span></td>
+                        <td id="hospitalized-on">Date Hospitalized : <span class="fw-bold fs-5" id="hospitalized-date"></span></td>
                     </tr>  <tr class="border-secondary border-2 border-0 border-top border-bottom">
                         <td><span class="">Percentage : <span class="fw-bold fs-5" id="percentage-is"></span></span></td>
                         <td></td>

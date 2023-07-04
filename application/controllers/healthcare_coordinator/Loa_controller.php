@@ -1067,7 +1067,7 @@ class Loa_controller extends CI_Controller {
 
 			$action_customs = '<a href="'.base_url().'healthcare-coordinator/bill/billed/fetch-payable/'.$bill['bill_no'].'" data-bs-toggle="tooltip" title="View Hospital Bill"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
 
-			$action_customs .= '<a href="'.base_url().'healthcare-coordinator/bill/billed/charging/'.$bill['bill_no'].'" data-bs-toggle="tooltip" title="View Charging"><i class="mdi mdi-file-document-box fs-2 text-danger"></i></a>';
+			// $action_customs .= '<a href="'.base_url().'healthcare-coordinator/bill/billed/charging/'.$bill['bill_no'].'" data-bs-toggle="tooltip" title="View Charging"><i class="mdi mdi-file-document-box fs-2 text-danger"></i></a>';
 
 			$row[] = $bill_no_custom;
 			$row[] = $label_custom;
@@ -1119,35 +1119,76 @@ class Loa_controller extends CI_Controller {
 
 		foreach($billing as $bill){
 			$row = [];
-
 			$loa_id = $this->myhash->hasher($bill['loa_id'], 'encrypt');
-
 			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
-
 			$coordinator_bill = '<a href="JavaScript:void(0)" onclick="viewCoordinatorBill(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Coordinator Billing"><i class="mdi mdi-eye text-dark"></i>View</a>';
+			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf text-danger"></i></a>';
 
-			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-eye text-dark"></i>View</a>';
+			$record_diagnostic = '<a href="JavaScript:void(0)" onclick="PatientRecordDiagnostic(\'' . $bill['loa_no']. '\')" data-bs-toggle="tooltip" title="View Coordinator Billing"><i class="mdi mdi-eye text-dark"></i>View Record</a>';
+
+			if($bill['work_related'] == 'Yes'){
+				if($bill['percentage'] == ''){
+					$label = 'Work Related';
+					$percent = '100';
+				}else{
+					$label = 'Work Related';
+					$percent = $bill['percentage'];
+				}
+			}else{
+				if($bill['percentage'] == ''){
+					$label = 'Non Work-Related';
+					$percent = '100';
+				}else{
+					$label = 'Non Work-Related';
+					$percent = $bill['percentage'];
+				}
+			}
+			$percent_custom = '<span>'.$percent.'% '.$label.'</span>';
 
 			$row[] = $bill['billing_no'];
+			$row[] = $bill['loa_no'];
 			$row[] = $fullname;
-			// $row[] = $bill['business_unit'];
+			$row[] = $bill['business_unit'];
+			$row[] = $percent_custom;
 			$row[] = $bill['loa_request_type'];
-			$row[] = number_format($bill['total_net_bill'], 2, '.', ',');
-			$row[] = $coordinator_bill;
 			$row[] = number_format($bill['net_bill'], 2, '.', ',');
 			$row[] = $pdf_bill;
+			$row[] = $record_diagnostic;
 			$data[] = $row;
-			
-			
 		}
-
 		$output = [
 			"draw" => $_POST['draw'],
 			"data" => $data,
 		];
-
 		echo json_encode($output);
 	}
+
+	function get_data_patient_record() {
+
+		$bill_no = $this->uri->segment(5);
+		$row = $this->loa_model->get_monthly_bill($bill_no);
+		$data['loa'] = $row;
+		$data['emp_id'] = $row['emp_id'];
+		$data['itemized_bill'] = $this->loa_model->get_itemized_bill($row['emp_id']);
+		// var_dump($data['itemized_bill']);
+
+		$response = [
+			'status' => 'success',
+			'token' => $this->security->get_csrf_hash(),
+			'loa_id' => $row['tbl2_loa_id'],
+			'loa_no' => $row['tbl2_loa_no'],
+			'first_name' => $row['tbl4_fname'],
+			'middle_name' => $row['tbl4_mname'],
+			'last_name' => $row['tbl4_lname'],
+			'suffix' => $row['astbl4_suffix'],
+			'home_address' => $row['home_address'],
+			'date_of_birth' => $row['date_of_birth'],
+		];
+		echo json_encode($response);
+		// var_dump($response);
+	}
+
+
 
 	function fetch_billing_for_charging() {
 		$this->security->get_csrf_hash();
@@ -3489,8 +3530,7 @@ class Loa_controller extends CI_Controller {
 			$custom_loa_no = '<mark class="bg-primary text-white">'.$loa['loa_no'].'</mark>';
 			$custom_date = date("m/d/Y", strtotime($loa['request_date']));
 
-			/* Checking if the work_related column is empty. If it is empty, it will display the status column.
-			If it is not empty, it will display the text "for Approval". */
+			/* Checking if the work_related column is empty. If it is empty, it will display the status column.If it is not empty, it will display the text "for Approval". */
 			if($loa['work_related'] == ''){
 				$custom_status = '<span class="badge rounded-pill bg-warning">' . $loa['status'] . '</span>';
 			}else{
@@ -3513,8 +3553,7 @@ class Loa_controller extends CI_Controller {
 				$view_file = 'None';
 				// if Healthcare Provider name is too long for displaying to the table, shorten it and add the ... characters at the end 
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
-
-			} else {
+			}else{
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
 
 				// link to the file attached during loa request
@@ -3548,7 +3587,7 @@ class Loa_controller extends CI_Controller {
 //====================================================================================================
 //FINAL BILLING
 //====================================================================================================
-	function datatable_final_billing() {
+	function datatable_final_billing(){
     $token = $this->security->get_csrf_hash();
     $billing = $this->loa_model->get_billed_datatables();
     $data = [];
@@ -3635,7 +3674,7 @@ class Loa_controller extends CI_Controller {
     $year = date('Y', $date);
     $bill_no = "BILL-" . date('His') . mt_rand(1000, 9999);
     $total_payable = floatval(str_replace(',', '', $this->input->post('total-hospital-bill', TRUE)));
-    $matched = $this->loa_model->set_bill_for_matched($hp_id, $start_date, $end_date, $bill_no);
+    // $matched = $this->loa_model->set_bill_for_matched($hp_id, $start_date, $end_date, $bill_no);
     $status = $this->input->post('status', TRUE);
 
     $data = [
@@ -3652,6 +3691,7 @@ class Loa_controller extends CI_Controller {
     $inserted = $this->loa_model->insert_for_payment_consolidated($data);
     if ($inserted) {
       $this->loa_model->update_loa_request_status($hp_id, $start_date, $end_date,$status);
+      $this->loa_model->set_bill_for_matched($hp_id, $start_date, $end_date,$bill_no);
       header('Location: ' . base_url() . 'healthcare-coordinator/bill/requests-list/for-charging');
       exit;
     } else {
@@ -4508,7 +4548,7 @@ class Loa_controller extends CI_Controller {
 			$member_id = $this->myhash->hasher($member['emp_id'], 'encrypt');
 			$full_name = $member['first_name'] . ' ' . $member['middle_name'] . ' ' . $member['last_name'] . ' ' . $member['suffix'];
 			$image_cv = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $member['supporting_file'] . '\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-image fs-2 text-info"></i></a>';
-      		$custom_status = '<span class="badge rounded-pill bg-success">Paid</span>';
+      $custom_status = '<span class="badge rounded-pill bg-success">Paid</span>';
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewRecords(\''.$member['loa_id'].'\',\''.$member['noa_id'].'\')" data-bs-toggle="tooltip" title="View">View</a>';
 	
 			// $row[] = $full_name;

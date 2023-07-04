@@ -619,6 +619,7 @@ $route['healthcare-coordinator/loa/requests-list/cancelled/fetch'] = 'healthcare
 $route['healthcare-coordinator/loa/requests-list/resched/fetch'] = 'healthcare_coordinator/loa_controller/fetch_all_rescheduled_loa';
 $route['healthcare-coordinator/loa/pending/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_pending_loa_info';
 $route['healthcare-coordinator/loa/approved/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_approved_loa_info';
+$route['healthcare-coordinator/loa/approved/get_data_patient_record/(:any)'] = 'healthcare_coordinator/loa_controller/get_data_patient_record';
 $route['healthcare-coordinator/loa/disapproved/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_disapproved_loa_info';
 $route['healthcare-coordinator/loa/cancelled/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_cancelled_loa_info';
 $route['healthcare-coordinator/loa/completed/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_completed_loa_info';
@@ -665,6 +666,8 @@ $route['healthcare-coordinator/loa/charging/confirm'] = 'healthcare_coordinator/
 $route['healthcare-coordinator/loa/billing/fetch/(:any)'] = 'healthcare_coordinator/loa_controller/fetch_coordinator_billing';
 $route['healthcare-coordinator/bill/billed/fetch-payable/(:any)'] = 'healthcare_coordinator/loa_controller/fetch_monthly_payable';
 $route['healthcare-coordinator/loa/monthly-bill/fetch/(:any)'] = 'healthcare_coordinator/loa_controller/fetch_monthly_bill';
+
+$route['healthcare-coordinator/loa/monthly-bill/get_data_patient_record/(:any)'] = 'healthcare_coordinator/loa_controller/get_data_patient_record';
 $route['healthcare-coordinator/loa/matched/total-bill/fetch'] = 'healthcare_coordinator/loa_controller/get_matched_total_bill';
 $route['healthcare-coordinator/bill/billed/charging/(:any)'] = 'healthcare_coordinator/loa_controller/get_bill_for_charging';
 $route['healthcare-coordinator/loa/monthly-bill/charging/(:any)'] = 'healthcare_coordinator/loa_controller/fetch_billing_for_charging';

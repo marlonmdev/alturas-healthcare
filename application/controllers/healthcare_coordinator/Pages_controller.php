@@ -571,6 +571,7 @@ class Pages_controller extends CI_Controller {
 		$this->load->model('healthcare_coordinator/loa_model');
 		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
 		$data['user_role'] = $this->session->userdata('user_role');
+
 		$data['bar'] = $this->loa_model->bar_pending();
 		$data['bar1'] = $this->loa_model->bar_approved();
 		$data['bar2'] = $this->loa_model->bar_completed();

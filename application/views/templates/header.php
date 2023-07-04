@@ -69,7 +69,7 @@
       data-sidebar-position="absolute"
       data-header-position="absolute"
       data-boxed-layout="full"
-    >
+    > 
 
     <!-- Start of DB Backup Modal-->
     <div class="modal fade" id="dbBackupModal" tabindex="-1" role="dialog" aria-labelledby="dbBackupModal" aria-hidden="true">

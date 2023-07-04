@@ -30,7 +30,7 @@ class Api_model extends CI_Model {
     $this->db->set('ebm_status','Approved');
     $this->db->where('emp_id',$emp_id);
     $this->db->where('billing_id',$billing_id);
-    $this->db->update('cash_advance');
+    $this->db->update('cash_advance'); 
   
   }
 

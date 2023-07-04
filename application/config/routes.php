@@ -17,7 +17,8 @@ $route['ewdfsasdfsadfdssdaf4gegwwrerhtyuj5dgvbx7cvzdfaef_sdfupdatemembermbl'] = 
 // $route['import/members'] = 'import_controller';
 // $route['members/import'] = 'import_controller/import_csv_to_database';
 // $route['members/format-download'] = 'import_controller/csv_format_download';
-
+$route['auto_update/notification/guarantee-letter'] = 'sse_controller/count_uploaded_letter';
+$route['auto_update/notification/to-bill'] = 'sse_controller/count_to_bill';
 // Import Text Files
 $route['import/txt'] = 'import_controller/import_txt_file_page';
 $route['import/txt/upload'] = 'import_controller/db_upload_txt_file';

@@ -110,7 +110,7 @@
     </div>
  <!-- Modal -->
  <div class="modal fade show animate__animated animate__fadeOut" id="termModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg rounded">
                 <div class="modal-content">
                 <div class="modal-header">
                     <h3 class="modal-title" id="exampleModalLabel">Terms and Conditions</h3> 
@@ -449,7 +449,7 @@
           $.ajax({
               url: `${baseUrl}read-member-tnc`,
               type: "post",
-              data: {'<?php echo $this->security->get_csrf_token_name(); ?>' : '<?php echo $this->security->get_csrf_hash(); ?>',
+              data: {'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
                     },
               dataType: "json",
               success: function (res) {

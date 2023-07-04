@@ -33,8 +33,11 @@
     class="sidebar-link has-arrow"
     href="javascript:void(0)"
     aria-expanded="false">
+    <span class="position-relative">
+    <span class="position-absolute translate-middle badge bg-danger rounded-circle">3</span>
     <i class="mdi mdi-file-check"></i>
     <span class="hide-menu ls-1">Billing</span>
+    </span>
   </a> 
   <ul aria-expanded="false" class="collapse first-level">
     <li class="sidebar-item">
@@ -54,8 +57,11 @@
 
 <li id="hc-list-soa-tab" class="sidebar-item <?php echo $this->uri->segment(2) == 'patient_soa' ? 'selected' : ""; ?>" onclick="toggleSelected(this)">
   <a class="sidebar-link sidebar-link" href="<?php echo base_url(); ?>healthcare-provider/patient_soa/soa-list" aria-expanded="false">
+  <span class="position-relative">
+  <span class="position-absolute translate-middle badge bg-danger rounded-circle">1</span>
     <i class="mdi mdi-account-multiple"></i>
     <span class="hide-menu ls-1">List of Soa</span>
+  </span>
   </a>
 </li>
 

@@ -376,14 +376,21 @@ class Patient_controller extends CI_Controller {
 			// var_dump("physicians",$physicians);
 		}
 		
-		$med_serv = implode('', $ct_array);
+		$med_serv = [];
+
+		if($row['loa_request_type'] === 'Emergency'){
+			$med_serv = (count($ct_array)!=0) ? $ct_array : ['Emergency Loa'];
+		}else{
+			$med_serv = (count($ct_array)!=0) ? $ct_array : ['Consultation'];
+		}
+		
 
 		$response = [
 			'status' => 'success',
 			'token' => $this->security->get_csrf_hash(),
 			'loa_no' => $row['loa_no'],
 			'loa_request_type' => $row['loa_request_type'],
-			'med_services' => (count($ct_array)!=0) ? $ct_array : ['Consultation'],
+			'med_services' => $med_serv,
 			'requesting_company' => $row['requesting_company'],
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'complaints' => $row['chief_complaint'],
@@ -402,8 +409,8 @@ class Patient_controller extends CI_Controller {
 			'expiration' => date("F d, Y", strtotime($row['expiration_date'])),
 			'billed_on' => isset($billing['billed_on'])?date("F d, Y", strtotime($billing['billed_on'])):"",
 			'paid_on' => isset($paid_loa['date_add'])?date("F d, Y", strtotime($paid_loa['date_add'])):"",
-			'net_bill' => isset($billing['net_bill'])?$billing['net_bill']:"",
-			'paid_amount' =>isset($paid_loa['amount_paid'])?$paid_loa['amount_paid']:"",
+			'net_bill' => isset($billing['net_bill'])?number_format($billing['net_bill'],2, '.',','):"",
+			'paid_amount' =>isset($paid_loa['amount_paid'])?number_format($paid_loa['amount_paid'],2,'.',','):"",
 			'attending_doctors' =>isset($billing['attending_doctors'])?explode(';', $billing['attending_doctors']): ""
 		];
 		echo json_encode($response);
@@ -443,7 +450,7 @@ class Patient_controller extends CI_Controller {
 		// }else{
 		// 	$req_stat = $row['status'];
 		// }
-
+			
 		$response = array(
 			'status' => 'success',
 			'token' => $this->security->get_csrf_hash(),
@@ -478,8 +485,8 @@ class Patient_controller extends CI_Controller {
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 			'billed_on' => isset($billing['billed_on'])?(date("F d, Y", strtotime($billing['billed_on']))):"",
 			'paid_on' => isset($paid_noa['date_add'])?date("F d, Y", strtotime($paid_noa['date_add'])):"",
-			'net_bill' => isset($billing['net_bill'])?$billing['net_bill']:"",
-			'paid_amount' =>isset($paid_noa['amount_paid'])?$paid_noa['amount_paid']:"",
+			'net_bill' => isset($billing['net_bill'])?number_format($billing['net_bill'],2,'.',','):"",
+			'paid_amount' =>isset($paid_noa['amount_paid'])?number($paid_noa['amount_paid'],2,'.',','):"",
 			'attending_doctors' =>isset($billing['attending_doctors'])?explode(';', $billing['attending_doctors']):""
 		);
 		// var_dump("response",$response);

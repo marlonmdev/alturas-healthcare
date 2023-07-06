@@ -1123,8 +1123,9 @@ class Loa_controller extends CI_Controller {
 			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
 			$coordinator_bill = '<a href="JavaScript:void(0)" onclick="viewCoordinatorBill(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Coordinator Billing"><i class="mdi mdi-eye text-dark"></i>View</a>';
 			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf text-danger"></i></a>';
+			$detailed_pdf_bill = '<a href="JavaScript:void(0)" onclick="viewDetailedPDFBill(\'' . $bill['itemized_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf text-danger"></i></a>';
 
-			$record_diagnostic = '<a href="JavaScript:void(0)" onclick="PatientRecordDiagnostic(\'' . $bill['loa_no']. '\')" data-bs-toggle="tooltip" title="View Coordinator Billing"><i class="mdi mdi-eye text-dark"></i>View Record</a>';
+			// $record_diagnostic = '<a href="JavaScript:void(0)" onclick="PatientRecordDiagnostic(\'' . $bill['loa_no']. '\')" data-bs-toggle="tooltip" title="View Coordinator Billing"><i class="mdi mdi-eye text-dark"></i>View Record</a>';
 
 			if($bill['work_related'] == 'Yes'){
 				if($bill['percentage'] == ''){
@@ -1153,7 +1154,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $bill['loa_request_type'];
 			$row[] = number_format($bill['net_bill'], 2, '.', ',');
 			$row[] = $pdf_bill;
-			$row[] = $record_diagnostic;
+			$row[] = $detailed_pdf_bill;
 			$data[] = $row;
 		}
 		$output = [
@@ -1167,10 +1168,9 @@ class Loa_controller extends CI_Controller {
 
 		$bill_no = $this->uri->segment(5);
 		$row = $this->loa_model->get_monthly_bill($bill_no);
-		$data['loa'] = $row;
-		$data['emp_id'] = $row['emp_id'];
-		$data['itemized_bill'] = $this->loa_model->get_itemized_bill($row['emp_id']);
-		// var_dump($data['itemized_bill']);
+		// $data['loa'] = $row;
+		// $data['emp_id'] = $row['emp_id'];
+		// $data['itemized_bill'] = $this->loa_model->get_itemized_bill($row['emp_id']);
 
 		$response = [
 			'status' => 'success',
@@ -1180,9 +1180,11 @@ class Loa_controller extends CI_Controller {
 			'first_name' => $row['tbl4_fname'],
 			'middle_name' => $row['tbl4_mname'],
 			'last_name' => $row['tbl4_lname'],
-			'suffix' => $row['astbl4_suffix'],
+			'suffix' => $row['tbl4_suffix'],
 			'home_address' => $row['home_address'],
 			'date_of_birth' => $row['date_of_birth'],
+			'percentage' => $row['tbl2_percentage'],
+			'percentage' => $row['tbl2_percentage'],
 		];
 		echo json_encode($response);
 		// var_dump($response);

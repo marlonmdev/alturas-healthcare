@@ -114,8 +114,8 @@ function toggleSelected(item) {
 // const eventSource = new EventSource(baseurl+'auto_update/notification');
 
 $(document).ready(function(){
-  update_notification('auto_update/notification/guarantee-letter',0);
-  update_notification('auto_update/notification/to-bill',1);
+  // update_notification('auto_update/notification/guarantee-letter',0);
+  // update_notification('auto_update/notification/to-bill',1);
 //   eventSource.addEventListener('message', function (event) {
 //   const data = JSON.parse(event.data);
 //   console.log('Received update:', data);
@@ -141,16 +141,20 @@ const csrfToken = '<?php echo $this->security->get_csrf_hash(); ?>';
 
     eventSource.onmessage = function (event) {
       // Handle incoming messages from the EventSource
-      console.log(event.data);
+      // console.log(event.data);
       if(index === 0){
         if(event.data > 0){
           $('#letter-count').text(event.data);
+        }else{
+          $('#letter-count').text("");
         }
       }
 
       if(index === 1){
         if(event.data > 0){
           $('#billing-count').text(event.data);
+        }else{
+          $('#billing-count').text("");
         }
         
       }

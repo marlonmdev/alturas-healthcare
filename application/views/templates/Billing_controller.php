@@ -29,7 +29,6 @@ class Billing_controller extends CI_Controller {
     public function get_personal_and_company_charge($label,$loa_noa,$net_b,$status,$prevmbl,$old_billing) {
 
         // var_dump("prev balance",$prevmbl);
-        // var_dump("old billing",$old_billing);
         
         $loa_info = $this->loa_model->db_get_loa_info($loa_noa);
         $noa_info = $this->noa_model->db_get_noa_info($loa_noa);
@@ -50,30 +49,14 @@ class Billing_controller extends CI_Controller {
                 
                 if( date('Y', strtotime($loa_info['request_date'])) < date('Y') && $last_bill != floatval($loa_info['remaining_balance']) && $old_billing != null){     
                     $previous_mbl = ($status) ? floatval($prevmbl) : $last_bill;
-                    var_dump('request_date 1',$loa_info['request_date']);
-                    var_dump('last_bill 1',$last_bill);
-                    var_dump('old_billing 1',$old_billing);
-                    var_dump('prev mbl 1',$previous_mbl);
                 }else if( date('Y', strtotime($loa_info['request_date'])) == date('Y') && $last_bill != floatval($loa_info['remaining_balance']) && $old_billing != null){
                     $previous_mbl = ($status) ? floatval($prevmbl) : floatval($loa_info['remaining_balance']);
-                    var_dump('request_date 2',$loa_info['request_date']);
-                    var_dump('last_bill 2',$last_bill);
-                    var_dump('old_billing 2',$old_billing);
-                    var_dump('prev mbl 2',$previous_mbl);
                 }
                 else if( date('Y', strtotime($loa_info['request_date'])) == date('Y') && $last_bill != floatval($loa_info['remaining_balance']) && $old_billing == null){
                     $previous_mbl = ($status) ? floatval($prevmbl) : floatval($loa_info['remaining_balance']);
-                    var_dump('request_date 3',$loa_info['request_date']);
-                    var_dump('last_bill 3',$last_bill);
-                    var_dump('old_billing 3',$old_billing);
-                    var_dump('prev mbl 3',$previous_mbl);
                 }
                 else{
                     $previous_mbl = ($status) ? floatval($prevmbl) : $last_bill;
-                    var_dump('request_date 4',$loa_info['request_date']);
-                    var_dump('last_bill 4',$last_bill);
-                    var_dump('old_billing 4',$old_billing);
-                    var_dump('prev mbl 4',$previous_mbl);
                 }
                 
                 $used_mbl = floatval($loa_info['used_mbl']);
@@ -1067,25 +1050,6 @@ class Billing_controller extends CI_Controller {
 		$max_billing_id = !$result ? 0 : $result['billing_id'];
 		$add_billing = $max_billing_id + 1;
 		$current_year = date('Y').date('m');
-
-        if($loa['loa_request_type'] === 'Diagnostic Test'){
-            $med_services = [];
-            $exploded_med_services = explode(";", $loa['med_services']);
-
-            foreach ($exploded_med_services as $ctype_id) :
-                $cost_type = $this->billing_model->get_cost_type_by_id($ctype_id);
-                array_push($med_services, $cost_type['item_description']);
-            endforeach;
-            $data['services'] = $med_services;
-        }
-
-        if($loa['loa_request_type'] === 'Consultation'){
-            $data['services'] = 'Consultation';
-        }
-
-        if($loa['loa_request_type'] === 'Emergency'){
-            $data['services'] = 'Emergency';
-        }
 		// call function loa_number
 		$data['billing_no'] = $this->billing_number($add_billing, 5, 'BLN-'.$current_year);
 		$this->load->view('templates/header', $data);
@@ -1160,12 +1124,7 @@ class Billing_controller extends CI_Controller {
             $file_inputs = array('pdf-file','itemize-pdf-file');
 
             foreach ($file_inputs as $input_name) {
-
-                if ($input_name === 'itemize-pdf-file' && empty($_FILES[$input_name]['name'])) {
-                    // Skip the 'Medical-Abstract' field if it is empty
-                    continue;
-                }
-
+               
                 $config['upload_path'] = $file_paths[$input_name];
                 $this->upload->initialize($config);
 
@@ -1219,7 +1178,6 @@ class Billing_controller extends CI_Controller {
                 'extracted_txt'         => $hospitalBillData,
                 'attending_doctors'     => $attending_doctor,
                 're_upload'             => isset($check_bill) ? 0 : 1,
-                'done_re_upload'        => isset($check_bill) ? 'Done' : null,
                 'request_date'          => $loa['request_date']
             ];   
 
@@ -1270,23 +1228,22 @@ class Billing_controller extends CI_Controller {
                         $inserted = $this->billing_model->insert_billing($data);
 
                         $this->billing_model->_set_loa_status_completed($loa_id);
-                        if(count($itemize_bill)){
                         $bill_id = $this->billing_model->get_billing_id($data['billing_no'],$data['emp_id'],$data['hp_id']);
                         foreach($itemize_bill as $items){
-                                $item = [
-                                    'emp_id'        => $data['emp_id'], 
-                                    'billing_id'    => $bill_id['billing_id'], 
-                                    'hp_id'         => $data['hp_id'], 
-                                    'labels'        => $items[0], 
-                                    'discription'   => $items[2], 
-                                    'qty'           => $items[3], 
-                                    'unit_price'    => $items[4], 
-                                    'amount'        => $items[5], 
-                                    'date'          => $items[1],
-                                ];
-                
-                                $this->billing_model->itemized_bill($item);
-                            }
+                            $item = [
+                                'emp_id'        => $data['emp_id'], 
+                                'billing_id'    => $bill_id['billing_id'], 
+                                'hp_id'         => $data['hp_id'], 
+                                'labels'        => $items[0], 
+                                'discription'   => $items[2], 
+                                'qty'           => $items[3], 
+                                'unit_price'    => $items[4], 
+                                'amount'        => $items[5], 
+                                'date'          => $items[1],
+                            ];
+            
+                            $this->billing_model->itemized_bill($item);
+            
                         }
 
                         foreach($benefits_deductions as $items){
@@ -1572,7 +1529,6 @@ class Billing_controller extends CI_Controller {
                 'extracted_txt'         => $hospitalBillData,
                 'attending_doctors'      => $attending_doctor,
                 're_upload'             => isset($check_bill) ? 0 : 1,
-                'done_re_upload'        => isset($check_bill) ? 'Done' : null,
                 'request_date'          => $noa['request_date']
             ];    
             $mbl = [
@@ -1943,7 +1899,7 @@ class Billing_controller extends CI_Controller {
 				'check_num' => $payment['check_num'],
 				'check_date' => $payment['check_date'],
 				'bank' => $payment['bank'],
-				'amount_paid' => number_format($payment['amount_paid'],2,'.',','),
+				'amount_paid' => $payment['amount_paid'],
 				'billed_date' => 'From '. date("F d, Y", strtotime($payment['startDate'])).' to '. date("F d, Y", strtotime($payment['endDate'])),
 				'covered_loa_no' => $loa_noa_no
 			]; 

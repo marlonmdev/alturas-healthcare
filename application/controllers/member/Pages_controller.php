@@ -80,8 +80,8 @@ class Pages_controller extends CI_Controller {
 			endforeach;
 
         endforeach;
-
-		$data['mbl'] =  number_format((floatval($mbl['remaining_balance'])-floatval($med_services)),2);
+		$r_mbl = floatval($mbl['remaining_balance'])-floatval($med_services);
+		$data['mbl'] =  number_format(($r_mbl > 1) ? $r_mbl : 0,2);
 		//var_dump($data['mbl']);
 		$this->load->view('templates/header', $data);
 		$this->load->view('member_panel/loa/request_loa_form',$data);

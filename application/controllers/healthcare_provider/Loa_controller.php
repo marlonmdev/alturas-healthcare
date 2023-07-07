@@ -321,7 +321,7 @@ class Loa_controller extends CI_Controller {
 				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-cyan">' . $loa['status'] . '</span></div>';
 
 				$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>
-				<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $billed_pdf->pdf_bill . '\' , \''. $loa['loa_no'] .'\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i>
+				<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $billed_pdf['pdf_bill'] . '\' , \''. $loa['loa_no'] .'\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i>
 				</a>';
 
 				// initialize multiple varibles at once

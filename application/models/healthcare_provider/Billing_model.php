@@ -153,14 +153,14 @@ class Billing_model extends CI_Model {
                  ->from('billing')
                  ->where('loa_id', $id);
         $query = $this->db->get();
-        return $query->row(); // Return a single object representing the row
+        return $query->row_array(); // Return a single object representing the row
     }
     function get_billed_noa_pdf($id) {
         $this->db->select('pdf_bill')
                  ->from('billing')
                  ->where('noa_id', $id);
         $query = $this->db->get();
-        return $query->row(); // Return a single object representing the row
+        return $query->row_array(); // Return a single object representing the row
     }
     function get_loa_billing_info($id){
         $this->db->select('tbl_1.billing_id, tbl_1.billing_no, tbl_1.billing_type, tbl_1.emp_id, tbl_1.hp_id, tbl_1.total_services, tbl_1.total_medications, tbl_1.total_pro_fees, tbl_1.total_room_board, tbl_1.total_bill, tbl_1.total_deduction, tbl_1.net_bill, tbl_1.company_charge, tbl_1.personal_charge, tbl_1.before_remaining_bal, tbl_1.after_remaining_bal, tbl_1.billed_by, tbl_1.billed_on, tbl_1.pdf_bill, tbl_1.attending_doctors, tbl_1.details_no, tbl_2.health_card_no, tbl_2.first_name, tbl_2.middle_name, tbl_2.last_name, tbl_2.suffix, tbl_2.health_card_no, tbl_3.hp_name')

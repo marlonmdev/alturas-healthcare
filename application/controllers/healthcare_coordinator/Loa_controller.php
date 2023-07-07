@@ -1855,10 +1855,12 @@ class Loa_controller extends CI_Controller {
 				$config['upload_path'] = $file_paths[$input_name];
 				$this->upload->initialize($config);
 
-				if (!$this->upload->do_upload($input_name)) {
-					// Handle upload error
-					$error_occurred = TRUE;
-					break;
+				if ($_FILES[$input_name]['size']!== 0) {
+					if (!$this->upload->do_upload($input_name)) {
+						// Handle upload error
+						$error_occurred = TRUE;
+						break;
+					}
 				}
 
 				$uploaded_files[$input_name] = $this->upload->data();

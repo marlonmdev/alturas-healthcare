@@ -828,7 +828,7 @@ function db_get_cost_types_by_hp_ID($hp_id) {
                  ->from('loa_requests as tbl_1')
                  ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
                  ->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id')
-                 ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id')
+                 ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id','left')
                  ->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id= tbl_5.emp_id')
                  ->where('tbl_1.loa_id', $loa_id);
         return $this->db->get()->row_array();
@@ -839,7 +839,7 @@ function db_get_cost_types_by_hp_ID($hp_id) {
                  ->from('loa_requests as tbl_1')
                  ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
                  ->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id')
-                 ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id')
+                 ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id','left')
                  ->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id= tbl_5.emp_id')
                  ->where('tbl_1.loa_id', $loa_id);
         return $this->db->get()->row_array();
@@ -2166,5 +2166,15 @@ function get_billed_for_charging($bill_no) {
     return $query->num_rows(); 
   } 
 //End =================================================
-
+  function db_check_healthcare_provider_exist($hp_id) {
+    $this->db->where('hp_id', $hp_id);
+    $query = $this->db->get('healthcare_providers');
+    return $query->num_rows() > 0 ? true : false;
+  }
+  function db_get_member_details($member_id) {
+    $query = $this->db->get_where('members', ['member_id' => $member_id]);
+    return $query->row_array();
+  }
 }
+
+

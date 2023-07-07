@@ -325,7 +325,7 @@ class Billing_model extends CI_Model {
         return $this->db->update('max_benefit_limits', $data); 
     }
 
-    function check_re_upload_billing($billing_no){
+    function check_re_upload_billing($billing_no){ 
         $query = $this->db->get_where('billing', ['billing_no' => $billing_no,'re_upload' => 1]);
         return $query->num_rows();
      }

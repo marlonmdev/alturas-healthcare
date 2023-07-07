@@ -34,7 +34,7 @@ class Search_controller extends CI_Controller {
     function get_searched_member_details() {
         $member_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
         $row = $this->search_model->db_get_member_details($member_id);
-
+        // var_dump('row',$row);
         $birth_date = date("d-m-Y", strtotime($row['date_of_birth']));
         $current_date = date("d-m-Y");
         $diff = date_diff(date_create($birth_date), date_create($current_date));
@@ -63,6 +63,7 @@ class Search_controller extends CI_Controller {
             'contact_person_no' => $row['contact_person_no'],
             'health_card_no' => $row['health_card_no'],
             'requesting_company' => $row['company'],
+            'mbl' => $row['remaining_balance']
         ];
         echo json_encode($response);
     }

@@ -38,14 +38,6 @@
                       ><i class="mdi mdi-note-plus"></i
                       ><span class="hide-menu ls-1">EMERGENCY LOA</span>
                     </a>
-                <!-- <ul aria-expanded="false" class="collapse first-level">
-                  <li class="sidebar-item">
-                    <a href="<?php echo base_url(); ?>member/request-emergency-loa" class="sidebar-link"
-                      ><i class="mdi mdi-note-plus"></i
-                      ><span class="hide-menu ls-1">Request Emerg LOA</span>
-                    </a>
-                  </li>
-                </ul> -->
               </li>
 
               <li class="sidebar-item 

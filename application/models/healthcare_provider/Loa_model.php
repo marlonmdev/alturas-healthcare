@@ -152,7 +152,7 @@ class Loa_model extends CI_Model{
         $this->db->from('loa_requests as tbl_1');
         $this->db->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
         $this->db->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id');
-        $this->db->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id');
+        $this->db->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id','left');
         $this->db->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id');
 
         
@@ -171,7 +171,7 @@ class Loa_model extends CI_Model{
                  ->from('loa_requests as tbl_1')
                  ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
                  ->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id')
-                 ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id')
+                 ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id','left')
                  ->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id= tbl_5.emp_id')
                  ->where('tbl_1.loa_id', $loa_id);
         return $this->db->get()->row_array();
@@ -290,4 +290,23 @@ class Loa_model extends CI_Model{
         return $this->db->get_where('performed_loa_info', ['loa_id' => $loa_id,
                         'physician_fname !=' => '', 'physician_mname !=' => '','physician_lname !=' => '',])->result_array();
     }
+
+    function db_get_loa_detail($loa_id) {
+        $this->db->select('*')
+                 ->from('loa_requests as tbl_1')
+                 ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+                 ->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id')
+                 ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id','left')
+                 ->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id= tbl_5.emp_id')
+                 ->where('tbl_1.loa_id', $loa_id);
+        return $this->db->get()->row_array();
+      }
+
+      function get_bill_info($loa_id) {
+        return $this->db->get_where('billing', ['loa_id' => $loa_id])->row_array();
+      }
+
+      function get_paid_date($details_no) {
+        return $this->db->get_where('payment_details', ['details_no' => $details_no])->row_array();
+      }
 }

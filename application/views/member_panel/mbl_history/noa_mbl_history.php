@@ -46,6 +46,7 @@
                       <th class="fw-bold" style="color: white">#</th>
                       <th class="fw-bold" style="color: white">NOA #</th>
                       <th class="fw-bold" style="color: white">STATUS</th>
+                      <th class="fw-bold" style="color: white">TYPE OR REQUEST</th>
                       <th class="fw-bold" style="color: white">REQUEST DATE</th>
                       <th class="fw-bold" style="color: white">HOSPITAL BILL</th>
                       <th class="fw-bold" style="color: white">VIEW</th>

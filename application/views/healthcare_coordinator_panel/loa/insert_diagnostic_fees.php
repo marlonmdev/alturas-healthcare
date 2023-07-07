@@ -9,7 +9,7 @@
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
-              <li class="breadcrumb-item active" aria-current="page">Diagnostic SOA</li>
+              <li class="breadcrumb-item active" aria-current="page">Diagnostic Detailed SOA</li>
             </ol>
           </nav>
         </div>
@@ -86,11 +86,9 @@
       </div>
       <hr>
 
-
-      <div class="col-4">
-        <button type="button" class="btn btn-info" id="patient_information">
-          <i class="mdi mdi-eye"></i> Patient Information
-        </button>
+      <div class="row">
+        <div class="col-lg-3"><button type="button" class="btn btn-info" id="patient_information"><i class="mdi mdi-eye" style="color:#80ff00"></i> Patient Information</button></div>
+        <div class="col-lg-3 offset-6"><button type="button" class="btn btn-info" id="summary" ><i class="mdi mdi-file-pdf text-danger"></i> Summary of SOA (Pdf)</button></div>
       </div>
      
 
@@ -168,7 +166,7 @@
 
         <div class="col-4">
           <label>Total Deduction :</label>
-          <input class="form-control text-danger fw-bold" name="less_benefits" value="₱<?php  echo number_format ($benefits_total,2); ?>" readonly>
+          <input class="form-control text-danger fw-bold" name="total_deduction" value="₱<?php  echo number_format ($benefits_total,2); ?>" readonly>
         </div>
 
         <div class="col-4">
@@ -195,7 +193,9 @@
 
     </form>
   </div>
+  <!-- <?php include 'view_pdf_bill_modal.php'; ?> -->
 </div>
+
 
 <!-- Patient Information -->
 <div class="modal fade pt-4" id="patientinformation" tabindex="-1" data-bs-backdrop="static">
@@ -314,6 +314,25 @@
           </div>
 
         </form>
+        
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End -->
+
+<!-- PDF SOA -->
+<div class="modal fade" id="viewPDFBillModal" tabindex="-1" data-bs-backdrop="static" style="height:100%">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color:#00538c">
+        <span class="fw-bold fs-4" style="color:#fff"><i class="mdi mdi-file-pdf text-danger"></i> Summary of Statement of Account</span>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="col-lg-6" style="width:100%;height:100%;">
+          <iframe id="pdf-viewer" style="width:100%;height:580px;"></iframe><br>
+        </div>
       </div>
     </div>
   </div>
@@ -322,8 +341,11 @@
 
 
 
+
 <script>
   const form = document.querySelector('#performedLoaInfo');
+  const baseurl = `<?php echo base_url();?>`;
+  const pdff = `<?php echo $pdf_bill ?>`;
   $(document).ready(function(){
 
     $('#performedLoaInfo').submit(function(event){
@@ -380,186 +402,53 @@
     });
 
     $("#patient_information").click(PatientInfo);
+      
+    $("#summary").click(function() {
+      viewPDFBill();
+    });
   });
 
-  const enableInput = () => {
-    const date = document.querySelector('#date');
-    const physician = document.querySelector('#physician');
-    const status = document.querySelector('#status');
+  const viewPDFBill = () => {
+    $('#viewPDFBillModal').modal('show');
+    let pdfFile = `${baseurl}uploads/pdf_bills/${pdff}`;
+    let fileExists = checkFileExists(pdfFile);
+    // console.log("pdfFilename",pdfFile);
+    if(fileExists){
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', pdfFile, true);
+      xhr.responseType = 'blob';
 
-    if(status.value == 'Performed') {
-      date.removeAttribute('readonly');
-      physician.removeAttribute('readonly');
-    }else{
-      date.setAttribute('readonly', true);
-      physician.setAttribute('readonly', true);
+      xhr.onload = function(e) {
+        if (this.status == 200) {
+          let blob = this.response;
+          let reader = new FileReader();
+
+          reader.onload = function(event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-viewer');
+            iframe.src = dataURL;
+          };
+          reader.readAsDataURL(blob);
+        }
+      };
+      xhr.send();
     }
   }
 
-  let count = 0;
-  const addNewDeduction = () => {
-    const container = document.querySelector('#dynamic-deduction');
-    const deduction_count = document.querySelector('#deduction-count');
-    count ++;
-    deduction_count.value = count;
-    let html_code  = `<div class="row row-deduction" id="row${count}">`;
+  const checkFileExists = (fileUrl) => {
+    let xhr = new XMLHttpRequest();
+    xhr.open('HEAD', fileUrl, false);
+    xhr.send();
 
-    /* Creating a new input field with the name deduction_name[] */
-    html_code += `<div class="col-md-4">
-                    <input type="text" name="deduction-name[]" class="form-control fw-bold ls-1" placeholder="*Enter Deduction Name" required/>
-                    <div class="invalid-feedback">Deduction name and amount is required</div>
-                  </div>`;
-
-    /* Creating a form input field with a name of deduction_amount[] and a class of deduction-amount. */
-    html_code += `<div class="col-md-4">
-                    <div class="input-group mb-3">
-                      <span class="input-group-text bg-success text-white">&#8369;</span>
-                      <input type="number" name="deduction-amount[]" class="deduction-amount form-control fw-bold ls-1" placeholder="*Deduction Amount" oninput="calculateDiagnosticTestBilling()" required/>
-                      <span class="other-deduction-msg text-danger fw-bold"></span>
-                    </div>
-                  </div>`;
-        
-    /* Adding a remove button to the html code. */
-    html_code += `<div class="col-md-4">
-                    <button type="button" data-id="${count}" class="btn btn-danger btn-md btn-remove" onclick="removeDeduction(this)" data-bs-toggle="tooltip" title="Click to remove Deduction"><i class="mdi mdi-close"></i></button>
-                  </div>`;
-
-    html_code += `</div>`;
-
-    $('#dynamic-deduction').append(html_code);
+    return xhr.status == "200" ? true: false;
   }
 
-  const addfee = () => {
-    const container = document.querySelector('#dynamic-fee');
-    const deduction_count = document.querySelector('#fee-count');
-    count ++;
-    deduction_count.value = count;
-    let html_code  = `<div class="row row-deduction1" id="row${count}">`;
-
-    html_code += `<div class="col-md-4">
-                    <input type="text" name="charge-name[]" class="form-control fw-bold ls-1" placeholder="*Enter Charge Name" required/>
-                    <div class="invalid-feedback">Deduction name and amount is required</div>
-                  </div>`;
-
-    html_code += `<div class="col-md-4">
-                    <div class="input-group mb-3">
-                      <span class="input-group-text bg-success text-white">&#8369;</span>
-                      <input type="number" name="charge-amount[]" class="charge-amount form-control fw-bold ls-1" placeholder="*Charge Amount" oninput="calculateDiagnosticTestBilling()" required/>
-                      <span class="other-deduction-msg text-danger fw-bold"></span>
-                    </div>
-                  </div>`;
-        
-    html_code += `<div class="col-md-3">
-                    <button type="button" data-id="${count}" class="btn btn-danger btn-md btn-remove" onclick="removeDeduction(this)" data-bs-toggle="tooltip" title="Click to remove Deduction"><i class="mdi mdi-close"></i></button>
-                  </div>`;
-
-    html_code += `</div>`;
-
-    $('#dynamic-fee').append(html_code);
-  }
-
-  window.onload = function() {
-    calculateDiagnosticTestBilling();
-  };
-
-  const calculateDiagnosticTestBilling = (remaining_balance) => {
-    let total_deductions = 0;
-    let net_bill_amount = 0;
-    let company_charge = 0;
-    let personal_charge = 0;
-    let final_services = 0;
-    const deduct_philhealth = document.querySelector('#deduct-philhealth');
-    const total_bill = document.querySelector('#total-bill');
-    const net_bill = document.querySelector('#net-bill');
-    const input_total_deduction = document.querySelector('#total-deduction');
-    const medicines = document.querySelector('#medicines');
-
-    total_services = totalServices();
-    let other_deduction1 = calculatebenefits();
-    let charge = totalcharge();
-    final_services = charge+other_deduction1+total_services + parseFloat(medicines.value);
-    total_bill.value = parseFloat(final_services).toFixed(2);
-    
-    let other_deduction = calculateOtherDeductions();
-    let benefits_deduction = totalbenefits(); // Get the total benefits
-    total_deductions =other_deduction + benefits_deduction; // Add benefits to the total deductions
-
-    net_bill_amount = parseFloat(final_services) - parseFloat(total_deductions);
-
-    input_total_deduction.value = parseFloat(total_deductions).toFixed(2);
-    net_bill.value = parseFloat(net_bill_amount).toFixed(2);
-  }
-  
-
-  const removeDeduction = (remove_btn) => {
-    count--;
-    const btn_id = remove_btn.getAttribute('data-id');
-    const deduction_count = document.querySelector('#deduction-count');
-    // update deduction count hidden input value for reference
-    deduction_count.value = count;
-
-    document.querySelector(`#row${btn_id}`).remove();
-    calculateDiagnosticTestBilling();
-  }
-
-  const totalServices = () => {
-    let total_services = 0;
-    const services_fee = document.querySelectorAll('.ct-fee');
-    const quantity = document.querySelectorAll('.ct-qty');
-
-    for(let i = 0; i < services_fee.length; i++) {
-      total_services += services_fee[i].value * quantity[i].value;
-    }
-    return total_services;
-  }
-
-
-  const totalbenefits = () => {
-    let total_benefits = 0;
-    const benefits = document.querySelectorAll('.b_amount');
-
-    for (let i = 0; i < benefits.length; i++) {
-      total_benefits += parseFloat(benefits[i].value);
-    }
-    
-    return total_benefits;
-  }
-
-  const totalcharge = () => {
-    let total_charge = 0;
-    const charge = document.querySelectorAll('.c_amount');
-
-    for (let i = 0; i < charge.length; i++) {
-      total_charge += parseFloat(charge[i].value);
-    }
-    
-    return total_charge;
-  }
-
-  const calculateOtherDeductions = () => {
-    let other_deduction = 0;
-    const row_deduction = document.querySelectorAll('.row-deduction');
-    const deduction_amount = document.querySelectorAll('.deduction-amount');
-
-    for (let i = 0; i < row_deduction.length; i++) {
-      other_deduction += deduction_amount[i].value * 1;
-    }  
-    return other_deduction;
-  }
-
-  const calculatebenefits = () => {
-    let other_deduction1 = 0;
-    const row_deduction = document.querySelectorAll('.row-deduction1');
-    const deduction_amount = document.querySelectorAll('.charge-amount');
-
-    for (let i = 0; i < row_deduction.length; i++) {
-      other_deduction1 += deduction_amount[i].value * 1;
-    }  
-    return other_deduction1;
-  }
 
   function PatientInfo($billing_id) {
     $("#patientinformation").modal("show");
     $('#billing-id').val(billing_id);
   }
+
+
 </script>
+

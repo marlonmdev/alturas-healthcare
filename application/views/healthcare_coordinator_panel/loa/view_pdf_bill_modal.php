@@ -1,8 +1,8 @@
 <div class="modal fade" id="viewPDFBillModal" tabindex="-1" data-bs-backdrop="static" style="height:100%">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
-      <div class="modal-header">
-        <span class="fw-bold fs-4">Statement of Account of LOA # : [ <span class="text-warning fw-bold" id="pdf-loa-no"></span> ]</span>
+      <div class="modal-header" style="background-color: #00538c">
+        <span class="fw-bold fs-4" style="color:#fff">Statement of Account of LOA # : [ <span class="text-warning fw-bold" id="pdf-loa-no"></span> ]</span>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">

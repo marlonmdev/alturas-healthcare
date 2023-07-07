@@ -549,8 +549,17 @@ class Pages_controller extends CI_Controller {
 
 	function view_all_billed_loa() {
 		$this->load->model('healthcare_coordinator/loa_model');
+		// $data['emp_id'] = $emp_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		// var_dump($data['emp_id']);
+		// $token = $this->security->get_csrf_hash();
+		// $loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		// $loa = $this->loa_model->get_all_completed_loa($loa_id);
+		// var_dump($loa_id);
+
 		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
 		$data['user_role'] = $this->session->userdata('user_role');
+		// $data['loa_requests'] = $this->loa_model->get_data_loa_requests();
+		// var_dump($data['loa_requests']);
 		$data['bar'] = $this->loa_model->bar_pending();
 		$data['bar1'] = $this->loa_model->bar_approved();
 		$data['bar2'] = $this->loa_model->bar_completed();

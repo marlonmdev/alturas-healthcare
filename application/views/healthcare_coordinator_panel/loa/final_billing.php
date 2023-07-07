@@ -89,11 +89,11 @@
                   </table>
                 </div>
 
-                <div class="row pt-4">
+                <!-- <div class="row pt-4">
                   <div class="col-lg-2 offset-10">
                     <input name="total-hospital-bill" id="total-hospital-bill" class="form-control text-align:left fw-bold" value="0"  oninput="checkTotalHospitalBill()" readonly>
                   </div>
-                </div>
+                </div> -->
               </div>
               <div class="offset-10 pt-2 pb-4">
                 <button class="btn btn-info fw-bold fs-5 btn-lg" type="submit" id="proceed-btn" disabled><i class="mdi mdi-send"></i> Proceed</button>
@@ -193,47 +193,109 @@
 <div class="modal fade pt-4" id="GuaranteeLetter" tabindex="-1" data-bs-backdrop="static">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title ls-2">GUARANTEE LETTER</h4>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
       
       <div class="modal-body">
         <form method="post" action="<?php echo base_url(); ?>healthcare-coordinator/loa/billed/submit_letter" id="Letter" enctype="multipart/form-data">
           <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
-          <input type="hidden" name="emp-id" id="emp-id">
-          <input type="hidden" name="billing-id" id="billing-id">
+          <input type="hidden" name="billing-id" id="billing-id">   
+          <input type="hidden" name="loa_no" id="loa_no">          
                         
-          <div class="col-lg-8 pt-1">
-            <input type="hidden" class="form-control text-danger fs-5 fw-bold" name="emp-name" id="emp-name" placeholder="Employee Name" readonly>
-          </div>
-                        
-          <div class="row pt-5">
-            <div class="col-lg-10 offset-1">
-              <div class="form-group">
-                <label for="letter" style="font-size: 20px">Upload File:</label>
-                <input type="file" class="form-control-file dropify" name="letter" id="letter" accept=".jpg, .jpeg, .png, .gif, .pdf" data-max-file-size="5M" onchange="showPreview(this)">
-              </div>
-              <div style="font-size: 20px; text-align:center" id="image-preview" class="mb-3"></div>
-              <p style="font-size: 20px; text-align:center" id="pdf-preview" class="mb-0"></p>
-              <span id="letter_error" class="text-danger"></span>
-            </div>
-          </div><br>
+          <p id="generated-date"></p>
+          <p class="rch">JONE SIEGFRED L. SEPE</p>
+          <p class="cp">CEO/PRESIDENT</p>
+          <p class="gsp">Gallares Street Poblacion II</p>
+          <p class="tcb">Tagbilaran City, Bohol, 0139</p>
 
-          <div class="row pt-3">
-            <div class="col-sm-12 mb-sm-0 d-flex justify-content-end">
-              <button type="submit" class="btn btn-primary me-2"><i class="mdi mdi-content-save"></i> UPLOAD</button>
-              <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="mdi mdi-close-box"></i> CANCEL</button>
-            </div>
+          <p class="dds">Dear DR. SEPE;</p>
+ 
+          <div class="my-div1" style="text-align: justify">
+            <p style="padding-left:30px">This letter is in reference to the request for the</p> <p class="ahp">Alturas Healthcare Program</p> on behalf of our client, <span id="first_name"><?= $data['first_name'] ?></span> <span id="middle_name"><?= $data['middle_name'] ?></span> <span id="last_name"><?= $data['last_name'] ?></span>. The Alturas Group of Companies has assessed and validated the said request for assistance through the Crisis Intervention Section. Therefore, the company is using this letter to guarantee payment of the bill in the amount <span id="company_charge_words"></span> (<span id="company_charge"><?=  $data['company_charge'] ?></span>).
           </div>
+
+          <div class="my-div2" style="text-align: justify">
+            Please be informed that the payment will be directly deposited into your company's designated bank account. If you have any inquiries or require further information, please feel free to contact us at 233-0261.
+          </div>
+
+          <p class="fyc">Thank you for your consideration.</p>
+ 
+
+          <p class="vty">Yours sincerely,</p>
+
+          <input type="text" name="name" id="name" class="bottom-line-input"> 
+          <p class="coordinator">Coordinator</p>
 
         </form>
+      </div>
+      <div class="modal-footer">
+        <div class="col-sm-12 mb-sm-0 d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary me-2"><i class="mdi mdi-file-pdf"></i> Generate PDF</button>
+          <button type="submit" class="btn btn-primary me-2"><i class="mdi mdi-near-me"></i> Send</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="mdi mdi-close-box"></i> CLOSE</button>
+        </div>
       </div>
     </div>
   </div>
 </div>
 <!-- End -->
 
+<style>
+  .rch{
+    font-size: 15px;font-family: Tahoma;font-weight: bolder;padding: 0;margin: 0; 
+  }
+  .cp{
+    padding: 0;margin: 0;font-weight: bold;
+  }
+  .gsp{
+    padding: 0;margin: 0;font-weight: bold;
+  }
+  .tcb{
+    font-weight: bold;
+  }
+  .dds{
+    font-weight: bold;font-family: Tahoma;
+  }
+  .ahp{
+    font-weight: bold;
+  }
+  .my-div1 p {
+    display: inline;margin: 2;padding: 2;text-align:justify
+  }
+  #first_name{
+    text-transform: uppercase;font-weight: bold;
+  }
+  #middle_name{
+    text-transform: uppercase;font-weight: bold;
+  }
+  #last_name{
+    text-transform: uppercase;font-weight: bold;
+  }
+  #company_charge_words{
+    font-weight: bolder;text-transform: uppercase
+  }
+  #company_charge{
+    font-weight: bolder
+  }
+  .my-div2{
+    padding-top: 30px
+  }
+  .fyc{
+    padding-top: 20px
+  }
+  .vty{
+    padding-top: 50px
+  }
+  .bottom-line-input {
+    border: none;border-bottom: 1px solid black;background-color: transparent;padding: 0;font-weight: bold
+  }
+  .coordinator{
+    padding-left: 40px
+  }
+  #generated-date{
+    font-weight:bold;font-size: 15px;font-family: Tahoma;padding-top: 30px
+  }
+
+
+</style>
   
 
 <script>
@@ -644,10 +706,13 @@
     $('#bd-loa-no').html(loa_no);
   }
 
-  function GuaranteeLetter(billing_id) {
-    $("#GuaranteeLetter").modal("show");
-    $('#billing-id').val(billing_id);
-  }
+  // function GuaranteeLetter(billing_id) {
+  //   $("#GuaranteeLetter").modal("show");
+  //   $('#billing-id').val(billing_id);
+  // }
+
+
+  
 
 
   function showPreview(input) {
@@ -745,4 +810,120 @@
     );
   }
 
+  // function GuaranteeLetter(loa_id,billing_id) {
+  //   $.ajax({
+  //     url: `${baseUrl}healthcare-coordinator/loa/billed/guarantee/${loa_id}`,
+  //     type: "GET",
+  //     success: function(response) {
+  //       const res = JSON.parse(response);
+  //       const { status, token, first_name,middle_name,last_name,company_charge } = res;
+
+  //       // Update modal content
+  //       $("#GuaranteeLetter").modal("show");
+  //       $('#billing-id').val(billing_id);
+  //       $('#loa_no').val(loa_id);
+  //       $('#first_name').text(first_name);
+  //       $('#middle_name').text(middle_name);
+  //       $('#last_name').text(last_name);
+  //       $('#company_charge').html('₱' + Number(company_charge).toFixed(2));
+  //     }
+  //   });
+  // }
+
+  function GuaranteeLetter(loa_id, billing_id) {
+    $.ajax({
+      url: `${baseUrl}healthcare-coordinator/loa/billed/guarantee/${loa_id}`,
+      type: "GET",
+      success: function (response) {
+        const res = JSON.parse(response);
+        const { status, token, first_name, middle_name, last_name, company_charge } = res;
+
+        // Update modal content
+        $("#GuaranteeLetter").modal("show");
+        $('#billing-id').val(billing_id);
+        $('#loa_no').val(loa_id);
+        $('#first_name').text(first_name);
+        $('#middle_name').text(middle_name);
+        $('#last_name').text(last_name);
+        $('#company_charge').html('₱' + Number(company_charge).toFixed(2));
+
+        const words = convertNumberToWords(parseFloat(company_charge));
+        $('#company_charge_words').text(words);
+      }
+    });
+  }
+
+  // Get the current date
+  const currentDate = new Date();
+  const formattedDate = currentDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  document.getElementById('generated-date').textContent = formattedDate;
+
+  function convertNumberToWords(number) {
+  const units = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+  const teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+  const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+  if (number === 0) {
+    return 'Zero';
+  }
+
+  function convertGroup(number) {
+    let word = '';
+
+    if (number >= 100 && number <= 999) {
+      word += units[Math.floor(number / 100)] + ' Hundred ';
+      number %= 100;
+    }
+
+    if (number >= 10 && number <= 19) {
+      word += teens[number - 10];
+      number = 0;
+    } else if (number >= 20) {
+      word += tens[Math.floor(number / 10)];
+      number %= 10;
+    }
+
+    if (number >= 1 && number <= 9) {
+      word += units[number];
+    }
+
+    return word;
+  }
+
+  let word = '';
+
+  if (number >= 1000000 && number <= 999999999) {
+    word += convertGroup(Math.floor(number / 1000000)) + ' Million ';
+    number %= 1000000;
+  }
+
+  if (number >= 1000 && number <= 999999) {
+    word += convertGroup(Math.floor(number / 1000)) + ' Thousand ';
+    number %= 1000;
+  }
+
+  word += convertGroup(number);
+
+  return word + ' Pesos';
+}
+
+
 </script>
+
+<style>
+  @keyframes blink {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  .blink {
+    animation: blink 1s infinite;
+  }
+</style>

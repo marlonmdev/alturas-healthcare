@@ -622,6 +622,7 @@ $route['healthcare-coordinator/loa/requests-list/cancelled/fetch'] = 'healthcare
 $route['healthcare-coordinator/loa/requests-list/resched/fetch'] = 'healthcare_coordinator/loa_controller/fetch_all_rescheduled_loa';
 $route['healthcare-coordinator/loa/pending/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_pending_loa_info';
 $route['healthcare-coordinator/loa/approved/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_approved_loa_info';
+
 $route['healthcare-coordinator/loa/approved/get_data_patient_record/(:any)'] = 'healthcare_coordinator/loa_controller/get_data_patient_record';
 $route['healthcare-coordinator/loa/disapproved/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_disapproved_loa_info';
 $route['healthcare-coordinator/loa/cancelled/view/(:any)'] = 'healthcare_coordinator/loa_controller/get_cancelled_loa_info';
@@ -1008,6 +1009,8 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 	$route['healthcare-coordinator/loa/billed/update_diagnostic_fees'] = 'healthcare_coordinator/loa_controller/update_diagnostic_fees';
 	$route['healthcare-coordinator/loa/billed/diagnostic_fees1/(:any)'] = 'healthcare_coordinator/loa_controller/diagnostic_fees1';
 	$route['healthcare-coordinator/loa/billed/submit_diagnostic'] = 'healthcare_coordinator/loa_controller/submit_diagnostic';
+
+	$route['healthcare-coordinator/loa/billed/guarantee/(:any)'] = 'healthcare_coordinator/loa_controller/guarantee';
 	//end
 
 	//Healthcare Advance

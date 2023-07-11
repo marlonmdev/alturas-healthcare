@@ -548,7 +548,7 @@ class Loa_controller extends CI_Controller {
 				$short_hp_name,
 				$value['loa_request_type'],
 				$request_date,
-				$view_file,
+				($value['loa_request_type'] === 'Diagnostic Test')?$view_file:'NONE',
 				$custom_status,
 				$button
 			);
@@ -619,7 +619,7 @@ class Loa_controller extends CI_Controller {
 				$short_hp_name,
 				$value['loa_request_type'],
 				$expiry_date,
-				$view_file,
+				($value['loa_request_type'] === 'Diagnostic Test')?$view_file:'NONE',
 				'<span class="badge rounded-pill bg-success">' . $value['status'] . '</span>',
 				$buttons
 			);
@@ -681,7 +681,7 @@ class Loa_controller extends CI_Controller {
 				$short_hp_name,
 				$value['loa_request_type'],
 				// $short_med_serv,
-				$view_file,
+				($value['loa_request_type'] === 'Diagnostic Test')?$view_file:'NONE',
 				'<span class="badge rounded-pill bg-danger">' . $value['status'] . '</span>',
 				$button
 			);
@@ -738,7 +738,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $short_hp_name;
 			$row[] = $loa['loa_request_type'];
 			// $row[] = $short_med_services;
-			$row[] = $view_file;
+			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;
@@ -803,7 +803,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $short_hp_name;
 			$row[] = $loa['loa_request_type'];
 			// $row[] = $short_med_services;
-			$row[] = $view_file;
+			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;
@@ -866,7 +866,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $short_hp_name;
 			$row[] = $loa['loa_request_type'];
 			// $row[] = $short_med_services;
-			$row[] = $view_file;
+			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;
@@ -926,7 +926,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $short_hp_name;
 			$row[] = $loa['loa_request_type'];
 			// $row[] = $short_med_services;
-			$row[] = $view_file;
+			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;
@@ -941,7 +941,7 @@ class Loa_controller extends CI_Controller {
 	function get_loa_info() {
 		$doctor_name = $requesting_physician = "";
 		$loa_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
-		$row = $this->loa_model->db_get_loa_info($loa_id);
+		$row = $this->loa_model->db_get_loa_detail($loa_id);
 
 		//check if requesting physician exist from DB
 		$exist = $this->loa_model->db_get_requesting_physician($row['requesting_physician']);
@@ -1019,10 +1019,10 @@ class Loa_controller extends CI_Controller {
 			'age' => $age,
 			'gender' => $row['gender'],
 			'philhealth_no' => $row['philhealth_no'],
-			'blood_type' => $row['blood_type'],
+			'blood_type' => ($row['city_address']!=="")?$row['blood_type']:'None',
 			'contact_no' => $row['contact_no'],
 			'home_address' => $row['home_address'],
-			'city_address' => $row['city_address'],
+			'city_address' => ($row['city_address']!=="")?$row['city_address']:'None',
 			'email' => $row['email'],
 			'contact_person' => $row['contact_person'],
 			'contact_person_addr' => $row['contact_person_addr'],
@@ -1050,7 +1050,9 @@ class Loa_controller extends CI_Controller {
 			'cancelled_on' => $row['cancelled_on'] ? date("F d, Y", strtotime($row['cancelled_on'])) : '',
 			'cancellation_reason' => $row['cancellation_reason'],
 			'billed_on' => $billed_on,
-			'paid_on' => $paid_on
+			'paid_on' => $paid_on,
+			'member_mbl' => number_format($row['max_benefit_limit'], 2),
+			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		];
 		echo json_encode($response);
 	}

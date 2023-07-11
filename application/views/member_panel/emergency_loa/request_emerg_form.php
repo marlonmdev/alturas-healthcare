@@ -89,7 +89,7 @@
               <br>
               <div class="row">
                 <div class="col-sm-12 mb-2 d-flex justify-content-start">
-                  <button type="submit" class="btn btn-primary me-2">
+                  <button type="submit" id = "submit" class="btn btn-primary me-2">
                     <i class="mdi mdi-content-save"></i> SUBMIT
                   </button>
                   <a href="JavaScript:void(0)" onclick="window.history.back()" class="btn btn-danger">
@@ -119,18 +119,16 @@
   $(document).ready(function() {
     $('#submit').prop('disabled',false); 
 
-
     $('#admission-date').flatpickr({
       dateFormat: "Y-m-d"
     });
 
-    $('#memberNoaRequestForm').submit(function(event) {
-      event.preventDefault();
-        let $data = new FormData($(this)[0]);
-        if(mbl<=0){
+    if(mbl<=0){
+        $('#submit').prop('disabled',true);
         $.alert({
           title: "<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Unable to Request</h3>",
-          content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it looks like your MBL balance is currently empty. Please ensure that you have enough MBL in your account before attempting to make a request. Thank you for your understanding.</div>",
+          content: "<div style='font-size: 16px; color: #333;'>We sincerely apologize for any inconvenience caused. It appears that your MBL balance  is currently empty. In order to proceed with a request, we kindly request that you ensure there are sufficient MBL funds available. We greatly appreciate your understanding and cooperation in this matter.</div>",
+
           type: "red",
           buttons: {
               ok: {
@@ -142,8 +140,24 @@
               },
           },
       });
-          // $('#submit').prop('disabled',true);      
-      }else{
+      }else  if(mbl< 500){
+        $.alert({
+          title: "<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Warning</h3>",
+          content: "<div style='font-size: 16px; color: #333;'>We sincerely apologize for any inconvenience caused. It appears that the MBL balance is currently below 500.00. We greatly appreciate your understanding and cooperation in this matter.</div>",
+
+          type: "red",
+          buttons: {
+              ok: {
+                  text: "OK",
+                  btnClass: "btn-danger",
+              },
+          },
+        });
+      }
+
+    $('#memberNoaRequestForm').submit(function(event) {
+      event.preventDefault();
+        let $data = new FormData($(this)[0]);
         $.ajax({
           type: "post",
           url: $(this).attr('action'),
@@ -212,7 +226,6 @@
           },
         });
       // End of AJAX Request
-    }
     
     });
   });

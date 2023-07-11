@@ -27,14 +27,10 @@ class Billing_controller extends CI_Controller {
     }
 
     public function get_personal_and_company_charge($label,$loa_noa,$net_b,$status,$prevmbl,$old_billing) {
-
-        // var_dump("prev balance",$prevmbl);
-        // var_dump("old billing",$old_billing);
         
         $loa_info = $this->loa_model->db_get_loa_info($loa_noa);
         $noa_info = $this->noa_model->db_get_noa_info($loa_noa);
-        
-
+       
 			$company_charge = '';
 			$personal_charge = '';
 			$remaining_mbl = '';
@@ -50,30 +46,18 @@ class Billing_controller extends CI_Controller {
                 
                 if( date('Y', strtotime($loa_info['request_date'])) < date('Y') && $last_bill != floatval($loa_info['remaining_balance']) && $old_billing != null){     
                     $previous_mbl = ($status) ? floatval($prevmbl) : $last_bill;
-                    var_dump('request_date 1',$loa_info['request_date']);
-                    var_dump('last_bill 1',$last_bill);
-                    var_dump('old_billing 1',$old_billing);
-                    var_dump('prev mbl 1',$previous_mbl);
+
                 }else if( date('Y', strtotime($loa_info['request_date'])) == date('Y') && $last_bill != floatval($loa_info['remaining_balance']) && $old_billing != null){
                     $previous_mbl = ($status) ? floatval($prevmbl) : floatval($loa_info['remaining_balance']);
-                    var_dump('request_date 2',$loa_info['request_date']);
-                    var_dump('last_bill 2',$last_bill);
-                    var_dump('old_billing 2',$old_billing);
-                    var_dump('prev mbl 2',$previous_mbl);
+                   
                 }
                 else if( date('Y', strtotime($loa_info['request_date'])) == date('Y') && $last_bill != floatval($loa_info['remaining_balance']) && $old_billing == null){
                     $previous_mbl = ($status) ? floatval($prevmbl) : floatval($loa_info['remaining_balance']);
-                    var_dump('request_date 3',$loa_info['request_date']);
-                    var_dump('last_bill 3',$last_bill);
-                    var_dump('old_billing 3',$old_billing);
-                    var_dump('prev mbl 3',$previous_mbl);
+                   
                 }
                 else{
                     $previous_mbl = ($status) ? floatval($prevmbl) : $last_bill;
-                    var_dump('request_date 4',$loa_info['request_date']);
-                    var_dump('last_bill 4',$last_bill);
-                    var_dump('old_billing 4',$old_billing);
-                    var_dump('prev mbl 4',$previous_mbl);
+                   
                 }
                 
                 $used_mbl = floatval($loa_info['used_mbl']);
@@ -1196,7 +1180,8 @@ class Billing_controller extends CI_Controller {
             $result_charge = $this->get_personal_and_company_charge("loa",$loa_id,$net_bill,($check_bill !=0)? true : false,
              ($get_prev_mbl !=null)?$get_prev_mbl['after_remaining_bal'] :  $get_prev_balance,
              ($old_billing !=null)? $old_billing['after_remaining_bal'] : null);
-             
+            //  var_dump("re upload",$check_bill);
+            //  var_dump("done reupload",$check_bill)
             $existed = $this->billing_model->check_billing_loa($loa_id);
             $bill_no = $this->billing_model->get_billing_no($loa_id);
             $data = [
@@ -1218,8 +1203,8 @@ class Billing_controller extends CI_Controller {
                 'status'                => 'Billed',
                 'extracted_txt'         => $hospitalBillData,
                 'attending_doctors'     => $attending_doctor,
-                're_upload'             => isset($check_bill) ? 0 : 1,
-                'done_re_upload'        => isset($check_bill) ? 'Done' : null,
+                're_upload'             => ($check_bill) ? 0 : 1,
+                'done_re_upload'        => ($check_bill) ? null : 'Done',
                 'request_date'          => $loa['request_date']
             ];   
 
@@ -1425,6 +1410,26 @@ class Billing_controller extends CI_Controller {
             $data['re_upload'] = true;
             $data['prev_billing'] = $mbl_by_bill_no['pdf_bill'];
             $data['net_bill'] = $mbl_by_bill_no['net_bill'];
+
+            if($loa['loa_request_type'] === 'Diagnostic Test'){
+                $med_services = [];
+                $exploded_med_services = explode(";", $loa['med_services']);
+    
+                foreach ($exploded_med_services as $ctype_id) :
+                    $cost_type = $this->billing_model->get_cost_type_by_id($ctype_id);
+                    array_push($med_services, $cost_type['item_description']);
+                endforeach;
+                $data['services'] = $med_services;
+            }
+    
+            if($loa['loa_request_type'] === 'Consultation'){
+                $data['services'] = 'Consultation';
+            }
+    
+            if($loa['loa_request_type'] === 'Emergency'){
+                $data['services'] = 'Emergency';
+            }
+
             $this->load->view('templates/header', $data);
             $this->load->view('healthcare_provider_panel/billing/upload_loa_bill_pdf');
             $this->load->view('templates/footer');

@@ -47,6 +47,7 @@ class Mbl_history extends CI_Controller {
 			$row[] = $loa['tbl1_loa_id'];
 			$row[] = $loa['loa_no'];
 			$row[] =  $loa['tbl1_status'];
+			$row[] = $loa['loa_request_type'];
 			$row[] = $loa['tbl1_request_date'];
             $row[] = number_format(floatval((isset($loa['net_bill']) ? $loa['net_bill'] : $med_services)),2);
 			$row[] = $custom_actions;
@@ -78,6 +79,7 @@ class Mbl_history extends CI_Controller {
 			$row[] = $noa['tbl1_noa_id'];
 			$row[] = $noa['noa_no'];
 			$row[] =  $noa['tbl1_status'];
+			$row[] =  $noa['type_request'];
 			$row[] =  $noa['tbl1_request_date'];
             $row[] = number_format(floatval((isset($noa['net_bill']) ? $noa['net_bill'] : 0)),2);
 			$row[] = $custom_actions;	
@@ -212,7 +214,7 @@ class Mbl_history extends CI_Controller {
 			'token' => $this->security->get_csrf_hash(),
 			'loa_no' => $row['loa_no'],
 			'loa_request_type' => $row['loa_request_type'],
-			'med_services' => (count($ct_array)!=0) ? $ct_array : ['Consultation'],
+			'med_services' => ($row['loa_request_type'] === 'Diagnostic Test') ? $ct_array : (($row['loa_request_type'] === 'Consultation') ?['Consultation']:['Emergency Loa']),
 			'requesting_company' => $row['requesting_company'],
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'complaints' => $row['chief_complaint'],

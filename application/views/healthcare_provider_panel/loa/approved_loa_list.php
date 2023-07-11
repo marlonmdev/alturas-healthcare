@@ -121,7 +121,7 @@
 
     function viewLoaInfo(loa_id) {
         $.ajax({
-        url: `${baseUrl}healthcare-provider/loa-requests/approved/view/${loa_id}`,
+        url: `${baseUrl}healthcare-provider/loa-requests/view/${loa_id}`,
         type: "GET",
         success: function(response) {
             const res = JSON.parse(response);

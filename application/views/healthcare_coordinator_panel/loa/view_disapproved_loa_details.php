@@ -26,14 +26,14 @@
                   <td class="fw-bold ls-1">Disapproved By :</td>
                   <td class="fw-bold ls-1" id="disapproved-by"></td>
                 </tr>
-                <tr>
+                <!-- <tr>
                   <td class="fw-bold ls-1">Work Related :</td>
                   <td class="fw-bold ls-1" id="work_related"></td>
                 </tr>
                 <tr>
                   <td class="fw-bold ls-1">Percentage :</td>
                   <td class="fw-bold ls-1" id="percentage"></td>
-                </tr>
+                </tr> -->
                 <tr>
                   <td class="fw-bold ls-1">Maximum Benefit Limit :</td>
                   <td class="fw-bold ls-1">&#8369;<span id="member-mbl"></span></td>

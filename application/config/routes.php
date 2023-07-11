@@ -222,6 +222,7 @@ $route['healthcare-provider/loa-requests/approved/view/(:any)'] = 'healthcare_pr
 $route['healthcare-provider/loa-requests/disapproved/view/(:any)'] = 'healthcare_provider/loa_controller/get_disapproved_loa_info';
 $route['healthcare-provider/loa-requests/completed/view/(:any)'] = 'healthcare_provider/loa_controller/get_completed_loa_info';
 $route['healthcare-provider/loa-requests/billed/view/(:any)'] = 'healthcare_provider/loa_controller/get_billed_loa_info';
+$route['healthcare-provider/loa-requests/view/(:any)'] = 'healthcare_provider/loa_controller/get_loa_info';
 
 
 // NOA Pages
@@ -534,7 +535,8 @@ $route['healthcare-coordinator/setup/company-doctors'] = 'healthcare_coordinator
 $route['healthcare-coordinator/setup/cost-types'] = 'healthcare_coordinator/pages_controller/view_all_cost_types';
 $route['healthcare-coordinator/setup/room-types'] = 'healthcare_coordinator/pages_controller/view_all_room_types';
 $route['healthcare-coordinator/loa/request-loa'] = 'healthcare_coordinator/pages_controller/view_request_loa_form';
-
+$route['healthcare-coordinator/loa/request-emergency'] = 'healthcare_coordinator/pages_controller/request_emegency_loa_form';
+// $route['healthcare-coordinator/loa/request-emergency/submit'] = 'healthcare_coordinator/loa_controller/submit_loa_request';
 
 
 

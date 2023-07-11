@@ -90,6 +90,35 @@ class Loa_controller extends CI_Controller {
 					$this->insert_loa($input_post, $med_services, $attending_physician, $rx_file);
 				}
 				break;
+				case ($request_type == 'Emergency'):
+					$this->form_validation->set_rules('hospital-name', 'HealthCare Provider', 'required');
+					$this->form_validation->set_rules('admission-date', 'Date Hospitalized', 'required');
+					$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[1000]');
+					if ($this->form_validation->run() == FALSE) {
+						$response = [
+							'status' => 'error',
+							'healthcare_provider_error' => form_error('healthcare-provider'),
+							'chief_complaint_error' => form_error('chief-complaint'),
+							'admission_date_error' => form_error('admission-date'),
+						];
+
+						echo json_encode($response);
+						exit();
+					}
+					// check if the selected healthcare provider exist from database
+					$hp_exist = $this->loa_model->db_check_healthcare_provider_exist($input_post['hospital-name']);
+					if (!$hp_exist) {
+						$response = [
+							'status' => 'save-error',
+							'message' => 'Invalid Healthcare Provider'
+						];
+						echo json_encode($response);
+						exit();
+					} else {
+							// Call function insert_loa
+							$this->insert_loa($input_post, "", "", "");
+					}
+				break;
 		}
 	}
 
@@ -98,39 +127,33 @@ class Loa_controller extends CI_Controller {
 		$result = $this->loa_model->db_get_max_loa_id();
 		$max_loa_id = !$result ? 0 : $result['loa_id'];
 		$add_loa = $max_loa_id + 1;
+		$current_year = date('Y');
 		// call function loa_number
-		$loa_no = $this->loa_number($add_loa, 8, 'LOA-');
+		$loa_no = $this->loa_number($add_loa, 7, 'LOA-'.$current_year);
 
+		$member_id = $this->myhash->hasher($input_post['emp-id'], 'decrypt');
+		
+		$member = $this->loa_model->db_get_member_details($member_id);
 		$post_data = [
 			'loa_no' => $loa_no,
-			'emp_id' => $input_post['emp-id'],
-			'first_name' =>  ucwords($input_post['first-name']),
-			'middle_name' =>  ucwords($input_post['middle-name']),
-			'last_name' =>  ucwords($input_post['last-name']),
-			'suffix' =>  ucwords($input_post['suffix']),
-			'date_of_birth' => date("Y-m-d", strtotime($input_post['date-of-birth'])),
-			'gender' => $input_post['gender'],
-			'philhealth_no' => $input_post['philhealth-no'],
-			'blood_type' => $input_post['blood-type'],
-			'contact_no' => $input_post['contact-no'],
-			'home_address' => $input_post['home-address'],
-			'city_address' => $input_post['city-address'],
-			'email' =>  $input_post['email'],
-			'contact_person' => $input_post['contact-person'],
-			'contact_person_addr' =>  $input_post['contact-person-addr'],
-			'contact_person_no' => $input_post['contact-person-no'],
-			'hcare_provider' => $input_post['healthcare-provider'],
+			'emp_id' => $member['emp_id'],
+			'first_name' =>  $member['first_name'],
+			'middle_name' =>  $member['middle_name'],
+			'last_name' =>  $member['last_name'],
+			'suffix' =>  $member['suffix'],
+			'hcare_provider' => $input_post['hospital-name'],
 			'loa_request_type' => $input_post['loa-request-type'],
-			'med_services' => implode(';', $med_services),
-			'health_card_no' => $input_post['health-card-no'],
-			'requesting_company' => $input_post['requesting-company'],
-			'request_date' => date("Y-m-d", strtotime($input_post['request-date'])),
-			'chief_complaint' => strip_tags($input_post['chief-complaint']),
-			'requesting_physician' => ucwords($input_post['requesting-physician']),
+			'med_services' => ($med_services!=="")?implode(';', $med_services):"",
+			'health_card_no' => $member['health_card_no'],
+			'requesting_company' => $member['company'],
+			'request_date' => date("Y-m-d"),
+			'emerg_date' => (isset( $input_post['admission-date']))? $input_post['admission-date']:null,
+			'chief_complaint' => (isset($input_post['chief-complaint']))?strip_tags($input_post['chief-complaint']):"",
+			'requesting_physician' =>(isset($input_post['requesting-physician']))? ucwords($input_post['requesting-physician']):"",
 			'attending_physician' => $attending_physician,
 			'rx_file' => $rx_file,
-			'requested_by' => $input_post['requested-by'],
 			'status' => 'Pending',
+			'requested_by' => $this->session->userdata('emp_id'),
 		];
 		$inserted = $this->loa_model->db_insert_loa_request($post_data);
 		if (!$inserted) {
@@ -139,12 +162,68 @@ class Loa_controller extends CI_Controller {
 				'message' => 'LOA Request Failed'
 			];
 		}
+
 		$response = [
 			'status' => 'success', 
 			'message' => 'LOA Request Save Successfully'
 		];
 		echo json_encode($response);
 	}
+	// function insert_loa($input_post, $med_services, $attending_physician, $rx_file) {
+	// 	// select the max loa_id from DB
+	// 	$result = $this->loa_model->db_get_max_loa_id();
+	// 	$max_loa_id = !$result ? 0 : $result['loa_id'];
+	// 	$add_loa = $max_loa_id + 1;
+	// 	// call function loa_number
+	// 	$loa_no = $this->loa_number($add_loa, 8, 'LOA-');
+
+	// 	$member_id = $input_post['member-id'];
+	// 	$member = $this->loa_model->db_get_member_details($member_id);
+	// 	$post_data = [
+	// 		'loa_no' => $loa_no,
+	// 		'emp_id' => $input_post['emp-id'],
+	// 		'first_name' =>  ucwords($input_post['first-name']),
+	// 		'middle_name' =>  ucwords($input_post['middle-name']),
+	// 		'last_name' =>  ucwords($input_post['last-name']),
+	// 		'suffix' =>  ucwords($input_post['suffix']),
+	// 		'date_of_birth' => date("Y-m-d", strtotime($input_post['date-of-birth'])),
+	// 		'gender' => $input_post['gender'],
+	// 		'philhealth_no' => $input_post['philhealth-no'],
+	// 		'blood_type' => $input_post['blood-type'],
+	// 		'contact_no' => $input_post['contact-no'],
+	// 		'home_address' => $input_post['home-address'],
+	// 		'city_address' => $input_post['city-address'],
+	// 		'email' =>  $input_post['email'],
+	// 		'contact_person' => $input_post['contact-person'],
+	// 		'contact_person_addr' =>  $input_post['contact-person-addr'],
+	// 		'contact_person_no' => $input_post['contact-person-no'],
+	// 		'hcare_provider' => $input_post['healthcare-provider'],
+	// 		'loa_request_type' => $input_post['loa-request-type'],
+	// 		'med_services' => implode(';', $med_services),
+	// 		'health_card_no' => $input_post['health-card-no'],
+	// 		'requesting_company' => $input_post['requesting-company'],
+	// 		'request_date' => date("Y-m-d", strtotime($input_post['request-date'])),
+	// 		'emerg_date' => (isset( $input_post['admission-date']))? $input_post['admission-date']:null,
+	// 		'chief_complaint' => strip_tags($input_post['chief-complaint']),
+	// 		'requesting_physician' => ucwords($input_post['requesting-physician']),
+	// 		'attending_physician' => $attending_physician,
+	// 		'rx_file' => $rx_file,
+	// 		'requested_by' => $input_post['requested-by'],
+	// 		'status' => 'Pending',
+	// 	];
+	// 	$inserted = $this->loa_model->db_insert_loa_request($post_data);
+	// 	if (!$inserted) {
+	// 		$response = [
+	// 			'status' => 'save-error', 
+	// 			'message' => 'LOA Request Failed'
+	// 		];
+	// 	}
+	// 	$response = [
+	// 		'status' => 'success', 
+	// 		'message' => 'LOA Request Save Successfully'
+	// 	];
+	// 	echo json_encode($response);
+	// }
 
 	function check_rx_file($str) {
 		if (isset($_FILES['rx-file']['name']) && !empty($_FILES['rx-file']['name'])) {
@@ -364,7 +443,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
-			$row[] = $view_file;
+			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 			$row[] = $custom_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
@@ -449,7 +528,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
-			$row[] = $view_file;
+			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 			$row[] = $expiry_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
@@ -586,7 +665,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
-			$row[] = $view_file;
+			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 			$row[] = $custom_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
@@ -686,7 +765,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
-			$row[] = $view_file;
+			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 			$row[] = $custom_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
@@ -807,7 +886,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
-			$row[] = $view_file;
+			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 			$row[] = $custom_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
@@ -866,7 +945,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
-			$row[] = $view_file;
+			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 			$row[] = $expiry_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
@@ -923,7 +1002,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
-			$row[] = $view_file;
+			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 			$row[] = $custom_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
@@ -1005,7 +1084,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
-			$row[] = $view_file;
+			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 			$row[] = $custom_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
@@ -1515,8 +1594,8 @@ class Loa_controller extends CI_Controller {
 			'requesting_company' => $row['requesting_company'],
 			'request_date' => $row['request_date'] ? date("F d, Y", strtotime($row['request_date'])) : '',
 			'chief_complaint' => $row['chief_complaint'],
-			'requesting_physician' => $row['doctor_name'],
-			'attending_physician' => $row['attending_physician'],
+			'requesting_physician' => ($row['doctor_name']!==null)?$row['doctor_name']:'None',
+			'attending_physician' => ($row['attending_physician']!==null)?$row['attending_physician']:'None',
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
 			'work_related' => $row['work_related'],
@@ -1593,8 +1672,8 @@ class Loa_controller extends CI_Controller {
 			'med_services' => $med_serv,
 			'requesting_company' => $row['requesting_company'],
 			'chief_complaint' => $row['chief_complaint'],
-			'requesting_physician' => $row['doctor_name'],
-			'attending_physician' => $row['attending_physician'],
+			'requesting_physician' => ($row['doctor_name']!==null)?$row['doctor_name']:'None',
+			'attending_physician' => ($row['attending_physician']!==null)?$row['attending_physician']:'None',
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
@@ -1660,8 +1739,8 @@ class Loa_controller extends CI_Controller {
 			'requesting_company' => $row['requesting_company'],
 			'request_date' => $row['request_date'] ? date("F d, Y", strtotime($row['request_date'])) : '',
 			'chief_complaint' => $row['chief_complaint'],
-			'requesting_physician' => $row['doctor_name'],
-			'attending_physician' => $row['attending_physician'],
+			'requesting_physician' => ($row['doctor_name']!==null)?$row['doctor_name']:'None',
+			'attending_physician' => ($row['attending_physician']!==null)?$row['attending_physician']:'None',
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
 			'work_related' => $row['work_related'],
@@ -1786,7 +1865,7 @@ class Loa_controller extends CI_Controller {
 			'requesting_company' => $row['requesting_company'],
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'chief_complaint' => $row['chief_complaint'],
-			'requesting_physician' => $row['doctor_name'],
+			'requesting_physician' => ($row['doctor_name']!==null)?$row['doctor_name']:'None',
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
 			'work_related' => $row['work_related'],
@@ -1795,7 +1874,8 @@ class Loa_controller extends CI_Controller {
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 			'requested_by' => $row['requested_by'],
 			'approved_by' => $row['doctor_name'],
-			'approved_on' => $row['approved_on']
+			'approved_on' => $row['approved_on'],
+			'expiry_date' => $row['expiration_date']
 		];
 		echo json_encode($response);
 	}

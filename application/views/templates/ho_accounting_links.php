@@ -42,7 +42,7 @@
 
               <li class="sidebar-item <?php echo ($this->uri->segment(3) == 'ledger') ? 'selected' : '' ; ?>">
                 <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
-                  <i class="mdi mdi-file-document ls-1"></i>Ledger
+                  <i class="mdi mdi-book-open-page-variant ls-1"></i>Ledger
                   
                 </a>
                 <ul aria-expanded="false" class="collapse first-level">
@@ -78,6 +78,17 @@
                   aria-expanded="false"
                   ><i class="mdi mdi-file"></i
                   ><span class="hide-menu ls-1">NOA</span>
+                </a>
+              </li>
+
+              <li class="sidebar-item">
+                <?php echo ($this->uri->segment(3) == 'setup') ? 'selected' : '' ; ?>
+                <a
+                  class="sidebar-link"
+                  href="<?php echo base_url(); ?>head-office-accounting/setup/bank-accounts"
+                  aria-expanded="false"
+                  ><i class="mdi mdi-settings-box"></i
+                  ><span class="hide-menu ls-1">Bank Setup</span>
                 </a>
               </li>
 

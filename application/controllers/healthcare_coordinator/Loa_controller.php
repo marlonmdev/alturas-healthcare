@@ -1023,8 +1023,8 @@ class Loa_controller extends CI_Controller {
 
 	function fetch_for_payment_loa() {
 		$this->security->get_csrf_hash();
-		$status = 'Payable';
-		$for_payment = $this->loa_model->fetch_for_payment_bill($status);
+		// $status = 'Payable';
+		$for_payment = $this->loa_model->fetch_for_payment_bill();
 		$data = [];
 		foreach($for_payment as $bill){
 			$row = [];
@@ -1850,13 +1850,13 @@ class Loa_controller extends CI_Controller {
 			foreach ($file_inputs as $input_name) {
 				$config['upload_path'] = $file_paths[$input_name];
 				$this->upload->initialize($config);
-
-				if (!$this->upload->do_upload($input_name)) {
-					// Handle upload error
-					$error_occurred = TRUE;
-					break;
+				if (empty($_FILES[$input_name])) {
+					if (!$this->upload->do_upload($input_name)) {
+						// Handle upload error
+						$error_occurred = TRUE;
+						break;
+					}
 				}
-
 				$uploaded_files[$input_name] = $this->upload->data();
 			}
 
@@ -1896,7 +1896,6 @@ class Loa_controller extends CI_Controller {
 			}
 		}
 	}
-
 
 	function generate_printable_loa() {
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');

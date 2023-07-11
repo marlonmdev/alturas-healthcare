@@ -83,7 +83,7 @@
                         <thead style="background-color:#00538C">
                             <tr>
                                 <td class="text-white">Charging No.</td>
-                                <td class="text-white">Date Consolidated</td>
+                                <td class="text-white">Transaction Date</td>
                                 <td class="text-white">Business Unit</td>
                                 <td class="text-white">Company Charge</td>
                                 <td class="text-white">Healthcare Advance</td>
@@ -131,10 +131,11 @@
                 },
 
                 //Set column definition initialisation properties.
-                columnDefs: [{
-                    "targets": [5], // 5th column / numbering column
-                    "orderable": false, //set not orderable
-                }, ],
+                columnDefs: [
+                    { targets: 3, className: 'text-end' },
+                    { targets: 4, className: 'text-end' },
+                    { targets: 5, className: 'text-end' },
+                ],
                 info: false,
                 paging: false,
                 filter: false,

@@ -32,7 +32,7 @@
                             <span class="hidden-xs-down fs-5 font-bold">Billed</span></a
                         >
                     </li>
-                    <li class="nav-item">
+                    <l class="nav-item">
                         <a
                             class="nav-link"
                             href="<?php echo base_url(); ?>head-office-accounting/billing-list/for-payment"
@@ -40,7 +40,7 @@
                             ><span class="hidden-sm-up"></span>
                             <span class="hidden-xs-down fs-5 font-bold">For Payment</span></a
                         >
-                    </li>
+                    </l i>
                     <li class="nav-item">
                        <a
                             class="nav-link"
@@ -53,7 +53,7 @@
                 </ul>
             </div>
             <div  id="billing-container" style="display:">
-                <div class="row pt-2">
+                <div class="row pt-2 pb-2 gap-2">
                     <div class="col-lg-4 ps-5 pb-3 pt-1 pb-4">
                         <div class="input-group">
                             <div class="input-group-prepend">
@@ -71,67 +71,39 @@
                     </div>
                     <div class="col-lg-4 pt-1">
                         <div class="input-group">
-                            <div class="input-group-prepend ">
-                                <span class="input-group-text text-dark fw-bold">
-                                Business Unit : 
+                            <div class="input-group-append">
+                                <span class="input-group-text text-dark ls-1 ms-2">
+                                    <i class="mdi mdi-calendar-range"></i>
                                 </span>
                             </div>
-                            <select class="form-select fw-bold" name="billed-bu-filter" id="billed-bu-filter" onchange="displayValue()">
-                                <option value="">Select Business Units...</option>
-                                <?php
-                                    // Sort the business units alphabetically
-                                    $sorted_bu = array_column($business_unit, 'business_unit');
-                                    asort($sorted_bu);
-                                    
-                                    foreach($sorted_bu as $bu) :
-                                ?>
-                                <option value="<?php echo $bu; ?>"><?php echo $bu; ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                            <input type="date" class="form-control" name="start_date" id="start-date" oninput="validateDateRange()" placeholder="Start Date" onchange="displayValue()">
 
-                            <!-- <div class="col-lg-6 pt-1" id="bu-units-wrapper"> -->
-                              <!-- business units will be appended here... -->
-                            <!-- </div> -->
-
-                        </div>
-                    </div>
-                    <div class="col-lg-4 pt-1 offset-">
-                            <div class="input-group">
-                                <div class="input-group-append">
-                                    <span class="input-group-text text-dark ls-1 ms-2">
-                                        <i class="mdi mdi-calendar-range"></i>
-                                    </span>
-                                </div>
-                                <input type="date" class="form-control" name="start_date" id="start-date" oninput="validateDateRange()" placeholder="Start Date" onchange="displayValue()">
-
-                                <div class="input-group-append">
-                                    <span class="input-group-text text-dark ls-1 ms-2">
-                                        <i class="mdi mdi-calendar-range"></i>
-                                    </span>
-                                </div>
-                                <input type="date" class="form-control" name="end-date" id="end-date" oninput="validateDateRange()" placeholder="End Date" onchange="displayValue()">
+                            <div class="input-group-append">
+                                <span class="input-group-text text-dark ls-1 ms-2">
+                                    <i class="mdi mdi-calendar-range"></i>
+                                </span>
                             </div>
+                            <input type="date" class="form-control" name="end-date" id="end-date" oninput="validateDateRange()" placeholder="End Date" onchange="displayValue()">
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col pb-2 pt-4 offset-9">
+                    <div class="col-md-2 pb-4 pt-1">
                             <button class="btn btn-info w-100" onclick="submitForPayment()" title="click to submit data for payment"><i class="mdi mdi-send"></i> For Payment </button>
                         </div>
-                        <div class="col pb-2 pt-4">
+                        <!-- <div class="col pb-2 pt-4">
                             <button class="btn btn-danger ls-1" onclick="printPDF()" title="click to print data"><i class="mdi mdi-printer"></i> Print </button>
-                        </div>
-                    </div>
+                        </div> -->
                 </div>
                 <div class="card shadow">
-                    <div class="row pe-2" id="printableDiv">
+                    <div class="row" id="printableDiv">
                         <div id="billing-table">
                             <div class="card-body">
-                                <div class="pt-4 table-responsive">
+                                <div class="table-responsive">
                                     <i class="text-danger">( Click LOA/NOA number to view details )</i>
                                     <table class="table table-sm border" id="billedTable">
                                         <thead>
                                             <tr class="border-secondary border-2 border-0 border-top border-bottom">
                                                 <th class="fw-bold ls-2"><strong>#</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Request Date</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Billing No</strong></th>
                                                 <th class="fw-bold ls-2"><strong>LOA/NOA #</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Patient Name</strong></th>
@@ -149,10 +121,26 @@
                                         </thead>
                                         <tbody class="pt-2" id="billing-tbody" >
                                         </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td class="fw-bold">TOTAL</td>
+                                                <td class="fw-bold text-end" id="total_bill"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        </tfoot>
                                     </table><br>
-                                    <div class="row offset-7">
-                                        <span class="ps-4 fw-bold">TOTAL PAYABLE <span class="offset-2" id="total_bill"></span></span>
-                                    </div>
                                     <br><br><br>
                                 </div>
                             </div>
@@ -184,14 +172,20 @@
             data.hp_id = $('#billed-hospital-filter').val();
             data.endDate = $('#end-date').val();
             data.startDate = $('#start-date').val();
-            data.business_unit = $('#billed-bu-filter').val();
           
         },
       },
       //Set column definition initialisation properties.
-      columnDefs: [{
-        "orderable": false, //set not orderable
-      }, ],
+      columnDefs: [
+            { targets: 6, className: 'text-end' },
+            { targets: 8, className: 'text-end' },
+            { targets: 9, className: 'text-end' },
+            { targets: 10, className: 'text-end' },
+            { targets: 11, className: 'text-end' },
+            { targets: 12, className: 'text-end' },
+            { targets: 13, className: 'text-end' },
+            { targets: 14, className: 'text-center' },
+        ],
       data: [],  // Empty data array
       deferRender: true,  // Enable deferred rendering
       info: false,
@@ -201,9 +195,8 @@
       responsive: true,
       fixedHeader: true,
     });
-
     billedTable.on('draw.dt', function() {
-        let columnIdx = 10;
+        let columnIdx = 11;
         let sum = 0;
         let rows = billedTable.rows().nodes();
 
@@ -283,9 +276,6 @@
     $('#billed-hospital-filter').change(function(){
         billedTable.draw();
     });
-    $('#billed-bu-filter').change(function(){
-        billedTable.draw();
-    });
     $('#charging-end-date').change(function(){
         chargingTable.draw();
     });
@@ -331,14 +321,6 @@
         bDate.textContent = '';
     }
 
-    const b_units = document.querySelector('#b-bu-units');
-    const bu_filter = document.querySelector('#billed-bu-filter').value;
-    if(bu_filter != ''){
-        b_units.textContent = 'BU :  '+bu_filter;
-    }else{
-        b_units.textContent = '';
-    }
-   
     
 }
 
@@ -387,8 +369,6 @@ const viewValues = () => {
     const hp_id = document.querySelector('#billed-hospital-filter').value;
     const start_date = document.querySelector('#start-date').value;
     const end_date = document.querySelector('#end-date').value;
-    // const tdElement = document.querySelector('#td-val'); // Replace 'td' with the specific selector for your target <td> element
-    // const spanElement = tdElement.querySelector('span');
     const total = document.querySelector('#total_bill');
     const spanValue = total.textContent;
     $.confirm({
@@ -425,13 +405,14 @@ const viewValues = () => {
                                                 showConfirmButton: false,
                                                 type: 'success'
                                             });
-                                            // setTimeout(function () {
-                                            //     window.location.href = '<?php echo base_url();?>head-office-accounting/billing-list/for-payment';
-                                            // }, 2600);
-
+                                         
                                             if(payment_no != ''){
                                                 printForPayment(payment_no);
                                             }
+                                            setTimeout(function () {
+                                                window.location.href = '<?php echo base_url();?>head-office-accounting/billing-list/for-payment';
+                                            }, 2600);
+
                                         }
                                         if(status == 'error'){
                                             swal({
@@ -618,16 +599,11 @@ const viewValues = () => {
     }
 
     const printPDF = () => { 
-        const bu_filters = document.querySelector('#billed-bu-filter').value;
         const hp_id = document.querySelector('#billed-hospital-filter').value;
         const start_date = document.querySelector('#start-date').value;
         const end_date = document.querySelector('#end-date').value;
-
-          if(bu_filters == ""){
-            bu_filter = 'none';
-          }else{
-            bu_filter = bu_filters;
-          } if(hp_id == ''){
+        
+        if(hp_id == ''){
             hp_ids = 'none';
           }else{
             hp_ids = hp_id;
@@ -642,21 +618,16 @@ const viewValues = () => {
           }
 
         var base_url = `${baseUrl}`;
-        var win = window.open(base_url + "print/pdfbilling/" + btoa(hp_ids) + "/" + btoa(start_dates) + "/" + btoa(end_dates) + "/" + btoa(bu_filter), '_blank');
+        var win = window.open(base_url + "print/pdfbilling/" + btoa(hp_ids) + "/" + btoa(start_dates) + "/" + btoa(end_dates), '_blank');
 
     }
 
     const printForPayment = (payment_no) => {
-        const bu_filters = document.querySelector('#billed-bu-filter').value;
         const hp_id = document.querySelector('#billed-hospital-filter').value;
         const start_date = document.querySelector('#start-date').value;
         const end_date = document.querySelector('#end-date').value;
 
-        if(bu_filters == ""){
-            bu_filter = 'none';
-          }else{
-            bu_filter = bu_filters;
-          } if(hp_id == ''){
+         if(hp_id == ''){
             hp_ids = 'none';
           }else{
             hp_ids = hp_id;
@@ -671,7 +642,7 @@ const viewValues = () => {
           }
 
         const base_url = `${baseUrl}`;
-        window.open(base_url + "printforpayment/pdfbilling/" + btoa(hp_ids) + "/" + btoa(start_dates) + "/" + btoa(end_dates) + "/" + btoa(bu_filter) + "/" + btoa(payment_no), '_blank');
+        window.open(base_url + "printforpayment/pdfbilling/" + btoa(hp_ids) + "/" + btoa(start_dates) + "/" + btoa(end_dates) + "/" + btoa(payment_no), '_blank');
     }
 
     const viewLOANOAdetails = (billing_id) => {

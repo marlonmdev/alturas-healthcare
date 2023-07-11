@@ -16,9 +16,8 @@ class Pages_controller extends CI_Controller {
     function index() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['billed_count'] = $this->List_model->hp_billed_count();
+		$data['bu_charge_count'] = $this->List_model->hp_paid_count();
 		$data['payment_count'] = $this->List_model->hp_payment_history_count();
-		$data['loa_count'] = $this->List_model->hp_approved_loa_count();
-		$data['noa_count'] = $this->List_model->hp_approved_noa_count();
 
 		$bill = $this->List_model->hp_paid_bill();
 
@@ -29,11 +28,6 @@ class Pages_controller extends CI_Controller {
 		
 		}
 		
-		// $data_paid = [
-		// 	'hp_name' => $paid['hp_name'],
-		// 	'paid_count' => $paid,
-		// ];
-
 		$this->load->view('templates/header', $data);
 		$this->load->view('ho_accounting_panel/dashboard/index');
 		$this->load->view('templates/footer');
@@ -235,15 +229,6 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
-	function view_charging_details() {
-		$data['user_role'] = $this->session->userdata('user_role');
-		$data['emp_id'] = $empId = $this->uri->segment(4);
-		$data['member'] = $this->List_model->get_member_info($empId);
-		$this->load->view('templates/header', $data);
-		$this->load->view('ho_accounting_panel/billing_list_table/charging_details.php');
-		$this->load->view('templates/footer');
-	}
-
 	function fetch_acc_ledger() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['bu'] = $this->List_model->get_business_units();
@@ -257,6 +242,14 @@ class Pages_controller extends CI_Controller {
 		$data['bu'] = $this->List_model->get_business_units();
 		$this->load->view('templates/header', $data);
 		$this->load->view('ho_accounting_panel/billing_list_table/ledger_mbl.php');
+		$this->load->view('templates/footer');
+	}
+
+	function setup_bank_accounts() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hc_provider'] = $this->List_model->get_hc_provider();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/setup_bank_accounts.php');
 		$this->load->view('templates/footer');
 	}
 

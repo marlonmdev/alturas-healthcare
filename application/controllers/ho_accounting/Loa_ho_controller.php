@@ -36,7 +36,7 @@ class Loa_ho_controller extends CI_Controller
 
             // initialize multiple varibles at once
             $view_file = $short_med_services = '';
-            if ($loa['loa_request_type'] === 'Consultation') {
+            if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
                 // if request is consultation set the view file and medical services to None
                 $view_file = $short_med_services = 'None';
             } else {
@@ -99,7 +99,7 @@ class Loa_ho_controller extends CI_Controller
 
 				// initialize multiple varibles at once
 				$view_file = $short_med_services = '';
-				if ($loa['loa_request_type'] === 'Consultation') {
+				if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 					// if request is consultation set the view file and medical services to None
 					$view_file = $short_med_services = 'None';
 				} else {
@@ -158,15 +158,20 @@ class Loa_ho_controller extends CI_Controller
 		$currentDate = date("d-m-Y");
 		$diff = date_diff(date_create($birthDate), date_create($currentDate));
 		$age = $diff->format("%y");
-		// get selected medical services
-		$selected_cost_types = explode(';', $row['med_services']);
-		$ct_array = [];
-		foreach ($cost_types as $cost_type) :
-			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
-				array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
-			}
-		endforeach;
-		$med_serv = implode(' ', $ct_array);
+		
+		if($row['loa_request_type'] === 'Diagnostic Test'){
+			// get selected medical services
+			$selected_cost_types = explode(';', $row['med_services']);
+			$ct_array = [];
+			foreach ($cost_types as $cost_type) :
+				if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
+					array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
+				}
+			endforeach;
+			$med_serv = implode(' ', $ct_array);
+		}else{
+			$med_serv = '';
+		}
 
 		$paid_on = '';
 		$bill = $this->loa_model->get_bill_info($row['loa_id']);
@@ -212,7 +217,7 @@ class Loa_ho_controller extends CI_Controller
 			'requesting_company' => $row['requesting_company'],
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'chief_complaint' => $row['chief_complaint'],
-			'requesting_physician' => $row['doctor_name'],
+			'requesting_physician' => isset($row['doctor_name']) ? $row['doctor_name'] : '',
 			'attending_physician' => $row['attending_physician'],
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
@@ -250,7 +255,7 @@ class Loa_ho_controller extends CI_Controller
 
 				// initialize multiple varibles at once
 				$view_file = $short_med_services = '';
-				if ($loa['loa_request_type'] === 'Consultation') {
+				if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 					// if request is consultation set the view file and medical services to None
 					$view_file = $short_med_services = 'None';
 				} else {
@@ -313,7 +318,7 @@ class Loa_ho_controller extends CI_Controller
 
 				// initialize multiple varibles at once
 				$view_file = $short_med_services = '';
-				if ($loa['loa_request_type'] === 'Consultation') {
+				if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 					// if request is consultation set the view file and medical services to None
 					$view_file = $short_med_services = 'None';
 				} else {

@@ -214,7 +214,14 @@ class List_model extends CI_Model{
     }
 
     function hp_billed_count(){
-        return $this->db->get_where('billing', array('status' => 'Billed'))->num_rows();
+        return $this->db->get_where('billing', array('status' => 'Payable'))->num_rows();
+    }
+
+    function hp_paid_count() {
+        $this->db->where('status', 'Paid')
+                ->where('company_charge !=', '')
+                ->where('bu_charging_status', '');
+        return $this->db->get('billing')->num_rows();
     }
 
     function hp_paid_bill(){
@@ -263,6 +270,12 @@ class List_model extends CI_Model{
     function get_loa_noa_id($payment_no) {
         $this->db->where('payment_no', $payment_no);
         return $this->db->get('billing')->result_array();
+    }
+
+    function update_payable($bill_no) {
+        $this->db->where('bill_no', $bill_no)
+                ->set('status', 'Paid');
+        return $this->db->update('monthly_payable');
     }
 
     function insert_total_paid($billing_id, $total_paid) {
@@ -524,9 +537,6 @@ class List_model extends CI_Model{
         $endDate = date('Y-m-d', strtotime($this->input->post('endDate')));
         $this->db->where('tbl_1.request_date <=', $endDate);
       }
-      if($this->input->post('business_unit')){
-        $this->db->like('tbl_4.business_unit', $this->input->post('business_unit'));
-      }
    }
 
    function get_for_payment_loa_noa() {
@@ -614,7 +624,6 @@ class List_model extends CI_Model{
             $endDate = date('Y-m-d', strtotime($this->input->post('end_date')));
             $this->db->where('request_date <=', $endDate);
         }
-    
         if (!empty($this->input->post('hp_id'))) {
             return $this->db->update('billing');
         }
@@ -704,7 +713,7 @@ class List_model extends CI_Model{
         return $total_sum;
     }
     
-    function get_print_billed_loa_noa($hp_id,$start_date,$end_date,$bu_filter) {
+    function get_print_billed_loa_noa($hp_id,$start_date,$end_date) {
         $this->db->select('*')
                 ->from('billing as tbl_1')
                 ->join('loa_requests as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id', 'left')
@@ -716,9 +725,6 @@ class List_model extends CI_Model{
                 ->where('tbl_1.status', 'Payable');
         if(!empty($hp_id)){
             $this->db->where('tbl_1.hp_id', $hp_id);
-        }
-        if(!empty($bu_filter)){
-            $this->db->where('tbl_5.business_unit', $bu_filter);
         }
         if(!empty($start_date)){
             $startDate = date('Y-m-d', strtotime($start_date));
@@ -774,15 +780,29 @@ class List_model extends CI_Model{
        }
 
        var $charge_table_1 = 'billing';
+       var $charge_table_6 = 'loa_requests';
+       var $charge_table_7 = 'noa_requests';
        var $charge_table_5 = 'members';
        private function _get_get_charging_for_report_query() {
-       $this->db->from($this->charge_table_1 . ' as tbl_1')
-               ->join($this->charge_table_5 . ' as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
-               ->where('tbl_1.status', 'Paid')
-               ->where('tbl_1.bu_charging_status', '');
+        $this->db->from($this->charge_table_1 . ' as tbl_1')
+                ->join($this->charge_table_6 . ' as tbl_6', 'tbl_1.loa_id = tbl_6.loa_id', 'left')
+                ->join($this->charge_table_7 . ' as tbl_7', 'tbl_1.noa_id = tbl_7.noa_id', 'left')
+                ->join($this->charge_table_5 . ' as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
+                ->where('tbl_1.status', 'Paid')
+                ->where('tbl_1.bu_charging_status', '') //erase this code before dryrun
+                ->where('tbl_1.company_charge !=', '')
+                ->order_by('tbl_1.request_date', 'asc');
    
             if($this->input->post('filter')){
                 $this->db->like('tbl_5.business_unit', $this->input->post('filter'));
+            }
+            if ($this->input->post('start_date')) {
+                $startDate = date('Y-m-d', strtotime($this->input->post('start_date')));
+                $this->db->where('tbl_1.request_date >=', $startDate);
+            }
+            if ($this->input->post('end_date')){
+                $endDate = date('Y-m-d', strtotime($this->input->post('end_date')));
+                $this->db->where('tbl_1.request_date <=', $endDate);
             }
        }
    
@@ -817,29 +837,6 @@ class List_model extends CI_Model{
 
        function get_member_info($empId) {
         return $this->db->get_where('members', ['emp_id' => $empId])->row_array();
-       }
-
-       var $details_table_1 = 'billing';
-       var $details_table_2 = 'loa_requests';
-       var $details_table_3 = 'noa_requests';
-       var $details_table_5 = 'members';
-       private function _get_get_details_for_report_query() {
-       $this->db->from($this->details_table_1 . ' as tbl_1')
-                ->join($this->details_table_2 . ' as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id', 'left')
-                ->join($this->details_table_3 . ' as tbl_3', 'tbl_1.noa_id = tbl_3.noa_id', 'left')
-                ->join($this->details_table_5 . ' as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
-                ->where('tbl_1.emp_id', $this->input->post('emp_id'))
-                ->where('tbl_1.status', 'Paid')
-                ->where('tbl_1.bu_charging_status', '')
-                ->order_by('tbl_1.billing_id', 'desc');
-       }
-   
-       function get_charging_details() {
-       $this->_get_get_details_for_report_query();
-       if ($_POST['length'] != -1)
-           $this->db->limit($_POST['length'], $_POST['start']);
-       $query = $this->db->get();
-       return $query->result_array();
        }
 
        var $paid_details_table_1 = 'billing';
@@ -888,6 +885,10 @@ class List_model extends CI_Model{
         return $this->db->get()->row_array();
        }
 
+       function get_bill_payment_details($payment_no) {
+        return $this->db->get_where('monthly_payable', ['payment_no' => $payment_no])->row_array();
+       }
+
        function get_loa_noa_billing_by_id($billing_id){
 		$this->db->select('*')
 				->from('billing as tbl_1')
@@ -918,6 +919,14 @@ class List_model extends CI_Model{
         if($this->input->post('bu_filter')){
             $this->db->like('tbl_5.business_unit', $this->input->post('bu_filter'));
         }
+        if ($this->input->post('start_date')) {
+            $startDate = date('Y-m-d', strtotime($this->input->post('start_date')));
+            $this->db->where('tbl_1.request_date >=', $startDate);
+        }
+        if ($this->input->post('end_date')){
+            $endDate = date('Y-m-d', strtotime($this->input->post('end_date')));
+            $this->db->where('tbl_1.request_date <=', $endDate);
+        }
 
         return $this->db->get()->result_array();
     }
@@ -928,9 +937,9 @@ class List_model extends CI_Model{
                 ->set('bu_generated_on', date('Y-m-d'))
                 ->where_in('billing_id', $billing_ids);
 
-        if(!empty($this->input->post('bu_filter'))){
+        // if(!empty($this->input->post('filter'))){
             return $this->db->update('billing');
-        }
+        // }
     }
     
     function get_billing_id($charging_no) {
@@ -1072,10 +1081,13 @@ class List_model extends CI_Model{
      function get_bu_charging($charging_no) {
         $this->db->select('*')
                 ->from('billing as tbl_1')
-                ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+                ->join('loa_requests as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id','left')
+                ->join('noa_requests as tbl_3', 'tbl_1.noa_id = tbl_3.noa_id','left')
+                ->join('members as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id')
                 ->where('tbl_1.status', 'Paid')
                 ->where('tbl_1.bu_charging_status', 'Receivable')
-                ->where('tbl_1.bu_charging_no', $charging_no);
+                ->where('tbl_1.bu_charging_no', $charging_no)
+                ->order_by('tbl_1.request_date', 'asc');
         return $this->db->get()->result_array();
      }
 
@@ -1113,6 +1125,7 @@ class List_model extends CI_Model{
         $this->db->from('billing as tbl_1');
         $this->db->join('members as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id');
         $this->db->where_in('tbl_1.billing_id', $billing_id);
+        $this->db->order_by('tbl_1.request_date', 'asc');
         return $this->db->get()->result_array();
      }
 
@@ -1120,6 +1133,7 @@ class List_model extends CI_Model{
         $this->db->from('billing as tbl_1');
         $this->db->join('members as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id');
         $this->db->where('tbl_1.bu_charging_no', $charge_no);
+        $this->db->order_by('tbl_1.request_date', 'asc');
         return $this->db->get()->result_array();
      }
 
@@ -1281,6 +1295,53 @@ class List_model extends CI_Model{
             $this->db->where("tbl_5.business_unit", $bu_unit);
         }
         return $this->db->get()->result_array();
+    }
+
+    function submit_bank_accounts($data) {
+        
+        return $this->db->insert('bank_accounts', $data);
+    }
+
+    private function fetch_bank_Accounts() {
+        $this->db->from('bank_accounts as tbl_1');
+        $this->db->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id');
+        $this->db->order_by('tbl_1.bank_id','desc');
+    }
+
+    function get_bank_accounts() {
+        $this->fetch_bank_Accounts(); // Call the function to set up the query conditions
+        if (!empty($_POST['length']) && $_POST['length'] != -1) {
+            $this->db->limit($_POST['length'], $_POST['start']);
+        }
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    function delete_bank_account() {
+        $this->db->where('bank_id', $this->input->post('bank_id'))
+		         ->delete('bank_accounts');
+		return $this->db->affected_rows() > 0 ? true : false;
+    }
+
+    function update_bank_account($user) {
+        $data = [
+			'hp_id' => $this->input->post('hp_id'),
+			'bank_name' => $this->input->post('bank_name'),
+			'account_name' => $this->input->post('account_name'),
+			'account_number' => $this->input->post('account_num'),
+			'updated_on' => date('Y-m-d'),
+			'updated_by' => $user,
+		];
+        $this->db->where('bank_id', $this->input->post('bank_id'));
+        return $this->db->update('bank_accounts', $data);
+    }
+
+    function get_bank_details($hp_id) {
+        return $this->db->get_where('bank_accounts',['hp_id' => $hp_id])->result_array();
+    }
+
+    function get_bank_numbers($bank_id) {
+        return $this->db->get_where('bank_accounts',['bank_id' => $bank_id])->row_array();
     }
     
 

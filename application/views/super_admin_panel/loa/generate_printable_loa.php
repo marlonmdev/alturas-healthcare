@@ -92,7 +92,7 @@
                           }
                         endforeach;
                         $med_services = implode(', ', $ct_array);
-                        if ($row['loa_request_type'] !== 'Consultation') {
+                        if ($row['loa_request_type'] == 'Diagnostic Test') {
                           echo '<i class="mdi mdi-chevron-right fs-4"></i>' . $med_services;
                         }
                         ?>
@@ -149,17 +149,21 @@
                       </td>
                     </tr>
 
-                    <tr>
-                      <td class="ls-1 fs-6" style="padding:0 0 0 20px;vertical-align:baseline;">
-                        Requesting Physician: <br>
-                        <i class="mdi mdi-chevron-right fs-4"></i><span class="fw-bold"><?= $req['doctor_name'] ?></span>
-                      </td>
+                    <?php if($req != 'Does not Exist from Database') { ?>
+                      <tr>
+                        <td class="ls-1 fs-6" style="padding:0 0 0 20px;vertical-align:baseline;">
+                          Requesting Physician: <br>
+                          <i class="mdi mdi-chevron-right fs-4"></i><span class="fw-bold"><?= $req['doctor_name'] ?></span>
+                        </td>
 
-                      <td class="ls-1 fs-6" style="padding:0 20px 0 0;text-align:justify;">
-                        Attending Physician: <br>
-                        <i class="mdi mdi-chevron-right fs-4"></i><span class="fw-bold"><?= $row['attending_physician'] ?></span>
-                      </td>
-                    </tr>
+                        <td class="ls-1 fs-6" style="padding:0 20px 0 0;text-align:justify;">
+                          Attending Physician: <br>
+                          <i class="mdi mdi-chevron-right fs-4"></i><span class="fw-bold"><?= $row['attending_physician'] ?></span>
+                        </td>
+                      </tr>
+                      <?php } else {?>
+                            <tr></tr>
+                            <?php }?> 
 
                     <tr>
                       <td style="padding: 0 0 0 10px;">

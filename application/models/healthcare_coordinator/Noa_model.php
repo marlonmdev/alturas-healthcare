@@ -379,11 +379,10 @@ class Noa_model extends CI_Model {
       $this->db->update('noa_requests', $data);
     }
 
-    function fetch_for_payment_bill($status) {
+    function fetch_for_payment_bill() {
       $this->db->select('*')
               ->from('monthly_payable as tbl_1')
               ->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
-              ->where('status', $status)
               ->where('type', 'NOA');
   
       if($this->input->post('filter')){

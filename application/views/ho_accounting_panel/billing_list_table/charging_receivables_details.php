@@ -108,7 +108,7 @@
                                 contentType: false,
                                 success: function(response){
                                     const {
-                                        token, status, message, image_error
+                                        token, charging_no, status, message, image_error
                                     } = response;
 
                                     if(status == 'validation-error'){
@@ -127,6 +127,8 @@
                                             showConfirmButton: false,
                                             type: 'success'
                                         });
+                                        printPaidBuCharge(charging_no);
+
                                         window.location.href = `${baseUrl}head-office-accounting/charging/business-unit/paid`;
                                     }else if(status == 'failed'){
                                         swal({
@@ -154,6 +156,11 @@
 
     const goback = () =>{
         window.history.back();
+    }
+
+    const printPaidBuCharge = (charging_no) => {
+        var base_url = `${baseUrl}`;
+        window.open(base_url + "printBUCharge/pdfPaidCharges/" + btoa(charging_no), '_blank');
     }
 
     const printBUCharging = () => {

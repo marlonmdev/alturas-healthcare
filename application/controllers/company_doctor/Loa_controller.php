@@ -184,7 +184,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
-			if ($loa['loa_request_type'] === 'Consultation') {
+			if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 				// if request is consultation set the view file and medical services to None
 				// $short_med_services = 'Npne';
 				$view_file = 'None';
@@ -268,7 +268,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
-			if ($loa['loa_request_type'] === 'Consultation') {
+			if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 				// if request is consultation set the view file to None
 				$view_file = 'None';
 				// if Hospital Name is too long for displaying to the table shorten it and add the ... characters at the end 
@@ -359,7 +359,11 @@ class Loa_controller extends CI_Controller {
 		$data['row'] = $exist = $this->loa_model->db_get_loa_info($loa_id);
 		$data['mbl'] = $this->loa_model->db_get_member_mbl($exist['emp_id']);
 		$data['cost_types'] = $this->loa_model->db_get_cost_types();
-		$data['req'] = $this->loa_model->db_get_doctor_by_id($exist['requesting_physician']);
+		if($exist['requesting_physician'] != ''){
+			$data['req'] = $this->loa_model->db_get_doctor_by_id($exist['requesting_physician']);
+		}else{
+			$data['req'] = 'Does not Exist from Database';	
+		}
 		$data['doc'] = $this->loa_model->db_get_doctor_by_id($exist['approved_by']);
 		if (!$exist) {
 			$this->load->view('pages/page_not_found');
@@ -393,7 +397,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
-			if ($loa['loa_request_type'] === 'Consultation') {
+			if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 				// if request is consultation set the view file to None
 				$view_file = 'None';
 
@@ -452,7 +456,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
-			if ($loa['loa_request_type'] === 'Consultation') {
+			if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 				// if request is consultation set the view file to None
 				$view_file = 'None';
 				// if Hospital Name is too long for displaying to the table shorten it and add the ... characters at the end 
@@ -509,7 +513,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
-			if ($loa['loa_request_type'] === 'Consultation') {
+			if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 				// if request is consultation set the view file to None
 				$view_file =  'None';
 				// if Hospital Name is too long for displaying to the table shorten it and add the ... characters at the end 
@@ -563,7 +567,7 @@ class Loa_controller extends CI_Controller {
 			$custom_actions .= '<a href="JavaScript:void(0)" onclick="showBackDateForm(\'' . $loa_id . '\', \'' . $loa['loa_no'] . '\', \''.$loa['expiration_date'].'\')" data-bs-toggle="tooltip" title="Date Extension"><i class="mdi mdi-border-color fs-2 text-cyan"></i></a>';
 			
 			$view_file = $short_hp_name = '';
-			if ($loa['loa_request_type'] === 'Consultation') {
+			if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 				$view_file = 'None';
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
 			}else{
@@ -615,7 +619,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
-			if ($loa['loa_request_type'] === 'Consultation') {
+			if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 				// if request is consultation set the view file to None
 				$view_file = 'None';
 
@@ -674,7 +678,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
-			if ($loa['loa_request_type'] === 'Consultation') {
+			if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 				// if request is consultation set the view file to None
 				$view_file = 'None';
 
@@ -733,7 +737,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
-			if ($loa['loa_request_type'] === 'Consultation') {
+			if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 				// if request is consultation set the view file to None
 				$view_file = 'None';
 

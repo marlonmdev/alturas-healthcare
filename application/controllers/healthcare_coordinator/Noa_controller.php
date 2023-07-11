@@ -557,7 +557,7 @@ class Noa_controller extends CI_Controller {
 	function fetch_payable_noa() {
 		$this->security->get_csrf_hash();
 		$status = 'Payable';
-		$for_payment = $this->noa_model->fetch_for_payment_bill($status);
+		$for_payment = $this->noa_model->fetch_for_payment_bill();
 		$data = [];
 		foreach($for_payment as $bill){
 			$row = [];

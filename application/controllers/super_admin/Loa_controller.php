@@ -354,7 +354,7 @@ class Loa_controller extends CI_Controller {
 			// initialize multiple varibles at once
 			// $view_file = $short_med_services = '';
 			$view_file = $short_hp_name = '';
-			if ($loa['loa_request_type'] === 'Consultation') {
+			if ($loa['loa_request_type'] === 'Consultation'  || $loa['loa_request_type'] === 'Emergency') {
 				// if request is consultation set the view file and medical services to None
 				// $view_file = $short_med_services = 'None';
 				$view_file = 'None';
@@ -429,7 +429,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
-			if ($loa['loa_request_type'] === 'Consultation') {
+			if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 				// if request is consultation set the view file and medical services to None
 				$view_file = 'None';
 
@@ -501,7 +501,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
-			if ($loa['loa_request_type'] === 'Consultation') {
+			if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 				// if request is consultation set the view file and medical services to None
 				$view_file = 'None';
 
@@ -559,7 +559,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
-			if ($loa['loa_request_type'] === 'Consultation') {
+			if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 				// if request is consultation set the view file and medical services to None
 				$view_file = 'None';
 
@@ -617,7 +617,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
-			if ($loa['loa_request_type'] === 'Consultation') {
+			if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 				// if request is consultation set the view file and medical services to None
 				$view_file = 'None';
 
@@ -675,7 +675,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
-			if ($loa['loa_request_type'] === 'Consultation') {
+			if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 				// if request is consultation set the view file and medical services to None
 				$view_file = 'None';
 
@@ -733,7 +733,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
-			if ($loa['loa_request_type'] === 'Consultation') {
+			if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 				// if request is consultation set the view file and medical services to None
 				$view_file = 'None';
 
@@ -791,7 +791,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
-			if ($loa['loa_request_type'] === 'Consultation') {
+			if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 				// if request is consultation set the view file and medical services to None
 				$view_file = 'None';
 
@@ -1331,7 +1331,11 @@ class Loa_controller extends CI_Controller {
 		$data['row'] = $exist = $this->loa_model->db_get_loa_info($loa_id);
 		$data['mbl'] = $this->loa_model->db_get_member_mbl($exist['emp_id']);
 		$data['cost_types'] = $this->loa_model->db_get_cost_types();
-		$data['req'] = $this->loa_model->db_get_doctor_by_id($exist['requesting_physician']);
+		if($exist['requesting_physician'] != ''){
+			$data['req'] = $this->loa_model->db_get_doctor_by_id($exist['requesting_physician']);
+		}else{
+			$data['req'] = 'Does not Exist from Database';	
+		}
 		$data['doc'] = $this->loa_model->db_get_doctor_by_id($exist['approved_by']);
 		if (!$exist) {
 			$this->load->view('pages/page_not_found');

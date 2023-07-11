@@ -614,6 +614,7 @@ class Transaction_controller extends CI_Controller {
 			$approved_by = $doctor['doctor_name'];
 			$requested_on = date('F d, Y',strtotime($loa['request_date']));
 			$approved_on = date('F d, Y',strtotime($loa['approved_on']));
+			$hospitalized_on = date('F d, Y',strtotime($loa['emerg_date']));
 			$loa_noa_no = $loa['loa_no'];
 
 				if($loa['work_related'] == 'Yes'){ 
@@ -709,6 +710,7 @@ class Transaction_controller extends CI_Controller {
 			'percentage' => $wpercent .', '.$nwpercent,
 			'services' => $med_serv,
 			'admission_date' => isset($admission_date) ? $admission_date : '',
+			'hospitalized_date' => isset($hospitalized_on) ? $hospitalized_on : '',
 			'billed_on' =>  date('F d, Y',strtotime($data['billed_on'])),
 			'billed_by' => $data['billed_by'],
 			'billing_no' => $data['billing_no'],

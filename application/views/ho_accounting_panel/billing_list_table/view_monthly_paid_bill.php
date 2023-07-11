@@ -48,8 +48,8 @@
                 }
               ?>
                 <div class="text-center pt-4">
-                      <h4>ALTURAS HEALTHCARE SYSTEM</h4>
-                      <h4>Paid Billing Summary</h4>
+                      <h4>ALTURAS HEALTHCARE PROGRAM</h4>
+                      <h4>Paid Summary Details</h4>
                       <h5><?php echo $pay['hp_name']; ?></h5>
                       <?php echo $date; ?>
                       <h5><?php echo $payment_no; ?></h5>
@@ -61,10 +61,11 @@
 
                   <div class="table-responsive">
                     <i class="text-danger">( Click LOA/NOA number to view details )</i>
-                    <table class="table table-hover table-responsive" id="paidTable">
+                    <table class="table table-sm table-hover table-responsive" id="paidTable">
                       <thead style="background-color:#eddcb7">
                         <tr>
                           <th class="fw-bold">#</th>
+                          <th class="fw-bold">Request Date</th>
                           <th class="fw-bold">Billing No.</th>
                           <th class="fw-bold">LOA/NOA #</th>
                           <th class="fw-bold">Patient Name</th>
@@ -91,8 +92,9 @@
                         <td></td>
                         <td></td>
                         <td></td>
+                        <td></td>
                         <td class="fw-bold">TOTAL </td>
-                        <td><span class="text-danger fw-bold fs-5" id="pd-total-bill"></span></td>
+                        <td><span class="text-danger fw-bold fs-5 text-end" id="pd-total-bill"></span></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -140,9 +142,16 @@
         },
       },
       //Set column definition initialisation properties.
-      columnDefs: [{
-        "orderable": false, //set not orderable
-      }, ],
+      columnDefs: [
+            { targets: 7, className: 'text-end' },
+            { targets: 8, className: 'text-end' },
+            { targets: 9, className: 'text-end' },
+            { targets: 10, className: 'text-end' },
+            { targets: 11, className: 'text-end' },
+            { targets: 12, className: 'text-end' },
+            { targets: 13, className: 'text-center' },
+            { targets: 14, className: 'text-center' },
+        ],
       data: [],  // Empty data array
       deferRender: true,  // Enable deferred rendering
       info: false,
@@ -154,7 +163,7 @@
     });
 
     billedTable.on('draw.dt', function() {
-    let columnIdx = 9;
+    let columnIdx = 10;
     let sum = 0;
     let rows = billedTable.rows().nodes();
     if ($('#paidTable').DataTable().data().length > 0) {

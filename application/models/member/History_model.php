@@ -24,7 +24,7 @@ class History_model extends CI_Model {
 		$this->db->join($this->table_2 . ' as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id','left');
 		$this->db->join($this->table_3 . ' as tbl_3', 'tbl_1.noa_id = tbl_3.noa_id','left');
 		$this->db->where('tbl_1.emp_id', $emp_id);
-		$this->db->where('YEAR(billed_on)', date('Y'));
+		// $this->db->where('YEAR(billed_on)', date('Y'));
 		$i = 0;
 		// loop column 
 		foreach ($this->column_search_history as $item) {
@@ -45,14 +45,13 @@ class History_model extends CI_Model {
 		}
 
 		if ($this->input->post('start_date')) {
-			$startDate = date('Y-m-d', strtotime($this->input->post('start_date')));
-			$this->db->where('tbl_1.request_date >=', $startDate);
+			 $this->db->where('YEAR(tbl_1.request_date) =',$this->input->post('start_date'));
 		}
 
-		if ($this->input->post('end_date')){
-			$endDate = date('Y-m-d', strtotime($this->input->post('end_date')));
-			$this->db->where('tbl_1.request_date <=', $endDate);
-		}
+		// if ($this->input->post('end_date')){
+		// 	$endDate = date('Y-m-d', strtotime($this->input->post('end_date')));
+		// 	$this->db->where('tbl_1.request_date <=', $endDate);
+		// }
   
 		// here order processing
 		// if (isset($_POST['order'])) {
@@ -84,5 +83,26 @@ class History_model extends CI_Model {
 				->where('emp_id', $emp_id);
 		return $this->db->count_all_results();
 	}
+
+	function get_mbl_details($emp_id){
+		$query = $this->db->select("YEAR(created_on) AS created_on")
+                  ->get_where('user_accounts', ['emp_id' => $emp_id]);
+
+		$result = $query->row_array();
+		$created_on = $result['created_on'];
+
+		return $created_on;
+	}
 	
+	function get_start_mbl($emp_id){
+		$query = $this->db->select("before_remaining_bal AS start_mbl")
+                  ->get_where('billing', ['emp_id' => $emp_id, 'YEAR(billed_on)' => $this->input->post('start_date')]);
+				//   ->order_by('billing_id', 'DESC')
+				//   ->limit(1);
+
+		$result = $query->row_array();
+		$start_mbl = $result['start_mbl'];
+
+		return $start_mbl;
+	}
 }

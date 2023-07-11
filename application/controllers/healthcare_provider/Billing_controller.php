@@ -1203,8 +1203,6 @@ class Billing_controller extends CI_Controller {
                 'status'                => 'Billed',
                 'extracted_txt'         => $hospitalBillData,
                 'attending_doctors'     => $attending_doctor,
-                're_upload'             => ($check_bill) ? 0 : 1,
-                'done_re_upload'        => ($check_bill) ? null : 'Done',
                 'request_date'          => $loa['request_date']
             ];   
 
@@ -1219,6 +1217,9 @@ class Billing_controller extends CI_Controller {
                     // var_dump("billing no",$billing_no);
             if($check_bill){
                 $this->billing_model->insert_old_billing($billing_no);
+                $data = ['done_re_upload' => 'Done',
+                        're_upload' => 0,
+                        ];
                 $inserted = $this->billing_model->update_billing($data,$billing_no);
 
                 if($inserted){
@@ -1576,8 +1577,6 @@ class Billing_controller extends CI_Controller {
                 'status'                => 'Billed',
                 'extracted_txt'         => $hospitalBillData,
                 'attending_doctors'      => $attending_doctor,
-                're_upload'             => isset($check_bill) ? 0 : 1,
-                'done_re_upload'        => isset($check_bill) ? 'Done' : null,
                 'request_date'          => $noa['request_date']
             ];    
             $mbl = [
@@ -1589,7 +1588,9 @@ class Billing_controller extends CI_Controller {
             // var_dump("billing no",$billing_no);
             if($check_bill){
                 $this->billing_model->insert_old_billing($billing_no);
-
+                $data = ['done_re_upload' => 'Done',
+                're_upload' => 0,
+                ];
                 $inserted = $this->billing_model->update_billing($data,$billing_no);
 
                 if($inserted){

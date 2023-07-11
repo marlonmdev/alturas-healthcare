@@ -69,6 +69,7 @@ $route['member/requested-noa/paid'] = 'member/pages_controller/view_paid_noa';
 $route['member/requested-loa/paid'] = 'member/pages_controller/view_paid_loa';
 $route['member/mbl-history/loa'] = 'member/pages_controller/loa_mbl_history';
 $route['member/mbl-history/noa'] = 'member/pages_controller/noa_mbl_history';
+$route['member/mbl-ledger/loa-noa'] = 'member/pages_controller/mbl_ledger';
 
 // Member User Account Routes
 $route['member/account-settings'] = 'member/account_controller/account_settings';

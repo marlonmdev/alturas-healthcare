@@ -347,7 +347,10 @@ class Loa_model extends CI_Model {
       }
       $i++;
       }
-
+      
+      if ($this->input->post('start_date')) {
+        $this->db->where('YEAR(tbl_1.request_date) =',$this->input->post('start_date'));
+     }
       // here order processing
       if (isset($_POST['order'])) {
       $this->db->order_by($this->column_order_history[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);

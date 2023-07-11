@@ -118,6 +118,19 @@
                   <span class="hide-menu ls-1">MBL History</span>
                 </a>
               </li>
+
+              <li class="sidebar-item 
+              <?php echo $this->uri->segment(2) == 'mbl-ledger' ? 'selected' : ''; ?>
+              ">
+                <a
+                  class="sidebar-link"
+                  href="<?php echo base_url(); ?>member/mbl-ledger/loa-noa"
+                  aria-expanded="false"
+                  >
+                  <i class="mdi mdi-receipt"></i>
+                  <span class="hide-menu ls-1">MBL Ledger</span>
+                </a>
+              </li>
               
               <li class="sidebar-item">
                 <a

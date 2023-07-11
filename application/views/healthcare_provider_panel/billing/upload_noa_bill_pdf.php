@@ -619,6 +619,17 @@
                         })
                         .catch(function(error) {
                         console.log(error);
+                            $.alert({
+                                          title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
+                                          content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience. The system encountered an error. Please refresh current window. Thank you for your understanding.</div>",
+                                          type: "red",
+                                          buttons: {
+                                          ok: {
+                                              text: "OK",
+                                              btnClass: "btn-danger",
+                                          },
+                                      },
+                                  });
                         });
 
                     promises.push(promise);
@@ -801,7 +812,18 @@
                         });
                         
                     }, function(error) {
-                    console.error(error);
+                        console.error(error);
+                            $.alert({
+                                          title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
+                                          content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience. The system encountered an error. Please refresh current window. Thank you for your understanding.</div>",
+                                          type: "red",
+                                          buttons: {
+                                          ok: {
+                                              text: "OK",
+                                              btnClass: "btn-danger",
+                                          },
+                                      },
+                                  });
                     });
                 };
                 if(this.files[0]){

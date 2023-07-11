@@ -766,7 +766,6 @@ function db_get_cost_types_by_hp_ID($hp_id) {
   } 
 
   function db_get_loa_detail($loa_id) {
-<<<<<<< HEAD
         $this->db->select('*')
                  ->from('loa_requests as tbl_1')
                  ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
@@ -775,16 +774,6 @@ function db_get_cost_types_by_hp_ID($hp_id) {
                  ->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id= tbl_5.emp_id')
                  ->where('tbl_1.loa_id', $loa_id);
         return $this->db->get()->row_array();
-    }
-=======
-    $this->db->select('*')
-             ->from('loa_requests as tbl_1')
-             ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
-             ->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id')
-             ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id')
-             ->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id= tbl_5.emp_id')
-             ->where('tbl_1.loa_id', $loa_id);
-    return $this->db->get()->row_array();
   }
 
   function db_get_data_for_gurantee($loa_id) {
@@ -798,7 +787,7 @@ function db_get_cost_types_by_hp_ID($hp_id) {
              ->where('tbl_1.loa_id', $loa_id);
     return $this->db->get()->row_array();
   }
->>>>>>> 6ae76648ab7ec8ff119e48e2151993bed3099657
+
 
    function db_get_loa_details($loa_id) {
         $this->db->select('*')

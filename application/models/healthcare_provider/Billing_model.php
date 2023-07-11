@@ -335,7 +335,12 @@ class Billing_model extends CI_Model {
 
         // Insert the selected records into the destination table
         if (!empty($result)) {
-          return  $this->db->insert_batch('re_upload_billing', $result);
+            $updatedResult = array();
+            foreach ($result as $row) {
+                $row['done_re_upload'] = 'Done';
+                $updatedResult[] = $row;
+            }
+            return $this->db->insert_batch('re_upload_billing', $updatedResult);
         }
         // $this->db->where('billing_no', $billing_no);
         // $this->db->where('re_upload', 1);

@@ -27,7 +27,7 @@
           </div>
         </form>
       </div>
-
+      <div id="progress-bar"></div>
       <form action="<?php echo base_url();?>healthcare-provider/billing/bill-loa/upload-pdf/<?= $loa_id ?>/submit" id="pdfBillingForm" enctype="multipart/form-data" class="needs-validation" novalidate>
         <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
         <input type="hidden" name="billing-no" value="<?= $billing_no ?>">
@@ -635,7 +635,6 @@ reader.onload = function() {
     pdfjsLib.getDocument(typedarray).promise.then(function(pdf) {
           let numPages = pdf.numPages;
               let promises = [];
-              console.log("number of pages",numPages);
               for (let page = 1; page <= numPages ; page++) {
               let promise = pdf.getPage(page)
                   .then(function(page) {
@@ -662,11 +661,22 @@ reader.onload = function() {
                       }
                       return groups;
                       }, []);
-
+                
                   return sortedItems;
                   })
                   .catch(function(error) {
-                  console.log(error);
+                  console.log("1",error);
+                  $.alert({
+                                          title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
+                                          content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience. The system encountered an error. Please refresh current window. Thank you for your understanding.</div>",
+                                          type: "red",
+                                          buttons: {
+                                          ok: {
+                                              text: "OK",
+                                              btnClass: "btn-danger",
+                                          },
+                                      },
+                                  });
                   });
 
                   promises.push(promise);
@@ -852,10 +862,34 @@ reader.onload = function() {
                   
                       console.log("netbill",net_bill);
                       console.log("mbl",mbl);
-                  });
+                  }).catch(function(error) {
+                      console.log("2",error);
+                      $.alert({
+                                          title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
+                                          content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience. The system encountered an error. Please refresh current window. Thank you for your understanding.</div>",
+                                          type: "red",
+                                          buttons: {
+                                          ok: {
+                                              text: "OK",
+                                              btnClass: "btn-danger",
+                                          },
+                                      },
+                                  });
+                    });
                   
               }, function(error) {
-              console.error(error);
+              console.error("3",error);
+              $.alert({
+                                          title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
+                                          content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience. The system encountered an error. Please refresh current window. Thank you for your understanding.</div>",
+                                          type: "red",
+                                          buttons: {
+                                          ok: {
+                                              text: "OK",
+                                              btnClass: "btn-danger",
+                                          },
+                                      },
+                                  });
               });
 };
   if(this.files[0])

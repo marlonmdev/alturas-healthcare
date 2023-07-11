@@ -291,7 +291,7 @@
 
             <div class="col-lg-3">
               <label class="fw-bold pt-2">Service Fee : </label>
-              <input class="form-control fw-bold ct-fee text-info" name="service-fee[]" value="<?php echo $cost_type['op_price'] ?>" readonly>
+              <input class="form-control fw-bold ct-fee text-info" name="service-fee[]" value="₱ <?php echo number_format ($cost_type['op_price'],2) ?>" readonly>
             </div>
 
             <div class="col-lg-3">

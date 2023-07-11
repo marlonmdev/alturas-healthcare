@@ -1001,7 +1001,6 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 	$route['healthcare-coordinator/loa/billed/update_consultation_fees'] = 'healthcare_coordinator/loa_controller/update_consultation_fees';
 	$route['healthcare-coordinator/loa/billed/consultation_fees1/(:any)'] = 'healthcare_coordinator/loa_controller/consultation_fees1';
 	$route['healthcare-coordinator/loa/billed/submit_consultation'] = 'healthcare_coordinator/loa_controller/submit_consultation';
-	$route['healthcare-coordinator/loa/billed/submit_letter'] = 'healthcare_coordinator/loa_controller/submit_letter';
 
 	$route['healthcare-coordinator/loa/billed/diagnostic_schedule/(:any)'] = 'healthcare_coordinator/loa_controller/diagnostic_schedule';
 	$route['healthcare-coordinator/loa/billed/diagnostic_schedule_submit'] = 'healthcare_coordinator/loa_controller/diagnostic_schedule_submit';
@@ -1011,6 +1010,8 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 	$route['healthcare-coordinator/loa/billed/submit_diagnostic'] = 'healthcare_coordinator/loa_controller/submit_diagnostic';
 
 	$route['healthcare-coordinator/loa/billed/guarantee/(:any)'] = 'healthcare_coordinator/loa_controller/guarantee';
+	$route['healthcare-coordinator/loa/billed/guarantee_pdf/(:any)'] = 'healthcare_coordinator/loa_controller/guarantee_pdf/$1';
+	$route['healthcare-coordinator/loa/billed/submit_letter'] = 'healthcare_coordinator/loa_controller/submit_letter';
 	//end
 
 	//Healthcare Advance

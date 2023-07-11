@@ -13,7 +13,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> 
 
   <div class="container-fluid">
     <div class="row">
@@ -189,113 +189,22 @@
 </div>
 <!-- End -->
 
-<!-- Guarantee Letter -->
+
+<!-- GUARANTEE LETTER -->
 <div class="modal fade pt-4" id="GuaranteeLetter" tabindex="-1" data-bs-backdrop="static">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-fullscreen">
     <div class="modal-content">
-      
-      <div class="modal-body">
-        <form method="post" action="<?php echo base_url(); ?>healthcare-coordinator/loa/billed/submit_letter" id="Letter" enctype="multipart/form-data">
-          <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
-          <input type="hidden" name="billing-id" id="billing-id">   
-          <input type="hidden" name="loa_no" id="loa_no">          
-                        
-          <p id="generated-date"></p>
-          <p class="rch">JONE SIEGFRED L. SEPE</p>
-          <p class="cp">CEO/PRESIDENT</p>
-          <p class="gsp">Gallares Street Poblacion II</p>
-          <p class="tcb">Tagbilaran City, Bohol, 0139</p>
-
-          <p class="dds">Dear DR. SEPE;</p>
- 
-          <div class="my-div1" style="text-align: justify">
-            <p style="padding-left:30px">This letter is in reference to the request for the</p> <p class="ahp">Alturas Healthcare Program</p> on behalf of our client, <span id="first_name"><?= $data['first_name'] ?></span> <span id="middle_name"><?= $data['middle_name'] ?></span> <span id="last_name"><?= $data['last_name'] ?></span>. The Alturas Group of Companies has assessed and validated the said request for assistance through the Crisis Intervention Section. Therefore, the company is using this letter to guarantee payment of the bill in the amount <span id="company_charge_words"></span> (<span id="company_charge"><?=  $data['company_charge'] ?></span>).
-          </div>
-
-          <div class="my-div2" style="text-align: justify">
-            Please be informed that the payment will be directly deposited into your company's designated bank account. If you have any inquiries or require further information, please feel free to contact us at 233-0261.
-          </div>
-
-          <p class="fyc">Thank you for your consideration.</p>
- 
-
-          <p class="vty">Yours sincerely,</p>
-
-          <input type="text" name="name" id="name" class="bottom-line-input"> 
-          <p class="coordinator">Coordinator</p>
-
-        </form>
-      </div>
+      <div class="modal-body"></div>
       <div class="modal-footer">
-        <div class="col-sm-12 mb-sm-0 d-flex justify-content-end">
-          <button type="submit" class="btn btn-primary me-2"><i class="mdi mdi-file-pdf"></i> Generate PDF</button>
-          <button type="submit" class="btn btn-primary me-2"><i class="mdi mdi-near-me"></i> Send</button>
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="mdi mdi-close-box"></i> CLOSE</button>
-        </div>
+        <button type="submit"  id="Letter" class="btn btn-primary me-2" form="submitForm"><i class="mdi mdi-near-me"></i> Send</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="mdi mdi-close-box"></i> CLOSE</button>
       </div>
     </div>
   </div>
 </div>
-<!-- End -->
-
-<style>
-  .rch{
-    font-size: 15px;font-family: Tahoma;font-weight: bolder;padding: 0;margin: 0; 
-  }
-  .cp{
-    padding: 0;margin: 0;font-weight: bold;
-  }
-  .gsp{
-    padding: 0;margin: 0;font-weight: bold;
-  }
-  .tcb{
-    font-weight: bold;
-  }
-  .dds{
-    font-weight: bold;font-family: Tahoma;
-  }
-  .ahp{
-    font-weight: bold;
-  }
-  .my-div1 p {
-    display: inline;margin: 2;padding: 2;text-align:justify
-  }
-  #first_name{
-    text-transform: uppercase;font-weight: bold;
-  }
-  #middle_name{
-    text-transform: uppercase;font-weight: bold;
-  }
-  #last_name{
-    text-transform: uppercase;font-weight: bold;
-  }
-  #company_charge_words{
-    font-weight: bolder;text-transform: uppercase
-  }
-  #company_charge{
-    font-weight: bolder
-  }
-  .my-div2{
-    padding-top: 30px
-  }
-  .fyc{
-    padding-top: 20px
-  }
-  .vty{
-    padding-top: 50px
-  }
-  .bottom-line-input {
-    border: none;border-bottom: 1px solid black;background-color: transparent;padding: 0;font-weight: bold
-  }
-  .coordinator{
-    padding-left: 40px
-  }
-  #generated-date{
-    font-weight:bold;font-size: 15px;font-family: Tahoma;padding-top: 30px
-  }
+<!-- END -->
 
 
-</style>
   
 
 <script>
@@ -464,18 +373,24 @@
     //End
 
     //Submit Guarantee Letter
-    $('#Letter').submit(function(event) {
-      event.preventDefault();
-
-      const LetterForm = $('#Letter')[0];
-      const formdata = new FormData(LetterForm);
+    $('#Letter').click(function(event) {
+      // event.preventDefault();
+      /* The above code is not written in PHP, it is written in JavaScript. */
+      // console.log("pdf file",$('#pdf_file').val());
+      // const LetterForm = $('#Letterf')[0];
+      // const formdata = new FormData(LetterForm);
+      // formdata.append('token', `<?= $this->security->get_csrf_hash() ?>`);
       $.ajax({
         type: "post",
-        url: $(this).attr('action'),
-        data: formdata,
+        url: `<?php echo base_url(); ?>healthcare-coordinator/loa/billed/submit_letter`,
+        data:{
+          token :`<?= $this->security->get_csrf_hash() ?>`,
+          pdf_file : $('#pdf_file').val(),
+          billing_id : $('#billing_id').val(),
+        } ,
         dataType: "json",
-        processData: false,
-        contentType: false,
+        // processData: false,
+        // contentType: false,
         success: function(response) {
           const {
             token,
@@ -485,14 +400,21 @@
           } = response;
           switch (status) {
             case 'error':
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
               // is-invalid class is a built in classname for errors in bootstrap
-              if (charge_type_error !== '') {
-                $('#charge-type-error').html(charge_type_error);
-                $('#charge-type').addClass('is-invalid');
-              } else {
-                $('#charge-type-error').html('');
-                $('#charge-type').removeClass('is-invalid');
-              }
+              // if (charge_type_error !== '') {
+              //   $('#charge-type-error').html(charge_type_error);
+              //   $('#charge-type').addClass('is-invalid');
+              // } else {
+              //   $('#charge-type-error').html('');
+              //   $('#charge-type').removeClass('is-invalid');
+              // }
             break;
             case 'save-error':
               swal({
@@ -518,6 +440,18 @@
       })
     });
     //End
+
+    $(".generate_pdf").click(function() {
+      // Send an AJAX request to the server to generate the PDF
+      $.ajax({
+        type: "POST",
+        url: "<?php echo base_url(); ?>healthcare-coordinator/loa/billed/guarantee_pdf",
+        success: function(response) {
+          // Open the generated PDF in a new tab or window
+          window.open(response, "_blank");
+        }
+      });
+    });
   });
 
     
@@ -810,13 +744,15 @@
     );
   }
 
-  // function GuaranteeLetter(loa_id,billing_id) {
+
+
+  // function GuaranteeLetter(loa_id, billing_id) {
   //   $.ajax({
   //     url: `${baseUrl}healthcare-coordinator/loa/billed/guarantee/${loa_id}`,
   //     type: "GET",
-  //     success: function(response) {
+  //     success: function (response) {
   //       const res = JSON.parse(response);
-  //       const { status, token, first_name,middle_name,last_name,company_charge } = res;
+  //       const { status, token, first_name, middle_name, last_name, company_charge } = res;
 
   //       // Update modal content
   //       $("#GuaranteeLetter").modal("show");
@@ -826,91 +762,41 @@
   //       $('#middle_name').text(middle_name);
   //       $('#last_name').text(last_name);
   //       $('#company_charge').html('₱' + Number(company_charge).toFixed(2));
+
+  //       const words = convertNumberToWords(parseFloat(company_charge));
+  //       $('#company_charge_words').text(words);
   //     }
   //   });
   // }
 
   function GuaranteeLetter(loa_id, billing_id) {
+    // const pdfUrl = `${baseUrl}healthcare-coordinator/loa/billed/guarantee_pdf/${loa_id}`;
+   
+
     $.ajax({
-      url: `${baseUrl}healthcare-coordinator/loa/billed/guarantee/${loa_id}`,
+      url: `${baseUrl}healthcare-coordinator/loa/billed/guarantee_pdf/${loa_id}`,
       type: "GET",
       success: function (response) {
         const res = JSON.parse(response);
-        const { status, token, first_name, middle_name, last_name, company_charge } = res;
-
-        // Update modal content
-        $("#GuaranteeLetter").modal("show");
-        $('#billing-id').val(billing_id);
-        $('#loa_no').val(loa_id);
-        $('#first_name').text(first_name);
-        $('#middle_name').text(middle_name);
-        $('#last_name').text(last_name);
-        $('#company_charge').html('₱' + Number(company_charge).toFixed(2));
-
-        const words = convertNumberToWords(parseFloat(company_charge));
-        $('#company_charge_words').text(words);
+        const { status, filename } = res;
+        console.log('filename',filename);
+        console.log('status',status);
+        const embedTag = `<embed src="${baseUrl}/uploads/guarantee_letter/${filename}" name="pdfEmbed" id="pdfEmbed" width="100%" height="100%" type="application/pdf" /> <input type = "hidden" name="pdf_file" id="pdf_file" value="${filename}" /> <input type = "hidden" name="billing_id" id="billing_id" value="${billing_id}" />`;
+      // `<input type = "text" name="pdf_file" id="pdf_file" value="${filename}"/>`;
+       
+        $('#GuaranteeLetter .modal-body').html(embedTag);
+        $('#GuaranteeLetter').modal('show');
+        // console.log ($('#pdf_file').val());
       }
     });
+
   }
 
-  // Get the current date
-  const currentDate = new Date();
-  const formattedDate = currentDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-  document.getElementById('generated-date').textContent = formattedDate;
-
-  function convertNumberToWords(number) {
-  const units = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
-  const teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
-  const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-
-  if (number === 0) {
-    return 'Zero';
-  }
-
-  function convertGroup(number) {
-    let word = '';
-
-    if (number >= 100 && number <= 999) {
-      word += units[Math.floor(number / 100)] + ' Hundred ';
-      number %= 100;
-    }
-
-    if (number >= 10 && number <= 19) {
-      word += teens[number - 10];
-      number = 0;
-    } else if (number >= 20) {
-      word += tens[Math.floor(number / 10)];
-      number %= 10;
-    }
-
-    if (number >= 1 && number <= 9) {
-      word += units[number];
-    }
-
-    return word;
-  }
-
-  let word = '';
-
-  if (number >= 1000000 && number <= 999999999) {
-    word += convertGroup(Math.floor(number / 1000000)) + ' Million ';
-    number %= 1000000;
-  }
-
-  if (number >= 1000 && number <= 999999) {
-    word += convertGroup(Math.floor(number / 1000)) + ' Thousand ';
-    number %= 1000;
-  }
-
-  word += convertGroup(number);
-
-  return word + ' Pesos';
-}
-
-
+  
 </script>
 
 <style>
+
   @keyframes blink {
     0% {
       opacity: 1;
@@ -926,4 +812,5 @@
   .blink {
     animation: blink 1s infinite;
   }
+
 </style>

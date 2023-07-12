@@ -90,6 +90,35 @@ class Loa_controller extends CI_Controller {
 					$this->insert_loa($input_post, $med_services, $attending_physician, $rx_file);
 				}
 				break;
+				case ($request_type == 'Emergency'):
+					$this->form_validation->set_rules('hospital-name', 'HealthCare Provider', 'required');
+					$this->form_validation->set_rules('admission-date', 'Date Hospitalized', 'required');
+					$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[1000]');
+					if ($this->form_validation->run() == FALSE) {
+						$response = [
+							'status' => 'error',
+							'healthcare_provider_error' => form_error('healthcare-provider'),
+							'chief_complaint_error' => form_error('chief-complaint'),
+							'admission_date_error' => form_error('admission-date'),
+						];
+
+						echo json_encode($response);
+						exit();
+					}
+					// check if the selected healthcare provider exist from database
+					$hp_exist = $this->loa_model->db_check_healthcare_provider_exist($input_post['hospital-name']);
+					if (!$hp_exist) {
+						$response = [
+							'status' => 'save-error',
+							'message' => 'Invalid Healthcare Provider'
+						];
+						echo json_encode($response);
+						exit();
+					} else {
+							// Call function insert_loa
+							$this->insert_loa($input_post, "", "", "");
+					}
+				break;
 		}
 	}
 
@@ -98,39 +127,33 @@ class Loa_controller extends CI_Controller {
 		$result = $this->loa_model->db_get_max_loa_id();
 		$max_loa_id = !$result ? 0 : $result['loa_id'];
 		$add_loa = $max_loa_id + 1;
+		$current_year = date('Y');
 		// call function loa_number
-		$loa_no = $this->loa_number($add_loa, 8, 'LOA-');
+		$loa_no = $this->loa_number($add_loa, 7, 'LOA-'.$current_year);
 
+		$member_id = $this->myhash->hasher($input_post['emp-id'], 'decrypt');
+		
+		$member = $this->loa_model->db_get_member_details($member_id);
 		$post_data = [
 			'loa_no' => $loa_no,
-			'emp_id' => $input_post['emp-id'],
-			'first_name' =>  ucwords($input_post['first-name']),
-			'middle_name' =>  ucwords($input_post['middle-name']),
-			'last_name' =>  ucwords($input_post['last-name']),
-			'suffix' =>  ucwords($input_post['suffix']),
-			'date_of_birth' => date("Y-m-d", strtotime($input_post['date-of-birth'])),
-			'gender' => $input_post['gender'],
-			'philhealth_no' => $input_post['philhealth-no'],
-			'blood_type' => $input_post['blood-type'],
-			'contact_no' => $input_post['contact-no'],
-			'home_address' => $input_post['home-address'],
-			'city_address' => $input_post['city-address'],
-			'email' =>  $input_post['email'],
-			'contact_person' => $input_post['contact-person'],
-			'contact_person_addr' =>  $input_post['contact-person-addr'],
-			'contact_person_no' => $input_post['contact-person-no'],
-			'hcare_provider' => $input_post['healthcare-provider'],
+			'emp_id' => $member['emp_id'],
+			'first_name' =>  $member['first_name'],
+			'middle_name' =>  $member['middle_name'],
+			'last_name' =>  $member['last_name'],
+			'suffix' =>  $member['suffix'],
+			'hcare_provider' => $input_post['hospital-name'],
 			'loa_request_type' => $input_post['loa-request-type'],
-			'med_services' => implode(';', $med_services),
-			'health_card_no' => $input_post['health-card-no'],
-			'requesting_company' => $input_post['requesting-company'],
-			'request_date' => date("Y-m-d", strtotime($input_post['request-date'])),
-			'chief_complaint' => strip_tags($input_post['chief-complaint']),
-			'requesting_physician' => ucwords($input_post['requesting-physician']),
+			'med_services' => ($med_services!=="")?implode(';', $med_services):"",
+			'health_card_no' => $member['health_card_no'],
+			'requesting_company' => $member['company'],
+			'request_date' => date("Y-m-d"),
+			'emerg_date' => (isset( $input_post['admission-date']))? $input_post['admission-date']:null,
+			'chief_complaint' => (isset($input_post['chief-complaint']))?strip_tags($input_post['chief-complaint']):"",
+			'requesting_physician' =>(isset($input_post['requesting-physician']))? ucwords($input_post['requesting-physician']):"",
 			'attending_physician' => $attending_physician,
 			'rx_file' => $rx_file,
-			'requested_by' => $input_post['requested-by'],
 			'status' => 'Pending',
+			'requested_by' => $this->session->userdata('emp_id'),
 		];
 		$inserted = $this->loa_model->db_insert_loa_request($post_data);
 		if (!$inserted) {
@@ -139,12 +162,68 @@ class Loa_controller extends CI_Controller {
 				'message' => 'LOA Request Failed'
 			];
 		}
+
 		$response = [
 			'status' => 'success', 
 			'message' => 'LOA Request Save Successfully'
 		];
 		echo json_encode($response);
 	}
+	// function insert_loa($input_post, $med_services, $attending_physician, $rx_file) {
+	// 	// select the max loa_id from DB
+	// 	$result = $this->loa_model->db_get_max_loa_id();
+	// 	$max_loa_id = !$result ? 0 : $result['loa_id'];
+	// 	$add_loa = $max_loa_id + 1;
+	// 	// call function loa_number
+	// 	$loa_no = $this->loa_number($add_loa, 8, 'LOA-');
+
+	// 	$member_id = $input_post['member-id'];
+	// 	$member = $this->loa_model->db_get_member_details($member_id);
+	// 	$post_data = [
+	// 		'loa_no' => $loa_no,
+	// 		'emp_id' => $input_post['emp-id'],
+	// 		'first_name' =>  ucwords($input_post['first-name']),
+	// 		'middle_name' =>  ucwords($input_post['middle-name']),
+	// 		'last_name' =>  ucwords($input_post['last-name']),
+	// 		'suffix' =>  ucwords($input_post['suffix']),
+	// 		'date_of_birth' => date("Y-m-d", strtotime($input_post['date-of-birth'])),
+	// 		'gender' => $input_post['gender'],
+	// 		'philhealth_no' => $input_post['philhealth-no'],
+	// 		'blood_type' => $input_post['blood-type'],
+	// 		'contact_no' => $input_post['contact-no'],
+	// 		'home_address' => $input_post['home-address'],
+	// 		'city_address' => $input_post['city-address'],
+	// 		'email' =>  $input_post['email'],
+	// 		'contact_person' => $input_post['contact-person'],
+	// 		'contact_person_addr' =>  $input_post['contact-person-addr'],
+	// 		'contact_person_no' => $input_post['contact-person-no'],
+	// 		'hcare_provider' => $input_post['healthcare-provider'],
+	// 		'loa_request_type' => $input_post['loa-request-type'],
+	// 		'med_services' => implode(';', $med_services),
+	// 		'health_card_no' => $input_post['health-card-no'],
+	// 		'requesting_company' => $input_post['requesting-company'],
+	// 		'request_date' => date("Y-m-d", strtotime($input_post['request-date'])),
+	// 		'emerg_date' => (isset( $input_post['admission-date']))? $input_post['admission-date']:null,
+	// 		'chief_complaint' => strip_tags($input_post['chief-complaint']),
+	// 		'requesting_physician' => ucwords($input_post['requesting-physician']),
+	// 		'attending_physician' => $attending_physician,
+	// 		'rx_file' => $rx_file,
+	// 		'requested_by' => $input_post['requested-by'],
+	// 		'status' => 'Pending',
+	// 	];
+	// 	$inserted = $this->loa_model->db_insert_loa_request($post_data);
+	// 	if (!$inserted) {
+	// 		$response = [
+	// 			'status' => 'save-error', 
+	// 			'message' => 'LOA Request Failed'
+	// 		];
+	// 	}
+	// 	$response = [
+	// 		'status' => 'success', 
+	// 		'message' => 'LOA Request Save Successfully'
+	// 	];
+	// 	echo json_encode($response);
+	// }
 
 	function check_rx_file($str) {
 		if (isset($_FILES['rx-file']['name']) && !empty($_FILES['rx-file']['name'])) {
@@ -364,7 +443,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
-			$row[] = $view_file;
+			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 			$row[] = $custom_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
@@ -449,7 +528,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
-			$row[] = $view_file;
+			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 			$row[] = $expiry_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
@@ -586,7 +665,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
-			$row[] = $view_file;
+			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 			$row[] = $custom_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
@@ -686,7 +765,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
-			$row[] = $view_file;
+			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 			$row[] = $custom_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
@@ -807,7 +886,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
-			$row[] = $view_file;
+			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 			$row[] = $custom_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
@@ -866,7 +945,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
-			$row[] = $view_file;
+			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 			$row[] = $expiry_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
@@ -923,7 +1002,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
-			$row[] = $view_file;
+			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 			$row[] = $custom_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
@@ -1005,7 +1084,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
-			$row[] = $view_file;
+			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 			$row[] = $custom_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
@@ -1123,8 +1202,9 @@ class Loa_controller extends CI_Controller {
 			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
 			$coordinator_bill = '<a href="JavaScript:void(0)" onclick="viewCoordinatorBill(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Coordinator Billing"><i class="mdi mdi-eye text-dark"></i>View</a>';
 			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf text-danger"></i></a>';
+			$detailed_pdf_bill = '<a href="JavaScript:void(0)" onclick="viewDetailedPDFBill(\'' . $bill['itemized_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf text-danger"></i></a>';
 
-			$record_diagnostic = '<a href="JavaScript:void(0)" onclick="PatientRecordDiagnostic(\'' . $bill['loa_no']. '\')" data-bs-toggle="tooltip" title="View Coordinator Billing"><i class="mdi mdi-eye text-dark"></i>View Record</a>';
+			// $record_diagnostic = '<a href="JavaScript:void(0)" onclick="PatientRecordDiagnostic(\'' . $bill['loa_no']. '\')" data-bs-toggle="tooltip" title="View Coordinator Billing"><i class="mdi mdi-eye text-dark"></i>View Record</a>';
 
 			if($bill['work_related'] == 'Yes'){
 				if($bill['percentage'] == ''){
@@ -1153,7 +1233,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $bill['loa_request_type'];
 			$row[] = number_format($bill['net_bill'], 2, '.', ',');
 			$row[] = $pdf_bill;
-			$row[] = $record_diagnostic;
+			$row[] = $detailed_pdf_bill;
 			$data[] = $row;
 		}
 		$output = [
@@ -1167,10 +1247,9 @@ class Loa_controller extends CI_Controller {
 
 		$bill_no = $this->uri->segment(5);
 		$row = $this->loa_model->get_monthly_bill($bill_no);
-		$data['loa'] = $row;
-		$data['emp_id'] = $row['emp_id'];
-		$data['itemized_bill'] = $this->loa_model->get_itemized_bill($row['emp_id']);
-		// var_dump($data['itemized_bill']);
+		// $data['loa'] = $row;
+		// $data['emp_id'] = $row['emp_id'];
+		// $data['itemized_bill'] = $this->loa_model->get_itemized_bill($row['emp_id']);
 
 		$response = [
 			'status' => 'success',
@@ -1180,9 +1259,11 @@ class Loa_controller extends CI_Controller {
 			'first_name' => $row['tbl4_fname'],
 			'middle_name' => $row['tbl4_mname'],
 			'last_name' => $row['tbl4_lname'],
-			'suffix' => $row['astbl4_suffix'],
+			'suffix' => $row['tbl4_suffix'],
 			'home_address' => $row['home_address'],
 			'date_of_birth' => $row['date_of_birth'],
+			'percentage' => $row['tbl2_percentage'],
+			'percentage' => $row['tbl2_percentage'],
 		];
 		echo json_encode($response);
 		// var_dump($response);
@@ -1455,6 +1536,8 @@ class Loa_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
+	
+
 	function get_disapproved_loa_info() {
 		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$this->load->model('healthcare_coordinator/loa_model');
@@ -1511,8 +1594,8 @@ class Loa_controller extends CI_Controller {
 			'requesting_company' => $row['requesting_company'],
 			'request_date' => $row['request_date'] ? date("F d, Y", strtotime($row['request_date'])) : '',
 			'chief_complaint' => $row['chief_complaint'],
-			'requesting_physician' => $row['doctor_name'],
-			'attending_physician' => $row['attending_physician'],
+			'requesting_physician' => ($row['doctor_name']!==null)?$row['doctor_name']:'None',
+			'attending_physician' => ($row['attending_physician']!==null)?$row['attending_physician']:'None',
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
 			'work_related' => $row['work_related'],
@@ -1589,8 +1672,8 @@ class Loa_controller extends CI_Controller {
 			'med_services' => $med_serv,
 			'requesting_company' => $row['requesting_company'],
 			'chief_complaint' => $row['chief_complaint'],
-			'requesting_physician' => $row['doctor_name'],
-			'attending_physician' => $row['attending_physician'],
+			'requesting_physician' => ($row['doctor_name']!==null)?$row['doctor_name']:'None',
+			'attending_physician' => ($row['attending_physician']!==null)?$row['attending_physician']:'None',
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
@@ -1656,8 +1739,8 @@ class Loa_controller extends CI_Controller {
 			'requesting_company' => $row['requesting_company'],
 			'request_date' => $row['request_date'] ? date("F d, Y", strtotime($row['request_date'])) : '',
 			'chief_complaint' => $row['chief_complaint'],
-			'requesting_physician' => $row['doctor_name'],
-			'attending_physician' => $row['attending_physician'],
+			'requesting_physician' => ($row['doctor_name']!==null)?$row['doctor_name']:'None',
+			'attending_physician' => ($row['attending_physician']!==null)?$row['attending_physician']:'None',
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
 			'work_related' => $row['work_related'],
@@ -1782,7 +1865,7 @@ class Loa_controller extends CI_Controller {
 			'requesting_company' => $row['requesting_company'],
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'chief_complaint' => $row['chief_complaint'],
-			'requesting_physician' => $row['doctor_name'],
+			'requesting_physician' => ($row['doctor_name']!==null)?$row['doctor_name']:'None',
 			'rx_file' => $row['rx_file'],
 			'req_status' => $row['status'],
 			'work_related' => $row['work_related'],
@@ -1791,7 +1874,8 @@ class Loa_controller extends CI_Controller {
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 			'requested_by' => $row['requested_by'],
 			'approved_by' => $row['doctor_name'],
-			'approved_on' => $row['approved_on']
+			'approved_on' => $row['approved_on'],
+			'expiry_date' => $row['expiration_date']
 		];
 		echo json_encode($response);
 	}
@@ -1850,7 +1934,8 @@ class Loa_controller extends CI_Controller {
 			foreach ($file_inputs as $input_name) {
 				$config['upload_path'] = $file_paths[$input_name];
 				$this->upload->initialize($config);
-				if (empty($_FILES[$input_name])) {
+
+				if ($_FILES[$input_name]['size']!== 0) {
 					if (!$this->upload->do_upload($input_name)) {
 						// Handle upload error
 						$error_occurred = TRUE;
@@ -3595,34 +3680,61 @@ class Loa_controller extends CI_Controller {
       $row = [];
       if ($bill['done_matching'] != 1) {
         $loa_id = $this->myhash->hasher($bill['tbl1_loa_id'], 'encrypt');
+
         $fullname = $bill['first_name'] . ' ' . $bill['middle_name'] . ' ' . $bill['last_name'] . ' ' . $bill['suffix'];
         $request_date=date("F d, Y", strtotime($bill['tbl1_request_date']));
         $custom_status = '<span class="badge rounded-pill bg-success">' . $bill['tbl1_status'] . '</span>';
 
-        if (empty($bill['pdf_bill'])) {
+				if (empty($bill['pdf_bill'])) {
     			$pdf_bill = 'Waiting for SOA';
 				}else{
-    			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf fs-2 text-info"></i></a>';
+    			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf fs-2 text-info';
+
+    			if ($bill['done_re_upload'] == 'Done') {
+        		$pdf_bill .= ' blink';
+    			}
+
+    			$pdf_bill .= '"></i></a>';
 				}
 
         $custom_actions = '';
         $letter = $this->loa_model->check_if_guarantee_letter_already_added($bill['loa_id']);
+        $performed_fees = $this->loa_model->check_if_performed_fees_is_processing($bill['loa_id']);
+        $re_upload = $this->loa_model->check_if_re_upload_is_1($bill['loa_id']);
+
 
         if ($bill['loa_request_type'] == 'Consultation'){
         	if ($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Approved'){
         		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/consultation_schedule/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Appointment Schedule"><i class="mdi mdi-pen fs-2 text-danger"></i></a>';
+
         	}else if($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Performed'){
         		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/consultation_fees1/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Service Fee"><i class="mdi mdi-pen fs-2 text-danger"></i></a>';
-        		$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $loa_id . '\', \'' . $bill['loa_no'] . '\')" data-bs-toggle="tooltip" title="Re-Upload File"><i class="mdi mdi-key-plus fs-2 text-info"></i></a>';
-        		$custom_actions .= '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $bill['billing_id'] . '\')" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-2 text-info"></i></a>';
-        	}else if($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Processing'){
-        		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/consultation_fees/'. $loa_id . '" data-bs-toggle="tooltip" title="Edit Service Fee"><i class="mdi mdi-pen fs-2 text-info"></i></a>';
-        		$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $loa_id . '\', \'' . $bill['loa_no'] . '\')" data-bs-toggle="tooltip" title="Re-Upload File"><i class="mdi mdi-key-plus fs-2 text-info"></i></a>';
-        		if ($letter['guarantee_letter'] =='') {
-        			$custom_actions .= '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $bill['billing_id'] . '\')" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-2 text-info"></i></a>';
+
+        		if ($bill['re_upload'] =='0') {
+        			$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $loa_id . '\', \'' . $bill['loa_no'] . '\')" data-bs-toggle="tooltip" title="Re-Upload File"><i class="mdi mdi-key-plus fs-2 text-info"></i></a>';
+        		}else{
+							$custom_actions .= '<i class="mdi mdi-key-plus fs-2 text-secondary" title="Re-Upload another SOA Already Sent"></i>';
+						}
+    
+					}else if($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Processing'){
+						if ($bill['performed_fees'] =='Processing') {
+        			$custom_actions .= '<i class="mdi mdi-pen fs-2 text-secondary" title="Detailed SOA Already Added"></i>';
+        		}else{
+							$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/consultation_fees1/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Service Fee"><i class="mdi mdi-pen fs-2 text-danger"></i></a>';
+						}
+
+						if ($bill['re_upload'] =='1') {
+        			$custom_actions .= '<i class="mdi mdi-key-plus fs-2 text-secondary" title="Re-Upload another SOA Already Sent"></i>';
+        		}else{
+							$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $loa_id . '\', \'' . $bill['loa_no'] . '\')" data-bs-toggle="tooltip" title="Re-Upload File"><i class="mdi mdi-key-plus fs-2 text-info"></i></a>';
+						}
+
+        		if ($bill['guarantee_letter'] =='') {
+        			$custom_actions .= '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $loa_id . '\',\'' . $bill['billing_id'] . '\')" data-bs-toggle="modal" data-bs-target="#GuaranteeLetter" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-2 text-info"></i></a>';
         		}else{
 							$custom_actions .= '<i class="mdi mdi-reply fs-2 text-secondary" title="Guarantee Letter Already Sent"></i>';
 						}
+
         	}else if($bill['tbl1_status'] == 'Approved' && $bill['performed_fees'] == 'Approved'){
         		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Appointment Schedule"><i class="mdi mdi-pen fs-2 text-danger"></i></a>';
         	}else if($bill['tbl1_status'] == 'Completed' && $bill['performed_fees'] == 'Performed'){
@@ -3632,18 +3744,42 @@ class Loa_controller extends CI_Controller {
         }else if ($bill['loa_request_type'] == 'Diagnostic Test') {
         	if ($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Approved') {
         		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/diagnostic_schedule/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Appointment Schedule"><i class="mdi mdi-pen fs-2 text-danger"></i></a>';
-        		$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $loa_id . '\', \'' . $bill['loa_no'] . '\')" data-bs-toggle="tooltip" title="Re-Upload File"><i class="mdi mdi-key-plus fs-2 text-info"></i></a>';
+
         	}else if($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Performed'){
         		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/diagnostic_fees1/'. $loa_id . '" data-bs-toggle="tooltip" title="Check Detailed SOA"><i class="mdi mdi-pen fs-2 text-danger"></i></a>';
-        		$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $loa_id . '\', \'' . $bill['loa_no'] . '\')" data-bs-toggle="tooltip" title="Re-Upload File"><i class="mdi mdi-key-plus fs-2 text-info"></i></a>';
-        		$custom_actions .= '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $bill['billing_id'] . '\')" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-2 text-info"></i></a>';
+
+        		if ($bill['re_upload'] =='0') {
+        			$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $loa_id . '\', \'' . $bill['loa_no'] . '\')" data-bs-toggle="tooltip" title="Re-Upload File"><i class="mdi mdi-key-plus fs-2 text-info"></i></a>';
+        		}else{
+							$custom_actions .= '<i class="mdi mdi-key-plus fs-2 text-secondary" title="Re-Upload another SOA Already Sent"></i>';
+						}
+
+					}else if($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Processing'){
+						if ($bill['performed_fees'] =='Processing') {
+        			$custom_actions .= '<i class="mdi mdi-pen fs-2 text-secondary" title="Detailed SOA Already Added"></i>';
+        		}else{
+							$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/diagnostic_fees1/'. $loa_id . '" data-bs-toggle="tooltip" title="Check Detailed SOA"><i class="mdi mdi-pen fs-2 text-danger"></i></a>';
+						}
+
+						if ($bill['re_upload'] =='1') {
+        			$custom_actions .= '<i class="mdi mdi-key-plus fs-2 text-secondary" title="Re-Upload another SOA Already Sent"></i>';
+        		}else{
+							$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $loa_id . '\', \'' . $bill['loa_no'] . '\')" data-bs-toggle="tooltip" title="Re-Upload File"><i class="mdi mdi-key-plus fs-2 text-info"></i></a>';
+						}
+
+        		if ($bill['guarantee_letter'] =='') {
+        			$custom_actions .= '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $loa_id . '\',\'' . $bill['billing_id'] . '\')" data-bs-toggle="modal" data-bs-target="#GuaranteeLetter" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-2 text-info"></i></a>';
+        		}else{
+							$custom_actions .= '<i class="mdi mdi-reply fs-2 text-secondary" title="Guarantee Letter Already Sent"></i>';
+						}
+
         	}else if($bill['tbl1_status'] == 'Approved' && $bill['performed_fees'] == 'Approved'){
         		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Appointment Schedule"><i class="mdi mdi-pen fs-2 text-danger"></i></a>';
         	}else if($bill['tbl1_status'] == 'Completed' && $bill['performed_fees'] == 'Performed'){
         		$custom_actions .='<i class="mdi mdi-cached fs-2 text-danger"></i>Processing...';
         	}
         }
-        
+
         $row[] = $bill['loa_no'];
         $row[] = $fullname;
         $row[] = $bill['loa_request_type'];
@@ -3660,7 +3796,23 @@ class Loa_controller extends CI_Controller {
       "data" => $data,
     ];
     echo json_encode($output);
+    // var_dump($output);
 	}
+
+	// function guarantee() {
+	// 	$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+	// 	$row = $this->loa_model->db_get_data_for_gurantee($loa_id);
+
+	// 	$response = [
+	// 		'status' => 'success',
+	// 		'token' => $this->security->get_csrf_hash(),
+	// 		'first_name' => $row['first_name'],
+	// 		'middle_name' => $row['middle_name'],
+	// 		'last_name' => $row['last_name'],
+	// 		'company_charge' => $row['company_charge'],
+	// 	];
+	// 	echo json_encode($response);
+	// }
 
 	function submit_final_billing() {
     $token = $this->security->get_csrf_hash();
@@ -3672,7 +3824,7 @@ class Loa_controller extends CI_Controller {
     $month = date('m', $date);
     $year = date('Y', $date);
     $bill_no = "BILL-" . date('His') . mt_rand(1000, 9999);
-    $total_payable = floatval(str_replace(',', '', $this->input->post('total-hospital-bill', TRUE)));
+    // $total_payable = floatval(str_replace(',', '', $this->input->post('total-hospital-bill', TRUE)));
     // $matched = $this->loa_model->set_bill_for_matched($hp_id, $start_date, $end_date, $bill_no);
     $status = $this->input->post('status', TRUE);
 
@@ -3683,7 +3835,7 @@ class Loa_controller extends CI_Controller {
       'month' => $month,
       'year' => $year,
       'status' => 'Payable',
-      'total_payable' => $total_payable,
+      // 'total_payable' => $total_payable,
       'added_on' => date('Y-m-d'),
       'added_by' => $this->session->userdata('fullname'),
     ];
@@ -3731,41 +3883,171 @@ class Loa_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	function submit_letter(){
-		$token = $this->security->get_csrf_hash();
-		$billing_id = $this->input->post('billing-id');
-		$config['upload_path'] = './uploads/guarantee_letter/';
-		$config['allowed_types'] = 'pdf|jpeg|jpg|png|gif|svg';
-		$config['encrypt_name'] = TRUE;
-		$this->load->library('upload', $config);
+	// function submit_letter(){
+	// 	$token = $this->security->get_csrf_hash();
+	// 	$billing_id = $this->input->post('billing-id');
+	// 	$config['upload_path'] = './uploads/guarantee_letter/';
+	// 	$config['allowed_types'] = 'pdf|jpeg|jpg|png|gif|svg';
+	// 	$config['encrypt_name'] = TRUE;
+	// 	$this->load->library('upload', $config);
 
-		if(!$this->upload->do_upload('letter')){
-			echo json_encode([
-				'token' => $token,
-				'status' => 'error',
-				'message' => 'File upload failed!'
-			]);
-		}else{
-			$uploadData = $this->upload->data();
-			$guarantee_letter = $uploadData['file_name'];
-			$upload_on = date('Y-m-d');
+	// 	if(!$this->upload->do_upload('letter')){
+	// 		echo json_encode([
+	// 			'token' => $token,
+	// 			'status' => 'error',
+	// 			'message' => 'File upload failed!'
+	// 		]);
+	// 	}else{
+	// 		$uploadData = $this->upload->data();
+	// 		$guarantee_letter = $uploadData['file_name'];
+	// 		$upload_on = date('Y-m-d');
 	
-			$updated = $this->loa_model->db_update_letter($billing_id, $guarantee_letter, $upload_on);
-			if (!$updated) {
-				$response = [
-					'token' => $token,
-					'status' => 'save-error',
-					'message' => 'Save Failed',
-				];
-			}else{
-				$response = [
-					'token' => $token,
-					'status' => 'success',
-					'message' => 'Saved Successfully',
-				];
-			}
-			echo json_encode($response);
-		}
+	// 		$updated = $this->loa_model->db_update_letter($billing_id, $guarantee_letter, $upload_on);
+	// 		if (!$updated) {
+	// 			$response = [
+	// 				'token' => $token,
+	// 				'status' => 'save-error',
+	// 				'message' => 'Save Failed',
+	// 			];
+	// 		}else{
+	// 			$response = [
+	// 				'token' => $token,
+	// 				'status' => 'success',
+	// 				'message' => 'Saved Successfully',
+	// 			];
+	// 		}
+	// 		echo json_encode($response);
+	// 	}
+	// }
+
+	function submit_letter() {
+    // $token = $this->security->get_csrf_hash();
+    $pdf_file = $this->input->post('pdf_file');
+    $billing_id = $this->input->post('billing_id');
+    $token = $this->input->post('token');
+   
+    if (!isset($pdf_file) && !isset($billing_id)) {
+        echo json_encode([
+            'token' => $token,
+            'status' => 'error',
+            'message' => 'File upload failed!',
+            'pdf file' => $pdf_file,
+            'billing_id' => $billing_id,
+        ]); 
+    } else {
+        // $uploadData = $this->upload->data();
+        // // $guarantee_letter = $uploadData['file_name'];
+        // $fileData = file_get_contents($uploadData['full_path']);
+        $upload_on = date('Y-m-d');
+
+        // Read the uploaded file data
+        
+
+        // Save the file data into the database
+        $updated = $this->loa_model->db_update_letter($billing_id, $pdf_file, $upload_on);
+        if (!$updated) {
+            $response = [
+                'token' => $token,
+                'status' => 'save-error',
+                'message' => 'Save Failed',
+            ];
+        } else {
+            $response = [
+                'token' => $token,
+                'status' => 'success',
+                'message' => 'Saved Successfully',
+            ];
+        }
+        echo json_encode($response);
+        // var_dump($response);
+    }
+	}
+
+public function guarantee_pdf($loa_id){
+    $this->security->get_csrf_hash();
+    $this->load->library('tcpdf_library');
+    $loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+    $row = $this->loa_model->db_get_data_for_gurantee($loa_id);
+    $companyChargeWords = $this->convertNumberToWords($row['company_charge']);
+    $name = $this->session->userdata('fullname');
+    // $data['doc'] = $this->loa_model->db_get_doctor_by_id($row['approved_by']);
+    $doc = $this->loa_model->db_get_doctor_by_id($row['approved_by']);
+    // var_dump($doc['doctor_signature']);
+    // var_dump($doc);
+
+
+    // Generate the PDF content
+    $pdf = new TCPDF();
+
+    // Disable the header and footer lines
+    $pdf->SetPrintHeader(false);
+    $pdf->SetPrintFooter(false);
+
+    // Set the font and size for the letter content...
+    $pdf->SetFont('Helvetica', '', 12);
+
+    // Add the letter content
+    $pdf->AddPage();
+
+    $html1 = '<div>
+               	<p id="generated-date" style="font-weight: bold;">' . date("F j, Y") . '</p>
+               	<p></p>
+			          <p style="font-weight: bold;line-height: 0;">JONE SIEGFRED L. SEPE</p>
+			          <p style="line-height: 0;">CEO/PRESIDENT</p>
+			          <p style="line-height: 0;">Gallares Street Poblacion II</p>
+			          <p style="line-height: 0;">Tagbilaran City, Bohol, 0139</p>
+            </div>';
+
+    $html2 = '<div style="text-align: justify;">
+                <p style="font-weight: bold;">Dear DR. SEPE;</p>
+
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This letter is in reference to the request for the</span> <span style="font-weight: bold;">Alturas Healthcare Program</span> on behalf of our client, <span style="font-weight: bold;text-transform: uppercase">' . $row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] . ' ' . $row['suffix'] . '</span>. The Alturas Group of Companies has assessed and validated the said request for assistance through the Crisis Intervention Section. Therefore, the company is using this letter to guarantee payment of the bill in the amount <span id="company_charge_words" style="font-weight: bold;text-transform: uppercase">' . $companyChargeWords . '</span> <span style="font-weight: bold">(PHP ' . number_format($row['company_charge'], 2) . ')</span>.</p>
+
+                <p>Please be informed that the payment will be directly deposited into your company designated bank account. If you have any inquiries or require further information, please feel free to contact us at 233-0261.</p>
+
+                <p>Thank you for your consideration.</p>
+            	</div>';
+
+    $html3 = '<div style="text-align: justify;">
+                <p>Yours sincerely,</p>
+                <p></p>
+
+                <p>Prepared By :</p>
+                <p></p>
+                <p style="line-height: 0;text-transform: uppercase;font-weight: bold;">' . $name . '</p>
+
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                Approved By :</p>
+                
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <img src="' . base_url() . 'uploads/doctor_signatures/' . $doc['doctor_signature'] . '" alt="Doctor Signature" style="height:auto;width:170px;vertical-align:baseline;margin-left:-170px">
+
+                <p style="line-height: 0;text-transform: uppercase;font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <span style="text-decoration: underline;">Dr. Michael D. Uy</span></p></p>
+
+
+                <p style="line-height: -2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                Company Physician</p>
+
+              
+            	</div>';
+
+    $pdf->writeHTML($html1);
+    $pdf->writeHTML($html2);
+    $pdf->writeHTML($html3);
+
+    // Output the PDF to the browser
+    // $pdf->Output('guarantee_letter.pdf', 'I');
+	// $pdfPath = 'uploads/guarantee_letter/guarantee_letter.pdf';
+	$fileName = 'guarantee_letter' . $loa_id . '.pdf';
+	$pdf->Output(getcwd() . '/uploads/guarantee_letter/' . $fileName, 'F');
+	$response = [
+		'status' => 'saved-pdf',
+		'filename' => $fileName
+	];
+	echo json_encode($response);
+
+	// file_put_c	ontents($pdfPath, $pdfContent);
 	}
 
 	function consultation_schedule(){
@@ -3963,19 +4245,29 @@ class Loa_controller extends CI_Controller {
 		$loa = $this->loa_model->get_all_completed_loa($loa_id);
 
 		$data['user_role'] = $this->session->userdata('user_role');
+		$data['cost_types'] = $this->loa_model->get_cost_types_by_hp($loa['hcare_provider'], $loa_id);
+		$data['loa'] = $loa;
 		$data['emp_id'] = $loa['emp_id'];
+		$data['itemized_bill'] = $this->loa_model->get_itemized_bill($loa['emp_id']);
+		$data['benefits'] = $this->loa_model->get_benefits_deduction($loa['emp_id']);
 		$data['full_name'] = $loa['first_name'] .' '. $loa['middle_name'] .' '. $loa['last_name'] .' '. $loa['suffix'];
+		$data['home_address'] = $loa['home_address'];
+		$data['date_of_birth'] = $loa['date_of_birth'];
+		$data['philhealth_no'] = $loa['philhealth_no'];
+		$data['billed_on'] = $loa['billed_on'];
+		$data['request_date'] = $loa['request_date'];
 		$data['loa_no'] = $loa['loa_no'];
 		$data['hc_provider'] = $loa['hp_name'];
+		$data['chief_complaint'] = $loa['chief_complaint'];
 		$data['hp_id'] = $loa['hp_id'];
 		$data['loa_id'] = $loa['loa_id'];
 		$data['health_card_no'] = $loa['health_card_no'];
 		$data['work_related'] = $loa['work_related'];
+		$data['percentage'] = $loa['percentage'];
 		$data['med_services'] = $loa['med_services'];
 		$data['request_type'] = $loa['loa_request_type'];
 		$data['max_benefit_limit'] = number_format($loa['max_benefit_limit'],2);
 		$data['remaining_balance'] = number_format($loa['remaining_balance'],2);
-		$data['fees'] = $this->loa_model->db_get_hr_added_loa_fees($loa_id);
 
 		$data['bar'] = $this->loa_model->bar_pending();
 		$data['bar1'] = $this->loa_model->bar_approved();
@@ -3997,97 +4289,31 @@ class Loa_controller extends CI_Controller {
 		$token = $this->security->get_csrf_hash();
 		$data['user_role'] = $this->session->userdata('user_role');
 		$loa_id =  $this->input->post('loa-id', TRUE);
-		$total_deduct =  $this->input->post('total-deduction', TRUE);
-		
-		if($total_deduct != ''){
-			$total_deductions = $this->input->post('total-deduction', TRUE);
-		}else{
-			$total_deductions = 0;
-		}
+
+		$hospital_charge = $this->input->post('hospital_charge', TRUE);
+		$less_benefits = $this->input->post('total_deduction', TRUE);
+		$total_net_bill = $this->input->post('net_bill', TRUE);
+
+		$hospital_charge = str_replace(['₱', ','], '', $hospital_charge);
+		$less_benefits = str_replace(['₱', ','], '', $less_benefits);
+		$total_net_bill = str_replace(['₱', ','], '', $total_net_bill);
+
 		//insert_added_loa_fees
 		$post_data = [
 			'emp_id' => $this->input->post('emp-id', TRUE),
 			'loa_id' => $this->input->post('loa-id', TRUE),
 			'hp_id' => $this->input->post('hp-id', TRUE),
 			'request_type' => $this->input->post('request-type', TRUE),
-			'medicines' => $this->input->post('medicines', TRUE),
-			'service_fee' => $this->input->post('service-fee', TRUE),
-			'total_services' => $this->input->post('total-bill', TRUE),
-			'total_deductions' => $total_deductions,
-			'total_net_bill' => $this->input->post('net-bill', TRUE),
+			'total_services' => $hospital_charge,
+			'total_deductions' => $less_benefits,
+			'total_net_bill' => $total_net_bill,
 			'added_by' => $this->session->userdata('fullname'),
 			'added_on' => date('Y-m-d')
 		];
 		$inserted = $this->loa_model->insert_added_loa_fees1($post_data);
+		$inserted = $this->loa_model->update_performed_fees_processing($loa_id);
 		//end
-		
-		//insert loa deductions
-		$deduct_name = $this->input->post('deduction-name', TRUE);
-		$deduct_amount = $this->input->post('deduction-amount', TRUE);
-		if($deduct_amount > 0){
-			$data = [];
-			for($x = 0; $x < count($deduct_name); $x++){
-				$data[] = [
-					'emp_id' => $this->input->post('emp-id', TRUE),
-					'loa_id' => $this->input->post('loa-id', TRUE),
-					'deduction_name' => $deduct_name[$x],
-					'deduction_amount' => $deduct_amount[$x],
-					'added_on' => date('Y-m-d'),
-					'added_by' => $this->session->userdata('fullname')
-				];
-			}
-			$this->loa_model->insert_deductions2($data);
-		}
-		//end
-		
-		//insert philhealth deduction
-		$philhealth_deduct = $this->input->post('philhealth-deduction', TRUE);
-		if($philhealth_deduct > 0){
-			$add_deduct = [
-				'emp_id' => $this->input->post('emp-id', TRUE),
-				'loa_id' => $this->input->post('loa-id', TRUE),
-				'deduction_name' => 'Philhealth Benefits',
-				'deduction_amount' => $this->input->post('philhealth-deduction', TRUE),
-				'added_on' => date('Y-m-d'),
-				'added_by' => $this->session->userdata('fullname')
-			];
-			$this->loa_model->insert_philhealth1($add_deduct);
-		}
-		//end
-
-		// $existing = $this->loa_model->check_if_loa_already_added1($loa_id);
-		// $resched = $this->loa_model->check_if_done_created_new_loa1($loa_id);
-		// $rescheduled = $this->loa_model->check_if_status_cancelled1($loa_id);
-		// if($rescheduled){
-		// 	if($existing && $resched['reffered'] == 1){
-		// 		$this->loa_model->_set_loa_status_completed2($loa_id);
-		// 	}
-		// }else{
-		// 	if($existing){
-		// 		$this->loa_model->_set_loa_status_completed1($loa_id);
-		// 	}
-		// }
-
-		//Insert Charge Fee
-	  $charge_name = $this->input->post('charge-name', TRUE);
-		$charge_amount = $this->input->post('charge-amount', TRUE);
-		if($charge_amount > 0){
-			$data1 = [];
-			for($x = 0; $x < count($charge_name); $x++){
-				$data1[] = [
-					'emp_id' => $this->input->post('emp-id', TRUE),
-					'loa_id' => $this->input->post('loa-id', TRUE),
-					'charge_name' => $charge_name[$x],
-					'charge_amount' => $charge_amount[$x],
-					'added_on' => date('Y-m-d'),
-					'added_by' => $this->session->userdata('fullname')
-				];
-			}
-			$this->loa_model->insert_charge($data1);
-		}
-		$inserted = $this->loa_model->update_performed_fees1($loa_id);
-		//end
-		
+	
 		if($inserted){
 			echo json_encode([
 				'token' => $token,
@@ -4342,6 +4568,7 @@ class Loa_controller extends CI_Controller {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['cost_types'] = $this->loa_model->get_cost_types_by_hp($loa['hcare_provider'], $loa_id);
 		$data['loa'] = $loa;
+		$data['billing_id'] = $loa['billing_id'];
 		$data['emp_id'] = $loa['emp_id'];
 		$data['itemized_bill'] = $this->loa_model->get_itemized_bill($loa['emp_id']);
 		$data['benefits'] = $this->loa_model->get_benefits_deduction($loa['emp_id']);
@@ -4361,9 +4588,11 @@ class Loa_controller extends CI_Controller {
 		$data['percentage'] = $loa['percentage'];
 		$data['med_services'] = $loa['med_services'];
 		$data['request_type'] = $loa['loa_request_type'];
+		$data['pdf_bill'] = $loa['pdf_bill'];
 		$data['max_benefit_limit'] = number_format($loa['max_benefit_limit'],2);
 		$data['remaining_balance'] = number_format($loa['remaining_balance'],2);
 		// $data['fees'] = $this->loa_model->db_get_hr_added_loa_fees($loa_id);
+
 
 		$data['bar'] = $this->loa_model->bar_pending();
 		$data['bar1'] = $this->loa_model->bar_approved();
@@ -4381,89 +4610,18 @@ class Loa_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
-// 	function submit_diagnostic() {
-// 		$token = $this->security->get_csrf_hash();
-// 		$data['user_role'] = $this->session->userdata('user_role');
-
-// 		// Retrieve the form data
-// $emp_id = $_POST['emp_id'];
-// $loa_id = $_POST['loa_id'];
-// $hp_id = $_POST['hp_id'];
-// $request_type = $_POST['request_type'];
-// $hospital_charge = $_POST['hospital_charge'];
-// $less_benefits = $_POST['less_benefits'];
-// $total_net_bill = $_POST['total_net_bill'];
-// $added_by = $_POST['added_by'];
-// $added_on = $_POST['added_on'];
-
-// // Remove currency symbol and comma from the string values
-// $hospital_charge = str_replace(['₱', ','], '', $hospital_charge);
-// $less_benefits = str_replace(['₱', ','], '', $less_benefits);
-// $total_net_bill = str_replace(['₱', ','], '', $total_net_bill);
-
-// // Convert the string values to float
-// $hospital_charge = (float) $hospital_charge;
-// $less_benefits = (float) $less_benefits;
-// $total_net_bill = (float) $total_net_bill;
-
-
-// 		$loa_id =  $this->input->post('loa-id', TRUE);
-// 		$deduction =  $this->input->post('less_benefits', TRUE);
-// 		if($deduction != ''){
-// 			$benefits = $this->input->post('less_benefits', TRUE);
-// 		}else{
-// 			$benefits = 0;
-// 		}
-
-// 		//insert_added_loa_fees
-// 		$post_data = [
-// 			'emp_id' => $this->input->post('emp-id', TRUE),
-// 			'loa_id' => $this->input->post('loa-id', TRUE),
-// 			'hp_id' => $this->input->post('hp-id', TRUE),
-// 			'request_type' => $this->input->post('request-type', TRUE),
-// 			'hospital_charge' => $this->input->post('hospital_charge', TRUE),
-// 			'less_benefits' => $benefits,
-// 			'total_net_bill' => $this->input->post('net_bill', TRUE),
-// 			'added_by' => $this->session->userdata('fullname'),
-// 			'added_on' => date('Y-m-d')
-// 		];
-// 		$inserted = $this->loa_model->insert_added_loa_fees($post_data);
-// 		//end
-		
-// 		// if($inserted){
-// 		// 	echo json_encode([
-// 		// 		'token' => $token,
-// 		// 		'status' => 'success',
-// 		// 		'message' => 'Data Added Successfully!'
-// 		// 	]);
-// 		// }else{
-// 		// 	echo json_encode([
-// 		// 		'token' => $token,
-// 		// 		'status' => 'failed',
-// 		// 		'message' => 'Data Insertion Failed!'
-// 		// 	]);
-// 		// }
-// 		var_dump($post_data);
-// 	}
-
 	function submit_diagnostic() {
 		$token = $this->security->get_csrf_hash();
 		$data['user_role'] = $this->session->userdata('user_role');
 		$loa_id = $this->input->post('loa-id', TRUE);
 
 		$hospital_charge = $this->input->post('hospital_charge', TRUE);
-		$less_benefits = $this->input->post('less_benefits', TRUE);
+		$less_benefits = $this->input->post('total_deduction', TRUE);
 		$total_net_bill = $this->input->post('net_bill', TRUE);
 
 		$hospital_charge = str_replace(['₱', ','], '', $hospital_charge);
 		$less_benefits = str_replace(['₱', ','], '', $less_benefits);
 		$total_net_bill = str_replace(['₱', ','], '', $total_net_bill);
-
-		// $hospital_charge = (float) $hospital_charge;
-		// $less_benefits = (float) $less_benefits;
-		// $total_net_bill = (float) $total_net_bill;
-
-		// $hospital_charge = number_format($hospital_charge, 2, '.', '');
 
 		//insert_added_loa_fees
 		$post_data = [
@@ -4471,13 +4629,14 @@ class Loa_controller extends CI_Controller {
 			'loa_id' => $this->input->post('loa-id', TRUE),
 			'hp_id' => $this->input->post('hp-id', TRUE),
 			'request_type' => $this->input->post('request-type', TRUE),
-			'hospital_charge' => $hospital_charge,
-			'less_benefits' => $less_benefits,
+			'total_services' => $hospital_charge,
+			'total_deductions' => $less_benefits,
 			'total_net_bill' => $total_net_bill,
 			'added_by' => $this->session->userdata('fullname'),
 			'added_on' => date('Y-m-d')
 		];
 		$inserted = $this->loa_model->insert_added_loa_fees($post_data);
+		$inserted = $this->loa_model->update_performed_fees_processing($loa_id);
 		//end
 
 		if ($inserted) {
@@ -4621,5 +4780,89 @@ class Loa_controller extends CI_Controller {
 	//====================================================================================================
 	//END
 	//====================================================================================================
+
+	function convertNumberToWords($number){
+    // Define arrays for the words
+    $units = array('', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen');
+    $tens = array('', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety');
+    $scale = array('', 'Thousand', 'Million', 'Billion', 'Trillion'); // Add more scales as needed
+
+    // Clean up the number and convert to string
+    $number = trim($number);
+    $number = (string) $number;
+    $number = str_replace(',', '', $number);
+
+    // Check for zero or empty value
+    if ($number == '0' || $number == '') {
+        return 'Zero';
+    }
+
+    // Split the number into chunks of 3 digits
+    $chunks = array_reverse(str_split($number, 3));
+
+    // Initialize the result
+    $result = '';
+
+    // Process each chunk
+    foreach ($chunks as $index => $chunk) {
+        // Skip empty chunks
+        if ((int) $chunk === 0) {
+            continue;
+        }
+
+        // Split the chunk into individual digits
+        $digits = str_split(strrev($chunk));
+
+        // Initialize the chunk result
+        $chunkResult = '';
+
+        // Process each digit in the chunk
+        foreach ($digits as $digitIndex => $digit) {
+            // Get the position of the digit within the chunk
+            $position = $digitIndex + 1;
+
+            // Convert the digit to words based on its position
+            switch ($position) {
+                case 1:
+                    // Ones place
+                    $chunkResult = $units[$digit];
+                    break;
+                case 2:
+                    // Tens place
+                    if ($digit == '1') {
+                        // If the tens digit is 1, use the corresponding value from the units array
+                        $chunkResult = $units[$digits[$digitIndex - 1] . $digit];
+                    } else {
+                        // Otherwise, use the corresponding value from the tens array and append the ones digit
+                        $chunkResult = $tens[$digit] . ' ' . $chunkResult;
+                    }
+                    break;
+                case 3:
+                    // Hundreds place
+                    $chunkResult = $units[$digit] . ' Hundred ' . $chunkResult;
+                    break;
+            }
+        }
+
+        // Append the scale to the chunk result if needed
+        if ($index > 0 && $chunkResult != '') {
+            $chunkResult .= ' ' . $scale[$index];
+        }
+
+        // Append the chunk result to the final result
+        $result = $chunkResult . ' ' . $result;
+    }
+
+    // Clean up the result
+    $result = trim($result);
+
+    // Capitalize the first letter and add "Pesos" at the end
+    $result = ucfirst($result) . ' Pesos';
+
+    // Return the converted words
+    return $result;
+
+}
+
 	
 }

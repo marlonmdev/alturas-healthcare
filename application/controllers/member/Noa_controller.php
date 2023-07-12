@@ -83,7 +83,7 @@ class Noa_controller extends CI_Controller {
 					'request_date' => date("Y-m-d"),
 					'status' => $default_status,
 					'requested_by' => $emp_id,
-					'type_request' => $inputPost['type_request'],
+					'type_request' => $inputPost['type_request'], 
 				);
 
 				$saved = $this->noa_model->db_insert_noa_request($post_data);

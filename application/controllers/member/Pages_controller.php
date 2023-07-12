@@ -8,6 +8,7 @@ class Pages_controller extends CI_Controller {
 		$this->load->model('member/loa_model');
 		$this->load->model('member/noa_model');
 		$this->load->model('member/get_model');
+		$this->load->model('member/history_model');
 		$user_role = $this->session->userdata('user_role');
 		$logged_in = $this->session->userdata('logged_in');
 		if ($logged_in !== true && $user_role !== 'member') {
@@ -80,8 +81,8 @@ class Pages_controller extends CI_Controller {
 			endforeach;
 
         endforeach;
-
-		$data['mbl'] =  number_format((floatval($mbl['remaining_balance'])-floatval($med_services)),2);
+		$r_mbl = floatval($mbl['remaining_balance'])-floatval($med_services);
+		$data['mbl'] =  number_format(($r_mbl > 1) ? $r_mbl : 0,2);
 		//var_dump($data['mbl']);
 		$this->load->view('templates/header', $data);
 		$this->load->view('member_panel/loa/request_loa_form',$data);
@@ -255,6 +256,7 @@ class Pages_controller extends CI_Controller {
 	function loa_mbl_history() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['emp_id'] = $this->session->userdata('emp_id');
+		$data['start_date'] = $this->history_model->get_mbl_details($data['emp_id']);
 		$this->load->view('templates/header', $data);
 		$this->load->view('member_panel/mbl_history/loa_mbl_history');
 		$this->load->view('templates/footer');
@@ -263,6 +265,7 @@ class Pages_controller extends CI_Controller {
 	function noa_mbl_history() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['emp_id'] = $this->session->userdata('emp_id');
+		$data['start_date'] = $this->history_model->get_mbl_details($data['emp_id']);
 		$this->load->view('templates/header', $data);
 		$this->load->view('member_panel/mbl_history/noa_mbl_history');
 		$this->load->view('templates/footer');
@@ -279,6 +282,15 @@ class Pages_controller extends CI_Controller {
 		$data['mbl'] = $this->history_model->get_member_mbl($emp_id);
 		$this->load->view('templates/header', $data);
 		$this->load->view('member_panel/emergency_loa/request_emerg_form',$data);
+		$this->load->view('templates/footer');
+	}
+
+	function mbl_ledger() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['emp_id'] = $this->session->userdata('emp_id');
+		$data['start_date'] = $this->history_model->get_mbl_details($data['emp_id']);
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/mbl_history/mbl_ledger');
 		$this->load->view('templates/footer');
 	}
 }

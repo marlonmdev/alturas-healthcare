@@ -119,7 +119,7 @@
 
     function viewLoaInfo(loa_id) {
         $.ajax({
-            url: `${baseUrl}healthcare-provider/loa-requests/pending/view/${loa_id}`,
+            url: `${baseUrl}healthcare-provider/loa-requests/view/${loa_id}`,
             type: "GET",
             success: function(response) {
                 const res = JSON.parse(response);
@@ -169,36 +169,7 @@
                 $('#chief-complaint').html(chief_complaint);
                 $('#requesting-physician').html(requesting_physician);
                 $('#attending-physician').html(at_physician);
-                if(work_related == 'Yes'){ 
-                  if(percentage == ''){
-                    wpercent = '100% W-R';
-                    nwpercent = '';
-                  }else{
-                    wpercent = percentage+'%  W-R';
-                    result = 100 - parseFloat(percentage);
-                    if(percentage == '100'){
-                      nwpercent = '';
-                    }else{
-                      nwpercent = result+'% Non W-R';
-                    }
-                    
-                  }	
-                }else if(work_related == 'No'){
-                  if(percentage == ''){
-                    wpercent = '';
-                    nwpercent = '100% Non W-R';
-                  }else{
-                    nwpercent = percentage+'% Non W-R';
-                    result = 100 - parseFloat(percentage);
-                    if(percentage == '100'){
-                      wpercent = '';
-                    }else{
-                      wpercent = result+'%  W-R';
-                    }
-                  
-                  }
-                }
-                $('#percentage').html(wpercent+', '+nwpercent);
+                $('#percentage').html(percentage);
             }
         });
     }

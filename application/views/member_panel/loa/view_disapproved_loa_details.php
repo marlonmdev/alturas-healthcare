@@ -29,9 +29,6 @@
                   <td class="fw-bold ls-1">Reason for Disapproval :</td>
                   <td class="fw-bold ls-1" id="disapprove-reason"></td>
                 </tr>
-                  <td class="fw-bold ls-1">Percentage :</td>
-                  <td class="fw-bold ls-1" id="percentage"></td>
-                </tr>
                 <tr>
                   <td class="fw-bold ls-1">Healthcard Number :</td>
                   <td class="fw-bold ls-1" id="health-card-no"></td>

@@ -13,7 +13,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> 
 
   <div class="container-fluid">
     <div class="row">
@@ -89,11 +89,11 @@
                   </table>
                 </div>
 
-                <div class="row pt-4">
+                <!-- <div class="row pt-4">
                   <div class="col-lg-2 offset-10">
                     <input name="total-hospital-bill" id="total-hospital-bill" class="form-control text-align:left fw-bold" value="0"  oninput="checkTotalHospitalBill()" readonly>
                   </div>
-                </div>
+                </div> -->
               </div>
               <div class="offset-10 pt-2 pb-4">
                 <button class="btn btn-info fw-bold fs-5 btn-lg" type="submit" id="proceed-btn" disabled><i class="mdi mdi-send"></i> Proceed</button>
@@ -189,50 +189,21 @@
 </div>
 <!-- End -->
 
-<!-- Guarantee Letter -->
+
+<!-- GUARANTEE LETTER -->
 <div class="modal fade pt-4" id="GuaranteeLetter" tabindex="-1" data-bs-backdrop="static">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-fullscreen">
     <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title ls-2">GUARANTEE LETTER</h4>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      
-      <div class="modal-body">
-        <form method="post" action="<?php echo base_url(); ?>healthcare-coordinator/loa/billed/submit_letter" id="Letter" enctype="multipart/form-data">
-          <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
-          <input type="hidden" name="emp-id" id="emp-id">
-          <input type="hidden" name="billing-id" id="billing-id">
-                        
-          <div class="col-lg-8 pt-1">
-            <input type="hidden" class="form-control text-danger fs-5 fw-bold" name="emp-name" id="emp-name" placeholder="Employee Name" readonly>
-          </div>
-                        
-          <div class="row pt-5">
-            <div class="col-lg-10 offset-1">
-              <div class="form-group">
-                <label for="letter" style="font-size: 20px">Upload File:</label>
-                <input type="file" class="form-control-file dropify" name="letter" id="letter" accept=".jpg, .jpeg, .png, .gif, .pdf" data-max-file-size="5M" onchange="showPreview(this)">
-              </div>
-              <div style="font-size: 20px; text-align:center" id="image-preview" class="mb-3"></div>
-              <p style="font-size: 20px; text-align:center" id="pdf-preview" class="mb-0"></p>
-              <span id="letter_error" class="text-danger"></span>
-            </div>
-          </div><br>
-
-          <div class="row pt-3">
-            <div class="col-sm-12 mb-sm-0 d-flex justify-content-end">
-              <button type="submit" class="btn btn-primary me-2"><i class="mdi mdi-content-save"></i> UPLOAD</button>
-              <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="mdi mdi-close-box"></i> CANCEL</button>
-            </div>
-          </div>
-
-        </form>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="submit"  id="Letter" class="btn btn-primary me-2" form="submitForm"><i class="mdi mdi-near-me"></i> Send</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="mdi mdi-close-box"></i> CLOSE</button>
       </div>
     </div>
   </div>
 </div>
-<!-- End -->
+<!-- END -->
+
 
   
 
@@ -402,18 +373,24 @@
     //End
 
     //Submit Guarantee Letter
-    $('#Letter').submit(function(event) {
-      event.preventDefault();
-
-      const LetterForm = $('#Letter')[0];
-      const formdata = new FormData(LetterForm);
+    $('#Letter').click(function(event) {
+      // event.preventDefault();
+      /* The above code is not written in PHP, it is written in JavaScript. */
+      // console.log("pdf file",$('#pdf_file').val());
+      // const LetterForm = $('#Letterf')[0];
+      // const formdata = new FormData(LetterForm);
+      // formdata.append('token', `<?= $this->security->get_csrf_hash() ?>`);
       $.ajax({
         type: "post",
-        url: $(this).attr('action'),
-        data: formdata,
+        url: `<?php echo base_url(); ?>healthcare-coordinator/loa/billed/submit_letter`,
+        data:{
+          token :`<?= $this->security->get_csrf_hash() ?>`,
+          pdf_file : $('#pdf_file').val(),
+          billing_id : $('#billing_id').val(),
+        } ,
         dataType: "json",
-        processData: false,
-        contentType: false,
+        // processData: false,
+        // contentType: false,
         success: function(response) {
           const {
             token,
@@ -423,14 +400,21 @@
           } = response;
           switch (status) {
             case 'error':
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
               // is-invalid class is a built in classname for errors in bootstrap
-              if (charge_type_error !== '') {
-                $('#charge-type-error').html(charge_type_error);
-                $('#charge-type').addClass('is-invalid');
-              } else {
-                $('#charge-type-error').html('');
-                $('#charge-type').removeClass('is-invalid');
-              }
+              // if (charge_type_error !== '') {
+              //   $('#charge-type-error').html(charge_type_error);
+              //   $('#charge-type').addClass('is-invalid');
+              // } else {
+              //   $('#charge-type-error').html('');
+              //   $('#charge-type').removeClass('is-invalid');
+              // }
             break;
             case 'save-error':
               swal({
@@ -456,6 +440,18 @@
       })
     });
     //End
+
+    $(".generate_pdf").click(function() {
+      // Send an AJAX request to the server to generate the PDF
+      $.ajax({
+        type: "POST",
+        url: "<?php echo base_url(); ?>healthcare-coordinator/loa/billed/guarantee_pdf",
+        success: function(response) {
+          // Open the generated PDF in a new tab or window
+          window.open(response, "_blank");
+        }
+      });
+    });
   });
 
     
@@ -644,10 +640,13 @@
     $('#bd-loa-no').html(loa_no);
   }
 
-  function GuaranteeLetter(billing_id) {
-    $("#GuaranteeLetter").modal("show");
-    $('#billing-id').val(billing_id);
-  }
+  // function GuaranteeLetter(billing_id) {
+  //   $("#GuaranteeLetter").modal("show");
+  //   $('#billing-id').val(billing_id);
+  // }
+
+
+  
 
 
   function showPreview(input) {
@@ -745,4 +744,73 @@
     );
   }
 
+
+
+  // function GuaranteeLetter(loa_id, billing_id) {
+  //   $.ajax({
+  //     url: `${baseUrl}healthcare-coordinator/loa/billed/guarantee/${loa_id}`,
+  //     type: "GET",
+  //     success: function (response) {
+  //       const res = JSON.parse(response);
+  //       const { status, token, first_name, middle_name, last_name, company_charge } = res;
+
+  //       // Update modal content
+  //       $("#GuaranteeLetter").modal("show");
+  //       $('#billing-id').val(billing_id);
+  //       $('#loa_no').val(loa_id);
+  //       $('#first_name').text(first_name);
+  //       $('#middle_name').text(middle_name);
+  //       $('#last_name').text(last_name);
+  //       $('#company_charge').html('₱' + Number(company_charge).toFixed(2));
+
+  //       const words = convertNumberToWords(parseFloat(company_charge));
+  //       $('#company_charge_words').text(words);
+  //     }
+  //   });
+  // }
+
+  function GuaranteeLetter(loa_id, billing_id) {
+    // const pdfUrl = `${baseUrl}healthcare-coordinator/loa/billed/guarantee_pdf/${loa_id}`;
+   
+
+    $.ajax({
+      url: `${baseUrl}healthcare-coordinator/loa/billed/guarantee_pdf/${loa_id}`,
+      type: "GET",
+      success: function (response) {
+        const res = JSON.parse(response);
+        const { status, filename } = res;
+        console.log('filename',filename);
+        console.log('status',status);
+        const embedTag = `<embed src="${baseUrl}/uploads/guarantee_letter/${filename}" name="pdfEmbed" id="pdfEmbed" width="100%" height="100%" type="application/pdf" /> <input type = "hidden" name="pdf_file" id="pdf_file" value="${filename}" /> <input type = "hidden" name="billing_id" id="billing_id" value="${billing_id}" />`;
+      // `<input type = "text" name="pdf_file" id="pdf_file" value="${filename}"/>`;
+       
+        $('#GuaranteeLetter .modal-body').html(embedTag);
+        $('#GuaranteeLetter').modal('show');
+        // console.log ($('#pdf_file').val());
+      }
+    });
+
+  }
+
+  
 </script>
+
+<style>
+
+  @keyframes blink {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  .blink {
+    animation: blink 1s infinite;
+  }
+
+</style>

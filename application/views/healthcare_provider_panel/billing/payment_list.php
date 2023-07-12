@@ -115,7 +115,7 @@
                         $('#check-number').val(check_num);
                         $('#check-date').val(check_date);
                         $('#bank').val(bank);
-                        $('#amount-paid').val(parseFloat(amount_paid).toFixed(2));
+                        $('#amount-paid').val(amount_paid);
                         $('#textbox').val(covered_loa_no);
                         $('#c-billed-date').val(billed_date);
                         // $('#supporting-docu').attr('src', check_image);

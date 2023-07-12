@@ -34,22 +34,10 @@
               <li class="sidebar-item 
               <?php echo $this->uri->segment(2) == 'request-emergency-loa' ? 'selected' : ''; ?>
               ">
-                <a
-                  class="sidebar-link has-arrow"
-                  href="javascript:void(0)"
-                  aria-expanded="false"
-                  >
-                  <i class="mdi mdi-file-chart"></i>
-                  <span class="hide-menu ls-1">Emergency LOA</span>
-                </a>
-                <ul aria-expanded="false" class="collapse first-level">
-                  <li class="sidebar-item">
-                    <a href="<?php echo base_url(); ?>member/request-emergency-loa" class="sidebar-link"
+              <a href="<?php echo base_url(); ?>member/request-emergency-loa" class="sidebar-link"
                       ><i class="mdi mdi-note-plus"></i
-                      ><span class="hide-menu ls-1">Request Emerg LOA</span>
+                      ><span class="hide-menu ls-1">EMERGENCY LOA</span>
                     </a>
-                  </li>
-                </ul>
               </li>
 
               <li class="sidebar-item 
@@ -128,6 +116,19 @@
                   >
                   <i class="mdi mdi-receipt"></i>
                   <span class="hide-menu ls-1">MBL History</span>
+                </a>
+              </li>
+
+              <li class="sidebar-item 
+              <?php echo $this->uri->segment(2) == 'mbl-ledger' ? 'selected' : ''; ?>
+              ">
+                <a
+                  class="sidebar-link"
+                  href="<?php echo base_url(); ?>member/mbl-ledger/loa-noa"
+                  aria-expanded="false"
+                  >
+                  <i class="mdi mdi-receipt"></i>
+                  <span class="hide-menu ls-1">MBL Ledger</span>
                 </a>
               </li>
               

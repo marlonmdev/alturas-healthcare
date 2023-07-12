@@ -34,6 +34,22 @@
               <span class="hidden-xs-down fs-5 font-bold">NOA</span>
             </a>
           </li>
+          <li>
+            <div class="input-group">
+                                <div class="input-group-append">
+                                    <span class="input-group-text text-dark ls-1 ms-2">
+                                        <i class="mdi mdi-calendar-range"></i>
+                                    </span>
+                                </div>
+                                <div class="dropdown">
+                                <input type="text" class="form-control dropdown-toggle" id="yearDropdown" data-bs-toggle="dropdown" aria-expanded="false"  readonly>
+                                  <ul class="dropdown-menu dropdown-menu-scrollable" aria-labelledby="yearDropdown" id ="yearList">
+
+                                  </ul>
+                                </div>
+                                
+          </div>
+          </li>
 
         </ul>
 
@@ -44,11 +60,11 @@
                 <thead style="background-color:#00538C">
                   <tr>
                     <th class="fw-bold" style="color: white">#</th>
-                    <th class="fw-bold" style="color: white">LOA #</th>
-                    <th class="fw-bold" style="color: white">STATUS</th>
                     <th class="fw-bold" style="color: white">REQUEST DATE</th>
-                    <th class="fw-bold" style="color: white">HOSPITAL BILL</th>
-                    <th class="fw-bold" style="color: white">VIEW</th> 
+                    <th class="fw-bold" style="color: white">LOA #</th>
+                    <th class="fw-bold" style="color: white">TYPE OF REQUEST</th>
+                    <th class="fw-bold" style="color: white">STATUS</th>
+                    <th class="fw-bold" style="color: white">HOSPITAL BILL</th> 
                   </tr>
                 </thead>
                 <tbody>
@@ -64,35 +80,64 @@
     </div>
   </div>
 </div>
-
+<style>
+  .dropdown-menu-scrollable {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+</style>
 <script>
   const baseUrl = "<?= base_url() ?>";
   const emp_id = "<?= $emp_id ?>";
-
+  const startYear = '2000';
+  // const startYear = '<?= $start_date ?>';
+  const yearList = document.getElementById('yearList');
+  const currentYear = new Date().getFullYear();
   $(document).ready(function() {
-    $("#memberPersonalCharges").DataTable({
-      processing: true, //Feature control the processing indicator.
-      serverSide: true, //Feature control DataTables' server-side processing mode.
-      order: [], //Initial no order.
+     $('#yearDropdown').val(currentYear);
+     mbl_datatable();
+    yearList.addEventListener('click', function(event) {
+          const selectedYear = event.target.textContent;
+          yearDropdown.value = selectedYear;
+          mbl_datatable();
+        });
 
-      // Load data for the table's content from an Ajax source
-      ajax: {
-        url: `${baseUrl}member/mbl-history/loa/fetch`,
-        type: "POST",
-        // passing the token as data so that requests will be allowed
-        data: { 'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
-                        'emp_id' :  emp_id
-              }
-      },
+        for (let year = currentYear; year >= startYear; year--) {
+          const listItem = document.createElement('li');
+          const link = document.createElement('a');
+          link.classList.add('dropdown-item');
+          link.href = '#';
+          link.textContent = year;
+          listItem.appendChild(link);
+          yearList.appendChild(listItem);
+        }
 
-      //Set column definition initialisation properties.
-      columnDefs: [{
-        "targets": [4, 5], // numbering column
-        "orderable": false, //set not orderable
-      }, ],
-      responsive: true,
-      fixedHeader: true,
-    });
+        $('#filter').change(function(){
+          mbl_datatable();
+        });
+
+    // $("#memberPersonalCharges").DataTable({
+    //   processing: true, //Feature control the processing indicator.
+    //   serverSide: true, //Feature control DataTables' server-side processing mode.
+    //   order: [], //Initial no order.
+    //   // Load data for the table's content from an Ajax source
+    //   ajax: {
+    //     url: `${baseUrl}member/mbl-history/loa/fetch`,
+    //     type: "POST",
+    //     // passing the token as data so that requests will be allowed
+    //     data: { 'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
+    //                     'emp_id' :  emp_id
+    //           }
+    //   },
+
+    //   //Set column definition initialisation properties.
+    //   columnDefs: [{
+    //     "targets": [4, 5], // numbering column
+    //     "orderable": false, //set not orderable
+    //   }, ],
+    //   responsive: true,
+    //   fixedHeader: true,
+    // });
 
     $('#viewLoaModal').on('hidden.bs.modal', function() {
           $('#services').empty(); // Remove all list items from the list
@@ -103,6 +148,43 @@
           // Additional reset logic if needed
         });
   });
+
+  const mbl_datatable = () => {
+         // Check if the DataTable already exists
+         if ($.fn.DataTable.isDataTable("#memberPersonalCharges")) {
+              // Destroy the DataTable
+              $("#memberPersonalCharges").DataTable().destroy();
+            }
+            
+            $("#memberPersonalCharges").DataTable({
+              processing: true, //Feature control the processing indicator. 
+              serverSide: true, //Feature control DataTables' server-side processing mode.
+              order: [], //Initial no order.
+              columnDefs: [
+            {
+                "targets": [2], // Replace 0 with the index of the column you want to bold (zero-based index)
+                "render": function (data, type, row, meta) {
+                        return '<strong>' + data + '</strong>';
+                }
+            }],
+              // Load data for the table's content from an Ajax source
+              ajax: {
+                url: `${baseUrl}member/mbl-history/loa/fetch`,
+                type: "POST",
+                // passing the token as data so that requests will be allowed
+                data: { 'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
+                                'emp_id' :  emp_id,
+                                'start_date' : $('#yearDropdown').val(),
+                               
+                      }
+              },
+
+              responsive: true,
+              fixedHeader: true,
+
+            });
+
+      }
 
   function viewImage(file,type) {
         let src = '';

@@ -229,10 +229,10 @@
     const printPaidBill = () => {
       const hp_id = document.querySelector('#p-hp-id').value;
       const start_date = document.querySelector('#p-start-date').value;
-       const end_date = document.querySelector('#p-end-date').value;
+      const end_date = document.querySelector('#p-end-date').value;
 
-       var base_url = `${baseUrl}`;
-        var win = window.open(base_url + "printpaid/pdfbilling/" + btoa(hp_id) + "/" + btoa(start_date) + "/" + btoa(end_date), '_blank');
+      var base_url = `${baseUrl}`;
+      var win = window.open(base_url + "printpaid/pdfbilling/" + btoa(hp_id) + "/" + btoa(start_date) + "/" + btoa(end_date), '_blank');
     }
 
     const viewLOANOAdetails = (billing_id) => {

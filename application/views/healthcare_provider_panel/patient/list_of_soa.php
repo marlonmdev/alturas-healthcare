@@ -185,6 +185,7 @@
         copyTagStyles: true,
         removeInline: false,
         afterPrint: function() {
+          console.log('not printed');
           billedTablef.destroy();
           billedTable = datatable_t();
         }

@@ -28,7 +28,7 @@ class Mbl_history extends CI_Controller {
 			// var_dump('loa',$loa['tbl1_loa_id']);
 			$loa_id = $this->myhash->hasher($loa['tbl1_loa_id'], 'encrypt');
 			
-			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaHistoryInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaHistoryInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA">'.$loa['loa_no'].'</a>';
             
             $med_services = 0;
             $exploded_med_services = explode(";", $loa['med_services']);
@@ -45,11 +45,12 @@ class Mbl_history extends CI_Controller {
             endforeach;
             
 			$row[] = $loa['tbl1_loa_id'];
-			$row[] = $loa['loa_no'];
-			$row[] =  $loa['tbl1_status'];
 			$row[] = $loa['tbl1_request_date'];
-            $row[] = number_format(floatval((isset($loa['net_bill']) ? $loa['net_bill'] : $med_services)),2);
 			$row[] = $custom_actions;
+			$row[] = $loa['loa_request_type'];
+			$row[] =  $loa['tbl1_status'];
+            $row[] = number_format(floatval((isset($loa['net_bill']) ? $loa['net_bill'] : $med_services)),2);
+			
 			$data[] = $row;
 		}
 
@@ -73,14 +74,14 @@ class Mbl_history extends CI_Controller {
 
 			$noa_id = $this->myhash->hasher($noa['tbl1_noa_id'], 'encrypt');
 			
-			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewNoaHistoryInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewNoaHistoryInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View LOA">'.$noa['noa_no'].'</a>';
 			
 			$row[] = $noa['tbl1_noa_id'];
-			$row[] = $noa['noa_no'];
-			$row[] =  $noa['tbl1_status'];
 			$row[] =  $noa['tbl1_request_date'];
-            $row[] = number_format(floatval((isset($noa['net_bill']) ? $noa['net_bill'] : 0)),2);
 			$row[] = $custom_actions;	
+			$row[] =  $noa['type_request'];
+			$row[] =  $noa['tbl1_status'];
+            $row[] = number_format(floatval((isset($noa['net_bill']) ? $noa['net_bill'] : 0)),2);
 			$data[] = $row;
 		}
 
@@ -98,46 +99,66 @@ class Mbl_history extends CI_Controller {
 		$this->security->get_csrf_hash();
 		$emp_id = $this->input->post('emp_id');
 		$list = $this->history_model->get_history_datatables($emp_id);
-		// var_dump("executed", $list);
+		$startmbl = $this->history_model->get_start_mbl($emp_id);
+		// var_dump("start mbl",$startmbl);
+		$row1 = array();
 		$data = array();
-		foreach ($list as $bill){
-			$row = array(); 
-			if($this->input->post('loa_noa') === "NOA"){
-				if($bill['loa_id']){
-				  continue;
-				}
-			  }
+		$counter = true;
+				
+				
 
-			if($this->input->post('loa_noa') === "LOA"){
-				if($bill['noa_id']){
-				  continue;
+			foreach ($list as $bill){
+			 $row = array();
+				if($this->input->post('loa_noa') === "NOA"){
+					if($bill['loa_id']){
+					  continue;
+					}
+				  }
+	
+				if($this->input->post('loa_noa') === "LOA"){
+					if($bill['noa_id']){
+					  continue;
+					}
+				  }
+	
+				$loa_id = $this->myhash->hasher($bill['loa_id'], 'encrypt');
+				$noa_id = $this->myhash->hasher($bill['noa_id'], 'encrypt');
+				if(isset($bill['loa_id'])){
+					$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaHistoryInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA">'.$bill['loa_no'].'</a>';
 				}
-			  }
+				
+				if(isset($bill['noa_id'])){
+					$custom_actions = '<a href="JavaScript:void(0)" onclick="viewNoaHistoryInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA">'.$bill['noa_no'].'</a>';
+				}
 
-			$loa_id = $this->myhash->hasher($bill['loa_id'], 'encrypt');
-			$noa_id = $this->myhash->hasher($bill['noa_id'], 'encrypt');
-			if(isset($bill['loa_id'])){
-				$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaHistoryInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+				if($counter){
+					$row1[] = '';
+					$row1[] = '';
+					$row1[] = '';
+					$row1[] = '';
+					$row1[] = '';
+					$row1[] = '';
+					$row1[] = '';
+					$row1[] = '';
+					$row1[] = 'BEGINNING MBL';
+					$row1[] = number_format(($startmbl),2);
+					$row1[] = '';
+					$data[] = $row1;
+					$counter = false;
+				}
+
+				$row[] = $bill['billing_id'];	
+				$row[] = $bill['tbl1_request_date'];
+				$row[] = $custom_actions;	
+				$row[] = $bill['billing_no'];
+				$row[] = $bill['tbl1_status'];
+				$row[] = number_format(floatval($bill['net_bill']),2);
+				$row[] = number_format(floatval($bill['company_charge']),2);
+				$row[] = number_format(floatval($bill['personal_charge']),2);
+				$row[] = number_format(floatval($bill['cash_advance']),2);
+				$row[] = number_format(floatval($bill['after_remaining_bal']),2);
+				$data[] = $row;
 			}
-			
-			if(isset($bill['noa_id'])){
-				$custom_actions = '<a href="JavaScript:void(0)" onclick="viewNoaHistoryInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
-			}
-			
-			$row[] = $bill['billing_id'];	
-			$row[] = $bill['billing_no'];
-			$row[] = (isset($bill['loa_id']))? "LOA": "NOA";
-			$row[] = $bill['tbl1_status'];
-			$row[] = $bill['tbl1_request_date'];
-            $row[] = number_format(floatval($bill['net_bill']),2);
-            $row[] = number_format(floatval($bill['before_remaining_bal']),2);
-            $row[] = number_format(floatval($bill['company_charge']),2);
-            $row[] = number_format(floatval($bill['personal_charge']),2);
-            $row[] = number_format(floatval($bill['cash_advance']),2);
-            $row[] = number_format(floatval($bill['after_remaining_bal']),2);
-			$row[] = $custom_actions;	
-			$data[] = $row;
-		}
 		
 		$output = array(
 			"draw" => $_POST['draw'],
@@ -145,6 +166,7 @@ class Mbl_history extends CI_Controller {
 			"recordsFiltered" => $this->history_model->count_history_filtered($emp_id),
 			"data" => $data,
 		);
+
 		echo json_encode($output);
 	}
 
@@ -212,7 +234,7 @@ class Mbl_history extends CI_Controller {
 			'token' => $this->security->get_csrf_hash(),
 			'loa_no' => $row['loa_no'],
 			'loa_request_type' => $row['loa_request_type'],
-			'med_services' => (count($ct_array)!=0) ? $ct_array : ['Consultation'],
+			'med_services' => ($row['loa_request_type'] === 'Diagnostic Test') ? $ct_array : (($row['loa_request_type'] === 'Consultation') ?['Consultation']:['Emergency Loa']),
 			'requesting_company' => $row['requesting_company'],
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'complaints' => $row['chief_complaint'],

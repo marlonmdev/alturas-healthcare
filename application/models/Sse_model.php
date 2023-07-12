@@ -9,9 +9,19 @@ class Sse_model extends CI_Model {
     $this->db->from('billing');
     $this->db->where('guarantee_letter', 1);
     $query = $this->db->get();
-    $result = $query->row();
-    return $result->count;
+    $result1 = $query->row();
+    $count1 = $result1->count;
+
+    $this->db->select('COUNT(*) as count');
+    $this->db->from('billing');
+    $this->db->where('re_upload', 1);
+    $query = $this->db->get();
+    $result2 = $query->row();
+    $count2 = $result2->count;
+    
+    return $count1+$count2;
 }
+
 public function get_count_to_bill()
     {
         // Subquery for loa_requests table
@@ -23,7 +33,7 @@ public function get_count_to_bill()
     // Subquery for noa_requests table
     $this->db->select('COUNT(*) as count');
     $this->db->from('noa_requests');
-    $this->db->where_in('status', array('Approved', 'Completed', 'Referred'));
+    $this->db->where_in('status', array('Approved'));
     $subquery_noa = $this->db->get_compiled_select();
 
     // Combine both subqueries with UNION ALL

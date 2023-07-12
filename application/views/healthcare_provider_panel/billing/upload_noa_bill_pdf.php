@@ -619,6 +619,17 @@
                         })
                         .catch(function(error) {
                         console.log(error);
+                            $.alert({
+                                          title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
+                                          content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience. The system encountered an error. Please refresh current window. Thank you for your understanding.</div>",
+                                          type: "red",
+                                          buttons: {
+                                          ok: {
+                                              text: "OK",
+                                              btnClass: "btn-danger",
+                                          },
+                                      },
+                                  });
                         });
 
                     promises.push(promise);
@@ -697,6 +708,8 @@
                                 if(pdfid === 'pdf-file'){
                                     var itemsPattern = /\s+date\s+description\s+qty\s+unit price\s+amount/;
                                     const regex = /please pay for this amount\s*\.*\s*([\d,\.]+)/i;
+                                    const hosp_plan = /hospitalization plan:\s(.*?)\sage/si;
+                                    const hpmatch = finalResult.match(hosp_plan);
                                     const match = finalResult.match(regex);
                                     console.log("match",match);
 
@@ -705,7 +718,12 @@
                                         const matches_2 = finalResult.match(doc_pattern);
                                         const result_2 = matches_2 ? matches_2[1] : null;
                                         hospital_charges = result_2;
-                                        benefits_deductions = JSON.stringify(get_deduction(final_text(finalResult)));
+                                        if(hpmatch[1].replace(/\s/g, "")!=='self-pay'){
+                                            benefits_deductions = JSON.stringify(get_ph_deduction(final_text(finalResult)));
+                                        }else{
+                                            benefits_deductions = JSON.stringify(get_selfpay_deduction(final_text(finalResult)));
+                                        }
+                                        // benefits_deductions = JSON.stringify(get_deduction(final_text(finalResult)));
                                         attending_doctors = get_doctors(finalResult);
 
                                         console.log("doctors", attending_doctors);
@@ -794,7 +812,18 @@
                         });
                         
                     }, function(error) {
-                    console.error(error);
+                        console.error(error);
+                            $.alert({
+                                          title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
+                                          content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience. The system encountered an error. Please refresh current window. Thank you for your understanding.</div>",
+                                          type: "red",
+                                          buttons: {
+                                          ok: {
+                                              text: "OK",
+                                              btnClass: "btn-danger",
+                                          },
+                                      },
+                                  });
                     });
                 };
                 if(this.files[0]){
@@ -1065,51 +1094,191 @@
                         return outputArray.filter(arr => arr.length !== 1);
       }
                                 
-      const get_deduction = (text) => {
+    //   const get_deduction = (text) => {
+
+    //         // var lines = text.split("\n");
+    //         const final_text = text.replace(/[()]/g, '');
+    //         let include = false;
+    //         const regex = /subtotal([\s\S]*?)total/gi;
+    //         const matches = text.match(regex);
+    //         let data = [];
+    //         var deductions = matches.join("\n").split("\n");
+    //         console.log("matches",deductions);
+    //         const texts = deductions.filter(line => {
+    //         if (/\bsubtotal\b/i.test(line)) {
+    //             include = true;
+    //             return false;
+    //         }
+    //         if (/\btotal\b/i.test(line)) {
+    //             include = false;
+    //             return false;
+    //         }
+
+    //         if (include) {
+    //             return true;
+    //         }
+
+    //         return false;
+    //         });
+
+    //         // data = texts.map(line => line.split(/\s{3,}/));
+    //         data = texts.map(line => {
+    //             const appendedLine = line.replace(/(\d{1,3}(?:\s*,\s*\d{3})*(?:\.\d+)?)/g, ';$1').replace(/\s/g, '');
+    //             const splitLine = appendedLine.split(';').filter(item => item.trim() !== '');
+    //             return splitLine;
+    //         });
+
+    //         const outputArray = data.map((arr, index) => {
+    //         if(arr.length === 1){
+    //             return [...arr, '0'];
+    //         }else{
+    //             return [...arr];
+    //         }
+    //         });
+    //         console.log("deductions",outputArray);
+    //         return outputArray;
+    //     };
+    const get_ph_deduction = (text) => {
 
             // var lines = text.split("\n");
-            const final_text = text.replace(/[()]/g, '');
+            const final_text = text.replace(/(\([\d,.]+\))/g, match => match.replace(/[()]/g, ''));
+            console.log('final deduction',final_text);
             let include = false;
             const regex = /subtotal([\s\S]*?)total/gi;
-            const matches = text.match(regex);
+            const matches = final_text.match(regex);
+
+            const payregex = /payment([\s\S]*?)subtotal/gi;
+            const paymatches = final_text.match(payregex);
             let data = [];
-            var deductions = matches.join("\n").split("\n");
-            console.log("matches",deductions);
-            const texts = deductions.filter(line => {
-            if (/\bsubtotal\b/i.test(line)) {
-                include = true;
+            let ptexts = [];
+            
+            if(paymatches!==null){
+                var paydeductions = paymatches.join("\n").split("\n");
+                console.log("payment matches",deductions);
+
+                ptexts = paydeductions.filter(line => {
+
+                if (/\bpayment\b/i.test(line)) {
+                    include = true;
+                }
+
+                if (/\bsubtotal\b/i.test(line)) {
+                    include = false;
+                    return false;
+                }
+
+                if (include) {
+                    return true;
+                }
+
                 return false;
+
+                });
             }
-            if (/\btotal\b/i.test(line)) {
-                include = false;
+            if(matches!==null){
+                var deductions = matches.join("\n").split("\n");
+                console.log("ph matches",deductions);
+                const texts = deductions.filter(line => {
+
+                if (/\bsubtotal\b/i.test(line)) {
+                    include = true;
+                    return false;
+                }
+
+                if (/\btotal\b/i.test(line)) {
+                    include = false;
                 return false;
+                }
+
+                if (include) {
+                    return true;
+                }
+
+                return false;
+                });
+            
+                // data = texts.map(line => line.split(/\s{2,}/));
+                data = texts .map(line => {
+                    const appendedLine = line.replace(/(\d{1,3}(?:\s*,\s*\d{3})*(?:\.\d+)?)/g, ';$1').replace(/\s/g, '');
+                    const splitLine = appendedLine.split(';').filter(item => item.trim() !== '');
+                    return splitLine;
+                });
+
+                const pdata = ptexts .map(line => {
+                    const amount = line.split(/\s{2,}/).pop();
+                    return amount;
+                });
+
+                console.log('pdata',pdata);
+                let ph_counter = 0;
+                const outputArray = data.map((arr, index) => {
+                if(arr.length === 1){ 
+                    if(paymatches!==null){
+                        const py_amount = pdata[ph_counter];
+                        ph_counter++; 
+                        return [...arr,py_amount];
+                    }
+                }else{
+                    return [...arr];
+                }
+                });
+
+                console.log("ph deductions",outputArray);
+                return (outputArray.length > 1)?outputArray:[];
             }
+                return null;
+            };
 
-            if (include) {
-                return true;
+            const get_selfpay_deduction = (text) => {
+
+            // var lines = text.split("\n");
+            const final_text = text.replace(/(\([\d,.]+\))/g, match => match.replace(/[()]/g, ''));
+            console.log('final deduction',final_text);
+            let include = false;
+            const regex = /subtotal([\s\S]*?)total/gi;
+            const matches = final_text.match(regex);
+
+            let data = [];
+            if(matches!== null){
+                var deductions = matches.join("\n").split("\n");
+                // console.log("se",deductions);
+                const texts = deductions.filter(line => {
+
+                if (/\bsubtotal\b/i.test(line)) {
+                    include = true;
+                    return false;
+                }
+
+                if (/\btotal\b/i.test(line)) {
+                    include = false;
+                // return false;
+                }
+
+                if (include) {
+                    return true;
+                }
+
+                return false;
+                });
+                console.log('self text',texts);
+                // data = texts.map(line => line.split(/\s{2,}/));
+                data = texts .map(line => {
+                    const appendedLine = line.replace(/(\d{1,3}(?:\s*,\s*\d{3})*(?:\.\d+)?)/g, ';$1').replace(/\s/g, '');
+                    const splitLine = appendedLine.split(';').filter(item => item.trim() !== '');
+                    return splitLine;
+                });
+
+                const outputArray = data.map((arr, index) => {
+                if(arr.length > 1){   
+                    return [...arr];
+                }
+                });
+
+                console.log("self pay deductions",(outputArray.length > 1)? outputArray : []);
+                return (outputArray.length > 1)?outputArray:[];
             }
-
-            return false;
-            });
-
-            // data = texts.map(line => line.split(/\s{3,}/));
-            data = texts.map(line => {
-                const appendedLine = line.replace(/(\d{1,3}(?:\s*,\s*\d{3})*(?:\.\d+)?)/g, ';$1').replace(/\s/g, '');
-                const splitLine = appendedLine.split(';').filter(item => item.trim() !== '');
-                return splitLine;
-            });
-
-            const outputArray = data.map((arr, index) => {
-            if(arr.length === 1){
-                return [...arr, '0'];
-            }else{
-                return [...arr];
-            }
-            });
-            console.log("deductions",outputArray);
-            return outputArray;
+            return null;
         };
-
 
             function validate_name(patient, member) {
                 // Remove leading and trailing spaces

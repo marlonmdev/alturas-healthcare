@@ -68,8 +68,8 @@ class Loa_controller extends CI_Controller {
 				$row[] = $custom_loa_no;
 				$row[] = $full_name;
 				$row[] = $loa['loa_request_type'];
-				$row[] = $short_med_services;
-				$row[] = $view_file;
+				$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$short_med_services:'NONE';
+				$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 				$row[] = $custom_date;
 				$row[] = $custom_status;
 				$row[] = $custom_actions;
@@ -154,8 +154,8 @@ class Loa_controller extends CI_Controller {
 				$row[] = $custom_loa_no;
 				$row[] = $full_name;
 				$row[] = $loa['loa_request_type'];
-				$row[] = $short_med_services;
-				$row[] = $view_file;
+				$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$short_med_services:'NONE';
+				$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 				$row[] = $custom_date;
 				$row[] = $custom_status;
 				$row[] = $custom_actions;
@@ -218,8 +218,8 @@ class Loa_controller extends CI_Controller {
 				$row[] = $custom_loa_no;
 				$row[] = $full_name;
 				$row[] = $loa['loa_request_type'];
-				$row[] = $short_med_services;
-				$row[] = $view_file;
+				$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$short_med_services:'NONE';
+				$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 				$row[] = $custom_date;
 				$row[] = $custom_status;
 				$row[] = $custom_actions;
@@ -282,8 +282,8 @@ class Loa_controller extends CI_Controller {
 				$row[] = $custom_loa_no;
 				$row[] = $full_name;
 				$row[] = $loa['loa_request_type'];
-				$row[] = $short_med_services;
-				$row[] = $view_file;
+				$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$short_med_services:'NONE';
+				$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 				$row[] = $custom_date;
 				$row[] = $custom_status;
 				$row[] = $custom_actions;
@@ -321,7 +321,7 @@ class Loa_controller extends CI_Controller {
 				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-cyan">' . $loa['status'] . '</span></div>';
 
 				$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>
-				<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $billed_pdf->pdf_bill . '\' , \''. $loa['loa_no'] .'\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i>
+				<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $billed_pdf['pdf_bill'] . '\' , \''. $loa['loa_no'] .'\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i>
 				</a>';
 
 				// initialize multiple varibles at once
@@ -350,8 +350,8 @@ class Loa_controller extends CI_Controller {
 				$row[] = $custom_loa_no;
 				$row[] = $full_name;
 				$row[] = $loa['loa_request_type'];
-				$row[] = $short_med_services;
-				$row[] = $view_file;
+				$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$short_med_services:'NONE';
+				$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
 				$row[] = $custom_date;
 				$row[] = $custom_status;
 				$row[] = $custom_actions;
@@ -366,154 +366,42 @@ class Loa_controller extends CI_Controller {
 			];
 			echo json_encode($output);
     }
+	function get_loa_info() {
+		$doctor_name = $requesting_physician = "";
+		$loa_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$row = $this->loa_model->db_get_loa_detail($loa_id);
+
+		//check if requesting physician exist from DB
+		$exist = $this->loa_model->db_get_requesting_physician($row['requesting_physician']);
+		if (!$exist) {
+			$requesting_physician = "Does not exist from Database";
+		} else {
+			$requesting_physician = $exist['doctor_name'];
+		}
 
 
-  function get_pending_loa_info() {
-		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
-		$row = $this->loa_model->db_get_loa_info($loa_id);
-		$cost_types = $this->loa_model->db_get_cost_types();
-		// Calculate Age
-		$birth_date = date("d-m-Y", strtotime($row['date_of_birth']));
-		$current_date = date("d-m-Y");
-		$diff = date_diff(date_create($birth_date), date_create($current_date));
-		$age = $diff->format("%y");
-		// get selected medical services
-		$selected_cost_types = explode(';', $row['med_services']);
-		$ct_array = [];
-		foreach ($cost_types as $cost_type) :
-			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
-				array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
-			}
-		endforeach;
-		$med_serv = implode(' ', $ct_array);
-
-		$response = [
-			'status' => 'success',
-			'token' => $this->security->get_csrf_hash(),
-			'loa_id' => $row['loa_id'],
-			'loa_no' => $row['loa_no'],
-			'first_name' => $row['first_name'],
-			'middle_name' => $row['middle_name'],
-			'last_name' => $row['last_name'],
-			'suffix' => $row['suffix'],
-			'date_of_birth' => 	date("F d, Y", strtotime($row['date_of_birth'])),
-			'age' => $age,
-			'gender' => $row['gender'],
-			'blood_type' => $row['blood_type'],
-			'philhealth_no' => $row['philhealth_no'],
-			'contact_no' => $row['contact_no'],
-			'home_address' => $row['home_address'],
-			'city_address' => $row['city_address'],
-			'email' => $row['email'],
-			'contact_person' => $row['contact_person'],
-			'contact_person_addr' => $row['contact_person_addr'],
-			'contact_person_no' => $row['contact_person_no'],
-			'healthcare_provider' => $row['hp_name'],
-			'loa_request_type' => $row['loa_request_type'],
-			'med_services' => $med_serv,
-			'health_card_no' => $row['health_card_no'],
-			'requesting_company' => $row['requesting_company'],
-			'request_date' => date("F d, Y", strtotime($row['request_date'])),
-			'chief_complaint' => $row['chief_complaint'],
-			'requesting_physician' => $row['doctor_name'],
-			'attending_physician' => $row['attending_physician'],
-			'rx_file' => $row['rx_file'],
-			'req_status' => $row['work_related'] != '' ? 'for Approval': $row['status'],
-			'work_related' => $row['work_related'],
-			'percentage' => $row['percentage'],
-			'member_mbl' => number_format($row['max_benefit_limit'], 2),
-			'remaining_mbl' => number_format($row['remaining_balance'], 2),
-		];
-		echo json_encode($response);
-	}
-
-  function get_approved_loa_info() {
-		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
-		$row = $this->loa_model->db_get_loa_info($loa_id);
-		$doctor_name = "";
 		if ($row['approved_by']) {
 			$doc = $this->loa_model->db_get_doctor_by_id($row['approved_by']);
 			$doctor_name = $doc['doctor_name'];
-		} else {
-			$doctor_name = "Does not exist from Database";
-		}
-
-		$cost_types = $this->loa_model->db_get_cost_types();
-		// Calculate Age
-		$birthDate = date("d-m-Y", strtotime($row['date_of_birth']));
-		$currentDate = date("d-m-Y");
-		$diff = date_diff(date_create($birthDate), date_create($currentDate));
-		$age = $diff->format("%y");
-		// get selected medical services
-		$selected_cost_types = explode(';', $row['med_services']);
-		$ct_array = [];
-		foreach ($cost_types as $cost_type) :
-			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
-				array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
-			}
-		endforeach;
-		$med_serv = implode(' ', $ct_array);
-
-		$response = [
-			'status' => 'success',
-			'token' => $this->security->get_csrf_hash(),
-			'loa_id' => $row['loa_id'],
-			'loa_no' => $row['loa_no'],
-			'first_name' => $row['first_name'],
-			'middle_name' => $row['middle_name'],
-			'last_name' => $row['last_name'],
-			'suffix' => $row['suffix'],
-			'date_of_birth' => 	date("F d, Y", strtotime($row['date_of_birth'])),
-			'age' => $age,
-			'gender' => $row['gender'],
-			'blood_type' => $row['blood_type'],
-			'philhealth_no' => $row['philhealth_no'],
-			'contact_no' => $row['contact_no'],
-			'home_address' => $row['home_address'],
-			'city_address' => $row['city_address'],
-			'email' => $row['email'],
-			'contact_person' => $row['contact_person'],
-			'contact_person_addr' => $row['contact_person_addr'],
-			'contact_person_no' => $row['contact_person_no'],
-			'healthcare_provider' => $row['hp_name'],
-			'loa_request_type' => $row['loa_request_type'],
-			'med_services' => $med_serv,
-			'health_card_no' => $row['health_card_no'],
-			'requesting_company' => $row['requesting_company'],
-			'request_date' => date("F d, Y", strtotime($row['request_date'])),
-			'chief_complaint' => $row['chief_complaint'],
-			'requesting_physician' => $row['doctor_name'],
-			'attending_physician' => $row['attending_physician'],
-			'rx_file' => $row['rx_file'],
-			'req_status' => $row['status'],
-			'work_related' => $row['work_related'],
-			'percentage' => $row['percentage'],
-			'approved_by' => $doctor_name,
-			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
-			'member_mbl' => number_format($row['max_benefit_limit'], 2),
-			'remaining_mbl' => number_format($row['remaining_balance'], 2),
-		];
-		echo json_encode($response);
-	}
-
-	function get_disapproved_loa_info() {
-		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
-		$row = $this->loa_model->db_get_loa_info($loa_id);
-		$doctor_name = "";
-		if ($row['disapproved_by']) {
+		} elseif ($row['disapproved_by']) {
 			$doc = $this->loa_model->db_get_doctor_by_id($row['disapproved_by']);
 			$doctor_name = $doc['doctor_name'];
 		} else {
-			$doctor_name = "Does not exist from Database";
+			$doctor_name = "Does not exist from database";
 		}
 
 		$cost_types = $this->loa_model->db_get_cost_types();
-		// Calculate Age
+		// Calculate Age Based on Date of Birth
 		$birth_date = date("d-m-Y", strtotime($row['date_of_birth']));
 		$current_date = date("d-m-Y");
 		$diff = date_diff(date_create($birth_date), date_create($current_date));
-		$age = $diff->format("%y");
-		// get selected medical services
+		$age = $diff->format("%y") . ' years old';
+
+		/* Taking the med_services column from the database and exploding it into an array.
+		Then it is looping through the cost_types array and checking if the ctype_id is in the
+		selected_cost_types array.
+		If it is, it pushes the cost_type into the ct_array.
+		Then it implodes the ct_array into a string and assigns it to the  variable. */
 		$selected_cost_types = explode(';', $row['med_services']);
 		$ct_array = [];
 		foreach ($cost_types as $cost_type) :
@@ -522,6 +410,29 @@ class Loa_controller extends CI_Controller {
 			}
 		endforeach;
 		$med_serv = implode(' ', $ct_array);
+
+		/* Checking if the status is pending and the work related is not empty. If it is, then it will set
+		the req_stat to for approval. If not, then it will set the req_stat to the status. */
+		$req_stat = '';
+		if($row['status'] == 'Pending' && $row['work_related'] != ''){
+			$req_stat = 'for Approval';
+		}else{
+			$req_stat = $row['status'];
+		}
+
+		$paid_on = '';
+		$bill = $this->loa_model->get_bill_info($row['loa_id']);
+		if(!empty($bill)){
+			$billed_on = date('F d, Y', strtotime($bill['billed_on']));
+			$paid = $this->loa_model->get_paid_date($bill['details_no']);
+			if(!empty($paid)){
+				$paid_on = date('F d, Y', strtotime($paid['date_add']));
+			}else{
+				$paid_on = '';
+			}
+		}else{
+			$billed_on = '';
+		}
 
 		$response = [
 			'status' => 'success',
@@ -532,14 +443,14 @@ class Loa_controller extends CI_Controller {
 			'middle_name' => $row['middle_name'],
 			'last_name' => $row['last_name'],
 			'suffix' => $row['suffix'],
-			'date_of_birth' => 	date("F d, Y", strtotime($row['date_of_birth'])),
+			'date_of_birth' => date("F d, Y", strtotime($row['date_of_birth'])),
 			'age' => $age,
 			'gender' => $row['gender'],
-			'blood_type' => $row['blood_type'],
 			'philhealth_no' => $row['philhealth_no'],
+			'blood_type' => ($row['city_address']!=="")?$row['blood_type']:'None',
 			'contact_no' => $row['contact_no'],
 			'home_address' => $row['home_address'],
-			'city_address' => $row['city_address'],
+			'city_address' => ($row['city_address']!=="")?$row['city_address']:'None',
 			'email' => $row['email'],
 			'contact_person' => $row['contact_person'],
 			'contact_person_addr' => $row['contact_person_addr'],
@@ -551,159 +462,365 @@ class Loa_controller extends CI_Controller {
 			'requesting_company' => $row['requesting_company'],
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'chief_complaint' => $row['chief_complaint'],
-			'requesting_physician' => $row['doctor_name'],
+			'requesting_physician' => $requesting_physician,
 			'attending_physician' => $row['attending_physician'],
 			'rx_file' => $row['rx_file'],
-			'req_status' => $row['status'],
+			'req_status' => $req_stat,
 			'work_related' => $row['work_related'],
-			'percentage' => $row['percentage'],
+			'percentage' => ($row['percentage']!=='')?$row['percentage']:'None',
+			'approved_by' => $doctor_name,
+			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
 			'disapproved_by' => $doctor_name,
 			'disapprove_reason' => $row['disapprove_reason'],
-			'disapproved_on' => date("F d, Y", strtotime($row['approved_on'])),
+			'disapproved_on' => $row['disapproved_on'] ? date("F d, Y", strtotime($row['disapproved_on'])) : '',
+			'expiry_date' => $row['expiration_date'] ? date("F d, Y", strtotime($row['expiration_date'])) : '',
+			'cancelled_by' => $row['cancelled_by'] ? $row['cancelled_by'] : '',
+			'cancelled_on' => $row['cancelled_on'] ? date("F d, Y", strtotime($row['cancelled_on'])) : '',
+			'cancellation_reason' => $row['cancellation_reason'],
+			'billed_on' => $billed_on,
+			'paid_on' => $paid_on,
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 		];
 		echo json_encode($response);
 	}
 
-	function get_completed_loa_info() {
-		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
-		$row = $this->loa_model->db_get_loa_info($loa_id);
-		$doctor_name = "";
-		if ($row['approved_by']) {
-			$doc = $this->loa_model->db_get_doctor_by_id($row['approved_by']);
-			$doctor_name = $doc['doctor_name'];
-		} else {
-			$doctor_name = "Does not exist from Database";
-		}
+//   function get_pending_loa_info() {
+// 		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+// 		$row = $this->loa_model->db_get_loa_info($loa_id);
+// 		$cost_types = $this->loa_model->db_get_cost_types();
+// 		// Calculate Age
+// 		$birth_date = date("d-m-Y", strtotime($row['date_of_birth']));
+// 		$current_date = date("d-m-Y");
+// 		$diff = date_diff(date_create($birth_date), date_create($current_date));
+// 		$age = $diff->format("%y");
+// 		// get selected medical services
+// 		$selected_cost_types = explode(';', $row['med_services']);
+// 		$ct_array = [];
+// 		foreach ($cost_types as $cost_type) :
+// 			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
+// 				array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
+// 			}
+// 		endforeach;
+// 		$med_serv = implode(' ', $ct_array);
 
-		$cost_types = $this->loa_model->db_get_cost_types();
-		// Calculate Age
-		$birthDate = date("d-m-Y", strtotime($row['date_of_birth']));
-		$currentDate = date("d-m-Y");
-		$diff = date_diff(date_create($birthDate), date_create($currentDate));
-		$age = $diff->format("%y");
-		// get selected medical services
-		$selected_cost_types = explode(';', $row['med_services']);
-		$ct_array = [];
-		foreach ($cost_types as $cost_type) :
-			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
-				array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
-			}
-		endforeach;
-		$med_serv = implode(' ', $ct_array);
+// 		$response = [
+// 			'status' => 'success',
+// 			'token' => $this->security->get_csrf_hash(),
+// 			'loa_id' => $row['loa_id'],
+// 			'loa_no' => $row['loa_no'],
+// 			'first_name' => $row['first_name'],
+// 			'middle_name' => $row['middle_name'],
+// 			'last_name' => $row['last_name'],
+// 			'suffix' => $row['suffix'],
+// 			'date_of_birth' => 	date("F d, Y", strtotime($row['date_of_birth'])),
+// 			'age' => $age,
+// 			'gender' => $row['gender'],
+// 			'blood_type' => ($row['blood_type']!=="")?$row['blood_type']:'NONE',
+// 			'philhealth_no' => $row['philhealth_no'],
+// 			'contact_no' => $row['contact_no'],
+// 			'home_address' => $row['home_address'],
+// 			'city_address' => ($row['city_address']!=="")?$row['city_address']:'NONE',
+// 			'email' => $row['email'],
+// 			'contact_person' => $row['contact_person'],
+// 			'contact_person_addr' => $row['contact_person_addr'],
+// 			'contact_person_no' => $row['contact_person_no'],
+// 			'healthcare_provider' => $row['hp_name'],
+// 			'loa_request_type' => $row['loa_request_type'],
+// 			'med_services' => $med_serv,
+// 			'health_card_no' => $row['health_card_no'],
+// 			'requesting_company' => $row['requesting_company'],
+// 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
+// 			'chief_complaint' => $row['chief_complaint'],
+// 			'requesting_physician' => ($row['doctor_name']!== null)?$row['doctor_name']:"NONE",
+// 			'attending_physician' => ($row['attending_physician']!=="")?$row['attending_physician']:"NONE",
+// 			'rx_file' => $row['rx_file'],
+// 			'req_status' => $row['work_related'] != '' ? 'for Approval': $row['status'],
+// 			'work_related' => $row['work_related'],
+// 			'percentage' => ($row['percentage']!=="")?$row['percentage']:'NONE',
+// 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
+// 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
+// 		];
+// 		echo json_encode($response);
+// 	}
 
-		$response = [
-			'status' => 'success',
-			'token' => $this->security->get_csrf_hash(),
-			'loa_id' => $row['loa_id'],
-			'loa_no' => $row['loa_no'],
-			'first_name' => $row['first_name'],
-			'middle_name' => $row['middle_name'],
-			'last_name' => $row['last_name'],
-			'suffix' => $row['suffix'],
-			'date_of_birth' => 	date("F d, Y", strtotime($row['date_of_birth'])),
-			'age' => $age,
-			'gender' => $row['gender'],
-			'blood_type' => $row['blood_type'],
-			'philhealth_no' => $row['philhealth_no'],
-			'contact_no' => $row['contact_no'],
-			'home_address' => $row['home_address'],
-			'city_address' => $row['city_address'],
-			'email' => $row['email'],
-			'contact_person' => $row['contact_person'],
-			'contact_person_addr' => $row['contact_person_addr'],
-			'contact_person_no' => $row['contact_person_no'],
-			'healthcare_provider' => $row['hp_name'],
-			'loa_request_type' => $row['loa_request_type'],
-			'med_services' => $med_serv,
-			'health_card_no' => $row['health_card_no'],
-			'requesting_company' => $row['requesting_company'],
-			'request_date' => date("F d, Y", strtotime($row['request_date'])),
-			'chief_complaint' => $row['chief_complaint'],
-			'requesting_physician' => $row['doctor_name'],
-			'attending_physician' => $row['attending_physician'],
-			'rx_file' => $row['rx_file'],
-			'req_status' => $row['status'],
-			'work_related' => $row['work_related'],
-			'percentage' => $row['percentage'],
-			'approved_by' => $doctor_name,
-			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
-			'member_mbl' => number_format($row['max_benefit_limit'], 2),
-			'remaining_mbl' => number_format($row['remaining_balance'], 2),
-		];
-		echo json_encode($response);
-	}
+//   function get_approved_loa_info() {
+// 		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+// 		$row = $this->loa_model->db_get_loa_info($loa_id);
+// 		$doctor_name = "";
+// 		if ($row['approved_by']) {
+// 			$doc = $this->loa_model->db_get_doctor_by_id($row['approved_by']);
+// 			$doctor_name = $doc['doctor_name'];
+// 		} else {
+// 			$doctor_name = "Does not exist from Database";
+// 		}
+
+// 		$cost_types = $this->loa_model->db_get_cost_types();
+// 		// Calculate Age
+// 		$birthDate = date("d-m-Y", strtotime($row['date_of_birth']));
+// 		$currentDate = date("d-m-Y");
+// 		$diff = date_diff(date_create($birthDate), date_create($currentDate));
+// 		$age = $diff->format("%y");
+// 		// get selected medical services
+// 		$selected_cost_types = explode(';', $row['med_services']);
+// 		$ct_array = [];
+// 		foreach ($cost_types as $cost_type) :
+// 			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
+// 				array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
+// 			}
+// 		endforeach;
+// 		$med_serv = implode(' ', $ct_array);
+
+// 		$response = [
+// 			'status' => 'success',
+// 			'token' => $this->security->get_csrf_hash(),
+// 			'loa_id' => $row['loa_id'],
+// 			'loa_no' => $row['loa_no'],
+// 			'first_name' => $row['first_name'],
+// 			'middle_name' => $row['middle_name'],
+// 			'last_name' => $row['last_name'],
+// 			'suffix' => $row['suffix'],
+// 			'date_of_birth' => 	date("F d, Y", strtotime($row['date_of_birth'])),
+// 			'age' => $age,
+// 			'gender' => $row['gender'],
+// 			'blood_type' => $row['blood_type'],
+// 			'philhealth_no' => $row['philhealth_no'],
+// 			'contact_no' => $row['contact_no'],
+// 			'home_address' => $row['home_address'],
+// 			'city_address' => $row['city_address'],
+// 			'email' => $row['email'],
+// 			'contact_person' => $row['contact_person'],
+// 			'contact_person_addr' => $row['contact_person_addr'],
+// 			'contact_person_no' => $row['contact_person_no'],
+// 			'healthcare_provider' => $row['hp_name'],
+// 			'loa_request_type' => $row['loa_request_type'],
+// 			'med_services' => $med_serv,
+// 			'health_card_no' => $row['health_card_no'],
+// 			'requesting_company' => $row['requesting_company'],
+// 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
+// 			'chief_complaint' => $row['chief_complaint'],
+// 			'requesting_physician' => $row['doctor_name'],
+// 			'attending_physician' => $row['attending_physician'],
+// 			'rx_file' => $row['rx_file'],
+// 			'req_status' => $row['status'],
+// 			'work_related' => $row['work_related'],
+// 			'percentage' => $row['percentage'],
+// 			'approved_by' => $doctor_name,
+// 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
+// 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
+// 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
+// 		];
+// 		echo json_encode($response);
+// 	}
+
+// 	function get_disapproved_loa_info() {
+// 		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+// 		$row = $this->loa_model->db_get_loa_info($loa_id);
+// 		$doctor_name = "";
+// 		if ($row['disapproved_by']) {
+// 			$doc = $this->loa_model->db_get_doctor_by_id($row['disapproved_by']);
+// 			$doctor_name = $doc['doctor_name'];
+// 		} else {
+// 			$doctor_name = "Does not exist from Database";
+// 		}
+
+// 		$cost_types = $this->loa_model->db_get_cost_types();
+// 		// Calculate Age
+// 		$birth_date = date("d-m-Y", strtotime($row['date_of_birth']));
+// 		$current_date = date("d-m-Y");
+// 		$diff = date_diff(date_create($birth_date), date_create($current_date));
+// 		$age = $diff->format("%y");
+// 		// get selected medical services
+// 		$selected_cost_types = explode(';', $row['med_services']);
+// 		$ct_array = [];
+// 		foreach ($cost_types as $cost_type) :
+// 			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
+// 				array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
+// 			}
+// 		endforeach;
+// 		$med_serv = implode(' ', $ct_array);
+
+// 		$response = [
+// 			'status' => 'success',
+// 			'token' => $this->security->get_csrf_hash(),
+// 			'loa_id' => $row['loa_id'],
+// 			'loa_no' => $row['loa_no'],
+// 			'first_name' => $row['first_name'],
+// 			'middle_name' => $row['middle_name'],
+// 			'last_name' => $row['last_name'],
+// 			'suffix' => $row['suffix'],
+// 			'date_of_birth' => 	date("F d, Y", strtotime($row['date_of_birth'])),
+// 			'age' => $age,
+// 			'gender' => $row['gender'],
+// 			'blood_type' => $row['blood_type'],
+// 			'philhealth_no' => $row['philhealth_no'],
+// 			'contact_no' => $row['contact_no'],
+// 			'home_address' => $row['home_address'],
+// 			'city_address' => $row['city_address'],
+// 			'email' => $row['email'],
+// 			'contact_person' => $row['contact_person'],
+// 			'contact_person_addr' => $row['contact_person_addr'],
+// 			'contact_person_no' => $row['contact_person_no'],
+// 			'healthcare_provider' => $row['hp_name'],
+// 			'loa_request_type' => $row['loa_request_type'],
+// 			'med_services' => $med_serv,
+// 			'health_card_no' => $row['health_card_no'],
+// 			'requesting_company' => $row['requesting_company'],
+// 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
+// 			'chief_complaint' => $row['chief_complaint'],
+// 			'requesting_physician' => $row['doctor_name'],
+// 			'attending_physician' => $row['attending_physician'],
+// 			'rx_file' => $row['rx_file'],
+// 			'req_status' => $row['status'],
+// 			'work_related' => $row['work_related'],
+// 			'percentage' => $row['percentage'],
+// 			'disapproved_by' => $doctor_name,
+// 			'disapprove_reason' => $row['disapprove_reason'],
+// 			'disapproved_on' => date("F d, Y", strtotime($row['approved_on'])),
+// 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
+// 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
+// 		];
+// 		echo json_encode($response);
+// 	}
+
+// 	function get_completed_loa_info() {
+// 		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+// 		$row = $this->loa_model->db_get_loa_info($loa_id);
+// 		$doctor_name = "";
+// 		if ($row['approved_by']) {
+// 			$doc = $this->loa_model->db_get_doctor_by_id($row['approved_by']);
+// 			$doctor_name = $doc['doctor_name'];
+// 		} else {
+// 			$doctor_name = "Does not exist from Database";
+// 		}
+
+// 		$cost_types = $this->loa_model->db_get_cost_types();
+// 		// Calculate Age
+// 		$birthDate = date("d-m-Y", strtotime($row['date_of_birth']));
+// 		$currentDate = date("d-m-Y");
+// 		$diff = date_diff(date_create($birthDate), date_create($currentDate));
+// 		$age = $diff->format("%y");
+// 		// get selected medical services
+// 		$selected_cost_types = explode(';', $row['med_services']);
+// 		$ct_array = [];
+// 		foreach ($cost_types as $cost_type) :
+// 			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
+// 				array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
+// 			}
+// 		endforeach;
+// 		$med_serv = implode(' ', $ct_array);
+
+// 		$response = [
+// 			'status' => 'success',
+// 			'token' => $this->security->get_csrf_hash(),
+// 			'loa_id' => $row['loa_id'],
+// 			'loa_no' => $row['loa_no'],
+// 			'first_name' => $row['first_name'],
+// 			'middle_name' => $row['middle_name'],
+// 			'last_name' => $row['last_name'],
+// 			'suffix' => $row['suffix'],
+// 			'date_of_birth' => 	date("F d, Y", strtotime($row['date_of_birth'])),
+// 			'age' => $age,
+// 			'gender' => $row['gender'],
+// 			'blood_type' => $row['blood_type'],
+// 			'philhealth_no' => $row['philhealth_no'],
+// 			'contact_no' => $row['contact_no'],
+// 			'home_address' => $row['home_address'],
+// 			'city_address' => $row['city_address'],
+// 			'email' => $row['email'],
+// 			'contact_person' => $row['contact_person'],
+// 			'contact_person_addr' => $row['contact_person_addr'],
+// 			'contact_person_no' => $row['contact_person_no'],
+// 			'healthcare_provider' => $row['hp_name'],
+// 			'loa_request_type' => $row['loa_request_type'],
+// 			'med_services' => $med_serv,
+// 			'health_card_no' => $row['health_card_no'],
+// 			'requesting_company' => $row['requesting_company'],
+// 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
+// 			'chief_complaint' => $row['chief_complaint'],
+// 			'requesting_physician' => $row['doctor_name'],
+// 			'attending_physician' => $row['attending_physician'],
+// 			'rx_file' => $row['rx_file'],
+// 			'req_status' => $row['status'],
+// 			'work_related' => $row['work_related'],
+// 			'percentage' => $row['percentage'],
+// 			'approved_by' => $doctor_name,
+// 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
+// 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
+// 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
+// 		];
+// 		echo json_encode($response);
+// 	}
 
 
-	function get_billed_loa_info() {
-		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
-		$row = $this->loa_model->db_get_loa_info($loa_id);
-		$doctor_name = "";
-		if ($row['approved_by']) {
-			$doc = $this->loa_model->db_get_doctor_by_id($row['approved_by']);
-			$doctor_name = $doc['doctor_name'];
-		} else {
-			$doctor_name = "Does not exist from Database";
-		}
+// 	function get_billed_loa_info() {
+// 		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+// 		$row = $this->loa_model->db_get_loa_info($loa_id);
+// 		$doctor_name = "";
+// 		if ($row['approved_by']) {
+// 			$doc = $this->loa_model->db_get_doctor_by_id($row['approved_by']);
+// 			$doctor_name = $doc['doctor_name'];
+// 		} else {
+// 			$doctor_name = "Does not exist from Database";
+// 		}
 
-		$cost_types = $this->loa_model->db_get_cost_types();
-		// Calculate Age
-		$birthDate = date("d-m-Y", strtotime($row['date_of_birth']));
-		$currentDate = date("d-m-Y");
-		$diff = date_diff(date_create($birthDate), date_create($currentDate));
-		$age = $diff->format("%y");
-		// get selected medical services
-		$selected_cost_types = explode(';', $row['med_services']);
-		$ct_array = [];
-		foreach ($cost_types as $cost_type) :
-			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
-				array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
-			}
-		endforeach;
-		$med_serv = implode(' ', $ct_array);
+// 		$cost_types = $this->loa_model->db_get_cost_types();
+// 		// Calculate Age
+// 		$birthDate = date("d-m-Y", strtotime($row['date_of_birth']));
+// 		$currentDate = date("d-m-Y");
+// 		$diff = date_diff(date_create($birthDate), date_create($currentDate));
+// 		$age = $diff->format("%y");
+// 		// get selected medical services
+// 		$selected_cost_types = explode(';', $row['med_services']);
+// 		$ct_array = [];
+// 		foreach ($cost_types as $cost_type) :
+// 			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
+// 				array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
+// 			}
+// 		endforeach;
+// 		$med_serv = implode(' ', $ct_array);
 
-		$response = [
-			'status' => 'success',
-			'token' => $this->security->get_csrf_hash(),
-			'loa_id' => $row['loa_id'],
-			'loa_no' => $row['loa_no'],
-			'first_name' => $row['first_name'],
-			'middle_name' => $row['middle_name'],
-			'last_name' => $row['last_name'],
-			'suffix' => $row['suffix'],
-			'date_of_birth' => 	date("F d, Y", strtotime($row['date_of_birth'])),
-			'age' => $age,
-			'gender' => $row['gender'],
-			'blood_type' => $row['blood_type'],
-			'philhealth_no' => $row['philhealth_no'],
-			'contact_no' => $row['contact_no'],
-			'home_address' => $row['home_address'],
-			'city_address' => $row['city_address'],
-			'email' => $row['email'],
-			'contact_person' => $row['contact_person'],
-			'contact_person_addr' => $row['contact_person_addr'],
-			'contact_person_no' => $row['contact_person_no'],
-			'healthcare_provider' => $row['hp_name'],
-			'loa_request_type' => $row['loa_request_type'],
-			'med_services' => $med_serv,
-			'health_card_no' => $row['health_card_no'],
-			'requesting_company' => $row['requesting_company'],
-			'request_date' => date("F d, Y", strtotime($row['request_date'])),
-			'chief_complaint' => $row['chief_complaint'],
-			'requesting_physician' => $row['doctor_name'],
-			'attending_physician' => $row['attending_physician'],
-			'rx_file' => $row['rx_file'],
-			'req_status' => $row['status'],
-			'work_related' => $row['work_related'],
-			'percentage' => $row['percentage'],
-			'approved_by' => $doctor_name,
-			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
-			'member_mbl' => number_format($row['max_benefit_limit'], 2),
-			'remaining_mbl' => number_format($row['remaining_balance'], 2),
-		];
-		echo json_encode($response);
-	}
+// 		$response = [
+// 			'status' => 'success',
+// 			'token' => $this->security->get_csrf_hash(),
+// 			'loa_id' => $row['loa_id'],
+// 			'loa_no' => $row['loa_no'],
+// 			'first_name' => $row['first_name'],
+// 			'middle_name' => $row['middle_name'],
+// 			'last_name' => $row['last_name'],
+// 			'suffix' => $row['suffix'],
+// 			'date_of_birth' => 	date("F d, Y", strtotime($row['date_of_birth'])),
+// 			'age' => $age,
+// 			'gender' => $row['gender'],
+// 			'blood_type' => $row['blood_type'],
+// 			'philhealth_no' => $row['philhealth_no'],
+// 			'contact_no' => $row['contact_no'],
+// 			'home_address' => $row['home_address'],
+// 			'city_address' => $row['city_address'],
+// 			'email' => $row['email'],
+// 			'contact_person' => $row['contact_person'],
+// 			'contact_person_addr' => $row['contact_person_addr'],
+// 			'contact_person_no' => $row['contact_person_no'],
+// 			'healthcare_provider' => $row['hp_name'],
+// 			'loa_request_type' => $row['loa_request_type'],
+// 			'med_services' => $med_serv,
+// 			'health_card_no' => $row['health_card_no'],
+// 			'requesting_company' => $row['requesting_company'],
+// 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
+// 			'chief_complaint' => $row['chief_complaint'],
+// 			'requesting_physician' => $row['doctor_name'],
+// 			'attending_physician' => $row['attending_physician'],
+// 			'rx_file' => $row['rx_file'],
+// 			'req_status' => $row['status'],
+// 			'work_related' => $row['work_related'],
+// 			'percentage' => $row['percentage'],
+// 			'approved_by' => $doctor_name,
+// 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
+// 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
+// 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
+// 		];
+// 		echo json_encode($response);
+// 	}
 
 }
 

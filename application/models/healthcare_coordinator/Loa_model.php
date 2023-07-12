@@ -1361,11 +1361,10 @@ function db_get_cost_types_by_hp_ID($hp_id) {
     return $this->db->update('loa_requests');
   }
 
-  function fetch_for_payment_bill($status) {
+  function fetch_for_payment_bill() {
     $this->db->select('*')
       ->from('monthly_payable as tbl_1')
       ->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
-      ->where('status', $status)
       ->where('type', 'LOA');
     if($this->input->post('filter')){
       $this->db->like('tbl_1.hp_id', $this->input->post('filter'));

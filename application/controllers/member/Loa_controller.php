@@ -140,11 +140,11 @@ class Loa_controller extends CI_Controller {
     $response = '';
 
     if(empty($cost_types)){
-        $response .= '<select class="chosen-select" id="med-services" name="med-services[]" multiple="multiple">';
+        $response .= '<select class="chosen-select form-select" style=" width: 300px; height: 200px;" id="med-services" name="med-services[]" multiple="multiple">';
         $response .= '<option value="" disabled>No Available Services</option>';
         $response .= '</select>';
     }else{
-        $response .= '<select class="chosen-select" id="med-services" name="med-services[]" data-placeholder="Choose services..." multiple="multiple">';
+        $response .= '<select class="chosen-select form-select" style=" width: 300px; height: 200px;" id="med-services" name="med-services[]" data-placeholder="Choose services..." multiple="multiple">';
         foreach ($cost_types as $cost_type) {
             $response .= '<option value="'.$cost_type['ctype_id'].'" data-price="'.$cost_type['op_price'].'">'.$cost_type['item_description'].''.' ₱'.''.number_format($cost_type['op_price'],2,'.',',').'</option>';
         }
@@ -163,13 +163,13 @@ class Loa_controller extends CI_Controller {
 		$response = '';
 
 		if(empty($cost_types)){
-			$response .= '<select class="chosen-select" id="med-services" name="med-services[]" multiple="multiple">';
+			$response .= '<select class="chosen-select form-select" style=" width: 300px; height: 200px;" id="med-services" name="med-services[]" multiple="multiple">';
 			
 			$response .= '<option value="" disabled>No Available Services</option>';
 
 			$response .= '</select>';
 		}else{
-			$response .= '<select class="chosen-select" id="med-services" name="med-services[]" data-placeholder="Choose services..." multiple="multiple">';
+			$response .= '<select class="chosen-select form-select" style=" width: 300px; height: 200px;" id="med-services" name="med-services[]" data-placeholder="Choose services..." multiple="multiple">';
                     
 			foreach ($cost_types as $cost_type) {
 				$select = in_array($cost_type['ctype_id'], $selectedOptions) ? 'selected' : '';

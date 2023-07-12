@@ -132,10 +132,12 @@
                 },
 
                 //Set column definition initialisation properties.
-                columnDefs: [{
-                    "targets": [5], // 5th column / numbering column
-                    "orderable": false, //set not orderable
-                }, ],
+                columnDefs: [
+                    { targets: 3, className: 'text-end' },
+                    { targets: 4, className: 'text-end' },
+                    { targets: 5, className: 'text-end' },
+                    { targets: 6, className: 'text-center' },
+                ],
                 info: false,
                 paging: false,
                 filter: false,

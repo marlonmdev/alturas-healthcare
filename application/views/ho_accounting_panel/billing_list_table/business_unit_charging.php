@@ -21,7 +21,7 @@
     <!-- End Bread crumb and right sidebar toggle -->
     <div class="container-fluid">
         <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
-       <div class="row">
+        <div class="row">
             <div class="col-lg-12 pb-1">
                 <ul class="nav nav-tabs mb-4" role="tablist"> 
                     <li class="nav-item">
@@ -53,46 +53,69 @@
                     </li>
                 </ul>
             </div>
-            <div class="col-lg-5 ps-5 pb-2">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text bg-dark text-white">
-                        <i class="mdi mdi-filter"></i>
-                        </span>
+            <div class="row gap-4 pt-2 pb-2">
+                <div class="col-lg-4 ps-5 pb-2">
+                    <small class="text-danger">* Required Field</small>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-dark text-white">
+                            <i class="mdi mdi-filter"></i>
+                            </span>
+                        </div>
+                        <select class="form-select fw-bold" name="charging-bu-filter" id="charging-bu-filter" required>
+                            <option value="">Select Business Units...</option>
+                            <?php
+                                // Sort the business units alphabetically
+                                $sorted_bu = array_column($bu, 'business_unit');
+                                asort($sorted_bu);
+                                
+                                foreach($sorted_bu as $bu) :
+                            ?>
+                            <option value="<?php echo $bu; ?>"><?php echo $bu; ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
-                    <select class="form-select fw-bold" name="charging-bu-filter" id="charging-bu-filter">
-                        <option value="">Select Business Units...</option>
-                        <?php
-                            // Sort the business units alphabetically
-                            $sorted_bu = array_column($bu, 'business_unit');
-                            asort($sorted_bu);
-                            
-                            foreach($sorted_bu as $bu) :
-                        ?>
-                        <option value="<?php echo $bu; ?>"><?php echo $bu; ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                </div>
+                <div class="col-lg-4">
+                    <small class="text-danger">* Required Fields</small>
+                    <div class="input-group">
+                        <div class="input-group-append">
+                            <span class="input-group-text text-dark ls-1 ms-2">
+                                <i class="mdi mdi-calendar-range"></i>
+                            </span>
+                        </div>
+                        <input type="date" class="form-control" name="start_date" id="start-date" oninput="validateDateRange()" placeholder="Start Date" required>
+
+                        <div class="input-group-append">
+                            <span class="input-group-text text-dark ls-1 ms-2">
+                                <i class="mdi mdi-calendar-range"></i>
+                            </span>
+                        </div>
+                        <input type="date" class="form-control" name="end-date" id="end-date" oninput="validateDateRange()" placeholder="End Date" required>
+                    </div>
+                </div>
+                <div class="col-lg-2 pt-4">
+                    <button class="btn btn-danger rounded-pill btn-sm fs-6" type="button" id="print-btn" onclick="forCollection()" title="tag charges for receivables"><i class="mdi mdi-printer"></i> CONSOLIDATE</button>
                 </div>
             </div>
-            <div class="col-lg-3">
-                <button class="btn btn-danger rounded-pill btn-sm fs-6" type="button" id="print-btn" onclick="forCollection()" title="tag charges for receivables"><i class="mdi mdi-printer"></i> CONSOLIDATE</button>
-            </div>
        </div>
-        <br>
+          <br>
         <div class="card bg-light">
             <div class="card-body">
                 <div class=" table-responsive">
                     <table class="table table-hover" id="chargeTable">
                         <thead style="background-color:#00538C">
                             <tr>
+                                <td class="text-white">Request Date</td>
                                 <td class="text-white">Healthcard No.</td>
                                 <td class="text-white">Member</td>
                                 <td class="text-white">Business Unit</td>
+                                <td class="text-white">LOA/NOA No.</td>
+                                <td class="text-white">Payment No.</td>
                                 <td class="text-white">Company Charge</td>
                                 <td class="text-white">Healthcare Advance</td>
                                 <td class="text-white">Total Charge</td>
                                 <td class="text-white">Status</td>
-                                <td class="text-white">Action</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -100,11 +123,13 @@
                         <tfoot>
                             <td></td>
                             <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                             <td><span class="fw-bold fs-5">TOTAL</span></td>
                             <td><span class="fw-bold fs-5" id="total-company"></span></td>
                             <td><span class="fw-bold fs-5" id="total-advance"></span></td>
                             <td><span class="fw-bold fs-5" id="total-payable"></span></td>
-                            <td></td>
                             <td></td>
                         </tfoot>
                     </table>
@@ -129,15 +154,18 @@
                     data: function(data) {
                         data.token     = '<?php echo $this->security->get_csrf_hash(); ?>';
                         data.filter    = $('#charging-bu-filter').val();
+                        data.start_date    = $('#start-date').val();
+                        data.end_date    = $('#end-date').val();
                     },
                 
                 },
 
                 //Set column definition initialisation properties.
-                columnDefs: [{
-                    "targets": [5], // 5th column / numbering column
-                    "orderable": false, //set not orderable
-                }, ],
+                columnDefs: [
+                    { targets: 6, className: 'text-end' },
+                    { targets: 7, className: 'text-end' },
+                    { targets: 8, className: 'text-end' },
+                ],
                 info: false,
                 paging: false,
                 filter: false,
@@ -149,10 +177,16 @@
             $('#charging-bu-filter').change(function(){
                 chargingTable.draw();
             });
+            $('#start-date').change(function(){
+                chargingTable.draw();
+            });
+            $('#end-date').change(function(){
+                chargingTable.draw();
+            });
 
                       
         chargingTable.on('draw.dt', function() {
-            let columnIndices = [3, 4, 5]; // Array of column indices to calculate sum
+            let columnIndices = [6, 7, 8]; // Array of column indices to calculate sum
             let sums = [0, 0, 0]; // Array to store the sums for each column
 
             if ($('#chargeTable').DataTable().data().length > 0) {
@@ -182,11 +216,45 @@
             $('#total-advance').html(sumColumn2.toLocaleString('PHP', { minimumFractionDigits: 2 }));
             $('#total-payable').html(sumColumn3.toLocaleString('PHP', { minimumFractionDigits: 2 }));
         });
+
+        $("#start-date").flatpickr({
+            dateFormat: 'Y-m-d',
+        });
+        $("#end-date").flatpickr({
+            dateFormat: 'Y-m-d',
+        });
+        
             
         });
 
+        const validateDateRange = () => {
+            const startDateInput = document.querySelector('#start-date');
+            const endDateInput = document.querySelector('#end-date');
+            const startDate = new Date(startDateInput.value);
+            const endDate = new Date(endDateInput.value);
+
+            if (startDateInput.value === '' || endDateInput.value === '') {
+                return; // Don't do anything if either input is empty
+            }
+
+            if (endDate < startDate) {
+                // alert('End date must be greater than or equal to the start date');
+                swal({
+                    title: 'Failed',
+                    text: 'End date must be greater than or equal to the start date',
+                    showConfirmButton: true,
+                    type: 'error'
+                });
+                endDateInput.value = '';
+                return;
+            }          
+        }
+
+
         const forCollection = () => {
             const bu_filter = document.querySelector('#charging-bu-filter').value;
+            const start_date = document.querySelector('#start-date').value;
+            const end_date = document.querySelector('#end-date').value;
 
             $.confirm({
                     title: '<strong>Confirmation!</strong>',
@@ -204,6 +272,8 @@
                                     data: {
                                         'token': '<?php echo $this->security->get_csrf_hash(); ?>',
                                         'bu_filter' : bu_filter,
+                                        'start_date' : start_date,
+                                        'end_date' : end_date,
                                     },
                                     dataType: 'json',
                                     success: function(response){
@@ -220,6 +290,10 @@
                                                 type: 'success'
                                             });
                                             printBUCharging(charging_no);
+
+                                            setTimeout(function () {
+                                                window.location.href = '<?php echo base_url();?>head-office-accounting/charging/business-unit/for-payment';
+                                            }, 2600);
                                         }
                                         if(status == 'failed'){
                                             swal({

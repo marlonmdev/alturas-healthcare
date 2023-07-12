@@ -58,7 +58,7 @@
                 <thead style="background-color:#00538C">
                   <tr>
                     <th style="color: white;">CONSOLIDATED BILLING</th>
-                    <th style="color: white;">DATE</th>
+                    <th style="color: white;">COVERED DATE</th>
                     <th style="color: white;">HEALTHCARE PROVIDER</th>
                     <th style="color: white;">STATUS</th>
                     <th style="color: white;">ACTION</th>

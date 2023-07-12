@@ -92,9 +92,9 @@
               </div>
             </div>
             
-            <div class="card shadow" style="background-color:">
-                <div class="table-responsive pt-2">
-                  <table class="table table-hover table-responsive table-stripped"  id="ledgertbody">
+            <div class="card shadow">
+                <div class="table-responsive pt-2 ps-4 pe-5 pb-2">
+                  <table class="table table-hover table-sm table-responsive table-stripped"  id="ledgertbody">
                     <thead style="background-color:#eddcb7">
                       <tr>
                         <th class="fw-bold">DATE PAID</th>
@@ -156,9 +156,10 @@
         },
       },
       //Set column definition initialisation properties.
-      columnDefs: [{
-        "orderable": false, //set not orderable
-      }, ],
+      columnDefs: [
+            { targets: 3, className: 'text-end' },
+            { targets: 4, className: 'text-end' },
+        ],
       data: [],  // Empty data array
       deferRender: true,  // Enable deferred rendering
       info: false,

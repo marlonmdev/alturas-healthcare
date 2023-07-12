@@ -275,6 +275,7 @@
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
         $('#billed-on').html(billed_on);
+        $('#paid-date').hide();
         if(work_related == 'Yes'){ 
 					if(percentage == ''){
 					  wpercent = '100% W-R';

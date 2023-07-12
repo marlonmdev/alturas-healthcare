@@ -55,8 +55,9 @@
               <table class="table table-hover table-responsive" id="matchedLoaTable">
                 <thead style="background-color:#00538C">
                   <tr>
+                    <th style="color: white;">TRANSACTION DATE</th>
                     <th style="color: white;">PAID BILLING</th>
-                    <th style="color: white;">DATE BILLED</th>
+                    <th style="color: white;">COVERED DATE</th>
                     <th style="color: white;">HEALTHCARE PROVIDER</th>
                     <th style="color: white;">PAID ON</th>
                     <th style="color: white;">STATUS</th>

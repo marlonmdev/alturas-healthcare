@@ -232,7 +232,8 @@ class Transaction_model extends CI_Model {
                 ->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
                 ->join('monthly_payable as tbl_3', 'tbl_1.payment_no = tbl_3.payment_no')
                 ->where('tbl_1.status', 'Payment')
-				->where('tbl_3.audited_by', '');
+				->where('tbl_3.audited_by', '')
+				->order_by('tbl_3.bill_id', 'desc');
         return $this->db->get()->result_array();
     }
 
@@ -241,7 +242,8 @@ class Transaction_model extends CI_Model {
 				->from('billing as tbl_1')
 				->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
 				->join('monthly_payable as tbl_3', 'tbl_1.payment_no = tbl_3.payment_no')
-				->where('tbl_3.status', 'Audited');
+				->where('tbl_3.status', 'Audited')
+				->order_by('tbl_3.bill_id', 'desc');
 		return $this->db->get()->result_array();
 	}
 
@@ -250,7 +252,8 @@ class Transaction_model extends CI_Model {
 				->from('billing as tbl_1')
 				->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
 				->join('monthly_payable as tbl_3', 'tbl_1.payment_no = tbl_3.payment_no')
-				->where('tbl_3.status', 'Paid');
+				->where('tbl_3.status', 'Paid')
+				->order_by('tbl_3.bill_id', 'desc');
 		return $this->db->get()->result_array();
 	}
 

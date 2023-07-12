@@ -91,7 +91,7 @@
                             }
                           endforeach;
                           $med_services = implode(', ', $ct_array);
-                          if ($row['loa_request_type'] !== 'Consultation') {
+                          if ($row['loa_request_type'] === 'Diagnostic Test') {
                             echo '<i class="mdi mdi-chevron-right fs-4"></i>' . $med_services;
                           }
                           ?>
@@ -101,14 +101,6 @@
                           <i class="mdi mdi-chevron-right fs-4"></i><?= $row['chief_complaint'] ?>
                         </td>
                       </tr>
-
-                      <!-- <tr>
-                        <td class="ls-1 fs-6"  style="padding:10px 0 0 20px;text-align:justify;vertical-align:baseline;" colspan="2">
-                          <h5 class="ls-1">CHIEF COMPLAINT</h5>
-                          <i class="mdi mdi-chevron-right fs-4"></i><?= $row['chief_complaint'] ?>
-                        </td>
-                      </tr> -->
-
                       <tr>
                         <td colspan="2" style="padding: 0 20px 0 20px;">
                           <div class="my-2" style="border:0.5px solid #585858;"></div>
@@ -154,7 +146,7 @@
                           <div class="my-2" style="border:0.5px solid #585858;"></div>
                         </td>
                       </tr>
-
+                          <?php if($req != 'Does not Exist from Database') { ?>
                       <tr>
                         <td class="ls-1 fs-6" style="padding:0 0 0 20px;vertical-align:baseline;">
                           Requesting Physician: <br>
@@ -166,7 +158,9 @@
                           <i class="mdi mdi-chevron-right fs-4"></i><span class="fw-bold"><?= $row['attending_physician'] ?></span>
                         </td>
                       </tr>
-
+                      <?php } else {?>
+                            <tr></tr>
+                            <?php }?> 
                       <tr>
                         <td style="padding: 0 0 0 10px;">
                           <svg id="barcode"></svg>

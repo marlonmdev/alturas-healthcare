@@ -66,9 +66,9 @@
                 <button class="btn btn-danger rounded-pill" type="button" id="print-btn" onclick="printMBLledger()"><i class="mdi mdi-printer"></i> Print</button>
               </div>
             </div>
-            <div class="card shadow" style="background-color:">
-                <div class="table-responsive pt-2">
-                  <table class="table table-hover table-responsive table-stripped"  id="ledgermbl">
+            <div class="card shadow">
+                <div class="table-responsive pt-2 ps-4 pe-4 pb-2">
+                  <table class="table table-sm table-hover table-responsive table-stripped"  id="ledgermbl">
                     <thead style="background-color:#eddcb7">
                       <tr>
                         <th class="fw-bold">HEALTHCARD NO.</th>
@@ -116,9 +116,10 @@
         },
       },
       //Set column definition initialisation properties.
-      columnDefs: [{
-        "orderable": false, //set not orderable
-      }, ],
+      columnDefs: [
+            { targets: 4, className: 'text-end' },
+            { targets: 5, className: 'text-end' },
+        ],
       data: [],  // Empty data array
       deferRender: true,  // Enable deferred rendering
       info: false,

@@ -214,7 +214,7 @@ class Noa_model extends CI_Model {
     ->join('max_benefit_limits as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id')
     ->join('members as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id')
     ->join('billing as tbl_6', 'tbl_1.noa_id = tbl_6.noa_id')
-    ->join('payment_details as tbl_7', 'tbl_6.details_no = tbl_7.details_no')
+    ->join('payment_details as tbl_7', 'tbl_6.details_no = tbl_7.details_no','left')
     ->where('tbl_1.noa_id', $noa_id);
 return $this->db->get()->row_array();
   }

@@ -62,15 +62,15 @@
             </select>
           </div>
         </div> -->
-
         <div class="card shadow">
           <div class="card-body">
             <div class="">
               <table class="table table-hover table-responsive" id="matchedLoaTable">
                 <thead style="background-color:#00538C">
                   <tr>
+                    <th style="color: white;">TRANSACTION DATE</th>
                     <th style="color: white;">CONSOLIDATED BILLING</th>
-                    <th style="color: white;">DATE</th>
+                    <th style="color: white;">COVERED DATE</th>
                     <th style="color: white;">HEALTHCARE PROVIDER</th>
                     <th style="color: white;">STATUS</th>
                     <th style="color: white;">ACTION</th>
@@ -89,6 +89,7 @@
   <?php include 'view_check_voucher.php';?>
 </div>
 <script>
+  const baseUrl = '<?php echo base_url(); ?>';
  function redirectPage(route, seconds){
           setTimeout(() => {
           window.location.href = route;
@@ -154,7 +155,7 @@
                             contentType: false,
                             success: function(response){
                                 const {
-                                    token, status, message, acc_num_error, acc_name_error, check_num_error, check_date_error, bank_error,paid_error,image_error
+                                    token, status, payment_no, message, acc_num_error, acc_name_error, check_num_error, check_date_error, bank_error,paid_error,image_error
                                 } = response;
 
                                 if(status == 'validation-error'){
@@ -213,7 +214,6 @@
                                         $("#file-error").html("");
                                         $("#supporting-docu").removeClass('is-invalid');
                                     }
-
                                 }
                                 if(status == 'success'){
                                     let page = '<?php echo base_url()?>head-office-accounting/billing-list/paid-bill';
@@ -226,6 +226,11 @@
                                         showConfirmButton: false,
                                         type: 'success'
                                     });
+
+                                    if(payment_no != ''){
+                                        printPaidBill(payment_no);
+
+                                    }
                                         redirectPage(page, 3000);
                                 }
                                 if(status == 'error'){
@@ -261,7 +266,13 @@
     });
   });
 
-  const addPaymentDetails = (payment_no) => {
+  const printPaidBill = (payment_no) => {
+
+    var base_url = `${baseUrl}`;
+    window.open(base_url + "printpaidbill/pdfbilling/" + btoa(payment_no), '_blank');
+  }
+
+  const addPaymentDetails = (payment_no,hp_id) => {
     $.ajax({
         url : '<?php echo base_url();?>head-office-accounting/bill/for-payment-details/fetch',
         method : 'GET',
@@ -269,11 +280,14 @@
         data : {
             'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
             'payment_no' : payment_no,
+            'hp_id' : hp_id
         },
         success: function(output) {
         let bill = output.billing;
         let total = output.total_payable;
+        let bank = output.bank;
         let hp_con = '';
+        let bank_acc = '';
         let hpNames = new Set();
         let hpIds = new Set();
 
@@ -281,6 +295,14 @@
             hpNames.add(item.hp_name);
             hpIds.add(item.hp_id);
         });
+
+            bank_acc += '<select class="form-select" name="bank-name" id="bank-name" onchange="getAccountNum()">'+
+                            '<option value="">Please Select</option>';
+        $.each(bank, function(index, item) {
+            bank_acc += '<option value="'+item.bank_id+'">'+item.bank_name+'</option>';
+                       
+        });
+            bank_acc +=  '</select>';
 
         if (hpNames.size === 1 && hpIds.size === 1) {
             hp_con += '<input class="form-control text-dark fw-bold ls-1 fs-6" name="hospital_filtered" id="hospital_filtered" value="'+hpNames.values().next().value+'" readonly>'+
@@ -298,7 +320,29 @@
         $('#p-payment-no').html(payment_no);
         $('#pd-payment-no').val(payment_no);
         $('#p-total-bill').val(total);
+        $('#bank-options').html(bank_acc);
         }
+
+    });
+  }
+
+  const getAccountNum = () => {
+    const bank_id = document.querySelector('#bank-name').value;
+    $.ajax({
+      url: `${baseUrl}head-office-accounting/billing-list/billed/fetch-bank-number`,
+      type: 'GET',
+      data: {
+        'token' : '<?php echo $this->security->get_csrf_hash();?>',
+        'bank_id' : bank_id
+      },
+      dataType : 'json',
+      success: function(data){
+        let account_name = data.account_name;
+        let acc_number = data.account_num;
+
+        $('#acc-name').val(account_name);
+        $('#acc-number').val(acc_number);
+      },
 
     });
   }

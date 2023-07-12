@@ -781,7 +781,7 @@ function db_get_cost_types_by_hp_ID($hp_id) {
              ->from('loa_requests as tbl_1')
              ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
              ->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id')
-             ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id')
+             ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id','left')
              ->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id= tbl_5.emp_id')
              ->join('billing as tbl_6', 'tbl_1.loa_id= tbl_6.loa_id')
              ->where('tbl_1.loa_id', $loa_id);

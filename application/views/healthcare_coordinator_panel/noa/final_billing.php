@@ -113,7 +113,7 @@
 </div>
 
 <!-- Guarantee Letter -->
-<div class="modal fade pt-4" id="GuaranteeLetter" tabindex="-1" data-bs-backdrop="static">
+<!-- <div class="modal fade pt-4" id="GuaranteeLetter" tabindex="-1" data-bs-backdrop="static">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -154,9 +154,22 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 <!-- End -->
 
+<!-- GUARANTEE LETTER -->
+<div class="modal fade pt-4" id="GuaranteeLetter" tabindex="-1" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="submit"  id="Letter" class="btn btn-primary me-2" form="submitForm"><i class="mdi mdi-near-me"></i> Send</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="mdi mdi-close-box"></i> CLOSE</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END -->
 
 
 
@@ -233,18 +246,72 @@
     });
 
     //Submit Guarantee Letter
-    $('#Letter').submit(function(event) {
-      event.preventDefault();
+    // $('#Letter').submit(function(event) {
+    //   event.preventDefault();
 
-      const LetterForm = $('#Letter')[0];
-      const formdata = new FormData(LetterForm);
+    //   const LetterForm = $('#Letter')[0];
+    //   const formdata = new FormData(LetterForm);
+    //   $.ajax({
+    //     type: "post",
+    //     url: $(this).attr('action'),
+    //     data: formdata,
+    //     dataType: "json",
+    //     processData: false,
+    //     contentType: false,
+    //     success: function(response) {
+    //       const {
+    //         token,
+    //         status,
+    //         message,
+            
+    //       } = response;
+    //       switch (status) {
+    //         case 'error':
+    //           // is-invalid class is a built in classname for errors in bootstrap
+    //           if (charge_type_error !== '') {
+    //             $('#charge-type-error').html(charge_type_error);
+    //             $('#charge-type').addClass('is-invalid');
+    //           } else {
+    //             $('#charge-type-error').html('');
+    //             $('#charge-type').removeClass('is-invalid');
+    //           }
+    //         break;
+    //         case 'save-error':
+    //           swal({
+    //             title: 'Failed',
+    //             text: message,
+    //             timer: 3000,
+    //             showConfirmButton: false,
+    //             type: 'error'
+    //           });
+            
+    //         break;
+    //         case 'success':
+    //           swal({
+    //             title: 'Success',
+    //             text: message,
+    //             timer: 3000,
+    //             showConfirmButton: false,
+    //             type: 'success'
+    //           });
+    //         break;
+    //       }
+    //     },
+    //   })
+    // });
+    //End
+
+    //Submit Guarantee Letter
+    $('#Letter').click(function(event) {
       $.ajax({
         type: "post",
-        url: $(this).attr('action'),
-        data: formdata,
+        url: `<?php echo base_url(); ?>healthcare-coordinator/noa/billed/submit_letter`,
+        data:{
+          token :`<?= $this->security->get_csrf_hash() ?>`,
+          pdf_file : $('#pdf_file').val(),
+          billing_id : $('#billing_id').val(),
+        } ,
         dataType: "json",
-        processData: false,
-        contentType: false,
         success: function(response) {
           const {
             token,
@@ -254,14 +321,14 @@
           } = response;
           switch (status) {
             case 'error':
-              // is-invalid class is a built in classname for errors in bootstrap
-              if (charge_type_error !== '') {
-                $('#charge-type-error').html(charge_type_error);
-                $('#charge-type').addClass('is-invalid');
-              } else {
-                $('#charge-type-error').html('');
-                $('#charge-type').removeClass('is-invalid');
-              }
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
+
             break;
             case 'save-error':
               swal({
@@ -287,6 +354,18 @@
       })
     });
     //End
+
+    $(".generate_pdf").click(function() {
+      // Send an AJAX request to the server to generate the PDF
+      $.ajax({
+        type: "POST",
+        url: "<?php echo base_url(); ?>healthcare-coordinator/noa/billed/guarantee_pdf",
+        success: function(response) {
+          // Open the generated PDF in a new tab or window
+          window.open(response, "_blank");
+        }
+      });
+    });
   });
 
   const enableProceedBtn = () => {
@@ -402,10 +481,10 @@
   }
 
 
-  function GuaranteeLetter(billing_id) {
-    $("#GuaranteeLetter").modal("show");
-    $('#billing-id').val(billing_id);
-  }
+  // function GuaranteeLetter(billing_id) {
+  //   $("#GuaranteeLetter").modal("show");
+  //   $('#billing-id').val(billing_id);
+  // }
 
   function showPreview(input) {
     const preview = document.getElementById('preview');
@@ -437,5 +516,24 @@
     } else {
       preview.style.display = 'none';
     }
+  }
+
+  function GuaranteeLetter(noa_id, billing_id) {
+    console.log(billing_id);
+    $.ajax({
+      url: `${baseUrl}healthcare-coordinator/noa/billed/guarantee_pdf/${noa_id}`,
+      type: "GET",
+      success: function (response) {
+        const res = JSON.parse(response);
+        const { status, filename } = res;
+        console.log('filename',filename);
+        console.log('status',status);
+        const embedTag = `<embed src="${baseUrl}/uploads/guarantee_letter/${filename}" name="pdfEmbed" id="pdfEmbed" width="100%" height="100%" type="application/pdf" /> <input type = "hidden" name="pdf_file" id="pdf_file" value="${filename}" /> <input type = "hidden" name="billing_id" id="billing_id" value="${billing_id}" />`;
+       
+        $('#GuaranteeLetter .modal-body').html(embedTag);
+        $('#GuaranteeLetter').modal('show');
+        // console.log ($('#pdf_file').val());
+      }
+    });
   }
 </script>

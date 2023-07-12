@@ -1015,6 +1015,8 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 	$route['healthcare-coordinator/loa/billed/guarantee/(:any)'] = 'healthcare_coordinator/loa_controller/guarantee';
 	$route['healthcare-coordinator/loa/billed/guarantee_pdf/(:any)'] = 'healthcare_coordinator/loa_controller/guarantee_pdf/$1';
 	$route['healthcare-coordinator/loa/billed/submit_letter'] = 'healthcare_coordinator/loa_controller/submit_letter';
+	$route['healthcare-coordinator/noa/billed/guarantee_pdf/(:any)'] = 'healthcare_coordinator/noa_controller/guarantee_pdf/$1';
+	$route['healthcare-coordinator/noa/billed/submit_letter'] = 'healthcare_coordinator/noa_controller/submit_letter';
 	//end
 
 	//Healthcare Advance

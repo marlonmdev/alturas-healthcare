@@ -484,8 +484,11 @@ class Loa_controller extends CI_Controller {
 			}
 			
 			$custom_actions .= '<a class="me-1" href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Print LOA"><i class="mdi mdi-printer fs-2 text-primary"></i></a>';
-
-			$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Performed"><i class="mdi mdi-playlist-check fs-2 text-success"></i></a>';
+				// $custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Performed"><i class="mdi mdi-playlist-check fs-2 text-success"></i></a>';
+			// if($loa['loa_request_type'] == 'Consultation' ||'Diagnostic Test'){
+			if(!$loa['loa_request_type'] == 'Emergency'){
+				$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Performed"><i class="mdi mdi-playlist-check fs-2 text-success"></i></a>';
+			}
 
 			$exists = $this->loa_model->check_loa_no($loa['loa_id']);
 			if($loa['loa_request_type'] == 'Consultation'){
@@ -543,85 +546,6 @@ class Loa_controller extends CI_Controller {
 		];
 		echo json_encode($output);
 	}
-
-	// function fetch_all_approved_loa() {
-	// 	$this->security->get_csrf_hash();
-	// 	// $status = 'Approved';
-	// 	$list = $this->loa_model->get_datatables();
-	// 	$data = [];
-	// 	foreach ($list as $loa) {
-	// 		$row = [];
-
-	// 		$loa_id = $this->myhash->hasher($loa['loa_id'], 'encrypt');
-
-	// 		$full_name = $loa['first_name'] . ' ' . $loa['middle_name'] . ' ' . $loa['last_name'] . ' ' . $loa['suffix'];
-
-	// 		$custom_loa_no = '<mark class="bg-primary text-white">'.$loa['loa_no'].'</mark>';
-
-	// 		$expiry_date = $loa['expiration_date'] ? date('m/d/Y', strtotime($loa['expiration_date'])): 'None';
-
-	// 		$custom_actions = '<a class="me-1" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
-
-	// 		$custom_actions .= '<a class="me-1" href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Print LOA"><i class="mdi mdi-printer fs-2 text-primary"></i></a>';
-
-	// 		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Performed"><i class="mdi mdi-playlist-check fs-2 text-success"></i></a>';
-
-	// 		$exists = $this->loa_model->check_loa_no($loa['loa_id']);
-	// 		if($loa['loa_request_type'] == 'Consultation'){
-	// 			if($exists){
-	// 				$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaConsult(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-cyan"></i></a>';
-	// 			}else{
-	// 				$custom_actions .= '';
-	// 			}
-	// 		}else{
-	// 			if($exists){
-	// 				$custom_actions .= '<a class="me-1" href="JavaScript:void(0)" onclick="viewPerformedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Performed LOA Info"><i class="mdi mdi-clipboard-text fs-2 ps-1 text-cyan"></i></a>';
-	// 			}else{
-	// 				$custom_actions .= '';
-	// 			}
-	// 		}				
-
-	// 		$custom_actions .= '<a class="me-2" href="JavaScript:void(0)" onclick="loaCancellation(\'' . $loa_id . '\', \'' . $loa['loa_no'] . '\')" data-bs-toggle="tooltip" title="Cancel LOA Request"><i class="mdi mdi-close-circle fs-2 text-danger"></i></a>';
-	
-	// 		$custom_status = '<span class="badge rounded-pill bg-success">' . $loa['status'] . '</span>';
-		
-	// 		// initialize multiple varibles at once
-	// 		$view_file = $short_hp_name = '';
-	// 		if ($loa['loa_request_type'] === 'Consultation') {
-	// 			// if request is consultation set the view file to None
-	// 			$view_file = 'None';
-
-	// 			// if Healthcare Provider name is too long for displaying to the table, shorten it and add the ... characters at the end 
-	// 			$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
-
-	// 		} else {
-
-	// 			$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
-
-	// 			// link to the file attached during loa request
-	// 			$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
-	// 		}
-
-	// 		// this data will be rendered to the datatable
-	// 		$row[] = $custom_loa_no;
-	// 		$row[] = $full_name;
-	// 		$row[] = $loa['loa_request_type'];
-	// 		$row[] = $short_hp_name;
-	// 		$row[] = $view_file;
-	// 		$row[] = $expiry_date;
-	// 		$row[] = $custom_status;
-	// 		$row[] = $custom_actions;
-	// 		$data[] = $row;
-	// 	}
-
-	// 	$output = [
-	// 		"draw" => $_POST['draw'],
-	// 		"recordsTotal" => $this->loa_model->count_all(),
-	// 		"recordsFiltered" => $this->loa_model->count_filtered(),
-	// 		"data" => $data,
-	// 	];
-	// 	echo json_encode($output);
-	// }
 
 
 	function fetch_all_disapproved_loa() {
@@ -2288,6 +2212,9 @@ class Loa_controller extends CI_Controller {
 			}else if($loa['loa_request_type'] == 'Diagnostic Test'){
 				$view_page ='schedule_diagnostic.php';
 			}
+			// else if($loa['loa_request_type'] == 'Emergency'){
+			// 	$view_page ='schedule_consultation.php';
+			// }
 			$this->load->view('templates/header', $data);
 			$this->load->view('healthcare_coordinator_panel/loa/'.$view_page);
 			$this->load->view('templates/footer');
@@ -3780,6 +3707,17 @@ class Loa_controller extends CI_Controller {
         	}else if($bill['tbl1_status'] == 'Completed' && $bill['performed_fees'] == 'Performed'){
         		$custom_actions .='<i class="mdi mdi-cached fs-2 text-danger"></i>Processing...';
         	}
+        }else if ($bill['loa_request_type'] == 'Emergency') {
+        	if($bill['tbl1_status'] == 'Approved' && $bill['performed_fees'] == 'Approved'){
+        		$custom_actions .='<i class="mdi mdi-cached fs-2 text-danger"></i>Processing...';
+
+        	}else if($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Approved'){
+        		if ($bill['guarantee_letter'] =='') {
+        			$custom_actions .= '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $loa_id . '\',\'' . $bill['billing_id'] . '\')" data-bs-toggle="modal" data-bs-target="#GuaranteeLetter" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-2 text-info"></i></a>';
+        		}else{
+							$custom_actions .= '<i class="mdi mdi-reply fs-2 text-secondary" title="Guarantee Letter Already Sent"></i>';
+						}
+        	}
         }
 
         $row[] = $bill['loa_no'];
@@ -3800,21 +3738,6 @@ class Loa_controller extends CI_Controller {
     echo json_encode($output);
     // var_dump($output);
 	}
-
-	// function guarantee() {
-	// 	$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
-	// 	$row = $this->loa_model->db_get_data_for_gurantee($loa_id);
-
-	// 	$response = [
-	// 		'status' => 'success',
-	// 		'token' => $this->security->get_csrf_hash(),
-	// 		'first_name' => $row['first_name'],
-	// 		'middle_name' => $row['middle_name'],
-	// 		'last_name' => $row['last_name'],
-	// 		'company_charge' => $row['company_charge'],
-	// 	];
-	// 	echo json_encode($response);
-	// }
 
 	function submit_final_billing() {
     $token = $this->security->get_csrf_hash();
@@ -3885,42 +3808,6 @@ class Loa_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	// function submit_letter(){
-	// 	$token = $this->security->get_csrf_hash();
-	// 	$billing_id = $this->input->post('billing-id');
-	// 	$config['upload_path'] = './uploads/guarantee_letter/';
-	// 	$config['allowed_types'] = 'pdf|jpeg|jpg|png|gif|svg';
-	// 	$config['encrypt_name'] = TRUE;
-	// 	$this->load->library('upload', $config);
-
-	// 	if(!$this->upload->do_upload('letter')){
-	// 		echo json_encode([
-	// 			'token' => $token,
-	// 			'status' => 'error',
-	// 			'message' => 'File upload failed!'
-	// 		]);
-	// 	}else{
-	// 		$uploadData = $this->upload->data();
-	// 		$guarantee_letter = $uploadData['file_name'];
-	// 		$upload_on = date('Y-m-d');
-	
-	// 		$updated = $this->loa_model->db_update_letter($billing_id, $guarantee_letter, $upload_on);
-	// 		if (!$updated) {
-	// 			$response = [
-	// 				'token' => $token,
-	// 				'status' => 'save-error',
-	// 				'message' => 'Save Failed',
-	// 			];
-	// 		}else{
-	// 			$response = [
-	// 				'token' => $token,
-	// 				'status' => 'success',
-	// 				'message' => 'Saved Successfully',
-	// 			];
-	// 		}
-	// 		echo json_encode($response);
-	// 	}
-	// }
 
 	function submit_letter() {
     // $token = $this->security->get_csrf_hash();
@@ -3937,13 +3824,8 @@ class Loa_controller extends CI_Controller {
             'billing_id' => $billing_id,
         ]); 
     } else {
-        // $uploadData = $this->upload->data();
-        // // $guarantee_letter = $uploadData['file_name'];
-        // $fileData = file_get_contents($uploadData['full_path']);
         $upload_on = date('Y-m-d');
 
-        // Read the uploaded file data
-        
 
         // Save the file data into the database
         $updated = $this->loa_model->db_update_letter($billing_id, $pdf_file, $upload_on);
@@ -3969,13 +3851,11 @@ public function guarantee_pdf($loa_id){
     $this->security->get_csrf_hash();
     $this->load->library('tcpdf_library');
     $loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+    // var_dump('loa_id',$loa_id);
     $row = $this->loa_model->db_get_data_for_gurantee($loa_id);
     $companyChargeWords = $this->convertNumberToWords($row['company_charge']);
     $name = $this->session->userdata('fullname');
-    // $data['doc'] = $this->loa_model->db_get_doctor_by_id($row['approved_by']);
     $doc = $this->loa_model->db_get_doctor_by_id($row['approved_by']);
-    // var_dump($doc['doctor_signature']);
-    // var_dump($doc);
 
 
     // Generate the PDF content

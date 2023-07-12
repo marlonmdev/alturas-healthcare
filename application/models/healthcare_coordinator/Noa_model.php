@@ -511,6 +511,30 @@ public function processing(){
 }
 //End =================================================
 
-  
+  // Gurantee Letter query
+  function db_get_data_for_gurantee($noa_id) {
+    $this->db->select('*')
+            ->from('noa_requests as tbl_1')
+            ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+            ->join('healthcare_providers as tbl_3', 'tbl_1.hospital_id = tbl_3.hp_id')
+            ->join('company_doctors as tbl_4', 'tbl_1.approved_by = tbl_4.doctor_id')
+            ->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id= tbl_5.emp_id')
+            ->join('billing as tbl_6', 'tbl_1.noa_id= tbl_6.noa_id')
+            ->where('tbl_1.noa_id', $noa_id);
+    return $this->db->get()->row_array();
+  }
+
+  // function db_get_doctor_by_id($doctor_id) {
+  //   $query = $this->db->get_where('company_doctors', ['doctor_id' => $doctor_id]);
+  //   return $query->row_array();
+  // }
+  //End
+
+  function db_update_letter($billing_id, $guarantee_letter, $upload_on) {
+    $this->db->where('billing_id', $billing_id)
+            ->set('guarantee_letter', $guarantee_letter)
+            ->set('guarantee_uploaded_on', $upload_on);
+    return $this->db->update('billing');
+  }
 
 }

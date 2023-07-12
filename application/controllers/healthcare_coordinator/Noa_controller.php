@@ -408,49 +408,16 @@ class Noa_controller extends CI_Controller {
  	//END==================================================================
 
  	//FINAL BILLING========================================================
- // 	function final_billing() {
-	// 	$token = $this->security->get_csrf_hash(); 
-	// 	$status = 'Billed';
-	// 	$billing = $this->noa_model->get_final_datatables($status);
-
-	// 	$data = array();
-	// 	foreach ($billing as $bill){
-	// 		$row = array();
-	// 		$loa_id = $this->myhash->hasher($bill['loa_id'], 'encrypt');
-	// 		$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
-	// 		$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i></a>';
-	// 		$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $bill['status'] . '</span></div>';
-
-	// 		$row[] = $bill['noa_no'];
-	// 		$row[] = $fullname;
-	// 		$row[] = '₱' . number_format($bill['after_remaining_bal'], 2, '.', ',');
-	// 		$workRelated = $bill['work_related'] . ' (' . $bill['percentage'] . '%)';
-	// 		$row[] = $workRelated;
-	// 		$row[] = '₱' . number_format($bill['company_charge'], 2, '.', ',');
-	// 		$row[] = '₱' . number_format($bill['personal_charge'], 2, '.', ',');
-	// 		$row[] = $pdf_bill;
-	// 		$netBill = '₱' . number_format($bill['net_bill'], 2, '.', ',');
-	// 		$row[] = $netBill;
-	// 		$row[] = $custom_status;
-	// 		$data[] = $row;
-	// 	}
-
-	// 	$output = [
-	// 		"draw" => $_POST['draw'],
-	// 		"data" => $data,
-	// 	];
-
-	// 	echo json_encode($output);
-	// }
-
 	function final_billing() {
 		$token = $this->security->get_csrf_hash(); 
 		$billing = $this->noa_model->get_final_datatables();
+		// var_dump($billing);
 
 		$data = array();
 		foreach ($billing as $bill){
 			$row = array();
-			$loa_id = $this->myhash->hasher($bill['loa_id'], 'encrypt');
+			$noa_id = $this->myhash->hasher($bill['noa_id'], 'encrypt');
+			// var_dump($noa_id);
 			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
 			$request_date=date("F d, Y", strtotime($bill['tbl1_request_date']));
 
@@ -474,16 +441,16 @@ class Noa_controller extends CI_Controller {
 
 			$custom_actions = '';
 			if($bill['tbl1_status'] == 'Billed'){
+
 				if ($bill['guarantee_letter'] =='') {
-	  			$custom_actions = '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $bill['billing_id'] . '\')" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-2 text-info"></i></a>';
+	  			// $custom_actions = '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $bill['billing_id'] . '\')" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-2 text-info"></i></a>';
+	  			$custom_actions .= '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $noa_id . '\',\'' . $bill['billing_id'] . '\')" data-bs-toggle="modal" data-bs-target="#GuaranteeLetter" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-2 text-info"></i></a>';
 	  		}else{
 					$custom_actions .= '<i class="mdi mdi-reply fs-2 text-secondary" title="Guarantee Letter Already Sent"></i>';
 				}
 			}else if($bill['tbl1_status'] == 'Approved'){
 				$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/noa/requests-list/approved/" data-bs-toggle="tooltip" title="Back to NOA"><i class="mdi mdi-pen fs-2 text-danger"></i></a>';
 			}
-
-			
 
 			$row[] = $bill['noa_no'];
 			$row[] = $fullname;
@@ -508,6 +475,7 @@ class Noa_controller extends CI_Controller {
 		];
 
 		echo json_encode($output);
+		// var_dump($output);
 	}
 
 	function submit_final_billing() {
@@ -1331,5 +1299,212 @@ class Noa_controller extends CI_Controller {
 		$this->load->view('healthcare_coordinator_panel/noa/view_monthly_charging');
 		$this->load->view('templates/footer');
 	}
+
+	function submit_letter() {
+    $pdf_file = $this->input->post('pdf_file');
+    $billing_id = $this->input->post('billing_id');
+    $token = $this->input->post('token');
+    var_dump($pdf_file);
+    var_dump($billing_id);
+   
+    if(!isset($pdf_file) && !isset($billing_id)) {
+      echo json_encode([
+        'token' => $token,
+        'status' => 'error',
+        'message' => 'File upload failed!',
+        'pdf file' => $pdf_file,
+        'billing_id' => $billing_id,
+      ]); 
+    }else{
+      $upload_on = date('Y-m-d');
+
+      // Save the file data into the database
+      $updated = $this->noa_model->db_update_letter($billing_id, $pdf_file, $upload_on);
+      if (!$updated){
+        $response = [
+          'token' => $token,
+          'status' => 'save-error',
+          'message' => 'Save Failed',
+        ];
+      }else{
+        $response = [
+          'token' => $token,
+          'status' => 'success',
+         'message' => 'Saved Successfully',
+        ];
+      }
+      echo json_encode($response);
+    }
+	}
+
+	public function guarantee_pdf($noa_id){
+    $this->security->get_csrf_hash();
+    $this->load->library('tcpdf_library');
+    $noa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+    $row = $this->noa_model->db_get_data_for_gurantee($noa_id);
+    $companyChargeWords = $this->convertNumberToWords($row['company_charge']);
+    $name = $this->session->userdata('fullname');
+    $doc = $this->noa_model->db_get_doctor_by_id($row['approved_by']);
+    // var_dump($doc['doctor_signature']);
+    // var_dump($doc);
+    // var_dump($row);
+
+
+    // Generate the PDF content
+    $pdf = new TCPDF();
+
+    // Disable the header and footer lines
+    $pdf->SetPrintHeader(false);
+    $pdf->SetPrintFooter(false);
+
+    // Set the font and size for the letter content...
+    $pdf->SetFont('Helvetica', '', 12);
+
+    // Add the letter content
+    $pdf->AddPage();
+
+    $html1 = '<div>
+               	<p id="generated-date" style="font-weight: bold;">' . date("F j, Y") . '</p>
+               	<p></p>
+			          <p style="font-weight: bold;line-height: 0;">JONE SIEGFRED L. SEPE</p>
+			          <p style="line-height: 0;">CEO/PRESIDENT</p>
+			          <p style="line-height: 0;">Gallares Street Poblacion II</p>
+			          <p style="line-height: 0;">Tagbilaran City, Bohol, 0139</p>
+            </div>';
+
+    $html2 = '<div style="text-align: justify;">
+                <p style="font-weight: bold;">Dear DR. SEPE;</p>
+
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This letter is in reference to the request for the</span> <span style="font-weight: bold;">Alturas Healthcare Program</span> on behalf of our client, <span style="font-weight: bold;text-transform: uppercase">' . $row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] . ' ' . $row['suffix'] . '</span>. The Alturas Group of Companies has assessed and validated the said request for assistance through the Crisis Intervention Section. Therefore, the company is using this letter to guarantee payment of the bill in the amount <span id="company_charge_words" style="font-weight: bold;text-transform: uppercase">' . $companyChargeWords . '</span> <span style="font-weight: bold">(PHP ' . number_format($row['company_charge'], 2) . ')</span>.</p>
+
+                <p>Please be informed that the payment will be directly deposited into your company designated bank account. If you have any inquiries or require further information, please feel free to contact us at 233-0261.</p>
+
+                <p>Thank you for your consideration.</p>
+            	</div>';
+
+    $html3 = '<div style="text-align: justify;">
+                <p>Yours sincerely,</p>
+                <p></p>
+
+                <p>Prepared By :</p>
+                <p></p>
+                <p style="line-height: 0;text-transform: uppercase;font-weight: bold;">' . $name . '</p>
+
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                Approved By :</p>
+                
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <img src="' . base_url() . 'uploads/doctor_signatures/' . $doc['doctor_signature'] . '" alt="Doctor Signature" style="height:auto;width:170px;vertical-align:baseline;margin-left:-170px">
+
+                <p style="line-height: 0;text-transform: uppercase;font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <span style="text-decoration: underline;">Dr. Michael D. Uy</span></p></p>
+
+
+                <p style="line-height: -2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                Company Physician</p>
+
+              
+            	</div>';
+
+    $pdf->writeHTML($html1);
+    $pdf->writeHTML($html2);
+    $pdf->writeHTML($html3);
+
+    // Output the PDF to the browser
+    // $pdf->Output('guarantee_letter.pdf', 'I');
+	// $pdfPath = 'uploads/guarantee_letter/guarantee_letter.pdf';
+	$fileName = 'guarantee_letter' . $noa_id . '.pdf';
+	$pdf->Output(getcwd() . '/uploads/guarantee_letter/' . $fileName, 'F');
+	$response = [
+		'status' => 'saved-pdf',
+		'filename' => $fileName
+	];
+	echo json_encode($response);
+
+	// file_put_c	ontents($pdfPath, $pdfContent);
+	}
+
+	function convertNumberToWords($number){
+    // Define arrays for the words
+    $units = array('', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen');
+    $tens = array('', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety');
+    $scale = array('', 'Thousand', 'Million', 'Billion', 'Trillion'); // Add more scales as needed
+
+    // Clean up the number and convert to string
+    $number = trim($number);
+    $number = (string) $number;
+    $number = str_replace(',', '', $number);
+
+    // Check for zero or empty value
+    if ($number == '0' || $number == '') {
+        return 'Zero';
+    }
+
+    // Split the number into chunks of 3 digits
+    $chunks = array_reverse(str_split($number, 3));
+
+    // Initialize the result
+    $result = '';
+
+    // Process each chunk
+    foreach ($chunks as $index => $chunk) {
+        // Skip empty chunks
+        if ((int) $chunk === 0) {
+            continue;
+        }
+
+        // Split the chunk into individual digits
+        $digits = str_split(strrev($chunk));
+
+        // Initialize the chunk result
+        $chunkResult = '';
+
+        // Process each digit in the chunk
+        foreach ($digits as $digitIndex => $digit) {
+            // Get the position of the digit within the chunk
+            $position = $digitIndex + 1;
+
+            // Convert the digit to words based on its position
+            switch ($position) {
+                case 1:
+                    // Ones place
+                    $chunkResult = $units[$digit];
+                    break;
+                case 2:
+                    // Tens place
+                    if ($digit == '1') {
+                        // If the tens digit is 1, use the corresponding value from the units array
+                        $chunkResult = $units[$digits[$digitIndex - 1] . $digit];
+                    } else {
+                        // Otherwise, use the corresponding value from the tens array and append the ones digit
+                        // $chunkResult = $tens[$digit] . ' ' . $chunkResult;
+                    }
+                    break;
+                case 3:
+                    // Hundreds place
+                    $chunkResult = $units[$digit] . ' Hundred ' . $chunkResult;
+                    break;
+            }
+        }
+
+        // Append the scale to the chunk result if needed
+        if ($index > 0 && $chunkResult != '') {
+            $chunkResult .= ' ' . $scale[$index];
+        }
+
+        // Append the chunk result to the final result
+        $result = $chunkResult . ' ' . $result;
+    }
+
+    // Clean up the result
+    $result = trim($result);
+
+    // Capitalize the first letter and add "Pesos" at the end
+    $result = ucfirst($result) . ' Pesos';
+
+    // Return the converted words
+    return $result;
+
+}
 
 }

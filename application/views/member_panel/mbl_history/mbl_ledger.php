@@ -104,7 +104,7 @@
   const baseUrl = "<?= base_url() ?>";
   const emp_id = "<?= $emp_id ?>";
   const currentYear = new Date().getFullYear();
-  const startYear = '2000';
+  const startYear = '2022';
   // const startYear = '<?= $start_date ?>';
   const yearList = document.getElementById('yearList');
 

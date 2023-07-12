@@ -54,6 +54,17 @@ class Mbl_history extends CI_Controller {
 			$data[] = $row;
 		}
 
+		if(!$list){
+			$his_mbl = $this->history_model->get_his_mbl($emp_id);
+			$row[] = '';
+			$row[] =  '';
+			$row[] = '';	
+			$row[] = 'BEGINNING MBL';	
+			$row[] = number_format($his_mbl,2);
+			$row[] = '';	
+			$data[] = $row;
+		}
+
 		$output = array(
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->loa_model->count_all_loa($emp_id, $hp_id),
@@ -69,8 +80,9 @@ class Mbl_history extends CI_Controller {
 		$list = $this->noa_model->get_noa_datatables($emp_id);
 		
 		$data = array();
+		$row = array(); 
 		foreach ($list as $noa){
-			$row = array(); 
+			
 
 			$noa_id = $this->myhash->hasher($noa['tbl1_noa_id'], 'encrypt');
 			
@@ -82,6 +94,17 @@ class Mbl_history extends CI_Controller {
 			$row[] =  $noa['type_request'];
 			$row[] =  $noa['tbl1_status'];
             $row[] = number_format(floatval((isset($noa['net_bill']) ? $noa['net_bill'] : 0)),2);
+			$data[] = $row;
+		}
+		// var_dump('list',$list);
+		if(!$list){
+			$his_mbl = $this->history_model->get_his_mbl($emp_id);
+			$row[] = '';
+			$row[] =  '';
+			$row[] = '';	
+			$row[] = 'BEGINNING MBL';	
+			$row[] = number_format($his_mbl,2);
+			$row[] = '';	
 			$data[] = $row;
 		}
 

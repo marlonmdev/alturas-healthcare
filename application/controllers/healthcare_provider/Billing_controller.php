@@ -1217,9 +1217,10 @@ class Billing_controller extends CI_Controller {
                     // var_dump("billing no",$billing_no);
             if($check_bill){
                 $this->billing_model->insert_old_billing($billing_no);
-                $data = ['done_re_upload' => 'Done',
+                $data += ['done_re_upload' => 'Done',
                         're_upload' => 0,
                         ];
+                       
                 $inserted = $this->billing_model->update_billing($data,$billing_no);
 
                 if($inserted){
@@ -1241,6 +1242,16 @@ class Billing_controller extends CI_Controller {
                             'used_mbl'            => $result_charge1['used_mbl'],
                             'remaining_balance'      => $result_charge1['remaining_balance']
                         ];
+
+                        if($result_charge1['personal_charge']>0){
+                            $advances = ['emp_id'                => $loa['emp_id'],
+                                        'billing_id'            => $n['billing_id'],
+                                        'hp_id'                =>$this->session->userdata('dsg_hcare_prov'),
+                                        'excess_amount'       => floatval(str_replace(',', '', $result_charge1['personal_charge'])),
+                                        'date_added'             => date('Y-m-d'),
+                                        'status'                => 'Pending'];
+                            $this->billing_model->insert_cash_advance($advances);
+                        }
                         //  var_dump("affected",$data1);
                         $this->billing_model->update_affected_billing($data1,$n['billing_no']);
                         $this->billing_model->update_member_remaining_balance($n['emp_id'], $mbl1);
@@ -1588,7 +1599,7 @@ class Billing_controller extends CI_Controller {
             // var_dump("billing no",$billing_no);
             if($check_bill){
                 $this->billing_model->insert_old_billing($billing_no);
-                $data = ['done_re_upload' => 'Done',
+                $data += ['done_re_upload' => 'Done',
                 're_upload' => 0,
                 ];
                 $inserted = $this->billing_model->update_billing($data,$billing_no);
@@ -1612,6 +1623,16 @@ class Billing_controller extends CI_Controller {
                             'used_mbl'            => $result_charge1['used_mbl'],
                             'remaining_balance'      => $result_charge1['remaining_balance']
                         ];
+
+                        if($result_charge1['personal_charge']>0){
+                            $advances = ['emp_id'                => $noa['emp_id'],
+                                        'billing_id'            => $n['billing_id'],
+                                        'hp_id'                =>$this->session->userdata('dsg_hcare_prov'),
+                                        'excess_amount'       => floatval(str_replace(',', '', $result_charge1['personal_charge'])),
+                                        'date_added'             => date('Y-m-d'),
+                                        'status'                => 'Pending'];
+                            $this->billing_model->insert_cash_advance($advances);
+                        }
                         //  var_dump("affected",$data1);
                         $this->billing_model->update_affected_billing($data1,$n['billing_no']);
                         $this->billing_model->update_member_remaining_balance($n['emp_id'], $mbl1);

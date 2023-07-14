@@ -89,7 +89,7 @@
 <script>
   const baseUrl = "<?= base_url() ?>";
   const emp_id = "<?= $emp_id ?>";
-  const startYear = '2022';
+  const startYear = '2023';
   // const startYear = '<?= $start_date ?>';
   const yearList = document.getElementById('yearList');
   const currentYear = new Date().getFullYear();

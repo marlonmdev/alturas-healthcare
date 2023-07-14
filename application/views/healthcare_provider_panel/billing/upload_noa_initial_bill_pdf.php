@@ -40,160 +40,138 @@
             
             <div class="col-12 mb-3">
             <ul class="nav nav-tabs mb-4" role="tablist">           
-                <li class="nav-item">
-                    <a class="nav-link active" href="<?php echo base_url(); ?>healthcare-provider/billing/bill-noa/upload-pdf/<?= $noa_id ?>" role="tab">
+            <li class="nav-item">
+                    <a class="nav-link " href="<?php echo base_url(); ?>healthcare-provider/billing/bill-noa/upload-pdf/<?= $noa_id ?>" role="tab">
                     <span class="hidden-sm-up"></span>
                     <span class="hidden-xs-down fs-5 font-bold">Final Bill</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?php echo base_url(); ?>healthcare-provider/billing/initial-bill-noa/upload-pdf/<?= $noa_id ?>" role="tab">
+                    <a class="nav-link active" href="<?php echo base_url(); ?>healthcare-provider/billing/initial-bill-noa/upload-pdf/<?= $noa_id ?>" role="tab">
                     <span class="hidden-sm-up"></span>
                     <span class="hidden-xs-down fs-5 font-bold">Initial Bill</span>
                     </a>
                 </li>
-                    
+                
                     </ul>
-
-                    <div class="row">
-
-                    <div class="col-lg-4">
-                    </div>
-                        <div class="col-lg-4">
-                            <!-- <label class="form-label fs-5 ls-1">Remaining MBL Balance</label> -->
-                            <div class="input-group">
-                                <label class="form-label fs-5 ls-1 pt-1">MBL Balance</label>
-                                <span class="input-group-text bg-cyan text-white ms-2">&#8369;</span>
-                                <input type="text" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="<?= number_format($remaining_balance) ?>" readonly>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4">
-                            <!-- <label class="form-label fs-5 ls-1" id="net_bill_label">Final Bill</label> -->
-                            <div class="input-group">
-                                <label class="form-label fs-5 ls-1 pt-1" id="net_bill_label">Final Bill</label>
-                                <span class="input-group-text bg-cyan text-white ms-2">&#8369;</span>
-                                <input type="text" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" value="0.00" readonly>
-                            </div>
-                        </div>
-
-                        <!-- Move the above two divs to the end -->
-                    </div>
-
                 
             </div>
-                    <!-- Content for the "final_bill" tab pane -->
-                    <form action="<?php echo base_url();?>healthcare-provider/billing/bill-noa/upload-pdf/<?= $noa_id ?>/submit" id="pdfBillingForm" enctype="multipart/form-data" class="needs-validation" novalidate>
-                        <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
-                        <input type="hidden" name="billing-no" value="<?= $billing_no ?>">
-                        <!-- <input type="text" class="form-control fw-bold ls-1" id="net-bill" name="net-bill" value="0.00" hidden> -->
-                        <div class="card">
-                            <div class="card-body shadow">
-                                <div class="row mt-3">
-                            <div class="col-12">
-                                <table class="table table-bordered">
-                                    <tr>
-                                        <td>
-                                            <span class="fw-bold text-secondary fs-5 ls-1">
-                                                Patient's Name: <span class="text-info"><?= $patient_name ?></span>
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span class="fw-bold text-secondary fs-5 ls-1">
-                                                NOA No. : <span class="text-info"><?= $noa_no ?></span>
-                                            </span>  
-                                        </td>
-                                        <td>
-                                            <span class="fw-bold text-secondary fs-5 ls-1">
-                                                Billing No. : <span class="text-info"><?= $billing_no ?></span>
-                                            </span> 
-                                        </td>
-                                    </tr>
-                                </table>
+           
+            <input type="hidden" id="i_token" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+            <!-- Content for the "initial_bill" tab pane -->
+            <form  action="<?php echo base_url();?>healthcare-provider/initial_billing/bill-noa/upload-pdf/<?= $noa_id ?>/submit" id="initialpdfBillingForm" enctype="multipart/form-data" class="needs-validation" novalidate>
+            <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
+            <input type="hidden" name="billing-no" value="<?= $billing_no ?>">
+            <div class="row">
+            <div class="col-lg-8"></div> <!-- Empty column to create space on the left side -->
+            <!-- <div class="col-lg-4">
+                <div class="input-group">
+                    <div class="input-group-append">
+                        <span class="input-group-text text-white bg-dark ls-1 ms-2" title="Initial bill As Of">
+                            <i class="mdi mdi-calendar-range"></i>
+                        </span>
+                    </div>
+                    <input type="date" class="form-control" name="initial-date" id="initial-date" title="Initial bill As Of" onchange="validateDateRange()" placeholder="Billing Date"  required>
+                </div>
+            </div> -->
+        </div>
+
+            <div class="card">
+                <div class="card-body shadow">
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <td>
+                                        <span class="fw-bold text-secondary fs-5 ls-1">
+                                            Patient's Name: <span class="text-info"><?= $patient_name ?></span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold text-secondary fs-5 ls-1">
+                                            NOA No. : <span class="text-info"><?= $noa_no ?></span>
+                                        </span>  
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold text-secondary fs-5 ls-1">
+                                            Billing No. : <span class="text-info"><?= $billing_no ?></span>
+                                        </span> 
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                        <div class="row pt-3">
+                            <div class="col-lg-6">
+                                <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
+                                    <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Initial Billing 
+                                </label>
+                                <input type="file" class="form-control" name="pdf-file-initial" id="pdf-file-initial" accept="application/pdf" onchange="previewPdfFile('pdf-file-initial')" required>
+                                <div class="invalid-feedback fs-6">
+                                    PDF File is required
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3">
+                            <label class="form-label fs-5 ls-1">Remaining MBL Balance</label>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-cyan text-white">&#8369;</span>
+                                    <input type="text" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="<?= number_format($remaining_balance) ?>"  readonly>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3">
+                            <label class="form-label fs-5 ls-1" id="net_bill_label">Initial Bill</label>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-cyan text-white">&#8369;</span>
+                                    <input type="text" class="form-control fw-bold ls-1" id="initial-net-bill" name="initial-net-bill" value="0.00" readonly>
+                                </div>
                             </div>
                         </div>
 
-                            <div class="row pt-3">
-                                <div class="col-lg-6">
-                                    <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
-                                        <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload final Billing 
-                                    </label>
-                                    <input type="file" class="form-control" name="pdf-file" id="pdf-file" accept="application/pdf" onchange="previewPdfFile('pdf-file')" required>
-                                    <div class="invalid-feedback fs-6">
-                                        PDF File is required
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6">
-                                    <label class="fw-bold fs-5 ls-1" id="">
-                                        <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Itemized Billing 
-                                    </label>
-                                    <input type="file" class="form-control" name="itemize-pdf-file" id="itemize-pdf-file" accept="application/pdf" onchange="previewPdfFile('itemize-pdf-file')" required>
-                                    <div class="invalid-feedback fs-6">
-                                        PDF File is required
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row  pt-3" id="final_diagnosis">
-                                <div class="col-lg-6">
-                                    <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
-                                        <i class="mdi mdi-asterisk text-danger ms-1"></i> Upload Final Diagnosis/Operation 
-                                    </label>
-                                    <input type="file" class="form-control" name="Final-Diagnosis" id="Final-Diagnosis" accept="application/pdf" onchange="previewPdfFile('Final-Diagnosis')"  >
-                                    <div class="invalid-feedback fs-6">
-                                        PDF File is required
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6 ">
-                                    <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
-                                        Upload Medical Abstract(Optional)
-                                    </label>
-                                    <input type="file" class="form-control" name="Medical-Abstract" id="Medical-Abstract" accept="image/jpeg,image/png" onchange="previewPdfFile('Medical-Abstract')">
-                    
-                                </div>
-
-                                <div class="col-lg-6 mt-3" id="prescription-div">
-                                    <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
-                                    <input type="checkbox" id="take-home-checkbox">  Upload Prescription Image
-                                    </label>
-                                    <input type="file" class="form-control" name="Prescription" id="Prescription" accept="image/jpeg,image/png">
-                                    <div class="invalid-feedback fs-6">
-                                    Prescription Image is required
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6 mt-3" id="med-services-div">
-                                    <label class="fw-bold fs-5 ls-1" id="initial_btn_label">
-                                    Select Take Home Medicines
-                                    </label>
-                                    <div id="med-services-wrapper"></div>
-                                    <em id="med-services-error" class="text-danger"></em>
-                                </div>
-                                
-                            </div>
-                
-
-                        <div class="row mt-3">
-                            <div class="d-flex justify-content-center align-items-center mt-2">
-                                <button type="submit" class="btn btn-info text-white btn-lg ls-2 me-3" id="upload-btn">
-                                    <i class="mdi mdi-upload me-1"></i>UPLOAD
-                                </button>
-                                <button type="button" class="btn btn-dark text-white btn-lg ls-2" id="clear-btn">CLEAR</button>
-                            </div>
+                    <div class="row mt-3">
+                        <div class="d-flex justify-content-center align-items-center mt-2">
+                            <button type="submit" class="btn btn-info text-white btn-lg ls-2 me-3" id="initial-upload-btn">
+                                <i class="mdi mdi-upload me-1"></i>UPLOAD
+                            </button>
+                            <button type="button" class="btn btn-dark text-white btn-lg ls-2" id="clear-btn-initial">CLEAR</button>
                         </div>
-                        
                     </div>
                     
                 </div>
-            </form> 
-        </div>
-        
-        <?php include 'view_pdf_bill_modal.php'; ?>
+            </div>
+        </form>
 
-    </div>
-</div>
+                    <div class="col-lg-12" id="initial_bill_history">
+                        <label class="fw-bold fs-5 ls-1 ps-3" id="initial_btn_label">
+                                <i class="mdi mdi-asterisk text-danger ms-1"></i> Initial Billing History
+                            </label>
+                            <div class="card shadow">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover w-100" id="initial_bill_table">
+                                            <thead style="background-color: #00538C; color: white;">
+                                                <tr>
+                                                    <th class="fw-bold" style="color: white;">BILLING NO</th>
+                                                    <th class="fw-bold" style="color: white;">FILE NAME</th>
+                                                    <th class="fw-bold" style="color: white;">BILLING DATE</th>
+                                                    <th class="fw-bold" style="color: white;">INITIAL  BILL</th>
+                                                    <th class="fw-bold" style="color: white;">VIEW</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Add your table rows dynamically here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <?php include 'view_pdf_bill_modal.php'; ?>
+                </div>
+            </div>
 
 <script>
     const baseUrl = `<?php echo base_url(); ?>`;
@@ -202,7 +180,8 @@
     var prev_billing = '<?= isset($prev_billing) ? $prev_billing : null ?>';
     var noa_no = '<?= $noa_no ?>';
     var noa_id = "<?php echo $noa_id; ?>";  
-    
+    var initial_net_bill = "";
+    var initial_net_bill_date = 0;
     var patient_name ="<?= $patient_name ?>";
     // console.log("admission_date",admission_date);
     const mbl = parseFloat($('#remaining-balance').val().replace(/,/g, ''));
@@ -211,101 +190,102 @@
     const form = document.querySelector('#pdfBillingForm');
     let hospital_charges ="";
     let attending_doctors ="";
-   
+    let is_valid_name = true;
+    let is_valid_noa = true;
+    let is_valid_netbill = true;
     let json_final_charges = {};
     let benefits_deductions = {};
+    
+
     let pdfinput = "";
-   
+    const  previewPdfFile = (pdf_input) => {
+        pdfinput = pdf_input;
+        let pdfFileInput = document.getElementById(pdf_input);
+        let pdfFile = pdfFileInput.files[0];
+        let reader = new FileReader();
+        if(pdfFile){
+            $('#viewPDFBillModal').modal('show');
+                if(pdfinput==="pdf-file" || pdfinput ==="pdf-file-initial"){
+                    $('#billing_no').text('<?=$billing_no?>');
+                    $('#billing_no_holder').show();
+                }else{
+                    $('#billing_no_holder').hide();
+                }
+                reader.onload = function(event) {
+                let dataURL = event.target.result;
+                let iframe = document.querySelector('#pdf-viewer');
+                iframe.src = dataURL;
+            };
+            reader.readAsDataURL(pdfFile);
+        }
+
+    };
 
     $(document).ready(function(){
-        if(re_upload){
-            $('#final_diagnosis').hide();
-            $('#Final-Diagnosis').prop('required',false);
-        }else{
-            $('#Final-Diagnosis').prop('required',true);
-        }
-       
-        $('#Prescription').hide();
       
-        $('#clear-btn').on('click', function(){
-            $('#pdfBillingForm')[0].reset();
+        $('#clear-btn-initial').on('click', function(){
+            $('#initialpdfBillingForm')[0].reset();
         });
-       
-        $('#pdfBillingForm').on('reset',function(){
-            $('#upload-btn').prop('disabled',false);
-        });
-       
-        $('#cancel,#ccancel').on('click', function() {
-            $('#net-bill').val('0.00');
-            $('#'+pdfinput).val('');
+     
+        $('#initialpdfBillingForm').on('reset',function(){
+            $('#initial-upload-btn').prop('disabled',false);
         });
         // $('#Operation').prop("disabled",true);
-        $('#med-services-div').hide();
-        $.ajax({
-                    url: `${baseUrl}healthcare-provider/patient/get_takehome_meds`,
-                    type: "GET",
-                    data: {token:'<?php echo $this->security->get_csrf_hash(); ?>'},
-                    dataType: "json",
-                    success:function(response){
-                        $('#med-services-wrapper').empty();                
-                        $('#med-services-wrapper').append(response);
-                        $(".chosen-select").chosen({
-                        width: "100%",
-                        no_results_text: "Oops, nothing found!"
-                        }); 
-                    }
-                    });
+      
 
-        $('#take-home-checkbox').on('change',function(){
-            if(this.checked){
-                $('#med-services').prop('disabled',false);
-                $('#med-services').prop('required',true);
-                $('#Prescription').prop('required',true);
-                $('#Prescription').prop('disabled',false);
-                $('#med-services-div').show();
-                $('#Prescription').show();
-            }else{
-                $('#med-services').prop('disabled',true);
-                $('#med-services').prop('required',false);
-                $('#Prescription').prop('required',false);
-                $('#Prescription').prop('disabled',true);
-                $('#med-services-div').hide();
-                $('#Prescription').hide();
-            }   
+        $('#cancel,#ccancel').on('click', function() {
+            $('#pdf-file-initial').val('');
+            $('#initial-net-bill').val(initial_net_bill);
         });
-       
-        // $('#viewPDFBillModal').on('hidden.bs.modal', function (e) {
-            
-        //     if(!is_valid_noa || !is_valid_netbill || !is_valid_name){
-        //         // window.location.reload();
-        //         // $('#pdfBillingForm')[0].reset();
-        //         // $('#initialpdfBillingForm')[0].reset();
-        //     }
-        //     // console.log("is_valid_name",is_valid_name);
-        //     // console.log("is_valid_noa",is_valid_noa);
-        //     // console.log("is_valid_netbill",is_valid_netbill);
-        //     is_valid_name = true;
-        //     is_valid_noa = true;
-        //     is_valid_netbill = true;
-        // });
-        
 
-        //submit the form
-        $('#pdfBillingForm').submit(function(event){
-            event.preventDefault();
-            console.log('medicines',$('#med-services').val());
-            if (!form.checkValidity()) {
-                form.classList.add('was-validated');
-                return;
+
+        $('#initial_bill_table').DataTable({
+            processing: true,
+            serverSide: true,
+            searching: false,
+            order: [],
+            ajax: {
+                url: `${baseUrl}healthcare-provider/fetch_initial_billing/fetch/${noa_id}`,
+                type: "POST",
+                data: function (d) {
+                    d.token = '<?php echo $this->security->get_csrf_hash(); ?>';
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log("AJAX Error: " + textStatus + "\n" + errorThrown);
+            },
+            responsive: true,
+            fixedHeader: true,
+            initComplete: function () {
+                var dataTable = $('#initial_bill_table').DataTable();
+                var columnData = dataTable.column(3).data(); // Assuming column 4 is index 3
+                var firstIndex = columnData[0];
+
+                var initial_date = dataTable.column(2).data(); // Assuming column 4 is index 3
+                var date = initial_date[0];
+                if (dataTable.rows().count() !== 0) {
+
+                    const b_Date = new Date(date);
+                    const year = b_Date.getFullYear();
+                    const month = String(b_Date.getMonth() + 1).padStart(2, '0');
+                    const day = String(b_Date.getDate()).padStart(2, '0');
+
+                    initial_net_bill = firstIndex;
+                    initial_net_bill_date = year+month+day;
+                    $('#initial-net-bill').val(initial_net_bill);
+
+                }
             }
+        });
+
+
+        $('#initialpdfBillingForm').submit(function(event){
+            event.preventDefault();
 
             let formData = new FormData($(this)[0]);
-            formData.append('hospital_bill_data', hospital_charges);
-            formData.append('attending_doctors', attending_doctors);
-            formData.append('json_final_charges', json_final_charges);
-            formData.append('benefits_deductions', benefits_deductions);
-
-            formData.append('net_bill', $('#net-bill').val());
+            // formData.append('hospital_bill_data', hospital_charges);
+            // formData.append('attending_doctors', attending_doctors);
+            // formData.append('net_bill', $('#net-bill').val());
             $.ajax({
                 type: 'POST',
                 url: $(this).attr('action'),
@@ -317,22 +297,17 @@
                     const { token, status, message, billing_id } = response;
 
                 if(status == 'success'){
-                    
+                   
                         swal({
                             title: 'Success',
-                            text: 'Final Bill Uploaded Successfully...',
+                            text: 'Initial Bill Uploaded Successfully...',
                             timer: 1000,
                             showConfirmButton: false,
                             type: 'success'
                             }).then(function() {
-                                // window.location.replace(`${baseUrl}healthcare-provider/billing`);
-                                // window.location.href = `${baseUrl}healthcare-provider/billing`;
-                                window.history.replaceState({}, document.title, `${baseUrl}healthcare-provider/billing`);
-                                $('#go-back').submit();
-                                // window.location.href = `${baseUrl}healthcare-provider/billing/bill-noa/upload-pdf/${billing_id}/success`;
-                                //window.location.href = `${baseUrl}healthcare-provider/billing/search`;
+                                location.reload();
                         });
-                  
+                
                     }else{
                         swal({
                             title: 'Failed',
@@ -346,10 +321,10 @@
             });
 
         });
-
-        //extract pdf text and git the net bill
-        ['pdf-file','itemize-pdf-file'].forEach(function(pdfid) {
-        let pdfFileInput = document.getElementById(pdfid);
+       
+         //extract pdf text and git the net bill
+  
+        let pdfFileInput = document.getElementById('pdf-file-initial');
         let subtotalValue = 0;
         pdfFileInput.addEventListener('change', function() {
         let reader = new FileReader();
@@ -409,12 +384,10 @@
                       console.log("patient name", result_3);
                       console.log('final text',final_text(finalResult));
 
-                      //validate loa 
-                      const invalid_noa = /registry\s{1,}no:/i;
                     const valid_noa = /admission\s{1,}no:/i;
                       if(!finalResult.match(valid_noa)){
-                        is_valid_noa = false;
-                        $('#upload-btn').prop('disabled',true);
+                        
+                        $('#initial-upload-btn').prop('disabled',true);
                         setTimeout(function() {
                             $.alert({
                                           title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>ERROR</h3>`,
@@ -431,7 +404,7 @@
                                   }, 1000); // Delay of 2000 milliseconds (2 seconds)
                       }else{ 
                         if (patient_name.length) {
-                        is_valid_noa = true;
+                       
                         const names = patient_name.toLowerCase().split(' ').filter(Boolean);
 
                         let removedElement ="";
@@ -444,8 +417,8 @@
                             const mem_name = removedElement + ", " + names.join(' ');
 
                         if(!validate_name(result_3,mem_name)){
-                            is_valid_name = false;
-                            $('#upload-btn').prop('disabled',true);
+                           
+                            $('#initial-upload-btn').prop('disabled',true);
 
                             $.alert({
                                     title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
@@ -458,45 +431,39 @@
                                     },
                                 },
                             });
-                        }
-
-                       else{
-                        is_valid_name = true;
-
-                        //   if(pdfid === 'pdf-file'){
-                            if(pdfFileInput.id === 'pdf-file' || pdfFileInput.id ==='pdf-file-initial'){
-                                var itemsPattern = /\s+date\s+description\s+qty\s+unit price\s+amount/;
+                        }else{
                                 const regex = /please pay for this amount\s*\.*\s*([\d,\.]+)/i;
-                                const hosp_plan = /hospitalization plan:\s(.*?)\sage/si;
-                                const hpmatch = finalResult.match(hosp_plan);
+                                // const hosp_plan = /hospitalization plan:\s(.*?)\sage/si;
+                                // const hpmatch = finalResult.match(hosp_plan);
                                 const match = finalResult.match(regex);
                                 
-                                console.log("match",hpmatch[1]);
+                                // console.log("match",hpmatch[1]);
                                 
-                                if (match && !itemsPattern.test(finalResult)) {
-                                  const doc_pattern = /hospital charges(.*?)please pay for this amount/si;
-                                  const matches_2 = finalResult.match(doc_pattern);
-                                  const result_2 = matches_2 ? matches_2[1] : null;
-                                  hospital_charges = result_2;
+                                if (match) {
+                                //   const doc_pattern = /hospital charges(.*?)please pay for this amount/si;
+                                //   const matches_2 = finalResult.match(doc_pattern);
+                                //   const result_2 = matches_2 ? matches_2[1] : null;
+                                //   hospital_charges = result_2;
 
-                                  if(hpmatch[1].replace(/\s/g, "")!=='self-pay'){
-                                    benefits_deductions = JSON.stringify(get_ph_deduction(final_text(finalResult)));
-                                  }else{
-                                    benefits_deductions = JSON.stringify(get_selfpay_deduction(final_text(finalResult)));
-                                  }
+                                //   if(hpmatch[1].replace(/\s/g, "")!=='self-pay'){
+                                //     benefits_deductions = JSON.stringify(get_ph_deduction(final_text(finalResult)));
+                                //   }else{
+                                //     benefits_deductions = JSON.stringify(get_selfpay_deduction(final_text(finalResult)));
+                                //   }
                               
-                                  attending_doctors = get_doctors(final_text(finalResult));
-                                  console.log("doctors", attending_doctors);
-                                  console.log("hospital charges", hospital_charges);
-                                  console.log("JSON deduction",benefits_deductions);
+                                //   attending_doctors = get_doctors(finalResult);
+                                //   console.log("doctors", attending_doctors);
+                                //   console.log("hospital charges", hospital_charges);
+                                //   console.log("JSON deduction",benefits_deductions);
                                   subtotalValue = parseFloat(match[1].replace(/,/g, ""));
                                   net_bill=subtotalValue;
-                                  document.getElementsByName("net-bill")[0].value = match[1];
-                                  is_valid_netbill = true;
-                                  $('#upload-btn').prop('disabled',false);
+
+                                  document.getElementsByName("initial-net-bill")[0].value = match[1];
+                                
+                                  $('#initial-upload-btn').prop('disabled',false);
                                   
                                   if(parseFloat(net_bill)>mbl){
-                                  // $('#upload-btn').prop('disabled',true);
+            
                                                 setTimeout(function() {
                                                 $.alert({
                                                     title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Warning</h3>`,
@@ -516,45 +483,20 @@
                                 } else {
                         
                                 console.log("please pay for this amount is not found");
-                                is_valid_netbill = false;
-                                $('#upload-btn').prop('disabled',true);
-                                $.alert({
-                                        title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
-                                        content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it appears that there was an issue with the uploaded PDF. Please review the PDF file and try again.</div>",
-                                        type: "red",
-                                        buttons: {
-                                        ok: {
-                                            text: "OK",
-                                            btnClass: "btn-danger",
+                        
+                                $('#initial-upload-btn').prop('disabled',true);
+                                    $.alert({
+                                            title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
+                                            content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it appears that there was an issue with the uploaded PDF. Please review the PDF file and try again.</div>",
+                                            type: "red",
+                                            buttons: {
+                                            ok: {
+                                                text: "OK",
+                                                btnClass: "btn-danger",
+                                            },
                                         },
-                                    },
-                                });
+                                    });
                                 }
-                              }else{
-                                var itemPattern = /\s+date\s+description\s+qty\s+unit price\s+amount/;
-                                
-                                if (itemPattern.test(finalResult)) {
-                                  $('#upload-btn').prop('disabled',false);
-                                  get_all_item(final_text(finalResult));
-                                  json_final_charges = JSON.stringify(get_all_item(final_text(finalResult)));
-                                  console.log("JSON item",json_final_charges);
-                            
-                                } else {
-                                  $('#upload-btn').prop('disabled',true);
-                                  $.alert({
-                                          title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
-                                          content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it appears that the uploaded pdf is not an itemized bill. Please review the PDF file and try again.</div>",
-                                          type: "red",
-                                          buttons: {
-                                          ok: {
-                                              text: "OK",
-                                              btnClass: "btn-danger",
-                                          },
-                                      },
-                                  });
-                                }
-                                
-                              }
                             }
                             }
                           }
@@ -582,33 +524,9 @@
                 }
                 
                 });
+          
             });
 
-        });
-
-
-            const  previewPdfFile = (pdf_input) => {
-        pdfinput = pdf_input;
-        let pdfFileInput = document.getElementById(pdf_input);
-        let pdfFile = pdfFileInput.files[0];
-        let reader = new FileReader();
-        if(pdfFile){
-            $('#viewPDFBillModal').modal('show');
-            if(pdfinput==="pdf-file" || pdfinput ==="pdf-file-initial"){
-                $('#billing_no').text('<?=$billing_no?>');
-                $('#billing_no_holder').show();
-            }else{
-                $('#billing_no_holder').hide();
-            }
-            reader.onload = function(event) {
-            let dataURL = event.target.result;
-            let iframe = document.querySelector('#pdf-viewer');
-            iframe.src = dataURL;
-        };
-            reader.readAsDataURL(pdfFile);
-        }
-
-    };
             const get_doctors = (lines) => {
                 let include = false;
                 let include2 = true;

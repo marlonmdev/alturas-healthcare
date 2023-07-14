@@ -127,7 +127,7 @@
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Type of Request</label>
                   <select class="form-select" name="loa-request-type" id="loa-request-type" onchange="showMedServices()" disabled> 
                     <option value="" selected>Select LOA Request Type</option>
-                    <option value="Consultation">Consultation</option>
+                    <!-- <option value="Consultation">Consultation</option> -->
                     <option value="Diagnostic Test">Diagnostic Test</option>
                   </select>
                   <em id="loa-request-type-error" class="text-danger"></em>

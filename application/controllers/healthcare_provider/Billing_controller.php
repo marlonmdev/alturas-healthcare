@@ -1372,6 +1372,7 @@ class Billing_controller extends CI_Controller {
 
 	function upload_noa_pdf_bill_form() {
         $noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+        $bill_type = $this->uri->segment(3);
         $noa = $this->billing_model->get_noa_to_bill($noa_id);
         $mbl = $this->billing_model->get_member_mbl($noa['emp_id']);
         $hcare_provider_id = $this->session->userdata('dsg_hcare_prov');
@@ -1396,12 +1397,12 @@ class Billing_controller extends CI_Controller {
             $data['billing_no'] = $billing_no;
             $data['admission_date'] = intval(str_replace('-', '', $noa['admission_date']));
         }
-        
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_provider_panel/billing/upload_noa_bill_pdf');
+		$this->load->view('healthcare_provider_panel/billing/' . (($bill_type === 'bill-noa') ? "upload_noa_bill_pdf" : "upload_noa_initial_bill_pdf"));
+		// $this->load->view('healthcare_provider_panel/billing/upload_noa_bill_pdf');
 		$this->load->view('templates/footer');
-	}
+	}  
 
 	function re_upload_pdf_bill_form() {    
         $loa_noa = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
@@ -1727,7 +1728,7 @@ class Billing_controller extends CI_Controller {
         $net_b = $this->input->post('initial-net-bill', TRUE);
         // $initial_date = $this->input->post('initial-date',TRUE);
         $net_bill = floatval(str_replace(',', '', $net_b));
-        $hospitalBillData = $_POST['hospital_bill_data'];
+        // $hospitalBillData = $_POST['hospital_bill_data'];
         
         // var_dump("initial date",$initial_date);
         // PDF File Upload

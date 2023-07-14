@@ -3,7 +3,7 @@
     <div class="modal-content">
       <section id="printableDiv">
         <div class="modal-header">
-          <h4 class="modal-title ls-2">LOA #: <span class="loa_no" id="loa-no" class="text-primary"></span> <span id="loa-status"></span></h4>
+          <h4 class="modal-title ls-2">LOA #: <span class="loa_no" id="loa-no" class="text-primary"></span> <span id="loa-statuss"></span></h4>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
           </button>
         </div>
@@ -29,10 +29,6 @@
                 <tr>
                   <td class="fw-bold ls-1">Referred by : </td>
                   <td class="fw-bold ls-1" id="requested-by"></td>
-                </tr>
-                <tr>
-                  <td class="fw-bold ls-1">Work Related :</td>
-                  <td class="fw-bold ls-1" id="work_related"></td>
                 </tr>
                 <tr>
                   <td class="fw-bold ls-1">Percentage :</td>

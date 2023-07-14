@@ -54,7 +54,7 @@
               <table class="table table-hover table-responsive" id="matchedLoaTable">
                 <thead class="fs-6" style="background-color:#00538C">
                   <tr>
-                    <th class="fw-bold" style="color: white;">PAYMENT #</th>
+                    <th class="fw-bold" style="color: white;">Billing No.</th>
                     <th class="fw-bold" style="color: white;">CONSOLIDATED BILLING</th>
                     <th class="fw-bold" style="color: white;">HEALTHCARE PROVIDER</th>
                     <th class="fw-bold" style="color: white;">STATUS</th>

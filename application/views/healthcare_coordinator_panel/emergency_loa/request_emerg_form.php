@@ -66,7 +66,6 @@
                       endforeach;
                     endif;
                     ?>
-                    <option value="Dummy">Dummy</option>
                   </select>
                   <em id="hospital-name-error" class="text-danger"></em>
                 </div>

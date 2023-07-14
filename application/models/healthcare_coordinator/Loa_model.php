@@ -1321,36 +1321,21 @@ function db_get_cost_types_by_hp_ID($hp_id) {
     return $this->db->get()->row_array();
   }
   
-  // function set_bill_for_matched($hp_id, $start_date, $end_date, $bill_no) {
-  //   $this->db->set('done_matching', '1')
-  //           ->set('status', 'Payable')
-  //           ->set('bill_no', $bill_no)
-  //           ->where('status', 'Billed')
-  //           ->where('hp_id', $hp_id)
-  //           ->where('billed_on >=', $start_date)
-  //           ->where('billed_on <=', $end_date)
-  //           ->where('loa_id !=', '');
-  //   return $this->db->update('billing');
-  // }
-
-   function set_bill_for_matched($hp_id, $start_date, $end_date, $bill_no) {
-    $this->db->set('status', 'Payable')
+  function set_bill_for_matched($hp_id, $start_date, $end_date, $bill_no) {
+    $this->db->set('done_matching', '1')
+            ->set('status', 'Payable')
             ->set('bill_no', $bill_no)
             ->where('status', 'Billed')
             ->where('hp_id', $hp_id)
             ->where('request_date >=', $start_date)
-            ->where('request_date <=', $end_date);
+            ->where('request_date <=', $end_date)
+            ->where('loa_id !=', '');
     return $this->db->update('billing');
   }
 
   function insert_for_payment_consolidated($data) {
     return $this->db->insert('monthly_payable', $data);
   }
-  // function update_loa_request_status() {
-  //   $data = array('status' => 'Payable');
-  //   $this->db->where('status', 'Billed');
-  //   $this->db->update('loa_requests', $data);
-  // }
 
   function update_loa_request_status($hp_id, $start_date, $end_date) {
     $this->db->set('status', 'Payable')
@@ -1746,7 +1731,8 @@ function get_billed_for_charging($bill_no) {
     $this->db->join('noa_requests as tbl_4','tbl_2.noa_id= tbl_4.noa_id','left');
     $this->db->join('loa_requests as tbl_5','tbl_2.loa_id= tbl_5.loa_id','left');
     $this->db->join('healthcare_providers as tbl_6','tbl_2.hp_id= tbl_6.hp_id');
-    $this->db->where('tbl_1.status',$status);
+    $this->db->where('tbl_1.ebm_status',$status);
+    $this->db->where('tbl_1.status', 'For Advance');
   }
 
   function get_result_healthcare_advance_data_approved($status) {
@@ -1777,7 +1763,9 @@ function get_billed_for_charging($bill_no) {
     $this->db->join('noa_requests as tbl_4','tbl_2.noa_id= tbl_4.noa_id','left');
     $this->db->join('loa_requests as tbl_5','tbl_2.loa_id= tbl_5.loa_id','left');
     $this->db->join('healthcare_providers as tbl_6','tbl_2.hp_id= tbl_6.hp_id');
-    $this->db->where('tbl_1.status',$status);
+    $this->db->where('tbl_1.ebm_status',$status);
+    $this->db->where('tbl_1.status', 'For Advance');
+
   }
 
   function get_result_healthcare_advance_data_disapproved($status) {
@@ -1821,18 +1809,18 @@ function get_billed_for_charging($bill_no) {
     return $query->result_array();
   }
 
-  function get_itemized_bill($emp_id){
+  function get_itemized_bill($billing_id){
     $this->db->select('*')
       ->from('itemized_bill')
-      ->where('emp_id', $emp_id);
+      ->where('billing_id', $billing_id);
     $query = $this->db->get();
     return $query->result_array();
   }
 
-  function get_benefits_deduction($emp_id){
+  function get_benefits_deduction($billing_id){
     $this->db->select('*')
       ->from('benefits_deductions')
-      ->where('emp_id', $emp_id);
+      ->where('billing_id', $billing_id);
     $query = $this->db->get();
     return $query->result_array();
   }

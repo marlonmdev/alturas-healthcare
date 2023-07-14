@@ -92,76 +92,76 @@
     <!-- End Wrapper -->
     </div>
     <script>
-      window.onload = function () {
+      // window.onload = function () {
 
-        var chart = new CanvasJS.Chart("chartContainer", {
-          animationEnabled: true,
-          theme: "light2",
-          title:{
-            text: "Line Chart"
-          },
-          data: [{        
-            type: "line",
-                indexLabelFontSize: 16,
-            dataPoints: [
-              { y: 450 },
-              { y: 414},
-              { y: 520, indexLabel: "\u2191 highest",markerColor: "red", markerType: "triangle" },
-              { y: 460 },
-              { y: 450 },
-              { y: 500 },
-              { y: 480 },
-              { y: 480 },
-              { y: 410 , indexLabel: "\u2193 lowest",markerColor: "DarkSlateGrey", markerType: "cross" },
-              { y: 500 },
-              { y: 480 },
-              { y: 510 }
-            ]
-          }]
-        });
+      //   var chart = new CanvasJS.Chart("chartContainer", {
+      //     animationEnabled: true,
+      //     theme: "light2",
+      //     title:{
+      //       text: "Line Chart"
+      //     },
+      //     data: [{        
+      //       type: "line",
+      //           indexLabelFontSize: 16,
+      //       dataPoints: [
+      //         { y: 450 },
+      //         { y: 414},
+      //         { y: 520, indexLabel: "\u2191 highest",markerColor: "red", markerType: "triangle" },
+      //         { y: 460 },
+      //         { y: 450 },
+      //         { y: 500 },
+      //         { y: 480 },
+      //         { y: 480 },
+      //         { y: 410 , indexLabel: "\u2193 lowest",markerColor: "DarkSlateGrey", markerType: "cross" },
+      //         { y: 500 },
+      //         { y: 480 },
+      //         { y: 510 }
+      //       ]
+      //     }]
+      //   });
 
-        var chartDN = new CanvasJS.Chart("chartDNContainer", {
-              theme: "light2",
-              exportFileName: "Doughnut Chart",
-              exportEnabled: true,
-              animationEnabled: true,
-              title:{
-                text: "Monthly Expense"
-              },
-              legend:{
-                cursor: "pointer",
-                itemclick: explodePie
-              },
-              data: [{
-                type: "doughnut",
-                innerRadius: 90,
-                showInLegend: true,
-                toolTipContent: "<b>{name}</b>: ${y} (#percent%)",
-                indexLabel: "{name} - #percent%",
-                dataPoints: [
-                  { y: 450, name: "Food" },
-                  { y: 120, name: "Insurance" },
-                  { y: 300, name: "Travelling" },
-                  { y: 800, name: "Housing" },
-                  { y: 150, name: "Education" },
-                  { y: 150, name: "Shopping"},
-                  { y: 250, name: "Others" }
-                ]
-              }]
-            });
-        chart.render();
-        chartDN.render();
+      //   var chartDN = new CanvasJS.Chart("chartDNContainer", {
+      //         theme: "light2",
+      //         exportFileName: "Doughnut Chart",
+      //         exportEnabled: true,
+      //         animationEnabled: true,
+      //         title:{
+      //           text: "Monthly Expense"
+      //         },
+      //         legend:{
+      //           cursor: "pointer",
+      //           itemclick: explodePie
+      //         },
+      //         data: [{
+      //           type: "doughnut",
+      //           innerRadius: 90,
+      //           showInLegend: true,
+      //           toolTipContent: "<b>{name}</b>: ${y} (#percent%)",
+      //           indexLabel: "{name} - #percent%",
+      //           dataPoints: [
+      //             { y: 450, name: "Food" },
+      //             { y: 120, name: "Insurance" },
+      //             { y: 300, name: "Travelling" },
+      //             { y: 800, name: "Housing" },
+      //             { y: 150, name: "Education" },
+      //             { y: 150, name: "Shopping"},
+      //             { y: 250, name: "Others" }
+      //           ]
+      //         }]
+      //       });
+      //   chart.render();
+      //   chartDN.render();
 
-        function explodePie (e) {
-          if(typeof (e.dataSeries.dataPoints[e.dataPointIndex].exploded) === "undefined" || !e.dataSeries.dataPoints[e.dataPointIndex].exploded) {
-            e.dataSeries.dataPoints[e.dataPointIndex].exploded = true;
-          } else {
-            e.dataSeries.dataPoints[e.dataPointIndex].exploded = false;
-          }
-          e.chart.render();
-        }
+      //   function explodePie (e) {
+      //     if(typeof (e.dataSeries.dataPoints[e.dataPointIndex].exploded) === "undefined" || !e.dataSeries.dataPoints[e.dataPointIndex].exploded) {
+      //       e.dataSeries.dataPoints[e.dataPointIndex].exploded = true;
+      //     } else {
+      //       e.dataSeries.dataPoints[e.dataPointIndex].exploded = false;
+      //     }
+      //     e.chart.render();
+      //   }
 
-      }
+      // }
 
       
       

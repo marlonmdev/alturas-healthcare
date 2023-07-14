@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 require_once dirname(__file__).'/tcpdf/tcpdf.php';
 
-class tcpdf_library extends TCPDF
+class Tcpdf_library extends TCPDF
 {
 
 	public function __construct(){
@@ -11,4 +11,3 @@ class tcpdf_library extends TCPDF
 		
 	}
 }
-

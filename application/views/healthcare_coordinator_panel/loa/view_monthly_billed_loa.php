@@ -74,7 +74,7 @@
       </table>
     </div>
     <div class="row pt-4 pb-2">
-      <div class="col-lg-2 offset-10">
+      <div class="col-lg-2 offset-8">
         <label>Total Hospital Bill : </label>
         <input name="total-hospital-bill" id="total-hospital-bill" class="form-control text-center fw-bold" value="0" readonly>
       </div>
@@ -195,31 +195,33 @@
       responsive: true,
       fixedHeader: true,
     });
+
+    billedTable.on('draw.dt', function() {
+        let columnId = 6;
+        let sum = 0;
+        let rowss = billedTable.rows().nodes();
+
+        if ($('#billedLoaTable').DataTable().data().length > 0) {
+            // The table is not empty
+            rowss.each(function(index, row) {
+            let rowData = billedTable.row(row).data();
+            let columnValue = rowData[columnId];
+            let pattern = /-?[\d,]+(\.\d+)?/g;
+            let matches = columnValue.match(pattern);
+
+            if (matches && matches.length > 0) {
+                let numberString = matches[0].replace(/,/g, ''); // Replace all commas
+                let floatValue = parseFloat(numberString);
+                sum += floatValue;
+            }
+            });
+        }
+
+        $('#total-hospital-bill').val(sum.toLocaleString('PHP', { minimumFractionDigits: 2 }));
+    });
+
   });
 
-  window.onload = function() {
-    getTotalBill();
-  }
-
-  const getTotalBill = () => {
-    const coordinator_bill = document.querySelector('#total-coordinator-bill');
-    const hospital_bill = document.querySelector('#total-hospital-bill');
-    const bill_no = document.querySelector('#bill-no').value;
-
-    $.ajax({
-      type: 'post',
-      url: `${baseUrl}healthcare-coordinator/loa/matched/total-bill/fetch`,
-      dataType: "json",
-      data: {
-        'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
-        'bill_no' : bill_no,
-      },
-      success: function(response){
-        hospital_bill.value = response.total_hospital_bill;
-        coordinator_bill.value = response.total_coordinator_bill;
-      },
-    });
-  }
 
   const viewPDFBill = (pdf_bill,loa_no) => {
     $('#viewPDFBillModal').modal('show');

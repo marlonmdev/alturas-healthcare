@@ -159,6 +159,12 @@ class Noa_controller extends CI_Controller {
 
 			$button = '<a class="me-2" href="JavaScript:void(0)" onclick="viewNoaInfoModal(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
+			if($value['spot_report_file'] && $value['incident_report_file'] != ''){
+				$button .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $noa_id . '\',\'' . $value['work_related'] . '\',\'' . $value['percentage'] . '\',\'' . $value['spot_report_file'] . '\',\'' . $value['incident_report_file'] . '\')" data-bs-toggle="tooltip" title="View Uploaded Reports"><i class="mdi mdi-teamviewer fs-2 text-warning"></i></a>';
+			}else{
+				$button .= '';
+			}
+
 			$button .= '<a class="me-2" href="' . base_url() . 'member/requested-noa/edit/' . $noa_id . '" data-bs-toggle="tooltip" title="Edit NOA"><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a>';
 
 			$button .= '<a href="JavaScript:void(0)" onclick="cancelPendingNoa(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Delete NOA"><i class="mdi mdi-delete-circle fs-2 text-danger"></i></a>';
@@ -188,6 +194,13 @@ class Noa_controller extends CI_Controller {
 			$custom_noa_no = '<mark class="bg-primary text-white">'.$value['noa_no'].'</mark>';
 
 			$button = '<a class="me-2" href="JavaScript:void(0)" onclick="viewNoaInfoModal(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+
+			if($value['spot_report_file'] && $value['incident_report_file'] != ''){
+				$button .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $noa_id . '\',\'' . $value['work_related'] . '\',\'' . $value['percentage'] . '\',\'' . $value['spot_report_file'] . '\',\'' . $value['incident_report_file'] . '\')" data-bs-toggle="tooltip" title="View Uploaded Reports"><i class="mdi mdi-teamviewer fs-2 text-warning"></i></a>';
+			}else{
+				$button .= '';
+			}
+
 
 			// $button .= '<a href="' . base_url() . 'member/requested-noa/generate-printable-noa/' . $noa_id . '" data-bs-toggle="tooltip" title="Print NOA"><i class="mdi mdi-printer fs-2 text-primary"></i></a>';
 

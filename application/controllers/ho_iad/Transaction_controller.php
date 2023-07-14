@@ -174,7 +174,7 @@ class Transaction_controller extends CI_Controller {
 			'check_no'     	 => $payment_details['check_num'],
 			'check_date'     => $payment_details['check_date'],
 			'bank'     	 		 => $payment_details['bank'],
-			'amount_paid'    => $payment_details['amount_paid'],
+			'amount_paid'    => number_format($payment_details['amount_paid'],2,'.',','),
 			'type_request'     => $request_type,
 		];
 
@@ -724,6 +724,51 @@ class Transaction_controller extends CI_Controller {
 		];
 		
 		echo json_encode($response);
+	}
+	
+	function fetch_bu_charges() {
+		$token = $this->security->get_csrf_hash();
+		$charge = $this->transaction_model->get_charging_for_report();
+		$data = [];
+	
+		$healthCardTotals = []; // Store totals for each health_card_no
+	
+		foreach ($charge as $bill) {
+			$row = [];
+			if ($bill['company_charge'] != '' && $bill['cash_advance'] != '') {
+
+				$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
+
+				if(!empty($bill['loa_id'])){
+					$loa = $this->transaction_model->get_loa_info($bill['loa_id']);
+					$loa_noa_no = $loa['loa_no'];
+					$request_date = date('m/d/Y',strtotime($loa['request_date']));
+				}else if(!empty($bill['noa_id'])){
+					$noa = $this->transaction_model->get_noa_info($bill['noa_id']);
+					$loa_noa_no = $noa['noa_no'];
+					$request_date = date('m/d/Y',strtotime($noa['request_date']));
+				}
+				$row[] = $request_date;
+				$row[] = $bill['health_card_no'];
+				$row[] = $fullname;
+				$row[] = $bill['business_unit'];
+				$row[] = $loa_noa_no;
+				$row[] = $bill['payment_no'];
+				$row[] = number_format($bill['company_charge'], 2, '.', ',');
+				$row[] = number_format($bill['cash_advance'], 2, '.', ',');
+				$row[] = number_format(floatval($bill['company_charge'] + $bill['cash_advance']), 2, '.', ',');
+				$row[] = '<span class="bg-danger text-white badge rounded-pill">Unpaid</span>';
+				$data[] = $row;
+
+			}
+		}
+	
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
+	
+		echo json_encode($output);
 	}
 
 

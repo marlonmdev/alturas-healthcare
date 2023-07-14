@@ -156,8 +156,12 @@ class Loa_model extends CI_Model {
     return $query->result_array();
   }
 
+  function get_loa_info_by_id($loa_id) {
+    return $this->db->get_where('loa_requests', ['loa_id' => $loa_id])->row_array();
+  }
+
   function db_get_all_pending_loa() {
-    $this->db->select('tbl_1.loa_id, tbl_1.loa_no, tbl_1.first_name, tbl_1.middle_name, tbl_1.last_name, tbl_1.suffix, tbl_2.hp_name, tbl_1.loa_request_type, tbl_1.med_services, tbl_1.request_date, tbl_1.rx_file, tbl_1.status')
+    $this->db->select('*')
             ->from('loa_requests as tbl_1')
             ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
             ->where('tbl_1.status', 'Pending')
@@ -166,7 +170,7 @@ class Loa_model extends CI_Model {
   }
 
   function db_get_all_approved_loa() {
-    $this->db->select('tbl_1.loa_id, tbl_1.loa_no, tbl_1.first_name, tbl_1.middle_name, tbl_1.last_name, tbl_1.suffix, tbl_2.hp_name, tbl_1.loa_request_type, tbl_1.med_services, tbl_1.request_date, tbl_1.rx_file, tbl_1.status')
+    $this->db->select('*')
              ->from('loa_requests as tbl_1')
              ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
              ->where('tbl_1.status', 'Approved')
@@ -175,7 +179,7 @@ class Loa_model extends CI_Model {
   }
 
   function db_get_all_disapproved_loa() {
-    $this->db->select('tbl_1.loa_id, tbl_1.loa_no, tbl_1.first_name, tbl_1.middle_name, tbl_1.last_name, tbl_1.suffix, tbl_2.hp_name, tbl_1.loa_request_type, tbl_1.med_services, tbl_1.request_date, tbl_1.rx_file, tbl_1.status')
+    $this->db->select('*')
              ->from('loa_requests as tbl_1')
              ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
              ->where('tbl_1.status', 'Disapproved')

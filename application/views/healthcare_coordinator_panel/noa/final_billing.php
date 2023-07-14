@@ -1,5 +1,5 @@
 <div class="page-wrapper">
-  <div class="page-breadcrumb">
+  <!-- <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
         <h4 class="page-title ls-2">Final Billing (Inpatient)</h4>
@@ -13,7 +13,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
 
   <div class="container-fluid">
@@ -30,7 +30,7 @@
           <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/for_payment" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">FOR PAYMENT</span>
+              <span class="hidden-xs-down fs-5 font-bold">HISTORY</span>
             </a>
           </li>
         </ul>
@@ -96,7 +96,7 @@
               <div class="row pt-4">
                 <div class="col-lg-2 offset-9">
                   <label>Total Hospital Bill : </label>
-                  <input name="total-hospital-bill" id="total-hospital-bill" class="form-control text-center fw-bold" value="0" readonly>
+                  <input name="total-hospital-bill" id="total-hospital-bill" class="form-control text-center fw-bold" readonly>
                 </div>
               </div>
             </div><br><br>
@@ -208,6 +208,30 @@
       fixedHeader: true,
     });
 
+    billedTable.on('draw.dt', function() {
+        let columnId = 9;
+        let sum = 0;
+        let rowss = billedTable.rows().nodes();
+
+        if ($('#billedLoaTable').DataTable().data().length > 0) {
+            // The table is not empty
+            rowss.each(function(index, row) {
+            let rowData = billedTable.row(row).data();
+            let columnValue = rowData[columnId];
+            let pattern = /-?[\d,]+(\.\d+)?/g;
+            let matches = columnValue.match(pattern);
+
+            if (matches && matches.length > 0) {
+                let numberString = matches[0].replace(/,/g, ''); // Replace all commas
+                let floatValue = parseFloat(numberString);
+                sum += floatValue;
+            }
+            });
+        }
+
+        $('#total-hospital-bill').val(sum.toLocaleString('PHP', { minimumFractionDigits: 2 }));
+    });
+
     let columnIdx = 7;
     let rows = billedTable.rows().nodes();
 
@@ -224,17 +248,14 @@
 
     $('#billed-hospital-filter').change(function(){
       billedTable.draw();
-      getTotalBill();
     });
 
     $('#start-date').change(function(){
       billedTable.draw();
-      getTotalBill();
     });
 
     $('#end-date').change(function(){
       billedTable.draw();
-      getTotalBill();
     });
 
     $("#start-date").flatpickr({
@@ -418,28 +439,28 @@
     return xhr.status == "200" ? true: false;
   }
 
-  const getTotalBill = () => {
-    const hospital_bill = document.querySelector('#total-hospital-bill');
-    const hp_filter = document.querySelector('#billed-hospital-filter').value;
-    const end_date = document.querySelector('#end-date').value;
-    const start_date = document.querySelector('#start-date').value;
-    const button = document.querySelector('#proceed-btn');
+  // const getTotalBill = () => {
+  //   const hospital_bill = document.querySelector('#total-hospital-bill');
+  //   const hp_filter = document.querySelector('#billed-hospital-filter').value;
+  //   const end_date = document.querySelector('#end-date').value;
+  //   const start_date = document.querySelector('#start-date').value;
+  //   const button = document.querySelector('#proceed-btn');
 
-    $.ajax({
-      type: 'post',
-      url: `${baseUrl}healthcare-coordinator/noa/total-bill/fetch`,
-      dataType: "json",
-      data: {
-        'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
-        'hp_id' : hp_filter,
-        'startDate' : start_date,
-        'endDate' : end_date,
-      },
-      success: function(response){
-      hospital_bill.value = response.total_hospital_bill;
-      },
-    });
-  }
+  //   $.ajax({
+  //     type: 'post',
+  //     url: `${baseUrl}healthcare-coordinator/noa/total-bill/fetch`,
+  //     dataType: "json",
+  //     data: {
+  //       'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
+  //       'hp_id' : hp_filter,
+  //       'startDate' : start_date,
+  //       'endDate' : end_date,
+  //     },
+  //     success: function(response){
+  //     hospital_bill.value = response.total_hospital_bill;
+  //     },
+  //   });
+  // }
 
   const enableDate = () => {
     const hp_filter = document.querySelector('#billed-hospital-filter');

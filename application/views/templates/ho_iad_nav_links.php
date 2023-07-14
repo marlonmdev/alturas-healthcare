@@ -16,6 +16,15 @@
   </a>
 </li>
 
+<li class="sidebar-item <?php echo $this->uri->segment(3) == 'charges' ? 'selected' : ''; ?>">
+  <a class="sidebar-link"
+    href="<?php echo base_url(); ?>head-office-iad/charges/bu-charges"
+    aria-expanded="false">
+    <i class="mdi mdi-file-document-box"></i>
+    <span class="hide-menu ls-1">Business Unit Charging</span>
+  </a>
+</li>
+
 <li class="sidebar-item <?php echo $this->uri->segment(3) == 'search' ? 'selected' : ''; ?>">
   <a class="sidebar-link"
     href="<?php echo base_url(); ?>head-office-iad/transaction/search"

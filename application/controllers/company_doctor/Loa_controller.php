@@ -329,8 +329,14 @@ class Loa_controller extends CI_Controller {
 				'expiry_date_error' => form_error('expiry-date'),
 			];
 		} else {
+			$loa_info = $this->loa_model->get_loa_info_by_id($loa_id);
+			if($loa_info['status'] == 'Referred'){
+				$status = 'Referred';
+			}else{
+				$status = 'Approved';
+			}
 			$post_data = [
-				'status'          => 'Approved',
+				'status'          => $status,
 				'expiration_date' => date('Y-m-d', strtotime($expiry_date)),
 				'extended_when' => date("Y-m-d"),
 				'extended_by' 	=> $this->session->userdata('fullname'),
@@ -452,7 +458,7 @@ class Loa_controller extends CI_Controller {
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-danger">' . $loa['status'] . '</span></div>';
 			
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewExpiredLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
-			$custom_actions .= '<a href="JavaScript:void(0)" onclick="showBackDateForm(\'' . $loa_id . '\', \'' . $loa['loa_no'] . '\', \''.$loa['expiration_date'].'\')" data-bs-toggle="tooltip" title="Date Extension"><i class="mdi mdi-border-color fs-2 text-cyan"></i></a>';
+			$custom_actions .= '<a href="JavaScript:void(0)" onclick="showBackDateForm(\'' . $loa_id . '\', \'' . $loa['loa_no'] . '\')" data-bs-toggle="tooltip" title="Date Extension"><i class="mdi mdi-border-color fs-2 text-cyan"></i></a>';
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
@@ -493,7 +499,7 @@ class Loa_controller extends CI_Controller {
 
 	function fetch_all_completed_loa() {
 		$this->security->get_csrf_hash();
-		$status = 'closed';
+		$status = 'Completed';
 		$list = $this->loa_model->get_datatables($status);
 		$data = [];
 		foreach ($list as $loa) {
@@ -550,7 +556,7 @@ class Loa_controller extends CI_Controller {
 
 	function fetch_all_referral_loa() {
 		$this->security->get_csrf_hash();
-		$status = 'Reffered';
+		$status = 'Referred';
 		$list = $this->loa_model->get_datatables($status);
 		$data = [];
 

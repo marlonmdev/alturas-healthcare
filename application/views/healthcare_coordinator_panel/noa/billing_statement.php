@@ -1,20 +1,4 @@
 <div class="page-wrapper">
-  <div class="page-breadcrumb">
-    <div class="row">
-      <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2" style="color:red"><?php echo $status; ?></h4>
-        <div class="ms-auto text-end">
-          <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item">Healthcare Coordinator</li>
-              <li class="breadcrumb-item active" aria-current="page">Billing Statement</li>
-            </ol>
-          </nav>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
@@ -29,7 +13,7 @@
           <li class="nav-item">
             <a class="nav-link active" href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/for_payment" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">FOR PAYMENT</span>
+              <span class="hidden-xs-down fs-5 font-bold">HISTORY</span>
             </a>
           </li>
         </ul>

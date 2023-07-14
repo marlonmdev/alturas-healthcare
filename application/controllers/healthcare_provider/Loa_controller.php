@@ -91,7 +91,11 @@ class Loa_controller extends CI_Controller {
 		$data['row'] = $exist = $this->loa_model->db_get_loa_info($loa_id);
 		$data['mbl'] = $this->loa_model->db_get_member_mbl($exist['emp_id']);
 		$data['cost_types'] = $this->loa_model->db_get_cost_types();
-		$data['req'] = $this->loa_model->db_get_doctor_by_id($exist['requesting_physician']);
+		if($exist['requesting_physician'] != ''){
+			$data['req'] = $this->loa_model->db_get_doctor_by_id($exist['requesting_physician']);
+		}else{
+			$data['req'] = 'Does not Exist from Database';	
+		}
 		$data['doc'] = $this->loa_model->db_get_doctor_by_id($exist['approved_by']);
 		$data['bar'] = $this->loa_model->bar_pending();
 		$data['bar1'] = $this->loa_model->bar_approved();

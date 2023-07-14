@@ -71,6 +71,7 @@
                         <th class="fw-bold">PERCENTAGE</th>
                         <th class="fw-bold">TOTAL NET BILL</th>
                         <th class="fw-bold">COMPANY CHARGE</th>
+                        <th class="fw-bold">CASH ADVANCE</th>
                         <th class="fw-bold">PERSONAL CHARGE</th>
                         <th class="fw-bold">PREVIOUS MBL</th>
                         <th class="fw-bold">REMAINING MBL</th>
@@ -78,6 +79,20 @@
                     </thead>
                     <tbody id="billed-tbody">
                     </tbody>
+                    <tfoot>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="fw-bold">TOTAL</td>
+                        <td class="fw-bold" id="total-net-bill"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                    </tfoot>
                   </table>
                 </div>
               </div>
@@ -122,6 +137,30 @@
       lengthChange: false,
       responsive: true,
       fixedHeader: true,
+    });
+
+    billedTable.on('draw.dt', function() {
+        let columnId = 4;
+        let sum = 0;
+        let rowss = billedTable.rows().nodes();
+
+        if ($('#billedLoaTable').DataTable().data().length > 0) {
+            // The table is not empty
+            rowss.each(function(index, row) {
+            let rowData = billedTable.row(row).data();
+            let columnValue = rowData[columnId];
+            let pattern = /-?[\d,]+(\.\d+)?/g;
+            let matches = columnValue.match(pattern);
+
+            if (matches && matches.length > 0) {
+                let numberString = matches[0].replace(/,/g, ''); // Replace all commas
+                let floatValue = parseFloat(numberString);
+                sum += floatValue;
+            }
+            });
+        }
+
+        $('#total-net-bill').html(sum.toLocaleString('PHP', { minimumFractionDigits: 2 }));
     });
  });
 

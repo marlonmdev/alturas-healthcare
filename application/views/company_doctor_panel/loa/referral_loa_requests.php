@@ -203,7 +203,7 @@
                 type: 'success'
               });
               $("#backDateModal").modal("hide");
-              $("#expiredLoaTable").DataTable().ajax.reload();
+              $("#ReferralLoaTable").DataTable().ajax.reload();
             break;
           }
         },
@@ -264,7 +264,7 @@
         
         const med_serv = med_services !== '' ? med_services : 'None';
 
-        $('#loa-no').html(loa_no);
+        $('#loa-nos').html(loa_no);
         switch (req_status) {
           case 'Pending':
             $('#loa-status').html(`<strong class="text-warning">[${req_status}]</strong>`);

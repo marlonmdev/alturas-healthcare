@@ -52,7 +52,7 @@
                     <th class="fw-bold" style="color: white">PATIENT NAME</th>
                     <th class="fw-bold" style="color: white">BILLING #</th>
                     <th class="fw-bold" style="color: white">NAME OF HOSPITAL</th>
-                    <th class="fw-bold" style="color: white">DATE REQUEST</th>
+                    <th class="fw-bold" style="color: white">DATE REQUESTED</th>
                     <th class="fw-bold" style="color: white">ACTION</th>
                   </tr>
                 </thead>

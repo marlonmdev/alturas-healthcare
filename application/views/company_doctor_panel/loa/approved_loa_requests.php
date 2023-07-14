@@ -244,7 +244,7 @@
                 type: 'success'
               });
               $("#backDateModal").modal("hide");
-              $("#expiredLoaTable").DataTable().ajax.reload();
+              $("#approvedLoaTable").DataTable().ajax.reload();
             break;
           }
         },

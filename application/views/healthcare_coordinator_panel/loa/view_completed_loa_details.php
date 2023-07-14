@@ -27,10 +27,6 @@
                   <td class="fw-bold ls-1" id="approved-by"></td>
                 </tr>
                 <tr>
-                  <td class="fw-bold ls-1">Work Related :</td>
-                  <td class="fw-bold ls-1" id="work_related"></td>
-                </tr>
-                <tr>
                   <td class="fw-bold ls-1">Percentage :</td>
                   <td class="fw-bold ls-1" id="percentage"></td>
                 </tr>

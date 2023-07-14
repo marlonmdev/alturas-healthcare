@@ -36,8 +36,8 @@ class Api_model extends CI_Model {
 
   //update cash advance in billing table
   function update_billing($data) {
-    $this->db->set('cash_advance', $data['cash_advance']);
-    $this->db->set('personal_charge', $data['excess_amount']-$data['cash_advance']);
+    $this->db->set('cash_advance', $data['approved_amount']);
+    $this->db->set('personal_charge', $data['excess_amount']-$data['approved_amount']);
     $this->db->where('billing_id', $data['billing_id']);
     $this->db->where('emp_id', $data['emp_id']);
     return $this->db->update('billing'); 

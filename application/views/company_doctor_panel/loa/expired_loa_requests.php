@@ -125,6 +125,7 @@
         <?php include 'view_expired_loa_details.php'; ?>
       </div> 
     </div>
+    <?php include 'back_date_modal.php'; ?>
   </div>
 </div>
 
@@ -163,6 +164,62 @@
       expiredTable.draw();
     });
 
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    $("#expiry-date").flatpickr({
+      enableTime: false,
+      dateFormat: 'Y-m-d',
+      minDate: tomorrow
+    });
+
+    $('#backDateForm').submit(function(event){
+      event.preventDefault();
+      $.ajax({
+        type: "post",
+        url: `${baseUrl}company-doctor/loa/requests-list/expired/backdate_expired`,
+        data: $(this).serialize(),
+        dataType: "json",
+        success: function (res) {
+          const { status, message } = res;
+
+          switch (status) {
+            case 'error':
+              // is-invalid class is a built in classname for errors in bootstrap
+              if (expiry_date_error !== '') {
+                $('#expiry-date-error').html(expiry_date_error);
+                $('#expiry-date').addClass('is-invalid');
+              } else {
+                $('#expiry-date-error').html('');
+                $('#expiry-date').removeClass('is-invalid');
+              }
+              break;
+            case 'save-error':
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
+              break;
+            case 'success':
+              swal({
+                title: 'Success',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'success'
+              });
+              
+              $("#backDateModal").modal("hide");
+              $("#expiredLoaTable").DataTable().ajax.reload();
+              break;
+          }
+        },
+      });
+    });
 
   });
 
@@ -312,5 +369,13 @@
         $('#percentage').html(wpercent+', '+nwpercent);
       }
     });
+  }
+
+  const showBackDateForm = (loa_id, loa_no) => {
+    $("#backDateModal").modal("show");
+    $('#bd-loa-id').val(loa_id);
+    // $('#bd-loa-no').val(loa_no);
+
+    $('#bd-loa-no').html(loa_no);
   }
 </script>

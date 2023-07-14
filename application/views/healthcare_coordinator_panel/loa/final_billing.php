@@ -374,12 +374,6 @@
 
     //Submit Guarantee Letter
     $('#Letter').click(function(event) {
-      // event.preventDefault();
-      /* The above code is not written in PHP, it is written in JavaScript. */
-      // console.log("pdf file",$('#pdf_file').val());
-      // const LetterForm = $('#Letterf')[0];
-      // const formdata = new FormData(LetterForm);
-      // formdata.append('token', `<?= $this->security->get_csrf_hash() ?>`);
       $.ajax({
         type: "post",
         url: `<?php echo base_url(); ?>healthcare-coordinator/loa/billed/submit_letter`,
@@ -407,14 +401,7 @@
                 showConfirmButton: false,
                 type: 'error'
               });
-              // is-invalid class is a built in classname for errors in bootstrap
-              // if (charge_type_error !== '') {
-              //   $('#charge-type-error').html(charge_type_error);
-              //   $('#charge-type').addClass('is-invalid');
-              // } else {
-              //   $('#charge-type-error').html('');
-              //   $('#charge-type').removeClass('is-invalid');
-              // }
+
             break;
             case 'save-error':
               swal({
@@ -746,33 +733,9 @@
 
 
 
-  // function GuaranteeLetter(loa_id, billing_id) {
-  //   $.ajax({
-  //     url: `${baseUrl}healthcare-coordinator/loa/billed/guarantee/${loa_id}`,
-  //     type: "GET",
-  //     success: function (response) {
-  //       const res = JSON.parse(response);
-  //       const { status, token, first_name, middle_name, last_name, company_charge } = res;
 
-  //       // Update modal content
-  //       $("#GuaranteeLetter").modal("show");
-  //       $('#billing-id').val(billing_id);
-  //       $('#loa_no').val(loa_id);
-  //       $('#first_name').text(first_name);
-  //       $('#middle_name').text(middle_name);
-  //       $('#last_name').text(last_name);
-  //       $('#company_charge').html('₱' + Number(company_charge).toFixed(2));
-
-  //       const words = convertNumberToWords(parseFloat(company_charge));
-  //       $('#company_charge_words').text(words);
-  //     }
-  //   });
-  // }
 
   function GuaranteeLetter(loa_id, billing_id) {
-    // const pdfUrl = `${baseUrl}healthcare-coordinator/loa/billed/guarantee_pdf/${loa_id}`;
-   
-
     $.ajax({
       url: `${baseUrl}healthcare-coordinator/loa/billed/guarantee_pdf/${loa_id}`,
       type: "GET",
@@ -782,14 +745,11 @@
         console.log('filename',filename);
         console.log('status',status);
         const embedTag = `<embed src="${baseUrl}/uploads/guarantee_letter/${filename}" name="pdfEmbed" id="pdfEmbed" width="100%" height="100%" type="application/pdf" /> <input type = "hidden" name="pdf_file" id="pdf_file" value="${filename}" /> <input type = "hidden" name="billing_id" id="billing_id" value="${billing_id}" />`;
-      // `<input type = "text" name="pdf_file" id="pdf_file" value="${filename}"/>`;
        
         $('#GuaranteeLetter .modal-body').html(embedTag);
         $('#GuaranteeLetter').modal('show');
-        // console.log ($('#pdf_file').val());
       }
     });
-
   }
 
   

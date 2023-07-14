@@ -517,6 +517,12 @@ class Loa_controller extends CI_Controller {
 
 			$button = '<a class="me-2 align-top" style="top:-20px!important;" href="JavaScript:void(0)" onclick="viewLoaInfoModal(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
+			if($value['spot_report_file'] && $value['incident_report_file'] != ''){
+				$button .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $loa_id . '\',\'' . $value['work_related'] . '\',\'' . $value['percentage'] . '\',\'' . $value['spot_report_file'] . '\',\'' . $value['incident_report_file'] . '\')" data-bs-toggle="tooltip" title="View Uploaded Reports"><i class="mdi mdi-teamviewer fs-2 text-warning"></i></a>';
+			}else{
+				$button .= '';
+			}
+
 			$button .= '<a class="me-2 align-top" style="top:-20px!important;" href="' . base_url() . 'member/requested-loa/edit/' . $loa_id . '" data-bs-toggle="tooltip" title="Edit LOA"><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a>';
 
 			$button .= '<a class="align-top" style="top:-20px!important;" href="JavaScript:void(0)" onclick="cancelPendingLoa(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="Delete LOA"><i class="mdi mdi-delete-circle fs-2 text-danger"></i></a>';
@@ -581,6 +587,12 @@ class Loa_controller extends CI_Controller {
 			// }
 			
 			$buttons = '<a class="me-2" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+
+			if($value['spot_report_file'] && $value['incident_report_file'] != ''){
+				$buttons .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $loa_id . '\',\'' . $value['work_related'] . '\',\'' . $value['percentage'] . '\',\'' . $value['spot_report_file'] . '\',\'' . $value['incident_report_file'] . '\')" data-bs-toggle="tooltip" title="View Uploaded Reports"><i class="mdi mdi-teamviewer fs-2 text-warning"></i></a>';
+			}else{
+				$buttons .= '';
+			}
 
 			// $for_cancellation = $this->loa_model->db_get_loa_cancellation_request($value['loa_id']);
 

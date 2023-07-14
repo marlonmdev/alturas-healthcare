@@ -242,11 +242,11 @@
                 $("#dept-name").html(res.dept_name);
                 $("#position").html(res.position);
                 $("#emp-type").html(res.emp_type);
-                $("#cur-status").html(res.current_status);
+                $("#cur-status").html(res.current_status); 
                 $("#pos-level").html(res.pos_level);
                 $("#hcard-no").html(res.hcard_no);
                 $("#mbr-mbl").html(res.mbr_mbl);
-                $("#mbr-rmg-bal").html(res.mbr_rmg_bal);
+                $("#mbr-rmg-bal").html(res.mbr_rm_mbl);
                 $("#mbr-fullname").html(res.fullname);
                 $("#home-addr").html(res.home_address);
                 $("#city-addr").html(res.city_address);

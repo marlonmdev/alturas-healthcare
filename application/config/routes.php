@@ -1020,6 +1020,8 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 	$route['healthcare-coordinator/loa/billed/guarantee/(:any)'] = 'healthcare_coordinator/loa_controller/guarantee';
 	$route['healthcare-coordinator/loa/billed/guarantee_pdf/(:any)'] = 'healthcare_coordinator/loa_controller/guarantee_pdf/$1';
 	$route['healthcare-coordinator/loa/billed/submit_letter'] = 'healthcare_coordinator/loa_controller/submit_letter';
+	$route['healthcare-coordinator/noa/billed/guarantee_pdf/(:any)'] = 'healthcare_coordinator/noa_controller/guarantee_pdf/$1';
+	$route['healthcare-coordinator/noa/billed/submit_letter'] = 'healthcare_coordinator/noa_controller/submit_letter';
 	//end
 
 	//Healthcare Advance
@@ -1041,11 +1043,14 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 // IAD=====================================================================================================
 $route['head-office-iad/dashboard'] = 'ho_iad/pages_controller';
 $route['head-office-iad/biling/audit'] = 'ho_iad/pages_controller/view_billing_list';
+$route['head-office-iad/charges/bu-charges'] = 'ho_iad/pages_controller/view_bu_charges';
+$route['head-office-iad/charges/bu-charges/receivables'] = 'ho_iad/pages_controller/view_charges_receivables';
 $route['head-office-iad/biling/for-audit-list/(:any)'] = 'ho_iad/pages_controller/view_for_audit';
 $route['head-office-iad/biling/audited'] = 'ho_iad/pages_controller/view_audited';
 $route['head-office-iad/biling/audited-list/(:any)'] = 'ho_iad/pages_controller/view_audited_list';
 $route['head-office-iad/biling/paid'] = 'ho_iad/pages_controller/view_paid_bill';
 $route['head-office-iad/biling/paid-list/(:any)'] = 'ho_iad/pages_controller/view_paid_list';
+$route['head-office-iad/charges/bu-charges/paid'] = 'ho_iad/pages_controller/view_bu_paid_charges';
 
 // Summary of Billing
 $route['head-office-iad/transaction/search'] = 'ho_iad/transaction_controller/search';
@@ -1059,6 +1064,12 @@ $route['head-office-iad/biling/submit-audited'] = 'ho_iad/transaction_controller
 $route['head-office-iad/biling/audited/fetch'] = 'ho_iad/transaction_controller/fetch_audited_bill';
 $route['head-office-iad/biling/paid/fetch'] = 'ho_iad/transaction_controller/fetch_paid_bill';
 $route['head-office-iad/biling/loa-noa-details/fetch/(:any)'] = 'ho_iad/transaction_controller/fetch_loa_noa_details';
+$route['head-office-iad/charging/business-units/fetch'] = 'ho_iad/transaction_controller/fetch_bu_charges';
+$route['head-office-iad/charging/receivables/fetch'] = 'ho_iad/transaction_controller/fetch_bu_receivables';
+$route['head-office-iad/charging/bu-receivables/fetch/(:any)/(:any)'] = 'ho_iad/transaction_controller/view_bu_receivables_details';
+$route['printBUCharge/pdfReceivablesCharging/(:any)/(:any)/(:any)'] = 'ho_iad/transaction_controller/print_rcv_bu_charging/$1/$2/$3';
+$route['head-office-iad/charging/paid/business-units/fetch'] = 'ho_iad/transaction_controller/fetch_bu_paid_charge';
+
 //end
 // Payment Details
 $route['head-office-iad/transaction/payment-details/(:any)'] = 'ho_iad/transaction_controller/view_payment_details';

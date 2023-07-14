@@ -28,7 +28,7 @@
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Expiry Date :</td>
-                          <td class="fw-bold ls-1" id="expiry-date"></td>
+                          <td class="fw-bold ls-1" id="expiry-dates"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Member's Maximum Benefit Limit :</td>

@@ -80,7 +80,7 @@
                     <?php } else { ?>
                       <td colspan="2"></td>
                     <?php } ?>
-                    <td colspan="1" style="text-align: right"><b style="font-size:15px">TOTAL BILL :</b></td>
+                    <td colspan="1" style="text-align: right"><b style="font-size:15px">TOTAL :</b></td>
                     <td colspan="2"><b style="font-size:15px">₱ <?php echo number_format($totalBill, 2); ?></b></td>
                   </tr>
                 </tbody> 

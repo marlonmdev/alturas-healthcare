@@ -105,4 +105,19 @@ class History_model extends CI_Model {
 
 		return $start_mbl;
 	}
+	function get_his_mbl($emp_id){
+		// $query = '';
+		if($this->input->post('start_date')!== date('Y')){
+			$query = $this->db->select("remaining_balance AS start_mbl")
+                  ->get_where('mbl_history', ['emp_id' => $emp_id, 'YEAR(start_date)' => $this->input->post('start_date')]);
+		}else{
+			$query = $this->db->select("remaining_balance AS start_mbl")
+                  ->get_where('max_benefit_limits', ['emp_id' => $emp_id, 'YEAR(start_date)' => $this->input->post('start_date')]);
+		}
+		
+		$result = $query->row_array();
+		$start_mbl = $result['start_mbl'];
+
+		return $start_mbl;
+	}
 }

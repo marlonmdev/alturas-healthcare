@@ -1,5 +1,5 @@
 <div class="page-wrapper">
-  <div class="page-breadcrumb">
+  <!-- <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
         <h4 class="page-title ls-2">Final Billing (Inpatient)</h4>
@@ -13,7 +13,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
 
   <div class="container-fluid">
@@ -30,7 +30,7 @@
           <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/for_payment" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">FOR PAYMENT</span>
+              <span class="hidden-xs-down fs-5 font-bold">HISTORY</span>
             </a>
           </li>
         </ul>
@@ -96,7 +96,7 @@
               <div class="row pt-4">
                 <div class="col-lg-2 offset-9">
                   <label>Total Hospital Bill : </label>
-                  <input name="total-hospital-bill" id="total-hospital-bill" class="form-control text-center fw-bold" value="0" readonly>
+                  <input name="total-hospital-bill" id="total-hospital-bill" class="form-control text-center fw-bold" readonly>
                 </div>
               </div>
             </div><br><br>
@@ -113,7 +113,7 @@
 </div>
 
 <!-- Guarantee Letter -->
-<div class="modal fade pt-4" id="GuaranteeLetter" tabindex="-1" data-bs-backdrop="static">
+<!-- <div class="modal fade pt-4" id="GuaranteeLetter" tabindex="-1" data-bs-backdrop="static">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -154,9 +154,22 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 <!-- End -->
 
+<!-- GUARANTEE LETTER -->
+<div class="modal fade pt-4" id="GuaranteeLetter" tabindex="-1" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="submit"  id="Letter" class="btn btn-primary me-2" form="submitForm"><i class="mdi mdi-near-me"></i> Send</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="mdi mdi-close-box"></i> CLOSE</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END -->
 
 
 
@@ -195,6 +208,30 @@
       fixedHeader: true,
     });
 
+    billedTable.on('draw.dt', function() {
+        let columnId = 9;
+        let sum = 0;
+        let rowss = billedTable.rows().nodes();
+
+        if ($('#billedLoaTable').DataTable().data().length > 0) {
+            // The table is not empty
+            rowss.each(function(index, row) {
+            let rowData = billedTable.row(row).data();
+            let columnValue = rowData[columnId];
+            let pattern = /-?[\d,]+(\.\d+)?/g;
+            let matches = columnValue.match(pattern);
+
+            if (matches && matches.length > 0) {
+                let numberString = matches[0].replace(/,/g, ''); // Replace all commas
+                let floatValue = parseFloat(numberString);
+                sum += floatValue;
+            }
+            });
+        }
+
+        $('#total-hospital-bill').val(sum.toLocaleString('PHP', { minimumFractionDigits: 2 }));
+    });
+
     let columnIdx = 7;
     let rows = billedTable.rows().nodes();
 
@@ -211,17 +248,14 @@
 
     $('#billed-hospital-filter').change(function(){
       billedTable.draw();
-      getTotalBill();
     });
 
     $('#start-date').change(function(){
       billedTable.draw();
-      getTotalBill();
     });
 
     $('#end-date').change(function(){
       billedTable.draw();
-      getTotalBill();
     });
 
     $("#start-date").flatpickr({
@@ -233,18 +267,72 @@
     });
 
     //Submit Guarantee Letter
-    $('#Letter').submit(function(event) {
-      event.preventDefault();
+    // $('#Letter').submit(function(event) {
+    //   event.preventDefault();
 
-      const LetterForm = $('#Letter')[0];
-      const formdata = new FormData(LetterForm);
+    //   const LetterForm = $('#Letter')[0];
+    //   const formdata = new FormData(LetterForm);
+    //   $.ajax({
+    //     type: "post",
+    //     url: $(this).attr('action'),
+    //     data: formdata,
+    //     dataType: "json",
+    //     processData: false,
+    //     contentType: false,
+    //     success: function(response) {
+    //       const {
+    //         token,
+    //         status,
+    //         message,
+            
+    //       } = response;
+    //       switch (status) {
+    //         case 'error':
+    //           // is-invalid class is a built in classname for errors in bootstrap
+    //           if (charge_type_error !== '') {
+    //             $('#charge-type-error').html(charge_type_error);
+    //             $('#charge-type').addClass('is-invalid');
+    //           } else {
+    //             $('#charge-type-error').html('');
+    //             $('#charge-type').removeClass('is-invalid');
+    //           }
+    //         break;
+    //         case 'save-error':
+    //           swal({
+    //             title: 'Failed',
+    //             text: message,
+    //             timer: 3000,
+    //             showConfirmButton: false,
+    //             type: 'error'
+    //           });
+            
+    //         break;
+    //         case 'success':
+    //           swal({
+    //             title: 'Success',
+    //             text: message,
+    //             timer: 3000,
+    //             showConfirmButton: false,
+    //             type: 'success'
+    //           });
+    //         break;
+    //       }
+    //     },
+    //   })
+    // });
+    //End
+
+    //Submit Guarantee Letter
+    $('#Letter').click(function(event) {
       $.ajax({
         type: "post",
-        url: $(this).attr('action'),
-        data: formdata,
+        url: `<?php echo base_url(); ?>healthcare-coordinator/noa/billed/submit_letter`,
+        data:{
+          token :`<?= $this->security->get_csrf_hash() ?>`,
+          pdf_file : $('#pdf_file').val(),
+          billing_id : $('#billing_id').val(),
+        } ,
         dataType: "json",
-        processData: false,
-        contentType: false,
         success: function(response) {
           const {
             token,
@@ -254,14 +342,14 @@
           } = response;
           switch (status) {
             case 'error':
-              // is-invalid class is a built in classname for errors in bootstrap
-              if (charge_type_error !== '') {
-                $('#charge-type-error').html(charge_type_error);
-                $('#charge-type').addClass('is-invalid');
-              } else {
-                $('#charge-type-error').html('');
-                $('#charge-type').removeClass('is-invalid');
-              }
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
+
             break;
             case 'save-error':
               swal({
@@ -287,6 +375,18 @@
       })
     });
     //End
+
+    $(".generate_pdf").click(function() {
+      // Send an AJAX request to the server to generate the PDF
+      $.ajax({
+        type: "POST",
+        url: "<?php echo base_url(); ?>healthcare-coordinator/noa/billed/guarantee_pdf",
+        success: function(response) {
+          // Open the generated PDF in a new tab or window
+          window.open(response, "_blank");
+        }
+      });
+    });
   });
 
   const enableProceedBtn = () => {
@@ -339,28 +439,28 @@
     return xhr.status == "200" ? true: false;
   }
 
-  const getTotalBill = () => {
-    const hospital_bill = document.querySelector('#total-hospital-bill');
-    const hp_filter = document.querySelector('#billed-hospital-filter').value;
-    const end_date = document.querySelector('#end-date').value;
-    const start_date = document.querySelector('#start-date').value;
-    const button = document.querySelector('#proceed-btn');
+  // const getTotalBill = () => {
+  //   const hospital_bill = document.querySelector('#total-hospital-bill');
+  //   const hp_filter = document.querySelector('#billed-hospital-filter').value;
+  //   const end_date = document.querySelector('#end-date').value;
+  //   const start_date = document.querySelector('#start-date').value;
+  //   const button = document.querySelector('#proceed-btn');
 
-    $.ajax({
-      type: 'post',
-      url: `${baseUrl}healthcare-coordinator/noa/total-bill/fetch`,
-      dataType: "json",
-      data: {
-        'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
-        'hp_id' : hp_filter,
-        'startDate' : start_date,
-        'endDate' : end_date,
-      },
-      success: function(response){
-      hospital_bill.value = response.total_hospital_bill;
-      },
-    });
-  }
+  //   $.ajax({
+  //     type: 'post',
+  //     url: `${baseUrl}healthcare-coordinator/noa/total-bill/fetch`,
+  //     dataType: "json",
+  //     data: {
+  //       'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
+  //       'hp_id' : hp_filter,
+  //       'startDate' : start_date,
+  //       'endDate' : end_date,
+  //     },
+  //     success: function(response){
+  //     hospital_bill.value = response.total_hospital_bill;
+  //     },
+  //   });
+  // }
 
   const enableDate = () => {
     const hp_filter = document.querySelector('#billed-hospital-filter');
@@ -402,10 +502,10 @@
   }
 
 
-  function GuaranteeLetter(billing_id) {
-    $("#GuaranteeLetter").modal("show");
-    $('#billing-id').val(billing_id);
-  }
+  // function GuaranteeLetter(billing_id) {
+  //   $("#GuaranteeLetter").modal("show");
+  //   $('#billing-id').val(billing_id);
+  // }
 
   function showPreview(input) {
     const preview = document.getElementById('preview');
@@ -437,5 +537,24 @@
     } else {
       preview.style.display = 'none';
     }
+  }
+
+  function GuaranteeLetter(noa_id, billing_id) {
+    console.log(billing_id);
+    $.ajax({
+      url: `${baseUrl}healthcare-coordinator/noa/billed/guarantee_pdf/${noa_id}`,
+      type: "GET",
+      success: function (response) {
+        const res = JSON.parse(response);
+        const { status, filename } = res;
+        console.log('filename',filename);
+        console.log('status',status);
+        const embedTag = `<embed src="${baseUrl}/uploads/guarantee_letter/${filename}" name="pdfEmbed" id="pdfEmbed" width="100%" height="100%" type="application/pdf" /> <input type = "hidden" name="pdf_file" id="pdf_file" value="${filename}" /> <input type = "hidden" name="billing_id" id="billing_id" value="${billing_id}" />`;
+       
+        $('#GuaranteeLetter .modal-body').html(embedTag);
+        $('#GuaranteeLetter').modal('show');
+        // console.log ($('#pdf_file').val());
+      }
+    });
   }
 </script>

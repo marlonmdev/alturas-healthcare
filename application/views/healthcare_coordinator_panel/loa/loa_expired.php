@@ -375,7 +375,7 @@
         $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
-        $('#expiry-date').html(ed);
+        $('#expiry-dates').html(ed);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);

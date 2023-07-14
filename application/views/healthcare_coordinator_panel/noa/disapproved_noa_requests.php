@@ -318,7 +318,7 @@
         $('#admission_date').html(admission_date);
         $('#disapproved_on').html(disapproved_on);
         $('#disapproved_by').html(disapproved_by);
-        $('#disapprove_reason').html(disapprove_reason);
+        $('#disapprove_reason').html('<strong class="text-danger">' + disapprove_reason + '</strong>');
         if(work_related == 'Yes'){ 
           if(percentage == ''){
             wpercent = '100% W-R';

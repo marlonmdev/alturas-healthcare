@@ -219,13 +219,13 @@ class Patient_controller extends CI_Controller {
 			}
 
 			$payable = floatval($pay['company_charge'] + floatval($pay['cash_advance']));
-			$letter = '<a href="JavaScript:void(0)" onclick="viewPDFsoa(\'' . $pay['guarantee_letter'] . '\',\'' .null . '\',\'' . null . '\')" data-bs-toggle="tooltip" title="View Guarantee Letter"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			$letter = '<a href="JavaScript:void(0)" onclick="viewPDFsoa(\'' . $pay['guarantee_letter'] . '\',\'' .$pay['noa_no'] . '\',\'' . $pay['loa_no'] . '\',\'' . 'letter' . '\')" data-bs-toggle="tooltip" title="View Guarantee Letter"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 			$custom_action = '<a href="JavaScript:void(0)" onclick="upload_final_soa(\'' . $pay['billing_no'] . '\')" data-bs-toggle="tooltip" title="Upload Final SOA"><i class="mdi mdi-upload fs-2 text-danger"></i></a>';
 			
 			$dis_letter = '<a href="JavaScript:void(0)"  data-bs-toggle="tooltip" title="No Uploaded Guarantee Letter"><i class="mdi mdi-information fs-2 text-muted"></i></a>';
 			
 			if(isset($pay['guarantee_letter']) && isset($pay['final_soa'])){
-				$dis_custom_action = '<a href="JavaScript:void(0)" onclick="viewPDFsoa(\'' . $pay['final_soa'] . '\',\'' . $pay['noa_no'] . '\',\'' . $pay['loa_no'] . '\')" data-bs-toggle="tooltip" title="View Final SOA"><i class="mdi mdi-upload fs-2 text-disabled"></i></a>';
+				$dis_custom_action = '<a href="JavaScript:void(0)" onclick="viewPDFsoa(\'' . $pay['final_soa'] . '\',\'' . $pay['noa_no'] . '\',\'' . $pay['loa_no'] . '\',\'' . '' . '\')" data-bs-toggle="tooltip" title="View Final SOA"><i class="mdi mdi-upload fs-2 text-disabled"></i></a>';
 			}else{
 				$dis_custom_action = '<a href="JavaScript:void(0)"  data-bs-toggle="tooltip" title="Cannot Upload Final SOA"><i class="mdi mdi-upload fs-2 text-muted"></i></a>';
 			}

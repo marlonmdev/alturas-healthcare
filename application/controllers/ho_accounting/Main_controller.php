@@ -4013,7 +4013,7 @@ class Main_controller extends CI_Controller {
 		$PDFdata .= '</tbody></table>';
 
 		$pdf->setPrintHeader(false);
-		$pdf->setTitle('Business Unit Charging Report');
+		$pdf->setTitle('Max Benefit Limit Ledger');
 		$pdf->setFont('times', '', 10);
 		$pdf->AddPage('L');
 		$pdf->WriteHtmlCell(0, 0, '', '', $dateGenerate, 0, 1, 0, true, 'R', true);
@@ -4159,7 +4159,7 @@ class Main_controller extends CI_Controller {
 		$PDFdata .= '</table>';
 
 		$pdf->setPrintHeader(false);
-		$pdf->setTitle('Business Unit Charging Report');
+		$pdf->setTitle('Paid Bill Ledger');
 		$pdf->setFont('times', '', 10);
 		$pdf->AddPage('L');
 		$pdf->WriteHtmlCell(0, 0, '', '', $dateGenerate, 0, 1, 0, true, 'R', true);

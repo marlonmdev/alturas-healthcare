@@ -325,14 +325,22 @@
     });
  }
 
- const viewPDFsoa = (pdf_bill,noa_no,loa_no) => {
+ const viewPDFsoa = (pdf_bill,noa_no,loa_no,letter) => {
+  let pdfFile = '';
       $('#viewPDFBillModal').modal('show');
       if(noa_no != ''){
         $('#pdf-loa-no').html(noa_no);
       }else{
         $('#pdf-loa-no').html(loa_no);
       }
-        let pdfFile = `${baseUrl}uploads/final_soa/${pdf_bill}`;
+
+      if(letter !== 'letter'){
+        pdfFile = `${baseUrl}uploads/final_soa/${pdf_bill}`;
+      }else{
+        pdfFile = `${baseUrl}uploads/guarantee_letter/${pdf_bill}`;
+      }
+       
+        // let pdfFile = `${baseUrl}uploads/guarantee_letter/${pdf_bill}`;
         let fileExists = checkFileExists(pdfFile);
 
         if(fileExists){

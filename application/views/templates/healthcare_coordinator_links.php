@@ -40,20 +40,20 @@
   </a>
   <ul aria-expanded="false" class="collapse first-level">
     <li class="sidebar-item">
-      <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/request-emergency" class="sidebar-link"
-        ><i class="mdi mdi-note-plus"></i
-        ><span class="hide-menu ls-1">Emergency LOA</span>
-      </a>
-    </li>
-    <li class="sidebar-item">
       <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list" class="sidebar-link">
-        <i class="mdi mdi-note-outline"></i>LOA Request List
+        <i class="mdi mdi-note-outline"></i>Request List
         <?php
            $total = $bar + $bar1 + $bar2 + $bar3 + $bar4;
            if ($total > 0) {
              echo '<sup style="background-color: red; color: white; border-radius: 50%; padding: 7px">' . $total . '</sup>';
            }
         ?>
+      </a>
+    </li>
+    <li class="sidebar-item">
+      <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/request-emergency" class="sidebar-link"
+        ><i class="mdi mdi-note-plus"></i
+        ><span class="hide-menu ls-1">Emergency LOA</span>
       </a>
     </li>
   </ul>
@@ -71,14 +71,8 @@
   </a>
   <ul aria-expanded="false" class="collapse first-level">
     <li class="sidebar-item">
-      <a href="<?php echo base_url(); ?>healthcare-coordinator/noa/request-noa" class="sidebar-link"
-        ><i class="mdi mdi-note-plus"></i
-        ><span class="hide-menu ls-1">NOA Requisition</span>
-      </a>
-    </li>
-    <li class="sidebar-item">
       <a href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list" class="sidebar-link">
-        <i class="mdi mdi-note-outline"></i>NOA Request List
+        <i class="mdi mdi-note-outline"></i>Request List
         <?php
           $total2 = $bar5 + $bar6;
           if ($total2 > 0) {
@@ -87,6 +81,12 @@
         ?>
       </a>
     </li>
+    <li class="sidebar-item">
+      <a href="<?php echo base_url(); ?>healthcare-coordinator/noa/request-noa" class="sidebar-link"
+        ><i class="mdi mdi-note-plus"></i
+        ><span class="hide-menu ls-1">NOA Requisition</span>
+      </a>
+    </li>  
   </ul>
 </li>
 

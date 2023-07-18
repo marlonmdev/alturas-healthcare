@@ -142,6 +142,7 @@
                       <label class="fs-5">Uploaded Reports : <i><small class="text-danger">Click to view the file</small></i></label><br>
                       <li>Spot Report : <a href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewSpotFile()" id="uploaded-spot-report"></a></li>
                       <li>Incident Report : <a href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewIncidentFile()" id="uploaded-incident-report"></a></li>
+                      <li>Police Report : <a href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewPoliceFile()" id="uploaded-police-report"></a></li>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -244,7 +245,7 @@
                 type: 'success'
               });
               $("#backDateModal").modal("hide");
-              $("#expiredLoaTable").DataTable().ajax.reload();
+              $("#approvedLoaTable").DataTable().ajax.reload();
             break;
           }
         },
@@ -438,7 +439,7 @@
   }
   //end
 
-  const viewReports = (loa_id, work_related, percentage, spot_report, incident_report) => {
+  const viewReports = (loa_id, work_related, percentage, spot_report, incident_report, police_report) => {
    $('#viewUploadedReportsModal').modal('show');
       if(work_related == 'Yes'){ 
         if(percentage == ''){
@@ -472,6 +473,7 @@
       $('#report-percentage').val(wpercent+', '+nwpercent);
       $('#uploaded-spot-report') .html(spot_report);
       $('#uploaded-incident-report').html(incident_report);
+      $('#uploaded-police-report').html(police_report);
   }
 
   const viewSpotFile = () => {
@@ -539,6 +541,40 @@
       xhr.send();
       }
     }
+
+    const viewPoliceFile = () => {
+    const sport_report = document.querySelector('#uploaded-police-report');
+    const anchorText = sport_report.textContent;
+
+    $('#viewFileModal').modal('show');
+    $('#cancel').hide();
+    $('#file-name-r').html('POLICE REPORT');
+
+    let pdfFile = `${baseUrl}uploads/police_reports/${anchorText}`;
+    let fileExists = checkFileExists(pdfFile);
+
+    if(fileExists){
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', pdfFile, true);
+    xhr.responseType = 'blob';
+
+    xhr.onload = function(e) {
+        if (this.status == 200) {
+        let blob = this.response;
+        let reader = new FileReader();
+
+        reader.onload = function(event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-file-viewer');
+            iframe.src = dataURL;
+        };
+        reader.readAsDataURL(blob);
+        }
+    };
+    xhr.send();
+    }
+  }
+
 
     const checkFileExists = (fileUrl) => {
         let xhr = new XMLHttpRequest();

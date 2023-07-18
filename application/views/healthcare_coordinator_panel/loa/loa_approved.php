@@ -115,32 +115,32 @@
   </div>
   <?php include 'view_performed_consult_loa.php'; ?>
 </div>
- <!-- Viewing Upload Reports Modal -->
- <div class="modal fade" id="viewUploadedReportsModal" tabindex="-1" data-bs-backdrop="static" style="height:100%">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4>Attached Reports</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <div class="modal-body">
-                <input id="report-percentage" class="form-control" readonly>
-                <div class="pt-3">
-                  
-                  <label class="fs-5">Uploaded Reports : <i><small class="text-danger">Click to view the file</small></i></label><br>
-                  <li>Spot Report : <a href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewSpotFile()" id="uploaded-spot-report"></a></li>
-                  <li>Incident Report : <a href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewIncidentFile()" id="uploaded-incident-report"></a></li>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
-            </div>
+
+<!-- Viewing Upload Reports Modal -->
+<div class="modal fade" id="viewUploadedReportsModal" tabindex="-1" data-bs-backdrop="static" style="height:100%">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4>Attached Reports</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input id="report-percentage" class="form-control" readonly>
+        <div class="pt-3">
+          <label class="fs-5">Uploaded Reports : <i><small class="text-danger">Click to view the file</small></i></label><br>
+          <li>Spot Report : <a href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewSpotFile()" id="uploaded-spot-report"></a></li>
+          <li>Incident Report : <a href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewIncidentFile()" id="uploaded-incident-report"></a></li>
+          <li>Police Report : <a href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewPoliceFile()" id="uploaded-police-report"></a></li>
         </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+      </div>
     </div>
   </div>
-
-  <?php include 'view_pdf_file_modal.php';?>
+</div>
+<?php include 'view_pdf_file_modal.php';?>
+<!-- End -->
 
 
 <script>
@@ -449,7 +449,7 @@
     $("#loaCancellationForm").attr("action", `${baseUrl}healthcare-coordinator/loa/requests-list/cancel-request/${loa_id}`);
   }
 
-  const viewReports = (loa_id, work_related, percentage, spot_report, incident_report) => {
+  const viewReports = (loa_id, work_related, percentage, spot_report, incident_report, police_report) => {
    $('#viewUploadedReportsModal').modal('show');
       if(work_related == 'Yes'){ 
         if(percentage == ''){
@@ -483,6 +483,7 @@
       $('#report-percentage').val(wpercent+', '+nwpercent);
       $('#uploaded-spot-report') .html(spot_report);
       $('#uploaded-incident-report').html(incident_report);
+      $('#uploaded-police-report').html(police_report);
   }
 
   const viewSpotFile = () => {
@@ -491,7 +492,7 @@
 
       $('#viewFileModal').modal('show');
       $('#cancel').hide();
-      $('#file-name-r').html('Uploaded Spot Report');
+      $('#file-name-r').html('SPOT REPORT');
 
       let pdfFile = `${baseUrl}uploads/spot_reports/${anchorText}`;
       let fileExists = checkFileExists(pdfFile);
@@ -524,7 +525,7 @@
 
       $('#viewFileModal').modal('show');
       $('#cancel').hide();
-      $('#file-name-r').html('Uploaded Incident Report');
+      $('#file-name-r').html('INCIDENT REPORT');
 
       let pdfFile = `${baseUrl}uploads/incident_reports/${anchorText}`;
       let fileExists = checkFileExists(pdfFile);
@@ -550,6 +551,39 @@
       xhr.send();
       }
     }
+
+    const viewPoliceFile = () => {
+    const sport_report = document.querySelector('#uploaded-police-report');
+    const anchorText = sport_report.textContent;
+
+    $('#viewFileModal').modal('show');
+    $('#cancel').hide();
+    $('#file-name-r').html('POLICE REPORT');
+
+    let pdfFile = `${baseUrl}uploads/police_reports/${anchorText}`;
+    let fileExists = checkFileExists(pdfFile);
+
+    if(fileExists){
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', pdfFile, true);
+    xhr.responseType = 'blob';
+
+    xhr.onload = function(e) {
+        if (this.status == 200) {
+        let blob = this.response;
+        let reader = new FileReader();
+
+        reader.onload = function(event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-file-viewer');
+            iframe.src = dataURL;
+        };
+        reader.readAsDataURL(blob);
+        }
+    };
+    xhr.send();
+    }
+  }
 
     const checkFileExists = (fileUrl) => {
         let xhr = new XMLHttpRequest();

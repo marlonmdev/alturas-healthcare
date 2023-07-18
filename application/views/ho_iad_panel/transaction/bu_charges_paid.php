@@ -10,7 +10,7 @@
                     <ol class="breadcrumb">
                     <li class="breadcrumb-item">Head Office IAD</li>
                     <li class="breadcrumb-item active" aria-current="page">
-                        Unpaid Charge
+                        Paid Charge
                     </li>
                     </ol>
                 </nav>
@@ -21,12 +21,12 @@
     <!-- End Bread crumb and right sidebar toggle -->
     <div class="container-fluid">
         <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
-        <div class="row">
+       <div class="row">
             <div class="col-lg-12 pb-1">
-                <ul class="nav nav-tabs mb-4" role="tablist"> 
+            <ul class="nav nav-tabs mb-4" role="tablist"> 
                     <li class="nav-item">
                         <a
-                            class="nav-link active"
+                            class="nav-link"
                             href="<?php echo base_url(); ?>head-office-iad/charges/bu-charges"
                             role="tab"
                             ><span class="hidden-sm-up"></span>
@@ -44,12 +44,8 @@
                     </li>
                     <li class="nav-item">
                         <a
-                            class="nav-link"
-<<<<<<< HEAD
-                            href="<?php echo base_url(); ?>head-office-iad/charges/bu-charges"
-=======
+                            class="nav-link active"
                             href="<?php echo base_url(); ?>head-office-iad/charges/bu-charges/paid"
->>>>>>> fa43bd9d566d4e30192bbf26ea87e86a6c40d4d2
                             role="tab"
                             ><span class="hidden-sm-up"></span>
                             <span class="hidden-xs-down fs-5 font-bold">Paid Charges</span></a
@@ -57,16 +53,14 @@
                     </li>
                 </ul>
             </div>
-       </div>
-       <div class="row gap-4 pt-1 pb-2">
-            <div class="col-lg-4 ps-5 pb-2 pt-3">
+            <div class="col-lg-5 ps-5 pb-2">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text bg-dark text-white">
                         <i class="mdi mdi-filter"></i>
                         </span>
                     </div>
-                    <select class="form-select fw-bold" name="charging-bu-filter" id="charging-bu-filter" required>
+                    <select class="form-select fw-bold" name="charging-bu-filter" id="charging-bu-filter">
                         <option value="">Select Business Units...</option>
                         <?php
                             // Sort the business units alphabetically
@@ -80,42 +74,22 @@
                     </select>
                 </div>
             </div>
-            <div class="col-lg-4">
-                <small class="fw-bold">* Request Date</small>
-                <div class="input-group">
-                    <div class="input-group-append">
-                        <span class="input-group-text text-dark ls-1 ms-2">
-                            <i class="mdi mdi-calendar-range"></i>
-                        </span>
-                    </div>
-                    <input type="date" class="form-control" name="start_date" id="start-date" oninput="validateDateRange()" placeholder="Start Date" required>
-
-                    <div class="input-group-append">
-                        <span class="input-group-text text-dark ls-1 ms-2">
-                            <i class="mdi mdi-calendar-range"></i>
-                        </span>
-                    </div>
-                    <input type="date" class="form-control" name="end-date" id="end-date" oninput="validateDateRange()" placeholder="End Date" required>
-                </div>
-            </div>
-        </div>
-          <br>
+       </div>
+        <br>
         <div class="card bg-light">
             <div class="card-body">
                 <div class=" table-responsive">
                     <table class="table table-hover" id="chargeTable">
                         <thead style="background-color:#00538C">
                             <tr>
-                                <td class="text-white">Request Date</td>
-                                <td class="text-white">Healthcard No.</td>
-                                <td class="text-white">Member</td>
+                                <td class="text-white">Charging No.</td>
+                                <td class="text-white">Date Paid</td>
                                 <td class="text-white">Business Unit</td>
-                                <td class="text-white">LOA/NOA No.</td>
-                                <td class="text-white">Payment No.</td>
                                 <td class="text-white">Company Charge</td>
                                 <td class="text-white">Healthcare Advance</td>
                                 <td class="text-white">Total Charge</td>
                                 <td class="text-white">Status</td>
+                                <td class="text-white">Action</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -126,10 +100,8 @@
                             <td></td>
                             <td></td>
                             <td></td>
-                            <td><span class="fw-bold fs-5">TOTAL</span></td>
-                            <td><span class="fw-bold fs-5" id="total-company"></span></td>
-                            <td><span class="fw-bold fs-5" id="total-advance"></span></td>
-                            <td><span class="fw-bold fs-5" id="total-payable"></span></td>
+                            <td></td>
+                            <td></td>
                             <td></td>
                         </tfoot>
                     </table>
@@ -137,6 +109,7 @@
             </div>
         </div>
     </div> 
+    <?php include 'view_cv_attached.php'; ?>
 </div>
 <script>
         const baseUrl = "<?php echo base_url(); ?>";
@@ -148,23 +121,21 @@
 
                 // Load data for the table's content from an Ajax source
                 ajax: {
-                    url: `${baseUrl}head-office-iad/charging/business-units/fetch`,
+                    url: `${baseUrl}head-office-iad/charging/paid/business-units/fetch`,
                     type: "POST",
                     data: function(data) {
                         data.token     = '<?php echo $this->security->get_csrf_hash(); ?>';
                         data.filter    = $('#charging-bu-filter').val();
-                        data.start_date    = $('#start-date').val();
-                        data.end_date    = $('#end-date').val();
-
                     },
                 
                 },
 
                 //Set column definition initialisation properties.
                 columnDefs: [
-                    { targets: 6, className: 'text-end' },
-                    { targets: 7, className: 'text-end' },
-                    { targets: 8, className: 'text-end' },
+                    { targets: 3, className: 'text-end' },
+                    { targets: 4, className: 'text-end' },
+                    { targets: 5, className: 'text-end' },
+                    { targets: 6, className: 'text-center' },
                 ],
                 info: false,
                 paging: false,
@@ -177,55 +148,43 @@
             $('#charging-bu-filter').change(function(){
                 chargingTable.draw();
             });
-            $('#start-date').change(function(){
-                chargingTable.draw();
-            });
-            $('#end-date').change(function(){
-                chargingTable.draw();
-            });
 
-                      
-        chargingTable.on('draw.dt', function() {
-            let columnIndices = [6, 7, 8]; // Array of column indices to calculate sum
-            let sums = [0, 0, 0]; // Array to store the sums for each column
+        });
 
-            if ($('#chargeTable').DataTable().data().length > 0) {
-                // The table is not empty
-                chargingTable.rows().nodes().each(function(index, row) {
-                let rowData = chargingTable.row(row).data();
+    const viewSupDoc = (file_name,charging_no) => {
+        $('#viewCVModal').modal('show');
+        $('#cancel').hide();
+        $('#header').html('<h4 class="text-info">Charging No. [ '+charging_no+' ]</h4>');
+        let pdfFile = `${baseUrl}uploads/bu_charges_docs/${file_name}`;
+        let fileExists = checkFileExists(pdfFile);
 
-                columnIndices.forEach(function(columnIdx, idx) {
-                    let columnValue = rowData[columnIdx];
-                    let pattern = /-?[\d,]+(\.\d+)?/g;
-                    let matches = columnValue.match(pattern);
+        if(fileExists){
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', pdfFile, true);
+        xhr.responseType = 'blob';
 
-                    if (matches && matches.length > 0) {
-                    let numberString = matches[0].replace(/,/g, '');
-                    let floatValue = parseFloat(numberString);
-                    sums[idx] += floatValue;
-                    }
-                });
-                });
+        xhr.onload = function(e) {
+            if (this.status == 200) {
+            let blob = this.response;
+            let reader = new FileReader();
+
+            reader.onload = function(event) {
+                let dataURL = event.target.result;
+                let iframe = document.querySelector('#pdf-c-viewer');
+                iframe.src = dataURL;
+            };
+            reader.readAsDataURL(blob);
             }
+        };
+        xhr.send();
+        }
+    }
 
-            let sumColumn1 = sums[0];
-            let sumColumn2 = sums[1];
-            let sumColumn3 = sums[2];
+    const checkFileExists = (fileUrl) => {
+        let xhr = new XMLHttpRequest();
+        xhr.open('HEAD', fileUrl, false);
+        xhr.send();
 
-            $('#total-company').html(sumColumn1.toLocaleString('PHP', { minimumFractionDigits: 2 }));
-            $('#total-advance').html(sumColumn2.toLocaleString('PHP', { minimumFractionDigits: 2 }));
-            $('#total-payable').html(sumColumn3.toLocaleString('PHP', { minimumFractionDigits: 2 }));
-        });
-
-        $("#start-date").flatpickr({
-            dateFormat: 'Y-m-d',
-        });
-        $("#end-date").flatpickr({
-            dateFormat: 'Y-m-d',
-        });
-        
-            
-        });
-
-       
-    </script>
+        return xhr.status == "200" ? true: false;
+    }
+</script>

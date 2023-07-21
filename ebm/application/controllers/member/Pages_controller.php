@@ -1,0 +1,296 @@
+<?php
+defined('BASEPATH') or exit('No direct script access allowed');
+
+class Pages_controller extends CI_Controller {
+
+	function __construct() {
+		parent::__construct();
+		$this->load->model('member/loa_model');
+		$this->load->model('member/noa_model');
+		$this->load->model('member/get_model');
+		$this->load->model('member/history_model');
+		$user_role = $this->session->userdata('user_role');
+		$logged_in = $this->session->userdata('logged_in');
+		if ($logged_in !== true && $user_role !== 'member') {
+			redirect(base_url());
+		}
+	} 
+
+	function index() {
+		$this->load->model('member/count_model');
+		$this->load->model('member/history_model');
+		$emp_id = $this->session->userdata('emp_id');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['pending_loa_count'] = $this->count_model->count_all_pending_loa($emp_id);
+		$data['pending_noa_count'] = $this->count_model->count_all_pending_noa($emp_id);
+		$data['doctors'] = $this->get_model->db_get_company_doctors();
+		$data['mbl'] = $this->history_model->get_member_mbl($emp_id);
+		$data['emp_id'] = $emp_id;
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/dashboard/index');
+		$this->load->view('templates/footer');   
+	}
+
+	function healthcare_providers() {
+		$this->load->model('member/count_model');
+		$this->load->model('member/get_model');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hospitals_count'] = $this->count_model->count_all_hospitals();
+		$data['labs_count'] = $this->count_model->count_all_laboratories();
+		$data['clinics_count'] = $this->count_model->count_all_clinics();
+		$data['hospitals'] = $this->get_model->db_get_hospitals();
+		$data['labs'] = $this->get_model->db_get_laboratories();
+		$data['clinics'] = $this->get_model->db_get_clinics();
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/healthcare_providers/healthcare_providers');
+		$this->load->view('templates/footer');
+	}
+
+	function hmo_policy() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/hmo_policy/policy');
+		$this->load->view('templates/footer');
+	}
+
+	function request_loa_form() {
+		$emp_id = $this->session->userdata('emp_id');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
+		$data['doctors'] = $this->loa_model->db_get_company_doctors();
+		$data['costtypes'] = $this->loa_model->db_get_cost_types();
+		$data['member'] = $this->loa_model->db_get_member_infos($emp_id);
+		$data['pending'] = $this->loa_model->db_get_status_pending($emp_id);
+		$mbl = $this->loa_model->db_get_mbl($emp_id);
+		$get_pac_loa = $this->loa_model->get_pac_loa($emp_id);
+
+		$med_services = 0;
+    
+        foreach ($get_pac_loa as $loa) :
+			// var_dump("loa",$loa);
+			$exploded_med_services = explode(";", $loa['med_services']);
+			foreach ($exploded_med_services as $ctype_id) :
+				$cost_type = $this->loa_model->get_loa_op_price($ctype_id);
+					// var_dump(floatval($cost_type['op_price']));
+					//var_dump("ctype_id",$ctype_id);
+					if($loa['loa_request_type'] != 'Consultation'){
+						$med_services += floatval($cost_type['op_price']); 
+					}else{
+						$med_services+= 500;
+					}
+			endforeach;
+
+        endforeach;
+		$r_mbl = floatval($mbl['remaining_balance'])-floatval($med_services);
+		$data['mbl'] =  number_format(($r_mbl > 1) ? $r_mbl : 0,2);
+		//var_dump($data['mbl']);
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/loa/request_loa_form',$data);
+		$this->load->view('templates/footer');
+	}
+
+
+	function request_noa_form() {
+		$this->load->model('member/history_model');
+		$emp_id = $this->session->userdata('emp_id');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hospitals'] = $this->noa_model->db_get_all_hospitals();
+		$data['member'] = $this->loa_model->db_get_member_infos($emp_id);
+		$data['costtypes'] = $this->noa_model->db_get_all_cost_types();
+		$data['mbl'] = $this->history_model->get_member_mbl($emp_id);
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/noa/request_noa_form',$data);
+		$this->load->view('templates/footer');
+	}
+
+	function pending_requested_loa() {
+		$emp_id = $this->session->userdata('emp_id');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hospitals'] = $this->get_model->db_get_all_affiliate_hospitals();
+		$data['member'] = $this->loa_model->db_get_member_infos($emp_id);
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/loa/pending_loa');
+		$this->load->view('templates/footer');
+	}
+
+	function approved_requested_loa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/loa/approved_loa');
+		$this->load->view('templates/footer');
+	}
+
+	function disapproved_requested_loa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/loa/disapproved_loa');
+		$this->load->view('templates/footer');
+	}
+
+	function completed_requested_loa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/loa/completed_loa');
+		$this->load->view('templates/footer');
+	}
+
+	function expired_requested_loa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/loa/expired_loa');
+		$this->load->view('templates/footer');
+	}
+
+	function cancelled_requested_loa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/loa/cancelled_loa');
+		$this->load->view('templates/footer');
+	}
+
+	function view_billed_loa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/loa/billed_loa');
+		$this->load->view('templates/footer');
+	}
+
+	function view_paid_loa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/loa/paid_loa');
+		$this->load->view('templates/footer');
+	}
+
+	function pending_requested_noa() {
+		$emp_id = $this->session->userdata('emp_id');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hospitals'] = $this->noa_model->db_get_all_hospitals();
+		$data['member'] = $this->loa_model->db_get_member_infos($emp_id);
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/noa/pending_noa');
+		$this->load->view('templates/footer');
+	}
+
+	function approved_requested_noa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/noa/approved_noa');
+		$this->load->view('templates/footer');
+	}
+
+	function disapproved_requested_noa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/noa/disapproved_noa');
+		$this->load->view('templates/footer');
+	}
+
+	function completed_requested_noa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/noa/completed_noa');
+		$this->load->view('templates/footer');
+	}
+
+	function view_billed_noa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/noa/billed_noa');
+		$this->load->view('templates/footer');
+	}
+
+	function view_paid_noa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/noa/paid_noa');
+		$this->load->view('templates/footer');
+	}
+
+	function unpaid_personal_charges() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/personal_charges/personal_charges');
+		$this->load->view('templates/footer');
+	}
+
+	function paid_personal_charges() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/personal_charges/requested_healthcare_advance');
+		$this->load->view('templates/footer');
+	}
+
+	function view_approved_advances() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/personal_charges/approved_healthcare_advance');
+		$this->load->view('templates/footer');
+	}
+
+	function view_disapproved_advances() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/personal_charges/disapproved_healthcare_advance');
+		$this->load->view('templates/footer');
+	}
+
+	function user_profile() {
+		$emp_id = $this->session->userdata('emp_id');
+		$this->load->model('member/account_model');
+		$this->load->model('member/history_model');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['member'] = $member = $this->account_model->db_get_user_details($emp_id);
+		$data['mbl'] = $this->history_model->get_member_mbl($emp_id);
+
+		/* This is checking if the image file exists in the directory. */
+		$file_path = './uploads/profile_pics/' . $member['photo'];
+		$data['member_photo_status'] = file_exists($file_path) ? 'Exist' : 'Not Found';
+
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/dashboard/user_profile');
+		$this->load->view('templates/footer');
+	}
+
+	// mbl history
+	function loa_mbl_history() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['emp_id'] = $this->session->userdata('emp_id');
+		$data['start_date'] = $this->history_model->get_mbl_details($data['emp_id']);
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/mbl_history/loa_mbl_history');
+		$this->load->view('templates/footer');
+	}
+
+	function noa_mbl_history() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['emp_id'] = $this->session->userdata('emp_id');
+		$data['start_date'] = $this->history_model->get_mbl_details($data['emp_id']);
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/mbl_history/noa_mbl_history');
+		$this->load->view('templates/footer');
+	}
+
+	// emergency loa 
+	function request_emergency_loa_form() {
+		$this->load->model('member/history_model');
+		$emp_id = $this->session->userdata('emp_id');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hospitals'] = $this->noa_model->db_get_all_hospitals();
+		$data['member'] = $this->loa_model->db_get_member_infos($emp_id);
+		$data['costtypes'] = $this->noa_model->db_get_all_cost_types();
+		$data['mbl'] = $this->history_model->get_member_mbl($emp_id);
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/emergency_loa/request_emerg_form',$data);
+		$this->load->view('templates/footer');
+	}
+
+	function mbl_ledger() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['emp_id'] = $this->session->userdata('emp_id');
+		$data['start_date'] = $this->history_model->get_mbl_details($data['emp_id']);
+		$this->load->view('templates/header', $data);
+		$this->load->view('member_panel/mbl_history/mbl_ledger');
+		$this->load->view('templates/footer');
+	}
+}

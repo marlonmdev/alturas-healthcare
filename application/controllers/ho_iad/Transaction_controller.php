@@ -770,7 +770,7 @@ class Transaction_controller extends CI_Controller {
 	
 		echo json_encode($output);
 	}
-
+	
 	function fetch_bu_receivables() {
 		$token = $this->security->get_csrf_hash();
 		$bu_status = 'Receivable';
@@ -1096,6 +1096,7 @@ class Transaction_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 
+<<<<<<< HEAD
 	function fetch_charge_details() {
 		$token = $this->security->get_csrf_hash();
 		$billing_id = $this->input->get('billing_id');
@@ -1185,6 +1186,9 @@ class Transaction_controller extends CI_Controller {
 		echo json_encode($data);
 	}
 
+=======
+>>>>>>> fa43bd9d566d4e30192bbf26ea87e86a6c40d4d2
+>>>>>>> 6a9f3f570fc2240310963e20d1db108d59945459
 
 
 

@@ -1436,15 +1436,17 @@ function db_get_cost_types_by_hp_ID($hp_id) {
   var $table_1_billed = 'loa_requests';
   var $table_2_billed = 'billing';
   var $table_3_billed = 'hr_added_loa_fees';
+  var $table_4_billed = 'max_benefit_limits';
   var $column_order_billed = ['loa_no', 'first_name', 'loa_request_type', 'hp_name', null, 'request_date'];
   var $column_search_billed = ['loa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'loa_request_type', 'med_services', 'emp_id', 'health_card_no', 'hp_name', 'request_date', 'CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)'];
   var $order_billed = ['loa_id' => 'desc'];
 
   private function _get_billed_datatables_query() {
-    $this->db->select('tbl_1.loa_id as tbl1_loa_id, tbl_1.status as tbl1_status, tbl_1.request_date as tbl1_request_date, tbl_1.*, tbl_2.*, tbl_3.*');
+    $this->db->select('tbl_1.loa_id as tbl1_loa_id, tbl_1.status as tbl1_status, tbl_1.request_date as tbl1_request_date, tbl_1.work_related as tbl1_work_related, tbl_1.*, tbl_2.*, tbl_3.*, tbl_4.*');
     $this->db->from($this->table_1_billed . ' as tbl_1');
     $this->db->join($this->table_2_billed . ' as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id', 'left');
     $this->db->join($this->table_3_billed . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id', 'left');
+    $this->db->join($this->table_4_billed . ' as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id', 'left');
     $this->db->where_in('tbl_1.status', ['Completed', 'Billed', 'Approved']);
 
     $filter = $this->input->post('filter');
@@ -1872,6 +1874,15 @@ function get_billed_for_charging($bill_no) {
 
   function check_if_loa_already_added1($loa_id) {
     $query = $this->db->get_where('hr_added_loa_fees', ['loa_id' => $loa_id]);
+    if ($query->num_rows() > 0) {
+      return $query->row(); // Return the fetched row
+    }else{
+      return false;
+    }
+  }
+
+  function check_if_emergency_already_added_in_billing($loa_id) {
+    $query = $this->db->get_where('billing', ['loa_id' => $loa_id]);
     if ($query->num_rows() > 0) {
       return $query->row(); // Return the fetched row
     }else{

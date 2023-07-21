@@ -32,10 +32,10 @@
                   <tr>
                     <th class="fw-bold" style="color: white;">NAME OF PATIENT</th>
                     <th class="fw-bold" style="color: white;">MBL REMAINING BALANCE</th>
-                    <th class="fw-bold" style="color: white;">WORK RELATED</th>
-                    <th class="fw-bold" style="color: white;">COMPANY CHARGE</th>
-                    <th class="fw-bold" style="color: white;">PERSONAL CHARGE</th>
-                    <th class="fw-bold" style="color: white;">BILLING #</th>
+                    <!-- <th class="fw-bold" style="color: white;">WORK RELATED</th> -->
+                    <!-- <th class="fw-bold" style="color: white;">COMPANY CHARGE</th>
+                    <th class="fw-bold" style="color: white;">PERSONAL CHARGE</th> -->
+                    <!-- <th class="fw-bold" style="color: white;">BILLING #</th> -->
                     <th class="fw-bold" style="color: white;">DATE UPLOAD</th>
                     <th class="fw-bold" style="color: white;">VIEW SOA</th>
                     <th class="fw-bold" style="color: white;">HOSPITAL BILL</th>
@@ -59,10 +59,10 @@
                   <tr>
                     <td><?php echo $key === 0 ? $ledger['first_name'].' '.$ledger['middle_name'].' '.$ledger['last_name'] : ''; ?></td>
                     <td><?php echo $key === 0 ? '₱' . number_format($ledger['remaining_balance'], 2) : ''; ?></td>
-                    <td><?php echo $key === 0 ? $ledger['work_related'] . ' (' . $ledger['percentage'] . '%)' : ''; ?></td>
-                    <td><?php echo $key === 0 ? '₱' . number_format($ledger['company_charge'], 2) : ''; ?></td>
-                    <td><?php echo $key === 0 ? '₱' . number_format($ledger['personal_charge'], 2) : ''; ?></td>
-                    <td><?php echo $key === 0 ? $ledger['billing_no']: ''; ?></td>
+                  <!--   <td><?php echo $key === 0 ? $ledger['work_related'] . ' (' . $ledger['percentage'] . '%)' : ''; ?></td> -->
+                    <!-- <td><?php echo $key === 0 ? '₱' . number_format($ledger['company_charge'], 2) : ''; ?></td>
+                    <td><?php echo $key === 0 ? '₱' . number_format($ledger['personal_charge'], 2) : ''; ?></td> -->
+                    <!-- <td><?php echo $key === 0 ? $ledger['billing_no']: ''; ?></td> -->
                     <td><?php echo date('F d, Y', strtotime($ledger['date_uploaded'])); ?></td>
                     <td>
                       <a href="JavaScript:void(0)" onclick="viewPDFBill('<?php echo $ledger['pdf_bill']; ?>', '<?php echo $ledger['noa_no']; ?>')" data-bs-toggle="tooltip" title="View SOA" style="color: white;">
@@ -73,7 +73,7 @@
                   </tr>
                   <?php } ?>
                   <tr>
-                    <td colspan="5"></td>
+                    <td colspan="1"></td>
                     <?php if ($showModal) { ?>
                       <td colspan="1" style="text-align: right"><b style="font-size:15px">MBL EXCESS :</b></td>
                       <td colspan="1"><b style="font-size:15px;color:red">₱ <?php echo number_format($excessMBL, 2); ?></b></td>

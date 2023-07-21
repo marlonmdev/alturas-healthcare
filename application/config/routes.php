@@ -1076,12 +1076,15 @@ $route['head-office-iad/biling/audited/fetch'] = 'ho_iad/transaction_controller/
 $route['head-office-iad/biling/paid/fetch'] = 'ho_iad/transaction_controller/fetch_paid_bill';
 $route['head-office-iad/biling/loa-noa-details/fetch/(:any)'] = 'ho_iad/transaction_controller/fetch_loa_noa_details';
 $route['head-office-iad/charging/business-units/fetch'] = 'ho_iad/transaction_controller/fetch_bu_charges';
+<<<<<<< HEAD
+=======
 $route['head-office-iad/charging/receivables/fetch'] = 'ho_iad/transaction_controller/fetch_bu_receivables';
 $route['head-office-iad/charging/bu-receivables/fetch/(:any)/(:any)'] = 'ho_iad/transaction_controller/view_bu_receivables_details';
 $route['printBUCharge/pdfReceivablesCharging/(:any)/(:any)/(:any)'] = 'ho_iad/transaction_controller/print_rcv_bu_charging/$1/$2/$3';
 $route['head-office-iad/charging/paid/business-units/fetch'] = 'ho_iad/transaction_controller/fetch_bu_paid_charge';
 $route['head-office-iad/charging/view-details'] = 'ho_iad/transaction_controller/fetch_charge_details';
 
+>>>>>>> fa43bd9d566d4e30192bbf26ea87e86a6c40d4d2
 //end
 // Payment Details
 $route['head-office-iad/transaction/payment-details/(:any)'] = 'ho_iad/transaction_controller/view_payment_details';

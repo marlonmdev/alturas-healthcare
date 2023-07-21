@@ -411,13 +411,11 @@ class Noa_controller extends CI_Controller {
 	function final_billing() {
 		$token = $this->security->get_csrf_hash(); 
 		$billing = $this->noa_model->get_final_datatables();
-		// var_dump($billing);
 
 		$data = array();
 		foreach ($billing as $bill){
 			$row = array();
 			$noa_id = $this->myhash->hasher($bill['noa_id'], 'encrypt');
-			// var_dump($noa_id);
 			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
 			$request_date=date("F d, Y", strtotime($bill['tbl1_request_date']));
 
@@ -434,22 +432,22 @@ class Noa_controller extends CI_Controller {
 			}
 
 			if($bill['tbl1_status'] !== 'Billed'){
-				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $bill['tbl1_status'] . '</span></div>';
-			}else{
 				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $bill['tbl1_status'] . '</span></div>';
+			}else{
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $bill['tbl1_status'] . '</span></div>';
 			}
 
 			$custom_actions = '';
 			if($bill['tbl1_status'] == 'Billed'){
 
 				if ($bill['guarantee_letter'] =='') {
-	  			// $custom_actions = '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $bill['billing_id'] . '\')" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-2 text-info"></i></a>';
-	  			$custom_actions .= '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $noa_id . '\',\'' . $bill['billing_id'] . '\')" data-bs-toggle="modal" data-bs-target="#GuaranteeLetter" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-2 text-info"></i></a>';
+	  			$custom_actions .= '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $noa_id . '\',\'' . $bill['billing_id'] . '\')" data-bs-toggle="modal" data-bs-target="#GuaranteeLetter" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-2 text-danger"></i></a>';
 	  		}else{
 					$custom_actions .= '<i class="mdi mdi-reply fs-2 text-secondary" title="Guarantee Letter Already Sent"></i>';
 				}
 			}else if($bill['tbl1_status'] == 'Approved'){
-				$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/noa/requests-list/approved/" data-bs-toggle="tooltip" title="Back to NOA"><i class="mdi mdi-pen fs-2 text-danger"></i></a>';
+				// $custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/noa/requests-list/approved/" data-bs-toggle="tooltip" title="Back to NOA"><i class="mdi mdi-pen fs-2 text-danger"></i></a>';
+				$custom_actions .='<i class="mdi mdi-cached fs-2 text-success"></i>Processing...';
 			}
 
 			$row[] = $bill['noa_no'];
@@ -461,6 +459,7 @@ class Noa_controller extends CI_Controller {
 			$row[] = $billed_date;
 			$row[] = '₱' . number_format($bill['company_charge'], 2, '.', ',');
 			$row[] = '₱' . number_format($bill['personal_charge'], 2, '.', ',');
+			$row[] = '₱' . number_format($bill['cash_advance'], 2, '.', ',');
 			$row[] = $pdf_bill;
 			$netBill = '₱' . number_format($bill['net_bill'], 2, '.', ',');
 			$row[] = $netBill;
@@ -475,7 +474,6 @@ class Noa_controller extends CI_Controller {
 		];
 
 		echo json_encode($output);
-		// var_dump($output);
 	}
 
 	function submit_final_billing() {

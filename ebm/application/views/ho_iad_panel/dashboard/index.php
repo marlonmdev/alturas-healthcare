@@ -1,0 +1,97 @@
+
+      <!-- Start of Page Wrapper -->
+      <div class="page-wrapper">
+        <!-- Bread crumb and right sidebar toggle -->
+        <div class="page-breadcrumb">
+          <div class="row">
+            <div class="col-12 d-flex no-block align-items-center">
+              <h4 class="page-title ls-2"><i class="mdi mdi-view-quilt"></i>Dashboard</h4>
+              <div class="ms-auto text-end">
+                <nav aria-label="breadcrumb">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Internal Audit Department</li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                      Dashboard
+                    </li>
+                  </ol>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End Bread crumb and right sidebar toggle -->
+        <!-- Start of Container fluid  -->
+        <div class="container-fluid">
+          <div class="row mb-2">
+
+            <div class="col-lg-3 col-sm-6">
+              <div class="card-box bg-blue">
+                <div class="inner">
+                  <h3><i class="mdi mdi-view-dashboard"></i></h3>
+                  <h5>For Audit</h5>
+                </div>
+                <div class="icon">
+                  <i class="mdi mdi-file-document" aria-hidden="true"></i>
+                </div>
+                <a href="<?php echo base_url(); ?>head-office-iad/biling/audit" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            
+            <div class="col-lg-3 col-sm-6">
+              <div class="card-box bg-orange">
+                <div class="inner">
+                  <h3><i class="mdi mdi-view-dashboard"></i></h3>
+                  <h5>Audited</h5>
+                </div>
+                <div class="icon">
+                  <i class="mdi mdi-file" aria-hidden="true"></i>
+                </div>
+                <a href="<?php echo base_url(); ?>head-office-iad/biling/audited" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6">
+              <div class="card-box bg-green">
+                <div class="inner">
+                  <h3><i class="mdi mdi-view-dashboard"></i></h3>
+                  <h5>Paid Bill</h5>
+                </div>
+                <div class="icon">
+                  <i class="mdi mdi-file-check" aria-hidden="true"></i>
+                </div>
+                <a href="<?php echo base_url(); ?>head-office-iad/biling/paid" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="border border-2 border-secondary"></div>
+              <h4 class="page-title ls-2 mt-3 mb-4">Doctor's Availability</h4>
+              <div class="row">
+                <?php if (!empty($doctors)) : ?>
+                  <?php foreach ($doctors as $doc) : ?>
+                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 mb-3">
+                      <div class="p-30 text-white text-center shadow">
+                        <img src="<?php echo base_url(); ?>assets/images/company-doctor.svg" class="card-img-top img-responsive mb-3" alt="User Image" style="width:80px;height:auto;">
+                  
+                        <h5 class="text-dark mb-0 mt-1">
+                          <?php echo $doc['doctor_name']; ?>
+                        </h5>
+                        <strong style="letter-spacing:2px">
+                          <?php echo ($doc['online'] == 1) ? '<span class="text-success">Online</span>' : '<span class="text-warning">Offline</span>'; ?>
+                        </strong>
+                      </div>
+                    </div>
+                  <?php endforeach; ?>
+                <?php endif; ?>
+              </div>
+            </div>
+           <!-- End Row  -->  
+          </div>
+        <!-- End Container fluid  -->
+        </div>
+      <!-- End Page wrapper  -->
+      </div>
+    <!-- End Wrapper -->
+    </div>

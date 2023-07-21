@@ -417,8 +417,8 @@ class Loa_controller extends CI_Controller {
 
 			$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="Tag LOA Charge Type"><i class="mdi mdi-tag-plus fs-2 text-primary"></i></a>';
 
-			if($loa['spot_report_file'] && $loa['incident_report_file'] != ''){
-				$custom_actions .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $loa_id . '\',\'' . $loa['work_related'] . '\',\'' . $loa['percentage'] . '\',\'' . $loa['spot_report_file'] . '\',\'' . $loa['incident_report_file'] . '\')" data-bs-toggle="tooltip" title="View Uploaded Reports"><i class="mdi mdi-teamviewer fs-2 text-warning"></i></a>';
+			if($loa['spot_report_file'] || $loa['incident_report_file'] || $loa['police_report_file'] != ''){
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $loa_id . '\',\'' . $loa['work_related'] . '\',\'' . $loa['percentage'] . '\',\'' . $loa['spot_report_file'] . '\',\'' . $loa['incident_report_file'] . '\',\'' . $loa['police_report_file'] . '\')" data-bs-toggle="tooltip" title="View Uploaded Reports"><i class="mdi mdi-teamviewer fs-2 text-warning"></i></a>';
 			}else{
 				$custom_actions .= '';
 			}
@@ -477,8 +477,8 @@ class Loa_controller extends CI_Controller {
 
 			$custom_actions = '<a class="me-1" href="JavaScript:void(0)" onclick="viewApprovedLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
-			if($loa['spot_report_file'] && $loa['incident_report_file'] != ''){
-				$custom_actions .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $loa_id . '\',\'' . $loa['work_related'] . '\',\'' . $loa['percentage'] . '\',\'' . $loa['spot_report_file'] . '\',\'' . $loa['incident_report_file'] . '\')" data-bs-toggle="tooltip" title="View Uploaded Reports"><i class="mdi mdi-teamviewer fs-2 text-warning"></i></a>';
+			if($loa['spot_report_file'] || $loa['incident_report_file'] || $loa['police_report_file'] != ''){
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $loa_id . '\',\'' . $loa['work_related'] . '\',\'' . $loa['percentage'] . '\',\'' . $loa['spot_report_file'] . '\',\'' . $loa['incident_report_file'] . '\',\'' . $loa['police_report_file'] . '\')" data-bs-toggle="tooltip" title="View Uploaded Reports"><i class="mdi mdi-teamviewer fs-2 text-warning"></i></a>';
 			}else{
 				$custom_actions .= '';
 			}
@@ -1856,10 +1856,11 @@ class Loa_controller extends CI_Controller {
 			$file_paths = array(
 				'spot-report' => './uploads/spot_reports/',
 				'incident-report' => './uploads/incident_reports/',
+				'police-report' => './uploads/police_reports/',
 			);
 
 			// Iterate over each file input and perform the upload
-			$file_inputs = array('spot-report', 'incident-report');
+			$file_inputs = array('spot-report', 'incident-report','police-report');
 			foreach ($file_inputs as $input_name) {
 				$config['upload_path'] = $file_paths[$input_name];
 				$this->upload->initialize($config);
@@ -1888,6 +1889,7 @@ class Loa_controller extends CI_Controller {
 					'percentage' => $percentage,
 					'spot_report_file' => isset($uploaded_files['spot-report']) ? $uploaded_files['spot-report']['file_name'] : '',
 					'incident_report_file' => isset($uploaded_files['incident-report']) ? $uploaded_files['incident-report']['file_name'] : '',
+					'police_report_file' => isset($uploaded_files['police-report']) ? $uploaded_files['police-report']['file_name'] : '',
 					'date_uploaded' => date('Y-m-d')
 				];
 
@@ -3606,15 +3608,19 @@ class Loa_controller extends CI_Controller {
 	function datatable_final_billing(){
     $token = $this->security->get_csrf_hash();
     $billing = $this->loa_model->get_billed_datatables();
+    // var_dump($billing);
     $data = [];
 
     foreach ($billing as $bill) {
       $row = [];
       if ($bill['done_matching'] != 1) {
         $loa_id = $this->myhash->hasher($bill['tbl1_loa_id'], 'encrypt');
-
         $fullname = $bill['first_name'] . ' ' . $bill['middle_name'] . ' ' . $bill['last_name'] . ' ' . $bill['suffix'];
         $request_date=date("F d, Y", strtotime($bill['tbl1_request_date']));
+<<<<<<< HEAD
+        $workRelated = $bill['tbl1_work_related'] . ' (' . $bill['percentage'] . '%)';
+
+=======
         // $custom_status = '<span class="badge rounded-pill bg-success">' . $bill['tbl1_status'] . '</span>';
 
     //     if($bill['tbl1_status'] !== 'Billed'){
@@ -3622,6 +3628,7 @@ class Loa_controller extends CI_Controller {
 				// }else{
 				// 	$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $bill['tbl1_status'] . '</span></div>';
 				// }
+>>>>>>> fa43bd9d566d4e30192bbf26ea87e86a6c40d4d2
 
 				if($bill['tbl1_status'] == 'Billed'){
 					$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $bill['tbl1_status'] . '</span></div>';
@@ -3644,17 +3651,29 @@ class Loa_controller extends CI_Controller {
 				}
 
         $custom_actions = '';
+        $billed_date = '';
+        $mbl='';
         $letter = $this->loa_model->check_if_guarantee_letter_already_added($bill['loa_id']);
         $performed_fees = $this->loa_model->check_if_performed_fees_is_processing($bill['loa_id']);
         $re_upload = $this->loa_model->check_if_re_upload_is_1($bill['loa_id']);
+        // $emergency = $this->loa_model->check_if_emergency_already_added_in_billing($bill['loa_id']);
+
 
 
         if ($bill['loa_request_type'] == 'Consultation'){
         	if ($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Approved'){
         		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/consultation_schedule/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Appointment Schedule"><i class="mdi mdi-pen fs-2 text-warning"></i></a>';
+<<<<<<< HEAD
+        		$billed_date=date("F d, Y", strtotime($bill['billed_on']));
 
         	}else if($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Performed'){
         		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/consultation_fees1/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Service Fee"><i class="mdi mdi-pen fs-2 text-warning"></i></a>';
+        		$billed_date=date("F d, Y", strtotime($bill['billed_on']));
+=======
+
+        	}else if($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Performed'){
+        		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/consultation_fees1/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Service Fee"><i class="mdi mdi-pen fs-2 text-warning"></i></a>';
+>>>>>>> fa43bd9d566d4e30192bbf26ea87e86a6c40d4d2
 
         		if ($bill['re_upload'] =='0') {
         			$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $loa_id . '\', \'' . $bill['loa_no'] . '\')" data-bs-toggle="tooltip" title="Re-Upload File"><i class="mdi mdi-key-plus fs-2 text-primary"></i></a>';
@@ -3663,6 +3682,7 @@ class Loa_controller extends CI_Controller {
 						}
     
 					}else if($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Processing'){
+						$billed_date=date("F d, Y", strtotime($bill['billed_on']));
 						if ($bill['performed_fees'] =='Processing') {
         			$custom_actions .= '<i class="mdi mdi-pen fs-2 text-secondary" title="Detailed SOA Already Added"></i>';
         		}else{
@@ -3683,16 +3703,31 @@ class Loa_controller extends CI_Controller {
 
         	}else if($bill['tbl1_status'] == 'Approved' && $bill['performed_fees'] == 'Approved'){
         		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Appointment Schedule"><i class="mdi mdi-pen fs-2 text-success"></i></a>';
+<<<<<<< HEAD
+        		$billed_date .='No Billing Date Yet';
         	}else if($bill['tbl1_status'] == 'Completed' && $bill['performed_fees'] == 'Performed'){
         		$custom_actions .='<i class="mdi mdi-cached fs-2 text-info"></i>Processing...';
+        		$billed_date .='No Billing Date Yet';
+=======
+        	}else if($bill['tbl1_status'] == 'Completed' && $bill['performed_fees'] == 'Performed'){
+        		$custom_actions .='<i class="mdi mdi-cached fs-2 text-info"></i>Processing...';
+>>>>>>> fa43bd9d566d4e30192bbf26ea87e86a6c40d4d2
         	}
 
         }else if ($bill['loa_request_type'] == 'Diagnostic Test') {
         	if ($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Approved') {
         		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/diagnostic_schedule/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Appointment Schedule"><i class="mdi mdi-pen fs-2 text-warning"></i></a>';
+<<<<<<< HEAD
+        		$billed_date=date("F d, Y", strtotime($bill['billed_on']));
 
         	}else if($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Performed'){
         		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/diagnostic_fees1/'. $loa_id . '" data-bs-toggle="tooltip" title="Check Detailed SOA"><i class="mdi mdi-pen fs-2 text-warning"></i></a>';
+        		$billed_date=date("F d, Y", strtotime($bill['billed_on']));
+=======
+
+        	}else if($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Performed'){
+        		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/diagnostic_fees1/'. $loa_id . '" data-bs-toggle="tooltip" title="Check Detailed SOA"><i class="mdi mdi-pen fs-2 text-warning"></i></a>';
+>>>>>>> fa43bd9d566d4e30192bbf26ea87e86a6c40d4d2
 
         		if ($bill['re_upload'] =='0') {
         			$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $loa_id . '\', \'' . $bill['loa_no'] . '\')" data-bs-toggle="tooltip" title="Re-Upload File"><i class="mdi mdi-key-plus fs-2 text-primary"></i></a>';
@@ -3701,6 +3736,7 @@ class Loa_controller extends CI_Controller {
 						}
 
 					}else if($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Processing'){
+						$billed_date=date("F d, Y", strtotime($bill['billed_on']));
 						if ($bill['performed_fees'] =='Processing') {
         			$custom_actions .= '<i class="mdi mdi-pen fs-2 text-secondary" title="Detailed SOA Already Added"></i>';
         		}else{
@@ -3721,14 +3757,27 @@ class Loa_controller extends CI_Controller {
 
         	}else if($bill['tbl1_status'] == 'Approved' && $bill['performed_fees'] == 'Approved'){
         		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Appointment Schedule"><i class="mdi mdi-pen fs-2 text-success"></i></a>';
+<<<<<<< HEAD
+        		$billed_date .='No Billing Date Yet';
         	}else if($bill['tbl1_status'] == 'Completed' && $bill['performed_fees'] == 'Performed'){
         		$custom_actions .='<i class="mdi mdi-cached fs-2 text-info"></i>Processing...';
+        		$billed_date .='No Billing Date Yet';
+=======
+        	}else if($bill['tbl1_status'] == 'Completed' && $bill['performed_fees'] == 'Performed'){
+        		$custom_actions .='<i class="mdi mdi-cached fs-2 text-info"></i>Processing...';
+>>>>>>> fa43bd9d566d4e30192bbf26ea87e86a6c40d4d2
         	}
+
         }else if ($bill['loa_request_type'] == 'Emergency') {
         	if($bill['tbl1_status'] == 'Approved' && $bill['performed_fees'] == 'Approved'){
         		$custom_actions .='<i class="mdi mdi-cached fs-2 text-success"></i>Processing...';
+<<<<<<< HEAD
+        		$billed_date .='No Billing Date Yet';
+=======
 
+>>>>>>> fa43bd9d566d4e30192bbf26ea87e86a6c40d4d2
         	}else if($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Approved'){
+        		$billed_date=date("F d, Y", strtotime($bill['billed_on']));
         		if ($bill['guarantee_letter'] =='') {
         			$custom_actions .= '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $loa_id . '\',\'' . $bill['billing_id'] . '\')" data-bs-toggle="modal" data-bs-target="#GuaranteeLetter" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-2 text-danger"></i></a>';
         		}else{
@@ -3739,8 +3788,14 @@ class Loa_controller extends CI_Controller {
 
         $row[] = $bill['loa_no'];
         $row[] = $fullname;
+        $row[] = '₱' . number_format($bill['remaining_balance'], 2, '.', ',');
+        $row[] = $workRelated;
         $row[] = $bill['loa_request_type'];
         $row[] = $request_date;
+        $row[] = $billed_date;
+        $row[] = number_format($bill['company_charge'], 2, '.', ',');
+        $row[] = number_format($bill['personal_charge'], 2, '.', ',');
+        $row[] = number_format($bill['cash_advance'], 2, '.', ',');
         $row[] = number_format($bill['net_bill'], 2, '.', ',');
         $row[] = $pdf_bill;
         $row[] = $custom_status;
@@ -3864,6 +3919,8 @@ class Loa_controller extends CI_Controller {
     }
 	}
 
+<<<<<<< HEAD
+=======
 	// public function guarantee_pdf($loa_id){
 	// 	$this->security->get_csrf_hash();
 	// 	$this->load->library('tcpdf_library');
@@ -3949,6 +4006,7 @@ class Loa_controller extends CI_Controller {
 	
 	// 	// file_put_c	ontents($pdfPath, $pdfContent);
 	// 	}
+>>>>>>> fa43bd9d566d4e30192bbf26ea87e86a6c40d4d2
 
 	public function guarantee_pdf($loa_id){
 		$this->security->get_csrf_hash();
@@ -3969,6 +4027,26 @@ class Loa_controller extends CI_Controller {
 		// Disable the header and footer lines
 		$pdf->SetPrintHeader(false);
 		$pdf->SetPrintFooter(false);
+<<<<<<< HEAD
+
+
+		$title = '<div>
+							<p><img src="'.base_url().'assets/images/HC_logo.png" style="width:180px;height:80px">
+							</div>';
+
+		// $title = '<div class="col-lg-4" style="border-bottom:  1px solid black;">
+		// 						<img src="'.base_url().'assets/images/HC_logo.png" width="170px" height="45px">
+		// 						Corporate Center, North Wing
+		// 					</div>';
+							
+
+							
+
+
+
+
+
+=======
 		// $title = '<img src="'.base_url().'assets/images/HC_logo.png" style="width:200px;height:80px">';
 		// // $title .= '<style>h3 { margin: 0; padding: 0; line-height: .5; }</style>';
 		// $title .= '<p>Corporate Center, North Wing</p>';
@@ -3992,6 +4070,7 @@ class Loa_controller extends CI_Controller {
 
 
 
+>>>>>>> fa43bd9d566d4e30192bbf26ea87e86a6c40d4d2
 		// Set the font and size for the letter content...
 		$pdf->SetFont('Helvetica', '', 12);
 	
@@ -4019,6 +4098,9 @@ class Loa_controller extends CI_Controller {
 							<p >We appreciate your collaboration and dedication to providing exceptional healthcare services to our members. Your continued partnership with the Alturas Healthcare Program is instrumental in fulfilling our mission of delivering comprehensive and accessible healthcare to our beneficiaries.</p>
 							<p >Thank you for your attention to this matter, and we look forward to a continued successful relationship.</p>
 				</div>';
+<<<<<<< HEAD
+
+=======
 		// $html2 ='<div><p style="font-weight: bold;">RE: Guarantee Letter for Payment Covered by Alturas Healthcare;</p></div>';
 		// $html3 = '<div style="text-align: justify;">
 		// 			<p style="line-height: 2 ;">Dear DR. SEPE;</p>
@@ -4041,6 +4123,7 @@ class Loa_controller extends CI_Controller {
 					// <p>We appreciate your collaboration and dedication to providing exceptional healthcare services to our members. Your continued partnership with the Alturas Healthcare Program is instrumental in fulfilling our mission of delivering comprehensive and accessible healthcare to our beneficiaries.</p>
 					// <p>Thank you for your attention to this matter, and we look forward to a continued successful relationship.</p>
 					// </div>';
+>>>>>>> fa43bd9d566d4e30192bbf26ea87e86a6c40d4d2
 	
 		$html5 = '<div>
 					<p>Yours sincerely,</p>
@@ -4053,6 +4136,12 @@ class Loa_controller extends CI_Controller {
 				</div>';
 		$pdf->setTitle('Guarantee letter');
 		$pdf->setFont('times', '', 10);
+<<<<<<< HEAD
+		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
+		$pdf->writeHTML($html1);
+		$pdf->WriteHtmlCell(0, 0, '', '', $html5, 0, 1, 0, true, 'L', true);
+	
+=======
 		// $pdf->AddPage('P', 'LEGAL');
 		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
 		// $pdf->writeHTML($title);
@@ -4067,6 +4156,7 @@ class Loa_controller extends CI_Controller {
 		// Output the PDF to the browser
 		// $pdf->Output('guarantee_letter.pdf', 'I');
 		// $pdfPath = 'uploads/guarantee_letter/guarantee_letter.pdf';
+>>>>>>> fa43bd9d566d4e30192bbf26ea87e86a6c40d4d2
 		$fileName = 'guarantee_letter' . $loa_id . '.pdf';
 		$pdf->Output(getcwd() . '/uploads/guarantee_letter/' . $fileName, 'F');
 		$response = [
@@ -4074,8 +4164,11 @@ class Loa_controller extends CI_Controller {
 			'filename' => $fileName
 		];
 		echo json_encode($response);
+<<<<<<< HEAD
+=======
 	
 		// file_put_c	ontents($pdfPath, $pdfContent);
+>>>>>>> fa43bd9d566d4e30192bbf26ea87e86a6c40d4d2
 		}
 
 	function consultation_schedule(){
@@ -4598,8 +4691,15 @@ class Loa_controller extends CI_Controller {
 		$data['loa'] = $loa;
 		$data['billing_id'] = $loa['billing_id'];
 		$data['emp_id'] = $loa['emp_id'];
+<<<<<<< HEAD
+		// $data['itemized_bill'] = $this->loa_model->get_itemized_bill($loa['emp_id'],$loa['billing_id']);
+		$data['itemized_bill'] = $this->loa_model->get_itemized_bill($loa['billing_id']);
+		// $data['benefits'] = $this->loa_model->get_benefits_deduction($loa['emp_id'],$loa['billing_id']);
+		$data['benefits'] = $this->loa_model->get_benefits_deduction($loa['billing_id']);
+=======
 		$data['itemized_bill'] = $this->loa_model->get_itemized_bill($loa['emp_id'],$loa['billing_id']);
 		$data['benefits'] = $this->loa_model->get_benefits_deduction($loa['emp_id'],$loa['billing_id']);
+>>>>>>> fa43bd9d566d4e30192bbf26ea87e86a6c40d4d2
 		$data['full_name'] = $loa['first_name'] .' '. $loa['middle_name'] .' '. $loa['last_name'] .' '. $loa['suffix'];
 		$data['home_address'] = $loa['home_address'];
 		$data['date_of_birth'] = $loa['date_of_birth'];

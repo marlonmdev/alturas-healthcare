@@ -97,6 +97,7 @@
                   <table class="table table-hover table-sm table-responsive table-stripped"  id="ledgertbody">
                     <thead style="background-color:#eddcb7">
                       <tr>
+                        <th class="fw-bold">No.</th>
                         <th class="fw-bold">DATE PAID</th>
                         <th class="fw-bold">MEMBER NAME</th>
                         <th class="fw-bold">BUSINESS UNIT</th>
@@ -109,6 +110,7 @@
                     </tbody>
                     <tfoot>
                       <tr>
+                          <td></td>
                           <td></td>
                           <td></td>
                           <td class="fw-bold">TOTALS</td>
@@ -157,8 +159,8 @@
       },
       //Set column definition initialisation properties.
       columnDefs: [
-            { targets: 3, className: 'text-end' },
             { targets: 4, className: 'text-end' },
+            { targets: 5, className: 'text-end' },
         ],
       data: [],  // Empty data array
       deferRender: true,  // Enable deferred rendering

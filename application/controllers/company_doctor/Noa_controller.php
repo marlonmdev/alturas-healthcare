@@ -450,4 +450,144 @@ class Noa_controller extends CI_Controller {
 			echo json_encode($response);
 		}
 	}
+
+	function fetch_member_details() {
+		$this->security->get_csrf_hash();
+        $search_data = $this->input->post('search');
+        $result = $this->noa_model->get_autocomplete($search_data);
+        if (!empty($result)) {
+            foreach ($result as $row) :
+                $member_id = $this->myhash->hasher($row['member_id'], 'encrypt');
+                echo '<strong class="d-block mx-2 p-1 my-1"><a href="#" onclick="getMemberValues(\'' . $member_id . '\')" class="text-secondary" data-toggle="tooltip" data-placement="top" title="Click to fill form with Data">'
+                    . $row['first_name'] . ' '
+                    . $row['middle_name'] . ' '
+                    . $row['last_name'] . ' '
+                    . $row['suffix'] . '</a></strong>';
+            endforeach;
+        } else {
+            echo "<p class='text-center mt-1'><em>No data found...</em></p>";
+        }
+	}
+
+	function fetch_auto_complete() {
+		$member_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+        $row = $this->noa_model->db_get_member_details($member_id);
+        $birth_date = date("d-m-Y", strtotime($row['date_of_birth']));
+        $current_date = date("d-m-Y");
+        $diff = date_diff(date_create($birth_date), date_create($current_date));
+        $age = $diff->format("%y");
+
+        $response = [
+            'status' => 'success',
+            'token' => $this->security->get_csrf_hash(),
+            'member_id' => $row['member_id'],
+            'emp_id' => $row['emp_id'],
+            'first_name' => $row['first_name'],
+            'middle_name' => $row['middle_name'],
+            'last_name' => $row['last_name'],
+            'suffix' => $row['suffix'],
+            'gender' => $row['gender'],
+            'date_of_birth' => $row['date_of_birth'],
+            'age' => $age,
+            'philhealth_no' => $row['philhealth_no'],
+            'blood_type' =>  $row['blood_type'],
+            'home_address' => $row['home_address'],
+            'city_address' => $row['city_address'],
+            'contact_no' => $row['contact_no'],
+            'email' => $row['email'],
+            'contact_person' => $row['contact_person'],
+            'contact_person_addr' => $row['contact_person_addr'],
+            'contact_person_no' => $row['contact_person_no'],
+            'health_card_no' => $row['health_card_no'],
+            'requesting_company' => $row['company'],
+            'mbl' => number_format($row['remaining_balance'],2,'.',',')
+        ];
+        echo json_encode($response);
+	}
+
+	function noa_number($input, $pad_len = 7, $prefix = null) {
+		if ($pad_len <= strlen($input))
+			trigger_error('<strong>$pad_len</strong> cannot be less than or equal to the length of <strong>$input</strong> to generate invoice number', E_USER_ERROR);
+
+		if (is_string($prefix))
+			return sprintf("%s%s", $prefix, str_pad($input, $pad_len, "0", STR_PAD_LEFT));
+
+		return str_pad($input, $pad_len, "0", STR_PAD_LEFT);
+	}
+
+	function submit_noa_override() {
+			/* The below code is a PHP code that is used to save the data from the form to the database. */
+			$this->security->get_csrf_hash();
+			$emp_id = $this->session->userdata('emp_id');
+			$inputPost = $this->input->post(NULL, TRUE); // returns all POST items with XSS filter
+			$default_status = 'Pending';
+	
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules('hospital-name', 'Name of Hospital', 'required');
+			$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[1000]');
+			$this->form_validation->set_rules('admission-date', 'Admission Date', 'required');
+	
+			if ($this->form_validation->run() == FALSE) {
+				$response = [
+					'status' => 'error',
+					'hospital_name_error' => form_error('hospital-name'),
+					'chief_complaint_error' => form_error('chief-complaint'),
+					'admission_date_error' => form_error('admission-date'),
+				];
+			} else {
+				// check if the selected hospital exist from database
+				$hospital_id = $this->input->post('hospital-name');
+				$hp_exist = $this->noa_model->db_check_hospital_exist($hospital_id);
+				if (!$hp_exist) {
+					$response = [
+						'status' => 'save-error', 
+						'message' => 'Hospital Does Not Exist'
+					];
+					echo json_encode($response);
+					exit();
+				} else {
+					// select the max noa_id from DB
+					$result = $this->noa_model->db_get_max_noa_id();
+					$max_noa_id = !$result ? 0 : $result['noa_id'];
+					$add_noa = $max_noa_id + 1;
+					$current_year = date('Y');
+					// call function loa_number
+					$noa_no = $this->noa_number($add_noa, 7, 'NOA-'.$current_year);
+					$member_id = $inputPost['member-id'];
+					$member = $this->noa_model->db_get_member_details($member_id);
+	
+					$post_data = [
+						'noa_no' => $noa_no,
+						'emp_id' => $member['emp_id'],
+						'first_name' =>  $member['first_name'],
+						'middle_name' =>  $member['middle_name'],
+						'last_name' =>  $member['last_name'],
+						'suffix' =>  $member['suffix'],
+						'date_of_birth' => $member['date_of_birth'],
+						'health_card_no' => $member['health_card_no'],
+						'requesting_company' => $member['company'],
+						'hospital_id' => $inputPost['hospital-name'],
+						'admission_date' => date('Y-m-d', strtotime($inputPost['admission-date'])),
+						'chief_complaint' => strip_tags($inputPost['chief-complaint']),
+						'request_date' => date("Y-m-d"),
+						'status' => $default_status,
+						'requested_by' => $this->session->userdata('doctor_id'),
+						'override_by' => $inputPost['doctor-id']
+					];
+	
+					$saved = $this->noa_model->db_insert_noa_request($post_data);
+					if (!$saved) {
+						$response = [
+							'status' => 'save-error', 
+							'message' => 'NOA Request Failed'
+						];
+					}
+					$response = [
+						'status' => 'success', 
+						'message' => 'NOA Request Save Successfully'
+					];
+				}
+			}
+			echo json_encode($response);
+	}
 }

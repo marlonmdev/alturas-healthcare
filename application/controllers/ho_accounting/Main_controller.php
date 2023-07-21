@@ -1673,7 +1673,7 @@ class Main_controller extends CI_Controller {
 				$row[] = number_format($bill['company_charge'], 2, '.', ',');
 				$row[] = number_format($bill['cash_advance'], 2, '.', ',');
 				$row[] = number_format(floatval($bill['company_charge'] + $bill['cash_advance']), 2, '.', ',');
-				$row[] = '<span class="bg-danger text-white badge rounded-pill">Unpaid</span>';
+				$row[] = '<a class="fw-bold text-end"href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewChargeDetails(\''.$bill['billing_id'].'\')">View Details</a>';
 				$data[] = $row;
 
 			}
@@ -1685,6 +1685,95 @@ class Main_controller extends CI_Controller {
 		];
 	
 		echo json_encode($output);
+	}
+
+	function fetch_charge_details() {
+		$token = $this->security->get_csrf_hash();
+		$billing_id = $this->input->get('billing_id');
+		$bill = $this->List_model->get_charge_details($billing_id);
+
+		if(!empty($bill['loa_id'])){
+			$loa = $this->List_model->get_loa_info($bill['loa_id']);
+			$loa_noa_no = $loa['loa_no'];
+			if($loa['work_related'] == 'Yes'){ 
+				if($loa['percentage'] == ''){
+				   $wpercent = '100% W-R';
+				   $nwpercent = '';
+				}else{
+				   $wpercent = $loa['percentage'].'%  W-R';
+				   $result = 100 - floatval($loa['percentage']);
+				   if($loa['percentage'] == '100'){
+					   $nwpercent = '';
+				   }else{
+					   $nwpercent = $result.'% Non W-R';
+				   }
+				  
+				}	
+		   }else if($loa['work_related'] == 'No'){
+			   if($loa['percentage'] == ''){
+				   $wpercent = '';
+				   $nwpercent = '100% Non W-R';
+				}else{
+				   $nwpercent = $loa['percentage'].'% Non W-R';
+				   $result = 100 - floatval($loa['percentage']);
+				   if($loa['percentage'] == '100'){
+					   $wpercent = '';
+				   }else{
+					   $wpercent = $result.'%  W-R';
+				   }
+				 
+				}
+		   }
+		}else if(!empty($bill['noa_id'])){
+			$noa = $this->List_model->get_noa_info($bill['noa_id']);
+			$loa_noa_no = $noa['noa_no'];
+			if($noa['work_related'] == 'Yes'){ 
+				if($noa['percentage'] == ''){
+				   $wpercent = '100% W-R';
+				   $nwpercent = '';
+				}else{
+				   $wpercent = $noa['percentage'].'%  W-R';
+				   $result = 100 - floatval($noa['percentage']);
+				   if($noa['percentage'] == '100'){
+					   $nwpercent = '';
+				   }else{
+					   $nwpercent = $result.'% Non W-R';
+				   }
+				  
+				}	
+		   }else if($noa['work_related'] == 'No'){
+			   if($noa['percentage'] == ''){
+				   $wpercent = '';
+				   $nwpercent = '100% Non W-R';
+				}else{
+				   $nwpercent = $noa['percentage'].'% Non W-R';
+				   $result = 100 - floatval($noa['percentage']);
+				   if($noa['percentage'] == '100'){
+					   $wpercent = '';
+				   }else{
+					   $wpercent = $result.'%  W-R';
+				   }
+				 
+				}
+		   }
+		}
+
+		$data = [
+			'token' => $token,
+			'payment_no' => $bill['payment_no'],
+			'billing_no' => $bill['billing_no'],
+			'loa_noa_no' => $loa_noa_no,
+			'percentage' => $wpercent .', '.$nwpercent,
+			'before_mbl' => number_format($bill['before_remaining_bal'],2,'.',','),
+			'net_bill' => number_format($bill['net_bill'],2,'.',','),
+			'company_charge' => number_format($bill['company_charge'],2,'.',','),
+			'personal_charge' => number_format($bill['personal_charge'],2,'.',','),
+			'cash_advance' => number_format($bill['cash_advance'],2,'.',','),
+			'after_mbl' => number_format($bill['after_remaining_bal'],2,'.',','),
+			'billed_on' => date('F d,Y', strtotime($bill['billed_on'])),
+		];
+
+		echo json_encode($data);
 	}
 	
 	function fetch_bu_paid_charge() {
@@ -1823,6 +1912,7 @@ class Main_controller extends CI_Controller {
 							<th class="fw-bold text-end">Company Charge</th>
 							<th class="fw-bold text-end">Healthcare Advance</th>
 							<th class="fw-bold text-end">Total Charge</th>
+							<th class="fw-bold text-end"></th>
 						</tr>
 					</thead>';
 
@@ -1859,6 +1949,7 @@ class Main_controller extends CI_Controller {
 									<td class="fs-6 text-end">' . number_format($charge['company_charge'],2,'.',',') . '</td>
 									<td class="fs-6 text-end">' . number_format($charge['cash_advance'],2,'.',',') . '</td>
 									<td class="fs-6 text-end">' . number_format($total_payable, 2, '.', ',') . '</td>
+									<td class="fs-6 text-end"><a class="fw-bold"href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewChargeDetails(\''.$charge['billing_id'].'\')">View Details</a></td>
 								</tr>
 							</tbody>';
 		
@@ -1882,6 +1973,7 @@ class Main_controller extends CI_Controller {
 					<td></td>
 					<td class="fw-bold text-end">TOTAL</td>
 					<td class="fw-bold text-end">'.number_format($totalPayableSum,2,'.',',').'</td>
+					<td></td>
 				</tr>
 			</tfoot>';
 
@@ -3776,12 +3868,13 @@ class Main_controller extends CI_Controller {
 				$fullnameData[$key]['total_paid_amount'] += $total_paid_amount;
 			}
 		}
-	
+		$number = 1;
 		foreach ($fullnameData as $key => $totals) {
 			list($fullname, $date_add) = explode('_', $key);
 
 			$row = [];
-			$row[] = date('m/d/Y',strtotime($date_add));
+			$row[] = $number++;
+			$row[] = date('F d,Y',strtotime($date_add));
 			$row[] = $fullname;
 			$row[] = $totals['business_unit'];
 			$row[] = number_format($totals['total_debit'], 2, '.', ',');
@@ -3834,12 +3927,12 @@ class Main_controller extends CI_Controller {
 				];
 			}
 	
-			$fullnameData[$key]['date_used'][] = $max['billed_on'];
+			$fullnameData[$key]['date_used'][] = date('F d,Y', strtotime($max['billed_on']));
 			$fullnameData[$key]['used_mbl'][] = $max['company_charge'];
 		}
 	
 		$previous_fullname = '';
-
+		$number = 1;
 		foreach ($fullnameData as $key => $totals) {
 			list($healcardno, $fullname, $business_unit) = explode('_', $key);
 
@@ -3856,11 +3949,12 @@ class Main_controller extends CI_Controller {
 
 				if ($fullname !== $previous_fullname) {
 					$first_row = [
+						$number++,
 						$healcardno,
 						$fullname,
 						$business_unit,
-						'----',
-						'----',
+						'<span class="text-success">-----</span>',
+						'<span class="text-success">-----</span>',
 						number_format($remaining_mbl, 2, '.', ',')
 					];
 
@@ -3868,6 +3962,7 @@ class Main_controller extends CI_Controller {
 				}
 
 				$row = [
+					'',
 					'',
 					'',
 					'',

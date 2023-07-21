@@ -2,15 +2,15 @@
 <div class="page-wrapper">
         <!-- Bread crumb and right sidebar toggle -->
         <div class="page-breadcrumb">
-            <div class="row">
+        <div class="row">
             <div class="col-12 d-flex no-block flex-column flex-sm-row align-items-left">
-                <h4 class="page-title ls-2"> <i class="mdi mdi-file-document-box"></i> Accredited Hospital Billing</h4>
+                <h4 class="page-title ls-2"> <i class="mdi mdi-file-document-box"></i> Non Accredited Hospital Billing</h4>
                 <div class="ms-auto text-end order-first order-sm-last">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                     <li class="breadcrumb-item">Head Office Accounting</li>
                     <li class="breadcrumb-item active" aria-current="page">
-                    Accredited Hospital
+                    Non Accredited Hospital
                     </li>
                     </ol>
                 </nav>

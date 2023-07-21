@@ -71,6 +71,7 @@
                   <table class="table table-sm table-hover table-responsive table-stripped"  id="ledgermbl">
                     <thead style="background-color:#eddcb7">
                       <tr>
+                        <th class="fw-bold">NO.</th>
                         <th class="fw-bold">HEALTHCARD NO.</th>
                         <th class="fw-bold">MEMBER NAME</th>
                         <th class="fw-bold">BUSINESS UNIT</th>
@@ -117,8 +118,8 @@
       },
       //Set column definition initialisation properties.
       columnDefs: [
-            { targets: 4, className: 'text-end' },
             { targets: 5, className: 'text-end' },
+            { targets: 6, className: 'text-end' },
         ],
       data: [],  // Empty data array
       deferRender: true,  // Enable deferred rendering

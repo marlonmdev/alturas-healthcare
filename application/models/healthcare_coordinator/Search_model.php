@@ -12,9 +12,12 @@ class Search_model extends CI_Model {
              ->or_like('CONCAT(first_name, " ",last_name)', $search_data)
              ->or_like('CONCAT(first_name, " ",middle_name, " ", last_name)', $search_data)
              ->or_like('CONCAT(first_name, " ",middle_name, " ", last_name, " ", suffix)', $search_data)
-             ->having('approval_status', 'Approved');
+             ->group_start()
+                ->where('approval_status', 'Approved')
+                ->or_where('approval_status', 'Done')
+             ->group_end();
     return $this->db->get_where('members')->result_array();
-  }
+}
 
   
   // function db_get_member_details($member_id) {

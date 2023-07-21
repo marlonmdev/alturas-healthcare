@@ -210,4 +210,52 @@ class Noa_model extends CI_Model {
   function db_get_healthcare_providers() {
     return $this->db->get('healthcare_providers')->result_array();
   }
+
+  function get_autocomplete($search_data) {
+    $this->db->select('tbl_1.member_id, tbl_1.emp_id, tbl_1.first_name, tbl_1.middle_name, tbl_1.last_name, tbl_1.suffix')
+             ->from('members as tbl_1')
+             ->join('max_benefit_limits as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+             ->like('tbl_1.first_name', $search_data)
+             ->or_like('tbl_1.middle_name', $search_data)
+             ->or_like('tbl_1.last_name', $search_data)
+             ->or_like('tbl_1.suffix', $search_data)
+             ->or_like('CONCAT(tbl_1.first_name, " ",tbl_1.last_name)', $search_data)
+             ->or_like('CONCAT(tbl_1.first_name, " ",tbl_1.middle_name, " ", tbl_1.last_name)', $search_data)
+             ->or_like('CONCAT(tbl_1.first_name, " ",tbl_1.middle_name, " ", tbl_1.last_name, " ", tbl_1.suffix)', $search_data)
+             ->group_start()
+                ->where('tbl_1.approval_status', 'Approved')
+                ->or_where('tbl_1.approval_status', 'Done')
+              ->group_end()
+              ->where('tbl_2.remaining_balance <=', 0);
+
+    return $this->db->get()->result_array();
+}
+
+function db_get_member_details($member_id) {
+  $this->db->select('*')
+          ->from('members as tbl_1')
+          ->join('max_benefit_limits as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+          ->where('tbl_1.member_id', $member_id);
+  return $this->db->get()->row_array();
+      
+}
+
+function db_check_hospital_exist($hospital_id) {
+  $this->db->where('hp_id', $hospital_id);
+  $query = $this->db->get('healthcare_providers');
+  return $query->num_rows() > 0 ? true : false;
+}
+
+function db_get_max_noa_id() {
+  $this->db->select_max('noa_id');
+  $query = $this->db->get('noa_requests');
+  return $query->row_array();
+}
+
+function db_insert_noa_request($post_data) {
+  return $this->db->insert('noa_requests', $post_data);
+}
+
+
+
 }

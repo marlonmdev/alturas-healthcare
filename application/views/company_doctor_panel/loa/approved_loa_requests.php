@@ -338,14 +338,19 @@
           percentage,
           approved_by,
           approved_on,
-          expiry_date
+          expiry_date,
+          hospitalized_date
         } = res;
 
         $("#viewLoaModal").modal("show");
 
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
-        
+        if(loa_request_type == 'Emergency'){
+          $('#hospitalized').show();
+        }else{
+          $('#hospitalized').hide();
+        }
         $('#a-loa-no').html(loa_no);
         $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
         $('#approved-by').html(approved_by);
@@ -375,6 +380,8 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
+        $('#hospitalized-date').html(hospitalized_date);
+
         
         if(work_related == 'Yes'){ 
 					if(percentage == ''){

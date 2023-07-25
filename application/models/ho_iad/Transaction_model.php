@@ -379,6 +379,48 @@ class Transaction_model extends CI_Model {
 	function get_business_units() {
         return $this->db->get('locate_business_unit')->result_array();
     }
+
+	var $rcv_charge_table_1 = 'billing';
+	var $rcv_charge_table_5 = 'members';
+	private function _fetch_receivables_bu_query($bu_status) {
+	$this->db->from($this->rcv_charge_table_1 . ' as tbl_1')
+			->join($this->rcv_charge_table_5 . ' as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
+			->where('tbl_1.bu_charging_status', $bu_status);
+
+		 if($this->input->post('filter')){
+			 $this->db->like('tbl_5.business_unit', $this->input->post('filter'));
+		 }
+	}
+
+	function fetch_receivables_bu($bu_status) {
+	$this->_fetch_receivables_bu_query($bu_status);
+	if ($_POST['length'] != -1)
+		$this->db->limit($_POST['length'], $_POST['start']);
+	$query = $this->db->get();
+	return $query->result_array();
+	}
+
+	function get_billing_id($charging_no) {
+        return $this->db->get_where('billing', ['bu_charging_no' => $charging_no])->result_array();
+    }
+
+	function get_bu_charges_info($billing_id) {
+        $this->db->from('billing as tbl_1');
+        $this->db->join('members as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id');
+        $this->db->where_in('tbl_1.billing_id', $billing_id);
+        $this->db->order_by('tbl_1.request_date', 'asc');
+        return $this->db->get()->result_array();
+     }
+
+	 function get_receivables_charging($charge_no) {
+        $this->db->from('billing as tbl_1');
+        $this->db->join('members as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id');
+        $this->db->where('tbl_1.bu_charging_no', $charge_no);
+        $this->db->order_by('tbl_1.request_date', 'asc');
+        return $this->db->get()->result_array();
+     }
+
+
 	
 
 

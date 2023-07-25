@@ -10,7 +10,7 @@
                     <ol class="breadcrumb">
                     <li class="breadcrumb-item">Head Office IAD</li>
                     <li class="breadcrumb-item active" aria-current="page">
-                        Receivables
+                        Paid Charge
                     </li>
                     </ol>
                 </nav>
@@ -23,7 +23,7 @@
         <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
        <div class="row">
             <div class="col-lg-12 pb-1">
-                <ul class="nav nav-tabs mb-4" role="tablist"> 
+            <ul class="nav nav-tabs mb-4" role="tablist"> 
                     <li class="nav-item">
                         <a
                             class="nav-link"
@@ -35,7 +35,7 @@
                     </li>
                     <li class="nav-item">
                         <a
-                            class="nav-link active"
+                            class="nav-link"
                             href="<?php echo base_url(); ?>head-office-iad/charges/bu-charges/receivables"
                             role="tab"
                             ><span class="hidden-sm-up"></span>
@@ -44,7 +44,7 @@
                     </li>
                     <li class="nav-item">
                         <a
-                            class="nav-link"
+                            class="nav-link active"
                             href="<?php echo base_url(); ?>head-office-iad/charges/bu-charges/paid"
                             role="tab"
                             ><span class="hidden-sm-up"></span>
@@ -83,7 +83,7 @@
                         <thead style="background-color:#00538C">
                             <tr>
                                 <td class="text-white">Charging No.</td>
-                                <td class="text-white">Transaction Date</td>
+                                <td class="text-white">Date Paid</td>
                                 <td class="text-white">Business Unit</td>
                                 <td class="text-white">Company Charge</td>
                                 <td class="text-white">Healthcare Advance</td>
@@ -109,6 +109,7 @@
             </div>
         </div>
     </div> 
+    <?php include 'view_cv_attached.php'; ?>
 </div>
 <script>
         const baseUrl = "<?php echo base_url(); ?>";
@@ -120,7 +121,7 @@
 
                 // Load data for the table's content from an Ajax source
                 ajax: {
-                    url: `${baseUrl}head-office-iad/charging/receivables/fetch`,
+                    url: `${baseUrl}head-office-iad/charging/paid/business-units/fetch`,
                     type: "POST",
                     data: function(data) {
                         data.token     = '<?php echo $this->security->get_csrf_hash(); ?>';
@@ -134,6 +135,7 @@
                     { targets: 3, className: 'text-end' },
                     { targets: 4, className: 'text-end' },
                     { targets: 5, className: 'text-end' },
+                    { targets: 6, className: 'text-center' },
                 ],
                 info: false,
                 paging: false,
@@ -149,4 +151,40 @@
 
         });
 
+    const viewSupDoc = (file_name,charging_no) => {
+        $('#viewCVModal').modal('show');
+        $('#cancel').hide();
+        $('#header').html('<h4 class="text-info">Charging No. [ '+charging_no+' ]</h4>');
+        let pdfFile = `${baseUrl}uploads/bu_charges_docs/${file_name}`;
+        let fileExists = checkFileExists(pdfFile);
+
+        if(fileExists){
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', pdfFile, true);
+        xhr.responseType = 'blob';
+
+        xhr.onload = function(e) {
+            if (this.status == 200) {
+            let blob = this.response;
+            let reader = new FileReader();
+
+            reader.onload = function(event) {
+                let dataURL = event.target.result;
+                let iframe = document.querySelector('#pdf-c-viewer');
+                iframe.src = dataURL;
+            };
+            reader.readAsDataURL(blob);
+            }
+        };
+        xhr.send();
+        }
+    }
+
+    const checkFileExists = (fileUrl) => {
+        let xhr = new XMLHttpRequest();
+        xhr.open('HEAD', fileUrl, false);
+        xhr.send();
+
+        return xhr.status == "200" ? true: false;
+    }
 </script>

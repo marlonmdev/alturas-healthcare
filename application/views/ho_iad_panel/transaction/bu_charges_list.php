@@ -45,7 +45,7 @@
                     <li class="nav-item">
                         <a
                             class="nav-link"
-                            href="<?php echo base_url(); ?>head-office-iad/charges/bu-charges"
+                            href="<?php echo base_url(); ?>head-office-iad/charges/bu-charges/paid"
                             role="tab"
                             ><span class="hidden-sm-up"></span>
                             <span class="hidden-xs-down fs-5 font-bold">Paid Charges</span></a

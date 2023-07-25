@@ -771,6 +771,329 @@ class Transaction_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 
+	function fetch_bu_receivables() {
+		$token = $this->security->get_csrf_hash();
+		$bu_status = 'Receivable';
+		$receivables = $this->transaction_model->fetch_receivables_bu($bu_status);
+		$data = [];
+		$type = 'unpaid';
+		$totals = [
+			'company_charge' => 0,
+			'cash_advance' => 0,
+		];
+		$uniqueEntries = [];
+
+		foreach ($receivables as $receivable) {
+			$chargingKey = $receivable['bu_charging_no'];
+			$charging = $this->transaction_model->get_billing_id($receivable['bu_charging_no']);
+			$IDs = array_column($charging, 'billing_id');
+			$encodedArray = urlencode(serialize($IDs));
+
+			if (!isset($uniqueEntries[$chargingKey])) {
+				$uniqueEntries[$chargingKey] = [
+					'company_charge' => 0,
+					'cash_advance' => 0,
+					'count' => 0,
+					'action' => '<a href="'.base_url().'head-office-iad/charging/bu-receivables/fetch/'.$type.'/'.$encodedArray.'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a> '
+				];
+			}
+	
+			if ($receivable['company_charge'] && $receivable['cash_advance'] != '') {
+				$uniqueEntries[$chargingKey]['company_charge'] += floatval($receivable['company_charge']);
+				$uniqueEntries[$chargingKey]['cash_advance'] += floatval($receivable['cash_advance']);
+				$uniqueEntries[$chargingKey]['count']++;
+			}
+		}
+	
+		foreach ($uniqueEntries as $key => $entry) {
+			$row = [];
+			$row[] = '<span class="text-info fw-bold">'.$key.'</span>';
+			$row[] = date('F d, Y', strtotime($receivable['bu_generated_on']));
+			$row[] = $receivable['business_unit'];
+			$row[] = number_format($entry['company_charge'], 2, '.', ',');
+			$row[] = number_format($entry['cash_advance'], 2, '.', ',');
+			$row[] = number_format(floatval($entry['cash_advance'] + $entry['company_charge']), 2, '.', ',');
+			$row[] = '<span class="bg-warning text-white badge rounded-pill">'.$receivable['bu_charging_status'].'</span>';
+			$row[] = $entry['action'];
+			$data[] = $row;
+	
+			$totals['company_charge'] += $entry['company_charge'];
+			$totals['cash_advance'] += $entry['cash_advance'];
+		}
+	
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+			"totals" => $totals,
+		];
+	
+		echo json_encode($output);
+	}
+
+	function view_bu_receivables_details() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['type'] = $this->uri->segment(5);
+		$encodedArray = $this->uri->segment(6);
+		$billing_id = unserialize(urldecode($encodedArray));
+		$details = $this->transaction_model->get_bu_charges_info($billing_id);
+
+		$table = '<div class="table-responsive"><table class="table table-stripped table-responsive">';
+		$table .= ' <thead>
+						<tr>
+							<th class="fw-bold">Healthcard No.</th>
+							<th class="fw-bold">Employee`s Name</th>
+							<th class="fw-bold">Request Date</th>
+							<th class="fw-bold">LOA/NOA No.</th>
+							<th class="fw-bold">Payment No.</th>
+							<th class="fw-bold text-end">Company Charge</th>
+							<th class="fw-bold text-end">Healthcare Advance</th>
+							<th class="fw-bold text-end">Total Charge</th>
+						</tr>
+					</thead>';
+
+		$previousHealthCardNo = '';
+		$previousFullName = '';
+		$totalPayableSum = 0;
+		
+		foreach ($details as $charge) {
+			if ($charge['company_charge'] && $charge['cash_advance'] != '') {
+
+				$currentHealthCardNo = $charge['health_card_no'];
+				$currentFullName = $charge['first_name'] . ' ' . $charge['middle_name'] . ' ' . $charge['last_name'] . ' ' . $charge['suffix'];
+		
+				$total_payable = floatval($charge['company_charge'] + $charge['cash_advance']);
+		
+				$healthCardNo = ($currentHealthCardNo !== $previousHealthCardNo) ? $currentHealthCardNo : '';
+				$fullName = ($currentFullName !== $previousFullName) ? $currentFullName : '';
+				if($charge['loa_id'] != ''){
+					$loa = $this->transaction_model->get_loa_info($charge['loa_id']);
+					$loa_noa_no = $loa['loa_no'];
+					$request_date = date('m/d/Y',strtotime($loa['request_date']));
+				}else if($charge['noa_id'] != ''){
+					$noa = $this->transaction_model->get_noa_info($charge['noa_id']);
+					$loa_noa_no = $noa['noa_no'];
+					$request_date = date('m/d/Y',strtotime($noa['request_date']));
+				}
+				$table .= ' <tbody>
+								<tr>
+									<td class="fs-6">' . $healthCardNo . '</td>
+									<td class="fs-6">' . $fullName . '</td>
+									<td class="fs-6">' . $request_date . '</td>
+									<td class="fs-6">' . $loa_noa_no . '</td>
+									<td class="fs-6">' . $charge['payment_no'] . '</td>
+									<td class="fs-6 text-end">' . number_format($charge['company_charge'],2,'.',',') . '</td>
+									<td class="fs-6 text-end">' . number_format($charge['cash_advance'],2,'.',',') . '</td>
+									<td class="fs-6 text-end">' . number_format($total_payable, 2, '.', ',') . '</td>
+								</tr>
+							</tbody>';
+		
+				$previousHealthCardNo = $currentHealthCardNo;
+				$previousFullName = $currentFullName;
+
+				$totalPayableSum += $total_payable;
+				$data['charging_no'] = $charge['bu_charging_no'];
+				$data['business_unit'] = $charge['business_unit'];
+
+			}
+		}
+		
+		$table .= '<tfoot>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td class="fw-bold text-end">TOTAL</td>
+					<td class="fw-bold text-end">'.number_format($totalPayableSum,2,'.',',').'</td>
+				</tr>
+			</tfoot>';
+
+		$table .= '</table></div>';
+		$data['table'] = $table;
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_iad_panel/transaction/bu_charges_receivables_details.php');
+		$this->load->view('templates/footer');
+
+	}
+
+	function print_rcv_bu_charging($business_unit, $charge_no, $type) {
+		$this->security->get_csrf_hash();
+		$this->load->library('tcpdf_library');
+		$pdf = new TCPDF();
+
+		$business_unit =  base64_decode($business_unit);
+		$charge_no =  base64_decode($charge_no);
+		$type =  base64_decode($type);
+
+		$charging = $this->transaction_model->get_receivables_charging($charge_no);
+		if($type == 'unpaid'){
+			$header = '<h3>Business Unit Charges</h3>';
+			$pdfname = 'Charge_'.$business_unit .'_'.date('YmdHi');
+		}else{
+			$header = '<h3>Paid Business Unit Charges</h3>';
+			$pdfname = 'PaidCharge_'.$business_unit .'_'.date('YmdHi');
+		}
+
+		$title = '<img src="'.base_url().'assets/images/HC_logo.png" style="width:110px;height:70px">';
+
+		$title .= '<style>h3 { margin: 0; padding: 0; line-height: .5; }</style>
+					'.$header.'
+					<h3>'.$business_unit.'</h3>
+					<h3>'.$charge_no.'</h3><br>';
+
+		$dateGenerate = '<small>Transaction Date: ' . date('m/d/Y h:i A').'</small> <small>( Reprinted Copy )</small><br>';
+		$PDFdata = '<table style="border:.5px solid #000; padding:3px" class="table table-bordered">';
+		$PDFdata .= ' <thead>
+						<tr class="border-secondary">
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Healthcard No.</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Employee`s Name</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Request Date</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>LOA/NOA No.</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Payment No.</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Company Charge</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Healthcare Advance</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Total Charge</strong></th>
+						</tr>
+					</thead>';
+
+		$previousHealthCardNo = '';
+		$previousFullName = '';
+		$totalPayableSum = 0;
+		$healthCardTotals = []; // Store totals for each health_card_no
+		
+		foreach ($charging as $charge) {
+			if ($charge['company_charge'] && $charge['cash_advance'] != '') {
+
+				$currentHealthCardNo = $charge['health_card_no'];
+				$currentFullName = $charge['first_name'] . ' ' . $charge['middle_name'] . ' ' . $charge['last_name'] . ' ' . $charge['suffix'];
+		
+				$total_payable = floatval($charge['company_charge'] + $charge['cash_advance']);
+		
+				$healthCardNo = ($currentHealthCardNo !== $previousHealthCardNo) ? $currentHealthCardNo : '';
+				$fullName = ($currentFullName !== $previousFullName) ? $currentFullName : '';
+				if($charge['loa_id'] != ''){
+					$loa = $this->transaction_model->get_loa_info($charge['loa_id']);
+					$loa_noa_no = $loa['loa_no'];
+					$request_date = date('m/d/Y',strtotime($loa['request_date']));
+				}else if($charge['noa_id'] != ''){
+					$noa = $this->transaction_model->get_noa_info($charge['noa_id']);
+					$loa_noa_no = $noa['noa_no'];
+					$request_date = date('m/d/Y',strtotime($noa['request_date']));
+				}
+				$PDFdata .= ' <tbody>
+								<tr>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">' . $healthCardNo . '</td>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">' . $fullName . '</td>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">' . $request_date . '</td>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">' . $loa_noa_no . '</td>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">' . $charge['payment_no'] . '</td>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">' . number_format($charge['company_charge'],2,'.',',') . '</td>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">' . number_format($charge['cash_advance'],2,'.',',') . '</td>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">' . number_format($total_payable, 2, '.', ',') . '</td>';
+				$PDFdata .= '</tr>
+							</tbody>';
+		
+				$previousHealthCardNo = $currentHealthCardNo;
+				$previousFullName = $currentFullName;
+
+				$totalPayableSum += $total_payable;
+			}
+		}
+
+		$PDFdata .= '<tfoot>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td class="fw-bold">TOTAL</td>
+						<td>'.number_format($totalPayableSum,2,'.',',').'</td>
+					</tr>
+				</tfoot>';
+
+		$PDFdata .= '</table>';
+
+		$pdf->setPrintHeader(false);
+		$pdf->setTitle('Business Unit Charging Report');
+		$pdf->setFont('times', '', 10);
+		$pdf->AddPage('L', 'LEGAL');
+		$pdf->WriteHtmlCell(0, 0, '', '', $dateGenerate, 0, 1, 0, true, 'R', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', '', 0, 1, 0, true, 'C', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'R', true);
+		$pdf->lastPage();
+		$pageCount = $pdf->getAliasNumPage(); // Get the number of pages
+		for ($i = 1; $i <= $pageCount; $i++) {
+			$pdf->setPage($i); // Set the page number
+			$pdf->writeHTMLCell(0, 0, '', '', 'Page '.$i.' of '.$pageCount, 0, 1, 0, true, 'R', true);
+		}
+		$pdf->Output($pdfname.'.pdf', 'I');
+	}
+
+	function fetch_bu_paid_charge() {
+		$token = $this->security->get_csrf_hash();
+		$bu_status = 'Paid';
+		$receivables = $this->transaction_model->fetch_receivables_bu($bu_status);
+		$data = [];
+		$type = 'paid';
+		$totals = [
+			'company_charge' => 0,
+			'cash_advance' => 0,
+		];
+		$uniqueEntries = [];
+
+		foreach ($receivables as $receivable) {
+			$chargingKey = $receivable['bu_charging_no'];
+			$charging = $this->transaction_model->get_billing_id($receivable['bu_charging_no']);
+			$IDs = array_column($charging, 'billing_id');
+			$encodedArray = urlencode(serialize($IDs));
+
+			if (!isset($uniqueEntries[$chargingKey])) {
+				$uniqueEntries[$chargingKey] = [
+					'company_charge' => 0,
+					'cash_advance' => 0,
+					'count' => 0,
+					'action' => '<a href="'.base_url().'head-office-iad/charging/bu-receivables/fetch/'.$type.'/'.$encodedArray.'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a> <a href="JavaScript:void(0)" onclick="viewSupDoc(\''.$receivable['bu_proof_payment'].'\', \''.$chargingKey.'\')" data-bs-toggle="tooltip" title="View Supporting Document"><i class="mdi mdi-file-find fs-2 pe-2 text-danger"></i></a>'
+				];
+			}
+	
+			if ($receivable['company_charge'] && $receivable['cash_advance'] != '') {
+				$uniqueEntries[$chargingKey]['company_charge'] += floatval($receivable['company_charge']);
+				$uniqueEntries[$chargingKey]['cash_advance'] += floatval($receivable['cash_advance']);
+				$uniqueEntries[$chargingKey]['count']++;
+			}
+		}
+	
+		foreach ($uniqueEntries as $key => $entry) {
+			$row = [];
+			$row[] = '<span class="text-info fw-bold">'.$key.'</span>';
+			$row[] = date('F d, Y', strtotime($receivable['bu_tagged_paid_on']));
+			$row[] = $receivable['business_unit'];
+			$row[] = number_format($entry['company_charge'], 2, '.', ',');
+			$row[] = number_format($entry['cash_advance'], 2, '.', ',');
+			$row[] = number_format(floatval($entry['cash_advance'] + $entry['company_charge']), 2, '.', ',');
+			$row[] = '<span class="bg-success text-white badge rounded-pill">'.$receivable['bu_charging_status'].'</span>';
+			$row[] = $entry['action'];
+			$data[] = $row;
+	
+			$totals['company_charge'] += $entry['company_charge'];
+			$totals['cash_advance'] += $entry['cash_advance'];
+		}
+	
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+			"totals" => $totals,
+		];
+	
+		echo json_encode($output);
+	}
+
+
 
 
 	//END ==================================================

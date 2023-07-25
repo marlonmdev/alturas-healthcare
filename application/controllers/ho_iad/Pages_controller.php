@@ -105,4 +105,12 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
+	function view_bu_paid_charges() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bu'] = $this->transaction_model->get_business_units();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_iad_panel/transaction/bu_charges_paid');
+		$this->load->view('templates/footer');
+	}
+
 }

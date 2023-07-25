@@ -6,12 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex,nofollow" />
     <title>Alturas Healthcare</title>
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="<?php echo base_url(); ?>assets/images/hmo-logo.png"
-    />
+    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo base_url(); ?>assets/images/hmo-logo.png"/>
     <!-- Start Custom CSS -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/matrixDashboard/dist/css/style.min.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/matrixDashboard/dist/css/cards.css" />
@@ -64,40 +59,32 @@
     </div>
     <!-- End of Logout Modal-->
 
-    <div
-      id="main-wrapper"
-      data-layout="vertical"
-      data-navbarbg="skin5"
-      data-sidebartype="full"
-      data-sidebar-position="absolute"
-      data-header-position="absolute"
-      data-boxed-layout="full"
-    > 
+    <div id="main-wrapper" data-layout="vertical" data-navbarbg="skin5" data-sidebartype="full" data-sidebar-position="absolute" data-header-position="absolute" data-boxed-layout="full"> 
 
-    <!-- Start of DB Backup Modal-->
-    <div class="modal fade" id="dbBackupModal" tabindex="-1" role="dialog" aria-labelledby="dbBackupModal" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title ls-2" id="dbBackupModal"><strong>Database Backup</strong></h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-            </button>
-          </div>
-          <div class="modal-body text-center fs-4">
-            <form method="POST" action="<?php echo base_url(); ?>super-admin/database-backup" id="dbBackupForm">
-              <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
-              <div class="form-group mb-3">
-                <input type="text" class="form-control" name="backup-name" id="backup-name" placeholder="Enter File Name" required>
-              </div>
+      <!-- Start of DB Backup Modal-->
+      <div class="modal fade" id="dbBackupModal" tabindex="-1" role="dialog" aria-labelledby="dbBackupModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title ls-2" id="dbBackupModal"><strong>Database Backup</strong></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+              </button>
+            </div>
+            <div class="modal-body text-center fs-4">
+              <form method="POST" action="<?php echo base_url(); ?>super-admin/database-backup" id="dbBackupForm">
+                <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
+                <div class="form-group mb-3">
+                  <input type="text" class="form-control" name="backup-name" id="backup-name" placeholder="Enter File Name" required>
+                </div>
 
-              <button type="submit" class="btn btn-primary me-1"><i class="mdi mdi-content-save"></i> Submit</button>
-              <button type="button" class="btn btn-dark" data-bs-dismiss="modal"><i class="mdi mdi-close-box"></i> Close</button>
-            </form>
+                <button type="submit" class="btn btn-primary me-1"><i class="mdi mdi-content-save"></i> Submit</button>
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal"><i class="mdi mdi-close-box"></i> Close</button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <!-- End of DB Backup Modal-->
+      <!-- End of DB Backup Modal-->
 
       <!-- Topbar header -->
       <header class="topbar" data-navbarbg="skin5">
@@ -116,33 +103,21 @@
                   height="auto"
                 />
               </b>
-              <!--End Logo icon -->
             </a>
             <!-- End Logo -->
             
-
             <!-- Toggle which is visible on mobile only -->
-            <a
-              class="nav-toggler waves-effect waves-light d-block d-md-none"
-              href="javascript:void(0)"
-              ><i class="ti-menu ti-close"></i
-            ></a>
+            <a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)"><i class="ti-menu ti-close"></i></a>
           </div>
           <!-- End Logo -->
-          <div
-            class="navbar-collapse collapse"
-            id="navbarSupportedContent"
-            data-navbarbg="skin5"
-          >
+
+          <div class="navbar-collapse collapse" id="navbarSupportedContent" data-navbarbg="skin5">
             <!-- toggle and nav items -->
             <ul class="navbar-nav float-start me-auto">
               <li class="nav-item d-none d-md-block">
-                <a
-                  class="nav-link sidebartoggler waves-effect waves-light"
-                  href="javascript:void(0)"
-                  data-sidebartype="mini-sidebar"
-                  ><i class="mdi mdi-menu font-24"></i
-                ></a>
+                <a class="nav-link sidebartoggler waves-effect waves-light" href="javascript:void(0)" data-sidebartype="mini-sidebar">
+                  <i class="mdi mdi-menu font-24"></i>
+                </a>
               </li>
 
              
@@ -162,35 +137,14 @@
 
               <!-- User profile -->
               <li class="nav-item dropdown">
-                <a
-                  class="
-                    nav-link
-                    dropdown-toggle
-                    text-muted
-                    waves-effect waves-dark
-                    pro-pic
-                  "
-                  href="#"
-                  id="navbarDropdown"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  <img
-                    src="<?php echo base_url(); ?>assets/images/default.png"
-                    alt="user"
-                    class="rounded-circle"
-                    width="31"
-                  />
+                <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <img src="<?php echo base_url(); ?>assets/images/default.png" alt="user" class="rounded-circle" width="31"/>
                 </a>
-                <ul
-                  class="dropdown-menu dropdown-menu-end user-dd animated"
-                  aria-labelledby="navbarDropdown"
-                >
+
+                <ul class="dropdown-menu dropdown-menu-end user-dd animated" aria-labelledby="navbarDropdown">
                   <!-- My Profile Link -->
                   <?php if ($this->uri->segment(1) == 'member') : ?>
-                    <a class="dropdown-item" href="<?php echo base_url() . 'member/profile' ?>"
-                      >
+                    <a class="dropdown-item" href="<?php echo base_url() . 'member/profile' ?>">
                       <i class="mdi mdi-account me-1 ms-1"></i> My Profile
                     </a>
                     <div class="dropdown-divider"></div>

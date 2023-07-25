@@ -300,14 +300,20 @@
           approved_by,
           approved_on,
           expiry_date,
-          percentage
+          percentage,
+          hospitalized_date
         } = res;
 
         $("#viewLoaModal").modal("show");
 
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
-        
+        if(loa_request_type == 'Emergency'){
+          $('#hospitalized').show();
+        }else{
+          $('#hospitalized').hide();
+        }
+        $('#hospitalized-date').html(hospitalized_date);
         $('#loa-no').html(loa_no);
         $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
         $('#approved-by').html(approved_by);

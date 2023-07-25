@@ -142,11 +142,6 @@ class Loa_model extends CI_Model {
     return $this->db->get()->result_array();
   }
 
-  function db_insert_loa_request($post_data) {
-    $query = $this->db->insert('loa_requests', $post_data);
-    return $query ? $this->db->insert_id() : false;
-  }
-
   function db_insert_loa_med_services($post_data) {
     return $this->db->insert('loa_cost_items', $post_data);
   }
@@ -244,11 +239,6 @@ class Loa_model extends CI_Model {
     return $this->db->update('loa_requests', $data);
   }
 
-  // function db_disapprove_loa_request($loa_id, $data) {
-  //   $this->db->where('loa_id', $loa_id);
-  //   return $this->db->update('loa_requests', $data);
-  // }
-
   function db_disapprove_loa_request($loa_id, $disapproved_by, $disapprove_reason, $disapproved_on) {
     $data = array(
       'status' => 'Disapproved',
@@ -304,43 +294,94 @@ class Loa_model extends CI_Model {
     }
 
     function get_cancel_datatables($status) {
-      $this->_get_cancell_datatables_query($status);
-      if ($_POST['length'] != -1)
-        $this->db->limit($_POST['length'], $_POST['start']);
-      $query = $this->db->get();
-      return $query->result_array();
+        $this->_get_cancell_datatables_query($status);
+        if ($_POST['length'] != -1)
+          $this->db->limit($_POST['length'], $_POST['start']);
+        $query = $this->db->get();
+        return $query->result_array();
     }
 
     function count_cancell_filtered($status) {
-      $this->_get_cancell_datatables_query($status);
-      $query = $this->db->get();
-      return $query->num_rows();
+        $this->_get_cancell_datatables_query($status);
+        $query = $this->db->get();
+        return $query->num_rows();
     }
 
     function count_all_cancell($status) {
-      $this->db->from($this->table1)
-              ->where('status', $status);
-      return $this->db->count_all_results();
+        $this->db->from($this->table1)
+                ->where('status', $status);
+        return $this->db->count_all_results();
     }
     // End of server-side processing datatables
 
     function db_get_healthcare_providers() {
-      return $this->db->get('healthcare_providers')->result_array();
+        return $this->db->get('healthcare_providers')->result_array();
+    }
+
+    function db_get_company_doctors() {
+        $query = $this->db->get('company_doctors');
+        return $query->result_array();
     }
 
     function db_update_loa_request($loa_id, $post_data) {
-    $this->db->where('loa_id', $loa_id);
-    return $this->db->update('loa_requests', $post_data);
-  }
-  // function db_get_llr_data() {
-  //   // $this->db->select('tbl_1.loa_id, tbl_1.loa_no, tbl_1.first_name, tbl_1.middle_name, tbl_1.last_name, tbl_1.suffix, tbl_2.hp_name, tbl_1.loa_request_type, tbl_1.med_services, tbl_1.request_date, tbl_1.rx_file, tbl_1.status')
-  //   //          ->from('loa_requests as tbl_1')
-  //   //          ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
-  //   //          ->where('tbl_1.status', 'Approved')
-  //   //          ->order_by('loa_id', 'DESC');
-  //   // return $this->db->get()->result_array();
-  //   $this->db->select('approved_on,expiration_date');
-  //   $query = $this->db->get_where('loa_requests', ['status' => 'Approved']);
-  //   return $query->result_array();
-  // }
+        $this->db->where('loa_id', $loa_id);
+        return $this->db->update('loa_requests', $post_data);
+    }
+
+    function get_autocomplete($search_data) {
+        $this->db->select('tbl_1.member_id, tbl_1.emp_id, tbl_1.first_name, tbl_1.middle_name, tbl_1.last_name, tbl_1.suffix')
+                ->from('members as tbl_1')
+                ->join('max_benefit_limits as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+                ->like('tbl_1.first_name', $search_data)
+                ->or_like('tbl_1.middle_name', $search_data)
+                ->or_like('tbl_1.last_name', $search_data)
+                ->or_like('tbl_1.suffix', $search_data)
+                ->or_like('CONCAT(tbl_1.first_name, " ",tbl_1.last_name)', $search_data)
+                ->or_like('CONCAT(tbl_1.first_name, " ",tbl_1.middle_name, " ", tbl_1.last_name)', $search_data)
+                ->or_like('CONCAT(tbl_1.first_name, " ",tbl_1.middle_name, " ", tbl_1.last_name, " ", tbl_1.suffix)', $search_data)
+                ->group_start()
+                    ->where('tbl_1.approval_status', 'Approved')
+                    ->or_where('tbl_1.approval_status', 'Done')
+                ->group_end()
+                ->where('tbl_2.remaining_balance', 0);
+        return $this->db->get()->result_array();
+    }
+
+    function db_get_member_details($member_id) {
+        $this->db->select('*')
+                ->from('members as tbl_1')
+                ->join('max_benefit_limits as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+                ->where('tbl_1.member_id', $member_id);
+        return $this->db->get()->row_array();
+            
+    }
+
+    function db_get_cost_types_by_hp($hp_id) {
+        $query = $this->db->get_where('cost_types', ['hp_id' => $hp_id]);
+        return $query->result_array();
+    }
+
+    function db_check_healthcare_provider_exist($hp_id) {
+        $this->db->where('hp_id', $hp_id);
+        $query = $this->db->get('healthcare_providers');
+        return $query->num_rows() > 0 ? true : false;
+    }
+
+    function db_get_max_loa_id() {
+        $this->db->select_max('loa_id');
+        $query = $this->db->get('loa_requests');
+        return $query->row_array();
+    }
+
+    function db_get_member_infos($emp_id){
+        $this->db->where('emp_id', $emp_id);
+        $query = $this->db->get('members');
+        return $query->num_rows() > 0 ? $query->row_array() : false;
+    }
+
+    function db_insert_loa_request($post_data) {
+        $query = $this->db->insert('loa_requests', $post_data);
+        return $query ? $this->db->insert_id() : false;
+    }
+
 }

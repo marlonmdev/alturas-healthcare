@@ -83,6 +83,7 @@
                       <th style="color: white">BILLED DATE</th>
                       <th style="color: white">COMPANY CHARGE</th>
                       <th style="color: white">PERSONAL CHARGE</th>
+                      <th style="color: white">HEALTHCARE ADVANCE</th>
                       <th style="color: white">VIEW SOA</th>
                       <th style="color: white">HOSPITAL BILL</th>
                       <th style="color: white">STATUS</th>
@@ -112,50 +113,7 @@
   <?php include 'view_pdf_bill_modal.php'; ?>
 </div>
 
-<!-- Guarantee Letter -->
-<!-- <div class="modal fade pt-4" id="GuaranteeLetter" tabindex="-1" data-bs-backdrop="static">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title ls-2">GUARANTEE LETTER</h4>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      
-      <div class="modal-body">
-        <form method="post" action="<?php echo base_url(); ?>healthcare-coordinator/loa/billed/submit_letter" id="Letter" enctype="multipart/form-data">
-          <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
-          <input type="hidden" name="emp-id" id="emp-id">
-          <input type="hidden" name="billing-id" id="billing-id">
-                        
-          <div class="col-lg-8 pt-1">
-            <input type="hidden" class="form-control text-danger fs-5 fw-bold" name="emp-name" id="emp-name" placeholder="Employee Name" readonly>
-          </div>
-                        
-          <div class="row pt-5">
-            <div class="col-lg-10 offset-1">
-              <div class="form-group">
-                <label for="letter" style="font-size: 20px">Upload File:</label>
-                <input type="file" class="form-control-file dropify" name="letter" id="letter" accept=".jpg, .jpeg, .png, .gif, .pdf" data-max-file-size="5M" onchange="showPreview(this)">
-              </div>
-              <div style="font-size: 20px; text-align:center" id="image-preview" class="mb-3"></div>
-              <p style="font-size: 20px; text-align:center" id="pdf-preview" class="mb-0"></p>
-              <span id="letter_error" class="text-danger"></span>
-            </div>
-          </div><br>
 
-          <div class="row pt-3">
-            <div class="col-sm-12 mb-sm-0 d-flex justify-content-end">
-              <button type="submit" class="btn btn-primary me-2"><i class="mdi mdi-content-save"></i> UPLOAD</button>
-              <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="mdi mdi-close-box"></i> CANCEL</button>
-            </div>
-          </div>
-
-        </form>
-      </div>
-    </div>
-  </div>
-</div> -->
-<!-- End -->
 
 <!-- GUARANTEE LETTER -->
 <div class="modal fade pt-4" id="GuaranteeLetter" tabindex="-1" data-bs-backdrop="static">

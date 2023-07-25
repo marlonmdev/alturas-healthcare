@@ -1,29 +1,29 @@
-<div class="modal fade" id="managersKeyMBLModal" tabindex="-1" data-bs-backdrop="static">
+<div class="modal fade" id="LOAMngKeyModal" tabindex="-1" data-bs-backdrop="static">
   <div class="modal-dialog modal-md">
     <div class="modal-content">
       <div class="modal-header bg-cyan">
-        <h5 class="modal-title text-white ls-1"><i class="mdi mdi-account-key"></i> ENTER MANAGER'S KEY TO RESET MBL</h5>
+        <h5 class="modal-title text-white ls-1"><i class="mdi mdi-account-key"></i> ENTER MANAGER'S KEY TO PROCEED</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
       <div class="modal-body">
-        <form id="managersKeyFormMBL" autocomplete="off">
+        <form id="managersKeyReqLOANOA" autocomplete="off">
+          <span class="text-danger">This requisition is for Members with Zero MBL and Company Related situations.</span>
           <input type="hidden" name="token" id="token" value="<?= $this->security->get_csrf_hash(); ?>">
-
+          <input type="hidden" id="req-type-key">
           <div class="text-center">
-            <strong id="msg-error-mbl" class="text-danger ls-1 mx-1"></strong>
+            <strong id="msg-error-req-loa" class="text-danger ls-1 mx-1"></strong>
           </div>
-
           <div class="mb-3">
             <label class="ls-1">Username</label>
-            <input type="text" class="form-control" name="mgr-username-mbl" id="mgr-username-mbl" placeholder="Enter Username">
-            <em id="mgr-username-error-mbl" class="text-danger"></em>
+            <input type="text" class="form-control" name="mgr-username-req-loa" id="mgr-username-req-loa" placeholder="Enter Username">
+            <em id="mgr-username-error-req-loa" class="text-danger"></em>
           </div>
 
           <div class="mb-4">
             <label class="ls-1">Password</label>
-            <input type="password" class="form-control input-password" name="mgr-password-mbl" id="mgr-password-mbl" placeholder="Enter Password">
-            <em id="mgr-password-error-mbl" class="text-danger"></em>
+            <input type="password" class="form-control input-password" name="mgr-password-req-loa" id="mgr-password-req-loa" placeholder="Enter Password">
+            <em id="mgr-password-error-req-loa" class="text-danger"></em>
           </div>              
 
           <div class="row mt-2">

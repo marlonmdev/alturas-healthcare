@@ -8,16 +8,16 @@
       <div class="modal-body">
         <div class="container" id="pf-table">
           <table class="table table-bordered table-striped table-hover table-responsive">
-            <thead class="fw-bold fs-6">
+            <thead class="fw-bold fs-6" style="background-color:#CE9421">
               <tr>
-                <th class="fw-bold">MEDICAL SERVICES</th>
-                <th class="fw-bold">STATUS</th>
-                <th class="fw-bold">DATE & TIME PERFORMED</th>
-                <th class="fw-bold">PHYSICIAN</th>
-                <th class="fw-bold">REASON FOR CANCELLATION</th>
+                <th class="fw-bold" style="color: black;font-size:12px">MEDICAL SERVICES</th>
+                <th class="fw-bold" style="color: black;font-size:12px">STATUS</th>
+                <th class="fw-bold" style="color: black;font-size:12px">DATE & TIME PERFORMED</th>
+                <th class="fw-bold" style="color: black;font-size:12px">PHYSICIAN</th>
+                <th class="fw-bold" style="color: black;font-size:12px">REASON FOR CANCELLATION</th>
               </tr>
             </thead>    
-            <tbody id="pf-tbody">
+            <tbody id="pf-tbody" style="color: white;font-size:12px">
             </tbody>
           </table>
                     

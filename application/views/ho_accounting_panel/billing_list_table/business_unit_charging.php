@@ -115,7 +115,7 @@
                                 <td class="text-white">Company Charge</td>
                                 <td class="text-white">Healthcare Advance</td>
                                 <td class="text-white">Total Charge</td>
-                                <td class="text-white">Status</td>
+                                <td class="text-white"></td>
                             </tr>
                         </thead>
                         <tbody>
@@ -136,6 +136,8 @@
                 </div>
             </div>
         </div>
+    <?php include 'view_charge_details.php'; ?>
+
     </div> 
 </div>
  <?php include 'view_payment_details.php' ?>
@@ -331,6 +333,36 @@
             var base_url = `${baseUrl}`;
             var win = window.open(base_url + "printBUCharge/pdfBUCharging/" + btoa(bu_filter) + "/" + btoa(charging_no), '_blank');
         }
+
+        const viewChargeDetails = (billing_id) => {
+        $.ajax({
+            url: `${baseUrl}head-office-accounting/charging/view-details`,
+            type: 'GET',
+            data: {
+                'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
+                'billing_id' : billing_id
+            },
+            success: function(data){
+                const res = JSON.parse(data);
+                const {
+                    token, payment_no, billing_no, loa_noa_no, percentage, before_mbl, net_bill, company_charge, personal_charge, cash_advance, after_mbl, billed_on
+                } = res;
+
+                $('#viewDetailsModal').modal('show');
+                $('#payment-no').html(payment_no);
+                $('#billing-no').html(billing_no);
+                $('#loa-noa-no').html(loa_noa_no);
+                $('#percentage').html(percentage);
+                $('#current-mbl').html(before_mbl);
+                $('#hospital-bill').html(net_bill);
+                $('#company-charge').html(company_charge);
+                $('#personal-charge').html(personal_charge);
+                $('#cash-advance').html(cash_advance);
+                $('#remaining-mbl').html(after_mbl);
+                $('#billed-on').html(billed_on);
+            }
+        });
+    }
 
 
     </script>

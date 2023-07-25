@@ -32,14 +32,21 @@
                 </div>
               </div>
             </div>
-            <div class="col">
+            <div class="col pb-3">
               <label class="fs-5 colored-label">Spot Report :</label>
               <input type="file" accept=".pdf, image/*" class="form-control" name="spot-report"  id="spot-report" onchange="previewFile('spot-report')">
-            </div>   
+            </div>  
+
             <div class="col pt-3 pb-3">
               <label class="fs-5 colored-label">Incident Report :</label>
-                <input type="file" accept=".pdf, image/*" class="form-control" name="incident-report" id="incident-report" onchange="previewFile('incident-report')">
-            </div>       
+              <input type="file" accept=".pdf, image/*" class="form-control" name="incident-report" id="incident-report" onchange="previewFile('incident-report')">
+            </div>
+
+            <div class="col pt-3 pb-3">
+              <label class="fs-5 colored-label">Police Report :</label>
+              <input type="file" accept=".pdf, image/*" class="form-control" name="police-report" id="police-report" onchange="previewFile('police-report')">
+            </div>
+
             <div class="row mb-2 pt-3">
               <div class="col-12 text-center">
                 <button type="submit" class="btn btn-info ls-1 me-2">SUBMIT</button>

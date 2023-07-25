@@ -55,6 +55,7 @@
             <?php include 'view_check_voucher.php'; ?>
         </form>
     </div> 
+    <?php include 'view_charge_details.php'; ?>
 </div>
 <script>
     const baseUrl = '<?php echo base_url(); ?>';
@@ -73,6 +74,36 @@
 
         var base_url = `${baseUrl}`;
         window.open(base_url + "printBUCharge/pdfReceivablesCharging/" + btoa(b_units) + "/" + btoa(charging_no) + "/" + btoa(type), '_blank');
+    }
+
+    const viewChargeDetails = (billing_id) => {
+        $.ajax({
+            url: `${baseUrl}head-office-iad/charging/view-details`,
+            type: 'GET',
+            data: {
+                'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
+                'billing_id' : billing_id
+            },
+            success: function(data){
+                const res = JSON.parse(data);
+                const {
+                    token, payment_no, billing_no, loa_noa_no, percentage, before_mbl, net_bill, company_charge, personal_charge, cash_advance, after_mbl, billed_on
+                } = res;
+
+                $('#viewDetailsModal').modal('show');
+                $('#payment-no').html(payment_no);
+                $('#billing-no').html(billing_no);
+                $('#loa-noa-no').html(loa_noa_no);
+                $('#percentage').html(percentage);
+                $('#current-mbl').html(before_mbl);
+                $('#hospital-bill').html(net_bill);
+                $('#company-charge').html(company_charge);
+                $('#personal-charge').html(personal_charge);
+                $('#cash-advance').html(cash_advance);
+                $('#remaining-mbl').html(after_mbl);
+                $('#billed-on').html(billed_on);
+            }
+        });
     }
 
 </script>

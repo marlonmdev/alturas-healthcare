@@ -45,7 +45,11 @@
                     <li class="nav-item">
                         <a
                             class="nav-link"
+<<<<<<< HEAD
+                            href="<?php echo base_url(); ?>head-office-accounting/charging/business-unit/paid"
+=======
                             href="<?php echo base_url(); ?>head-office-iad/charges/bu-charges/paid"
+>>>>>>> fa43bd9d566d4e30192bbf26ea87e86a6c40d4d2
                             role="tab"
                             ><span class="hidden-sm-up"></span>
                             <span class="hidden-xs-down fs-5 font-bold">Paid Charges</span></a
@@ -110,6 +114,10 @@
         </div>
     </div> 
 </div>
+<<<<<<< HEAD
+ <?php include 'view_payment_details.php' ?>
+=======
+>>>>>>> fa43bd9d566d4e30192bbf26ea87e86a6c40d4d2
 <script>
         const baseUrl = "<?php echo base_url(); ?>";
         $(document).ready(function(){
@@ -120,7 +128,11 @@
 
                 // Load data for the table's content from an Ajax source
                 ajax: {
+<<<<<<< HEAD
+                    url: `${baseUrl}head-office-accounting/charging/receivables/fetch`,
+=======
                     url: `${baseUrl}head-office-iad/charging/receivables/fetch`,
+>>>>>>> fa43bd9d566d4e30192bbf26ea87e86a6c40d4d2
                     type: "POST",
                     data: function(data) {
                         data.token     = '<?php echo $this->security->get_csrf_hash(); ?>';

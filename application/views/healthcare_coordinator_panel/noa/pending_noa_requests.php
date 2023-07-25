@@ -19,40 +19,33 @@
     <div class="row">
       <div class="col-lg-12">
          <ul class="nav nav-tabs mb-4" role="tablist">
-          <li class="nav-item">
-            <a class="nav-link active" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1 active" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">PENDING</span>
+              <span class="hidden-xs-down fs-5 font-bold"><i class="pending mdi mdi-dots-horizontal"></i> PENDING</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/approved" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/approved" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">APPROVED</span>
+              <span class="hidden-xs-down fs-5 font-bold"><i class="approved mdi mdi-thumb-up"></i> APPROVED</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/disapproved" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/disapproved" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">DISAPPROVED</span>
+              <span class="hidden-xs-down fs-5 font-bold"><i class="disapproved mdi mdi-thumb-down"></i> DISAPPROVED</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/expired" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/expired" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">EXPIRED</span>
+              <span class="hidden-xs-down fs-5 font-bold"><i class="expired mdi mdi-calendar-clock"></i> EXPIRED</span>
             </a>
           </li>
-
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/completed" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">COMPLETED</span>
-            </a>
-          </li> -->
         </ul>
 
         <?php include 'charge_type.php'; ?>
@@ -602,5 +595,62 @@
 <style type="text/css">
   #noa_no{
     color:orange
+  }
+</style>
+<style>
+  .nav-item1 {
+    list-style-type: none;
+  }
+
+  .nav-link1 {
+    display: inline-block;
+    padding: 10px;
+    padding-top:1px;
+    padding-bottom:1px;
+    text-decoration: none;
+    background-color: #e6e6e6;
+    color: #000;
+    border: 1px solid #000;
+    border-bottom: 3px solid #000;
+    border-radius: 15px;
+  }
+
+  .nav-link1:hover {
+    background-color: #002244;
+    color: #fff;
+    border: 1px solid #000;
+  }
+
+  .font-bold {
+    font-weight: bold;
+  }
+
+  .hidden-xs-down {
+    display: inline-block;
+  }
+
+  .fs-5 {
+    font-size: 1.2rem;
+  }
+  .pending{
+    color:red
+  }
+  .approved{
+    color:green
+  }
+  .disapproved{
+    color:red
+  }
+  .completed{
+    color:green
+  }
+  .referral{
+    color:orange
+  }
+  .expired{
+    color:#a32cc4
+  }
+  .cancelled{
+    color:red
   }
 </style>

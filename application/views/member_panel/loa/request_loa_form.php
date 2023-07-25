@@ -138,7 +138,6 @@
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i>MBL Balance</label>
                   <input type="text" class="form-control" name="remaining_mbl" id="remaining_mbl" value="<?= $mbl ?>" disabled>
                 </div>
-                
               </div>
 
                 <div class="form-group row" id="med-services-wrapper" hidden>
@@ -293,29 +292,28 @@
       $data.append('is_accredited',is_accredited);
       if(total > mbl){
         $.alert({
-                title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Unable to Submit: Insufficient MBL Balance</h3>`,
-                content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it appears that your selected services exceed the available MBL balance in your account. Before proceeding with your request, please ensure that you have sufficient MBL balance. Thank you for your understanding.</div>",
-                type: "red",
-                buttons: {
-                  ok: {
-                    text: "OK",
-                    btnClass: "btn-danger",
-                  }
-                }
-              });
-      }
-      else if($('#remaining_mbl').val()==0){
+          title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Unable to Submit: Insufficient MBL Balance</h3>`,
+          content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it appears that your selected services exceed the available MBL balance in your account. Before proceeding with your request, please ensure that you have sufficient MBL balance. Thank you for your understanding.</div>",
+          type: "red",
+          buttons: {
+            ok: {
+              text: "OK",
+              btnClass: "btn-danger",
+            }
+          }
+        });
+      }else if($('#remaining_mbl').val()==0){
         $.alert({
           title: "<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Unable to Submit: Insufficient MBL Balance</h3>",
           content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it looks like your MBL balance is currently empty. Please ensure that you have enough MBL in your account before attempting to make a request. Thank you for your understanding.</div>",
           type: "red",
           buttons: {
-              ok: {
-                  text: "OK",
-                  btnClass: "btn-danger",
-              },
+            ok: {
+              text: "OK",
+              btnClass: "btn-danger",
+            },
           },
-      });
+        });
       
       }else{
       $.ajax({
@@ -420,7 +418,8 @@
               break;
           }
         },
-      })}
+      })
+    }
     });
 
       $('#healthcare-provider').on('change',function(){

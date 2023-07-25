@@ -198,7 +198,6 @@
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);
-        const base_url = window.location.origin;
         const {
           status,
           token,

@@ -5,6 +5,7 @@ class Pages_controller extends CI_Controller {
 
 	public function __construct() {
 		parent::__construct();
+		$this->load->model('healthcare_coordinator/loa_model');
 		$this->load->model('company_doctor/members_model');
 		$user_role = $this->session->userdata('user_role');
 		$logged_in = $this->session->userdata('logged_in');
@@ -244,6 +245,26 @@ class Pages_controller extends CI_Controller {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
 		$this->load->view('company_doctor_panel/members/show_incident_spot_reports');
+		$this->load->view('templates/footer');
+	}
+
+	function view_request_loa() {
+		$data['doctor_id'] = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
+		$data['doctors'] = $this->loa_model->db_get_company_doctors();
+		$this->load->view('templates/header', $data);
+		$this->load->view('company_doctor_panel/loa/override_loa_request');
+		$this->load->view('templates/footer');
+	}
+
+	function view_request_noa() {
+		$data['doctor_id'] = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hospitals'] = $this->loa_model->db_get_healthcare_providers();
+		$data['doctors'] = $this->loa_model->db_get_company_doctors();
+		$this->load->view('templates/header', $data);
+		$this->load->view('company_doctor_panel/noa/override_noa_request');
 		$this->load->view('templates/footer');
 	}
 }

@@ -20,57 +20,57 @@
       <div class="col-lg-12">
 
         <ul class="nav nav-tabs mb-4" role="tablist">
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">PENDING</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="pending mdi mdi-dots-horizontal"></i> PENDING</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link active" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1 active" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">APPROVED</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="approved mdi mdi-thumb-up"></i> APPROVED</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/disapproved" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/disapproved" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">DISAPPROVED</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="disapproved mdi mdi-thumb-down"></i> DISAPPROVED</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">COMPLETED</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="completed mdi mdi-check"></i> COMPLETED</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/rescheduled">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/rescheduled">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">REFERRAL</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="referral mdi mdi-file-document-box"></i> REFERRAL</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/expired" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/expired" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">EXPIRED</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="expired mdi mdi-calendar-clock"></i> EXPIRED</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/cancelled" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/cancelled" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">CANCELLED</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="cancelled mdi mdi-close"></i> CANCELLED</span>
             </a>
           </li>
         </ul>
 
-        <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
+        <!-- <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
           <div class="input-group">
             <div class="input-group-prepend">
               <span class="input-group-text bg-dark text-white"><i class="mdi mdi-filter"></i></span>
@@ -82,7 +82,7 @@
               <?php endforeach; ?>
             </select>
           </div>
-        </div>
+        </div> -->
 
         <div class="card shadow">
           <div class="card-body">
@@ -90,17 +90,17 @@
               <table class="table table-hover table-responsive" id="approvedLoaTable">
                 <thead style="background-color:#00538C">
                   <tr>
-                    <th class="fw-bold" style="color: white;">LOA NO.</th>
-                    <th class="fw-bold" style="color: white;">NAME OF PATIENT</th>
-                    <th class="fw-bold" style="color: white;">TYPE OF REQUEST</th>
-                    <th class="fw-bold" style="color: white;">HEALTHCARE PROVIDER</th>
-                    <th class="fw-bold" style="color: white;">RX FILE</th>
-                    <th class="fw-bold" style="color: white;">EXPIRATION DATE</th>
-                    <th class="fw-bold" style="color: white;">STATUS</th>
-                    <th class="fw-bold" style="color: white;">ACTION</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">LOA NO.</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">NAME OF PATIENT</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">TYPE OF REQUEST</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">HEALTHCARE PROVIDER</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">RX FILE</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">EXPIRATION DATE</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">STATUS</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">ACTION</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody style="color:black;font-size:12px">
                 </tbody>
               </table>
             </div>
@@ -115,32 +115,32 @@
   </div>
   <?php include 'view_performed_consult_loa.php'; ?>
 </div>
- <!-- Viewing Upload Reports Modal -->
- <div class="modal fade" id="viewUploadedReportsModal" tabindex="-1" data-bs-backdrop="static" style="height:100%">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4>Attached Reports</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <div class="modal-body">
-                <input id="report-percentage" class="form-control" readonly>
-                <div class="pt-3">
-                  
-                  <label class="fs-5">Uploaded Reports : <i><small class="text-danger">Click to view the file</small></i></label><br>
-                  <li>Spot Report : <a href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewSpotFile()" id="uploaded-spot-report"></a></li>
-                  <li>Incident Report : <a href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewIncidentFile()" id="uploaded-incident-report"></a></li>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
-            </div>
+
+<!-- Viewing Upload Reports Modal -->
+<div class="modal fade" id="viewUploadedReportsModal" tabindex="-1" data-bs-backdrop="static" style="height:100%">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4>Attached Reports</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input id="report-percentage" class="form-control" readonly>
+        <div class="pt-3">
+          <label class="fs-5">Uploaded Reports : <i><small class="text-danger">Click to view the file</small></i></label><br>
+          <li>Spot Report : <a href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewSpotFile()" id="uploaded-spot-report"></a></li>
+          <li>Incident Report : <a href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewIncidentFile()" id="uploaded-incident-report"></a></li>
+          <li>Police Report : <a href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewPoliceFile()" id="uploaded-police-report"></a></li>
         </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+      </div>
     </div>
   </div>
-
-  <?php include 'view_pdf_file_modal.php';?>
+</div>
+<?php include 'view_pdf_file_modal.php';?>
+<!-- End -->
 
 
 <script>
@@ -449,7 +449,7 @@
     $("#loaCancellationForm").attr("action", `${baseUrl}healthcare-coordinator/loa/requests-list/cancel-request/${loa_id}`);
   }
 
-  const viewReports = (loa_id, work_related, percentage, spot_report, incident_report) => {
+  const viewReports = (loa_id, work_related, percentage, spot_report, incident_report, police_report) => {
    $('#viewUploadedReportsModal').modal('show');
       if(work_related == 'Yes'){ 
         if(percentage == ''){
@@ -483,6 +483,7 @@
       $('#report-percentage').val(wpercent+', '+nwpercent);
       $('#uploaded-spot-report') .html(spot_report);
       $('#uploaded-incident-report').html(incident_report);
+      $('#uploaded-police-report').html(police_report);
   }
 
   const viewSpotFile = () => {
@@ -491,7 +492,7 @@
 
       $('#viewFileModal').modal('show');
       $('#cancel').hide();
-      $('#file-name-r').html('Uploaded Spot Report');
+      $('#file-name-r').html('SPOT REPORT');
 
       let pdfFile = `${baseUrl}uploads/spot_reports/${anchorText}`;
       let fileExists = checkFileExists(pdfFile);
@@ -524,7 +525,7 @@
 
       $('#viewFileModal').modal('show');
       $('#cancel').hide();
-      $('#file-name-r').html('Uploaded Incident Report');
+      $('#file-name-r').html('INCIDENT REPORT');
 
       let pdfFile = `${baseUrl}uploads/incident_reports/${anchorText}`;
       let fileExists = checkFileExists(pdfFile);
@@ -551,6 +552,39 @@
       }
     }
 
+    const viewPoliceFile = () => {
+    const sport_report = document.querySelector('#uploaded-police-report');
+    const anchorText = sport_report.textContent;
+
+    $('#viewFileModal').modal('show');
+    $('#cancel').hide();
+    $('#file-name-r').html('POLICE REPORT');
+
+    let pdfFile = `${baseUrl}uploads/police_reports/${anchorText}`;
+    let fileExists = checkFileExists(pdfFile);
+
+    if(fileExists){
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', pdfFile, true);
+    xhr.responseType = 'blob';
+
+    xhr.onload = function(e) {
+        if (this.status == 200) {
+        let blob = this.response;
+        let reader = new FileReader();
+
+        reader.onload = function(event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-file-viewer');
+            iframe.src = dataURL;
+        };
+        reader.readAsDataURL(blob);
+        }
+    };
+    xhr.send();
+    }
+  }
+
     const checkFileExists = (fileUrl) => {
         let xhr = new XMLHttpRequest();
         xhr.open('HEAD', fileUrl, false);
@@ -560,3 +594,61 @@
     }
 
 </script>
+
+<style>
+  .nav-item1 {
+    list-style-type: none;
+  }
+
+  .nav-link1 {
+    display: inline-block;
+    padding: 10px;
+    padding-top:1px;
+    padding-bottom:1px;
+    text-decoration: none;
+    background-color: #e6e6e6;
+    color: #000;
+    border: 1px solid gray;
+    border-bottom: 3px solid gray;
+    border-radius: 15px;
+  }
+
+  .nav-link1:hover {
+    background-color: #002244;
+    color: #fff;
+    border: 1px solid #000;
+  }
+
+  .font-bold {
+    font-weight: bold;
+  }
+
+  .hidden-xs-down {
+    display: inline-block;
+  }
+
+  .fs-5 {
+    font-size: 1.2rem;
+  }
+  .pending{
+    color:red
+  }
+  .approved{
+    color:green
+  }
+  .disapproved{
+    color:red
+  }
+  .completed{
+    color:green
+  }
+  .referral{
+    color:orange
+  }
+  .expired{
+    color:#a32cc4
+  }
+  .cancelled{
+    color:red
+  }
+</style>

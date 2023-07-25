@@ -338,4 +338,102 @@ class Account_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
+	//Diagnostic Form with Managers key
+	function diagnostic_managers_key() {
+		$this->security->get_csrf_hash();
+		$mgr_username = $this->input->post('mgr-username', TRUE);
+		$mgr_password = $this->input->post('mgr-password', TRUE);
+
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('mgr-username', 'Username', 'trim|required');
+		$this->form_validation->set_rules('mgr-password', 'Password', 'trim|required');
+		if ($this->form_validation->run() == FALSE) {
+			$response = [
+				'status' => 'error',
+				'mgr_username_error' => form_error('mgr-username'),
+				'mgr_password_error' => form_error('mgr-password'),
+			];
+		}else{
+			$result = $this->account_model->get_manager_info($mgr_username);
+			if (!$result) {
+				$response = [
+					'status' => 'error',
+					'message' => 'Incorrect Username or Password',
+					'mgr_username_error' => '',
+					'mgr_password_error' => '',
+				];
+			}else{
+				$verified = $this->_verify_hash($mgr_password, $result['password']);
+				if (!$verified) {
+					$response = [
+						'status' => 'error',
+						'message' => 'Incorrect Username or Password',
+						'mgr_username_error' => '',
+						'mgr_password_error' => '',
+					
+						'company_doctor' => $result['doctor_id']
+					];
+				}else{
+					$response = [
+						'status'  => 'success',
+						'message' => 'Access Granted',
+					
+						'company_doctor' => $result['doctor_id']
+					];
+				}
+			}
+		}
+		echo json_encode($response);
+	}
+	//End
+
+	//Diagnostic Form with Managers key
+	function emergency_managers_key() {
+		$this->security->get_csrf_hash();
+		$mgr_username = $this->input->post('mgr-username', TRUE);
+		$mgr_password = $this->input->post('mgr-password', TRUE);
+
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('mgr-username', 'Username', 'trim|required');
+		$this->form_validation->set_rules('mgr-password', 'Password', 'trim|required');
+		if ($this->form_validation->run() == FALSE) {
+			$response = [
+				'status' => 'error',
+				'mgr_username_error' => form_error('mgr-username'),
+				'mgr_password_error' => form_error('mgr-password'),
+			];
+		}else{
+			$result = $this->account_model->get_manager_info($mgr_username);
+			if (!$result) {
+				$response = [
+					'status' => 'error',
+					'message' => 'Incorrect Username or Password',
+					'mgr_username_error' => '',
+					'mgr_password_error' => '',
+				];
+			}else{
+				$verified = $this->_verify_hash($mgr_password, $result['password']);
+				if (!$verified) {
+					$response = [
+						'status' => 'error',
+						'message' => 'Incorrect Username or Password',
+						'mgr_username_error' => '',
+						'mgr_password_error' => '',
+					
+						'company_doctor' => $result['doctor_id']
+					];
+				}else{
+					$response = [
+						'status'  => 'success',
+						'message' => 'Access Granted',
+					
+						'company_doctor' => $result['doctor_id']
+					];
+				}
+			}
+		}
+		echo json_encode($response);
+	}
+	//End
+
 }

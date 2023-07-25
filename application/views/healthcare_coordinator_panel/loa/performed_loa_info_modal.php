@@ -8,7 +8,7 @@
       <div class="modal-body">
         <div class="container" id="pf-table">
           <table class="table table-bordered table-striped table-hover table-responsive">
-            <thead class="fw-bold fs-6" style="background-color:#CE9421">
+            <thead class="fw-bold fs-6" style="background-color:#E7AF41">
               <tr>
                 <th class="fw-bold" style="color: black;font-size:12px">MEDICAL SERVICES</th>
                 <th class="fw-bold" style="color: black;font-size:12px">STATUS</th>
@@ -20,10 +20,6 @@
             <tbody id="pf-tbody" style="color: white;font-size:12px">
             </tbody>
           </table>
-                    
-          <div class="row mb-2">
-            <div class="col-12"><button type="button" class="btn btn-danger ls-1 offset-11" data-bs-dismiss="modal">CANCEL</button></div>
-          </div>
         </div>
       </div>
     </div>

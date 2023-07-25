@@ -1754,6 +1754,11 @@ function get_billed_for_charging($bill_no) {
     $this->db->where('status', $status);
     return $this->db->count_all_results();
   }
+  function count_all_generated_guarantee_letter() {
+    $this->db->from('billing');
+    $this->db->where('guarantee_letter !=', null);
+    return $this->db->get()->num_rows();
+  }
 
   function get_healthcare_advance_data_disapproved($status) {
     $this->db->select('tbl_3.first_name as tbl_3_fname, tbl_3.middle_name as tbl_3_mname, tbl_3.last_name as tbl_3_lname, tbl_3.suffix as tbl_3_suffix, tbl_1.*, tbl_2.*, tbl_3.*, tbl_4.*, tbl_5.*, tbl_6.*');

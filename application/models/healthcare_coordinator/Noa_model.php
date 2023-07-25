@@ -534,4 +534,10 @@ public function processing(){
     return $this->db->update('billing');
   }
 
+  function count_all_generated_guarantee_letter() {
+    $this->db->from('billing');
+    $this->db->where('guarantee_letter !=', null);
+    return $this->db->get()->num_rows();
+  }
+
 }

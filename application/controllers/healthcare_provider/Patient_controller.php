@@ -275,7 +275,7 @@ class Patient_controller extends CI_Controller {
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaHistoryInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 
 			$row[] = $loa['loa_no'];
-			$row[] = (isset($loa['net_bill']) ? $loa['net_bill'] : 0);
+			$row[] = (isset($loa['net_bill']) ? number_format($loa['net_bill'],2) : 0);
 			$row[] =  $loa['tbl1_status'];
 			$row[] = $loa['tbl1_request_date'];
 			$row[] = $custom_actions;
@@ -305,7 +305,7 @@ class Patient_controller extends CI_Controller {
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewNoaHistoryInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
 			
 			$row[] = $noa['noa_no'];
-			$row[] = (isset($noa['net_bill']) ? $noa['net_bill'] : 0);
+			$row[] = (isset($noa['net_bill']) ? number_format($noa['net_bill'],2) : 0);
 			$row[] =  $noa['tbl1_status'];
 			$row[] =  $noa['tbl1_request_date'];
 			$row[] = $custom_actions;	

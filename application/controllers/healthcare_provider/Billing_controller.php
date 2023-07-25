@@ -1996,7 +1996,7 @@ class Billing_controller extends CI_Controller {
             $date_uploaded = date("Y-m-d", strtotime($noa['date_uploaded']));
             $custom_billing_no = '<mark class="bg-primary text-white">' . $noa['billing_no'] . '</mark>';
             $file_name = $noa['pdf_bill'];
-            $initial_bill = number_format($noa['initial_bill']);
+            $initial_bill = number_format($noa['initial_bill'],2,'.',',');
             $custom_actions = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $noa['pdf_bill'] . '\' , \''. $noa['billing_no'] .'\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i></a>';
     
             // This data will be rendered to the datatable

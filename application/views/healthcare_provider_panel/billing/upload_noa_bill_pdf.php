@@ -64,7 +64,7 @@
                             <div class="input-group">
                                 <label class="form-label fs-5 ls-1 pt-1">MBL Balance</label>
                                 <span class="input-group-text bg-cyan text-white ms-2">&#8369;</span>
-                                <input type="text" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="<?= number_format($remaining_balance) ?>" readonly>
+                                <input type="text" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="<?= number_format($remaining_balance,2) ?>" readonly>
                             </div>
                         </div>
 
@@ -347,89 +347,347 @@
 
         });
 
-        //extract pdf text and git the net bill
-        ['pdf-file','itemize-pdf-file'].forEach(function(pdfid) {
-        let pdfFileInput = document.getElementById(pdfid);
-        let subtotalValue = 0;
-        pdfFileInput.addEventListener('change', function() {
-        let reader = new FileReader();
-        reader.onload = async function() {
-      let typedarray = new Uint8Array(this.result);
-      try {
-        let pdf = await pdfjsLib.getDocument(typedarray).promise;
-        let numPages = pdf.numPages;
-        let promises = [];
+    //     //extract pdf text and git the net bill
+    //     ['pdf-file','itemize-pdf-file'].forEach(function(pdfid) {
+    //     let pdfFileInput = document.getElementById(pdfid);
+    //     let subtotalValue = 0;
+    //     pdfFileInput.addEventListener('change', function() {
+    //     let reader = new FileReader();
+    //     reader.onload = async function() {
+    //   let typedarray = new Uint8Array(this.result);
+    //   try {
+    //     let pdf = await pdfjsLib.getDocument(typedarray).promise;
+    //     let numPages = pdf.numPages;
+    //     let promises = [];
       
-        console.log("number of pages", numPages);
+    //     console.log("number of pages", numPages);
 
-        for (let page = 1; page <= numPages; page++) {
-          let currentPage = await pdf.getPage(page);
-          let textContent = await currentPage.getTextContent();
+    //     for (let page = 1; page <= numPages; page++) {
+    //       let currentPage = await pdf.getPage(page);
+    //       let textContent = await currentPage.getTextContent();
 
-          const sortedItems = textContent.items
-            .map(function(item) {
-              return { text: item.str.toLowerCase(), x: item.transform[4], y: item.transform[5] };
-            })
-            .sort(function(a, b) {
-              if (Math.abs(a.y - b.y) < 5) {
-                return a.x - b.x;
-              } else {
-                return b.y - a.y;
-              }
-            })
-            .reduce(function(groups, item) {
-              const lastGroup = groups[groups.length - 1];
-              if (lastGroup && Math.abs(lastGroup.y - item.y) < 5) {
-                lastGroup.text += ' ' + item.text;
-              } else {
-                groups.push({ text: item.text, x: item.x, y: item.y });
-              }
-              return groups;
-            }, []);
+    //       const sortedItems = textContent.items
+    //         .map(function(item) {
+    //           return { text: item.str.toLowerCase(), x: item.transform[4], y: item.transform[5] };
+    //         })
+    //         .sort(function(a, b) {
+    //           if (Math.abs(a.y - b.y) < 5) {
+    //             return a.x - b.x;
+    //           } else {
+    //             return b.y - a.y;
+    //           }
+    //         })
+    //         .reduce(function(groups, item) {
+    //           const lastGroup = groups[groups.length - 1];
+    //           if (lastGroup && Math.abs(lastGroup.y - item.y) < 5) {
+    //             lastGroup.text += ' ' + item.text;
+    //           } else {
+    //             groups.push({ text: item.text, x: item.x, y: item.y });
+    //           }
+    //           return groups;
+    //         }, []);
 
         
 
-          promises.push(sortedItems);
-        }
+    //       promises.push(sortedItems);
+    //     }
 
-        let results = await Promise.all(promises);
-        let finalItems = results.flat();
-        console.log(finalItems);
+    //     let results = await Promise.all(promises);
+    //     let finalItems = results.flat();
+    //     console.log(finalItems);
 
-        let finalResult = finalItems.reduce(function(result, item) {
-          const pattern = /\.{2,}(?!\.)/g;
-          return (result = result + '\n' + item.text.replace(pattern, ''));
-        }, '').trim();
-        // Add conditions for extracted text
-        console.log(finalResult);
-                    const patient_pattern = /patient name:\s(.*?)\admission/si;
-                      const matches_3 = finalResult.match(patient_pattern);
-                      const result_3 = matches_3 ? matches_3[1] : null;
-                      console.log("final result",finalResult);
-                      console.log("patient name", result_3);
-                      console.log('final text',final_text(finalResult));
+    //     let finalResult = finalItems.reduce(function(result, item) {
+    //       const pattern = /\.{2,}(?!\.)/g;
+    //       return (result = result + '\n' + item.text.replace(pattern, ''));
+    //     }, '').trim();
+    //     // Add conditions for extracted text
+    //                   //validate loa 
+    //                     const valid_noa = /admission\s{1,}no:/i;
+    //                   if(!finalResult.match(valid_noa)){
+    //                     is_valid_noa = false;
+    //                     $('#upload-btn').prop('disabled',true);
+    //                     setTimeout(function() {
+    //                         $.alert({
+    //                                       title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>ERROR</h3>`,
+    //                                       content:`<div style='font-size: 16px; color: #333;'>We sincerely apologize for any inconvenience caused and would like to inform you that the uploaded PDF does not meet the criteria of being an ${(pdfid !== 'pdf-file'?'itemized bill of':'')} NOA (Notice of Admission). We highly value your understanding in this matter and extend our heartfelt gratitude for your unwavering cooperation.</div>`,
+    //                                       type: "red",
+    //                                       buttons: {
+    //                                           ok: {
+    //                                               text: "OK",
+    //                                               btnClass: "btn-danger",
+    //                                               action : function(){(pdfid === 'pdf-file')?$('#pdf-file').val(''):$('#itemize-pdf-file').val('')}
+    //                                               // window.location.reload();
+    //                                           },
+    //                                       },
+    //                                   });
+    //                               }, 1000); // Delay of 2000 milliseconds (2 seconds)
+    //                   }else{ 
+    //                     const patient_pattern = /patient name:\s(.*?)\admission/si;
+    //                     const matches_3 = finalResult.match(patient_pattern);
+    //                     const result_3 = matches_3 ? matches_3[1] : null;
+    //                     console.log("final result",finalResult);
+    //                     console.log("patient name", result_3);
+    //                     console.log('final text',final_text(finalResult));
 
-                      //validate loa 
-                      const invalid_noa = /registry\s{1,}no:/i;
-                    const valid_noa = /admission\s{1,}no:/i;
-                      if(!finalResult.match(valid_noa)){
-                        is_valid_noa = false;
-                        $('#upload-btn').prop('disabled',true);
-                        setTimeout(function() {
-                            $.alert({
-                                          title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>ERROR</h3>`,
-                                          content: "<div style='font-size: 16px; color: #333;'>We deeply regret any inconvenience caused and would like to inform you that the uploaded PDF does not meet the criteria of being a NOA (Notice of Admission). We appreciate your understanding in this matter and thank you for your cooperation.</div>",
-                                          type: "red",
-                                          buttons: {
-                                              ok: {
-                                                  text: "OK",
-                                                  btnClass: "btn-danger",
-                                                  // window.location.reload();
-                                              },
-                                          },
-                                      });
-                                  }, 1000); // Delay of 2000 milliseconds (2 seconds)
+    //                     if (patient_name.length) {
+    //                     is_valid_noa = true;
+    //                     const names = patient_name.toLowerCase().split(' ').filter(Boolean);
+
+    //                     let removedElement ="";
+
+    //                     if(names[names.length-1] === ".jr"){
+    //                         removedElement = names.splice(names.length-2, 1);
+    //                     }else{
+    //                         removedElement = names.splice(names.length-1, 1);
+    //                     }
+    //                         const mem_name = removedElement + ", " + names.join(' ');
+
+    //                     if(!validate_name(result_3,mem_name)){
+    //                         is_valid_name = false;
+    //                         $('#upload-btn').prop('disabled',true);
+
+    //                         $.alert({
+    //                                 title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
+    //                                 content: `<div style='font-size: 16px; color: #333;'>The uploaded PDF bill does not match the member's name. Please ensure that you have uploaded the correct PDF bill.</div>`,
+    //                                 type: "red",
+    //                                 buttons: {
+    //                                 ok: {
+    //                                     text: "OK",
+    //                                     btnClass: "btn-danger",
+    //                                     action : function(){(pdfid === 'pdf-file')?$('#pdf-file').val(''):$('#itemize-pdf-file').val('')}
+    //                                 },
+    //                             },
+    //                         });
+    //                     }
+
+    //                    else{
+    //                     is_valid_name = true;
+
+    //                     //   if(pdfid === 'pdf-file'){
+    //                         if(pdfid === 'pdf-file'){
+    //                             var itemsPattern = /\s+date\s+description\s+qty\s+unit price\s+amount/;
+    //                             const regex = /please pay for this amount\s*\.*\s*([\d,\.]+)/i;
+    //                             const hosp_plan = /hospitalization plan:\s(.*?)\sage/si;
+    //                             const hpmatch = finalResult.match(hosp_plan);
+    //                             const match = finalResult.match(regex);
+                                
+    //                             console.log("match",hpmatch[1]);
+                                
+    //                             if (match && !itemsPattern.test(finalResult)) {
+    //                               const doc_pattern = /hospital charges(.*?)please pay for this amount/si;
+    //                               const matches_2 = finalResult.match(doc_pattern);
+    //                               const result_2 = matches_2 ? matches_2[1] : null;
+    //                               hospital_charges = result_2;
+
+    //                               if(hpmatch[1].replace(/\s/g, "")!=='self-pay'){
+    //                                 benefits_deductions = JSON.stringify(get_ph_deduction(final_text(finalResult)));
+    //                               }else{
+    //                                 benefits_deductions = JSON.stringify(get_selfpay_deduction(final_text(finalResult)));
+    //                               }
+                              
+    //                               attending_doctors = get_doctors(final_text(finalResult));
+    //                               console.log("doctors", attending_doctors);
+    //                               console.log("hospital charges", hospital_charges);
+    //                               console.log("JSON deduction",benefits_deductions);
+    //                               subtotalValue = parseFloat(match[1].replace(/,/g, ""));
+    //                               net_bill=subtotalValue;
+    //                             //   console.log('match netbill',match[1]);
+    //                               document.getElementsByName("net-bill")[0].value = match[1];
+    //                               is_valid_netbill = true;
+    //                               $('#upload-btn').prop('disabled',false);
+                                  
+    //                               if(parseFloat(net_bill)>mbl){
+    //                               // $('#upload-btn').prop('disabled',true);
+    //                                             setTimeout(function() {
+    //                                             $.alert({
+    //                                                 title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Warning</h3>`,
+    //                                                 content: "<div style='font-size: 16px; color: #333;'>The uploaded PDF Bill exceeds the patient's MBL balance.</div>",
+    //                                                 type: "red",
+    //                                                 buttons: {
+    //                                                     ok: {
+    //                                                         text: "OK",
+    //                                                         btnClass: "btn-danger",
+    //                                                         // window.location.reload();
+    //                                                     },
+    //                                                 },
+    //                                             });
+    //                                         }, 1000); // Delay of 2000 milliseconds (2 seconds)
+    //                                 }
+
+    //                             } else {
+                        
+    //                             console.log("please pay for this amount is not found");
+    //                             is_valid_netbill = false;
+    //                             $('#upload-btn').prop('disabled',true);
+    //                             $.alert({
+    //                                     title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
+    //                                     content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it appears that there was an issue with the uploaded PDF. Please review the PDF file and try again.</div>",
+    //                                     type: "red",
+    //                                     buttons: {
+    //                                     ok: {
+    //                                         text: "OK",
+    //                                         btnClass: "btn-danger",
+    //                                         action : function(){(pdfid === 'pdf-file')?$('#pdf-file').val(''):$('#itemize-pdf-file').val('')}
+    //                                     },
+    //                                 },
+    //                             });
+    //                             }
+    //                           }else{
+    //                             var itemPattern = /\s+date\s+description\s+qty\s+unit price\s+amount/;
+                                
+    //                             if (itemPattern.test(finalResult)) {
+    //                               $('#upload-btn').prop('disabled',false);
+    //                               get_all_item(final_text(finalResult));
+    //                               json_final_charges = JSON.stringify(get_all_item(final_text(finalResult)));
+    //                               console.log("JSON item",json_final_charges);
+                            
+    //                             } else {
+    //                               $('#upload-btn').prop('disabled',true);
+    //                               $.alert({
+    //                                       title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
+    //                                       content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it appears that the uploaded pdf is not an itemized bill. Please review the PDF file and try again.</div>",
+    //                                       type: "red",
+    //                                       buttons: {
+    //                                       ok: {
+    //                                           text: "OK",
+    //                                           btnClass: "btn-danger",
+    //                                           action : function(){(pdfid === 'pdf-file')?$('#pdf-file').val(''):$('#itemize-pdf-file').val('')}
+    //                                       },
+    //                                   },
+    //                               });
+    //                             }
+                                
+    //                           }
+    //                         }
+    //                         }
+    //                       }
+                  
+    //                   console.log("netbill",net_bill);
+    //                   console.log("mbl",mbl);
+    //             } catch (error) {
+    //                 console.error(error);
+    //                                         $.alert({
+    //                                                 title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
+    //                                                 content: "<div style='font-size: 16px; color: #333;'>We sincerely apologize for any inconvenience caused. Our system has encountered an error while processing the uploaded PDF. We kindly request you to refresh the current window. Should you encounter this error again, please do not hesitate to contact our dedicated support team. We greatly appreciate your understanding and cooperation in this matter.</div>",
+    //                                                 type: "red",
+    //                                                 buttons: {
+    //                                                 ok: {
+    //                                                     text: "OK",
+    //                                                     btnClass: "btn-danger",
+    //                                                 },
+    //                                             },
+    //                                         });
+    //             }
+    //             };
+    //             //end of async function
+    //             if(this.files[0]){
+    //                 reader.readAsArrayBuffer(this.files[0]);
+    //             }
+                
+    //             });
+    //         });
+
+              // Assuming pdfs is an array of PDF IDs
+              ['pdf-file','itemize-pdf-file'].forEach((pdfid) => handlePDFChange(pdfid));
+
+        });
+
+        async function processPDF(pdfFileInput) {
+            return new Promise((resolve, reject) => {
+                let reader = new FileReader();
+
+                reader.onload = async function() {
+                let typedarray = new Uint8Array(this.result);
+                try {
+                    let pdf = await pdfjsLib.getDocument(typedarray).promise;
+                    let numPages = pdf.numPages;
+                    let promises = [];
+
+                    console.log("number of pages", numPages);
+
+                    for (let page = 1; page <= numPages; page++) {
+                    let currentPage = await pdf.getPage(page);
+                    let textContent = await currentPage.getTextContent();
+
+                    const sortedItems = textContent.items
+                        .map(function(item) {
+                        return { text: item.str.toLowerCase(), x: item.transform[4], y: item.transform[5] };
+                        })
+                        .sort(function(a, b) {
+                        if (Math.abs(a.y - b.y) < 5) {
+                            return a.x - b.x;
+                        } else {
+                            return b.y - a.y;
+                        }
+                        })
+                        .reduce(function(groups, item) {
+                        const lastGroup = groups[groups.length - 1];
+                        if (lastGroup && Math.abs(lastGroup.y - item.y) < 5) {
+                            lastGroup.text += ' ' + item.text;
+                        } else {
+                            groups.push({ text: item.text, x: item.x, y: item.y });
+                        }
+                        return groups;
+                        }, []);
+
+
+
+                    promises.push(sortedItems);
+                    }
+                    resolve(promises); // Resolve the promise with the collected results
+                } catch (error) {
+                    reject(error); // Reject the promise with the encountered error
+                }
+                };
+
+                if (pdfFileInput.files[0]) {
+                reader.readAsArrayBuffer(pdfFileInput.files[0]);
+                }
+            });
+            }
+
+            async function handlePDFChange(pdfid) {
+            let pdfFileInput = document.getElementById(pdfid);
+
+            pdfFileInput.addEventListener('change', async function() {
+                try {
+                let promises = await processPDF(pdfFileInput);
+                let finalItems = promises.flat();
+                console.log(finalItems);
+
+                let finalResult = finalItems.reduce(function(result, item) {
+                const pattern = /\.{2,}(?!\.)/g;
+                return (result = result + '\n' + item.text.replace(pattern, ''));
+                }, '').trim();
+                // Add conditions for extracted text
+                            //validate loa 
+                                const valid_noa = /admission\s{1,}no:/i;
+                            if(!finalResult.match(valid_noa)){
+                                is_valid_noa = false;
+                                $('#upload-btn').prop('disabled',true);
+                                setTimeout(function() {
+                                    $.alert({
+                                                title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>ERROR</h3>`,
+                                                content:`<div style='font-size: 16px; color: #333;'>We sincerely apologize for any inconvenience caused and would like to inform you that the uploaded PDF does not meet the criteria of being an ${(pdfid !== 'pdf-file'?'itemized bill of':'')} NOA (Notice of Admission). We highly value your understanding in this matter and extend our heartfelt gratitude for your unwavering cooperation.</div>`,
+                                                type: "red",
+                                                buttons: {
+                                                    ok: {
+                                                        text: "OK",
+                                                        btnClass: "btn-danger",
+                                                        action : function(){(pdfid === 'pdf-file')?$('#pdf-file').val(''):$('#itemize-pdf-file').val('')}
+                                                        // window.location.reload();
+                                                    },
+                                                },
+                                            });
+                                        }, 1000); // Delay of 2000 milliseconds (2 seconds)
                       }else{ 
+                        const patient_pattern = /patient name:\s(.*?)\admission/si;
+                        const matches_3 = finalResult.match(patient_pattern);
+                        const result_3 = matches_3 ? matches_3[1] : null;
+                        console.log("final result",finalResult);
+                        console.log("patient name", result_3);
+                        console.log('final text',final_text(finalResult));
+
                         if (patient_name.length) {
                         is_valid_noa = true;
                         const names = patient_name.toLowerCase().split(' ').filter(Boolean);
@@ -455,6 +713,7 @@
                                     ok: {
                                         text: "OK",
                                         btnClass: "btn-danger",
+                                        action : function(){(pdfid === 'pdf-file')?$('#pdf-file').val(''):$('#itemize-pdf-file').val('')}
                                     },
                                 },
                             });
@@ -464,13 +723,13 @@
                         is_valid_name = true;
 
                         //   if(pdfid === 'pdf-file'){
-                            if(pdfFileInput.id === 'pdf-file' || pdfFileInput.id ==='pdf-file-initial'){
+                            if(pdfid === 'pdf-file'){
                                 var itemsPattern = /\s+date\s+description\s+qty\s+unit price\s+amount/;
                                 const regex = /please pay for this amount\s*\.*\s*([\d,\.]+)/i;
                                 const hosp_plan = /hospitalization plan:\s(.*?)\sage/si;
                                 const hpmatch = finalResult.match(hosp_plan);
                                 const match = finalResult.match(regex);
-                                
+                                let subtotalValue = 0;
                                 console.log("match",hpmatch[1]);
                                 
                                 if (match && !itemsPattern.test(finalResult)) {
@@ -491,6 +750,7 @@
                                   console.log("JSON deduction",benefits_deductions);
                                   subtotalValue = parseFloat(match[1].replace(/,/g, ""));
                                   net_bill=subtotalValue;
+                                //   console.log('match netbill',match[1]);
                                   document.getElementsByName("net-bill")[0].value = match[1];
                                   is_valid_netbill = true;
                                   $('#upload-btn').prop('disabled',false);
@@ -526,6 +786,7 @@
                                         ok: {
                                             text: "OK",
                                             btnClass: "btn-danger",
+                                            action : function(){(pdfid === 'pdf-file')?$('#pdf-file').val(''):$('#itemize-pdf-file').val('')}
                                         },
                                     },
                                 });
@@ -549,6 +810,7 @@
                                           ok: {
                                               text: "OK",
                                               btnClass: "btn-danger",
+                                              action : function(){(pdfid === 'pdf-file')?$('#pdf-file').val(''):$('#itemize-pdf-file').val('')}
                                           },
                                       },
                                   });
@@ -562,29 +824,11 @@
                       console.log("netbill",net_bill);
                       console.log("mbl",mbl);
                 } catch (error) {
-                    console.error(error);
-                                            $.alert({
-                                                    title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
-                                                    content: "<div style='font-size: 16px; color: #333;'>We sincerely apologize for any inconvenience caused. Our system has encountered an error while processing the uploaded PDF. We kindly request you to refresh the current window. Should you encounter this error again, please do not hesitate to contact our dedicated support team. We greatly appreciate your understanding and cooperation in this matter.</div>",
-                                                    type: "red",
-                                                    buttons: {
-                                                    ok: {
-                                                        text: "OK",
-                                                        btnClass: "btn-danger",
-                                                    },
-                                                },
-                                            });
+                console.error(error);
+                // Handle the error appropriately
                 }
-                };
-                //end of async function
-                if(this.files[0]){
-                    reader.readAsArrayBuffer(this.files[0]);
-                }
-                
-                });
             });
-
-        });
+            }
 
 
             const  previewPdfFile = (pdf_input) => {
@@ -784,6 +1028,7 @@
                     "clave",
                     "member",
                     "page",
+                    "particulars",
                 // Add more search terms as needed
                 ];
 

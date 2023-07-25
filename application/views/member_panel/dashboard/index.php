@@ -215,9 +215,7 @@
             </div>
             </div>
 
-          <!-- <?php include 'view_mbl_loa_history.php'; ?>
-          <?php include 'view_mbl_noa_history.php'; ?> -->
-        <?php include 'view_pdf_bill_modal.php'; ?>
+       
     <script>
       const baseUrl = `<?php echo base_url(); ?>`;
       const emp_id = `<?= $emp_id ?>`;

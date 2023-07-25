@@ -19,7 +19,7 @@
 
   <div class="container-fluid">
     <div class="row">
-      <div class="col-lg-12">
+        
         <div class="card shadow">
           <div class="card-body">
 
@@ -111,6 +111,7 @@
                   <select class="form-select" name="healthcare-provider" id="healthcare-provider" oninput="enableRequestType()">
                     <option value="" selected>Select Healthcare Provider</option>
                     <?php
+                    $hcproviders_ids = isset($hcproviders_id) ? $hcproviders_id : ''; 
                     if (!empty($hcproviders)) :
                       foreach ($hcproviders as $hcprovider) :
                     ?>
@@ -139,14 +140,23 @@
                 </div>
                 
               </div>
-              <div class="form-group row">
-                <div class="col-lg-12 col-sm-12 mb-2 d-none" id="med-services-div">
+
+                <div class="form-group row" id="med-services-wrapper" hidden>
+                  <div class="col-sm-6 mb-4  pe-2"  >
+                    <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Select Medical Service/s</label>
+                    <input class="custom-input" id="med-services" name="med-services" placeholder="Type and press Enter|Tab">
+                    </input>
+                  </div>
+                </div>
+
+              <!-- <div class="form-group row">
+                <div class="col-sm-6 mb-4 d-none" id="med-services-div">
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Select Medical Service/s</label><br>
                   <div id="med-services-wrapper"></div>
                   <em id="med-services-error" class="text-danger"></em>
                 </div>
-              </div>
-
+              </div> -->
+              
               <!-- <input type="text" class="form-control" name="price" id="price">
               <input type="number" class="form-control" name="total_price" id="total_price"> -->
 
@@ -198,7 +208,7 @@
                 </div>
                 <div class="col-lg-6 col-sm-12 col-lg-offset-3 mb-2">
                   <label class="colored-label">Attending Physician <small class="text-danger"> *Note: Press Tab to Add More Physician</small></label>
-                  <input type="text" class="form-control" name="attending-physician" id="tags-input">
+                  <input class="custom-input" type="text" name="attending-physician" id="tags-input">
                 </div>
               </div>
 
@@ -216,11 +226,18 @@
                 </div>
                 <div class="form-group">
                   <div class="col-sm-12 mb-4">
-                    <label class="colored-label mb-1"><i class="mdi mdi-asterisk text-danger"></i> RX/Request from Accredited Doctor</label>
+                  <i class="mdi mdi-asterisk text-danger" id="mdi"></i><label class="colored-label mb-1" id="rx-title"> RX/Request from Accredited Doctor</label>
                     <div id="rx-file-wrapper">
                       <input type="file" class="dropify" name="rx-file" id="rx-file" data-height="300" data-max-file-size="5M" accept=".jpg, .jpeg, .png">
                     </div>
                     <em id="rx-file-error" class="text-danger"></em>
+                  </div>
+                  <div class="col-sm-12 mb-4" id="receipt-wrapper" hidden>
+                  <i class="mdi mdi-asterisk text-danger" id="mdi"></i><label class="colored-label mb-1" id="rx-title"> Hospital Receipt</label>
+                    <div id="hospital-receipt-wrapper">
+                      <input type="file" class="dropify" name="hospital-receipt" id="hospital-receipt" data-height="300" data-max-file-size="5M" accept=".jpg, .jpeg, .png">
+                    </div>
+                    <em id="hospital-receipt-error" class="text-danger"></em>
                   </div>
                 </div>
               </section>
@@ -241,13 +258,24 @@
     </div>
   </div>
 </div>
-
-
+<style>
+ .custom-input {
+  width: 100%;
+  /* height: 35px; Set the desired height, adjust as needed */
+  /* resize: vertical; Allows vertical resizing of the input field (optional) */
+  /* Add any other desired styles */
+}
+</style>
 <script>
   const baseUrl = "<?= base_url() ?>";
-  const mbl = $('#remaining_mbl').val();
+  const hc_providers = <?= json_encode($hcproviders_id) ?>;
+  const mbl = parseFloat($('#remaining_mbl').val().replace(/,/g, ''));
+  let total = 0;
+  let multiSelectInitialized = false;
+  let tagify;
+  let is_accredited = false;
   $(document).ready(function() {
-
+   console.log('hc providers', hc_providers);
     $("#remaining_mbl").css("border-color", "default");
    
     if( parseFloat($('#remaining_mbl').val().replace(',', ''))<1){
@@ -258,60 +286,11 @@
       $("#requesting-physician").prop('disabled',true);
       $("#tags-input").prop('disabled',true);
     }
-
-    $('#healthcare-provider').on('change', function(){
-      const hp_id = $(this).val();
-      const token = `<?php echo $this->security->get_csrf_hash(); ?>`;
-
-      if(hp_id != ''){
-        $.ajax({
-          url: `${baseUrl}member/get-services/${hp_id}`,
-          type: "GET",
-          dataType: "json",
-          success:function(response){
-            $('#med-services-wrapper').empty();                
-            $('#med-services-wrapper').append(response);
-            $(".chosen-select").chosen({
-              width: "100%",
-              no_results_text: "Oops, nothing found!"
-            }); 
-          }
-        });
-      }
-    });
-
-    var total = 0;
-    $('#med-services-wrapper').on('change', function() {
-            var prices = [];
-            
-            $('#med-services option:selected').each(function() {
-              var price = $(this).data('price');
-              if (typeof price !== 'undefined') {
-                prices.push(price);
-                console.log("price", price);
-              }
-            });
-
-            total = prices.reduce(function(acc, val) {
-              return acc + val;
-            }, 0);
-            
-            $("#remaining_mbl").val(mbl);
-            console.log("total", total);
-            
-            // if (total > mbl) {
-            //   total = prices.reduce(function(acc, val) {
-            //     return acc + val;
-            //   }, 0);
-
-              console.log("final", total);
-              $('#net_bill').val(total);
-              // }
-          });
     
     $('#memberLoaRequestForm').submit(function(event) {
       event.preventDefault();
       let $data = new FormData($(this)[0]);
+      $data.append('is_accredited',is_accredited);
       if(total > mbl){
         $.alert({
                 title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Unable to Submit: Insufficient MBL Balance</h3>`,
@@ -356,7 +335,8 @@
             med_services_error,
             chief_complaint_error,
             requesting_physician_error,
-            rx_file_error
+            rx_file_error,
+            hospital_receipt_error
           } = response;
           switch (status) {
             case 'error':
@@ -408,6 +388,13 @@
                 $('#rx-file-error').html('');
                 $('#rx-file-wrapper').removeClass('div-has-error');
               }
+              if (hospital_receipt_error !== '') {
+                $('#hospital-receipt-error').html(hospital_receipt_error);
+                $('#hospital-receipt-wrapper').addClass('div-has-error');
+              } else {
+                $('#hospital-receipt-error').html('');
+                $('#hospital-receipt-wrapper').removeClass('div-has-error');
+              }
               break;
             case 'save-error':
               swal({
@@ -436,8 +423,106 @@
       })}
     });
 
+      $('#healthcare-provider').on('change',function(){
+        $('#med-services').val('');
+        let hp_id = $('#healthcare-provider').val();
+        const token = `<?php echo $this->security->get_csrf_hash(); ?>`;
+        const intput_service = [];
+        const input = document.getElementById('med-services');
+        
+        // Declare tagify outside the if statement
+
+        hc_providers.forEach((element) => {
+          console.log('hp_id', hp_id);
+          console.log('element', element);
+          if (hp_id === element.hp_id) {
+            is_accredited = true;
+            console.log('is_accredited', is_accredited);
+            return;
+          } else {
+            is_accredited = false;
+            console.log('is_accredited', is_accredited);
+          }
+        });
+
+        hp_id = is_accredited ? hp_id : 1;
+        if (hp_id !== '') {
+          $.ajax({
+            url: `${baseUrl}member/get-services/${hp_id}`,
+            type: 'GET',
+            dataType: 'json',
+            data: { token: token },
+            success: function (response) {
+              console.log(response); // Check the response in the console
+
+              response.forEach(function (item) {
+                // Build the tag text, including the description and price
+                const tagText = is_accredited
+                  ? `${item.ctyp_description} - ₱${item.ctyp_price}`
+                  : `${item.ctyp_description}`;
+
+                // Optionally, you can directly add the tag to Tagify using addTags method
+                const tagData = {
+                  value: tagText,
+                  tagid: item.ctyp_id,
+                  // Use tagText as the visible text
+                  // data: {
+                  //   price: item.ctyp_price,
+                  //   // You can add any other additional data you need here
+                  // },
+                };
+                intput_service.push(tagData);
+              });
+
+              // Initialize Tagify with the intput_service array containing both tagData and tag text
+              // console.log('tagifiy',tagify);
+              if (tagify) {
+                tagify.settings.whitelist = intput_service;
+                tagify.settings.enforceWhitelist = false;
+                // tagify.dropdown.show.call(tagify, ''); // Refresh the dropdown to reflect the new whitelist
+              } else {
+                tagify = new Tagify(input, {
+                  whitelist: intput_service,
+                  enforceWhitelist: (is_accredited)?true:false,
+                });
+              }
+
+              tagify.on('change', function () {
+                const selectedTags = tagify.value.map((tag) => {
+                  return {
+                    value: tag.value,
+                    tagid: tag.tagid,
+                    // Use __tagifyTagData.tagText to get the visible text
+                    // data: tag.data.price, // Use __tagifyTagData.data to get additional data
+                  };
+                });
+                console.log('selected tag', selectedTags);
+              });
+
+              if (!is_accredited) {
+                $('#receipt-wrapper').prop('hidden',false);
+              } else {
+                $('#receipt-wrapper').prop('hidden',true);
+              }
+            },
+            error: function (xhr, status, error) {
+              console.error('Ajax request failed:', error);
+            },
+          });
+        }
+      });
+      // $('#med-services').on('change',function(){
+      //   console.log('input services',$('#med-services').val());
+      // });
+
 
   });
+
+//   const get_med_services = () => {
+  
+// };
+
+
 
   const enableRequestType = () => {
     const hc_provider = document.querySelector('#healthcare-provider').value;
@@ -453,14 +538,17 @@
   
   const showMedServices = () => {
     const loaType = document.querySelector('#loa-request-type').value;
-    const medServices = document.querySelector('#med-services-div');
+    // const medServices = document.querySelector('#med-services-div');
     const fileAttachment = document.querySelector('#div-attachment');
 
-    if (loaType === "Consultation" || loaType === ""){
-      medServices.className = "d-none";
+    if (loaType === "Test" || loaType === ""){
+      // medServices.className = "d-none";
+      // $('#med-services-wrapper').removeClass('d-block').addClass('d-none');
+      $('#med-services-wrapper').prop('hidden',true);
       fileAttachment.className = "d-none";
     } else if (loaType === "Diagnostic Test") {
-      medServices.className = "col-lg-7 col-sm-12 mb-2 d-block";
+      $('#med-services-wrapper').prop('hidden',false);
+      // $('#med-services-wrapper').removeClass('d-none').addClass('d-block');
       fileAttachment.className = "form-group row d-block";
     }
   }

@@ -57,12 +57,13 @@ class Pages_controller extends CI_Controller {
 		$emp_id = $this->session->userdata('emp_id');
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
+		$data['hcproviders_id'] = $this->loa_model->db_get_accredited_healthcare_providers();
 		$data['doctors'] = $this->loa_model->db_get_company_doctors();
 		$data['costtypes'] = $this->loa_model->db_get_cost_types();
 		$data['member'] = $this->loa_model->db_get_member_infos($emp_id);
 		$data['pending'] = $this->loa_model->db_get_status_pending($emp_id);
 		$mbl = $this->loa_model->db_get_mbl($emp_id);
-		$get_pac_loa = $this->loa_model->get_pac_loa($emp_id);
+		$get_pac_loa = $this->loa_model->get_pac_loa($emp_id); 
 
 		$med_services = 0;
     

@@ -117,7 +117,7 @@
                             <label class="form-label fs-5 ls-1">Remaining MBL Balance</label>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text bg-cyan text-white">&#8369;</span>
-                                    <input type="text" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="<?= number_format($remaining_balance) ?>"  readonly>
+                                    <input type="text" class="form-control fw-bold ls-1" id="remaining-balance" name="remaining-balance" value="<?= number_format($remaining_balance,2) ?>"  readonly>
                                 </div>
                             </div>
 
@@ -322,61 +322,80 @@
 
         });
        
-         //extract pdf text and git the net bill
-  
-        let pdfFileInput = document.getElementById('pdf-file-initial');
-        let subtotalValue = 0;
-        pdfFileInput.addEventListener('change', function() {
-        let reader = new FileReader();
-        reader.onload = async function() {
-      let typedarray = new Uint8Array(this.result);
-      try {
-        let pdf = await pdfjsLib.getDocument(typedarray).promise;
-        let numPages = pdf.numPages;
-        let promises = [];
-      
-        console.log("number of pages", numPages);
+                handlePDFChange('pdf-file-initial');
+            });
 
-        for (let page = 1; page <= numPages; page++) {
-          let currentPage = await pdf.getPage(page);
-          let textContent = await currentPage.getTextContent();
+            async function processPDF(pdfFileInput) {
+                return new Promise((resolve, reject) => {
+                    let reader = new FileReader();
 
-          const sortedItems = textContent.items
-            .map(function(item) {
-              return { text: item.str.toLowerCase(), x: item.transform[4], y: item.transform[5] };
-            })
-            .sort(function(a, b) {
-              if (Math.abs(a.y - b.y) < 5) {
-                return a.x - b.x;
-              } else {
-                return b.y - a.y;
-              }
-            })
-            .reduce(function(groups, item) {
-              const lastGroup = groups[groups.length - 1];
-              if (lastGroup && Math.abs(lastGroup.y - item.y) < 5) {
-                lastGroup.text += ' ' + item.text;
-              } else {
-                groups.push({ text: item.text, x: item.x, y: item.y });
-              }
-              return groups;
-            }, []);
+                    reader.onload = async function() {
+                    let typedarray = new Uint8Array(this.result);
+                    try {
+                        let pdf = await pdfjsLib.getDocument(typedarray).promise;
+                        let numPages = pdf.numPages;
+                        let promises = [];
 
-        
+                        console.log("number of pages", numPages);
 
-          promises.push(sortedItems);
-        }
+                        for (let page = 1; page <= numPages; page++) {
+                        let currentPage = await pdf.getPage(page);
+                        let textContent = await currentPage.getTextContent();
 
-        let results = await Promise.all(promises);
-        let finalItems = results.flat();
-        console.log(finalItems);
+                        const sortedItems = textContent.items
+                            .map(function(item) {
+                            return { text: item.str.toLowerCase(), x: item.transform[4], y: item.transform[5] };
+                            })
+                            .sort(function(a, b) {
+                            if (Math.abs(a.y - b.y) < 5) {
+                                return a.x - b.x;
+                            } else {
+                                return b.y - a.y;
+                            }
+                            })
+                            .reduce(function(groups, item) {
+                            const lastGroup = groups[groups.length - 1];
+                            if (lastGroup && Math.abs(lastGroup.y - item.y) < 5) {
+                                lastGroup.text += ' ' + item.text;
+                            } else {
+                                groups.push({ text: item.text, x: item.x, y: item.y });
+                            }
+                            return groups;
+                            }, []);
 
-        let finalResult = finalItems.reduce(function(result, item) {
-          const pattern = /\.{2,}(?!\.)/g;
-          return (result = result + '\n' + item.text.replace(pattern, ''));
-        }, '').trim();
-        // Add conditions for extracted text
-        console.log(finalResult);
+
+
+                        promises.push(sortedItems);
+                        }
+
+                        resolve(promises); // Resolve the promise with the collected results
+                    } catch (error) {
+                        reject(error); // Reject the promise with the encountered error
+                    }
+                    };
+
+                    if (pdfFileInput.files[0]) {
+                    reader.readAsArrayBuffer(pdfFileInput.files[0]);
+                    }
+                });
+                }
+
+                async function handlePDFChange(pdfid) {
+                let pdfFileInput = document.getElementById(pdfid);
+
+                pdfFileInput.addEventListener('change', async function() {
+                    try {
+                    let promises = await processPDF(pdfFileInput);
+                    let finalItems = promises.flat();
+                    let subtotalValue = 0;
+                    console.log(finalItems);
+
+                    let finalResult = finalItems.reduce(function(result, item) {
+                    const pattern = /\.{2,}(?!\.)/g;
+                    return (result = result + '\n' + item.text.replace(pattern, ''));
+                    }, '').trim();
+                    // Add conditions for extracted text
+                    console.log(finalResult);
                     const patient_pattern = /patient name:\s(.*?)\admission/si;
                       const matches_3 = finalResult.match(patient_pattern);
                       const result_3 = matches_3 ? matches_3[1] : null;
@@ -397,6 +416,7 @@
                                               ok: {
                                                   text: "OK",
                                                   btnClass: "btn-danger",
+                                                  action : function(){$('#pdf-file-initial').val('')}
                                                   // window.location.reload();
                                               },
                                           },
@@ -428,33 +448,14 @@
                                     ok: {
                                         text: "OK",
                                         btnClass: "btn-danger",
+                                        action : function(){$('#pdf-file-initial').val('')}
                                     },
                                 },
                             });
                         }else{
                                 const regex = /please pay for this amount\s*\.*\s*([\d,\.]+)/i;
-                                // const hosp_plan = /hospitalization plan:\s(.*?)\sage/si;
-                                // const hpmatch = finalResult.match(hosp_plan);
                                 const match = finalResult.match(regex);
-                                
-                                // console.log("match",hpmatch[1]);
-                                
                                 if (match) {
-                                //   const doc_pattern = /hospital charges(.*?)please pay for this amount/si;
-                                //   const matches_2 = finalResult.match(doc_pattern);
-                                //   const result_2 = matches_2 ? matches_2[1] : null;
-                                //   hospital_charges = result_2;
-
-                                //   if(hpmatch[1].replace(/\s/g, "")!=='self-pay'){
-                                //     benefits_deductions = JSON.stringify(get_ph_deduction(final_text(finalResult)));
-                                //   }else{
-                                //     benefits_deductions = JSON.stringify(get_selfpay_deduction(final_text(finalResult)));
-                                //   }
-                              
-                                //   attending_doctors = get_doctors(finalResult);
-                                //   console.log("doctors", attending_doctors);
-                                //   console.log("hospital charges", hospital_charges);
-                                //   console.log("JSON deduction",benefits_deductions);
                                   subtotalValue = parseFloat(match[1].replace(/,/g, ""));
                                   net_bill=subtotalValue;
 
@@ -493,6 +494,7 @@
                                             ok: {
                                                 text: "OK",
                                                 btnClass: "btn-danger",
+                                                action : function(){$('#pdf-file-initial').val('')}
                                             },
                                         },
                                     });
@@ -501,31 +503,14 @@
                             }
                           }
                   
-                      console.log("netbill",net_bill);
-                      console.log("mbl",mbl);
-                } catch (error) {
+                        console.log("netbill",net_bill);
+                        console.log("mbl",mbl);
+                    } catch (error) {
                     console.error(error);
-                                            $.alert({
-                                                    title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
-                                                    content: "<div style='font-size: 16px; color: #333;'>We sincerely apologize for any inconvenience caused. Our system has encountered an error while processing the uploaded PDF. We kindly request you to refresh the current window. Should you encounter this error again, please do not hesitate to contact our dedicated support team. We greatly appreciate your understanding and cooperation in this matter.</div>",
-                                                    type: "red",
-                                                    buttons: {
-                                                    ok: {
-                                                        text: "OK",
-                                                        btnClass: "btn-danger",
-                                                    },
-                                                },
-                                            });
-                }
-                };
-                //end of async function
-                if(this.files[0]){
-                    reader.readAsArrayBuffer(this.files[0]);
-                }
-                
+                    // Handle the error appropriately
+                    }
                 });
-          
-            });
+                }
 
             const get_doctors = (lines) => {
                 let include = false;
@@ -702,6 +687,8 @@
                     "clave",
                     "member",
                     "page",
+                    "kindly ",
+                    "particulars",
                 // Add more search terms as needed
                 ];
 

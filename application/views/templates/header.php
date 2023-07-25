@@ -27,10 +27,13 @@
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/photoviewer/dist/photoviewer.min.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/flatpickr/flatpickr.min.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/flatpickr/themes/confetti.css" />
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/multi-select-tag-main/src/css/multi-select-tag.css" />
     <!-- <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/pdfjs/web/viewer.css" /> -->
     <!-- End of Vendors CSS -->
 
     <!-- Script Tags -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js"></script>
+    <script src="<?php echo base_url(); ?>assets/vendors/multi-select-tag-main/src/js/multi-select-tag.js" ></script>
     <script src="<?php echo base_url(); ?>assets/vendors/jquery/jquery.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/vendors/chosen/chosen.jquery.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/vendors/qrcodejs/qrcode.min.js" defer></script>
@@ -101,10 +104,10 @@
         <nav class="navbar top-navbar navbar-expand-md navbar-dark">
           <div class="navbar-header">
             <!-- Logo -->
-            <?php $homepage = base_url().$user_role.'/dashboard'; ?>
+            <?php $homepage = base_url().$user_role.'/dashboard'; ?> 
             <a class="navbar-brand" href="<?= $homepage ?>">
               <!-- Logo icon -->
-              <b class="align-middles ps-md-2 ps-lg-2 ps-sm-0 ps-xs-0">
+              <b class="">
                 <img
                   src="<?php echo base_url(); ?>assets/images/HC_logo.png"
                   alt="Logo"
@@ -142,32 +145,11 @@
                 ></a>
               </li>
 
-              <!-- Start of Search Form -->
-              <!-- <li class="nav-item search-box">
-                <a
-                  class="nav-link waves-effect waves-dark"
-                  href="javascript:void(0)"
-                  ><i class="mdi mdi-magnify fs-4"></i
-                ></a>
-                <form class="app-search position-absolute">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Search &amp; enter"
-                  />
-                  <a class="srh-btn"><i class="mdi mdi-window-close"></i></a>
-                </form>
-              </li> -->
-              <!-- End of Search Form -->
+             
             </ul>
             <!-- Right side toggle and nav items -->
             <ul class="navbar-nav float-end">
-              <!-- Notifications -->
-              <!-- <li class="nav-item dropdown">
-                <a class="nav-link" href="#">
-                  <i class="mdi mdi-bell font-24"></i>
-                </a>
-              </li> -->
+           
 
               <li class="nav-item dropdown">
                 <strong class="nav-link ls-1">

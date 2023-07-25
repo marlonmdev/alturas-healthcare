@@ -2174,6 +2174,9 @@ class Loa_controller extends CI_Controller {
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$loa = $this->loa_model->get_all_approved_loa($loa_id);
 		$existing = $this->loa_model->check_loa_no($loa_id);
+		// var_dump('request type',$loa);
+		// var_dump('loa id',$loa_id);
+		// $view_page ="";
 		// var_dump($loa);
 		$data['bar'] = $this->loa_model->bar_pending();
 		$data['bar1'] = $this->loa_model->bar_approved();
@@ -3954,58 +3957,64 @@ class Loa_controller extends CI_Controller {
 		$this->security->get_csrf_hash();
 		$this->load->library('tcpdf_library');
 		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
-		// var_dump('loa_id',$loa_id);
+		// require_once('uploads\phpqrcode-master\qrlib.php');
 		$row = $this->loa_model->db_get_data_for_gurantee($loa_id);
 		$loa = $this->loa_model->db_get_loa_detail($loa_id);
-		$companyChargeWords = $this->convertNumberToWords($row['company_charge']);
-		// var_dump('companyChargeWords',$companyChargeWords);
 		$name = $this->session->userdata('fullname');
 		$doc = $this->loa_model->db_get_doctor_by_id($row['approved_by']);
-	
-	
-		// Generate the PDF content
+		$qr_count = $this->loa_model->count_all_generated_guarantee_letter();
+		$total = number_format($row['company_charge']+$row['cash_advance'],2,'.',',');
+		$companyChargeWords = $this->convertNumberToWords($total);
+		// Generate the qr code
+		$data = [
+			'Guarantee Payment no:' => $qr_count+1,
+			'Member`s Name:' => $row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] . ' ' . $row['suffix'] ,
+			'LOA no:' =>	$row['loa_no'],
+			'Billing no:' => $row['billing_no'],
+			'Total Billed Amount:' =>	number_format($row['net_bill'],2,'.',','),
+			'Company Charge:' => number_format($row['company_charge'],2,'.',','),
+			'Healthcare Advance:' => number_format($row['cash_advance'],2,'.',','),
+			'Total Guaranteed Amount:' => $total,
+		]; 
+		$formattedText = '';
+		foreach ($data as $key => $value) {
+			$formattedText .= $key . ' ' . $value . "\n";
+		}
+		$barcodeText = $row['health_card_no'];  // The text to be encoded in the barcode
+		$barcodeType = 'C128';        // The barcode type
+
 		$pdf = new TCPDF();
 	
 		// Disable the header and footer lines
 		$pdf->SetPrintHeader(false);
 		$pdf->SetPrintFooter(false);
-		// $title = '<img src="'.base_url().'assets/images/HC_logo.png" style="width:200px;height:80px">';
-		// // $title .= '<style>h3 { margin: 0; padding: 0; line-height: .5; }</style>';
-		// $title .= '<p>Corporate Center, North Wing</p>';
-		// $title .= '<p>Island City Mall Dampas Dist</p>';
-		// $title .= '<p>Tagbilaran City, Bohol, 6300</p>';
-		// $title .= '<p>Tel. no. 501-3000 local 1319</p>';
+		
+		$logo = '<img src="'.base_url().'assets/images/letter_logo_final.png" style="width:95px; 	height:70px;">';
+		$title = '<div >
+		
+		<p style="line-height: 0; margin-right: 0; font-size: 8px;">Corporate Center, North Wing</p>
+		<p style="line-height: 0; margin-right: 0; font-size: 8px;">Island City Mall Dampas Dist </p>
+		<p style="line-height: 0; margin-right: 0; font-size: 8px;">Tagbilaran City, Bohol, 6300 </p>
+		<p style="line-height: 0; margin-right: 0; font-size: 8px;">Tel. no. 501-3000 local 1319 </p>
+	  </div>';
 
-		$title = '<div>
-							<p><img src="'.base_url().'assets/images/HC_logo.png" style="width:180px;height:80px">
-							</div>';
-
-		// $title = '<div class="col-lg-4" style="border-bottom:  1px solid black;">
-		// 						<img src="'.base_url().'assets/images/HC_logo.png" width="170px" height="45px">
-		// 						Corporate Center, North Wing
-		// 					</div>';
-							
-
-							
-
-
-
-
-
-		// Set the font and size for the letter content...
-		$pdf->SetFont('Helvetica', '', 12);
-	
+		$pdf->SetMargins(25, 10, 15);
+		$pdf->setFont('times', '', 10);
 		// Add the letter content
 		$pdf->AddPage();
-	
-		$html1 = '<div >
-					   <p id="generated-date" style="font-weight: bold;">' . date("F j, Y") . '</p>
-					   <p></p>
-						  <p style="font-weight: bold;line-height: 0;">JONE SIEGFRED L. SEPE</p>
-						  <p style="line-height: 0;">CEO/PRESIDENT</p>
-						  <p style="line-height: 0;">0139 Gallares Street, Poblacion II,</p>
-						  <p style="line-height: 0;">Tagbilaran City, Bohol, 0139</p>
-						  <p style="line-height: 2; font-weight: bold; ">RE: Guarantee Letter for Payment Covered by Alturas Healthcare;</p>
+		$html1 = '<div>  <p id="generated-date" style=" line-height: 0;">' . date("F j, Y") . '</p>
+					<p></p>
+					<p></p>
+					<p style="font-weight: bold;line-height: 0;">JONE SIEGFRED L. SEPE</p>
+					<p style="font-weight: bold;line-height: 0;">CEO/PRESIDENT</p>
+					<p style="font-weight: bold; line-height: 0;">RAMIRO COMMUNITY HOSPITAL</p>
+					<p style="line-height: 0;">0139 Gallares Street, Poblacion II,</p>
+					<p style="line-height: 0;">Tagbilaran City, Bohol, 0139</p>
+		   		  </div>';
+
+
+		$html2 = '<div >
+						  <p style="font-weight: bold; text-decoration: underline; ">RE: Guarantee Letter for Payment Covered by Alturas Healthcare;</p>
 						  <p style="line-height: 2 ;">Dear DR. SEPE;</p>
 	
 							<p>We are writing to confirm that <span style="font-weight: bold;text-transform: uppercase">' . rtrim($row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] . ' ' . $row['suffix']) . '</span>, a valued member of the Alturas Healthcare Program, has received medical services and treatments from your esteemed healthcare facility. We would like to assure you that we will cover applicable expenses incurred by our member during their visit, as outlined in our agreement with your organization.</p>
@@ -4014,59 +4023,41 @@ class Loa_controller extends CI_Controller {
 							<p style="line-height: 0;">Patient Name: '.$row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] . ' ' . $row['suffix'] . ' </p>
 							<p style="line-height: 0;">Date of Birth: '.$row['date_of_birth'].'</p>
 							<p style="line-height: 0;">Alturas Healthcare Program ID: '.$row['health_card_no'].'</p>
-							<p style="line-height: 0;">LOA/NOA: '.$row['loa_no'].'</p>
-							<p >Therefore, in accordance with the terms and conditions of our agreement, Alturas Healthcare will be using this letter to guarantee payment of the bill amounting <span id="company_charge_words" style="font-weight: bold;text-transform: uppercase">' . $companyChargeWords . '</span> <span style="font-weight: bold">(PHP ' . number_format($row['company_charge'], 2,'.',',') . ')</span> only. We kindly request that you submit all relevant bills and supporting documentation for the services rendered to <span style="font-weight: bold;">' . rtrim($row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] . ' ' . $row['suffix']) . '</span> directly to our designated billing department.</p>
+							<p style="line-height: 0;">LOA No: '.$row['loa_no'].'</p>
+							<p></p>
+							<p></p>
+							<p >Therefore, in accordance with the terms and conditions of our agreement, Alturas Healthcare will be using this letter to guarantee payment of the bill amounting</span>'. (($row['cash_advance'] > 0) ? '<span style="font-weight: bold"> (PHP '.number_format($row['company_charge'], 2, '.', ',').')</span> to be charged to the company and <span style="font-weight: bold">(PHP '.number_format($row['cash_advance'], 2, '.', ',').')</span> as a cash advance payment, with the total amount of ' : '').'
+							<span id="company_charge_words" style="font-weight: bold;text-transform: uppercase">' . $companyChargeWords . '</span> <span style="font-weight: bold">(PHP ' . $total . ')</span> only. We kindly request that you submit all relevant bills and supporting documentation for the services rendered to <span style="font-weight: bold;">' . rtrim($row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] . ' ' . $row['suffix']) . '</span> directly to our designated billing department.</p>
 							<p >We appreciate your collaboration and dedication to providing exceptional healthcare services to our members. Your continued partnership with the Alturas Healthcare Program is instrumental in fulfilling our mission of delivering comprehensive and accessible healthcare to our beneficiaries.</p>
 							<p >Thank you for your attention to this matter, and we look forward to a continued successful relationship.</p>
-				</div>';
-		// $html2 ='<div><p style="font-weight: bold;">RE: Guarantee Letter for Payment Covered by Alturas Healthcare;</p></div>';
-		// $html3 = '<div style="text-align: justify;">
-		// 			<p style="line-height: 2 ;">Dear DR. SEPE;</p>
-	
-		// 			<p>We are writing to confirm that <span style="font-weight: bold;text-transform: uppercase">' . rtrim($row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] . ' ' . $row['suffix']) . '</span>, a valued member of the Alturas Healthcare Program, has received medical services and treatments from your esteemed healthcare facility. We would like to assure you that we will cover applicable expenses incurred by our member during their visit, as outlined in our agreement with your organization.</p>
-		// 			<p style="line-height: 0;">Patient Details:</p>
-		// 			<p></p>
-		// 			<p style="line-height: 0;">Patient Name: '.$row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] . ' ' . $row['suffix'] . ' </p>
-		// 			<p style="line-height: 0;">Date of Birth: '.$row['date_of_birth'].'</p>
-		// 			<p style="line-height: 0;">Alturas Healthcare Program ID: '.$row['health_card_no'].'</p>
-		// 			<p style="line-height: 0;">LOA/NOA: '.$row['loa_no'].'</p>
-		// 			<p >Therefore, in accordance with the terms and conditions of our agreement, Alturas Healthcare will be using this letter to guarantee payment of the bill amounting <span id="company_charge_words" style="font-weight: bold;text-transform: uppercase">' . $companyChargeWords . '</span> <span style="font-weight: bold">(PHP ' . number_format($row['company_charge'], 2,'.',',') . ')</span> only. We kindly request that you submit all relevant bills and supporting documentation for the services rendered to Patient Name directly to our designated billing department.</p>
-		// 			<p >We appreciate your collaboration and dedication to providing exceptional healthcare services to our members. Your continued partnership with the Alturas Healthcare Program is instrumental in fulfilling our mission of delivering comprehensive and accessible healthcare to our beneficiaries.</p>
-		// 			<p >Thank you for your attention to this matter, and we look forward to a continued successful relationship.</p>
-		// 			</div>';
-	
-		// $html4 = '<div style="text-align: justify;">
-	
-					// <p>Therefore, in accordance with the terms and conditions of our agreement, Alturas Healthcare will be using this letter to guarantee payment of the bill amounting <span id="company_charge_words" style="font-weight: bold;text-transform: uppercase">' . $companyChargeWords . '</span> <span style="font-weight: bold">(PHP ' . number_format($row['company_charge'], 2,'.',',') . ')</span> only. We kindly request that you submit all relevant bills and supporting documentation for the services rendered to Patient Name directly to our designated billing department.</p>
-					// <p>We appreciate your collaboration and dedication to providing exceptional healthcare services to our members. Your continued partnership with the Alturas Healthcare Program is instrumental in fulfilling our mission of delivering comprehensive and accessible healthcare to our beneficiaries.</p>
-					// <p>Thank you for your attention to this matter, and we look forward to a continued successful relationship.</p>
-					// </div>';
-	
-		$html5 = '<div>
-					<p>Yours sincerely,</p>
-					<img src="' . base_url() . 'uploads/doctor_signatures/' . $doc['doctor_signature'] . '" alt="Doctor Signature" style="height:auto;width:170px;vertical-align:baseline;">
-	
+							<p  style="line-height: 3;">Yours sincerely,</p>
+						</div>';
+		
+		$signature = '<div><img src="' . base_url() . 'uploads/doctor_signatures/' . $doc['doctor_signature'] . '" alt="Doctor Signature" style="height:auto;width:170px;vertical-align:baseline;"> </div>';
+		// $qr = '<img src="' . base_url() . 'uploads/qrcode/' . $qrfilename . '" alt="Guarantee Letter QR Code" style="height:100px;width:100px;"> ';
+		$html3 = '<div>
 					<p style="line-height: 0;text-transform: uppercase;">Dr. Michael D. Uy</span></p>
 	
 	
 					<p style="line-height: 1">Company Physician</p>
 				</div>';
-		$pdf->setTitle('Guarantee letter');
-		$pdf->setFont('times', '', 10);
-		// $pdf->AddPage('P', 'LEGAL');
-		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
-		// $pdf->writeHTML($title);
-		$pdf->writeHTML($html1);
-		// $pdf->writeHTML($html2);
-		// $pdf->writeHTML($html3);
-		// $pdf->writeHTML($html4);
 		
-		$pdf->WriteHtmlCell(0, 0, '', '', $html5, 0, 1, 0, true, 'L', true);
+		$pdf->setTitle('Guarantee letter');
+		$pdf->WriteHtmlCell(0, 0, '', '', $logo, 0, 1, 0, true, 'R', true);
+		$pdf->SetY($pdf->GetY()-2);
+		$pdf->SetX($pdf->GetX()+133);
+		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'L', true);
+		$pdf->SetY($pdf->GetY()-25);
+		$pdf->writeHTML($html1);
+		$pdf->writeHTML($html2);
+		$pdf->SetX($pdf->GetX()-20);
+		$pdf->WriteHtmlCell(0, 0, '', '', $signature, 0, 1, 0, true, 'L', true);
+		$pdf->SetY($pdf->GetY()-15);
+		$pdf->WriteHtmlCell(0, 0, '', '', $html3, 0, 1, 0, true, 'L', true);
+		$pdf->write1DBarcode($barcodeText, $barcodeType, 25, 149, 80, 5);
+		$pdf->write2DBarcode($formattedText, 'QRCODE', 155, 230, 30, 30);
 	
-	
-		// Output the PDF to the browser
-		// $pdf->Output('guarantee_letter.pdf', 'I');
-		// $pdfPath = 'uploads/guarantee_letter/guarantee_letter.pdf';
+		
 		$fileName = 'guarantee_letter' . $loa_id . '.pdf';
 		$pdf->Output(getcwd() . '/uploads/guarantee_letter/' . $fileName, 'F');
 		$response = [
@@ -4074,9 +4065,7 @@ class Loa_controller extends CI_Controller {
 			'filename' => $fileName
 		];
 		echo json_encode($response);
-	
-		// file_put_c	ontents($pdfPath, $pdfContent);
-		}
+	}
 
 	function consultation_schedule(){
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
@@ -4809,7 +4798,7 @@ class Loa_controller extends CI_Controller {
 	//END
 	//====================================================================================================
 	function convertNumberToWords($number) {
-		$number= number_format($number,2,'.',',');
+		// $number= number_format($number,2,'.',',');
 		$number = str_replace(',', '', $number);
 		$decimal = '';
 		

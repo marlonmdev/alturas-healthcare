@@ -17,6 +17,10 @@
                   <td class="fw-bold ls-1">Requested On :</td>
                   <td class="fw-bold ls-1" id="request-date"></td>
                 </tr>
+                <tr id="hospitalized">
+                  <td class="fw-bold ls-1">Date Hospitalized :</td>
+                  <td class="fw-bold ls-1" id="hospitalized-date"></td>
+                </tr>
                 <tr>
                   <td class="fw-bold ls-1">Disapproved By :</td>
                   <td class="fw-bold ls-1" id="disapproved-by"></td>

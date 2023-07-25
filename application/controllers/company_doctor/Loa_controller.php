@@ -893,7 +893,8 @@ class Loa_controller extends CI_Controller {
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 			'requested_by' => $row['requested_by'],
 			'billed_on' => $billed_on,
-			'paid_on' => $paid_on
+			'paid_on' => $paid_on,
+			'hospitalized_date' => date('F d, Y', strtotime($row['emerg_date']))
 		];
 		echo json_encode($response);
 	}
@@ -989,6 +990,307 @@ class Loa_controller extends CI_Controller {
 
 		
 	}
+
+	function search_autocomplete() {
+        $this->security->get_csrf_hash();
+        $search_data = $this->input->post('search');
+        $result = $this->loa_model->get_autocomplete($search_data);
+        if (!empty($result)) {
+            foreach ($result as $row) :
+                $member_id = $this->myhash->hasher($row['member_id'], 'encrypt');
+                echo '<strong class="d-block mx-2 p-1 my-1"><a href="#" onclick="getMemberValues(\'' . $member_id . '\')" class="text-secondary" data-toggle="tooltip" data-placement="top" title="Click to fill form with Data">'
+                    . $row['first_name'] . ' '
+                    . $row['middle_name'] . ' '
+                    . $row['last_name'] . ' '
+                    . $row['suffix'] . '</a></strong>';
+            endforeach;
+        } else {
+            echo "<p class='text-center mt-1'><em>No data found...</em></p>";
+        }
+    }
+
+	function fetch_member_details() {
+		$member_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+        $row = $this->loa_model->db_get_member_details($member_id);
+        $birth_date = date("d-m-Y", strtotime($row['date_of_birth']));
+        $current_date = date("d-m-Y");
+        $diff = date_diff(date_create($birth_date), date_create($current_date));
+        $age = $diff->format("%y");
+
+        $response = [
+            'status' => 'success',
+            'token' => $this->security->get_csrf_hash(),
+            'member_id' => $this->myhash->hasher($row['member_id'], 'encrypt'),
+            'emp_id' => $row['emp_id'],
+            'first_name' => $row['first_name'],
+            'middle_name' => $row['middle_name'],
+            'last_name' => $row['last_name'],
+            'suffix' => $row['suffix'],
+            'gender' => $row['gender'],
+            'date_of_birth' => $row['date_of_birth'],
+            'age' => $age,
+            'philhealth_no' => $row['philhealth_no'],
+            'blood_type' =>  $row['blood_type'],
+            'home_address' => $row['home_address'],
+            'city_address' => $row['city_address'],
+            'contact_no' => $row['contact_no'],
+            'email' => $row['email'],
+            'contact_person' => $row['contact_person'],
+            'contact_person_addr' => $row['contact_person_addr'],
+            'contact_person_no' => $row['contact_person_no'],
+            'health_card_no' => $row['health_card_no'],
+            'requesting_company' => $row['company'],
+            'mbl' => number_format($row['remaining_balance'],2,'.',',')
+        ];
+        echo json_encode($response);
+	}
+
+	function get_hp_services() {
+		$token = $this->security->get_csrf_hash();
+		$hp_id = $this->uri->segment(3);
+		$cost_types = $this->loa_model->db_get_cost_types_by_hp($hp_id);
+		$response = '';
+
+		if(empty($cost_types)){
+			$response .= '<select class="chosen-select form-select" style=" width: 300px; height: 200px;" id="med-services" name="med-services[]" multiple="multiple">';
+			$response .= '<option value="" disabled>No Available Services</option>';
+			$response .= '</select>';
+		}else{
+			$response .= '<select class="chosen-select form-select" style=" width: 300px; height: 200px;" id="med-services" name="med-services[]" data-placeholder="Choose services..." multiple="multiple">';
+			foreach ($cost_types as $cost_type) {
+				$response .= '<option value="'.$cost_type['ctype_id'].'" data-price="'.$cost_type['op_price'].'">'.$cost_type['item_description'].''.' ₱'.''.number_format($cost_type['op_price'],2,'.',',').'</option>';
+			}
+			$response .= '</select>';
+		}
+		echo json_encode($response);
+	}
+
+	function check_rx_file($str) {
+		if (isset($_FILES['rx-file']['name']) && !empty($_FILES['rx-file']['name'])) {
+			return true;
+		} else {
+			$this->form_validation->set_message('check_rx_file', 'Please choose RX/Request Document file to upload.');
+			return false;
+		}
+	}
+
+	function multiple_select() {
+		$med_services = $this->input->post('med-services');
+		if (count((array)$med_services) < 1) {
+			$this->form_validation->set_message('multiple_select', 'Select at least one Service');
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	function loa_form_validation($type) {
+		switch ($type) {
+			case 'Empty':
+			case 'Diagnostic Test':
+				$this->form_validation->set_rules('healthcare-provider', 'HealthCare Provider', 'required');
+				$this->form_validation->set_rules('loa-request-type', 'LOA Request Type', 'required');
+				$this->form_validation->set_rules('med-services', 'Medical Services', 'callback_multiple_select');
+				$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[1000]');
+				$this->form_validation->set_rules('requesting-physician', 'Requesting Physician', 'trim|required');
+				$this->form_validation->set_rules('rx-file', '', 'callback_check_rx_file');
+				if ($this->form_validation->run() == FALSE) {
+					$response = [
+						'status' => 'error',
+						'healthcare_provider_error' => form_error('healthcare-provider'),
+						'loa_request_type_error' => form_error('loa-request-type'),
+						'med_services_error' => form_error('med-services'),
+						'chief_complaint_error' => form_error('chief-complaint'),
+						'requesting_physician_error' => form_error('requesting-physician'),
+						'rx_file_error' => form_error('rx-file'),
+					];
+
+					echo json_encode($response);
+					exit();
+				}
+				break;
+			case 'Emergency':
+				$this->form_validation->set_rules('healthcare-provider', 'HealthCare Provider', 'required');
+				$this->form_validation->set_rules('hopitalized-date', 'Date Hospitalized', 'required');
+				$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[1000]');
+				if ($this->form_validation->run() == FALSE) {
+					$response = [
+						'status' => 'error',
+						'healthcare_provider_error' => form_error('healthcare-provider'),
+						'chief_complaint_error' => form_error('chief-complaint'),
+						'hospitalized_date_error' => form_error('hopitalized-date'),
+					];
+
+					echo json_encode($response);
+					exit();
+				}
+				break;
+			case 'Diagnostic Test Update':
+				$this->form_validation->set_rules('healthcare-provider', 'HealthCare Provider', 'required');
+				$this->form_validation->set_rules('loa-request-type', 'LOA Request Type', 'required');
+				$this->form_validation->set_rules('med-services', 'Medical Services', 'callback_multiple_select');
+				$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[2000]');
+				$this->form_validation->set_rules('requesting-physician', 'Requesting Physician', 'trim|required');
+				$this->form_validation->set_rules('rx-file', '', 'callback_update_check_rx_file');
+				if ($this->form_validation->run() == FALSE) {
+					$response = [
+						'status' => 'error',
+						'healthcare_provider_error' => form_error('healthcare-provider'),
+						'loa_request_type_error' => form_error('loa-request-type'),
+						'med_services_error' => form_error('med-services'),
+						'chief_complaint_error' => form_error('chief-complaint'),
+						'requesting_physician_error' => form_error('requesting-physician'),
+						'rx_file_error' => form_error('rx-file'),
+					];
+					echo json_encode($response);
+					exit();
+				}
+				break;
+		}
+	}
+
+	function loa_number($input, $pad_len = 7, $prefix = null) {
+		if ($pad_len <= strlen($input))
+			trigger_error('<strong>$pad_len</strong> cannot be less than or equal to the length of <strong>$input</strong> to generate invoice number', E_USER_ERROR);
+
+		if (is_string($prefix))
+			return sprintf("%s%s", $prefix, str_pad($input, $pad_len, "0", STR_PAD_LEFT));
+
+		return str_pad($input, $pad_len, "0", STR_PAD_LEFT);
+	}
+
+	function submit_loa_override() {
+		$token = $this->security->get_csrf_hash();
+		$input_post = $this->input->post(NULL, TRUE);
+		// JSON Decode - Takes a JSON encoded string and converts it into a PHP value
+		$physicians_tags = json_decode($this->input->post('attending-physician'), TRUE);
+		$physician_arr = [];
+		$hp_id = $this->input->post('healthcare-provider');
+		$request_type = $this->input->post('loa-request-type'); 
+		switch (true) {
+			case ($request_type == ''):
+				$this->loa_form_validation('Empty');
+				break;
+			case ($request_type == 'Diagnostic Test'):
+				$this->loa_form_validation('Diagnostic Test');
+				// check if the selected healthcare provider exist from database
+				$hp_exist = $this->loa_model->db_check_healthcare_provider_exist($hp_id);
+				if (!$hp_exist) {
+					$response = [
+						'status' => 'save-error',
+						'message' => 'Invalid Healthcare Provider'
+					];
+					echo json_encode($response);
+					exit();
+				} else {
+					// if theres selected file to be uploaded
+					$config['upload_path'] = './uploads/loa_attachments/';
+					$config['allowed_types'] = 'jpg|jpeg|png';
+					$config['encrypt_name'] = TRUE;
+					$this->load->library('upload', $config);
+
+					if (!$this->upload->do_upload('rx-file')) {
+						$response = [
+							'status' => 'save-error',
+							'message' => 'File Not Uploaded'
+						];
+						echo json_encode($response);
+						exit();
+					} else {
+						$upload_data = $this->upload->data();
+						$rx_file = $upload_data['file_name'];
+
+						$med_services = $this->input->post('med-services');
+
+						// for physician multi-tags input
+						if(empty($physicians_tags)) {
+							$attending_physician = '';
+						} else {
+							foreach ($physicians_tags as $physician_tag) :
+								array_push($physician_arr, ucwords($physician_tag['value']));
+							endforeach;
+							$attending_physician = implode(', ', $physician_arr);
+						}
+
+						// Call function insert_loa
+						$this->insert_loa($input_post, $med_services, $attending_physician, $rx_file);
+					}
+				}
+				break;
+				case ($request_type == 'Emergency'):
+					$this->loa_form_validation('Emergency');
+					// check if the selected healthcare provider exist from database
+					$hp_exist = $this->loa_model->db_check_healthcare_provider_exist($hp_id);
+					if (!$hp_exist) {
+						$response = [
+							'status' => 'save-error',
+							'message' => 'Invalid Healthcare Provider'
+						];
+						echo json_encode($response);
+						exit();
+					} else {
+							// Call function insert_loa
+							$this->insert_loa($input_post, "", "","");
+					}
+				break;
+			default:
+				$response = [
+					'status' => 'save-error',
+					'message' => 'Please Select Valid Request Type'
+				];
+				echo json_encode($response);
+		}
+	}
+
+	function insert_loa($input_post, $med_services, $attending_physician, $rx_file) {
+		// select the max loa_id from DB
+		$result = $this->loa_model->db_get_max_loa_id();
+		$max_loa_id = !$result ? 0 : $result['loa_id'];
+		$add_loa = $max_loa_id + 1;
+		$current_year = date('Y');
+		// call function loa_number
+		$loa_no = $this->loa_number($add_loa, 7, 'LOA-'.$current_year);
+		$emp_id = $input_post['emp-id'];
+		$member = $this->loa_model->db_get_member_infos($emp_id);
+
+		$post_data = [
+			'loa_no' => $loa_no,
+			'emp_id' => $emp_id,
+			'first_name' =>  $member['first_name'],
+			'middle_name' =>  $member['middle_name'],
+			'last_name' =>  $member['last_name'],
+			'suffix' =>  $member['suffix'],
+			'hcare_provider' => $input_post['healthcare-provider'],
+			'loa_request_type' => $input_post['loa-request-type'],
+			'med_services' => ($med_services !== "")? implode(';',$med_services) : "",
+			'health_card_no' => $member['health_card_no'],
+			'requesting_company' => $member['company'],
+			'request_date' => date("Y-m-d"), 
+			'emerg_date' => !empty($input_post['hopitalized-date']) ? date('Y-m-d', strtotime($input_post['hopitalized-date'])) : '0000-00-00',
+			'chief_complaint' => (isset($input_post['chief-complaint']))?strip_tags($input_post['chief-complaint']):"",
+			'requesting_physician' =>(isset($input_post['requesting-physician']))? ucwords($input_post['requesting-physician']):"",
+			'attending_physician' => $attending_physician,
+			'rx_file' => $rx_file,
+			'status' => 'Pending',
+			'requested_by' => $this->session->userdata('doctor_id'),
+			'override_by' => $input_post['doctor-id'],
+		];
+
+		$inserted = $this->loa_model->db_insert_loa_request($post_data);
+		// if loa request is not inserted
+		if (!$inserted) {
+			$response = [
+				'status' => 'save-error',
+				'message' => 'LOA Request Failed'
+			];
+		}
+		$response = [
+			'status' => 'success',
+			'message' => 'LOA Request Save Successfully'
+		];
+		echo json_encode($response);
+	}
+
 
 
 }

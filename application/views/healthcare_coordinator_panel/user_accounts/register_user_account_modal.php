@@ -26,8 +26,8 @@
                             <option value="">Select User Role</option>
                             <option value="healthcare-coordinator">Healthcare Coordinator</option>
                             <option value="healthcare-provider">Healthcare Provider</option>
-                            <option value="hc-provider-front-desk">Healthcare Provider Front Desk</option>
-                            <option value="hc-provider-accounting">Healthcare Provider Accounting</option>
+                            <!-- <option value="hc-provider-front-desk">Healthcare Provider Front Desk</option>
+                            <option value="hc-provider-accounting">Healthcare Provider Accounting</option> -->
                             <option value="head-office-accounting">Head Office - Accounting</option>
                             <option value="head-office-iad">Head Office - IAD</option>
                            

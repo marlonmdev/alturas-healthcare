@@ -17,6 +17,10 @@
                   <td class="fw-bold ls-1">Requested On :</td>
                   <td class="fw-bold ls-1" id="request-date"></td>
                 </tr>
+                <tr id="hospitalized">
+                  <td class="fw-bold ls-1">Date Hospitalized :</td>
+                  <td class="fw-bold ls-1" id="hospitalized-date"></td>
+                </tr>
                 <tr>
                   <td class="fw-bold ls-1">Member's Maximum Benefit Limit :</td>
                   <td class="fw-bold ls-1">&#8369;<span id="member-mbl"></span></td>
@@ -25,7 +29,7 @@
                   <td class="fw-bold ls-1">Member's Remaining MBL :</td>
                   <td class="fw-bold ls-1">&#8369;<span id="remaining-mbl"></span></td>
                 </tr>
-                <tr>
+                <tr id="percent">
                   <td class="fw-bold ls-1">Percentage :</td>
                   <td class="fw-bold ls-1"><span id="percentage"></span></td>
                 </tr>

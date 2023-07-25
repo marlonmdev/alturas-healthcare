@@ -422,6 +422,10 @@ class Transaction_model extends CI_Model {
         return $this->db->get()->result_array();
      }
 
+	 function get_charge_details($billing_id) {
+		return $this->db->get_where('billing', ['billing_id' => $billing_id])->row_array();
+	 }
+
 
 >>>>>>> fa43bd9d566d4e30192bbf26ea87e86a6c40d4d2
 	

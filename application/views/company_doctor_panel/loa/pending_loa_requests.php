@@ -270,7 +270,8 @@
           availment_date,
           req_status,
           member_mbl,
-          remaining_mbl
+          remaining_mbl,
+          hospitalized_date
         } = res;
 
         $("#viewLoaModal").modal("show");
@@ -285,6 +286,11 @@
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
 
+        if(loa_request_type == 'Emergency'){
+          $('#hospitalized').show();
+        }else{
+          $('#hospitalized').hide();
+        }
         $('#loa-no').html(loa_no);
         $('#loa-status').html(req_stat);
         $('#member-mbl').html(member_mbl);
@@ -311,8 +317,10 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
-      
-        if(work_related == 'Yes'){ 
+        $('#hospitalized-date').html(hospitalized_date);
+        if(work_related != ''){
+          $('#percent').show();
+          if(work_related == 'Yes'){ 
 					if(percentage == ''){
 					  wpercent = '100% W-R';
 					  nwpercent = '';
@@ -342,6 +350,10 @@
 					}
 			   }
         $('#percentage').html(wpercent+', '+nwpercent);
+        }else{
+          $('#percent').hide();
+        }
+        
       }
     });
   }

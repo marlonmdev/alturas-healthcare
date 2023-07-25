@@ -1343,6 +1343,10 @@ class List_model extends CI_Model{
     function get_bank_numbers($bank_id) {
         return $this->db->get_where('bank_accounts',['bank_id' => $bank_id])->row_array();
     }
+
+    function get_charge_details($billing_id) {
+		return $this->db->get_where('billing', ['billing_id' => $billing_id])->row_array();
+    }
     
 
 

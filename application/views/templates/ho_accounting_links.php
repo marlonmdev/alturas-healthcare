@@ -8,17 +8,26 @@
                 </a>
               </li>
 
-              <li class="sidebar-item">
-              <!-- <?php echo ($this->uri->segment(2) == 'bill') ? 'selected' : ''; ?> -->
-                <a
-                  class="sidebar-link"
-                  href="<?php echo base_url(); ?>head-office-accounting/bill/billing-list/billed-loa-noa"
-                  aria-expanded="false"
-                  ><i class="mdi mdi-file-check"></i
-                  ><span class="hide-menu ls-1">Billing List</span>
+              <li class="sidebar-item <?php echo ($this->uri->segment(2) == 'bill') ? 'selected' : ''; ?>">
+                <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
+                  <i class="mdi mdi-file-check ls-1"></i>Billing
+                  
                 </a>
+                <ul aria-expanded="false" class="collapse first-level">
+                  <li class="sidebar-item">
+                    <a href="<?php echo base_url(); ?>head-office-accounting/bill/billing-list/billed-loa-noa" class="sidebar-link"
+                      ><i class="mdi mdi-note"></i
+                      ><span class="hide-menu ls-1">Accredited Hospitals</span>
+                    </a>
+                  </li>
+                  <li class="sidebar-item">
+                    <a href="<?php echo base_url(); ?>head-office-accounting/bill/non-accredited/billed-loa-noa" class="sidebar-link">
+                      <i class="mdi mdi-note-outline ls-1"></i><span class="hide-menu ls-1">Non Accredited Hosp.</span>
+                    </a>
+                  </li>
+                </ul>
               </li>
-
+              
               <li class="sidebar-item">
                 <a
                   class="sidebar-link"

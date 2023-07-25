@@ -256,7 +256,7 @@
         const res = JSON.parse(response);
         const base_url = window.location.origin;
         const {
-          status,token,loa_no,req_status,request_date,requested_by,approved_on,approved_by,member_mbl,remaining_mbl,work_related,health_card_no,first_name,middle_name,last_name,suffix,date_of_birth,age,gender,blood_type,philhealth_no,home_address,city_address,contact_no,email,contact_person,contact_person_addr,contact_person_no,healthcare_provider,loa_request_type,med_services,requesting_company,chief_complaint,requesting_physician,percentage
+          status,token,loa_no,req_status,request_date,requested_by,approved_on,approved_by,member_mbl,remaining_mbl,work_related,health_card_no,first_name,middle_name,last_name,suffix,date_of_birth,age,gender,blood_type,philhealth_no,home_address,city_address,contact_no,email,contact_person,contact_person_addr,contact_person_no,healthcare_provider,loa_request_type,med_services,requesting_company,chief_complaint,requesting_physician,percentage,hospitalized_date
         } = res;
 
         $("#viewLoaModal").modal("show");
@@ -282,6 +282,12 @@
             $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
           break;
         }
+        if(loa_request_type == 'Emergency'){
+          $('#hospitalized').show();
+        }else{
+          $('#hospitalized').hide();
+        }
+        $('#hospitalized-date').html(hospitalized_date);
         $('#request-date').html(request_date);
         $('#requested-by').html(requested_by);
         $('#approved-date').html(approved_on);

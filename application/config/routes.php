@@ -438,6 +438,7 @@ $route['head-office-accounting/setup/submit-bank-account'] = 'ho_accounting/main
 $route['head-office-accounting/setup/bank-accounts/fetch'] = 'ho_accounting/main_controller/fetch_bank_accounts';
 $route['head-office-accounting/setup/delete-bank-account'] = 'ho_accounting/main_controller/delete_bank_account';
 $route['head-office-accounting/setup/update-bank-account'] = 'ho_accounting/main_controller/edit_bank_account';
+$route['head-office-accounting/charging/view-details'] = 'ho_accounting/main_controller/fetch_charge_details';
 
 $route['print/pdfbilling/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_bills/$1/$2/$3';
 $route['printforpayment/pdfbilling/(:any)/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_forPayment/$1/$2/$3/$4';
@@ -464,6 +465,7 @@ $route['head-office-accounting/payment_history'] = 'ho_accounting/Pages_controll
 $route['head-office-accounting/billing-list/unbilled/loa'] = 'ho_accounting/Pages_controller/unbilled_loa_form';
 $route['head-office-accounting/billing-list/unbilled/noa'] = 'ho_accounting/Pages_controller/unbilled_noa_form';
 $route['head-office-accounting/bill/billing-list/billed-loa-noa'] = 'ho_accounting/Pages_controller/view_billed_loa_noa';
+$route['head-office-accounting/bill/non-accredited/billed-loa-noa'] = 'ho_accounting/Pages_controller/view_other_hosp_billing';
 $route['head-office-accounting/bill/billing-list/paid-loa-noa'] = 'ho_accounting/Pages_controller/view_paid_loa_noa';
 $route['head-office-accounting/billing-list/for-payment'] = 'ho_accounting/Pages_controller/view_for_payments';
 $route['head-office-accounting/bill/fetch_payments/(:any)'] = 'ho_accounting/Pages_controller/view_payments';
@@ -785,11 +787,14 @@ $route['company-doctor/loa/requests-list/billed'] = 'company_doctor/pages_contro
 $route['company-doctor/noa/requests-list/billed'] = 'company_doctor/pages_controller/view_billed_noa_list';
 $route['company-doctor/noa/requests-list/paid'] = 'company_doctor/pages_controller/view_paid_noa_list';
 $route['company-doctor/loa/requests-list/paid'] = 'company_doctor/pages_controller/view_paid_loa_list';
+$route['company-doctor/override/loa-request/(:any)'] = 'company_doctor/pages_controller/view_request_loa';
+$route['company-doctor/override/noa-request/(:any)'] = 'company_doctor/pages_controller/view_request_noa';
 
 // Company Doctor User Account Routes
 $route['company-doctor/account-settings'] = 'company_doctor/account_controller/account_settings';
 $route['company-doctor/account-settings/password/update'] = 'company_doctor/account_controller/update_account_password';
 $route['company-doctor/account-settings/username/update'] = 'company_doctor/account_controller/update_account_username';
+$route['company-doctor/overide/get-mgr-key-loa'] = 'company_doctor/account_controller/check_manager_key';
 
 
 // Company Doctor Members Routes
@@ -814,6 +819,10 @@ $route['company-doctor/loa/requested-loa/generate-printable-loa/(:any)'] = 'comp
 $route['company-doctor/loa/requests-list/cancelled/fetch'] = 'company_doctor/loa_controller/fetch_all_cancelled_loa';
 $route['company-doctor/loa/requests-list/billed/fetch'] = 'company_doctor/loa_controller/fetch_all_billed_loa';
 $route['company-doctor/loa/requests-list/paid/fetch'] = 'company_doctor/loa_controller/fetch_all_paid_loa';
+$route['company-doctor/member/search'] = 'company_doctor/loa_controller/search_autocomplete';
+$route['company-doctor/loa/member/search/(:any)'] = 'company_doctor/loa_controller/fetch_member_details';
+$route['company-doctor/get-services/(:any)'] = 'company_doctor/loa_controller/get_hp_services';
+$route['company-doctor/override/loa/submit'] = 'company_doctor/loa_controller/submit_loa_override';
 
 // Company Doctor NOA Routes
 $route['company-doctor/noa/requests-list/fetch'] = 'company_doctor/noa_controller/fetch_all_pending_noa';
@@ -827,7 +836,9 @@ $route['company-doctor/noa/requests-list/disapprove/(:any)'] = 'company_doctor/n
 $route['company-doctor/noa/requested-noa/generate-printable-noa/(:any)'] = 'company_doctor/noa_controller/generate_printable_noa';
 $route['company-doctor/noa/requests-list/billed/fetch'] = 'company_doctor/noa_controller/fetch_billed_noa';
 $route['company-doctor/noa/requests-list/paid/fetch'] = 'company_doctor/noa_controller/fetch_paid_noa';
-
+$route['company-doctor/member/search'] = 'company_doctor/noa_controller/fetch_member_details';
+$route['company-doctor/noa/member/search/(:any)'] = 'company_doctor/noa_controller/fetch_auto_complete';
+$route['company-doctor/override/noa/submit'] = 'company_doctor/noa_controller/submit_noa_override';
 
 // End of Company Doctor Routes
 //========================================================================================================
@@ -1101,6 +1112,7 @@ $route['head-office-iad/charging/receivables/fetch'] = 'ho_iad/transaction_contr
 $route['head-office-iad/charging/bu-receivables/fetch/(:any)/(:any)'] = 'ho_iad/transaction_controller/view_bu_receivables_details';
 $route['printBUCharge/pdfReceivablesCharging/(:any)/(:any)/(:any)'] = 'ho_iad/transaction_controller/print_rcv_bu_charging/$1/$2/$3';
 $route['head-office-iad/charging/paid/business-units/fetch'] = 'ho_iad/transaction_controller/fetch_bu_paid_charge';
+$route['head-office-iad/charging/view-details'] = 'ho_iad/transaction_controller/fetch_charge_details';
 
 //end
 // Payment Details

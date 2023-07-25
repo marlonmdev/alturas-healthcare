@@ -22,4 +22,9 @@ class Account_model extends CI_Model {
     $query = $this->db->get_where('members', ['emp_id =' => $emp_id]);
     return $query->row_array();
   }
+
+  function get_manager_info($mgr_username){
+    $query = $this->db->get_where('user_accounts', ['user_role' => 'company-doctor', 'username' => $mgr_username]);
+    return $query->row_array();
+  }
 }

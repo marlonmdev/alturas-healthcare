@@ -262,7 +262,9 @@
         $('#admission-date').html(admission_date);
         $('#chief-complaint').html(chief_complaint);
         $('#request-date').html(request_date);
-        if(work_related == 'Yes'){ 
+        if(work_related != ''){
+          $('#percent').show();
+          if(work_related == 'Yes'){ 
 					if(percentage == ''){
 					  wpercent = '100% W-R';
 					  nwpercent = '';
@@ -292,6 +294,10 @@
 					}
 			   }
         $('#percentage').html(wpercent+', '+nwpercent);
+        }else{
+          $('#percent').hide();
+        }
+        
       }
     });
   }
@@ -302,69 +308,6 @@
     $('#noaApprovalModal').modal('show');
     $('#appr-noa-id').val(noa_id);
   }
-
-  // const approveNoaRequest = (noa_id) => {
-  //   const next_page = `${baseUrl}company-doctor/noa/requests-list/approved`;
-  //   // $.confirm is a convention of a Jquery Confirm plugin 
-  //   $.confirm({
-  //     title: '<strong>Confirm!</strong>',
-  //     content: 'Are you sure to Approve NOA Request?',
-  //     type: 'green',
-  //     buttons: {
-  //       confirm: {
-  //         text: 'Yes',
-  //         btnClass: 'btn-green',
-  //         action: function() {
-  //           $.ajax({
-  //             type: 'GET',
-  //             url: `${baseUrl}company-doctor/noa/requests-list/approve/${noa_id}`,
-  //             data: {
-  //               noa_id: noa_id
-  //             },
-  //             dataType: "json",
-  //             success: function(response) {
-  //               const {
-  //                 token,
-  //                 status,
-  //                 message
-  //               } = response;
-  //               if (status === 'success') {
-  //                 swal({
-  //                   title: 'Success',
-  //                   text: message,
-  //                   timer: 3000,
-  //                   showConfirmButton: false,
-  //                   type: 'success'
-  //                 });
-
-  //                 setTimeout(function() {
-  //                   window.location.href = next_page;
-  //                 }, 3200);
-
-  //               } else {
-  //                 swal({
-  //                   title: 'Failed',
-  //                   text: message,
-  //                   timer: 3000,
-  //                   showConfirmButton: false,
-  //                   type: 'error'
-  //                 });
-  //               }
-  //             }
-  //           });
-  //         }
-  //       },
-  //       cancel: {
-  //         btnClass: 'btn-dark',
-  //         action: function() {
-  //           // close dialog
-  //         }
-  //       },
-
-  //     }
-  //   });
-  // }
-
 
   const showExpDateInput = () => {
     const exp_type = $('#expiration-type').val();

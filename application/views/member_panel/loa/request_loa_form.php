@@ -137,8 +137,8 @@
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i>MBL Balance</label>
                   <input type="text" class="form-control" name="remaining_mbl" id="remaining_mbl" value="<?= $mbl ?>" disabled>
                 </div>
-                
               </div>
+              
               <div class="form-group row">
                 <div class="col-lg-12 col-sm-12 mb-2 d-none" id="med-services-div">
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Select Medical Service/s</label><br>
@@ -146,9 +146,6 @@
                   <em id="med-services-error" class="text-danger"></em>
                 </div>
               </div>
-
-              <!-- <input type="text" class="form-control" name="price" id="price">
-              <input type="number" class="form-control" name="total_price" id="total_price"> -->
 
               <div class="form-group row">
                 <div class="col-sm-3 mb-2">
@@ -282,61 +279,55 @@
 
     var total = 0;
     $('#med-services-wrapper').on('change', function() {
-            var prices = [];
+      var prices = [];
             
-            $('#med-services option:selected').each(function() {
-              var price = $(this).data('price');
-              if (typeof price !== 'undefined') {
-                prices.push(price);
-                console.log("price", price);
-              }
-            });
+      $('#med-services option:selected').each(function() {
+        var price = $(this).data('price');
+        if (typeof price !== 'undefined') {
+          prices.push(price);
+          console.log("price", price);
+        }
+      });
 
-            total = prices.reduce(function(acc, val) {
-              return acc + val;
-            }, 0);
+      total = prices.reduce(function(acc, val) {
+        return acc + val;
+      }, 0);
             
-            $("#remaining_mbl").val(mbl);
-            console.log("total", total);
+      $("#remaining_mbl").val(mbl);
+      console.log("total", total);
             
-            // if (total > mbl) {
-            //   total = prices.reduce(function(acc, val) {
-            //     return acc + val;
-            //   }, 0);
 
-              console.log("final", total);
-              $('#net_bill').val(total);
-              // }
-          });
+      console.log("final", total);
+      $('#net_bill').val(total);
+    });
     
     $('#memberLoaRequestForm').submit(function(event) {
       event.preventDefault();
       let $data = new FormData($(this)[0]);
       if(total > mbl){
         $.alert({
-                title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Unable to Submit: Insufficient MBL Balance</h3>`,
-                content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it appears that your selected services exceed the available MBL balance in your account. Before proceeding with your request, please ensure that you have sufficient MBL balance. Thank you for your understanding.</div>",
-                type: "red",
-                buttons: {
-                  ok: {
-                    text: "OK",
-                    btnClass: "btn-danger",
-                  }
-                }
-              });
-      }
-      else if($('#remaining_mbl').val()==0){
+          title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Unable to Submit: Insufficient MBL Balance</h3>`,
+          content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it appears that your selected services exceed the available MBL balance in your account. Before proceeding with your request, please ensure that you have sufficient MBL balance. Thank you for your understanding.</div>",
+          type: "red",
+          buttons: {
+            ok: {
+              text: "OK",
+              btnClass: "btn-danger",
+            }
+          }
+        });
+      }else if($('#remaining_mbl').val()==0){
         $.alert({
           title: "<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Unable to Submit: Insufficient MBL Balance</h3>",
           content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it looks like your MBL balance is currently empty. Please ensure that you have enough MBL in your account before attempting to make a request. Thank you for your understanding.</div>",
           type: "red",
           buttons: {
-              ok: {
-                  text: "OK",
-                  btnClass: "btn-danger",
-              },
+            ok: {
+              text: "OK",
+              btnClass: "btn-danger",
+            },
           },
-      });
+        });
       
       }else{
       $.ajax({
@@ -433,7 +424,8 @@
               break;
           }
         },
-      })}
+      })
+    }
     });
 
 

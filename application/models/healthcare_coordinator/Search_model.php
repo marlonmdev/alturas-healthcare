@@ -16,19 +16,25 @@ class Search_model extends CI_Model {
     return $this->db->get_where('members')->result_array();
   }
 
-  
-  // function db_get_member_details($member_id) {
-  //   $query = $this->db->get_where('members', ['member_id' => $member_id]);
-  //   return $query->row_array();
-  // }
   public function db_get_member_details($member_id) {
     $this->db->select('members.*, max_benefit_limits.remaining_balance')
              ->join('max_benefit_limits', 'members.emp_id = max_benefit_limits.emp_id', 'left')
              ->where('members.member_id', $member_id);
-
     $query = $this->db->get('members');
     return $query->row_array();
-}
+  }
+  public function db_get_member_details1($emp_id) {
+    $this->db->select('members.*, max_benefit_limits.remaining_balance')
+             ->join('max_benefit_limits', 'members.emp_id = max_benefit_limits.emp_id', 'left')
+             ->where('members.emp_id', $emp_id);
+    $query = $this->db->get('members');
+    return $query->row_array();
+  }
+
+  function db_get_healthcare_providers() {
+    $query = $this->db->get('healthcare_providers');
+    return $query->result_array();
+  }
 
 
 }

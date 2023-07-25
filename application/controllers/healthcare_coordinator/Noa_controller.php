@@ -94,12 +94,12 @@ class Noa_controller extends CI_Controller {
 				if (!$saved) {
 					$response = [
 						'status' => 'save-error', 
-						'message' => 'NOA Request Failed'
+						'message' => 'Failed to save!'
 					];
 				}
 				$response = [
 					'status' => 'success', 
-					'message' => 'NOA Request Save Successfully'
+					'message' => 'Successfully Saved!'
 				];
 			}
 		}

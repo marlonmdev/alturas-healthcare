@@ -715,7 +715,47 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
-	function request_noa_form() {
+	function search_noa() {
+		$this->load->model('healthcare_coordinator/setup_model');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hospitals'] = $this->setup_model->db_get_hospitals();
+		$data['costtypes'] = $this->setup_model->db_get_all_cost_types();
+		$data['bar'] = $this->setup_model->bar_pending();
+		$data['bar1'] = $this->setup_model->bar_approved();
+		$data['bar2'] = $this->setup_model->bar_completed();
+		$data['bar3'] = $this->setup_model->bar_referral();
+		$data['bar4'] = $this->setup_model->bar_expired();
+		$data['bar_Billed'] = $this->setup_model->bar_billed();
+		$data['bar5'] = $this->setup_model->bar_pending_noa();
+		$data['bar6'] = $this->setup_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->setup_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->setup_model->bar_billed_noa();
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/noa/search');
+		$this->load->view('templates/footer');
+	}
+
+	function noa_managers_key() {
+		$this->load->model('healthcare_coordinator/setup_model');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hospitals'] = $this->setup_model->db_get_hospitals();
+		$data['costtypes'] = $this->setup_model->db_get_all_cost_types();
+		$data['bar'] = $this->setup_model->bar_pending();
+		$data['bar1'] = $this->setup_model->bar_approved();
+		$data['bar2'] = $this->setup_model->bar_completed();
+		$data['bar3'] = $this->setup_model->bar_referral();
+		$data['bar4'] = $this->setup_model->bar_expired();
+		$data['bar_Billed'] = $this->setup_model->bar_billed();
+		$data['bar5'] = $this->setup_model->bar_pending_noa();
+		$data['bar6'] = $this->setup_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->setup_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->setup_model->bar_billed_noa();
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/noa/managers_key');
+		$this->load->view('templates/footer');
+	}
+
+	function admission_form() {
 		$this->load->model('healthcare_coordinator/setup_model');
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['hospitals'] = $this->setup_model->db_get_hospitals();
@@ -735,7 +775,7 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
-	function request_emegency_loa_form() {
+	function emergency_form() {
 		$this->load->model('healthcare_coordinator/setup_model');
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['hospitals'] = $this->setup_model->db_get_hospitals();
@@ -754,6 +794,127 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('healthcare_coordinator_panel/emergency_loa/request_emerg_form');
 		$this->load->view('templates/footer');
 	}
+
+	function search_emergency() {
+		$this->load->model('healthcare_coordinator/setup_model');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hospitals'] = $this->setup_model->db_get_hospitals();
+		$data['costtypes'] = $this->setup_model->db_get_all_cost_types();
+		$data['bar'] = $this->setup_model->bar_pending();
+		$data['bar1'] = $this->setup_model->bar_approved();
+		$data['bar2'] = $this->setup_model->bar_completed();
+		$data['bar3'] = $this->setup_model->bar_referral();
+		$data['bar4'] = $this->setup_model->bar_expired();
+		$data['bar_Billed'] = $this->setup_model->bar_billed();
+		$data['bar5'] = $this->setup_model->bar_pending_noa();
+		$data['bar6'] = $this->setup_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->setup_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->setup_model->bar_billed_noa();
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/emergency_loa/search');
+		$this->load->view('templates/footer');
+	}
+
+	function emergency_managers_key() {
+		$this->load->model('healthcare_coordinator/setup_model');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hospitals'] = $this->setup_model->db_get_hospitals();
+		$data['costtypes'] = $this->setup_model->db_get_all_cost_types();
+		$data['bar'] = $this->setup_model->bar_pending();
+		$data['bar1'] = $this->setup_model->bar_approved();
+		$data['bar2'] = $this->setup_model->bar_completed();
+		$data['bar3'] = $this->setup_model->bar_referral();
+		$data['bar4'] = $this->setup_model->bar_expired();
+		$data['bar_Billed'] = $this->setup_model->bar_billed();
+		$data['bar5'] = $this->setup_model->bar_pending_noa();
+		$data['bar6'] = $this->setup_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->setup_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->setup_model->bar_billed_noa();
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/emergency_loa/managers_key');
+		$this->load->view('templates/footer');
+	}
+
+	function diagnostic_managers_key() {
+		$this->load->model('healthcare_coordinator/setup_model');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hospitals'] = $this->setup_model->db_get_hospitals();
+		$data['costtypes'] = $this->setup_model->db_get_all_cost_types();
+		$data['bar'] = $this->setup_model->bar_pending();
+		$data['bar1'] = $this->setup_model->bar_approved();
+		$data['bar2'] = $this->setup_model->bar_completed();
+		$data['bar3'] = $this->setup_model->bar_referral();
+		$data['bar4'] = $this->setup_model->bar_expired();
+		$data['bar_Billed'] = $this->setup_model->bar_billed();
+		$data['bar5'] = $this->setup_model->bar_pending_noa();
+		$data['bar6'] = $this->setup_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->setup_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->setup_model->bar_billed_noa();
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/loa/managers_key');
+		$this->load->view('templates/footer');
+	}
+
+	function Diagnostic_form() {
+		$this->load->model('healthcare_coordinator/setup_model');
+		$data['user_role'] = $this->session->userdata('user_role');
+		// $data['emp_id'] = $emp_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		// var_dump($data['emp_id']);
+		$data['hospitals'] = $this->setup_model->db_get_hospitals();
+		$data['costtypes'] = $this->setup_model->db_get_all_cost_types();
+		$data['doctors'] = $this->loa_model->db_get_company_doctors();
+		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
+		// $mbl = $this->loa_model->db_get_mbl($emp_id);
+		$data['bar'] = $this->setup_model->bar_pending();
+		$data['bar1'] = $this->setup_model->bar_approved();
+		$data['bar2'] = $this->setup_model->bar_completed();
+		$data['bar3'] = $this->setup_model->bar_referral();
+		$data['bar4'] = $this->setup_model->bar_expired();
+		$data['bar_Billed'] = $this->setup_model->bar_billed();
+		$data['bar5'] = $this->setup_model->bar_pending_noa();
+		$data['bar6'] = $this->setup_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->setup_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->setup_model->bar_billed_noa();
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/loa/diagnostic_form');
+		$this->load->view('templates/footer');
+	}
+
+	// function request_loa_form() {
+	// 	$emp_id = $this->session->userdata('emp_id');
+	// 	$data['user_role'] = $this->session->userdata('user_role');
+	// 	$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
+	// 	$data['doctors'] = $this->loa_model->db_get_company_doctors();
+	// 	$data['costtypes'] = $this->loa_model->db_get_cost_types();
+	// 	$data['member'] = $this->loa_model->db_get_member_infos($emp_id);
+	// 	$data['pending'] = $this->loa_model->db_get_status_pending($emp_id);
+	// 	$mbl = $this->loa_model->db_get_mbl($emp_id);
+	// 	$get_pac_loa = $this->loa_model->get_pac_loa($emp_id);
+
+	// 	$med_services = 0;
+    
+ //        foreach ($get_pac_loa as $loa) :
+	// 		// var_dump("loa",$loa);
+	// 		$exploded_med_services = explode(";", $loa['med_services']);
+	// 		foreach ($exploded_med_services as $ctype_id) :
+	// 			$cost_type = $this->loa_model->get_loa_op_price($ctype_id);
+	// 				// var_dump(floatval($cost_type['op_price']));
+	// 				//var_dump("ctype_id",$ctype_id);
+	// 				if($loa['loa_request_type'] != 'Consultation'){
+	// 					$med_services += floatval($cost_type['op_price']); 
+	// 				}else{
+	// 					$med_services+= 500;
+	// 				}
+	// 		endforeach;
+
+ //        endforeach;
+	// 	$r_mbl = floatval($mbl['remaining_balance'])-floatval($med_services);
+	// 	$data['mbl'] =  number_format(($r_mbl > 1) ? $r_mbl : 0,2);
+	// 	//var_dump($data['mbl']);
+	// 	$this->load->view('templates/header', $data);
+	// 	$this->load->view('member_panel/loa/request_loa_form',$data);
+	// 	$this->load->view('templates/footer');
+	// }
 
 	function view_pending_noa_list() {
 		$this->load->model('healthcare_coordinator/noa_model');

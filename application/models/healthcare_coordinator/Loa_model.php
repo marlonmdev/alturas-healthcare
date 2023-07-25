@@ -637,6 +637,10 @@ class Loa_model extends CI_Model {
     $query = $this->db->get('cost_types');
     return $query->result_array();
   }
+  function db_get_cost_types_by_hp($hp_id) {
+    $query = $this->db->get_where('cost_types', ['hp_id' => $hp_id]);
+    return $query->result_array();
+  }
 
   
 
@@ -2067,6 +2071,30 @@ function get_billed_for_charging($bill_no) {
   // }
 
 //END==================================================
+
+//QUERY FOR DIAGNOSTIC TEST============================
+  function db_get_member_infos($emp_id){
+    $this->db->where('emp_id', $emp_id);
+    $query = $this->db->get('members');
+    return $query->num_rows() > 0 ? $query->row_array() : false;
+  }
+
+  function insert_diagnostic_form($post_data) {
+    $query = $this->db->insert('loa_requests', $post_data);
+    return $query ? $this->db->insert_id() : false;
+  }
+  function db_get_mbl($emp_id){
+    $this->db->where('emp_id', $emp_id);
+    $query = $this->db->get('max_benefit_limits');
+    return $query->num_rows() > 0 ? $query->row_array() : false;
+  }
+  function db_get_member_details1($member_id) {
+    $query = $this->db->get_where('members', ['emp_id' => $member_id]);
+    return $query->row_array();
+  }
+
+//END==================================================
+
 
 //Bar =================================================
   public function bar_pending(){

@@ -17,7 +17,7 @@
                 <th class="fw-bold" style="color: black;font-size:12px">REASON FOR CANCELLATION</th>
               </tr>
             </thead>    
-            <tbody id="pf-tbody" style="color: white;font-size:12px">
+            <tbody id="pf-tbody" style="color: black;font-size:12px">
             </tbody>
           </table>
         </div>

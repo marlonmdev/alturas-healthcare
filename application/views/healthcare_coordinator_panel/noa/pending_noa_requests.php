@@ -2,7 +2,7 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">PENDING REQUEST</h4>
+        <h4 class="page-title ls-2" style="font-size:14px">PENDING REQUEST</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -22,35 +22,35 @@
           <li class="nav-item1">
             <a class="nav-link1 active" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold"><i class="pending mdi mdi-dots-horizontal"></i> PENDING</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="pending mdi mdi-dots-horizontal"></i> PENDING</span>
             </a>
           </li>
 
           <li class="nav-item1">
             <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/approved" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold"><i class="approved mdi mdi-thumb-up"></i> APPROVED</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="approved mdi mdi-thumb-up"></i> APPROVED</span>
             </a>
           </li>
 
           <li class="nav-item1">
             <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/disapproved" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold"><i class="disapproved mdi mdi-thumb-down"></i> DISAPPROVED</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="disapproved mdi mdi-thumb-down"></i> DISAPPROVED</span>
             </a>
           </li>
 
           <li class="nav-item1">
             <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/expired" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold"><i class="expired mdi mdi-calendar-clock"></i> EXPIRED</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="expired mdi mdi-calendar-clock"></i> EXPIRED</span>
             </a>
           </li>
         </ul>
 
         <?php include 'charge_type.php'; ?>
 
-        <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
+        <!-- <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
           <div class="input-group">
             <div class="input-group-prepend">
               <span class="input-group-text bg-dark text-white"><i class="mdi mdi-filter"></i></span>
@@ -62,23 +62,23 @@
               <?php endforeach; ?>
             </select>
           </div>
-        </div>
+        </div> -->
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-hover" id="pendingNoaTable">
                 <thead style="background-color:#00538C">
                   <tr>
-                    <th class="fw-bold" style="color: white">NOA NO.</th>
-                    <th class="fw-bold" style="color: white">NAME OF PATIENT</th>
-                    <th class="fw-bold" style="color: white">DATE OF ADMISSION</th>
-                    <th class="fw-bold" style="color: white">NAME OF HOSPITAL</th>
-                    <th class="fw-bold" style="color: white">DATE OF REQUEST</th>
-                    <th class="fw-bold" style="color: white">STATUS</th>
-                    <th class="fw-bold" style="color: white">ACTION</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">NOA NO.</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">NAME OF PATIENT</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">DATE OF ADMISSION</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">NAME OF HOSPITAL</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">DATE OF REQUEST</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">STATUS</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">ACTION</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody style="color:black;font-size:12px">
                 </tbody>
               </table>
             </div>
@@ -201,7 +201,7 @@
         <!-- End of View NOA -->
 
         <!-- Viewing Upload Reports Modal -->
-        <div class="modal fade" id="viewUploadedReportsModal" tabindex="-1" data-bs-backdrop="static" style="height:100%">
+        <!-- <div class="modal fade" id="viewUploadedReportsModal" tabindex="-1" data-bs-backdrop="static" style="height:100%">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
@@ -221,10 +221,35 @@
               </div>
             </div>
           </div>
+        </div> -->
+
+        <!-- Viewing Upload Reports Modal -->
+        <div class="modal fade" id="viewUploadedReportsModal" tabindex="-1" data-bs-backdrop="static" style="height:100%">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4>Attached Reports</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <input id="report-percentage" class="form-control" readonly>
+                <div class="pt-3">
+                  <label class="fs-5">Uploaded Reports : <i><small class="text-danger">Click to view the file</small></i></label><br>
+                  <li>Spot Report : <a href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewSpotFile()" id="uploaded-spot-report"></a></li>
+                  <li>Incident Report : <a href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewIncidentFile()" id="uploaded-incident-report"></a></li>
+                  <li>Police Report : <a href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewPoliceFile()" id="uploaded-police-report"></a></li>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+              </div>
+            </div>
+          </div>
         </div>
+        <?php include 'view_pdf_file_modal.php';?>
         <!-- End Row  -->  
       </div>
-      <?php include 'view_pdf_file_modal.php';?>
+      <!-- <?php include 'view_pdf_file_modal.php';?> -->
     </div>
   </div>
 </div>
@@ -412,7 +437,7 @@
   function cancelNoaRequest(noa_id) {
     $.confirm({
       title: '<strong>Confirm!</strong>',
-      content: 'Are you sure to delete NOA Request?',
+      content: 'Are you sure you want to delete the request?',
       type: 'red',
       buttons: {
         confirm: {
@@ -485,7 +510,7 @@
     }
   }
 
-  const viewReports = (loa_id, work_related, percentage, spot_report, incident_report) => {
+  const viewReports = (loa_id, work_related, percentage, spot_report, incident_report, police_report) => {
     $('#viewUploadedReportsModal').modal('show');
     if(work_related == 'Yes'){ 
       if(percentage == ''){
@@ -517,6 +542,7 @@
     $('#report-percentage').val(wpercent+', '+nwpercent);
     $('#uploaded-spot-report') .html(spot_report);
     $('#uploaded-incident-report').html(incident_report);
+    $('#uploaded-police-report').html(police_report);
   }
 
   const viewSpotFile = () => {
@@ -525,7 +551,7 @@
 
     $('#viewFileModal').modal('show');
     $('#cancel').hide();
-    $('#file-name-r').html('Uploaded Spot Report');
+    $('#file-name-r').html('SPOT REPORT');
 
     let pdfFile = `${baseUrl}uploads/spot_reports/${anchorText}`;
     let fileExists = checkFileExists(pdfFile);
@@ -558,7 +584,7 @@
 
     $('#viewFileModal').modal('show');
     $('#cancel').hide();
-    $('#file-name-r').html('Uploaded Incident Report');
+    $('#file-name-r').html('INCIDENT REPORT');
 
     let pdfFile = `${baseUrl}uploads/incident_reports/${anchorText}`;
     let fileExists = checkFileExists(pdfFile);
@@ -581,6 +607,39 @@
         }
       };
       xhr.send();
+    }
+  }
+
+  const viewPoliceFile = () => {
+    const sport_report = document.querySelector('#uploaded-police-report');
+    const anchorText = sport_report.textContent;
+
+    $('#viewFileModal').modal('show');
+    $('#cancel').hide();
+    $('#file-name-r').html('POLICE REPORT');
+
+    let pdfFile = `${baseUrl}uploads/police_reports/${anchorText}`;
+    let fileExists = checkFileExists(pdfFile);
+
+    if(fileExists){
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', pdfFile, true);
+    xhr.responseType = 'blob';
+
+    xhr.onload = function(e) {
+        if (this.status == 200) {
+        let blob = this.response;
+        let reader = new FileReader();
+
+        reader.onload = function(event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-file-viewer');
+            iframe.src = dataURL;
+        };
+        reader.readAsDataURL(blob);
+        }
+    };
+    xhr.send();
     }
   }
 
@@ -610,8 +669,8 @@
     text-decoration: none;
     background-color: #e6e6e6;
     color: #000;
-    border: 1px solid #000;
-    border-bottom: 3px solid #000;
+    border: 1px solid gray;
+    border-bottom: 3px solid gray;
     border-radius: 15px;
   }
 

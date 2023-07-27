@@ -106,6 +106,9 @@ class Noa_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
+	//==================================================
+	//NOTICE OF ADMISSION (PENDING)
+	//==================================================
 	function fetch_all_pending_noa() {
 		$this->security->get_csrf_hash();
 		$status = 'Pending';
@@ -116,35 +119,32 @@ class Noa_controller extends CI_Controller {
 			$row = [];
 			$noa_id = $this->myhash->hasher($noa['noa_id'], 'encrypt');
 			$view_url = base_url() . 'healthcare-coordinator/noa/requested-loa/edit/' . $noa_id;
-
 			$full_name = $noa['first_name'] . ' ' . $noa['middle_name'] . ' ' . $noa['last_name'] . ' ' . $noa['suffix'];
-
 			$admission_date = date("m/d/Y", strtotime($noa['admission_date']));
 			$request_date = date("m/d/Y", strtotime($noa['request_date']));
-
-			$custom_noa_no = '<mark class="bg-primary text-white">'.$noa['noa_no'].'</mark>';
+			$custom_noa_no = '<mark class="bg-cyan text-black"><b>'.$noa['noa_no'].'</b></mark>';
 
 			/* Checking if the work_related column is empty. If it is empty, it will display the status column.
 			If it is not empty, it will display the text "for Approval". */
 			if($noa['work_related'] == ''){
-				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $noa['status'] . '</span></div>';
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-danger">' . $noa['status'] . '</span></div>';
 			}else{
 				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-cyan">for Approval</span></div>';
 			}
 
-			$custom_actions = '<a class="me-2" href="JavaScript:void(0)" onclick="viewNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			$custom_actions = '<a class="me-2" href="JavaScript:void(0)" onclick="viewNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View Info"><i class="mdi mdi-information fs-4 text-info"></i></a>';
 
-			$custom_actions .= '<a class="me-2" href="' . $view_url . '" data-bs-toggle="tooltip" title="Edit NOA" readonly><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a>';
+			$custom_actions .= '<a class="me-2" href="' . $view_url . '" data-bs-toggle="tooltip" title="Edit Admission Form" readonly><i class="mdi mdi-pencil-circle fs-4 text-success"></i></a>';
 
-			$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Tag NOA Charge Type"><i class="mdi mdi-tag-plus fs-2 text-primary"></i></a>';
+			$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Tagging"><i class="mdi mdi-tag-plus fs-4 text-primary"></i></a>';
 			
-			if($noa['spot_report_file'] && $noa['incident_report_file'] != ''){
-				$custom_actions .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $noa_id . '\',\'' . $noa['work_related'] . '\',\'' . $noa['percentage'] . '\',\'' . $noa['spot_report_file'] . '\',\'' . $noa['incident_report_file'] . '\')" data-bs-toggle="tooltip" title="View Uploaded Reports"><i class="mdi mdi-teamviewer fs-2 text-warning"></i></a>';
+			if($noa['spot_report_file'] || $noa['incident_report_file'] != '' || $noa['police_report_file'] != ''){
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $noa_id . '\',\'' . $noa['work_related'] . '\',\'' . $noa['percentage'] . '\',\'' . $noa['spot_report_file'] . '\',\'' . $noa['incident_report_file'] . '\',\'' . $noa['police_report_file'] . '\')" data-bs-toggle="tooltip" title="View Reports"><i class="mdi mdi-teamviewer fs-4 text-warning"></i></a>';
 			}else{
 				$custom_actions .= '';
 			}
 			
-			$custom_actions .= '<a href="Javascript:void(0)" onclick="cancelNoaRequest(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Delete NOA"><i class="mdi mdi-delete-circle fs-2 text-danger"></i></a>';
+			$custom_actions .= '<a href="Javascript:void(0)" onclick="cancelNoaRequest(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Delete Request"><i class="mdi mdi-delete-circle fs-4 text-danger"></i></a>';
 
 			
 			// shorten name of values from db if its too long for viewing and add ...
@@ -170,6 +170,48 @@ class Noa_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 
+	function update_noa_request() {
+		$this->security->get_csrf_hash();
+		$inputPost = $this->input->post(NULL, TRUE); // returns all POST items with XSS filter
+		$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$this->form_validation->set_rules('hospital-name', 'Name of Hospital', 'required');
+		$this->form_validation->set_rules('admission-date', 'Request Date of  Availment', 'required');
+		$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[1000]');
+		if ($this->form_validation->run() == FALSE) {
+			$response = [
+				'status' => 'error',
+				'hospital_name_error' => form_error('hospital-name'),
+				'admission_date_error' => form_error('admission-date'),
+				'chief_complaint_error' => form_error('chief-complaint'),
+			];
+		} else {
+			$post_data = [
+				'hospital_id' => $inputPost['hospital-name'],
+				'admission_date' => $inputPost['admission-date'],
+				'chief_complaint' => strip_tags($inputPost['chief-complaint']),
+			];
+			$saved = $this->noa_model->db_update_noa_request($noa_id, $post_data);
+			if ($saved) {
+				$response = [
+					'status' => 'success', 
+					'message' => 'Updated Successfully'
+				];
+			} else {
+				$response = [
+					'status' => 'save-error', 
+					'message' => 'Update Failed'
+				];
+			}
+		}
+		echo json_encode($response);
+	}
+	//==================================================
+	//END
+	//==================================================
+
+	//==================================================
+	//NOTICE OF ADMISSION (APPROVED)
+	//==================================================
 	function fetch_all_approved_noa() {
 		$this->security->get_csrf_hash();
 		$status = 'Approved';
@@ -180,22 +222,17 @@ class Noa_controller extends CI_Controller {
 			$row = [];
 			$noa_id = $this->myhash->hasher($noa['noa_id'], 'encrypt');
 			$full_name = $noa['first_name'] . ' ' . $noa['middle_name'] . ' ' . $noa['last_name'] . ' ' . $noa['suffix'];
-
 			$admission_date = date("m/d/Y", strtotime($noa['admission_date']));
 			$request_date = date("m/d/Y", strtotime($noa['request_date']));
 			$expiry_date = $noa['expiration_date'] ? date("m/d/Y", strtotime($noa['expiration_date'])) : 'None';
-
-			$custom_noa_no = '<mark class="bg-primary text-white">'.$noa['noa_no'].'</mark>';
-
+			$custom_noa_no = '<mark class="bg-cyan text-black"><b>'.$noa['noa_no'].'</b></mark>';
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $noa['status'] . '</span></div>';
-
-			$custom_actions = '<a class="me-2" href="JavaScript:void(0)" onclick="viewApprovedNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
-
-			$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/noa/requested-noa/generate-printable-noa/' . $noa_id . '" data-bs-toggle="tooltip" title="Print NOA"><i class="mdi mdi-printer fs-2 text-primary pe-2"></i></a>';
+			$custom_actions = '<a class="me-2" href="JavaScript:void(0)" onclick="viewApprovedNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View Info"><i class="mdi mdi-information fs-4 text-info"></i></a>';
+			$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/noa/requested-noa/generate-printable-noa/' . $noa_id . '" data-bs-toggle="tooltip" title="Print"><i class="mdi mdi-printer fs-4 text-primary pe-2"></i></a>';
 
 			
-			if($noa['spot_report_file'] && $noa['incident_report_file'] != ''){
-				$custom_actions .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $noa_id . '\',\'' . $noa['work_related'] . '\',\'' . $noa['percentage'] . '\',\'' . $noa['spot_report_file'] . '\',\'' . $noa['incident_report_file'] . '\')" data-bs-toggle="tooltip" title="View Uploaded Reports"><i class="mdi mdi-teamviewer fs-2 text-warning"></i></a>';
+			if($noa['spot_report_file'] || $noa['incident_report_file'] != '' || $noa['police_report_file'] != ''){
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $noa_id . '\',\'' . $noa['work_related'] . '\',\'' . $noa['percentage'] . '\',\'' . $noa['spot_report_file'] . '\',\'' . $noa['incident_report_file'] . '\',\'' . $noa['police_report_file'] . '\')" data-bs-toggle="tooltip" title="View Reports"><i class="mdi mdi-teamviewer fs-4 text-warning"></i></a>';
 			}else{
 				$custom_actions .= '';
 			}
@@ -221,6 +258,13 @@ class Noa_controller extends CI_Controller {
 		];
 		echo json_encode($output);
 	}
+	//==================================================
+	//END
+	//==================================================
+
+	//==================================================
+	//NOTICE OF ADMISSION (DISAPPROVED)
+	//==================================================
 
 	function fetch_all_disapproved_noa() {
 		$this->security->get_csrf_hash();
@@ -231,15 +275,11 @@ class Noa_controller extends CI_Controller {
 			$row = [];
 			$noa_id = $this->myhash->hasher($noa['noa_id'], 'encrypt');
 			$full_name = $noa['first_name'] . ' ' . $noa['middle_name'] . ' ' . $noa['last_name'] . ' ' . $noa['suffix'];
-
 			$admission_date = date("m/d/Y", strtotime($noa['admission_date']));
 			$request_date = date("m/d/Y", strtotime($noa['request_date']));
-
-			$custom_noa_no = '<mark class="bg-primary text-white">'.$noa['noa_no'].'</mark>';
-
+			$custom_noa_no = '<mark class="bg-cyan text-black"><b>'.$noa['noa_no'].'</b></mark>';
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-danger">' . $noa['status'] . '</span></div>';
-
-			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewDisapprovedNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewDisapprovedNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View Info"><i class="mdi mdi-information fs-4 text-info"></i></a>';
 
 			// shorten name of values from db if its too long for viewing and add ...
 			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];
@@ -306,7 +346,13 @@ class Noa_controller extends CI_Controller {
 		];
 		echo json_encode($output);
 	}
+	//==================================================
+	//END
+	//==================================================
 
+	//==================================================
+	//NOTICE OF ADMISSION (EXPIRED)
+	//==================================================
 
 	function fetch_all_expired_noa() {
 		$this->security->get_csrf_hash();
@@ -317,18 +363,15 @@ class Noa_controller extends CI_Controller {
 			$row = [];
 			$noa_id = $this->myhash->hasher($noa['noa_id'], 'encrypt');
 			$full_name = $noa['first_name'] . ' ' . $noa['middle_name'] . ' ' . $noa['last_name'] . ' ' . $noa['suffix'];
-
 			$admission_date = date("m/d/Y", strtotime($noa['admission_date']));
 			$request_date = date("m/d/Y", strtotime($noa['request_date']));
 			$expiry_date = $noa['expiration_date'] ? date("m/d/Y", strtotime($noa['expiration_date'])) : 'None';
-
-			$custom_noa_no = '<mark class="bg-primary text-white">'.$noa['noa_no'].'</mark>';
-
+			$custom_noa_no = '<mark class="bg-cyan text-black"><b>'.$noa['noa_no'].'</b></mark>';
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-danger">' . $noa['status'] . '</span></div>';
 
-			$custom_actions = '<a class="me-1" href="JavaScript:void(0)" onclick="viewExpiredNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			$custom_actions = '<a class="me-1" href="JavaScript:void(0)" onclick="viewExpiredNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View Info"><i class="mdi mdi-information fs-4 text-info"></i></a>';
 
-			$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $noa_id . '\', \'' . $noa['noa_no'] . '\')" data-bs-toggle="tooltip" title="Back Date NOA"><i class="mdi mdi-update fs-2 text-cyan"></i></a>';
+			$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $noa_id . '\', \'' . $noa['noa_no'] . '\')" data-bs-toggle="tooltip" title="Back Date"><i class="mdi mdi-update fs-4 text-cyan"></i></a>';
 
 			// shorten name of values from db if its too long for viewing and add ...
 			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];
@@ -352,6 +395,9 @@ class Noa_controller extends CI_Controller {
 		];
 		echo json_encode($output);
 	}
+	//==================================================
+	//END
+	//==================================================
 
 	//INITIAL BILLING====================================================
 	function initial_billing() {
@@ -1015,41 +1061,7 @@ class Noa_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
-	function update_noa_request() {
-		$this->security->get_csrf_hash();
-		$inputPost = $this->input->post(NULL, TRUE); // returns all POST items with XSS filter
-		$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
-		$this->form_validation->set_rules('hospital-name', 'Name of Hospital', 'required');
-		$this->form_validation->set_rules('admission-date', 'Request Date of  Availment', 'required');
-		$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[1000]');
-		if ($this->form_validation->run() == FALSE) {
-			$response = [
-				'status' => 'error',
-				'hospital_name_error' => form_error('hospital-name'),
-				'admission_date_error' => form_error('admission-date'),
-				'chief_complaint_error' => form_error('chief-complaint'),
-			];
-		} else {
-			$post_data = [
-				'hospital_id' => $inputPost['hospital-name'],
-				'admission_date' => $inputPost['admission-date'],
-				'chief_complaint' => strip_tags($inputPost['chief-complaint']),
-			];
-			$saved = $this->noa_model->db_update_noa_request($noa_id, $post_data);
-			if ($saved) {
-				$response = [
-					'status' => 'success', 
-					'message' => 'NOA Request Updated Successfully'
-				];
-			} else {
-				$response = [
-					'status' => 'save-error', 
-					'message' => 'NOA Request Update Failed'
-				];
-			}
-		}
-		echo json_encode($response);
-	}
+	
 
 	function cancel_noa_request() {
 		$token = $this->security->get_csrf_hash();
@@ -1133,10 +1145,11 @@ class Noa_controller extends CI_Controller {
 			$file_paths = array(
 				'spot-report' => './uploads/spot_reports/',
 				'incident-report' => './uploads/incident_reports/',
+				'police-report' => './uploads/police_reports/',
 			);
 
 			// Iterate over each file input and perform the upload
-			$file_inputs = array('spot-report', 'incident-report');
+			$file_inputs = array('spot-report', 'incident-report','police-report');
 			foreach ($file_inputs as $input_name) {
 				$config['upload_path'] = $file_paths[$input_name];
 				$this->upload->initialize($config);
@@ -1165,6 +1178,7 @@ class Noa_controller extends CI_Controller {
 					'percentage' => $percentage,
 					'spot_report_file' => isset($uploaded_files['spot-report']) ? $uploaded_files['spot-report']['file_name'] : '',
 					'incident_report_file' => isset($uploaded_files['incident-report']) ? $uploaded_files['incident-report']['file_name'] : '',
+					'police_report_file' => isset($uploaded_files['police-report']) ? $uploaded_files['police-report']['file_name'] : '',
 					'date_uploaded' => date('Y-m-d')
 
 				];

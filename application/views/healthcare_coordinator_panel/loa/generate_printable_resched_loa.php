@@ -4,7 +4,13 @@
       <div class="page-breadcrumb">
         <div class="row">
           <div class="col-12 d-flex no-block align-items-center">
-            <h4 class="page-title ls-2">Print LOA</h4>
+            <a class="btn btn-dark me-2" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/rescheduled">
+              <i class="mdi mdi-arrow-left-bold"></i>
+              Go Back
+            </a>
+            <button class="btn btn-info ls-1 me-2" onclick="saveAsImage()"><i class="mdi mdi-file-image"></i> Save as Image</button>
+
+            <button class="btn btn-danger ls-1" onclick="printDiv('#printableDiv')"><i class="mdi mdi-printer"></i> Print LOA</button>
             <div class="ms-auto text-end">
               <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
@@ -21,20 +27,6 @@
       <!-- End Bread crumb and right sidebar toggle -->
       <!-- Start of Container fluid  -->
       <div class="container-fluid">
-
-        <div class="row mb-3">
-          <div class="col-sm-12">
-            <a class="btn btn-dark me-2" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/rescheduled">
-              <i class="mdi mdi-arrow-left-bold"></i>
-              Go Back
-            </a>
-            
-            <button class="btn btn-info ls-1 me-2" onclick="saveAsImage()"><i class="mdi mdi-file-image"></i> Save as Image</button>
-
-            <button class="btn btn-danger ls-1" onclick="printDiv('#printableDiv')"><i class="mdi mdi-printer"></i> Print LOA</button>
-          </div>
-        </div>
-
         <div class="card shadow px-3 py-3">
           <div class="row" id="printableDiv" style="background:#ffff;padding:20px 40px;">
             <div class=" col-xs-12">

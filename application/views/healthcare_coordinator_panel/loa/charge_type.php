@@ -12,9 +12,9 @@
               <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
               <input type="hidden" name="loa-id" id="loa-id">
               <div class="col-6 pt-3">
-                <label class="colored-label fs-5">Select :</label>
+                <label class="colored-label fs-5">Select Type :</label>
                 <select class="form-select chargetype fs-5" name="charge-type" id="charge-type">
-                  <option value="">Select Charge Type...</option>
+                  <option value="">Select...</option>
                   <option value="Yes">Work related</option>
                   <option value="No">Non-work related</option>
                 </select>
@@ -23,7 +23,7 @@
              
 
               <div class="mb-2 pt-3 fs-5 ls-1 col-6">
-                <label class="colored-label">Enter Percentage</label>
+                <label class="colored-label">Enter Percentage :</label>
                 <div class="input-group">
                   <input type="number" class="form-control" name="percentage" min="0" max="100" step="0.01" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="2">
                   <div class="input-group-append">

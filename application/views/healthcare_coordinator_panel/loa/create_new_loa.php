@@ -2,7 +2,7 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed" type="submit" class="btn btn-outline-dark" data-bs-toggle="tooltip" title="Click to Go Back">
+        <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed" type="submit" class="btn btn-dark" data-bs-toggle="tooltip" title="Click to Go Back">
           <strong class="ls-2" style="vertical-align:middle"><i class="mdi mdi-arrow-left-bold"></i> Back</strong>
         </a>
         <div class="ms-auto text-end">
@@ -18,107 +18,109 @@
   </div>
 
   <div class="container-fluid">
-    <hr style="color:red">
-      <div class="col-12">
-        <div class="text-center mb-4 mt-0"><h4 class="page-title ls-2" style="letter-spacing:10px">REFERRAL FORM</h4></div>
-      </div>
-    <hr style="color:red">
-
-    <form method="post" action="<?= base_url(); ?>healthcare-coordinator/loa/requested-loa/submit" class="mt-2" id="coordinatorLoaRequestForm">
-      <input type="hidden" name="user-role" value="<?php echo $user_role ?>">
-      <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
-      <input type="hidden" name="emp-id" value="<?php echo $emp_id ?>">
-      <input type="hidden" name="loa-id" value="<?php echo $loa_id ?>">
-      <input type="hidden" name="approved_by" value="<?php echo $approved_by ?>">
-
-      <div class="row pt-2">
-        <div class="col-sm-6 mb-2">
-          <label class="colored-label fs-5">Full Name</label>
-          <input type="text" class="form-control fw-bold" name="full-name" value="<?php echo $fullname ?>" disabled>
-        </div>
-
-        <div class="col-lg-3">
-          <label class="fw-bold fs-5">Request Type : </label>
-          <input class="form-control fw-bold" type="text" name="request-type" id="request-type" value="<?php echo $request_type ?>" readonly>
-        </div>  
-
-        <div class="col-lg-3 col-sm-12 col-lg-offset-4">
-          <?php
-            $month = date('m');
-            $day = date('d');
-            $year = date('Y');
-            $today = $year . '-' . $month . '-' . $day;
-          ?>
-          <label class="colored-label fs-5">Date Creation</label>
-          <input type="text" class="form-control fw-bold" name="request-date" value="<?= $today; ?>" disabled>
-        </div>
-      </div>
-                    
-      <div class="form-group row">
-        <input type="hidden" name="old-hp-id" id="old-hp-id" value="<?php echo $hp_id ?>">
-        <div class="col-lg-6 pt-2 provider" style="display:block">
-          <label class="fw-bold fs-5">Previous Healthcare Provider : </label>
-          <input class="form-control fw-bold text-danger" type="text" name="old-hp-name" id="old-hp-name" value="<?php echo $hp_name  ?>" readonly>
-        </div> 
-        <div class="col-lg-3 pt-2">
-          <label class="fw-bold fs-5">Previous LOA Number : </label>
-          <input class="form-control fw-bold text-danger" type="text" name="loa-num" id="loa-num" value="<?php echo $loa_no ?>" readonly>
-        </div> 
-      </div><hr>
-
-      <label class="fw-bold fs-5">Previous Medical Service/s : </label>
-      <?php foreach($resched_services as $med_services) : ?>
-        <div class="col-lg-6 pb-3 ">
-          <input type="hidden" name="old-ctype-id[]" value="<?php echo $med_services['ctype_id'] ?>">
-          <input type="text" class="form-control fw-bold ls-1 text-danger" name="old-ct-name[]" value="<?php echo $med_services['item_description'] ?>" readonly>
-        </div>
-      <?php endforeach; ?><hr>
-
-      <div class="row">
-        <div class="col-lg-6 mb-2 pt-2 change-provider">
-          <label class="colored-label fs-5">New Healthcare Provider : </label>
-          <select class="form-select fw-bold" name="healthcare-provider" id="healthcare-provider" oninput="enableRequestType()">
-            <option value="">Select New Healthcare Provider</option>
-            <?php
-              if (!empty($hcproviders)) :
-              foreach ($hcproviders as $hcprovider) :
-            ?>
-              <option value="<?= $hcprovider['hp_id']; ?>"><?= $hcprovider['hp_name']; ?></option>
-            <?php
-              endforeach;
-              endif;
-            ?>
-          </select>
-          <em id="healthcare-provider-error" class="text-danger"></em>
-        </div>
-
-        <div class="col-lg-6 form-group row">
-          <div class="col-lg-12 col-sm-12 mb-2 pt-2" id="med-services-div">
-            <label class="colored-label fs-5"></label><br>
-            <div id="med-services-wrapper"></div>
-            <em id="med-services-error" class="text-danger"></em>
+    <div class="container-fluid">
+      <div class="card pt-1 shadow">
+        <div class="card-body">
+          <div class="col-12">
+            <div class="text-center mb-4 mt-0"><h4 class="page-title ls-2" style="letter-spacing:10px">REFERRAL FORM</h4></div>
           </div>
-        </div>
+          <hr style="color:gray">
 
-        <div class="form-group referralfile">
-          <div class="col-sm-12 mb-4">
-            <label class="colored-label mb-1"><i class="mdi mdi-asterisk text-danger"></i>Referral from Doctor</label>
-            <!-- <div id="rx-file-wrapper"> -->
-              <input type="file" class="dropify" name="referralfile" id="referralfile" data-height="300" data-max-file-size="5M" accept=".jpg, .jpeg, .png, .pdf">
-            <!-- </div> -->
-            <em id="rx-file-error" class="text-danger"></em>
-          </div>
-        </div>
-      </div>
-                
+          <form method="post" action="<?= base_url(); ?>healthcare-coordinator/loa/requested-loa/submit" class="mt-2" id="coordinatorLoaRequestForm">
+            <input type="hidden" name="user-role" value="<?php echo $user_role ?>">
+            <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
+            <input type="hidden" name="emp-id" value="<?php echo $emp_id ?>">
+            <input type="hidden" name="loa-id" value="<?php echo $loa_id ?>">
+            <input type="hidden" name="approved_by" value="<?php echo $approved_by ?>">
 
-      <div class="row mt-2 offset-10">
-        <div class="col-sm-12 mb-2 d-flex justify-content-start">
-          <button type="submit" class="btn btn-info me-2"><i class="mdi mdi-content-save-settings"></i> SUBMIT</button>
-        </div>
-      </div>
+            <div class="row pt-2">
+              <div class="col-sm-4 mb-2">
+                <label class="colored-label fs-5">Full Name</label>
+                <input type="text" class="form-control fw-bold text-info" name="full-name" value="<?php echo $fullname ?>" disabled>
+              </div>
 
-    </form>
+              <div class="col-lg-4">
+                <label class="fw-bold fs-5">Request Type : </label>
+                <input class="form-control fw-bold text-info" type="text" name="request-type" id="request-type" value="<?php echo $request_type ?>" readonly>
+              </div>  
+
+              <div class="col-lg-4 col-sm-12 col-lg-offset-4">
+                <?php
+                  $month = date('m');
+                  $day = date('d');
+                  $year = date('Y');
+                  $today = $year . '-' . $month . '-' . $day;
+                ?>
+                <label class="colored-label fs-5">Date Creation</label>
+                <input type="text" class="form-control fw-bold text-info" name="request-date" value="<?= $today; ?>" disabled>
+              </div>
+            </div>
+                          
+            <div class="form-group row">
+              <input type="hidden" name="old-hp-id" id="old-hp-id" value="<?php echo $hp_id ?>">
+              <div class="col-lg-4 pt-2 provider" style="display:block">
+                <label class="fw-bold fs-5">Previous Healthcare Provider : </label>
+                <input class="form-control fw-bold text-info" type="text" name="old-hp-name" id="old-hp-name" value="<?php echo $hp_name  ?>" readonly>
+              </div> 
+              <div class="col-lg-4 pt-2">
+                <label class="fw-bold fs-5">Previous LOA Number : </label>
+                <input class="form-control fw-bold text-info" type="text" name="loa-num" id="loa-num" value="<?php echo $loa_no ?>" readonly>
+              </div> 
+            </div><hr>
+
+            <label class="fw-bold fs-5">Previous Medical Service/s : </label>
+            <?php foreach($resched_services as $med_services) : ?>
+              <div class="col-lg-4 pb-3 ">
+                <input type="hidden" name="old-ctype-id[]" value="<?php echo $med_services['ctype_id'] ?>">
+                <input type="text" class="form-control fw-bold ls-1 text-danger" name="old-ct-name[]" value="<?php echo $med_services['item_description'] ?>" readonly>
+              </div>
+            <?php endforeach; ?><hr>
+
+            <div class="row">
+              <div class="col-lg-6 mb-2 pt-2 change-provider">
+                <label class="colored-label fs-5">New Healthcare Provider : </label>
+                <select class="form-select fw-bold" name="healthcare-provider" id="healthcare-provider" oninput="enableRequestType()">
+                  <option value="">Select New Healthcare Provider</option>
+                  <?php
+                    if (!empty($hcproviders)) :
+                    foreach ($hcproviders as $hcprovider) :
+                  ?>
+                    <option value="<?= $hcprovider['hp_id']; ?>"><?= $hcprovider['hp_name']; ?></option>
+                  <?php
+                    endforeach;
+                    endif;
+                  ?>
+                </select>
+                <em id="healthcare-provider-error" class="text-danger"></em>
+              </div>
+
+              <div class="col-lg-6 form-group row">
+                <div class="col-lg-12 col-sm-12 mb-2 pt-2" id="med-services-div">
+                  <label class="colored-label fs-5"></label><br>
+                  <div id="med-services-wrapper"></div>
+                  <em id="med-services-error" class="text-danger"></em>
+                </div>
+              </div>
+
+              <div class="form-group referralfile">
+                <div class="col-sm-12 mb-4">
+                  <label class="colored-label mb-1"><i class="mdi mdi-asterisk text-danger"></i>Referral from Doctor</label>
+                  <!-- <div id="rx-file-wrapper"> -->
+                    <input type="file" class="dropify" name="referralfile" id="referralfile" data-height="300" data-max-file-size="5M" accept=".jpg, .jpeg, .png, .pdf">
+                  <!-- </div> -->
+                  <em id="rx-file-error" class="text-danger"></em>
+                </div>
+              </div>
+            </div>
+                      
+
+            <div class="row mt-2 offset-10">
+              <div class="col-sm-12 mb-2 d-flex justify-content-start">
+                <button type="submit" class="btn btn-info me-2"><i class="mdi mdi-content-save-settings"></i> SUBMIT</button>
+              </div>
+            </div>
+
+          </form>
   </div>
 </div>
 

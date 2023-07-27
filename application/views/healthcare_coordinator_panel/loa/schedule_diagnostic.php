@@ -20,13 +20,12 @@
   <div class="container-fluid">
     <div class="card pt-1 shadow">
       <div class="card-body">
-        <!-- <div class="row"> -->
-          <div class="col-12">
-            <div class="text-center mb-4 mt-0"><h4 class="page-title ls-2" style="color:black">MEDICAL APPOINTMENT SCHEDULE</h4></div>
-          </div>
-          <hr style="color:gray">
+        <div class="col-12">
+          <div class="text-center mb-4 mt-0"><h4 class="page-title ls-2" style="color:black">MEDICAL APPOINTMENT SCHEDULE</h4></div>
+        </div>
+        <hr style="color:gray">
                 
-          <form id="performedLoaInfo" method="post" action="<?php echo base_url();?>healthcare-coordinator/loa-requests/approved/performed-loa-info/submit" class="needs-validation" novalidate>
+        <form id="performedLoaInfo" method="post" action="<?php echo base_url();?>healthcare-coordinator/loa-requests/approved/performed-loa-info/submit" class="needs-validation" novalidate>
           <div class="row">
             <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
             <input type="hidden" name="hp-id" value="<?php echo $hp_id ?>">

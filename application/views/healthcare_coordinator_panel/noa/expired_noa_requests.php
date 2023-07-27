@@ -2,7 +2,7 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">EXPIRED REQUEST</h4>
+        <h4 class="page-title ls-2" style="font-size:14px">EXPIRED REQUEST</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -22,33 +22,33 @@
           <li class="nav-item1">
             <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold"><i class="pending mdi mdi-dots-horizontal"></i> PENDING</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="pending mdi mdi-dots-horizontal"></i> PENDING</span>
             </a>
           </li>
 
           <li class="nav-item1">
             <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/approved" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold"><i class="approved mdi mdi-thumb-up"></i> APPROVED</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="approved mdi mdi-thumb-up"></i> APPROVED</span>
             </a>
           </li>
 
           <li class="nav-item1">
             <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/disapproved" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold"><i class="disapproved mdi mdi-thumb-down"></i> DISAPPROVED</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="disapproved mdi mdi-thumb-down"></i> DISAPPROVED</span>
             </a>
           </li>
 
           <li class="nav-item1">
             <a class="nav-link1 active" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/expired" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold"><i class="expired mdi mdi-calendar-clock"></i> EXPIRED</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="expired mdi mdi-calendar-clock"></i> EXPIRED</span>
             </a>
           </li>
         </ul>
 
-        <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
+        <!-- <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
           <div class="input-group">
             <div class="input-group-prepend">
               <span class="input-group-text bg-dark text-white"><i class="mdi mdi-filter"></i></span>
@@ -60,7 +60,7 @@
               <?php endforeach; ?>
             </select>
           </div>
-        </div>
+        </div> -->
 
         <div class="card shadow">
           <div class="card-body">
@@ -68,16 +68,16 @@
               <table class="table table-hover" id="expiredNoaTable">
                 <thead style="background-color:#00538C">
                   <tr>
-                    <th class="fw-bold" style="color: white">NOA NO.</th>
-                    <th class="fw-bold" style="color: white">NAME OF PATIENT</th>
-                    <th class="fw-bold" style="color: white">DATE OF ADMISSION</th>
-                    <th class="fw-bold" style="color: white">NAME OF HOSPITAL</th>
-                    <th class="fw-bold" style="color: white">DATE OF EXPIRATION</th>
-                    <th class="fw-bold" style="color: white">STATUS</th>
-                    <th class="fw-bold" style="color: white">ACTION</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">NOA NO.</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">NAME OF PATIENT</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">DATE OF ADMISSION</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">NAME OF HOSPITAL</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">DATE OF EXPIRATION</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">STATUS</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">ACTION</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody style="color:black;font-size:12px">
                 </tbody>
               </table>
             </div>
@@ -539,8 +539,8 @@
     text-decoration: none;
     background-color: #e6e6e6;
     color: #000;
-    border: 1px solid #000;
-    border-bottom: 3px solid #000;
+    border: 1px solid gray;
+    border-bottom: 3px solid gray;
     border-radius: 15px;
   }
 

@@ -2,12 +2,12 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">NOTICE OF ADMISSION <span class="text-success">[Edit]</span></h4>
+        <a href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list" class="btn btn-dark"><i class="mdi mdi-arrow-left-bold"></i> Back</a>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
-              <li class="breadcrumb-item active" aria-current="page">Edit Request</li>
+              <li class="breadcrumb-item active" aria-current="page">Edit Admission Form</li>
             </ol>
           </nav>
         </div>
@@ -23,29 +23,83 @@
             <form method="post" action="<?= base_url() ?>healthcare-coordinator/noa/requested-noa/update/<?= $this->myhash->hasher($row['noa_id'], 'encrypt') ?>" class="mt-2" id="noaRequestForm">
               <!--  Start of Hidden Inputs -->
               <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
+
+              <span class="text-info fs-3 fw-bold ls-2"><i class="mdi mdi-account-card-details"></i> PATIENT DETAILS</span><br><br>
               <div class="form-group row">
-                <div class="col-sm-7 mb-2">
+                <div class="col-sm-6 mb-2">
                   <label class="colored-label">Full Name</label>
-                  <input type="text" class="form-control" name="first-name" id="first-name" value="<?= $row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] . ' ' . $row['suffix'] ?>" disabled>
+                  <input type="text" class="form-control" value="<?= $row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] . ' ' . $row['suffix'] ?>" disabled>
                 </div>
                 <div class="col-sm-3 mb-2">
                   <label class="colored-label">Date of Birth</label>
-                  <input type="date" class="form-control" name="date-of-birth" id="date-of-birth" value="<?= $row['date_of_birth'] ?>" disabled>
+                  <input type="date" class="form-control" value="<?= $row['date_of_birth'] ?>" disabled>
                 </div>
-                <!-- Start of Age Calculator -->
-                <?php
-                  $birthDate = date("d-m-Y", strtotime($row['date_of_birth']));
-                  $currentDate = date("d-m-Y");
-                  $diff = date_diff(date_create($birthDate), date_create($currentDate));
-                  $age = $diff->format("%y");
-                ?>
-                <!-- End of Age Calculator -->
-                <div class="col-sm-2 mb-2">
+                <div class="col-sm-3 mb-2">
+                  <?php
+                    $birthDate = date("d-m-Y", strtotime($row['date_of_birth']));
+                    $currentDate = date("d-m-Y");
+                    $diff = date_diff(date_create($birthDate), date_create($currentDate));
+                    $age = $diff->format("%y");
+                  ?>
                   <label class="colored-label">Age:</label>
-                  <input type="text" class="form-control" name="age" id="age" value="<?= $age ?>" disabled>
+                  <input type="text" class="form-control" value="<?= $age ?>" disabled>
                 </div>
               </div>
 
+              <div class="form-group row">
+                <div class="col-sm-6 mb-2">
+                  <label class="colored-label">Gender</label>
+                  <input type="text" class="form-control" value="<?= $row['gender'] ?>" disabled>
+                </div>
+                <div class="col-sm-3 mb-2">
+                  <label class="colored-label">PhilHealth Number</label>
+                  <input type="text" class="form-control" value="<?= $row['philhealth_no'] ?>" disabled>
+                </div>
+                <div class="col-sm-3 mb-2">
+                  <label class="colored-label">Blood Type</label>
+                  <input type="text" class="form-control" value="<?= $row['blood_type'] ?>" disabled>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <div class="col-sm-6 mb-2">
+                  <label class="colored-label">Home Address</label>
+                  <input type="text" class="form-control" value="<?= $row['home_address'] ?>" disabled>
+                </div>
+                <div class="col-sm-6 mb-2">
+                  <label class="colored-label">City Address</label>
+                  <input type="text" class="form-control" value="<?= $row['city_address'] ?>" disabled>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <div class="col-sm-6 mb-2">
+                  <label class="colored-label">Contact Number</label>
+                  <input type="text" class="form-control" value="<?= $row['contact_no'] ?>" disabled>
+                </div>
+                <div class="col-sm-6">
+                  <label class="colored-label">Email</label>
+                  <input type="email" class="form-control" value="<?= $row['email'] ?>" disabled>
+                </div>
+              </div>
+
+              <span class="text-info mt-4 fs-3 fw-bold ls-2"><i class="mdi mdi-contact-mail"></i> CONTACT PERSON DETAILS</span><br><br>
+              <div class="form-group row">
+                <div class="col-sm-6 mb-2">
+                  <label class="colored-label">Contact Person Name</label>
+                  <input type="text" class="form-control" value="<?= $row['contact_person'] ?>" disabled>
+                </div>
+                <div class="col-sm-3 mb-2">
+                  <label class="colored-label">Contact Number</label>
+                  <input type="text" class="form-control" value="<?= $row['contact_person_no'] ?>" disabled>
+                </div>
+                <div class="col-sm-3 mb-2">
+                  <label class="colored-label">Address</label>
+                  <input type="text" class="form-control" value="<?= $row['contact_person_addr'] ?>" disabled>
+                </div>
+              </div>
+
+              <span class="text-info fs-3 fw-bold ls-2"><i class="mdi mdi-file-document-box"></i> REQUEST DETAILS</span><br><br>
               <div class="form-group row">
                 <div class="col-lg-8 col-sm-12 col-lg-offset-3 mb-2">
                   <label class="colored-label"><i class="bx bx-health icon-red"></i> Name of Hospital</label>
@@ -85,11 +139,8 @@
               </div><br>
 
               <div class="row">
-                <div class="col-sm-12 mb-2 d-flex justify-content-start">
-                  <button type="submit" class="btn btn-success me-2">
-                    <i class="mdi mdi-content-save-settings"></i> UPDATE
-                  </button>
-                  <a href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list" class="btn btn-danger"><i class="mdi mdi-close-box"></i> CANCEL</a>
+                <div class="col-sm-12 mb-2 d-flex justify-content-center">
+                  <button type="submit" class="btn btn-info me-2"><i class="mdi mdi-autorenew"></i> UPDATE</button>
                 </div>
               </div>
             </form>

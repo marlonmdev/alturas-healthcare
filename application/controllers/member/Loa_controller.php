@@ -24,18 +24,13 @@ class Loa_controller extends CI_Controller {
 	}
 
 	function check_hospital_receipt($str) {
-		$is_accredited = $this->session->userdata('is_accredited');
-		// var_dump('is_accredited',$is_accredited);
-		if($is_accredited === "false"){
-			
+		
 			if (isset($_FILES['hospital-receipt']['name']) && !empty($_FILES['hospital-receipt']['name'])) {
 				return true;
 			} else {
 				$this->form_validation->set_message('check_hospital_receipt', 'Please choose Hospital Receipt file to upload.');
 				return false;
 			}
-		}
-		$this->session->unset_userdata('is_accredited');
 	}
 
 	function update_check_rx_file($str) {
@@ -48,8 +43,10 @@ class Loa_controller extends CI_Controller {
 	}
 
 	function multiple_select() {
-		$med_services = $this->input->post('med-services');
+		$med_services = json_decode($this->input->post('med-services'),true);
+		// var_dump('med services',count((array)$med_services));
 		if (count((array)$med_services) < 1) {
+			
 			$this->form_validation->set_message('multiple_select', 'Select at least one Service');
 			return false;
 		} else {
@@ -88,23 +85,34 @@ class Loa_controller extends CI_Controller {
 				}
 				break;
 			case 'Diagnostic Test':
+				$this->form_validation->set_rules('healthcare-provider-category', 'HealthCare Provider Category', 'required');
 				$this->form_validation->set_rules('healthcare-provider', 'HealthCare Provider', 'required');
 				$this->form_validation->set_rules('loa-request-type', 'LOA Request Type', 'required');
 				$this->form_validation->set_rules('med-services', 'Medical Services', 'callback_multiple_select');
 				$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[1000]');
 				$this->form_validation->set_rules('requesting-physician', 'Requesting Physician', 'trim|required');
-				$this->form_validation->set_rules('rx-file', '', 'callback_check_rx_file');
-				$this->form_validation->set_rules('hospital-receipt', '', 'callback_check_hospital_receipt');
+				
+				$is_accredited = $this->session->userdata('is_accredited');
+				// var_dump('is_accredited',$is_accredited);
+				if(!$is_accredited){
+					$this->form_validation->set_rules('hospital-receipt', '', 'callback_check_hospital_receipt');
+					$this->form_validation->set_rules('hospital-bill', 'Hospital Bill','required');
+				}else{
+					$this->form_validation->set_rules('rx-file', '', 'callback_check_rx_file');
+				}
+				$this->session->unset_userdata('is_accredited');
 				if ($this->form_validation->run() == FALSE) {
 					$response = [
 						'status' => 'error',
 						'healthcare_provider_error' => form_error('healthcare-provider'),
+						'healthcare_provider_category_error' => form_error('healthcare-provider-category'),
 						'loa_request_type_error' => form_error('loa-request-type'),
 						'med_services_error' => form_error('med-services'),
 						'chief_complaint_error' => form_error('chief-complaint'),
 						'requesting_physician_error' => form_error('requesting-physician'),
 						'rx_file_error' => form_error('rx-file'),
 						'hospital_receipt_error' => form_error('hospital-receipt'),
+						'hospital_bill_error' => form_error('hospital-bill'),
 					];
 
 					echo json_encode($response);
@@ -231,9 +239,9 @@ class Loa_controller extends CI_Controller {
 		$physician_arr = [];
 		$hp_id = $this->input->post('healthcare-provider');
 		$request_type = $this->input->post('loa-request-type'); 
-		$is_accredited = $_POST['is_accredited'];
+		$is_accredited =json_decode($_POST['is_accredited'],true);
 		$this->session->set_userdata('is_accredited', $is_accredited);
-		// var_dump('is_accredited',$is_accredited);
+		// var_dump('hp_id',$hp_id);
 		switch (true) {
 			case ($request_type == ''):
 				$this->loa_form_validation('Empty',$is_accredited);
@@ -296,6 +304,10 @@ class Loa_controller extends CI_Controller {
 							// Skip the 'Medical-Abstract' field if it is empty
 							continue;
 						}
+						if ($input_name === 'rx-file' && empty($_FILES[$input_name]['name'])) {
+							// Skip the 'Medical-Abstract' field if it is empty
+							continue;
+						}
 		
 						$config['upload_path'] = $file_paths[$input_name];
 						$this->upload->initialize($config);
@@ -332,7 +344,7 @@ class Loa_controller extends CI_Controller {
 						}
 
 						// Call function insert_loa
-						$this->insert_loa($input_post, $med_services, $attending_physician, $uploaded_files['rx-file']['file_name'], isset($uploaded_files['hospital-receipt']['file_name'])?$uploaded_files['hospital-receipt']['file_name']:null);
+						$this->insert_loa($input_post, $med_services, $attending_physician, isset($uploaded_files['rx-file']['file_name'])?$uploaded_files['rx-file']['file_name']:null, isset($uploaded_files['hospital-receipt']['file_name'])?$uploaded_files['hospital-receipt']['file_name']:null);
 					}
 					// if (!$this->upload->do_upload('rx-file')) {
 					// 	$response = [
@@ -419,12 +431,13 @@ class Loa_controller extends CI_Controller {
 			'health_card_no' => $member['health_card_no'],
 			'requesting_company' => $member['company'],
 			'request_date' => date("Y-m-d"),
+			'hospital_bill' => (isset($input_post['hospital-bill']))?$input_post['hospital-bill']:null,
 			'emerg_date' => (isset( $input_post['admission-date']))? $input_post['admission-date']:null,
 			'chief_complaint' => (isset($input_post['chief-complaint']))?strip_tags($input_post['chief-complaint']):"",
 			'requesting_physician' =>(isset($input_post['requesting-physician']))? ucwords($input_post['requesting-physician']):"",
 			'attending_physician' => $attending_physician,
-			'rx_file' => $rx_file,
-			'hospital_receipt' => $hospital_receipt,
+			'rx_file' => isset($rx_file)?$rx_file:null,
+			'hospital_receipt' => isset($hospital_receipt)?$hospital_receipt:null,
 			'status' => 'Pending',
 			'requested_by' => $emp_id,
 		];
@@ -1088,7 +1101,11 @@ class Loa_controller extends CI_Controller {
 		$selected_cost_types = explode(';', $row['med_services']);
 		$ct_array = [];
 		foreach ($cost_types as $cost_type) :
+			var_dump('costype',in_array($cost_type['ctype_id'], $selected_cost_types));
 			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
+				array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
+			}
+			if (!in_array($cost_type['ctype_id'], $selected_cost_types)) {
 				array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
 			}
 		endforeach;

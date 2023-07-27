@@ -3998,16 +3998,15 @@ $med_serv = implode(' ', $ct_array);
 		// Disable the header and footer lines
 		$pdf->SetPrintHeader(false);
 		$pdf->SetPrintFooter(false);
-		// $title = '<img src="'.base_url().'assets/images/HC_logo.png" style="width:200px;height:80px">';
-		// // $title .= '<style>h3 { margin: 0; padding: 0; line-height: .5; }</style>';
-		// $title .= '<p>Corporate Center, North Wing</p>';
-		// $title .= '<p>Island City Mall Dampas Dist</p>';
-		// $title .= '<p>Tagbilaran City, Bohol, 6300</p>';
-		// $title .= '<p>Tel. no. 501-3000 local 1319</p>';
-
-		$title = '<div>
-							<p><img src="'.base_url().'assets/images/HC_logo.png" style="width:180px;height:80px">
-							</div>';
+		
+		$logo = '<img src="'.base_url().'assets/images/letter_logo_final.png" style="width:95px; 	height:70px;">';
+		$title = '<div >
+		
+		<p style="line-height: 0; margin-right: 0; font-size: 8px;">Corporate Center, North Wing</p>
+		<p style="line-height: 0; margin-right: 0; font-size: 8px;">Island City Mall Dampas Dist </p>
+		<p style="line-height: 0; margin-right: 0; font-size: 8px;">Tagbilaran City, Bohol, 6300 </p>
+		<p style="line-height: 0; margin-right: 0; font-size: 8px;">Tel. no. 501-3000 local 1319 </p>
+	  </div>';
 
 		$pdf->SetMargins(25, 10, 15);
 		$pdf->setFont('times', '', 10);
@@ -4041,56 +4040,30 @@ $med_serv = implode(' ', $ct_array);
 							<span id="company_charge_words" style="font-weight: bold;text-transform: uppercase">' . $companyChargeWords . '</span> <span style="font-weight: bold">(PHP ' . $total . ')</span> only. We kindly request that you submit all relevant bills and supporting documentation for the services rendered to <span style="font-weight: bold;">' . rtrim($row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] . ' ' . $row['suffix']) . '</span> directly to our designated billing department.</p>
 							<p >We appreciate your collaboration and dedication to providing exceptional healthcare services to our members. Your continued partnership with the Alturas Healthcare Program is instrumental in fulfilling our mission of delivering comprehensive and accessible healthcare to our beneficiaries.</p>
 							<p >Thank you for your attention to this matter, and we look forward to a continued successful relationship.</p>
-				</div>';
-		// $html2 ='<div><p style="font-weight: bold;">RE: Guarantee Letter for Payment Covered by Alturas Healthcare;</p></div>';
-		// $html3 = '<div style="text-align: justify;">
-		// 			<p style="line-height: 2 ;">Dear DR. SEPE;</p>
-	
-		// 			<p>We are writing to confirm that <span style="font-weight: bold;text-transform: uppercase">' . rtrim($row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] . ' ' . $row['suffix']) . '</span>, a valued member of the Alturas Healthcare Program, has received medical services and treatments from your esteemed healthcare facility. We would like to assure you that we will cover applicable expenses incurred by our member during their visit, as outlined in our agreement with your organization.</p>
-		// 			<p style="line-height: 0;">Patient Details:</p>
-		// 			<p></p>
-		// 			<p style="line-height: 0;">Patient Name: '.$row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] . ' ' . $row['suffix'] . ' </p>
-		// 			<p style="line-height: 0;">Date of Birth: '.$row['date_of_birth'].'</p>
-		// 			<p style="line-height: 0;">Alturas Healthcare Program ID: '.$row['health_card_no'].'</p>
-		// 			<p style="line-height: 0;">LOA/NOA: '.$row['loa_no'].'</p>
-		// 			<p >Therefore, in accordance with the terms and conditions of our agreement, Alturas Healthcare will be using this letter to guarantee payment of the bill amounting <span id="company_charge_words" style="font-weight: bold;text-transform: uppercase">' . $companyChargeWords . '</span> <span style="font-weight: bold">(PHP ' . number_format($row['company_charge'], 2,'.',',') . ')</span> only. We kindly request that you submit all relevant bills and supporting documentation for the services rendered to Patient Name directly to our designated billing department.</p>
-		// 			<p >We appreciate your collaboration and dedication to providing exceptional healthcare services to our members. Your continued partnership with the Alturas Healthcare Program is instrumental in fulfilling our mission of delivering comprehensive and accessible healthcare to our beneficiaries.</p>
-		// 			<p >Thank you for your attention to this matter, and we look forward to a continued successful relationship.</p>
-		// 			</div>';
-	
-		// $html4 = '<div style="text-align: justify;">
-	
-					// <p>Therefore, in accordance with the terms and conditions of our agreement, Alturas Healthcare will be using this letter to guarantee payment of the bill amounting <span id="company_charge_words" style="font-weight: bold;text-transform: uppercase">' . $companyChargeWords . '</span> <span style="font-weight: bold">(PHP ' . number_format($row['company_charge'], 2,'.',',') . ')</span> only. We kindly request that you submit all relevant bills and supporting documentation for the services rendered to Patient Name directly to our designated billing department.</p>
-					// <p>We appreciate your collaboration and dedication to providing exceptional healthcare services to our members. Your continued partnership with the Alturas Healthcare Program is instrumental in fulfilling our mission of delivering comprehensive and accessible healthcare to our beneficiaries.</p>
-					// <p>Thank you for your attention to this matter, and we look forward to a continued successful relationship.</p>
-					// </div>';
-	
-		$html5 = '<div>
-					<p>Yours sincerely,</p>
-					<img src="' . base_url() . 'uploads/doctor_signatures/' . $doc['doctor_signature'] . '" alt="Doctor Signature" style="height:auto;width:170px;vertical-align:baseline;">
-	
+							<p  style="line-height: 3;">Yours sincerely,</p>
+						</div>';
+		
+		$signature = '<div><img src="' . base_url() . 'uploads/doctor_signatures/' . $doc['doctor_signature'] . '" alt="Doctor Signature" style="height:auto;width:170px;vertical-align:baseline;"> </div>';
+		// $qr = '<img src="' . base_url() . 'uploads/qrcode/' . $qrfilename . '" alt="Guarantee Letter QR Code" style="height:100px;width:100px;"> ';
+		$html3 = '<div>
 					<p style="line-height: 0;text-transform: uppercase;">Dr. Michael D. Uy</span></p>
-	
-	
 					<p style="line-height: 1">Company Physician</p>
 				</div>';
 		
 		$pdf->setTitle('Guarantee letter');
-		$pdf->setFont('times', '', 10);
-		// $pdf->AddPage('P', 'LEGAL');
-		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
-		// $pdf->writeHTML($title);
+		$pdf->WriteHtmlCell(0, 0, '', '', $logo, 0, 1, 0, true, 'R', true);
+		$pdf->SetY($pdf->GetY()-2);
+		$pdf->SetX($pdf->GetX()+133);
+		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'L', true);
+		$pdf->SetY($pdf->GetY()-25);
 		$pdf->writeHTML($html1);
-		// $pdf->writeHTML($html2);
-		// $pdf->writeHTML($html3);
-		// $pdf->writeHTML($html4);
-		
-		$pdf->WriteHtmlCell(0, 0, '', '', $html5, 0, 1, 0, true, 'L', true);
-	
-	
-		// Output the PDF to the browser
-		// $pdf->Output('guarantee_letter.pdf', 'I');
-		// $pdfPath = 'uploads/guarantee_letter/guarantee_letter.pdf';
+		$pdf->writeHTML($html2);
+		$pdf->SetX($pdf->GetX()-20);
+		$pdf->WriteHtmlCell(0, 0, '', '', $signature, 0, 1, 0, true, 'L', true);
+		$pdf->SetY($pdf->GetY()-15);
+		$pdf->WriteHtmlCell(0, 0, '', '', $html3, 0, 1, 0, true, 'L', true);
+		$pdf->write1DBarcode($barcodeText, $barcodeType, 25, 149, 80, 5);
+		$pdf->write2DBarcode($formattedText, 'QRCODE', 155, 230, 30, 30);
 		$fileName = 'guarantee_letter' . $loa_id . '.pdf';
 		$pdf->Output(getcwd() . '/uploads/guarantee_letter/' . $fileName, 'F');
 		$response = [
@@ -4098,9 +4071,7 @@ $med_serv = implode(' ', $ct_array);
 			'filename' => $fileName
 		];
 		echo json_encode($response);
-	
-		// file_put_c	ontents($pdfPath, $pdfContent);
-		}
+	}
 
 	function consultation_schedule(){
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');

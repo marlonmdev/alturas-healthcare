@@ -22,11 +22,18 @@ $(document).ready(function () {
 
 	// initialize Tagify plugin on the above input node reference
 	const tags_input = document.querySelector("#tags-input");
+	const noa_med_services = document.querySelector("#noa-med-services");
 	new Tagify(tags_input, {
 		pattern: /^[A-Za-z\s\.]*$/, // this regex pattern only accepts letters, spaces and period
 		duplicate: "Already exists",
 	});
+	new Tagify(noa_med_services, {
+		// pattern: /^[A-Za-z\s\.]*$/, // this regex pattern only accepts letters, spaces and period
+		duplicate: "Already exists",
+	});
 
+	
 	// Input Mask Plugin
 	// $("#hospital-phone-number").inputmask({"mask": "(999) 999 9999"});
 });
+

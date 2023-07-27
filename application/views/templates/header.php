@@ -22,13 +22,12 @@
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/photoviewer/dist/photoviewer.min.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/flatpickr/flatpickr.min.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/flatpickr/themes/confetti.css" />
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/multi-select-tag-main/src/css/multi-select-tag.css" />
+    <!-- <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/multi-select-tag-main/src/css/multi-select-tag.css" /> -->
     <!-- <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/pdfjs/web/viewer.css" /> -->
     <!-- End of Vendors CSS -->
 
     <!-- Script Tags -->
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js"></script>
-    <script src="<?php echo base_url(); ?>assets/vendors/multi-select-tag-main/src/js/multi-select-tag.js" ></script>
+    <!-- <script src="<?php echo base_url(); ?>assets/vendors/multi-select-tag-main/src/js/multi-select-tag.js" ></script> -->
     <script src="<?php echo base_url(); ?>assets/vendors/jquery/jquery.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/vendors/chosen/chosen.jquery.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/vendors/qrcodejs/qrcode.min.js" defer></script>
@@ -38,7 +37,7 @@
     <script src="<?php echo base_url(); ?>assets/vendors/photoviewer/dist/photoviewer.min.js" defer></script>
     <script src="<?php echo base_url(); ?>assets/vendors/Toastr/build/toastr.min.js" defer></script>
   </head>
-
+  
   <body>
     <!-- Start of Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModal" aria-hidden="true">

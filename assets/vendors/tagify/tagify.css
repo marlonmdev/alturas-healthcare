@@ -52,6 +52,7 @@
 		transform: rotate(1turn);
 	}
 }
+
 .tagify:hover:not(.tagify--focus):not(.tagify--invalid) {
 	--tags-border-color: var(--tags-hover-border-color);
 }

@@ -89,7 +89,7 @@
 	}
 }
 body {
-	padding-top: 50px;  
+	padding-top: 65px;  
 	margin: 0;
 	font-family: var(--bs-font-sans-serif);
 	font-size: 0.875rem;
@@ -3629,14 +3629,14 @@ fieldset:disabled .btn {
 }
 @keyframes logoScale {
 	0% { transform: scale(1); }
-	50% { transform: scale(1.1); }
-	100% { transform: scale(1); }
+	20% { transform: scale(1.1); }
+	80% { transform: scale(1); }
   }
   
   /* Applying the animation to the .light-logo class */
   .light-logo {
 	/* Add any other styles you want for the logo here */
-	animation: logoScale 2s infinite;
+	animation: logoScale 1s infinite;
 	/* animation: colorAnimation 4s infinite; */
   }
   .mdi {
@@ -9220,7 +9220,7 @@ html[dir="ltr"] body .p-l-0 {
 .page-wrapper > .container-xl,
 .page-wrapper > .container-xxl {
 	padding: 20px;
-	min-height: calc(100vh - 180px);
+	min-height: calc(100vh - 120px);
 }
 .footer {
 	padding: 15px 20px;

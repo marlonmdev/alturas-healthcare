@@ -114,6 +114,14 @@ class Loa_model extends CI_Model {
     $query = $this->db->get('healthcare_providers');
     return $query->result_array();
   }
+  function db_get_affiliated_healthcare_providers() {
+    $query = $this->db->get_where('healthcare_providers',['accredited'=>1]);
+    return $query->result_array();
+  }
+  function db_get_not_affiliated_healthcare_providers() {
+    $query = $this->db->get_where('healthcare_providers',['accredited'=>0]);
+    return $query->result_array();
+  }
   function db_get_accredited_healthcare_providers() {
     return $this->db->select('hp_id')->get_where('healthcare_providers', ['accredited' => 1])->result_array();
   }

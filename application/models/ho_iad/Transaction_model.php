@@ -379,8 +379,6 @@ class Transaction_model extends CI_Model {
 	function get_business_units() {
         return $this->db->get('locate_business_unit')->result_array();
     }
-<<<<<<< HEAD
-=======
 
 	var $rcv_charge_table_1 = 'billing';
 	var $rcv_charge_table_5 = 'members';
@@ -427,7 +425,6 @@ class Transaction_model extends CI_Model {
 	 }
 
 
->>>>>>> fa43bd9d566d4e30192bbf26ea87e86a6c40d4d2
 	
 
 

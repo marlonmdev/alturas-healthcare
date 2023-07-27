@@ -30,68 +30,123 @@ class Noa_controller extends CI_Controller {
 		return checkdate($month, $day, $year);
 	}
 
+	function check_hospital_receipt($str) {
+		// $is_accredited = $this->session->userdata('is_accredited');
+		// var_dump('is_accredited',$is_accredited);
+		// if($is_accredited === "false"){
+			
+			if (isset($_FILES['hospital-receipt']['name']) && !empty($_FILES['hospital-receipt']['name'])) {
+				return true;
+			} else {
+				$this->form_validation->set_message('check_hospital_receipt', 'Please choose Hospital Receipt file to upload.');
+				return false;
+			}
+		// }
+		// $this->session->unset_userdata('is_accredited');
+	}
+
 	function submit_noa_request() {
 		$token = $this->security->get_csrf_hash();
 		$emp_id = $this->session->userdata('emp_id');
 		$member = $this->noa_model->db_get_member_infos($emp_id);
 		$inputPost = $this->input->post(NULL, TRUE); // returns all POST items with XSS filter
+		$medical_services = json_decode($this->input->post('noa-med-services'), TRUE);
 		$default_status = 'Pending';
-
+		$is_accredited = json_decode($_POST['is_accredited'],true);
 		$this->load->library('form_validation');
 		$this->form_validation->set_rules('hospital-name', 'Name of Hospital', 'required');
 		$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[1000]');
 		$this->form_validation->set_rules('admission-date', 'Admission Date', 'required');
+		$this->form_validation->set_rules('healthcare-provider-category', 'Healthcare Provider Category', 'required');
+		
+		if(!$is_accredited){
+			// var_dump('is_accredited',$is_accredited);
+			$this->form_validation->set_rules('noa-med-services', 'Medical Services', 'required');
+			$this->form_validation->set_rules('hospital-receipt', '', 'callback_check_hospital_receipt');
+			$this->form_validation->set_rules('hospital-bill', 'Hospital Bill', 'required');
+		}
+		
 		if ($this->form_validation->run() == FALSE) {
 			$response = array(
 				'status' => 'error',
 				'hospital_name_error' => form_error('hospital-name'),
 				'chief_complaint_error' => form_error('chief-complaint'),
 				'admission_date_error' => form_error('admission-date'),
+				'med_services_error' => form_error('noa-med-services'),
+				'hospital_receipt_error' => form_error('hospital-receipt'),
+				'hospital_bill_error' => form_error('hospital-bill'),
+				'healthcare_provider_category_error' => form_error('healthcare-provider-category'),
 			);
 			echo json_encode($response);
 			exit();
 		}else{
 			// check if the selected hospital exist from database
-			$hospital_id = $this->input->post('hospital-name');
-			$hp_exist = $this->noa_model->db_check_hospital_exist($hospital_id);
-			if (!$hp_exist) {
-				$response = array('status' => 'save-error', 'message' => 'Hospital Does Not Exist');
-				echo json_encode($response);
-				exit();
-			}else{
-				// select the max noa_id from DB
-				$result = $this->noa_model->db_get_max_noa_id();
-				$max_noa_id = !$result ? 0 : $result['noa_id'];
-				$add_noa = $max_noa_id + 1;
-				$current_year = date('Y');
-				// call function loa_number
-				$noa_no = $this->noa_number($add_noa, 7, 'NOA-'.$current_year);
+			$config['upload_path'] = './uploads/hospital_receipt/';
+			$config['allowed_types'] = 'jpg|jpeg|png';
+			$config['encrypt_name'] = TRUE;
+			$this->load->library('upload', $config);
+		  
+			if (!$this->upload->do_upload('hospital-receipt') && !$is_accredited) {
+				$response = [
+					'status'  => 'save-error',
+					'message' => 'PDF Bill Upload Failed'
+				];
+	
+			} else {
+				$upload_data = $this->upload->data();
+				$pdf_file = $upload_data['file_name'];
 
-				$post_data = array(
-					'noa_no' => $noa_no,
-					'emp_id' => $emp_id,
-					'first_name' =>  $member->first_name,
-					'middle_name' =>  $member->middle_name,
-					'last_name' =>  $member->last_name,
-					'suffix' =>  $member->suffix,
-					'date_of_birth' => $member->date_of_birth,
-					'health_card_no' => $member->health_card_no,
-					'requesting_company' => $member->company,
-					'hospital_id' => $inputPost['hospital-name'],
-					'admission_date' => $inputPost['admission-date'],
-					'chief_complaint' => strip_tags($inputPost['chief-complaint']),
-					'request_date' => date("Y-m-d"),
-					'status' => $default_status,
-					'requested_by' => $emp_id,
-					'type_request' => $inputPost['type_request'], 
-				);
-
-				$saved = $this->noa_model->db_insert_noa_request($post_data);
-				if (!$saved) {
-					$response = ['status' => 'save-error', 'message' => 'NOA Request Failed'];
+				$services = [];
+				if(!$is_accredited){
+					foreach($medical_services as $value){
+						$services[] = $value['value']; 
+					}
 				}
-				$response = ['status' => 'success', 'message' => 'NOA Request Save Successfully'];
-			}
+				
+				$hospital_id = $this->input->post('hospital-name');
+				$hp_exist = $this->noa_model->db_check_hospital_exist($hospital_id);
+				if (!$hp_exist) {
+					$response = array('status' => 'save-error', 'message' => 'Hospital Does Not Exist');
+					echo json_encode($response);
+					exit();
+				}else{
+					// select the max noa_id from DB
+					$result = $this->noa_model->db_get_max_noa_id();
+					$max_noa_id = !$result ? 0 : $result['noa_id'];
+					$add_noa = $max_noa_id + 1;
+					$current_year = date('Y');
+					// call function loa_number
+					$noa_no = $this->noa_number($add_noa, 7, 'NOA-'.$current_year);
+
+					$post_data = array(
+						'noa_no' => $noa_no,
+						'emp_id' => $emp_id,
+						'first_name' =>  $member->first_name,
+						'middle_name' =>  $member->middle_name,
+						'last_name' =>  $member->last_name,
+						'suffix' =>  $member->suffix,
+						'date_of_birth' => $member->date_of_birth,
+						'health_card_no' => $member->health_card_no,
+						'requesting_company' => $member->company,
+						'hospital_id' => $inputPost['hospital-name'],	
+						'admission_date' => $inputPost['admission-date'],
+						'chief_complaint' => strip_tags($inputPost['chief-complaint']),
+						'request_date' => date("Y-m-d"),
+						'hospital_bill' => isset($inputPost['hospital-bill'])?$inputPost['hospital-bill']:null,
+						'status' => $default_status,
+						'requested_by' => $emp_id,
+						'type_request' => $inputPost['type_request'],
+						'medical_services' => ($services!=="")?implode(';', $services):"", 
+						'hospital_receipt' => isset($pdf_file)?$pdf_file:null,
+					);
+
+					$saved = $this->noa_model->db_insert_noa_request($post_data);
+					if (!$saved) {
+						$response = ['status' => 'save-error', 'message' => 'NOA Request Failed'];
+					}
+					$response = ['status' => 'success', 'message' => 'NOA Request Save Successfully'];
+				}
+		}
 			echo json_encode($response);
 		}
 	}

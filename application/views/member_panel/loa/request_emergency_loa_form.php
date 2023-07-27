@@ -56,7 +56,7 @@
 
               <div class="form-group row">
                 <div class="col-lg-8 col-sm-12 col-lg-offset-3 mb-2">
-                  <label class="colored-label"><i class="bx bx-health icon-red"></i> Name of Hospital</label>
+                  <label class="colored-label"><i class="bx bx-health icon-red"></i> Affiliated Hospital</label>
                   <select class="form-select" name="hospital-name" id="hospital-name">
                     <option value="" selected>Select Hospital</option>
                     <?php

@@ -1728,23 +1728,13 @@ class Billing_controller extends CI_Controller {
         $net_b = $this->input->post('initial-net-bill', TRUE);
         // $initial_date = $this->input->post('initial-date',TRUE);
         $net_bill = floatval(str_replace(',', '', $net_b));
-        // $hospitalBillData = $_POST['hospital_bill_data'];
         
-        // var_dump("initial date",$initial_date);
         // PDF File Upload
         $config['upload_path'] = './uploads/pdf_bills/';
         $config['allowed_types'] = 'pdf';
         $config['encrypt_name'] = TRUE;
         $this->load->library('upload', $config);
-        // var_dump("initial date", $initial_date);
-        // if(empty($initial_date)){
-        //     $response = [
-        //         'status'  => 'save-error',
-        //         'message' => 'Invalid Date'
-        //     ];
-
-        // }
-        // else 
+      
         if (!$this->upload->do_upload('pdf-file-initial')) {
             $response = [
                 'status'  => 'save-error',

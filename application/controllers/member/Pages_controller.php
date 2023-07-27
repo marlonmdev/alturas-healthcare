@@ -56,7 +56,8 @@ class Pages_controller extends CI_Controller {
 	function request_loa_form() {
 		$emp_id = $this->session->userdata('emp_id');
 		$data['user_role'] = $this->session->userdata('user_role');
-		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
+		$data['ahcproviders'] = $this->loa_model->db_get_affiliated_healthcare_providers();
+		$data['hcproviders'] = $this->loa_model->db_get_not_affiliated_healthcare_providers();
 		$data['hcproviders_id'] = $this->loa_model->db_get_accredited_healthcare_providers();
 		$data['doctors'] = $this->loa_model->db_get_company_doctors();
 		$data['costtypes'] = $this->loa_model->db_get_cost_types();
@@ -95,10 +96,12 @@ class Pages_controller extends CI_Controller {
 		$this->load->model('member/history_model');
 		$emp_id = $this->session->userdata('emp_id');
 		$data['user_role'] = $this->session->userdata('user_role');
-		$data['hospitals'] = $this->noa_model->db_get_all_hospitals();
+		$data['ahcproviders'] = $this->loa_model->db_get_affiliated_healthcare_providers();
+		$data['hcproviders'] = $this->loa_model->db_get_not_affiliated_healthcare_providers();
 		$data['member'] = $this->loa_model->db_get_member_infos($emp_id);
 		$data['costtypes'] = $this->noa_model->db_get_all_cost_types();
 		$data['mbl'] = $this->history_model->get_member_mbl($emp_id);
+		$data['hcproviders_id'] = $this->loa_model->db_get_accredited_healthcare_providers();
 		$this->load->view('templates/header', $data);
 		$this->load->view('member_panel/noa/request_noa_form',$data);
 		$this->load->view('templates/footer');
@@ -277,7 +280,8 @@ class Pages_controller extends CI_Controller {
 		$this->load->model('member/history_model');
 		$emp_id = $this->session->userdata('emp_id');
 		$data['user_role'] = $this->session->userdata('user_role');
-		$data['hospitals'] = $this->noa_model->db_get_all_hospitals();
+		// $data['hospitals'] = $this->noa_model->db_get_all_hospitals();
+		$data['hospitals'] = $this->loa_model->db_get_affiliated_healthcare_providers();
 		$data['member'] = $this->loa_model->db_get_member_infos($emp_id);
 		$data['costtypes'] = $this->noa_model->db_get_all_cost_types();
 		$data['mbl'] = $this->history_model->get_member_mbl($emp_id);

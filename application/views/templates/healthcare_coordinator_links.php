@@ -220,28 +220,20 @@
   </a>
 </li> 
 
-<style type="text/css">
+<!-- <style type="text/css">
   #main-wrapper .left-sidebar[data-sidebarbg="skin5"],
   #main-wrapper .left-sidebar[data-sidebarbg="skin5"] ul {
     background: #003153;
-    /*color:#fff*/
   }
   .sidebar-nav ul .sidebar-item.selected > .sidebar-link {
     background: #003153;
-    color:#fff
   }
   .sidebar-nav > #sidebarnav > .sidebar-item > .sidebar-link:hover {
     background-color: #074C6C;
-    color:#fff
   }
- /* .sidebar-nav ul .sidebar-item .sidebar-link {
-    color: #fff;
-    padding: 14px 15px;
-    display: flex;
-    white-space: nowrap;
-    align-items: center;
-    line-height: 25px;
-    opacity: 0.9;
-  } */
+  .sidebar-nav ul .sidebar-item .sidebar-link {
+    color:#fff;
+  } 
 
 </style> 
+ -->

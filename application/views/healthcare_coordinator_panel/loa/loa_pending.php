@@ -130,7 +130,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
@@ -142,6 +142,7 @@
 <script>
   const baseUrl = `<?= base_url(); ?>`;
   const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
+  let hospital_receipt  = '';
   $(document).ready(function() {
 
     let pendingTable = $('#pendingLoaTable').DataTable({
@@ -187,10 +188,7 @@
         contentType: false,
         success: function(response) {
           const {
-            token,
-            status,
-            message,
-            charge_type_error,
+            token,status,message,charge_type_error,
           } = response;
           switch (status) {
             case 'error':
@@ -202,7 +200,7 @@
                 $('#charge-type-error').html('');
                 $('#charge-type').removeClass('is-invalid');
               }
-              break;
+            break;
             case 'save-error':
               swal({
                 title: 'Failed',
@@ -212,7 +210,7 @@
                 type: 'error'
               });
               $("#pendingLoaTable").DataTable().ajax.reload();
-              break;
+            break;
             case 'upload-error':
               swal({
                 title: 'Failed',
@@ -234,7 +232,71 @@
               
               $('#viewChargeTypeModal').modal('hide');
               $("#pendingLoaTable").DataTable().ajax.reload();
+            break;
+          }
+        },
+      })
+    });
+
+    $('#UpdateChargeTypeNotAffiliated').submit(function(event) {
+      event.preventDefault();
+
+      const ChargeForm = $('#UpdateChargeTypeNotAffiliated')[0];
+      const formdata = new FormData(ChargeForm);
+      $.ajax({
+        type: "post",
+        url: $(this).attr('action'),
+        data: formdata,
+        dataType: "json",
+        processData: false,
+        contentType: false,
+        success: function(response) {
+          const {
+            token,status,message,charge_type_error,
+          } = response;
+          switch (status) {
+            case 'error':
+              // is-invalid class is a built in classname for errors in bootstrap
+              if (charge_type_error !== '') {
+                $('#charge-type-error').html(charge_type_error);
+                $('#charge-type').addClass('is-invalid');
+              } else {
+                $('#charge-type-error').html('');
+                $('#charge-type').removeClass('is-invalid');
+              }
+            break;
+            case 'save-error':
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
+              $("#pendingLoaTable").DataTable().ajax.reload();
+            break;
+            case 'upload-error':
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
+              $("#pendingLoaTable").DataTable().ajax.reload();
               break;
+            case 'success':
+              swal({
+                title: 'Success',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'success'
+              });
+              
+              $('#viewChargeTypeModal').modal('hide');
+              $("#pendingLoaTable").DataTable().ajax.reload();
+            break;
           }
         },
       })
@@ -394,6 +456,29 @@
     $('#charge-type').val('');
   }
 
+  const ChargeTypenotAffiliated = (loa_id, hospital_receipt, hospital_bill) => {
+    console.log('Calling ChargeTypenotAffiliated with LOA ID:', loa_id);
+    $("#charge_type_modal_not_affiliated").modal("show");
+    $("#charge_type_modal_not_affiliated").find("form")[0].reset();
+    $('#loa_id').val(loa_id);
+    // Format the hospital_bill value with the currency symbol
+    const formattedHospitalBill = new Intl.NumberFormat('en-PH', {
+      style: 'currency',
+      currency: 'PHP',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(hospital_bill);
+
+    // Set the formatted hospital_bill value to the input field
+    $('#hospital_bill').val(formattedHospitalBill);
+
+    // Set the hospital_receipt attribute to the image element
+    $('#uploaded-hospital-receipt').attr("hospital_receipt", hospital_receipt);
+
+    // Set the src attribute of the image element
+    $('#uploaded-hospital-receipt').attr("src", baseUrl + 'uploads/hospital_receipt/' + hospital_receipt);
+  };
+
   let pdfinput = "";
   const  previewFile = (pdf_input) => {
       pdfinput = pdf_input;
@@ -513,6 +598,42 @@
     xhr.send();
     }
   }
+
+  const viewHospitalReceiptFile = () => {
+    // Retrieve the hospital_receipt attribute from the image element
+    const hospital_receipt = $('#uploaded-hospital-receipt').attr("hospital_receipt");
+
+    // Rest of your code remains unchanged
+    $('#viewFileModal').modal('show');
+    $('#cancel').hide();
+    $('#file-name-r').html('HOSPITAL RECEIPT');
+
+    let pdfFile = `${baseUrl}uploads/hospital_receipt/${hospital_receipt}`;
+    let fileExists = checkFileExists(pdfFile);
+
+    if (fileExists) {
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', pdfFile, true);
+      xhr.responseType = 'blob';
+
+      xhr.onload = function (e) {
+        if (this.status == 200) {
+          let blob = this.response;
+          let reader = new FileReader();
+
+          reader.onload = function (event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-file-viewer');
+            iframe.src = dataURL;
+          };
+          reader.readAsDataURL(blob);
+        }
+      };
+      xhr.send();
+    }
+  };
+
+  
 
     const checkFileExists = (fileUrl) => {
         let xhr = new XMLHttpRequest();

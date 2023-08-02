@@ -2,14 +2,14 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <a href="#" onclick="goBack()" type="submit" class="btn btn-outline-dark" data-bs-toggle="tooltip" title="Click to Go Back">
+        <a href="#" onclick="goBack()" type="submit" class="btn btn-danger" data-bs-toggle="tooltip" title="Click to Go Back">
           <strong class="ls-2" style="vertical-align:middle"><i class="mdi mdi-arrow-left-bold"></i> Back</strong>
         </a>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
-              <li class="breadcrumb-item active" aria-current="page">Diagnostic</li>
+              <li class="breadcrumb-item active" aria-current="page">Diagnostic Form</li>
             </ol>
           </nav>
         </div>
@@ -20,10 +20,14 @@
   <div class="container-fluid">
     <div class="card pt-1 shadow">
       <div class="card-body">
-        <div class="col-12">
-          <div class="text-center mb-4 mt-0"><h4 class="page-title ls-2" style="color:black">MEDICAL APPOINTMENT SCHEDULE</h4></div>
+        <div class="row">
+          <div class="col-xs-12 d-flex justify-content-center align-items-center">
+            <img src="<?= base_url(); ?>assets/images/logo2.png" alt="Alturas Healthcare Logo" height="70" width="300">
+          </div>
+          <div class="col-12 pt-3">
+            <div class="text-center mb-4 mt-0"><h4 class="page-title ls-2" style="color:black;font-family:Times Roman">HEALTHCARE SERVICES RECORD</h4></div>
+          </div><hr style="color:gray">
         </div>
-        <hr style="color:gray">
                 
         <form id="performedLoaInfo" method="post" action="<?php echo base_url();?>healthcare-coordinator/loa-requests/approved/performed-loa-info/submit" class="needs-validation" novalidate>
           <div class="row">
@@ -34,18 +38,18 @@
             <input type="hidden" name="request-type" value="<?php echo $request_type ?>">
               
             <div class="col-lg-4">
-              <label class="fw-bold">Member's Name : </label>
-              <input class="form-control text-info fw-bold" type="text" name="member-name" id="member-name" value="<?php echo $full_name ?>" readonly>
+              <label>Member's Name : </label>
+              <input class="form-control" type="text" name="member-name" id="member-name" value="<?php echo $full_name ?>" readonly>
             </div>
 
             <div class="col-lg-4">
-              <label class="fw-bold">LOA Number : </label>
-              <input class="form-control text-info fw-bold" type="text" name="loa-num" id="loa-num" value="<?php echo $loa_no?>" readonly>
+              <label>LOA Number : </label>
+              <input class="form-control" type="text" name="loa-num" id="loa-num" value="<?php echo $loa_no?>" readonly>
             </div>
 
             <div class="col-lg-4">
-              <label class="fw-bold">Healthcare Provider : </label>
-              <input class="form-control text-info fw-bold" type="text" name="hp-name" id="hp-name" value="<?php echo $hc_provider ?>" readonly>
+              <label>Healthcare Provider : </label>
+              <input class="form-control" type="text" name="hp-name" id="hp-name" value="<?php echo $hc_provider ?>" readonly>
             </div>
           </div>
 
@@ -60,8 +64,8 @@
               <input type="hidden" name="ctype_id[]" value="<?php echo $cost_type['ctype_id']; ?>">
               
               <div class="col-lg-4 pb-3 pt-3">
-                <label class="fw-bold">Medical Services : </label>
-                <input type="text" class="form-control fw-bold ls-1" name="ct-name[]" value="<?php echo $cost_type['item_description']; ?>" readonly>
+                <label>Medical Services : </label>
+                <input type="text" class="form-control ls-1" name="ct-name[]" value="<?php echo $cost_type['item_description']; ?>" readonly>
               </div>
 
               <div class="col-lg-4 pb-3 pt-3">

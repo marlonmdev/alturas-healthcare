@@ -561,7 +561,7 @@
 				// so sadly the "getCaretGlobalPosition" method doesn't recognize the caret position without this delay
 				setTimeout(() => {
 					this.dropdown.position();
-					this.dropdown.render(); 
+					this.dropdown.render();
 				});
 			} // a delay is needed because of the previous delay reason.
 			// this event must be fired after the dropdown was rendered & positioned

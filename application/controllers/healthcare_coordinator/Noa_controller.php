@@ -13,6 +13,26 @@ class Noa_controller extends CI_Controller {
 		}
 	}
 
+	function get_hp_services(){
+		$token = $this->security->get_csrf_hash();
+		$hp_id = $this->uri->segment(4);
+		$cost_types = $this->loa_model->db_get_cost_types_by_hp($hp_id);
+		$response = array();
+
+		if(empty($cost_types)){
+		}else{
+			foreach ($cost_types as $cost_type) {
+				$data = [
+					'ctyp_id' => $cost_type['ctype_id'],
+					'ctyp_description' => $cost_type['item_description'],
+					'ctyp_price' => number_format($cost_type['op_price'],2,'.',','),
+				];
+				array_push($response,$data);
+			}
+		}
+		echo json_encode($response);
+	}
+
 	function noa_number($input, $pad_len = 7, $prefix = null) {
 		if ($pad_len <= strlen($input))
 			trigger_error('<strong>$pad_len</strong> cannot be less than or equal to the length of <strong>$input</strong> to generate invoice number', E_USER_ERROR);

@@ -1218,7 +1218,7 @@ class Billing_controller extends CI_Controller {
             if($check_bill){
                 $this->billing_model->insert_old_billing($billing_no);
                 $data += ['done_re_upload' => 'Done',
-                        're_upload' => 0,
+                        're_upload' => 3,
                         ];
                        
                 $inserted = $this->billing_model->update_billing($data,$billing_no);

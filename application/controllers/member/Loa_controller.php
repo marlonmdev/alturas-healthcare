@@ -288,7 +288,7 @@ class Loa_controller extends CI_Controller {
 					exit();
 				} else {
 					// if theres selected file to be uploaded
-					// $config['upload_path'] = './uploads/loa_attachments/';
+					$config['upload_path'] = './uploads/loa_attachments/';
 					$config['allowed_types'] = 'jpg|jpeg|png';
 					$config['encrypt_name'] = TRUE;
 					$this->load->library('upload', $config);

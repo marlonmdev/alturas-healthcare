@@ -719,24 +719,44 @@ class Loa_controller extends CI_Controller {
 	function update_loa($loa_id, $input_post, $med_services, $attending_physician, $rx_file, $hospital_receipt, $is_accredited) {
 		$tagvalue = json_decode($med_services);
 		$services = [];
+		$post_data = [];
 		// var_dump('rx_file',$rx_file);
 		if($tagvalue!==null){
 			foreach($tagvalue as $value){
 				$services[] = (count(get_object_vars($value))>1)?$value->tagid:$value->value; 
 			}
 		}
-		$post_data = [
-			'emp_id' => $this->session->userdata('emp_id'),
-			'hcare_provider' => $input_post['healthcare-provider'],
-			'loa_request_type' => $input_post['loa-request-type'],
-			'med_services' => implode(';', $services),
-			'chief_complaint' => strip_tags($input_post['chief-complaint']),
-			'requesting_physician' => ucwords($input_post['requesting-physician']),
-			'hospital_bill' =>  !$is_accredited ? floatval($input_post['hospital-bill']) : null,
-			'attending_physician' => $attending_physician,
-			'rx_file' => $rx_file,
-			'hospital_receipt' => $hospital_receipt,
-		];
+
+		if($is_accredited){
+			$post_data = [
+				'emp_id' => $this->session->userdata('emp_id'),
+				'hcare_provider' => $input_post['healthcare-provider'],
+				'loa_request_type' => $input_post['loa-request-type'],
+				'med_services' => implode(';', $services),
+				'chief_complaint' => strip_tags($input_post['chief-complaint']),
+				'requesting_physician' => ucwords($input_post['requesting-physician']),
+				'hospital_bill' =>  null,
+				'attending_physician' => $attending_physician,
+				'rx_file' => $rx_file,
+				'hospital_receipt' => null,
+				'is_manual' => 0,
+			];
+		}else{
+			$post_data = [
+				'emp_id' => $this->session->userdata('emp_id'),
+				'hcare_provider' => $input_post['healthcare-provider'],
+				'loa_request_type' => $input_post['loa-request-type'],
+				'med_services' => implode(';', $services),
+				'chief_complaint' => strip_tags($input_post['chief-complaint']),
+				'requesting_physician' => ucwords($input_post['requesting-physician']),
+				'hospital_bill' =>  floatval($input_post['hospital-bill']),
+				'attending_physician' => $attending_physician,
+				'rx_file' => null,
+				'hospital_receipt' => $hospital_receipt,
+				'is_manual' => 1,
+			];
+		}
+		
 		$updated = $this->loa_model->db_update_loa_request($loa_id, $post_data);
 		// If loa is not updated
 		if (!$updated) {

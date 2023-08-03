@@ -160,7 +160,7 @@
               <div class="form-group row" id="edit-med-services-wrapper" >
                   <div class="col-sm-8 mb-2  pe-2"  >
                     <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Select Medical Service/s <small class="text-danger"> *Note: Press Tab or Enter to Add More Medical Service</small></label>
-                    <input class="custom-input" id="edit-med-services" name="edit-med-services" placeholder="Type and press Enter|Tab">
+                    <input class="form-control" id="edit-med-services" name="edit-med-services" placeholder="Type and press Enter|Tab">
                     <em id="edit-med-services-error" class="text-danger"></em>
                   </div>
                   <div class="col-lg-4 col-sm-12 mb-2" id="hospital-bill-wrapper" hidden >
@@ -286,9 +286,9 @@
 <!-- End Wrapper -->
 </div>
 <style>
- .custom-input {
+ /* .custom-input {
   width: 100%;
-}
+} */
 
 /* input[type="text"]::-webkit-inner-spin-button,
 input[type="text"]::-webkit-outer-spin-button {
@@ -494,7 +494,8 @@ input[type="text"]::-webkit-outer-spin-button {
 
     tagify_values();
       $('#healthcare-provider').on('change',function(){
-        tagify_values();
+        $('#edit-med-services').val('');
+          tagify_values();
       });
 
       if(is_manual){
@@ -515,6 +516,7 @@ input[type="text"]::-webkit-outer-spin-button {
 
     $('#healthcare-provider-category').on('change',function(){
         $('#edit-med-services').val('');
+        tagify_values();
         if( $('#healthcare-provider-category').val()==='1'){
           $('#hospital-bill-wrapper').prop('hidden',true);
         }else{

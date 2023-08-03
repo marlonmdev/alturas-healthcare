@@ -98,6 +98,7 @@
                     <th class="fw-bold" style="color: white">DATE OF ADMISSION</th>
                     <th class="fw-bold" style="color: white">NAME OF HOSPITAL</th>
                     <th class="fw-bold" style="color: white">DATE OF REQUEST</th>
+                    <th class="fw-bold" style="color: white">SOA</th>
                     <th class="fw-bold" style="color: white">STATUS</th>
                     <th class="fw-bold" style="color: white">ACTION</th>
                   </tr>
@@ -239,7 +240,8 @@
           work_related,
           request_date,
           req_status,
-          percentage
+          percentage,
+          med_services
         } = res;
 
         $("#viewNoaModal").modal("show");
@@ -262,6 +264,10 @@
         $('#admission-date').html(admission_date);
         $('#chief-complaint').html(chief_complaint);
         $('#request-date').html(request_date);
+        $('#med-services-list').html(med_services);
+      
+       
+
         if(work_related != ''){
           $('#percent').show();
           if(work_related == 'Yes'){ 
@@ -329,7 +335,7 @@
   $(document).ready(function() {
 
     $('#noaApproveForm').submit(function(event) {
-      const nextPage = `${baseUrl}company-doctor/noa/requests-list/approved`;
+      
       event.preventDefault();
 
       $.ajax({
@@ -342,8 +348,10 @@
             token,
             status,
             message,
-            expiration_date_error
+            expiration_date_error,
+            next_page
           } = response;
+          const nextPage = (next_page === 'Approved')?`${baseUrl}company-doctor/noa/requests-list/approved`:`${baseUrl}company-doctor/noa/requests-list/billed`;
           switch (status) {
             case 'error':
               // is-invalid class is a built in classname for errors in bootstrap
@@ -546,4 +554,17 @@
 
         return xhr.status == "200" ? true: false;
     }
+
+    const viewImage = (path) => {
+    let item = [{
+      src: path, // path to image
+      title: 'Attached RX File' // If you skip it, there will display the original image name
+    }];
+    // define options (if needed)
+    let options = {
+      index: 0 // this option means you will start at first image
+    };
+    // Initialize the plugin
+    let photoviewer = new PhotoViewer(item, options);
+  }
 </script>

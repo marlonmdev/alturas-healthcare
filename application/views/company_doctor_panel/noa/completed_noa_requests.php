@@ -74,6 +74,7 @@
                     <th class="fw-bold">Admission Date</th>
                     <th class="fw-bold">Hospital Name</th>
                     <th class="fw-bold">Request Date</th>
+                    <th class="fw-bold">SOA</th>
                     <th class="fw-bold">Status</th>
                     <th class="fw-bold">Actions</th>
                   </tr>
@@ -173,7 +174,8 @@
           work_related,
           req_status,
           approved_by,
-          approved_on
+          approved_on,
+          med_services
         } = res;
 
         $("#viewNoaModal").modal("show");
@@ -191,7 +193,20 @@
         $('#chief-complaint').html(chief_complaint);
         $('#request-date').html(request_date);
         $('#work-related').html(work_related);
+        $('#med-services-list').html(med_services);
       }
     });
+  }
+  const viewImage = (path) => {
+    let item = [{
+      src: path, // path to image
+      title: 'Attached RX File' // If you skip it, there will display the original image name
+    }];
+    // define options (if needed)
+    let options = {
+      index: 0 // this option means you will start at first image
+    };
+    // Initialize the plugin
+    let photoviewer = new PhotoViewer(item, options);
   }
 </script>

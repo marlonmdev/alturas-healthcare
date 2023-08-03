@@ -110,6 +110,7 @@
                     <th class="" style="color: white">TYPE OF REQUEST</th>
                     <th class="" style="color: white">HEALTHCARE PROVIDER</th>
                     <th class="" style="color: white">RX FILE</th>
+                    <th class="" style="color: white">SOA</th>
                     <th class="" style="color: white">DATE OF REQUEST</th>
                     <th class="" style="color: white">STATUS</th>
                     <th class="" style="color: white">ACTION</th>

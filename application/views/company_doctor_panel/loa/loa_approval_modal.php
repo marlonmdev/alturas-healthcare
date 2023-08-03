@@ -23,10 +23,10 @@
               </select>
             </div> 
 
-            <!-- <div class="col-12 mb-2 d-none" id="exp-date-div">
-              <input class="form-control" type="text" name="expiration-date" id="expiration-date" placeholder="Select Date" style="background-color:#ffff" required>
+            <div class="col-12 mb-2 d-none" id="exp-date-div">
+              <input class="form-control" type="text" name="expiration-date" id="expiration-date" placeholder="Select Date" style="background-color:#ffff">
               <em id="expiration-date-error" class="text-danger"></em>
-            </div> -->
+            </div>
           </div>
                
           <div class="row mt-2">

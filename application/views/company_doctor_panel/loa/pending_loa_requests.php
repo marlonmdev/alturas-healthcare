@@ -111,6 +111,7 @@
                     <th class="fw-bold" style="color: white">TYPE OF REQUEST</th>
                     <th class="fw-bold" style="color: white">HEALTHCARE PROVIDER</th>
                     <th class="fw-bold" style="color: white">RX FILE</th>
+                    <th class="fw-bold" style="color: white">SOA</th>
                     <th class="fw-bold" style="color: white">DATE OF REQUEST</th>
                     <th class="fw-bold" style="color: white">ESTIMATED TOTAL FEE</th>
                     <th class="fw-bold" style="color: white">PERCENTAGE</th>
@@ -387,7 +388,7 @@
   $(document).ready(function() {
 
     $('#loaApproveForm').submit(function(event) {
-      const nextPage = `${baseUrl}company-doctor/loa/requests-list/approved`;
+      
       event.preventDefault();
 
       $.ajax({
@@ -400,8 +401,10 @@
             token,
             status,
             message,
-            expiration_date_error
+            expiration_date_error,
+            next_page
           } = response;
+          const nextPage = (next_page === 'Approved')?`${baseUrl}company-doctor/loa/requests-list/approved`:`${baseUrl}company-doctor/loa/requests-list/billed`;
           switch (status) {
             case 'error':
               // is-invalid class is a built in classname for errors in bootstrap

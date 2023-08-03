@@ -97,6 +97,7 @@
                     <th class="fw-bold" style="color: white">DATE OF ADMISSION</th>
                     <th class="fw-bold" style="color: white">NAME OF HOSPITAL</th>
                     <th class="fw-bold" style="color: white">DATE OF EXPIRATION</th>
+                    <th class="fw-bold" style="color: white">SOA</th>
                     <th class="fw-bold" style="color: white">STATUS</th>
                     <th class="fw-bold" style="color: white">ACTION</th>
                   </tr>
@@ -206,7 +207,8 @@
           expiry_date,
           percentage,
           billed_on,
-          paid_on
+          paid_on,
+          med_services
         } = res;
 
         $("#viewNoaModal").modal("show");
@@ -237,6 +239,7 @@
         $('#request-date').html(request_date);
         $('#billed-date').html(billed_on);
         $('#paid-date').html(paid_on);
+        $('#med-services-list').html(med_services);
         if(work_related == 'Yes'){ 
 					if(percentage == ''){
 					  wpercent = '100% W-R';
@@ -269,5 +272,18 @@
         $('#percentage').html(wpercent+', '+nwpercent);
       }
     });
+  }
+  
+  const viewImage = (path) => {
+    let item = [{
+      src: path, // path to image
+      title: 'Attached RX File' // If you skip it, there will display the original image name
+    }];
+    // define options (if needed)
+    let options = {
+      index: 0 // this option means you will start at first image
+    };
+    // Initialize the plugin
+    let photoviewer = new PhotoViewer(item, options);
   }
 </script>

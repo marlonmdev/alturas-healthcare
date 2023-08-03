@@ -79,7 +79,7 @@
               <div class="form-group row" id="med-hr-wrapper" hidden>
                   <div class="col-sm-8 mb-0 pe-2" id="med-services-wrapper">
                     <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Input Medical Service/s <small class="text-danger"> *Note: Press Tab or Enter to Add More Medical Service</small></label>
-                    <input class="custom-input" id="noa-med-services" name="noa-med-services" placeholder="Type and press Enter|Tab" >
+                    <input class="form-control" id="noa-med-services" name="noa-med-services" placeholder="Type and press Enter|Tab" >
                     </input>
                     <em id="noa-med-services-error" class="text-danger"></em>
                   </div>
@@ -145,9 +145,9 @@
 <!-- End Wrapper -->
 </div>
 <style>
-   .custom-input {
+   /* .custom-input {
   width: 100%;
-}
+} */
 </style>
 <script type="text/javascript">
   const baseUrl = `<?php echo $this->config->base_url(); ?>`;

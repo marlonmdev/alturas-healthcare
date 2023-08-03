@@ -80,7 +80,7 @@
               <div class="form-group row" id="med-services-wrapper" hidden>
                   <div class="col-sm-8 mb-0 pe-2"  >
                     <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Input Medical Service/s <small class="text-danger"> *Note: Press Tab or Enter to Add More Medical Service</small></label>
-                    <input class="custom-input" id="noa-med-services" name="noa-med-services" placeholder="Type and press Enter|Tab">
+                    <input class="form-control" id="noa-med-services" name="noa-med-services" placeholder="Type and press Enter|Tab">
                     </input>
                     <em id="noa-med-services-error" class="text-danger"></em>
                   </div>
@@ -145,9 +145,9 @@
 
 
 <style>
- .custom-input {
+ /* .custom-input {
   width: 100%;
-}
+} */
 
 </style>
 <script type="text/javascript">
@@ -157,7 +157,9 @@
   const hospital_names = <?= json_encode($hcproviders)?>;
   let is_accredited = false;
   const input_bill = document.getElementById('hospital-bill');
+  const med_services = document.getElementById('noa-med-services');
   $(document).ready(function() {
+    new Tagify(med_services);
     $('#submit').prop('disabled',false); 
     $('#admission-date').flatpickr({
           dateFormat: "Y-m-d"

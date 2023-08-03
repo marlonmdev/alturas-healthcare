@@ -139,17 +139,10 @@
                 </div>
               </div>
 
-                <!-- <div class="form-group row" id="med-services-wrapper" hidden>
-                  <div class="col-sm-6 mb-2  pe-2"  >
-                    <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Select Medical Service/s</label>
-                    <input class="custom-input" id="med-services" name="med-services" placeholder="Type and press Enter|Tab">
-                    </input>
-                  </div>
-                </div> -->
                 <div class="form-group row" id="med-services-wrapper" hidden>
                   <div class="col-sm-8 mb-2  pe-2"  >
                     <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Select Medical Service/s <small class="text-danger"> *Note: Press Tab or Enter to Add More Medical Service</small></label>
-                    <input class="custom-input" id="med-services" name="med-services" placeholder="Type and press Enter|Tab">
+                    <input class="form-control" id="med-services" name="med-services" placeholder="Type and press Enter|Tab">
                     <em id="med-services-error" class="text-danger"></em>
                   </div>
                   <div class="col-lg-4 col-sm-12 mb-2" id="hospital-bill-wrapper" hidden>
@@ -157,17 +150,8 @@
                   <input type="text" class="form-control" name="hospital-bill" id="hospital-bill" placeholder="Enter Hospital Bill" style="background-color:#ffff" autocomplete="off">
                   <em id="hospital-bill-error" class="text-danger"></em>
                 </div>
-
-              <!-- <div class="form-group row">
-                <div class="col-sm-6 mb-4 d-none" id="med-services-div">
-                  <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Select Medical Service/s</label><br>
-                  <div id="med-services-wrapper"></div>
-                  <em id="med-services-error" class="text-danger"></em>
-                </div>
-              </div> -->
-
-              <!-- <input type="text" class="form-control" name="price" id="price">
-              <input type="number" class="form-control" name="total_price" id="total_price"> -->
+                
+              </div>
 
               <div class="form-group row">
                 <div class="col-sm-3 mb-2">
@@ -217,7 +201,7 @@
                 </div>
                 <div class="col-lg-6 col-sm-12 col-lg-offset-3 mb-2">
                   <label class="colored-label">Attending Physician <small class="text-danger"> *Note: Press Tab to Add More Physician</small></label>
-                  <input class="custom-input" type="text" name="attending-physician" id="tags-input">
+                  <input class="form-control" type="text" name="attending-physician" id="tags-input">
                 </div>
               </div>
 
@@ -268,9 +252,9 @@
   </div>
 </div>
 <style>
- .custom-input {
+ /* .custom-input {
   width: 100%;
-}
+} */
 
 /* input[type="text"]::-webkit-inner-spin-button,
 input[type="text"]::-webkit-outer-spin-button {
@@ -539,11 +523,6 @@ input[type="text"]::-webkit-outer-spin-button {
 
   });
 
-//   const get_med_services = () => {
-  
-// };
-
-
 const number_validator = () => {
 	$('#hospital-bill').on('keydown',function(event){
 		let value = $('#hospital-bill').val();
@@ -569,6 +548,7 @@ const number_validator = () => {
 		  
 	  });
 }
+
   const enableRequestType = () => {
     const hc_provider = document.querySelector('#healthcare-provider').value;
 
@@ -615,7 +595,6 @@ const number_validator = () => {
         request_type.value = '';
       }
   } 
-
   
 function removeOption() {
   var selectElement = document.getElementById('healthcare-provider');
@@ -626,7 +605,6 @@ function removeOption() {
   }
 }
 
-  
   const showMedServices = () => {
     const loaType = document.querySelector('#loa-request-type').value;
     // const medServices = document.querySelector('#med-services-div');
@@ -643,4 +621,5 @@ function removeOption() {
       fileAttachment.className = "form-group row d-block";
     }
   }
+
 </script>

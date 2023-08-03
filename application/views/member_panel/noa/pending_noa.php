@@ -73,6 +73,7 @@
                     <th class="fw-bold" style="color: white">DATE OF ADMISSION</th>
                     <th class="fw-bold" style="color: white">NAME OF HOSPITAL</th>
                     <th class="fw-bold" style="color: white">DATE OF REQUEST</th>
+                    <th class="fw-bold" style="color: white">HOSPITAL RECEIPT</th>
                     <th class="fw-bold" style="color: white">STATUS</th>
                     <th class="fw-bold" style="color: white">ACTION</th>
                   </tr>
@@ -143,7 +144,7 @@
 
   const viewNoaInfoModal = (req_id) => {
     $.ajax({
-      url: `${baseUrl}member/requested-noa/view/pending/${req_id}`,
+      url: `${baseUrl}member/requested-noa/view/${req_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);
@@ -166,7 +167,8 @@
           request_date,
           req_status,
           work_related,
-          percentage
+          percentage,
+          med_services
         } = res;
 
         $("#viewNoaModal").modal("show");
@@ -179,7 +181,7 @@
         }
 
         $('#noa-no').html(noa_no);
-        $('#loa-status').html(req_stat);
+        $('#noa-status').html(req_stat);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
         $('#date-of-birth').html(date_of_birth);
         $('#age').html(age);
@@ -187,36 +189,37 @@
         $('#admission-date').html(admission_date);
         $('#chief-complaint').html(chief_complaint);
         $('#request-date').html(request_date);
-        if(work_related == 'Yes'){ 
-					if(percentage == ''){
-					  wpercent = '100% W-R';
-					  nwpercent = '';
-					}else{
-					   wpercent = percentage+'%  W-R';
-					   result = 100 - parseFloat(percentage);
-					   if(percentage == '100'){
-						   nwpercent = '';
-					   }else{
-						   nwpercent = result+'% Non W-R';
-					   }
+        $('#med-services-list').html(med_services);
+        // if(work_related == 'Yes'){ 
+				// 	if(percentage == ''){
+				// 	  wpercent = '100% W-R';
+				// 	  nwpercent = '';
+				// 	}else{
+				// 	   wpercent = percentage+'%  W-R';
+				// 	   result = 100 - parseFloat(percentage);
+				// 	   if(percentage == '100'){
+				// 		   nwpercent = '';
+				// 	   }else{
+				// 		   nwpercent = result+'% Non W-R';
+				// 	   }
 					  
-					}	
-			   }else if(work_related == 'No'){
-				   if(percentage == ''){
-					   wpercent = '';
-					   nwpercent = '100% Non W-R';
-					}else{
-					   nwpercent = percentage+'% Non W-R';
-					   result = 100 - parseFloat(percentage);
-					   if(percentage == '100'){
-						   wpercent = '';
-					   }else{
-						   wpercent = result+'%  W-R';
-					   }
+				// 	}	
+			  //  }else if(work_related == 'No'){
+				//    if(percentage == ''){
+				// 	   wpercent = '';
+				// 	   nwpercent = '100% Non W-R';
+				// 	}else{
+				// 	   nwpercent = percentage+'% Non W-R';
+				// 	   result = 100 - parseFloat(percentage);
+				// 	   if(percentage == '100'){
+				// 		   wpercent = '';
+				// 	   }else{
+				// 		   wpercent = result+'%  W-R';
+				// 	   }
 					 
-					}
-			   }
-        $('#percentage').html(wpercent+', '+nwpercent);
+				// 	}
+			  //  }
+        $('#percentage').html('None');
       }
     });
   }
@@ -238,6 +241,22 @@
         link.click();
       });
   }
+
+  const viewImage = (path) => {
+    let item = [{
+      src: path, // path to image
+      title: 'Attached RX File' // If you skip it, there will display the original image name
+    }];
+    
+    // Define options (if needed)
+    let options = {
+      index: 0, // this option means you will start at the first image
+      fullscreen: true // set fullscreen mode to true
+    };
+    
+    // Initialize the plugin
+    let photoviewer = new PhotoViewer(item, options);
+  };
 
   const cancelPendingNoa = (noa_id) => {
     $.confirm({
@@ -398,6 +417,7 @@
       }
     }
 
+    
     const checkFileExists = (fileUrl) => {
         let xhr = new XMLHttpRequest();
         xhr.open('HEAD', fileUrl, false);

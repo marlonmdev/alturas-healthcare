@@ -119,6 +119,7 @@
                     <th class="fw-bold">LOA Type</th>
                     <th class="fw-bold">Healthcare Provider</th>
                     <th class="fw-bold">RX File</th>
+                    <th class="fw-bold">Hospital Receipt</th>
                     <th class="fw-bold">Request Date</th>
                     <th class="fw-bold">Status</th>
                     <th class="fw-bold">Actions</th>

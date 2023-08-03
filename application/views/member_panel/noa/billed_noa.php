@@ -73,6 +73,7 @@
                     <th class="fw-bold" style="color: white">DATE OF ADMISSION</th>
                     <th class="fw-bold" style="color: white">NAME OF HOSPITAL</th>
                     <th class="fw-bold" style="color: white">DATE OF REQUEST</th>
+                    <th class="fw-bold" style="color: white">HOSPITAL RECEIPT</th>
                     <th class="fw-bold" style="color: white">STATUS</th>
                     <th class="fw-bold" style="color: white">ACTION</th>
                   </tr>
@@ -136,9 +137,25 @@
       });
   }
 
+  const viewImage = (path) => {
+    let item = [{
+      src: path, // path to image
+      title: 'Attached RX File' // If you skip it, there will display the original image name
+    }];
+    
+    // Define options (if needed)
+    let options = {
+      index: 0, // this option means you will start at the first image
+      fullscreen: true // set fullscreen mode to true
+    };
+    
+    // Initialize the plugin
+    let photoviewer = new PhotoViewer(item, options);
+  };
+
   const viewNoaInfoModal = (req_id) => {
     $.ajax({
-      url: `${baseUrl}member/requested-noa/view/approved/${req_id}`,
+      url: `${baseUrl}member/requested-noa/view/${req_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);
@@ -164,6 +181,7 @@
           approved_by,
           approved_on,
           percentage,
+          med_services,
           billed_on
         } = res;
 
@@ -182,7 +200,7 @@
         $('#work-related').html(work_related);
         $('#request-date').html(request_date);
         $('#billed-on').html(billed_on);
-
+        $('#med-services-list').html(med_services);
         if(work_related == 'Yes'){ 
 					if(percentage == ''){
 					  wpercent = '100% W-R';

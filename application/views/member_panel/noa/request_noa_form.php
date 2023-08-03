@@ -86,7 +86,7 @@
                   </div>
                   <div class="col-lg-4 col-sm-12 mb-2">
                   <label class="colored-label"><i class="bx bx-health icon-red"></i>Total Bill</label>
-                  <input type="text" class="form-control" name="hospital-bill" id="hospital-bill" placeholder="Enter Hospital Bill" style="background-color:#ffff">
+                  <input type="text" class="form-control" name="hospital-bill" id="hospital-bill" placeholder="Enter Hospital Bill" style="background-color:#ffff" autocomplete="off">
                   <em id="hospital-bill-error" class="text-danger"></em>
                 </div>
               </div>
@@ -148,11 +148,7 @@
  .custom-input {
   width: 100%;
 }
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
+
 </style>
 <script type="text/javascript">
   const baseUrl = `<?php echo base_url(); ?>`;
@@ -307,44 +303,15 @@ input[type="number"]::-webkit-outer-spin-button {
     
     });
 
-    // $('#hospital-name').on('change',function(){
-    //   $('#noa-med-services').val('');
-    //   let hp_id = $('#hospital-name').val();
-      
-    //   hc_providers.forEach((element) => {
-    //       console.log('hp_id', hp_id);
-    //       console.log('element', element);
-    //       if (hp_id === element.hp_id) {
-    //         is_accredited = true;
-    //         console.log('is_accredited', is_accredited);
-    //         return;
-    //       } else {
-    //         is_accredited = false;
-    //         console.log('is_accredited', is_accredited);
-    //       }
-    //     });
-
-        
-        
-    // });
-    
-    // $('#tags-input').on('change',function(){
-    //   console.log('tags value',$('#tags-input').val());
-    // });
+    $('#healthcare-provider-category').on('change',function(){
+        $('#noa-med-services').val('');
+      });
+      $('#hospital-name').on('change',function(){
+        $('#noa-med-services').val('');
+      });
    
   });
  
-  // const enableRequestType = () => {
-  //   const hc_provider = document.querySelector('#hospital-name').value;
-
-  //   const admission_date = document.getElementById('admission-date');
-  //     if( hc_provider != '' ){
-  //       admission_date.disabled = false;
-  //     }else{
-  //       admission_date.disabled = true;
-  //       admission_date.value = '';
-  //     }
-  // } 
   const number_validator = () => {
 	$('#hospital-bill').on('keydown',function(event){
 		let value = $('#hospital-bill').val();

@@ -60,6 +60,7 @@
                   <tr>
                   <th class="fw-bold" style="color: white">#</th>
                     <th class="fw-bold" style="color: white">REQUEST DATE</th>
+                    <th class="fw-bold" style="color: white">HOSPITAL NAME</th>
                     <th class="fw-bold" style="color: white">NOA #</th>
                     <th class="fw-bold" style="color: white">TYPE OF REQUEST</th>
                     <th class="fw-bold" style="color: white">STATUS</th>
@@ -141,6 +142,7 @@
           $('#noa_details_1').empty(); 
           $('#noa_details_2').empty(); 
           $('#physician-noa').empty(); 
+          $('#services').empty();
           // Additional reset logic if needed
         });
   });
@@ -192,6 +194,9 @@
         }
         if(type == 'rx'){
             src = `${baseUrl}uploads/loa_attachments/${file}`;
+        }
+        if(type == 'h_bill'){
+            src = `${baseUrl}uploads/hospital_receipt/${file}`;
         }
         let item = [{
             src: src , // path to image
@@ -262,16 +267,18 @@
             healthcare_provider, loa_request_type, med_services, health_card_no, requesting_company,
             request_date,complaints, requesting_physician, attending_physician, pdf_bill,final_diagnosis,medical_abstract,
             req_status, work_related, approved_by, approved_on,billed_on,paid_on,net_bill,paid_amount,expiration,prescription,
-            disapproved_on,attending_doctors,disapprove_reason,disapproved_by
+            disapproved_on,attending_doctors,disapprove_reason,disapproved_by,hospital_receipt,hospital_name,hospital_bill
             } = res;
             // console.log("complaints",complaints);
             $("#viewNoaModal").modal("show");
             $("#p_disaproved").hide();
             $("#p_documents").hide();
             $("#p_physician").hide();
+            $("#p_services").hide();
             // const med_serv = med_services !== '' ? med_services : 'None';
             // const at_physician = attending_physician !== '' ? attending_physician : 'None';
             $('#noa_details_1').append(`<h6>NOA #: <strong><span class="text-primary">${noa_no}</span></strong></h6>`); 
+            $('#noa_details_2').append(`<h6>HOSPITAL NAME: <strong><span class="text-primary">${hospital_name}</span></strong></h6>`); 
             // $('#loa-no').html(loa_no);
             $('#nstatus').html(`<strong class="text-success">[${req_status}]</strong>`);
             // $('#noa-no').html(noa_no);
@@ -280,20 +287,31 @@
             // $('#expire-noa').html(approved_on);
             $('#complaint-noa').text(complaints);
             // console.log(disapprove_reason);
+            console.log('med_services',med_services);
+            console.log('hospital_receipt',hospital_receipt);
             switch(req_status){
                 case 'Pending':
                     $('#noa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
+                    if(hospital_receipt.length){$("#p_documents").show(); $('#p_services').show()
+                      $('#noa_details_2').append(`<h6>NET BILL: <strong><span class="text-primary">${hospital_bill}</span></strong></h6>`); 
+                    }
                 break;
                 case 'Approved':
                     $('#noa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
                     $('#noa_details_2').append(`<h6>APPROVED DATE: <strong><span class="text-primary">${approved_on}</span></strong></h6>`); 
                     $('#noa_details_1').append(`<h6>APPROVED BY: <strong><span class="text-primary">${approved_by}</span></strong></h6>`); 
                     $('#noa_details_2').append(`<h6>EXPIRATION DATE: <strong><span class="text-primary">${expiration}</span></strong></h6>`); 
+                    if(hospital_receipt.length){$("#p_documents").show(); $('#p_services').show()
+                      $('#noa_details_2').append(`<h6>NET BILL: <strong><span class="text-primary">${hospital_bill}</span></strong></h6>`); 
+                    }
                 break;
                 case 'Disapproved':
                     $('#noa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
                     $('#noa_details_2').append(`<h6>DISAPPROVED DATE: <strong><span class="text-primary">${disapproved_on}</span></strong></h6>`);
                     $('#noa_details_2').append(`<h6>DISAPPROVED BY: <strong><span class="text-primary">${disapproved_by}</span></strong></h6>`);
+                   if(hospital_receipt.length){$("#p_documents").show(); $('#p_services').show()
+                      $('#noa_details_2').append(`<h6>NET BILL: <strong><span class="text-primary">${hospital_bill}</span></strong></h6>`); 
+                    }
                     $("#p_disaproved").show();
                     $('#disaproved-noa').text(disapprove_reason);
                 break;
@@ -302,13 +320,21 @@
                     $('#noa_details_2').append(`<h6>APPROVED DATE: <strong><span class="text-primary">${approved_on}</span></strong></h6>`); 
                     $('#noa_details_1').append(`<h6>APPROVED BY: <strong><span class="text-primary">${approved_by}</span></strong></h6>`); 
                     $('#noa_details_2').append(`<h6>EXPIRED DATE: <strong><span class="text-primary">${expiration}</span></strong></h6>`); 
+                   if(hospital_receipt.length){$("#p_documents").show(); $('#p_services').show()
+                      $('#noa_details_2').append(`<h6>NET BILL: <strong><span class="text-primary">${hospital_bill}</span></strong></h6>`); 
+                    }
                 break;
                 case 'Billed' || 'Payment' || 'Payable':
                     $('#noa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
                     $('#noa_details_2').append(`<h6>APPROVED DATE: <strong><span class="text-primary">${approved_on}</span></strong></h6>`); 
                     $('#noa_details_1').append(`<h6>APPROVED BY: <strong><span class="text-primary">${approved_by}</span></strong></h6>`); 
                     $('#noa_details_2').append(`<h6>BILLED DATE: <strong><span class="text-primary">${billed_on}</span></strong></h6>`); 
-                    $('#noa_details_2').append(`<h6>NET BILL: <strong><span class="text-primary">${net_bill}</span></strong></h6>`); 
+                    if(hospital_receipt.length){$("#p_documents").show(); $('#p_services').show()
+                      $('#noa_details_2').append(`<h6>NET BILL: <strong><span class="text-primary">${hospital_bill}</span></strong></h6>`); 
+                    }else{
+                      $('#noa_details_2').append(`<h6>NET BILL: <strong><span class="text-primary">${net_bill}</span></strong></h6>`); 
+                    }
+                    if(hospital_receipt.length){$('#p_services').show()};
                     $("#p_documents").show();
                     $("#p_physician").show();
                 break;
@@ -317,16 +343,20 @@
                     $('#noa_details_2').append(`<h6>APPROVED DATE: <strong><span class="text-primary">${approved_on}</span></strong></h6>`); 
                     $('#noa_details_1').append(`<h6>APPROVED BY: <strong><span class="text-primary">${approved_by}</span></strong></h6>`); 
                     $('#noa_details_2').append(`<h6>BILLED DATE: <strong><span class="text-primary">${billed_on}</span></strong></h6>`); 
-                    $('#noa_details_1').append(`<h6>NET BILL: <strong><span class="text-primary">${net_bill}</span></strong></h6>`); 
+                    if(hospital_receipt.length){$("#p_documents").show(); $('#p_services').show()
+                      $('#noa_details_2').append(`<h6>NET BILL: <strong><span class="text-primary">${hospital_bill}</span></strong></h6>`); 
+                    }else{
+                      $('#noa_details_2').append(`<h6>NET BILL: <strong><span class="text-primary">${net_bill}</span></strong></h6>`); 
+                    }
                     $('#noa_details_2').append(`<h6>DATE PAID: <strong><span class="text-primary">${paid_on}</span></strong></h6>`); 
                     $('#noa_details_1').append(`<h6>PAID AMOUNT: <strong><span class="text-primary">${paid_amount}</span></strong></h6>`); 
+                    if(hospital_receipt.length){$('#p_services').show()};
                     $("#p_documents").show();
                     $("#p_physician").show();
                 break;
                 
             }
-            
-          
+
             if(pdf_bill.length){
               $('#documents-noa').append('<li id="soa"><span class="mdi mdi-file-pdf"></span><a href="#" onclick="viewPDFBill(\''+pdf_bill+'\',\''+noa_no+'\',\''+'pdf_bill'+'\')">Statement of Account (SOA)</a></li>');
             }
@@ -338,6 +368,9 @@
             }
             if(prescription.length){
               $('#documents-noa').append('<li id="rx-file"><span class="mdi mdi-file"></span><a href="#" onclick="viewImage(\''+prescription+'\',\''+'prescription'+'\')">Prescription File</a></li>');
+            }
+            if(hospital_receipt.length){
+              $('#documents-noa').append('<li id="soa"><span class="mdi mdi-file-pdf"></span><a href="#" onclick="viewImage(\''+hospital_receipt+'\',\''+'h_bill'+'\')">Hospital Bill</a></li>');
             }
             // $('#soa').html();                                                                                               
             
@@ -353,6 +386,11 @@
                 
               });
             }
+
+            $.each(med_services, function(index, item) {
+                console.log(item);
+                $('#services').append('<li>' + item + '</li>');
+            });
             
             // $('#work-related').html(work_related);
           }

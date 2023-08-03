@@ -124,57 +124,49 @@
               </div>
               <span class="text-info fs-3 fw-bold ls-2"><i class="mdi mdi-file-document-box"></i> LOA REQUEST DETAILS</span>
               <div class="form-group row">
-                <div class="col-lg-7 col-sm-12 col-lg-offset-3 mb-2">
-                  <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> HealthCare Provider</label>
-                  <select class="form-select" name="healthcare-provider" id="healthcare-provider" oninput="enableRequestType()">
-                    <option value="" selected>Select HealthCare Provider</option>
-                    <?php
-                    if (!empty($hcproviders)) {
-                      foreach ($hcproviders as $hcprovider) :
-                        if ($row['hcare_provider'] == $hcprovider['hp_id']) {
-                    ?>
-                          <option value="<?= $hcprovider['hp_id']; ?>" selected><?= $hcprovider['hp_name']; ?></option>
-                        <?php
-                        } else {
-                        ?>
-                          <option value="<?= $hcprovider['hp_id']; ?>"><?= $hcprovider['hp_name']; ?></option>
-                    <?php
-                        }
-                      endforeach;
-                    }
-                    ?>
+                <div class="col-sm-3 mb-2">
+                  <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Hospital Provider Category</label>
+                  <select class="form-select" name="healthcare-provider-category" id="healthcare-provider-category" oninput="enableProvider()">
+                    <option value="" selected disabled>Select Healthcare Provider Category</option>
+                    <option value="1">Affiliated</option>
+                    <option value="2">Not Affiliated</option>
+                  </select>
+                  <em id="healthcare-provider-category-error" class="text-danger"></em>
+                </div>
+                <div class="col-sm-3 mb-2">
+                  <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Healthcare Provider</label>
+                  <select class="form-select" name="healthcare-provider" id="healthcare-provider" onchange="enableRequestType()" >
+                    <option value="" selected disabled>Select Healthcare Provider</option>
                   </select>
                   <em id="healthcare-provider-error" class="text-danger"></em>
                 </div>
-                <div class="col-lg-5 col-sm-12 mb-2">
-                  <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Type of LOA Request</label>
-                  <select class="form-select" name="loa-request-type" id="loa-request-type" onchange="showMedServices()">
+
+                <div class="col-sm-3 mb-2">
+                  <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Type of Request</label>
+                  <select class="form-select" name="loa-request-type" id="loa-request-type" onchange="showMedServices()" > 
                     <option value="" selected>Select LOA Request Type</option>
-                    <?php
-                    if ($row['loa_request_type'] === "Consultation") :
-                    ?>
-                      <option value="Consultation" selected>Consultation</option>
-                      <option value="Diagnostic Test">Diagnostic Test</option>
-                    <?php
-                    elseif ($row['loa_request_type'] === "Diagnostic Test") :
-                    ?>
-                      <option value="Consultation">Consultation</option>
-                      <option value="Diagnostic Test" selected>Diagnostic Test</option>
-                    <?php
-                    endif;
-                    ?>
+                    <!-- <option value="Consultation">Consultation</option> -->
+                    <option value="Diagnostic Test">Diagnostic Test</option>
                   </select>
                   <em id="loa-request-type-error" class="text-danger"></em>
                 </div>
+
+                <div class="col-sm-3 mb-2">
+                  <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i>MBL Balance</label>
+                  <input type="text" class="form-control" name="remaining_mbl" id="remaining_mbl" value="<?= $mbl ?>" disabled>
+                </div>
               </div>
 
-              <div class="form-group row">
-                <div class="col-lg-7 col-sm-12 mb-2 <?= $row['loa_request_type'] === 'Consultation' ? 'd-none' : ''; ?>" id="med-services-div">
-                  <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Select Medical Service/s</label><br>
-                  <div id="med-services-wrapper">
-   
+              <div class="form-group row" id="edit-med-services-wrapper" >
+                  <div class="col-sm-8 mb-2  pe-2"  >
+                    <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Select Medical Service/s <small class="text-danger"> *Note: Press Tab or Enter to Add More Medical Service</small></label>
+                    <input class="custom-input" id="edit-med-services" name="edit-med-services" placeholder="Type and press Enter|Tab">
+                    <em id="edit-med-services-error" class="text-danger"></em>
                   </div>
-                  <em id="med-services-error" class="text-danger"></em>
+                  <div class="col-lg-4 col-sm-12 mb-2" id="hospital-bill-wrapper" hidden >
+                  <label class="colored-label"><i class="bx bx-health icon-red"></i>Total Bill</label>
+                  <input type="text" class="form-control" name="hospital-bill" id="hospital-bill" value=<?=number_format($row['hospital_bill'],2)?> placeholder="Enter Hospital Bill" style="background-color:#ffff" autocomplete="off">
+                  <em id="hospital-bill-error" class="text-danger"></em>
                 </div>
               </div>
 
@@ -235,7 +227,7 @@
                   <input type="text" class="form-control" name="attending-physician" value="<?= $row['attending_physician'] ?>" id="tags-input">
                 </div>
               </div>
-
+                    
               <section class="row <?= $row['loa_request_type'] === 'Consultation' ? 'd-none' : ''; ?>" id="div-attachment">
                 <div class="form-group">
                    <span class="text-info fs-3 fw-bold ls-2"><i class="mdi mdi-attachment"></i> FILE ATTACHMENT</span>
@@ -249,13 +241,21 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <div class="col-sm-12 mb-2">
-                    <label class="colored-label mb-1"><i class="mdi mdi-asterisk text-danger"></i> RX/Request from Accredited Doctor</label>
+                  <div class="col-sm-12 mb-4" id="rx-wrapper" hidden>
+                  <i class="mdi mdi-asterisk text-danger" id="mdi"></i><label class="colored-label mb-1" id="rx-title"> RX/Request from Accredited Doctor</label>
                     <div id="rx-file-wrapper">
-                      <input type="file" class="dropify" name="rx-file" id="rx-file" data-height="300" data-max-file-size="5M" data-default-file="<?= base_url() ?>uploads/loa_attachments/<?= $row['rx_file'] ?>" accept=".jpg, .jpeg, .png">
-                      <input type="hidden" name="file-attachment" value="<?= $row['rx_file'] ?>">
+                      <input type="file" class="dropify_rx" name="rx-file" id="rx-file"  data-height="300" data-max-file-size="5M" accept=".jpg, .jpeg, .png">
+                      <input type="hidden" name="file-attachment-rx" value="<?= $row['rx_file'] ?>">
                     </div>
                     <em id="rx-file-error" class="text-danger"></em>
+                  </div>
+                  <div class="col-sm-12 mb-4" id="receipt-wrapper" hidden>
+                  <i class="mdi mdi-asterisk text-danger" id="mdi"></i><label class="colored-label mb-1" id="rx-title"> Hospital Receipt</label>
+                    <div id="hospital-receipt-wrapper">
+                      <input type="file" class="dropify_hr" name="hospital-receipt" id="hospital-receipt"  data-height="300" data-max-file-size="5M" accept=".jpg, .jpeg, .png">
+                      <input type="hidden" name="file-attachment-receipt" value="<?= $row['hospital_receipt'] ?>">
+                    </div>
+                    <em id="hospital-receipt-error" class="text-danger"></em>
                   </div>
                 </div>
               </section>
@@ -285,66 +285,101 @@
 </div>
 <!-- End Wrapper -->
 </div>
+<style>
+ .custom-input {
+  width: 100%;
+}
+
+/* input[type="text"]::-webkit-inner-spin-button,
+input[type="text"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+} */
+</style>
 <script>
   const baseUrl = `<?= $this->config->base_url() ?>`;
   const redirectPage = `${baseUrl}member/requested-loa/pending`;
   const token = `<?php echo $this->security->get_csrf_hash(); ?>`;
+  const is_manual = <?= json_encode($is_accredited)?>;
+  const row = <?= json_encode($row)?>;
+  const ahcproviders_names = <?= json_encode($ahcproviders)?>;
+  const hospital_names = <?= json_encode($hcproviders)?>;
+  const services = <?= json_encode($costtypes)?>;
+  let tagify;
+  let is_accredited = false;
+  let is_rx_has_data = true;
+  let is_hr_has_data = true;
+  $(document).ready(function() {
+    console.log('is_manual',is_manual);
+    console.log('row',row);
 
-  window.addEventListener('load', function() {
-    // code to run on page load
-    const hp_id = $('#healthcare-provider').val();
-    const loa_id = $('#loa-id').val();
-
-    if(hp_id != ''){
-      $.ajax({
-          url: `${baseUrl}member/edit-loa/get-services/${hp_id}/${loa_id}`,
-          type: "GET",
-          dataType: "json",
-          success:function(response){
-
-            $('#med-services-wrapper').empty();                
-
-            $('#med-services-wrapper').append(response);
-
-            $(".chosen-select").chosen({
-              width: "100%",
-              no_results_text: "Oops, nothing found!"
-            }); 
-          }
+    number_validator();
+    if(row.rx_file){
+      $(".dropify_rx").dropify({
+        messages: {
+          default: "Drop files here or click to browse",
+          replace: "Drag and drop an image or file here or click to replace",
+        },
+        defaultFile: baseUrl+"/uploads/loa_attachments/"+row.rx_file, 
+      });
+    }else{
+      $(".dropify_rx").dropify({
+        messages: {
+          default: "Drop files here or click to browse",
+          replace: "Drag and drop an image or file here or click to replace",
+        },
       });
     }
-  });
+    
+    if(row.hospital_receipt){
+      $(".dropify_hr").dropify({
+        messages: {
+          default: "Drop files here or click to browse",
+          replace: "Drag and drop an image or file here or click to replace",
+        },
+        defaultFile: baseUrl+"/uploads/hospital_receipt/"+row.hospital_receipt, 
+      });
+    }else{
+      $(".dropify_hr").dropify({
+        messages: {
+          default: "Drop files here or click to browse",
+          replace: "Drag and drop an image or file here or click to replace",
+        },
+      });
+    }
+    
 
-  $(document).ready(function() {
+      $('.dropify_hr').on('dropify.afterClear', function (event, element) {
+        is_hr_has_data = false;
+        console.log('false');
+      });
 
-    $('#healthcare-provider').on('change', function(){
-      const hp_id = $('#healthcare-provider').val();
-      const loa_id = $('#loa-id').val();
+      $('.dropify_rx').on('dropify.afterClear', function (event, element) {
+        is_rx_has_data = false;
+        console.log('false');
+      });
 
-      if(hp_id != ''){
-        $.ajax({
-            url: `${baseUrl}member/edit-loa/get-services/${hp_id}/${loa_id}`,
-            type: "GET",
-            dataType: "json",
-            success:function(response){
+      $('.dropify_rx').on('change', function (event) {
+        if(event.target.files[0]){
+          is_rx_has_data = true;
+          console.log('true');
+        }
+      });
 
-              $('#med-services-wrapper').empty();                
-
-              $('#med-services-wrapper').append(response);
-
-              $(".chosen-select").chosen({
-                width: "100%",
-                no_results_text: "Oops, nothing found!"
-              }); 
-            }
-        });
-      }
-    });
-
+      $('.dropify_hr').on('change', function (event) {
+        if(event.target.files[0]){
+          is_hr_has_data = true;
+          console.log('true');
+        }
+      });
 
     $('#memberLoaRequestForm').submit(function(event) {
       event.preventDefault();
       let $data = new FormData($(this)[0]);
+      // console('data',data);
+      $data.append('is_accredited',is_accredited);
+      $data.append('is_hr_has_data',is_hr_has_data);
+      $data.append('is_rx_has_data',is_rx_has_data);
       $.ajax({
         type: "post",
         url: $(this).attr('action'),
@@ -362,7 +397,9 @@
             med_services_error,
             chief_complaint_error,
             requesting_physician_error,
-            rx_file_error
+            rx_file_error,
+            hospital_receipt_error,
+            hospital_bill_error
           } = response;
           switch (status) {
             case 'error':
@@ -384,11 +421,11 @@
               }
 
               if (med_services_error !== '') {
-                $('#med-services-error').html(med_services_error);
-                $('#med-services-wrapper').addClass('div-has-error');
+                $('#edit-med-services-error').html(med_services_error);
+                $('#edit-med-services-wrapper').addClass('div-has-error');
               } else {
-                $('#med-services-error').html('');
-                $('#med-services-wrapper').removeClass('div-has-error');
+                $('#edit-med-services-error').html('');
+                $('#edit-med-services-wrapper').removeClass('div-has-error');
               }
 
               if (chief_complaint_error !== '') {
@@ -413,6 +450,20 @@
               } else {
                 $('#rx-file-error').html('');
                 $('#rx-file-wrapper').removeClass('div-has-error');
+              }
+              if (hospital_receipt_error !== '') {
+                $('#hospital-receipt-error').html(hospital_receipt_error);
+                $('#receipt-wrapper').addClass('div-has-error');
+              } else {
+                $('#hospital-receipt-error').html('');
+                $('#receipt-wrapper').removeClass('div-has-error');
+              }
+              if (hospital_bill_error !== '') {
+                $('#hospital-bill-error').html(hospital_bill_error);
+                $('#hospital-bill-wrapper').addClass('div-has-error');
+              } else {
+                $('#hospital-bill-error').html('');
+                $('#hospital-bill-wrapper').removeClass('div-has-error');
               }
               break;
             case 'save-error':
@@ -440,34 +491,53 @@
         },
       })
     });
-  });
 
-  const enableRequestType = () => {
-    const hc_provider = document.querySelector('#healthcare-provider').value;
-    const request_type = document.querySelector('#loa-request-type');
-    const med_services = document.querySelector('#med-services-div');
+    tagify_values();
+      $('#healthcare-provider').on('change',function(){
+        tagify_values();
+      });
 
-    if(hc_provider != '' && request_type.value == 'Diagnostic Test'){
-      request_type.disabled = false;
-      med_services.className = 'd-block';
-    }else if(hc_provider != '' && request_type.value == 'Consultation' || hc_provider != '' && request_type.value == ''){
-      request_type.disabled = false;
-      med_services.className = 'd-none';
-    }else if(hc_provider != ''){
-      request_type.disabled = false;
-      med_services.className = 'd-block';
+      if(is_manual){
+      $('#healthcare-provider-category').val(2);
+      enableProvider();
+      $('#healthcare-provider').val(row.hcare_provider);
+      $('#loa-request-type').val(row.loa_request_type);
+      $('#hospital-bill-wrapper').prop('hidden',false);
+      // get_services(services,row.med_services);
     }else{
-      request_type.disabled = true;
-      request_type.value = '';
-      med_services.className = 'd-none';
+      $('#healthcare-provider-category').val(1);
+      enableProvider();
+      $('#healthcare-provider').val(row.hcare_provider);
+      $('#loa-request-type').val(row.loa_request_type);
+      $('#hospital-bill-wrapper').prop('hidden',true);
+      // get_services(services,row.med_services);
     }
 
-  } 
+    $('#healthcare-provider-category').on('change',function(){
+        $('#edit-med-services').val('');
+        if( $('#healthcare-provider-category').val()==='1'){
+          $('#hospital-bill-wrapper').prop('hidden',true);
+        }else{
+          $('#hospital-bill-wrapper').prop('hidden',false);
+        }
+      });
 
+  });
+  const enableRequestType = () => {
+    const hc_provider = document.querySelector('#healthcare-provider').value;
+
+    const request_type = document.querySelector('#loa-request-type');
+      if( hc_provider != '' ){
+        request_type.disabled = false;
+      }else{
+        request_type.disabled = true;
+        request_type.value = '';
+      }
+  } 
 
   const showMedServices = () => {
     const loaType = document.querySelector('#loa-request-type').value;
-    const medServices = document.querySelector('#med-services-div');
+    const medServices = document.querySelector('#edit-med-services-div');
     const fileAttachment = document.querySelector('#div-attachment');
     if (loaType === "Consultation" || loaType === "") {
       medServices.className = "d-none";
@@ -477,4 +547,203 @@
       fileAttachment.className = "form-group row d-block";
     }
   }
+
+  const number_validator = () => {
+	$('#hospital-bill').on('keydown',function(event){
+		let value = $('#hospital-bill').val();
+		let length  = $('#hospital-bill').val().length;
+		const key = event.key;
+		console.log('key',key);
+		console.log('length',length);
+		if(length+1 <=1 && (key === '0'|| key === '.' || key ==='')){
+		  event.preventDefault();
+		}
+		if(/^[a-zA-Z]$/.test(key)) {
+		  event.preventDefault(); 
+		}
+		if(/^[!@#$%^&*()\-_=+[\]{};':"\\|,<>/?`~]$/.test(key)) {
+		  event.preventDefault(); 
+		}
+		if(value.match(/\./) && /\./.test(key)) {
+		  event.preventDefault(); 
+		}
+		if(/\s/.test(key)){
+		  event.preventDefault();
+		}
+		  
+	  });
+}
+  // const enableRequestType = () => {
+  //   const hc_provider = document.querySelector('#healthcare-provider').value;
+
+  //   const request_type = document.querySelector('#loa-request-type');
+  //     if( hc_provider != '' ){
+  //       request_type.disabled = false;
+  //     }else{
+  //       request_type.disabled = true;
+  //       request_type.value = '';
+  //     }
+  // } 
+
+  const enableProvider = () => {
+    const hc_provider = document.querySelector('#healthcare-provider-category').value;
+    const optionElement = document.createElement('option');
+    const request_type = document.querySelector('#healthcare-provider');
+      if( hc_provider != '' ){
+        removeOption();
+        request_type.disabled = false;
+        if(hc_provider === '1'){
+            ahcproviders_names.forEach( function(hospital){
+            optionElement.value = hospital.hp_id;
+            optionElement.text = hospital.hp_name;
+            request_type.appendChild(optionElement);
+          });
+          is_accredited = true;
+          $('#receipt-wrapper').prop('hidden',true);
+          $('#hospital-bill-wrapper').prop('hidden',true);
+          $('#rx-wrapper').prop('hidden',false);
+        }
+        if(hc_provider === '2'){
+            hospital_names.forEach( function(hospital){
+            optionElement.value = hospital.hp_id;
+            optionElement.text = hospital.hp_name;
+            request_type.appendChild(optionElement);
+          });
+          is_accredited = false;
+          $('#receipt-wrapper').prop('hidden',false);
+          $('#hospital-bill-wrapper').prop('hidden',false);
+          $('#rx-wrapper').prop('hidden',true);
+        }
+      }else{
+        request_type.disabled = true;
+        request_type.value = '';
+      }
+  } 
+
+  function removeOption() {
+  var selectElement = document.getElementById('healthcare-provider');
+  for (var i = 0; i < selectElement.options.length; i++) {
+    if (selectElement.options[i].value !== '' ) {
+      selectElement.remove(i);
+    }
+  }
+}
+
+const get_services = (tagfiy,response,added_services) => {
+  let exp_services = added_services.split(';');
+  let prev_services = [];
+  exp_services.forEach(value => {
+    let is_custom = true;
+  //  const find_services = services.find(item => item.ctype_id === '1');
+   const find_services =response.map(arr =>{
+   
+    if(arr.ctyp_id === value){
+      is_custom = false;
+      return arr ;
+    }else{
+      if(is_custom){
+        is_custom = true;
+      }
+    }
+   }).filter(Boolean);
+
+   if(is_custom){
+    console.log('is_custom',is_custom);
+    prev_services.push(value);
+   }
+   find_services.forEach(function (item) {
+                // Build the tag text, including the description and price
+                const tagText = is_accredited
+                  ? `${item.ctyp_description} - ₱${item.ctyp_price}`
+                  : `${item.ctyp_description}`; 
+
+                // Optionally, you can directly add the tag to Tagify using addTags method
+                const tagData = {
+                  value: tagText,
+                  tagid: item.ctyp_id,
+                };
+                
+                prev_services.push(tagData);
+              });
+    });
+
+  // console.log('prev_services',prev_services);
+  tagfiy.addTags(prev_services);
+}
+
+const tagify_values = () =>{
+  // $('#edit-med-services').val('');
+        let hp_id = $('#healthcare-provider').val();
+        const token = `<?php echo $this->security->get_csrf_hash(); ?>`;
+        const intput_service = [];
+        const input = document.getElementById('edit-med-services');
+        
+        // Declare tagify outside the if statement
+        console.log('hp_id',hp_id);
+        hp_id = is_accredited ? hp_id : 1;
+        if (hp_id !== '') { 
+          $.ajax({
+            url: `${baseUrl}member/get-services/${hp_id}`,
+            type: 'GET',
+            dataType: 'json',
+            data: { token: token },
+            success: function (response) {
+              console.log(response); // Check the response in the console
+              console.log('is_accredited',is_accredited);
+              response.forEach(function (item) {
+                // Build the tag text, including the description and price
+                const tagText = is_accredited
+                  ? `${item.ctyp_description} - ₱${item.ctyp_price}`
+                  : `${item.ctyp_description}`; 
+
+                // Optionally, you can directly add the tag to Tagify using addTags method
+                const tagData = {
+                  value: tagText,
+                  tagid: item.ctyp_id,
+                  // Use tagText as the visible text
+                  // data: {
+                  //   price: item.ctyp_price,
+                  //   // You can add any other additional data you need here
+                  // },
+                };
+                intput_service.push(tagData);
+              });
+
+              // Initialize Tagify with the intput_service array containing both tagData and tag text
+              // console.log('tagifiy',tagify);
+              if (tagify) {
+                tagify.settings.whitelist = intput_service;
+                tagify.settings.enforceWhitelist = (is_accredited)?true:false;
+                // tagify.dropdown.show.call(tagify, ''); // Refresh the dropdown to reflect the new whitelist
+              } else {
+                tagify = new Tagify(input, {
+                  whitelist: intput_service,
+                  enforceWhitelist: (is_accredited)?true:false,
+                });
+                if(row.med_services){
+                  // console.log('services',services);
+                  get_services(tagify,response,row.med_services);
+                }
+              }
+
+              tagify.on('change', function () {
+                const selectedTags = tagify.value.map((tag) => {
+                  return {
+                    value: tag.value,
+                    tagid: tag.tagid,
+                    // Use __tagifyTagData.tagText to get the visible text
+                    // data: tag.data.price, // Use __tagifyTagData.data to get additional data
+                  };
+                });
+                console.log('selected tag', selectedTags);
+              });
+
+            },
+            error: function (xhr, status, error) {
+              console.error('Ajax request failed:', error);
+            },
+          });
+        }
+}
+
 </script>

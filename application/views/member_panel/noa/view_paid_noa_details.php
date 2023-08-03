@@ -61,6 +61,10 @@
                   <td class="fw-bold ls-1">Chief Complaint :</td>
                   <td class="fw-bold ls-1" id="chief-complaint"></td>
                 </tr>
+                <tr>
+                  <td class="fw-bold ls-1">Services :</td>
+                  <td class="fw-bold ls-1" id="med-services-list"></td>
+                </tr>
               </table>
             </div>
           </div>

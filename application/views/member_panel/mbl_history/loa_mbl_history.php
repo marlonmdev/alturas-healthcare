@@ -61,6 +61,7 @@
                   <tr>
                     <th class="fw-bold" style="color: white">#</th>
                     <th class="fw-bold" style="color: white">REQUEST DATE</th>
+                    <th class="fw-bold" style="color: white">HOSPITAL NAME</th>
                     <th class="fw-bold" style="color: white">LOA #</th>
                     <th class="fw-bold" style="color: white">TYPE OF REQUEST</th>
                     <th class="fw-bold" style="color: white">STATUS</th>
@@ -197,6 +198,9 @@
         if(type == 'rx'){
             src = `${baseUrl}uploads/loa_attachments/${file}`;
         }
+        if(type == 'h_bill'){
+            src = `${baseUrl}uploads/hospital_receipt/${file}`;
+        }
         let item = [{
             src: src , // path to image
             title: 'Attached RX File' // If you skip it, there will display the original image name
@@ -266,40 +270,52 @@
             healthcare_provider, loa_request_type, med_services, health_card_no, requesting_company,
             request_date, complaint, requesting_physician, attending_physician, rx_file,pdf_bill,
             req_status, work_related, approved_by, approved_on,expiration,billed_on,paid_on,net_bill,paid_amount,
-            disapproved_on,date_perform,attending_doctors,disapprove_reason,complaints,disapproved_by
+            disapproved_on,date_perform,attending_doctors,disapprove_reason,complaints,disapproved_by,hospital_receipt,hospital_bill
             } = res;
-
+            console.log('rx_file',rx_file);
             $("#viewLoaModal").modal("show");
             $("#p-disaproved").hide();
             $("#p-documents").hide();
             $("#p-physician").hide();
+            $("#p-services").hide();
            
             // const med_serv = med_services !== '' ? med_services : 'None';
             // const at_physician = attending_physician !== '' ? attending_physician : 'None';
             $('#loa_details_1').append(`<h6>LOA #: <strong><span class="text-primary">${loa_no}</span></strong></h6>`); 
+            $('#loa_details_2').append(`<h6>HOSPITAL NAME: <strong><span class="text-primary">${healthcare_provider}</span></strong></h6>`); 
             // $('#loa-no').html(loa_no);
             $('#status').html(`<strong class="text-success">[${req_status}]</strong>`);
             $('#complaint').text(complaints);
+            console.log('hospital_receipt',hospital_receipt);
             // $('#approved-date').html(approved_on);
             // $('#expire').html(expiration);
             switch(req_status){
                 case 'Pending':
                     $('#loa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
-                    if(rx_file.length){$("#p-documents").show();}
+                    if(rx_file.length){$("#p-documents").show()}
+                    if(hospital_receipt.length){$("#p-documents").show();$('#p-services').show();
+                      $('#loa_details_2').append(`<h6>NET BILL: <strong><span class="text-primary">${hospital_bill}</span></strong></h6>`); 
+                    }
                 break;
                 case 'Approved':
                     $('#loa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>APPROVED DATE: <strong><span class="text-primary">${approved_on}</span></strong></h6>`); 
                     $('#loa_details_1').append(`<h6>APPROVED BY: <strong><span class="text-primary">${approved_by}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>EXPIRATION DATE: <strong><span class="text-primary">${expiration}</span></strong></h6>`); 
-                    if(rx_file.length){$("#p-documents").show();}
+                     if(rx_file.length){$("#p-documents").show()}
+                     if(hospital_receipt.length){$("#p-documents").show();$('#p-services').show();
+                      $('#loa_details_2').append(`<h6>NET BILL: <strong><span class="text-primary">${hospital_bill}</span></strong></h6>`); 
+                    }
                     if(attending_doctors.length != 0 || attending_physician.length != 0){ $("#p-physician").show();}
                 break;
                 case 'Disapproved':
                     $('#loa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>DISAPPROVED DATE: <strong><span class="text-primary">${disapproved_on}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>DISAPPROVED BY: <strong><span class="text-primary">${disapproved_by}</span></strong></h6>`); 
-                    if(rx_file.length){$("#p-documents").show();}
+                     if(rx_file.length){$("#p-documents").show()}
+                   if(hospital_receipt.length){$("#p-documents").show();$('#p-services').show();
+                      $('#loa_details_2').append(`<h6>NET BILL: <strong><span class="text-primary">${hospital_bill}</span></strong></h6>`); 
+                    }
                     $("#p-disaproved").show();
                     $('#disaproved').text(disapprove_reason);
                 break;
@@ -316,7 +332,10 @@
                     $('#loa_details_2').append(`<h6>APPROVED DATE: <strong><span class="text-primary">${approved_on}</span></strong></h6>`); 
                     $('#loa_details_1').append(`<h6>APPROVED BY: <strong><span class="text-primary">${approved_by}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>EXPIRATION DATE: <strong><span class="text-primary">${expiration}</span></strong></h6>`); 
-                    if(rx_file.length){$("#p-documents").show();} 
+                     if(rx_file.length){$("#p-documents").show()}
+                   if(hospital_receipt.length){$("#p-documents").show();$('#p-services').show();
+                      $('#loa_details_2').append(`<h6>NET BILL: <strong><span class="text-primary">${hospital_bill}</span></strong></h6>`); 
+                    }
                     if(attending_doctors.length != 0 || attending_physician.length != 0){ $("#p-physician").show();}
                 break;
                 case 'Expired':
@@ -324,7 +343,10 @@
                     $('#loa_details_2').append(`<h6>APPROVED DATE: <strong><span class="text-primary">${approved_on}</span></strong></h6>`);
                     $('#loa_details_1').append(`<h6>APPROVED BY: <strong><span class="text-primary">${approved_by}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>EXPIRATION DATE: <strong><span class="text-primary">${expiration}</span></strong></h6>`); 
-                    if(rx_file.length){$("#p-documents").show();}
+                     if(rx_file.length){$("#p-documents").show()}
+                   if(hospital_receipt.length){$("#p-documents").show();$('#p-services').show();
+                      $('#loa_details_2').append(`<h6>NET BILL: <strong><span class="text-primary">${hospital_bill}</span></strong></h6>`); 
+                    }
                 break;
                 case 'Billed' || 'Payment' || 'Payable':
                     $('#loa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
@@ -332,7 +354,12 @@
                     $('#loa_details_1').append(`<h6>APPROVED BY: <strong><span class="text-primary">${approved_by}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>PERFORMED DATE: <strong><span class="text-primary">${date_perform}</span></strong></h6>`); 
                     $('#loa_details_1').append(`<h6>BILLED DATE: <strong><span class="text-primary">${billed_on}</span></strong></h6>`); 
-                    $('#loa_details_2').append(`<h6>NET BILL: <strong><span class="text-primary">${net_bill}</span></strong></h6>`); 
+                  
+                   if(hospital_receipt.length){$("#p-documents").show();$('#p-services').show();
+                      $('#loa_details_2').append(`<h6>NET BILL: <strong><span class="text-primary">${hospital_bill}</span></strong></h6>`); 
+                    }else{
+                      $('#loa_details_2').append(`<h6>NET BILL: <strong><span class="text-primary">${net_bill}</span></strong></h6>`); 
+                    }
                     $("#p-documents").show();
                     $("#p-physician").show();
                 break;
@@ -342,9 +369,14 @@
                     $('#loa_details_1').append(`<h6>APPROVED BY: <strong><span class="text-primary">${approved_by}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>PERFORMED DATE: <strong><span class="text-primary">${date_perform}</span></strong></h6>`); 
                     $('#loa_details_1').append(`<h6>BILLED DATE: <strong><span class="text-primary">${billed_on}</span></strong></h6>`); 
-                    $('#loa_details_2').append(`<h6>NET BILL: <strong><span class="text-primary">${net_bill}</span></strong></h6>`); 
+                  
                     $('#loa_details_1').append(`<h6>PAID AMOUNT: <strong><span class="text-primary">${paid_amount}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>DATE PAID: <strong><span class="text-primary">${paid_on}</span></strong></h6>`); 
+                   if(hospital_receipt.length){$("#p-documents").show();$('#p-services').show();
+                      $('#loa_details_2').append(`<h6>NET BILL: <strong><span class="text-primary">${hospital_bill}</span></strong></h6>`); 
+                    }else{
+                      $('#loa_details_2').append(`<h6>NET BILL: <strong><span class="text-primary">${net_bill}</span></strong></h6>`); 
+                    }
                     $("#p-documents").show();
                     $("#p-physician").show();
                 break;
@@ -358,6 +390,9 @@
             }
             if(pdf_bill.length){
               $('#documents').append('<li id="soa"><span class="mdi mdi-file-pdf"></span><a href="#" onclick="viewPDFBill(\''+pdf_bill+'\',\''+loa_no+'\',\''+'pdf_bill'+'\')">Statement of Account (SOA)</a></li>');
+            }
+            if(hospital_receipt.length){
+              $('#documents').append('<li id="soa"><span class="mdi mdi-file-pdf"></span><a href="#" onclick="viewImage(\''+hospital_receipt+'\',\''+'h_bill'+'\')">Hospital Bill</a></li>');
             }
 
             $.each(med_services, function(index, item) {

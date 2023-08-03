@@ -59,7 +59,7 @@
   <a class="sidebar-link sidebar-link" href="<?php echo base_url(); ?>healthcare-provider/patient_soa/soa-list" aria-expanded="false">
   <span class="position-relative">
   <span id ="letter-count" class="position-absolute translate-middle badge bg-danger rounded-circle"></span>
-    <i class="mdi mdi-account-multiple"></i>
+    <i class="mdi mdi-file-multiple"></i>
     <span class="hide-menu ls-1">List of Soa</span>
   </span>
   </a>

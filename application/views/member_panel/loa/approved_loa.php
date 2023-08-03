@@ -94,6 +94,7 @@
                     <th class="fw-bold" style="color: white">TYPE OF REQUEST</th>
                     <th class="fw-bold" style="color: white">DATE OF REQUEST</th>
                     <th class="fw-bold" style="color: white">RX FILE</th>
+                    <th class="fw-bold" style="color: white">HOSPITAL RECEIPT</th>
                     <th class="fw-bold" style="color: white">STATUS</th>
                     <th class="fw-bold" style="color: white">ACTION</th>
                   </tr>
@@ -277,6 +278,9 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
+        // console.log('percentage',percentage);
+        let wpercent = '';
+        let nwpercent = '';
         if(work_related == 'Yes'){ 
 					if(percentage == ''){
 					  wpercent = '100% W-R';

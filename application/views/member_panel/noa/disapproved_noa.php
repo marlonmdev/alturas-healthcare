@@ -73,6 +73,7 @@
                     <th class="fw-bold" style="color: white">DATE OF ADMISSION</th>
                     <th class="fw-bold" style="color: white">NAME OF HOSPITAL</th>
                     <th class="fw-bold" style="color: white">DATE OF REQUEST</th>
+                    <th class="fw-bold" style="color: white">HOSPITAL RECEIPT</th>
                     <th class="fw-bold" style="color: white">STATUS</th>
                     <th class="fw-bold" style="color: white">ACTION</th>
                   </tr>
@@ -136,9 +137,25 @@
       });
   }
 
+  const viewImage = (path) => {
+    let item = [{
+      src: path, // path to image
+      title: 'Attached RX File' // If you skip it, there will display the original image name
+    }];
+    
+    // Define options (if needed)
+    let options = {
+      index: 0, // this option means you will start at the first image
+      fullscreen: true // set fullscreen mode to true
+    };
+    
+    // Initialize the plugin
+    let photoviewer = new PhotoViewer(item, options);
+  };
+
   const viewNoaInfoModal = (req_id) => {
     $.ajax({
-      url: `${baseUrl}member/requested-noa/view/disapproved/${req_id}`,
+      url: `${baseUrl}member/requested-noa/view/${req_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);
@@ -164,7 +181,8 @@
           disapproved_by,
           disapprove_reason,
           disapproved_on,
-          percentage
+          percentage,
+          med_services
         } = res;
 
         $("#viewNoaModal").modal("show");
@@ -181,6 +199,9 @@
         $('#admission-date').html(admission_date);
         $('#chief-complaint').html(chief_complaint);
         $('#request-date').html(request_date);
+        $('#med-services-list').html(med_services);
+        let nwpercent = '';
+        let wpercent = '';
         if(work_related == 'Yes'){ 
 					if(percentage == ''){
 					  wpercent = '100% W-R';
@@ -210,7 +231,14 @@
 					 
 					}
 			   }
-        $('#percentage').html(wpercent+', '+nwpercent);
+        //  console.log('nwpercent',nwpercent);
+        //  console.log('wpercent',wpercent);
+         if(wpercent !== '' && nwpercent !== ''){
+          $('#percentage').html(wpercent+', '+nwpercent);
+         }else{
+          $('#percentage').html('None');
+         }
+       
       }
     });
   }

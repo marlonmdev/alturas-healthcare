@@ -199,7 +199,7 @@
 
   $(document).ready(function() {
 
-    $('#disapprovedNoaTable').DataTable({
+    const distable = $('#disapprovedNoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
@@ -209,9 +209,9 @@
         url: `${baseUrl}super-admin/noa/requests-list/disapproved/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
-        data: {
-          'token': '<?php echo $this->security->get_csrf_hash(); ?>',
-          'filter': $('#hospital-filter').val(),
+        data: function(data){
+          data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
+          data.filter = $('#hospital-filter').val();
         }
       },
 
@@ -224,6 +224,9 @@
       fixedHeader: true,
     });
 
+    $('#hospital-filter').on('change',function(){
+      distable.draw();
+    });
   });
 
   const saveAsImage = () => {

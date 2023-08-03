@@ -243,13 +243,16 @@ class Loa_model extends CI_Model {
   }
 
   function db_get_loa_details($loa_id) {
-    $this->db->select('*')
-             ->from('loa_requests as tbl_1')
-             ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
-             ->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id')
-             ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id','left')
-             ->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id= tbl_5.emp_id')
-             ->where('tbl_1.loa_id', $loa_id);
+      $this->db->select('tbl_1.status as tbl_1_status,tbl_1.work_related as tbl_1_workrelated, tbl_1.request_date as tbl_1_rq_date, tbl_1.*,tbl_2.*,tbl_3.*,tbl_4.*,tbl_5.*,tbl_6.*,tbl_7.*')
+      // $this->db->select('*')
+      ->from('loa_requests as tbl_1')
+      ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+      ->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id')
+      ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id','left')
+      ->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
+      ->join('billing as tbl_6', 'tbl_1.loa_id = tbl_6.loa_id','left')
+      ->join('payment_details as tbl_7', 'tbl_6.details_no = tbl_7.details_no','left')
+      ->where('tbl_1.loa_id', $loa_id);
     return $this->db->get()->row_array();
   }
 
@@ -265,6 +268,18 @@ class Loa_model extends CI_Model {
              ->where('tbl_1.loa_id', $loa_id);
     return $this->db->get()->row_array();
   }
+  // function db_get_loa_details($loa_id) {
+  //   $this->db->select('*')
+  //            ->from('loa_requests as tbl_1')
+  //            ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+  //            ->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id')
+  //            ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id','left')
+  //            ->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
+  //            ->join('billing as tbl_6', 'tbl_1.loa_id = tbl_6.loa_id')
+  //            ->join('payment_details as tbl_7', 'tbl_6.details_no = tbl_7.details_no','left')
+  //            ->where('tbl_1.loa_id', $loa_id);
+  //   return $this->db->get()->row_array();
+  // }
 
   function db_approve_loa_request($loa_id, $approved_by) {
     $data = [

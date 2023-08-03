@@ -53,6 +53,17 @@ class Loa_controller extends CI_Controller {
 			return true;
 		}
 	}
+	function edit_multiple_select() {
+		$med_services = json_decode($this->input->post('edit-med-services'),true);
+		//  var_dump('med services',$med_services);
+		if (count((array)$med_services) < 1) {
+			
+			$this->form_validation->set_message('edit_multiple_select', 'Select at least one Service');
+			return false;
+		} else {
+			return true;
+		}
+	}
 
 	function loa_number($input, $pad_len = 7, $prefix = null) {
 		if ($pad_len <= strlen($input))
@@ -136,21 +147,45 @@ class Loa_controller extends CI_Controller {
 				}
 				break;
 			case 'Diagnostic Test Update':
+				$this->form_validation->set_rules('healthcare-provider-category', 'HealthCare Provider Category', 'required');
 				$this->form_validation->set_rules('healthcare-provider', 'HealthCare Provider', 'required');
 				$this->form_validation->set_rules('loa-request-type', 'LOA Request Type', 'required');
-				$this->form_validation->set_rules('med-services', 'Medical Services', 'callback_multiple_select');
-				$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[2000]');
+				$this->form_validation->set_rules('edit-med-services', 'Medical Services', 'callback_edit_multiple_select');
+				$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[1000]');
 				$this->form_validation->set_rules('requesting-physician', 'Requesting Physician', 'trim|required');
-				$this->form_validation->set_rules('rx-file', '', 'callback_update_check_rx_file');
+				
+				$is_rx_has_data = $this->session->userdata('is_rx_has_data');
+				$is_hr_has_data = $this->session->userdata('is_hr_has_data');
+				$inputed_files = $this->session->userdata('inputed_files');
+				$is_accredited = $this->session->userdata('is_accredited');
+				// var_dump('rx_file',$inputed_files['rx_file']);
+				// var_dump('hospital_receipt',$inputed_files['hospital_receipt']);
+				// var_dump('is_accredited',$is_accredited);
+				if(!$is_accredited){
+					if((!$is_hr_has_data && isset($inputed_files['hospital_receipt'])) || (!$is_hr_has_data && !isset($inputed_files['hospital_receipt']))){
+						$this->form_validation->set_rules('hospital-receipt', '', 'callback_check_hospital_receipt');
+						$this->form_validation->set_rules('hospital-bill', 'Hospital Bill','required');
+					}
+				}else{
+					if((!$is_rx_has_data && !isset($inputed_files['hospital_receipt'])) || (!$is_rx_has_data && isset($inputed_files['hospital_receipt']))){
+						$this->form_validation->set_rules('rx-file', '', 'callback_check_rx_file');
+					}
+					
+				}
+				$this->session->unset_userdata('inputed_files');
+				$this->session->unset_userdata('is_accredited');
 				if ($this->form_validation->run() == FALSE) {
 					$response = [
 						'status' => 'error',
 						'healthcare_provider_error' => form_error('healthcare-provider'),
+						'healthcare_provider_category_error' => form_error('healthcare-provider-category'),
 						'loa_request_type_error' => form_error('loa-request-type'),
-						'med_services_error' => form_error('med-services'),
+						'med_services_error' => form_error('edit-med-services'),
 						'chief_complaint_error' => form_error('chief-complaint'),
 						'requesting_physician_error' => form_error('requesting-physician'),
 						'rx_file_error' => form_error('rx-file'),
+						'hospital_receipt_error' => form_error('hospital-receipt'),
+						'hospital_bill_error' => form_error('hospital-bill'),
 					];
 					echo json_encode($response);
 					exit();
@@ -239,7 +274,7 @@ class Loa_controller extends CI_Controller {
 		$physician_arr = [];
 		$hp_id = $this->input->post('healthcare-provider');
 		$request_type = $this->input->post('loa-request-type'); 
-		$is_accredited =json_decode($_POST['is_accredited'],true);
+		$is_accredited =$request_type !== "Emergency"?(json_decode($_POST['is_accredited'],true)):false;
 		$this->session->set_userdata('is_accredited', $is_accredited);
 		// var_dump('hp_id',$hp_id);
 		switch (true) {
@@ -273,7 +308,7 @@ class Loa_controller extends CI_Controller {
 				}
 
 				//  Call function insert_loa
-				$this->insert_loa($input_post, $med_services, $attending_physician, $rx_file,"");
+				$this->insert_loa($input_post, $med_services, $attending_physician, $rx_file,"",$is_accredited);
 				break;
 			case ($request_type == 'Diagnostic Test'):
 				$this->loa_form_validation('Diagnostic Test',$is_accredited);
@@ -344,7 +379,7 @@ class Loa_controller extends CI_Controller {
 						}
 
 						// Call function insert_loa
-						$this->insert_loa($input_post, $med_services, $attending_physician, isset($uploaded_files['rx-file']['file_name'])?$uploaded_files['rx-file']['file_name']:null, isset($uploaded_files['hospital-receipt']['file_name'])?$uploaded_files['hospital-receipt']['file_name']:null);
+						$this->insert_loa($input_post, $med_services, $attending_physician, isset($uploaded_files['rx-file']['file_name'])?$uploaded_files['rx-file']['file_name']:null, isset($uploaded_files['hospital-receipt']['file_name'])?$uploaded_files['hospital-receipt']['file_name']:null,$is_accredited);
 					}
 					// if (!$this->upload->do_upload('rx-file')) {
 					// 	$response = [
@@ -387,7 +422,7 @@ class Loa_controller extends CI_Controller {
 						exit();
 					} else {
 							// Call function insert_loa
-							$this->insert_loa($input_post, "", "", "","");
+							$this->insert_loa($input_post, "", "", "","",$is_accredited);
 					}
 				break;
 			default:
@@ -399,7 +434,7 @@ class Loa_controller extends CI_Controller {
 		}
 	}
 
-	function insert_loa($input_post, $med_services, $attending_physician, $rx_file, $hospital_receipt) {
+	function insert_loa($input_post, $med_services, $attending_physician, $rx_file, $hospital_receipt, $is_accredited) {
 		// select the max loa_id from DB
 		$result = $this->loa_model->db_get_max_loa_id();
 		$max_loa_id = !$result ? 0 : $result['loa_id'];
@@ -413,10 +448,12 @@ class Loa_controller extends CI_Controller {
 		$tagvalue = json_decode($med_services);
 		$services = [];
 		// var_dump('rx_file',$rx_file);
-		foreach($tagvalue as $value){
-			$services[] = (count(get_object_vars($value))>1)?$value->tagid:$value->value; 
-			// var_dump('count',count(get_object_vars($value)));
+		if($tagvalue!==null){
+			foreach($tagvalue as $value){
+				$services[] = (count(get_object_vars($value))>1)?$value->tagid:$value->value; 
+			}
 		}
+		
 		// var_dump($services);
 		$post_data = [
 			'loa_no' => $loa_no,
@@ -427,11 +464,12 @@ class Loa_controller extends CI_Controller {
 			'suffix' =>  $member['suffix'],
 			'hcare_provider' => $input_post['healthcare-provider'],
 			'loa_request_type' => $input_post['loa-request-type'],
+			'is_manual' => $is_accredited ? 0 : 1,
 			'med_services' => ($services!=="")?implode(';', $services):"",
 			'health_card_no' => $member['health_card_no'],
 			'requesting_company' => $member['company'],
 			'request_date' => date("Y-m-d"),
-			'hospital_bill' => (isset($input_post['hospital-bill']))?$input_post['hospital-bill']:null,
+			'hospital_bill' =>  !$is_accredited ? $input_post['hospital-bill'] : null,
 			'emerg_date' => (isset( $input_post['admission-date']))? $input_post['admission-date']:null,
 			'chief_complaint' => (isset($input_post['chief-complaint']))?strip_tags($input_post['chief-complaint']):"",
 			'requesting_physician' =>(isset($input_post['requesting-physician']))? ucwords($input_post['requesting-physician']):"",
@@ -460,11 +498,36 @@ class Loa_controller extends CI_Controller {
 	function edit_loa_request() {
 		$this->load->model('super_admin/setup_model');
 		$loa_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$data['ahcproviders'] = $this->loa_model->db_get_affiliated_healthcare_providers();
+		$data['hcproviders'] = $this->loa_model->db_get_not_affiliated_healthcare_providers();
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['row'] = $exist = $this->loa_model->db_get_loa_info($loa_id);
 		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
 		$data['costtypes'] = $this->loa_model->db_get_cost_types();
 		$data['doctors'] = $this->loa_model->db_get_company_doctors();
+		$data['is_accredited'] = ($exist['is_manual'])?true:false;
+		$mbl = $this->loa_model->db_get_mbl($exist['emp_id']);
+		$get_pac_loa = $this->loa_model->get_pac_loa($exist['emp_id']); 
+
+		$med_services = 0;
+    
+        foreach ($get_pac_loa as $loa) :
+			// var_dump("loa",$loa);
+			$exploded_med_services = explode(";", $loa['med_services']);
+			foreach ($exploded_med_services as $ctype_id) :
+				$cost_type = $this->loa_model->get_loa_op_price($ctype_id);
+					// var_dump(floatval($cost_type['op_price']));
+					//var_dump("ctype_id",$ctype_id);
+					if($loa['loa_request_type'] != 'Consultation'){
+						$med_services += floatval($cost_type['op_price']); 
+					}else{
+						$med_services+= 500;
+					}
+			endforeach;
+
+        endforeach;
+		$r_mbl = floatval($mbl['remaining_balance'])-floatval($med_services);
+		$data['mbl'] =  number_format(($r_mbl > 1) ? $r_mbl : 0,2);
 		// if loa request does not exist
 		if (!$exist) {
 			$this->load->view('pages/page_not_found');
@@ -479,17 +542,32 @@ class Loa_controller extends CI_Controller {
 		$token = $this->security->get_csrf_hash();
 		$loa_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
 		$input_post = $this->input->post(NULL, TRUE);
+		// var_dump('input post ',$input_post);
 		// JSON Decode - Takes a JSON encoded string and converts it into a PHP value
 		$physicians_tags = json_decode($this->input->post('attending-physician'), TRUE);
 		$physician_arr = [];
 		$hp_id = $this->input->post('healthcare-provider');
 		$request_type = $this->input->post('loa-request-type');
+		$is_accredited =$request_type !== "Emergency"?(json_decode($_POST['is_accredited'],true)):false;
+		$is_rx_has_data = json_decode($_POST['is_rx_has_data'],true);
+		$is_hr_has_data = json_decode($_POST['is_hr_has_data'],true);
+		$this->session->set_userdata(['is_accredited'=> $is_accredited,
+										'is_rx_has_data' => $is_rx_has_data,
+											'is_hr_has_data' => $is_hr_has_data]);
+		$important_data = [
+			'rx_file' => $_FILES['rx-file']['name'],
+			'hospital_receipt' => $_FILES['hospital-receipt']['name'],
+			// Add more fields as needed
+		];
+
+		$this->session->set_userdata('inputed_files', $important_data);			
+
 		switch (true) {
 			case ($request_type == ''):
-				$this->loa_form_validation('Empty');
+				$this->loa_form_validation('Empty',$is_accredited);
 				break;
 			case ($request_type == 'Consultation'):
-				$this->loa_form_validation('Consultation');
+				$this->loa_form_validation('Consultation',$is_accredited);
 				// check if the selected healthcare provider exist from database
 				$hp_exist = $this->loa_model->db_check_healthcare_provider_exist($hp_id);
 				// if healthcare provider does not exist
@@ -520,17 +598,23 @@ class Loa_controller extends CI_Controller {
 				}
 				break;
 			case ($request_type == 'Diagnostic Test'):
-				$this->loa_form_validation('Diagnostic Test Update');
+				$this->loa_form_validation('Diagnostic Test Update',$is_accredited);
 				// check if the selected healthcare provider exist from database
 				$hp_exist = $this->loa_model->db_check_healthcare_provider_exist($hp_id);
+
 				if (!$hp_exist) {
 					$response = array('status' => 'save-error', 'message' => 'Healthcare Provider Does Not Exist');
 					echo json_encode($response);
 					exit();
 				} else {
-					$db_filename = $input_post['file-attachment'];
-					$med_services = $this->input->post('med-services');
-
+					
+					$med_services = $this->input->post('edit-med-services');
+					// var_dump('med services',$med_services);
+					$old_rx_file = $input_post['file-attachment-rx'];
+					$old_hr_file = $input_post['file-attachment-receipt'];
+					$rx_file = '';
+					$hospital_receipt = '';
+				
 					// for physician multi-tags input
 					if(empty($physicians_tags)) {
 						$attending_physician = '';
@@ -541,33 +625,86 @@ class Loa_controller extends CI_Controller {
 						$attending_physician = implode(', ', $physician_arr);
 					}
 
-					// if there is no filename selected set the one from database
-					if (empty($_FILES['rx-file']['name'])) {
-						$rx_file = $db_filename;
-					} else {
 						// if there is a new file to be uploaded
-						$config['upload_path'] = './uploads/loa_attachments/';
 						$config['allowed_types'] = 'jpg|jpeg|png';
 						$config['encrypt_name'] = TRUE;
 						$this->load->library('upload', $config);
-						if (!$this->upload->do_upload('rx-file')) {
+						$file_paths = array(
+							'hospital-receipt' => './uploads/hospital_receipt/',
+							'rx-file' => './uploads/loa_attachments/'
+						);
+						$file_inputs = array('rx-file','hospital-receipt');
+						$uploaded_files = array();
+						$error_occurred = false;
+						$is_file_exist = false;
+						$is_file_empty = true;
+						foreach ($file_inputs as $input_name) {
+							// var_dump('inputed files',$_FILES[$input_name]['name']);
+							// var_dump('is readable',is_readable($file_paths[$input_name].$_FILES[$input_name]['name']));
+							// var_dump('is existed',file_exists($file_paths[$input_name].$_FILES[$input_name]['name']));
+							if($_FILES[$input_name]['name']!==''){
+								$is_file_empty = false;
+								if(file_exists($file_paths[$input_name].$_FILES[$input_name]['name']) && $_FILES[$input_name]['name'] !== ''){
+									$is_file_exist = true;
+									continue;
+								}
+								if ($input_name === 'hospital-receipt' && empty($_FILES[$input_name]['name'])) {
+									// Skip the 'Medical-Abstract' field if it is empty
+									continue;
+								}
+								if ($input_name === 'rx-file' && empty($_FILES[$input_name]['name'])) {
+									// Skip the 'Medical-Abstract' field if it is empty
+									continue;
+								}
+				
+								$config['upload_path'] = $file_paths[$input_name];
+								$this->upload->initialize($config);
+				
+								if (!$this->upload->do_upload($input_name)) {
+									$error = $this->upload->display_errors();
+									if (!empty($error)) {
+										// If error occurred for required files or any other file, set error flag
+										$error_occurred = TRUE;
+									}
+								} else {
+									$uploaded_files[$input_name] = $this->upload->data();
+								}
+							}
+						}
+						
+						// var_dump('uploaded_files',$uploaded_files);
+						
+						if($error_occurred){
 							$response = [
-								'status' => 'save-error', 
-								'message' => 'File Not Uploaded!'
+								'status' => 'save-error',
+								'message' => 'File Not Uploaded'
 							];
 							echo json_encode($response);
 							exit();
+						}else{
+							// var_dump('is_file_empty',$is_file_empty);
+							if($is_file_exist){
+								$rx_file = ($rx_file!=='')?$rx_file:null;
+								$hospital_receipt = ($hospital_receipt!=='')?$hospital_receipt:null;
+							}else{
+
+								$rx_file = ($is_accredited && !$is_file_empty) ? $uploaded_files['rx-file']['file_name'] : $old_rx_file;
+								$hospital_receipt = (!$is_accredited && !$is_file_empty) ? $uploaded_files['hospital-receipt']['file_name'] : $old_hr_file;
+								if ($old_rx_file !== '' && !$is_file_empty) {
+									$file_path = './uploads/loa_attachments/' . $old_rx_file;
+									file_exists($file_path) ? unlink($file_path) : '';
+								}
+								if ($old_hr_file !== '' && !$is_file_empty) {
+									$file_path = './uploads/hospital_receipt/' . $old_hr_file;
+									file_exists($file_path) ? unlink($file_path) : '';
+								}
+							}
 						}
-						$upload_data = $this->upload->data();
-						$rx_file = $upload_data['file_name'];
-						// remove the old file when the new file was uploaded
-						if ($db_filename !== '') {
-							$file_path = './uploads/loa_attachments/' . $db_filename;
-							file_exists($file_path) ? unlink($file_path) : '';
-						}
-					}
+						
+						
+					
 					// Call function update_loa			
-					$this->update_loa($loa_id, $input_post, $med_services, $attending_physician, $rx_file);
+					$this->update_loa($loa_id, $input_post, $med_services, $attending_physician, $rx_file, $hospital_receipt, $is_accredited);
 				}
 				break;
 			default:
@@ -579,16 +716,26 @@ class Loa_controller extends CI_Controller {
 		}
 	}
 
-	function update_loa($loa_id, $input_post, $med_services, $attending_physician, $rx_file) {
+	function update_loa($loa_id, $input_post, $med_services, $attending_physician, $rx_file, $hospital_receipt, $is_accredited) {
+		$tagvalue = json_decode($med_services);
+		$services = [];
+		// var_dump('rx_file',$rx_file);
+		if($tagvalue!==null){
+			foreach($tagvalue as $value){
+				$services[] = (count(get_object_vars($value))>1)?$value->tagid:$value->value; 
+			}
+		}
 		$post_data = [
 			'emp_id' => $this->session->userdata('emp_id'),
 			'hcare_provider' => $input_post['healthcare-provider'],
 			'loa_request_type' => $input_post['loa-request-type'],
-			'med_services' => implode(';', $med_services),
+			'med_services' => implode(';', $services),
 			'chief_complaint' => strip_tags($input_post['chief-complaint']),
 			'requesting_physician' => ucwords($input_post['requesting-physician']),
+			'hospital_bill' =>  !$is_accredited ? floatval($input_post['hospital-bill']) : null,
 			'attending_physician' => $attending_physician,
 			'rx_file' => $rx_file,
+			'hospital_receipt' => $hospital_receipt,
 		];
 		$updated = $this->loa_model->db_update_loa_request($loa_id, $post_data);
 		// If loa is not updated
@@ -610,6 +757,7 @@ class Loa_controller extends CI_Controller {
 		$emp_id = $this->session->userdata('emp_id');
 		$resultList = $this->loa_model->db_get_pending_loa($emp_id);
 		$cost_types = $this->loa_model->db_get_cost_types();
+		// var_dump('resultlist',$resultList);
 		$result = [];
 		foreach ($resultList as $key => $value) {
 			// decrypt the id passed from the view which is encrypted
@@ -641,6 +789,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_med_serv = '';
+			$view_receipt = '';
 			$ct_array = [];
 			$short_hp_name = strlen($value['hp_name']) > 24 ? substr($value['hp_name'], 0, 24) . "..." : $value['hp_name'];
 
@@ -658,7 +807,18 @@ class Loa_controller extends CI_Controller {
 				// convert array to string and add comma as a separator using PHP implode
 				$med_serv = implode(', ', $ct_array);
 				$short_med_serv = strlen($med_serv) > 30 ? substr($med_serv, 0, 30) . "..." : $med_serv;
-				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $value['rx_file'] . '\')"><strong>View</strong></a>';
+				if($value['rx_file']){
+					$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $value['rx_file'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_file ='None';
+				}
+				if($value['hospital_receipt']){
+					$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $value['hospital_receipt'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_receipt ='None';
+				}
+				
+				// var_dump('hospital_receipt',$value['hospital_receipt']);
 			}
 
 			$result['data'][] = array(
@@ -666,7 +826,8 @@ class Loa_controller extends CI_Controller {
 				$short_hp_name,
 				$value['loa_request_type'],
 				$request_date,
-				($value['loa_request_type'] === 'Diagnostic Test')?$view_file:'NONE',
+				($value['loa_request_type'] === 'Diagnostic Test')?$view_file:'None',
+				$view_receipt,
 				$custom_status,
 				$button
 			);
@@ -718,6 +879,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_med_serv = '';
+			$view_receipt = '';
 			$ct_array = [];
 			$short_hp_name = strlen($value['hp_name']) > 24 ? substr($value['hp_name'], 0, 24) . "..." : $value['hp_name'];
 
@@ -735,15 +897,26 @@ class Loa_controller extends CI_Controller {
 				// convert array to string and add comma as a separator using PHP implode
 				$med_serv = implode(', ', $ct_array);
 				$short_med_serv = strlen($med_serv) > 30 ? substr($med_serv, 0, 30) . "..." : $med_serv;
-				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $value['rx_file'] . '\')"><strong>View</strong></a>';
-			}
+				$short_med_serv = strlen($med_serv) > 30 ? substr($med_serv, 0, 30) . "..." : $med_serv;
+				if($value['rx_file']){
+					$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $value['rx_file'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_file ='None';
+				}
+				if($value['hospital_receipt']){
+					$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $value['hospital_receipt'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_receipt ='None';
+				}
+				}
 
 			$result['data'][] = array(
 				$custom_loa_no,
 				$short_hp_name,
 				$value['loa_request_type'],
 				$expiry_date,
-				($value['loa_request_type'] === 'Diagnostic Test')?$view_file:'NONE',
+				($value['loa_request_type'] === 'Diagnostic Test')?$view_file:'None',
+				$view_receipt,
 				'<span class="badge rounded-pill bg-success">' . $value['status'] . '</span>',
 				$buttons
 			);
@@ -779,6 +952,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_med_serv = '';
+			$view_receipt = '';
 			$ct_array = [];
 			$short_hp_name = strlen($value['hp_name']) > 24 ? substr($value['hp_name'], 0, 24) . "..." : $value['hp_name'];
 
@@ -796,8 +970,18 @@ class Loa_controller extends CI_Controller {
 				// convert array to string and add comma as a separator using PHP implode
 				$med_serv = implode(', ', $ct_array);
 				$short_med_serv = strlen($med_serv) > 30 ? substr($med_serv, 0, 30) . "..." : $med_serv;
-				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $value['rx_file'] . '\')"><strong>View</strong></a>';
-			}
+				$short_med_serv = strlen($med_serv) > 30 ? substr($med_serv, 0, 30) . "..." : $med_serv;
+				if($value['rx_file']){
+					$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $value['rx_file'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_file ='None';
+				}
+				if($value['hospital_receipt']){
+					$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $value['hospital_receipt'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_receipt ='None';
+				}
+				}
 
 			$result['data'][] = array(
 				$custom_loa_no,
@@ -805,7 +989,8 @@ class Loa_controller extends CI_Controller {
 				$short_hp_name,
 				$value['loa_request_type'],
 				// $short_med_serv,
-				($value['loa_request_type'] === 'Diagnostic Test')?$view_file:'NONE',
+				($value['loa_request_type'] === 'Diagnostic Test')?$view_file:'None',
+				$view_receipt,
 				'<span class="badge rounded-pill bg-danger">' . $value['status'] . '</span>',
 				$button
 			);
@@ -836,6 +1021,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_med_services = '';
+			$view_receipt = '';
 			if ($loa['loa_request_type'] === 'Consultation') {
 				// if request is consultation set the view file and medical services to None
 				$view_file = $short_med_services = 'None';
@@ -853,8 +1039,17 @@ class Loa_controller extends CI_Controller {
 				// if medical services are too long for displaying to the table shorten it and add the ... characters at the end 
 				$short_med_services = strlen($med_services) > 35 ? substr($med_services, 0, 35) . "..." : $med_services;
 				// link to the file attached during loa request
-				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
-			}
+				if($loa['rx_file']){
+					$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_file ='None';
+				}
+				if($loa['hospital_receipt']){
+					$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $loa['hospital_receipt'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_receipt ='None';
+				}
+				}
 
 			// this data will be rendered to the datatable
 			$row[] = $custom_loa_no;
@@ -862,7 +1057,8 @@ class Loa_controller extends CI_Controller {
 			$row[] = $short_hp_name;
 			$row[] = $loa['loa_request_type'];
 			// $row[] = $short_med_services;
-			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
+			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'None';
+			$row[] = $view_receipt;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;
@@ -901,6 +1097,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_med_services = '';
+			$view_receipt = '';
 			if ($loa['loa_request_type'] === 'Consultation') {
 				// if request is consultation set the view file and medical services to None
 				$view_file = $short_med_services = 'None';
@@ -918,8 +1115,17 @@ class Loa_controller extends CI_Controller {
 				// if medical services are too long for displaying to the table shorten it and add the ... characters at the end 
 				$short_med_services = strlen($med_services) > 35 ? substr($med_services, 0, 35) . "..." : $med_services;
 				// link to the file attached during loa request
-				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
-			}
+				if($loa['rx_file']){
+					$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_file ='None';
+				}
+				if($loa['hospital_receipt']){
+					$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $loa['hospital_receipt'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_receipt ='None';
+				}
+				}
 
 			// this data will be rendered to the datatable
 			$row[] = $custom_loa_no;
@@ -927,7 +1133,8 @@ class Loa_controller extends CI_Controller {
 			$row[] = $short_hp_name;
 			$row[] = $loa['loa_request_type'];
 			// $row[] = $short_med_services;
-			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
+			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'None';
+			$row[] = $view_receipt;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;
@@ -964,6 +1171,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_med_services = '';
+			$view_receipt = '';
 			if ($loa['loa_request_type'] === 'Consultation') {
 				// if request is consultation set the view file and medical services to None
 				$view_file = $short_med_services = 'None';
@@ -981,8 +1189,17 @@ class Loa_controller extends CI_Controller {
 				// if medical services are too long for displaying to the table shorten it and add the ... characters at the end 
 				$short_med_services = strlen($med_services) > 35 ? substr($med_services, 0, 35) . "..." : $med_services;
 				// link to the file attached during loa request
-				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
-			}
+				if($loa['rx_file']){
+					$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_file ='None';
+				}
+				if($loa['hospital_receipt']){
+					$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $loa['hospital_receipt'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_receipt ='None';
+				}
+				}
 
 			// this data will be rendered to the datatable
 			$row[] = $custom_loa_no;
@@ -990,7 +1207,8 @@ class Loa_controller extends CI_Controller {
 			$row[] = $short_hp_name;
 			$row[] = $loa['loa_request_type'];
 			// $row[] = $short_med_services;
-			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
+			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'None';
+			$row[] = $view_receipt;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;
@@ -1024,6 +1242,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_med_services = '';
+			$view_receipt = '';
 			if ($loa['loa_request_type'] === 'Consultation') {
 				// if request is consultation set the view file and medical services to None
 				$view_file = $short_med_services = 'None';
@@ -1041,8 +1260,17 @@ class Loa_controller extends CI_Controller {
 				// if medical services are too long for displaying to the table shorten it and add the ... characters at the end 
 				$short_med_services = strlen($med_services) > 35 ? substr($med_services, 0, 35) . "..." : $med_services;
 				// link to the file attached during loa request
-				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
-			}
+				if($loa['rx_file']){
+					$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_file ='None';
+				}
+				if($loa['hospital_receipt']){
+					$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $loa['hospital_receipt'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_receipt ='None';
+				}
+				}
 
 			// this data will be rendered to the datatable
 			$row[] = $custom_loa_no;
@@ -1050,7 +1278,8 @@ class Loa_controller extends CI_Controller {
 			$row[] = $short_hp_name;
 			$row[] = $loa['loa_request_type'];
 			// $row[] = $short_med_services;
-			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'NONE';
+			$row[] = ($loa['loa_request_type'] ==='Diagnostic Test')?$view_file:'None';
+			$row[] = $view_receipt;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;
@@ -1100,15 +1329,23 @@ class Loa_controller extends CI_Controller {
 		Then it implodes the ct_array into a string and assigns it to the  variable. */
 		$selected_cost_types = explode(';', $row['med_services']);
 		$ct_array = [];
+		$is_empty = true;
 		foreach ($cost_types as $cost_type) :
-			var_dump('costype',in_array($cost_type['ctype_id'], $selected_cost_types));
 			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
 				array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
-			}
-			if (!in_array($cost_type['ctype_id'], $selected_cost_types)) {
-				array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
+				$is_empty = false;
 			}
 		endforeach;
+		$selected_not_in_cost_types = array_diff($selected_cost_types, array_column($cost_types, 'ctype_id'));
+
+		foreach ($selected_not_in_cost_types as $selected_cost_type) {
+			// Handle the selected_cost_type that does not belong to $cost_types array
+			if($selected_cost_type !== ''){
+				$is_empty = false;
+				array_push($ct_array, '[ <span class="text-success">' . $selected_cost_type . '</span> ]');
+			}
+			
+		}
 		$med_serv = implode(' ', $ct_array);
 
 		/* Checking if the status is pending and the work related is not empty. If it is, then it will set
@@ -1117,7 +1354,7 @@ class Loa_controller extends CI_Controller {
 		if($row['status'] == 'Pending' && $row['work_related'] != ''){
 			$req_stat = 'for Approval';
 		}else{
-			$req_stat = $row['status'];
+			$req_stat = $row['tbl_1_status'];
 		}
 
 		$paid_on = '';
@@ -1133,11 +1370,12 @@ class Loa_controller extends CI_Controller {
 		}else{
 			$billed_on = '';
 		}
-
+		// var_dump('workrelated',$row['work_related']);
 		$response = [
 			'status' => 'success',
 			'token' => $this->security->get_csrf_hash(),
 			'loa_id' => $row['loa_id'],
+			'net_bill' => isset( $row['net_bill'])?$row['net_bill']:'',
 			'loa_no' => $row['loa_no'],
 			'first_name' => $row['first_name'],
 			'middle_name' => $row['middle_name'],
@@ -1157,16 +1395,18 @@ class Loa_controller extends CI_Controller {
 			'contact_person_no' => $row['contact_person_no'],
 			'healthcare_provider' => $row['hp_name'],
 			'loa_request_type' => $row['loa_request_type'],
-			'med_services' => $med_serv,
+			'med_services' => (!$is_empty)?$med_serv:'None',
+			'hospital_bill' => isset($row['hospital_bill']) ? $row['hospital_bill'] : '',
+			'hospital_receipt' => $row['hospital_receipt'],
 			'health_card_no' => $row['health_card_no'],
 			'requesting_company' => $row['requesting_company'],
-			'request_date' => date("F d, Y", strtotime($row['request_date'])),
+			'request_date' => date("F d, Y", strtotime($row['tbl_1_request_date'])),
 			'chief_complaint' => $row['chief_complaint'],
 			'requesting_physician' => $requesting_physician,
 			'attending_physician' => $row['attending_physician'],
 			'rx_file' => $row['rx_file'],
 			'req_status' => $req_stat,
-			'work_related' => $row['work_related'],
+			'work_related' => $row['tbl_1_workrelated'],
 			'percentage' => $row['percentage'],
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),

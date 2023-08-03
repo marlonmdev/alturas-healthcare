@@ -186,7 +186,7 @@
 
   $(document).ready(function() {
 
-    $('#pendingNoaTable').DataTable({
+    const pendingTable = $('#pendingNoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
@@ -196,9 +196,9 @@
         url: `${baseUrl}super-admin/noa/requests-list/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
-        data: {
-          'token': '<?php echo $this->security->get_csrf_hash(); ?>',
-          'filter': $('#hospital-filter').val(),
+        data: function(data) {
+          data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
+          data.filter = $('#hospital-filter').val();
         }
       },
 
@@ -209,6 +209,10 @@
       }, ],
       responsive: true,
       fixedHeader: true,
+    });
+
+    $('#hospital-filter').change(function(){
+      pendingTable.draw();
     });
 
   });

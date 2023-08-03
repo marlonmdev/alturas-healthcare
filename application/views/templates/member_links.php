@@ -114,7 +114,7 @@
                   href="<?php echo base_url(); ?>member/mbl-history/loa"
                   aria-expanded="false"
                   >
-                  <i class="mdi mdi-receipt"></i>
+                  <i class="mdi mdi-file-restore"></i>
                   <span class="hide-menu ls-1">MBL History</span>
                 </a>
               </li>
@@ -127,7 +127,7 @@
                   href="<?php echo base_url(); ?>member/mbl-ledger/loa-noa"
                   aria-expanded="false"
                   >
-                  <i class="mdi mdi-receipt"></i>
+                  <i class="mdi mdi-file-check"></i>
                   <span class="hide-menu ls-1">MBL Ledger</span>
                 </a>
               </li>

@@ -39,7 +39,7 @@
             <p id="complaint"></p>
           </li>
 
-          <li class="list-group-item">
+          <li class="list-group-item" id="p-services">
             <h6>Services Utilized</h6>
             <ul id="services">
              

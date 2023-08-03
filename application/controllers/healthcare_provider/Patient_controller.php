@@ -377,11 +377,12 @@ class Patient_controller extends CI_Controller {
 		}
 		
 		$med_serv = [];
-
+		
 		if($row['loa_request_type'] === 'Emergency'){
-			$med_serv = (count($ct_array)!=0) ? $ct_array : ['Emergency Loa'];
+			$med_serv = (count($ct_array)>0) ? $ct_array : ['Emergency Loa'];
 		}else{
-			$med_serv = (count($ct_array)!=0) ? $ct_array : ['Consultation'];
+			// var_dump('count',count($ct_array));
+			$med_serv = (count($ct_array)>0) ? $ct_array : ['Consultation'];
 		}
 		
 

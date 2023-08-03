@@ -154,7 +154,7 @@
                   </div>
                   <div class="col-lg-4 col-sm-12 mb-2" id="hospital-bill-wrapper" hidden>
                   <label class="colored-label"><i class="bx bx-health icon-red"></i>Total Bill</label>
-                  <input type="text" class="form-control" name="hospital-bill" id="hospital-bill" placeholder="Enter Hospital Bill" style="background-color:#ffff">
+                  <input type="text" class="form-control" name="hospital-bill" id="hospital-bill" placeholder="Enter Hospital Bill" style="background-color:#ffff" autocomplete="off">
                   <em id="hospital-bill-error" class="text-danger"></em>
                 </div>
               </div>
@@ -273,11 +273,11 @@
   width: 100%;
 }
 
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
+/* input[type="text"]::-webkit-inner-spin-button,
+input[type="text"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
-}
+} */
 </style>
 
 <script>
@@ -304,7 +304,7 @@ input[type="number"]::-webkit-outer-spin-button {
       $("#requesting-physician").prop('disabled',true);
       $("#tags-input").prop('disabled',true);
     }
-    number_validator('hospital-bill');
+    number_validator();
 
     $('#memberLoaRequestForm').submit(function(event) {
       event.preventDefault();
@@ -458,6 +458,10 @@ input[type="number"]::-webkit-outer-spin-button {
       })
     }
     });
+    
+      $('#healthcare-provider-category').on('change',function(){
+        $('#med-services').val('');
+      });
 
       $('#healthcare-provider').on('change',function(){
         $('#med-services').val('');
@@ -482,7 +486,7 @@ input[type="number"]::-webkit-outer-spin-button {
                 // Build the tag text, including the description and price
                 const tagText = is_accredited
                   ? `${item.ctyp_description} - ₱${item.ctyp_price}`
-                  : `${item.ctyp_description}`;
+                  : `${item.ctyp_description}`; 
 
                 // Optionally, you can directly add the tag to Tagify using addTags method
                 const tagData = {
@@ -501,7 +505,7 @@ input[type="number"]::-webkit-outer-spin-button {
               // console.log('tagifiy',tagify);
               if (tagify) {
                 tagify.settings.whitelist = intput_service;
-                tagify.settings.enforceWhitelist = false;
+                tagify.settings.enforceWhitelist = (is_accredited)?true:false;
                 // tagify.dropdown.show.call(tagify, ''); // Refresh the dropdown to reflect the new whitelist
               } else {
                 tagify = new Tagify(input, {
@@ -577,6 +581,7 @@ const number_validator = () => {
         request_type.value = '';
       }
   } 
+
   const enableProvider = () => {
     const hc_provider = document.querySelector('#healthcare-provider-category').value;
     const optionElement = document.createElement('option');

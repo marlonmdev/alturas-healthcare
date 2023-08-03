@@ -191,16 +191,19 @@ class Loa_model extends CI_Model {
              ->where('tbl_1.loa_id', $loa_id);
     return $this->db->get()->row_array();
   }
+
   function db_get_loa_detail($loa_id) {
-    $this->db->select('*')
+    $this->db->select('tbl_1.status as tbl_1_status,tbl_1.work_related as tbl_1_workrelated,tbl_1.request_date as tbl_1_request_date, tbl_1.*,tbl_2.*,tbl_3.*,tbl_4.*,tbl_5.*,tbl_6.*')
              ->from('loa_requests as tbl_1')
              ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
              ->join('healthcare_providers as tbl_3', 'tbl_1.hcare_provider = tbl_3.hp_id')
              ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id','left')
-             ->join('max_benefit_limits as tbl_5', 'tbl_1.emp_id= tbl_5.emp_id')
+             ->join('billing as tbl_5', 'tbl_1.loa_id = tbl_5.loa_id','left')
+             ->join('max_benefit_limits as tbl_6', 'tbl_1.emp_id= tbl_6.emp_id')
              ->where('tbl_1.loa_id', $loa_id);
     return $this->db->get()->row_array();
   }
+
   function db_get_requesting_physician($doctor_id) {
     $query = $this->db->get_where('company_doctors', ['doctor_id' => $doctor_id]);
     return $query->row_array();
@@ -330,15 +333,17 @@ class Loa_model extends CI_Model {
   }
 
   var $table_1 = 'loa_requests'; 
+  var $table_2 = 'healthcare_providers'; 
   var $table_3 = 'billing';
-  var $column_order_history = array('tbl_1.loa_no', 'tbl_2.net_bill', 'tbl_1.status','tbl_1.request_date');
-  var $column_search_history = array('tbl_1.loa_no','tbl_2.net_bill','tbl_1.status','tbl_1.request_date'); //set column field database for datatable searchable 
+  var $column_order_history = array('tbl_1.loa_no', 'tbl_3.net_bill', 'tbl_1.status','tbl_1.request_date','tbl_2.hp_name');
+  var $column_search_history = array('tbl_1.loa_no','tbl_3.net_bill','tbl_1.status','tbl_1.request_date','tbl_2.hp_name'); //set column field database for datatable searchable 
   var $order_history = array('tbl_1.loa_id' => 'desc'); // default order 
   private function _get_loa_datatables_query($emp_id) {
       // Select all data from the first table
-      $this->db->select('tbl_1.status as tbl1_status, tbl_1.loa_id as tbl1_loa_id, tbl_1.request_date as tbl1_request_date, tbl_1.*, tbl_2.*');
+      $this->db->select('tbl_1.status as tbl1_status, tbl_1.loa_id as tbl1_loa_id, tbl_1.request_date as tbl1_request_date, tbl_1.*, tbl_3.*, tbl_2.*');
       $this->db->from($this->table_1 . ' as tbl_1');
-      $this->db->join($this->table_3 . ' as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id','left');
+      $this->db->join($this->table_2 . ' as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id','left');
+      $this->db->join($this->table_3 . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id','left');
       $this->db->where('tbl_1.emp_id', $emp_id);
       $i = 0;
       // loop column 

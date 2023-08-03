@@ -18,8 +18,7 @@ class Mbl_history extends CI_Controller {
 	function fetch_loa_mbl_history() {
 		$this->security->get_csrf_hash(); 
 		$emp_id = $this->input->post('emp_id');
-		$hp_id = 1;
-		$list = $this->loa_model->get_loa_datatables($emp_id, $hp_id);
+		$list = $this->loa_model->get_loa_datatables($emp_id);
 		// var_dump('loa',$list['tbl1_loa_id']);
 		$data = array();
 		$custom_actions = '';
@@ -46,29 +45,30 @@ class Mbl_history extends CI_Controller {
             
 			$row[] = $loa['tbl1_loa_id'];
 			$row[] = $loa['tbl1_request_date'];
+			$row[] = $loa['hp_name'];
 			$row[] = $custom_actions;
 			$row[] = $loa['loa_request_type'];
 			$row[] =  $loa['tbl1_status'];
-            $row[] = number_format(floatval((isset($loa['net_bill']) ? $loa['net_bill'] : $med_services)),2);
+            $row[] = ($loa['is_manual'])?number_format($loa['hospital_bill'],2):number_format(floatval((isset($loa['net_bill']) ? $loa['net_bill'] : $med_services)),2);
 			
 			$data[] = $row;
 		}
 
-		if(!$list){
-			$his_mbl = $this->history_model->get_his_mbl($emp_id);
-			$row[] = '';
-			$row[] =  '';
-			$row[] = '';	
-			$row[] = 'BEGINNING MBL';	
-			$row[] = number_format($his_mbl,2);
-			$row[] = '';	
-			$data[] = $row;
-		}
+		// if(!$list){
+		// 	$his_mbl = $this->history_model->get_his_mbl($emp_id);
+		// 	$row[] = '';
+		// 	$row[] =  '';
+		// 	$row[] = '';	
+		// 	$row[] = 'BEGINNING MBL';	
+		// 	$row[] = number_format($his_mbl,2);
+		// 	$row[] = '';	
+		// 	$data[] = $row;
+		// }
 
 		$output = array(
 			"draw" => $_POST['draw'],
-			"recordsTotal" => $this->loa_model->count_all_loa($emp_id, $hp_id),
-			"recordsFiltered" => $this->loa_model->count_loa_filtered($emp_id, $hp_id),
+			"recordsTotal" => $this->loa_model->count_all_loa($emp_id),
+			"recordsFiltered" => $this->loa_model->count_loa_filtered($emp_id),
 			"data" => $data,
 		);
 		echo json_encode($output);	
@@ -80,9 +80,10 @@ class Mbl_history extends CI_Controller {
 		$list = $this->noa_model->get_noa_datatables($emp_id);
 		
 		$data = array();
-		$row = array(); 
+		
+		// var_dump('list',$list);
 		foreach ($list as $noa){
-			
+			$row = array(); 
 
 			$noa_id = $this->myhash->hasher($noa['tbl1_noa_id'], 'encrypt');
 			
@@ -90,23 +91,24 @@ class Mbl_history extends CI_Controller {
 			
 			$row[] = $noa['tbl1_noa_id'];
 			$row[] =  $noa['tbl1_request_date'];
+			$row[] =  $noa['hp_name'];
 			$row[] = $custom_actions;	
 			$row[] =  $noa['type_request'];
 			$row[] =  $noa['tbl1_status'];
-            $row[] = number_format(floatval((isset($noa['net_bill']) ? $noa['net_bill'] : 0)),2);
+            $row[] = ($noa['is_manual'])?number_format($noa['hospital_bill'],2):number_format(floatval((isset($noa['net_bill']) ? $noa['net_bill'] : 0)),2);
 			$data[] = $row;
 		}
 		// var_dump('list',$list);
-		if(!$list){
-			$his_mbl = $this->history_model->get_his_mbl($emp_id);
-			$row[] = '';
-			$row[] =  '';
-			$row[] = '';	
-			$row[] = 'BEGINNING MBL';	
-			$row[] = number_format($his_mbl,2);
-			$row[] = '';	
-			$data[] = $row;
-		}
+		// if(!$list){
+		// 	$his_mbl = $this->history_model->get_his_mbl($emp_id);
+		// 	$row[] = '';
+		// 	$row[] =  '';
+		// 	$row[] = '';	
+		// 	$row[] = 'BEGINNING MBL';	
+		// 	$row[] = number_format($his_mbl,2);
+		// 	$row[] = '';	
+		// 	$data[] = $row;
+		// }
 
 		$output = array(
 			"draw" => $_POST['draw'],
@@ -240,7 +242,17 @@ class Mbl_history extends CI_Controller {
 				array_push($ct_array, $cost_type['item_description']);
 			}
 		endforeach;
+		// var_dump('cost_types',$selected_cost_types);
+		$selected_not_in_cost_types = array_diff($selected_cost_types, array_column($cost_types, 'ctype_id'));
 
+		foreach ($selected_not_in_cost_types as $selected_cost_type) {
+			// Handle the selected_cost_type that does not belong to $cost_types array
+			if($selected_cost_type !== ''){
+				array_push($ct_array, $selected_cost_type);
+			}
+			
+		}
+		// var_dump('ct_array',$ct_array);
 		if($isperformed){
 			foreach ($performed as $physician) :
 				if (isset($physician['physician_fname']) || isset($physician['physician_mname']) || isset($physician['physician_lname'])) {
@@ -249,21 +261,29 @@ class Mbl_history extends CI_Controller {
 			endforeach;
 			// var_dump("physicians",$physicians);
 		}
-		
-		$med_serv = implode('', $ct_array);
+		// if($row['loa_request_type'] === 'Diagnostic Test'){
+			// var_dump('ct_array',$ct_array);
+		// }else{
+		// 	var_dump('ct_array2',$ct_array);
+		// } 
+		// $med_serv = implode('', $ct_array);
 
 		$response = [
 			'status' => 'success',
 			'token' => $this->security->get_csrf_hash(),
 			'loa_no' => $row['loa_no'],
 			'loa_request_type' => $row['loa_request_type'],
-			'med_services' => ($row['loa_request_type'] === 'Diagnostic Test') ? $ct_array : (($row['loa_request_type'] === 'Consultation') ?['Consultation']:['Emergency Loa']),
+			'med_services' => $ct_array,
+			'healthcare_provider' => $row['hp_name'],
+			// 'med_services' => ($row['loa_request_type'] === 'Diagnostic Test') ? $ct_array : (($row['loa_request_type'] === 'Consultation') ?['Consultation']:['Emergency Loa']),
 			'requesting_company' => $row['requesting_company'],
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'complaints' => $row['chief_complaint'],
 			'requesting_physician' => ($row['loa_request_type'] !== "Emergency")? $row['doctor_name'] :"",
 			'attending_physician' => $physicians,
-			'rx_file' => $row['rx_file'],
+			'rx_file' => isset($row['rx_file'])? $row['rx_file']:'',
+			'hospital_receipt' => isset($row['hospital_receipt'])? $row['hospital_receipt']:'',
+			'hospital_bill' => $row['hospital_bill'],
 			'pdf_bill' => isset($billing['pdf_bill'])?$billing['pdf_bill']:"",
 			'req_status' => $row['tbl_1_status'],
 			'work_related' => $row['work_related'],
@@ -309,15 +329,9 @@ class Mbl_history extends CI_Controller {
 		$today = date("Y-m-d");
 		$diff = date_diff(date_create($dateOfBirth), date_create($today));
 		$age = $diff->format('%y') . ' years old';
-		// var_dump("complaint",$row['chief_complaint']);
-		// /* Checking if the status is pending and the work related is not empty. If it is, then it will set
-		// the req_stat to for approval. If not, then it will set the req_stat to the status. */
-		// if($row['status'] == 'Pending' && $row['work_related'] != ''){
-		// 	$req_stat = 'for Approval';
-		// }else{
-		// 	$req_stat = $row['status'];
-		// }
 
+		// var_dump('hospital receipt',$row['hospital_receipt']);
+		// var_dump('medical_services',$row['medical_services']);
 		$response = array(
 			'status' => 'success',
 			'token' => $this->security->get_csrf_hash(),
@@ -332,6 +346,9 @@ class Mbl_history extends CI_Controller {
 			'date_of_birth' => date("F d, Y", strtotime($row['date_of_birth'])),
 			'age' => $age,
 			'hospital_name' => $row['hp_name'],
+			'hospital_receipt' => isset($row['hospital_receipt'])? $row['hospital_receipt']:'',
+			'med_services'	=> isset($row['medical_services'])? explode(';',$row['medical_services']):'',
+			'hospital_bill' => $row['hospital_bill'],
 			'admission_date' => date("F d, Y", strtotime($row['admission_date'])),
 			'complaints' => $row['chief_complaint'],
 			'pdf_bill' => isset($billing['pdf_bill'])?$billing['pdf_bill']:"",

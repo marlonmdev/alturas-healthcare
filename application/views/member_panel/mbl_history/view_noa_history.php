@@ -38,6 +38,12 @@
             <h6>Chief Complaint</h6>
             <p id="complaint-noa"></p>
           </li>
+          <li class="list-group-item" id="p_services">
+            <h6>Services Utilized</h6>
+            <ul id="services">
+             
+            </ul>
+          </li>
           <li class="list-group-item" id="p_disaproved">
             <h6>Reason for Disapproval</h6>
             <p id="disaproved-noa"></p>
@@ -47,6 +53,7 @@
             <ul id="documents-noa">
             </ul>
           </li>
+          
           <li class="list-group-item" id="p_physician">
             <h6>Attending Doctors</h6>
             <ul id="physician-noa">

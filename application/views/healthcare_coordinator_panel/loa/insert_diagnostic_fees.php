@@ -2,14 +2,14 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <a href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/billed" type="submit" class="btn btn-outline-dark" data-bs-toggle="tooltip" title="Click to Go Back">
+        <a href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/billed" type="submit" class="btn btn-danger" data-bs-toggle="tooltip" title="Click to Go Back">
           <strong class="ls-2" style="vertical-align:middle"><i class="mdi mdi-arrow-left-bold"></i> Back</strong>
         </a>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
-              <li class="breadcrumb-item active" aria-current="page">Diagnostic Detailed SOA</li>
+              <li class="breadcrumb-item active" aria-current="page">Detailed SOA</li>
             </ol>
           </nav>
         </div>
@@ -18,182 +18,196 @@
   </div>
 
   <div class="container-fluid">
-    <div class="col-12  pt-2">
-      <h5 style="text-align:center;color:black;font-size:15px;letter-spacing:4px;text-decoration:underline">DETAILED STATEMENT OF ACCOUNT</h5>
-    </div>
+    <div class="card pt-1 shadow">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-xs-12 d-flex justify-content-center align-items-center">
+            <img src="<?= base_url(); ?>assets/images/logo2.png" alt="Alturas Healthcare Logo" height="70" width="300">
+          </div>
+          <div class="col-12 pt-3">
+            <div class="text-center mb-4 mt-0"><h4 class="page-title ls-2" style="color:black;font-family:Times Roman">DETAILED STATEMENT OF ACCOUNT</h4></div>
+          </div><hr style="color:gray">
+        </div>
          
-    <form id="performedLoaInfo" method="post" class="needs-validation" novalidate>
-      <hr>
-      <div class="row">
-        <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
+        <form id="performedLoaInfo" method="post" class="needs-validation" novalidate>
 
-        <div class="col-lg-4">
-          <label class="fw-bold">Patient Name : </label>
-          <input class="form-control" name="member-name" value="<?php echo $full_name ?>" readonly>
-          <input type="hidden" name="emp-id" value="<?php echo $emp_id ?>">
-        </div>
+          <div class="row">
+            <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
 
-        <div class="col-lg-4">
-          <label class="fw-bold">Patient Address : </label>
-          <input class="form-control" name="hc-provider" value="<?php echo $home_address ?>" readonly>
-        </div>
+            <div class="col-lg-4">
+              <label>Patient Name : </label>
+              <input class="form-control" name="member-name" value="<?php echo $full_name ?>" readonly>
+              <input type="hidden" name="emp-id" value="<?php echo $emp_id ?>">
+            </div>
 
-        <?php
-          $date_of_birth = $loa['date_of_birth'];
-          // Calculate the age based on the birthdate
-          $birthdate = new DateTime($date_of_birth);
-          $currentDate = new DateTime();
-          $age = $birthdate->diff($currentDate)->y;
+            <div class="col-lg-4">
+              <label>Patient Address : </label>
+              <input class="form-control" name="hc-provider" value="<?php echo $home_address ?>" readonly>
+            </div>
+
+            <?php
+              $date_of_birth = $loa['date_of_birth'];
+              // Calculate the age based on the birthdate
+              $birthdate = new DateTime($date_of_birth);
+              $currentDate = new DateTime();
+              $age = $birthdate->diff($currentDate)->y;
 
 
-          echo '<div class="col-lg-4">
-                  <label class="fw-bold">Age : </label>
-                  <input class="form-control" name="member-name" value="'.$age.'" readonly>
-                </div>';
-        ?>
+              echo '<div class="col-lg-4">
+                      <label class="fw-bold">Age : </label>
+                      <input class="form-control" name="member-name" value="'.$age.'" readonly>
+                    </div>';
+            ?>
+          </div>
 
-        <div class="col-lg-4">
-          <label class="fw-bold">Healthcard Number : </label>
-          <input class="form-control" name="healthcard-no" value="<?php echo $health_card_no ?>" readonly>
-        </div>
+          <div class="row pt-3">
+            <div class="col-lg-4">
+              <label>Healthcard Number : </label>
+              <input class="form-control" name="healthcard-no" value="<?php echo $health_card_no ?>" readonly>
+            </div>
 
-        <div class="col-lg-4">
-          <label class="fw-bold">LOA Number : </label>
-          <input class="form-control" name="loa-no" value="<?php echo $loa_no ?>" readonly>
-          <input type="hidden" name="loa-id" value="<?php echo $loa_id ?>">
-        </div>
+            <div class="col-lg-4">
+              <label>LOA Number : </label>
+              <input class="form-control" name="loa-no" value="<?php echo $loa_no ?>" readonly>
+              <input type="hidden" name="loa-id" value="<?php echo $loa_id ?>">
+            </div>
 
-         <div class="col-lg-4">
-          <label class="fw-bold">Work-Related : </label>
-          <input class="form-control" name="work-related" value="<?php echo $work_related ?> (<?php echo $percentage ?>%)" readonly>
-        </div> 
+             <div class="col-lg-4">
+              <label>Work-Related : </label>
+              <input class="form-control" name="work-related" value="<?php echo $work_related ?> (<?php echo $percentage ?>%)" readonly>
+            </div> 
+          </div>
 
-        <div class="col-lg-4">
-          <label class="fw-bold">Healthcare Provider : </label>
-          <input class="form-control" name="hc-provider" value="<?php echo $hc_provider ?>" readonly>
-          <input type="hidden" name="hp-id" value="<?php echo $hp_id ?>">
-        </div>
+          <div class="row pt-3">
+            <div class="col-lg-4">
+              <label>Healthcare Provider : </label>
+              <input class="form-control" name="hc-provider" value="<?php echo $hc_provider ?>" readonly>
+              <input type="hidden" name="hp-id" value="<?php echo $hp_id ?>">
+            </div>
 
-        <div class="col-lg-4">
-          <label class="fw-bold">Type of Request : </label>
-          <input class="form-control" name="request-type" value="<?php echo $request_type ?>" readonly>
-        </div>
+            <div class="col-lg-4">
+              <label>Type of Request : </label>
+              <input class="form-control" name="request-type" value="<?php echo $request_type ?>" readonly>
+            </div>
 
-        <div class="col-lg-4">
-          <label class="fw-bold">Billed Date : </label>
-          <input class="form-control" name="healthcard-no" value="<?php echo date('m/d/Y', strtotime($loa['billed_on'])); ?>" readonly>
-        </div>   
-      </div>
-      <hr>
+            <div class="col-lg-4">
+              <label>Billed Date : </label>
+              <input class="form-control" name="healthcard-no" value="<?php echo date('m/d/Y', strtotime($loa['billed_on'])); ?>" readonly>
+            </div>   
+          </div>
+          <hr>
 
-      <div class="row">
-        <div class="col-lg-3"><button type="button" class="btn btn-info" id="patient_information"><i class="mdi mdi-eye" style="color:#80ff00"></i> Patient Information</button></div>
-        <div class="col-lg-3 offset-6"><button type="button" class="btn btn-info" id="summary" ><i class="mdi mdi-file-pdf text-danger"></i> Summary of SOA (Pdf)</button></div>
-      </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <button type="button" class="btn btn-info" id="patient_information"><i class="mdi mdi-eye" style="color:#80ff00"></i> Patient Information</button>
+              <button type="button" class="btn btn-info" id="summary" ><i class="mdi mdi-file-pdf text-danger"></i> Summary of SOA (Pdf)</button>
+              <button type="button" class="btn btn-info" id="detailed" ><i class="mdi mdi-file-pdf text-danger"></i> Detailed of SOA (Pdf)</button>
+            </div>
+          </div>
      
 
-      <table class="table table-bordered table-striped table-hover table-responsive table-sm">
-        <thead style="background-color:#00538c;text-align:center">
-          <tr>
-            <th style="color:#fff">DATE</th>
-            <th style="color:#fff">NAME</th>
-            <th style="color:#fff">DESCRIPTION</th>
-            <th style="color:#fff">QUANTITY</th>
-            <th style="color:#fff">UNIT PRICE</th>
-            <th style="color:#fff">AMOUNT</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php
-            $total = 0;
-            $displayedLabels = array();
+          <table class="table table-bordered table-striped table-hover table-responsive table-sm">
+            <thead style="background-color:#00538c;text-align:center">
+              <tr>
+                <th style="color:#fff">DATE</th>
+                <th style="color:#fff">NAME</th>
+                <th style="color:#fff">DESCRIPTION</th>
+                <th style="color:#fff">QUANTITY</th>
+                <th style="color:#fff">UNIT PRICE</th>
+                <th style="color:#fff">AMOUNT</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php
+                $total = 0;
+                $displayedLabels = array();
 
-            foreach ($itemized_bill as $data) {
-              $total += floatval(str_replace(',', '', $data['amount']));
+                foreach ($itemized_bill as $data) {
+                  $total += floatval(str_replace(',', '', $data['amount']));
 
-              if (!in_array($data['labels'], $displayedLabels)) {
-                $displayedLabels[] = $data['labels'];
+                  if (!in_array($data['labels'], $displayedLabels)) {
+                    $displayedLabels[] = $data['labels'];
+                  ?>
+                    <tr>
+                      <td style="text-align:center"><?php echo $data['date'] ?></td>
+                      <td><?php echo $data['labels'] ?></td>
+                      <td><?php echo $data['discription'] ?></td>
+                      <td style="text-align:center"><?php echo $data['qty'] ?></td>
+                      <td style="text-align:center"><?php echo $data['unit_price'] ?></td>
+                      <td style="text-align:center"><?php echo $data['amount'] ?></td>
+                    </tr>
+                  <?php } else { ?>
+                    <tr>
+                      <td style="text-align:center"><?php echo $data['date'] ?></td>
+                      <td></td>
+                      <td><?php echo $data['discription'] ?></td>
+                      <td style="text-align:center"><?php echo $data['qty'] ?></td>
+                      <td style="text-align:center"><?php echo $data['unit_price'] ?></td>
+                      <td style="text-align:center"><?php echo $data['amount'] ?></td>
+                    </tr>
+              <?php }} ?>
+            </tbody>
+          </table>
+          <hr>
+
+          <table class="table table-bordered table-striped table-hover table-responsive table-sm">
+            <thead style="background-color:#00538c;text-align:center">
+              <tr>
+                <th style="color:#fff">NAME OF BENEFITS</th>
+                <th style="color:#fff">AMOUNT</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php
+                $benefits_total=0;
+                foreach ($benefits as $data) {
+                  $benefits_total += floatval(str_replace(',', '', $data['benefits_amount']));
               ?>
                 <tr>
-                  <td style="text-align:center"><?php echo $data['date'] ?></td>
-                  <td><?php echo $data['labels'] ?></td>
-                  <td><?php echo $data['discription'] ?></td>
-                  <td style="text-align:center"><?php echo $data['qty'] ?></td>
-                  <td style="text-align:center"><?php echo $data['unit_price'] ?></td>
-                  <td style="text-align:center"><?php echo $data['amount'] ?></td>
+                  <td><?php echo $data['benefits_name'] ?></td>
+                  <td><?php echo $data['benefits_amount'] ?></td>
                 </tr>
-              <?php } else { ?>
-                <tr>
-                  <td style="text-align:center"><?php echo $data['date'] ?></td>
-                  <td></td>
-                  <td><?php echo $data['discription'] ?></td>
-                  <td style="text-align:center"><?php echo $data['qty'] ?></td>
-                  <td style="text-align:center"><?php echo $data['unit_price'] ?></td>
-                  <td style="text-align:center"><?php echo $data['amount'] ?></td>
-                </tr>
-          <?php }} ?>
-        </tbody>
-      </table>
-      <hr>
+              <?php } ?>
+            </tbody>
+          </table>
+          <hr>
 
-      <table class="table table-bordered table-striped table-hover table-responsive table-sm">
-        <thead style="background-color:#00538c;text-align:center">
-          <tr>
-            <th style="color:#fff">NAME OF BENEFITS</th>
-            <th style="color:#fff">AMOUNT</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php
-            $benefits_total=0;
-            foreach ($benefits as $data) {
-              $benefits_total += floatval(str_replace(',', '', $data['benefits_amount']));
-          ?>
-            <tr>
-              <td><?php echo $data['benefits_name'] ?></td>
-              <td><?php echo $data['benefits_amount'] ?></td>
-            </tr>
-          <?php } ?>
-        </tbody>
-      </table>
-      <hr>
+          <div class="row">
+            <div class="col-4">
+              <label>Hospital Charges :</label>
+              <input class="form-control text-danger fw-bold" name="hospital_charge" value="₱<?php  echo number_format ($total,2); ?>"  readonly>
+            </div>
 
-      <div class="row">
-        <div class="col-4">
-          <label>Hospital Charges :</label>
-          <input class="form-control text-danger fw-bold" name="hospital_charge" value="₱<?php  echo number_format ($total,2); ?>"  readonly>
-        </div>
+            <div class="col-4">
+              <label>Total Deduction :</label>
+              <input class="form-control text-danger fw-bold" name="total_deduction" value="₱<?php  echo number_format ($benefits_total,2); ?>" readonly>
+            </div>
 
-        <div class="col-4">
-          <label>Total Deduction :</label>
-          <input class="form-control text-danger fw-bold" name="total_deduction" value="₱<?php  echo number_format ($benefits_total,2); ?>" readonly>
-        </div>
+            <div class="col-4">
+              <label>Net Bill :</label>
+              <input class="form-control text-danger fw-bold" name="net_bill" value="₱<?php  echo number_format ($total-$benefits_total,2); ?>"  readonly>
+            </div>    
+          </div>
 
-        <div class="col-4">
-          <label>Net Bill</label>
-          <input class="form-control text-danger fw-bold" name="net_bill" value="₱<?php  echo number_format ($total-$benefits_total,2); ?>"  readonly>
-        </div>    
-      </div>
+          <div class="row pt-3 mb-3">
+            <div class="col-4">
+              <label>Patient's MBL : </label>
+              <input class="form-control text-danger fw-bold" name="patient-mbl" id="patient-mbl" value="&#8369; <?php echo $max_benefit_limit ?>" readonly>
+            </div>
 
-      <div class="row pt-3 mb-3">
-        <div class="col-4">
-          <label>Patient's MBL </label>
-          <input class="form-control text-danger fw-bold" name="patient-mbl" id="patient-mbl" value="&#8369; <?php echo $max_benefit_limit ?>" readonly>
-        </div>
+            <div class="col-4">
+              <label>Patient's Remaining MBL :</label>
+              <input class="form-control text-danger fw-bold" name="remaining-mbl" id="remaining-mbl" value="&#8369; <?php echo $remaining_balance ?>" readonly>
+            </div>
+          </div><br><hr>
 
-        <div class="col-4">
-          <label>Patient's Remaining MBL</label>
-          <input class="form-control text-danger fw-bold" name="remaining-mbl" id="remaining-mbl" value="&#8369; <?php echo $remaining_balance ?>" readonly>
-        </div>
-      </div><br><hr>
+        <div class="col-sm-12 mb-sm-0 d-flex justify-content-center pb-5">
+          <button class="btn btn-info fw-bold fs-4" type="submit" name="submit-btn" id="submit-btn"><i class="mdi mdi-near-me"></i> Submit</button>
+        </div> 
 
-      <div class="offset-10 pt-3">
-        <button class="btn btn-success fw-bold fs-4" type="submit" name="submit-btn" id="submit-btn"><i class="mdi mdi-near-me"></i> Submit</button>
-      </div> 
-
-    </form>
+      </form>
+    </div>
   </div>
-  <!-- <?php include 'view_pdf_bill_modal.php'; ?> -->
 </div>
 
 
@@ -273,7 +287,7 @@
 
           <div class="col-lg-12 pt-4">
             <label class="fw-bold">Chief Complaint : </label>
-            <textarea class="form-control"><?php echo $chief_complaint ?></textarea>
+            <textarea class="form-control" readonly><?php echo $chief_complaint ?></textarea>
           </div>
 
           <?php 
@@ -321,7 +335,7 @@
 </div>
 <!-- End -->
 
-<!-- PDF SOA -->
+<!-- PDF SUMMARY SOA -->
 <div class="modal fade" id="viewPDFBillModal" tabindex="-1" data-bs-backdrop="static" style="height:100%">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
@@ -339,6 +353,24 @@
 </div>
 <!-- End -->
 
+<!-- PDF DETAILED SOA -->
+<!-- <div class="modal fade" id="viewPDFBillModal1" tabindex="-1" data-bs-backdrop="static" style="height:100%">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color:#00538c">
+        <span class="fw-bold fs-4" style="color:#fff"><i class="mdi mdi-file-pdf text-danger"></i> Detailed of Statement of Account</span>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="col-lg-6" style="width:100%;height:100%;">
+          <iframe id="pdf-viewer1" style="width:100%;height:580px;"></iframe><br>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+<!-- End -->
+
 
 
 
@@ -347,7 +379,6 @@
   const baseurl = `<?php echo base_url();?>`;
   const pdff = `<?php echo $pdf_bill ?>`;
   $(document).ready(function(){
-
     $('#performedLoaInfo').submit(function(event){
       event.preventDefault();
 

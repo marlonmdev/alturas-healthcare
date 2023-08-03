@@ -858,12 +858,16 @@ class Pages_controller extends CI_Controller {
 	function Diagnostic_form() {
 		$this->load->model('healthcare_coordinator/setup_model');
 		$data['user_role'] = $this->session->userdata('user_role');
+		$data['ahcproviders'] = $this->loa_model->db_get_affiliated_healthcare_providers();
+		$data['hcproviders'] = $this->loa_model->db_get_not_affiliated_healthcare_providers();
+		// var_dump('hpro',$data['hcproviders']);
+		// var_dump('ahpro',$data['ahcproviders']);
 		// $data['emp_id'] = $emp_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
 		// var_dump($data['emp_id']);
 		$data['hospitals'] = $this->setup_model->db_get_hospitals();
 		$data['costtypes'] = $this->setup_model->db_get_all_cost_types();
 		$data['doctors'] = $this->loa_model->db_get_company_doctors();
-		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
+		// $data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
 		// $mbl = $this->loa_model->db_get_mbl($emp_id);
 		$data['bar'] = $this->setup_model->bar_pending();
 		$data['bar1'] = $this->setup_model->bar_approved();
@@ -876,7 +880,7 @@ class Pages_controller extends CI_Controller {
 		$data['bar_Initial'] = $this->setup_model->bar_initial_noa();
 		$data['bar_Billed2'] = $this->setup_model->bar_billed_noa();
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_coordinator_panel/loa/diagnostic_form');
+		$this->load->view('healthcare_coordinator_panel/loa/diagnostic_form', $data);
 		$this->load->view('templates/footer');
 	}
 

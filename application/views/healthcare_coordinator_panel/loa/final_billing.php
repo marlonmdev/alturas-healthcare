@@ -2,43 +2,44 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <!-- <h4 class="page-title ls-2">CHECKING OF BILLING</h4> -->
+        <h4 class="page-title ls-2"style="font-size:13px">Note: Checking of Billing</h4>
         <div class="ms-auto text-end">
-          <!-- <nav aria-label="breadcrumb">
+          <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
-              <li class="breadcrumb-item active" aria-current="page">Checking</li>
+              <li class="breadcrumb-item active" aria-current="page">Matching</li>
             </ol>
-          </nav> -->
+          </nav>
         </div>
       </div>
     </div>
-  </div> 
+  </div>
 
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
         <ul class="nav nav-tabs mb-4" role="tablist">
-          <li class="nav-item">
-            <a class="nav-link active" href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/billed" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1 active" href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/billed" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">FINAL BILLING</span>
+              <span class="hidden-xs-down fs-12 font-bold">FINAL BILLING</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/for-charging" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/for-charging" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">HISTORY</span>
+              <span class="hidden-xs-down fs-12 font-bold">HISTORY</span>
             </a>
           </li>
         </ul>
 
         <form id="billedForm" method="POST" action="<?php echo base_url(); ?>healthcare-coordinator/loa/billed/submit_final_billing">
           <input type="hidden" class="form-control" name="status" id="status" value="Payable">
-          <div class="row pt-2 pb-2">
+
+          <div class="row pt-1 pb-2">
             <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
-            <div class="col-lg-5 ps-5 pb-3 pt-1 pb-4">
+            <div class="col-lg-5 ps-1 pb-3 pt-1">
               <div class="input-group">
                 <div class="input-group-prepend">
                   <span class="input-group-text bg-dark text-white">
@@ -66,49 +67,45 @@
                 <input type="date" class="form-control" name="end-date" id="end-date" oninput="validateDateRange();" placeholder="End Date" disabled>
               </div>
             </div>
+          </div>
+
+          <table class="table-responsive table-hover" id="billedLoaTable">
+            <thead style="background-color:#ADD8E6">
+              <tr>
+                <th style="color: black;font-size:10px">LOA #</th>
+                <th style="color: black;font-size:10px">PATIENT NAME</th>
+                <th style="color: black;font-size:10px">REMAINING MBL</th>
+                <th style="color: black;font-size:10px">WORK RELATED</th>
+                <th style="color: black;font-size:10px">TYPE OF REQUEST</th>
+                <th style="color: black;font-size:10px">REQUEST DATE</th>
+                <th style="color: black;font-size:10px">BILLED DATE</th>
+                <th style="color: black;font-size:10px">COMPANY CHARGE</th>
+                <th style="color: black;font-size:10px">PERSONAL CHARGE</th>
+                <th style="color: black;font-size:10px">HEALTHCARE ADVANCE</th>
+                <th style="color: black;font-size:10px">HOSPITAL BILL</th>
+                <th style="color: black;font-size:10px">VIEW BILL</th>
+                <th style="color: black;font-size:10px">STATUS</th> 
+                <th style="color: black;font-size:10px">ACTION</th> 
+              </tr>
+            </thead>
+            <tbody id="billed-tbody" style="color:black;font-size:10px">
+            </tbody>
+          </table>
+
+          <!-- <div class="row pt-4">
+            <div class="col-lg-2 offset-10">
+              <input name="total-hospital-bill" id="total-hospital-bill" class="form-control text-align:left fw-bold" value="0"  oninput="checkTotalHospitalBill()" readonly>
+            </div>
+          </div> -->
+
+          <div class="offset-10 pt-2 pb-4">
+            <button class="btn btn-info fw-bold fs-12 btn-lg" type="submit" id="proceed-btn" disabled><i class="mdi mdi-send"></i> Proceed</button>
+          </div>
 
           
-            <div class="card shadow" style="background-color:">
-              <div class="card-body">
-                <div class="">
-                  <table class="table table-hover table-responsive" id="billedLoaTable">
-                    <thead style="background-color:#00538C">
-                      <tr>
-                        <th style="color: white">LOA NO.</th>
-                        <th style="color: white">NAME OF PATIENT</th>
-                        <th style="color: white">REMAINING MBL</th>
-                        <th style="color: white">WORK RELATED</th>
-                        <th style="color: white">TYPE OF REQUEST</th>
-                        <th style="color: white">REQUEST DATE</th>
-                        <th style="color: white">BILLED DATE</th>
-                        <th style="color: white">COMPANY CHARGE</th>
-                        <th style="color: white">PERSONAL CHARGE</th>
-                        <th style="color: white">HEALTHCARE ADVANCE</th>
-                        <th style="color: white">HOSPITAL BILL</th>
-                        <th style="color: white">VIEW BILL</th>
-                        <th style="color: white">STATUS</th> 
-                        <th style="color: white">ACTION</th> 
-                      </tr>
-                    </thead>
-                    <tbody id="billed-tbody">
-                    </tbody>
-                  </table>
-                </div>
-
-                <!-- <div class="row pt-4">
-                  <div class="col-lg-2 offset-10">
-                    <input name="total-hospital-bill" id="total-hospital-bill" class="form-control text-align:left fw-bold" value="0"  oninput="checkTotalHospitalBill()" readonly>
-                  </div>
-                </div> -->
-              </div>
-              <div class="offset-10 pt-2 pb-4">
-                <button class="btn btn-info fw-bold fs-5 btn-lg" type="submit" id="proceed-btn" disabled><i class="mdi mdi-send"></i> Proceed</button>
-              </div>
-              <?php include 'view_coordinator_bill_modal.php'; ?>
-            </div>
-          </div>
-        </div>
-      </form>
+        </form>
+      </div>
+      <?php include 'view_coordinator_bill_modal.php'; ?>
     </div>
   </div>
   <?php include 'view_pdf_bill_modal.php'; ?>
@@ -118,7 +115,7 @@
 <div class="modal fade" id="managersKeyModal" tabindex="-1" data-bs-backdrop="static">
   <div class="modal-dialog modal-md">
     <div class="modal-content">
-      <div class="modal-header bg-cyan">
+      <div class="modal-header bg-info">
         <h5 class="modal-title text-white ls-1"><i class="mdi mdi-account-key"></i> MANAGER'S KEY</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -147,8 +144,8 @@
 
           <div class="row mt-2">
             <div class="col-sm-12 d-flex justify-content-end">
-              <button type="submit" class="btn btn-cyan me-2"><i class="mdi mdi-send"></i> SUBMIT</button>
-              <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="mdi mdi-close-box"></i> CANCEL</button>
+              <button type="submit" class="btn btn-info me-2"><i class="mdi mdi-login"></i> Login</button>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="mdi mdi-close-box"></i> Close</button>
             </div>
           </div>
           
@@ -157,15 +154,16 @@
     </div>
   </div>
 </div>
+
 <!-- END -->
 
 
-<!-- Adjustment MOdal -->
+<!-- Reupload MOdal -->
 <div class="modal fade" id="backDateModal" tabindex="-1" data-bs-backdrop="static">
   <div class="modal-dialog modal-md">
     <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title ls-2"><i class="mdi mdi-arrow-up-bold-circle"></i>Re-Upload: [<span class="loa_no" id="bd-loa-no" class="text-primary"></span>]</h4>
+      <div class="modal-header" style="background-color:#00538c">
+        <h4 class="modal-title ls-2" style="color:#fff"><i class="mdi mdi-arrow-up-bold-circle"></i>Re-Upload: [<span class="text-warning" class="loa_no" id="bd-loa-no" ></span>]</h4>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
         </button>
       </div>
@@ -176,14 +174,14 @@
           <input type="hidden" name="loa-id" id="bd-loa-id">
 
           <div class="mb-3">
-            <label class="ls-1">Reason for Adjustment</label>
+            <label class="ls-1">Type the reason :</label>
             <textarea  class="form-control" name="reason_adjustment" id="reason_adjustment" cols="30" rows="6"></textarea>
             <em id="reason_adjustment_error" class="text-danger"></em>
           </div>               
 
           <div class="row mt-2">
             <div class="col-sm-12 d-flex justify-content-end">
-              <button type="submit" class="btn btn-success me-2"><i class="mdi mdi-send"></i> SUBMIT</button>
+              <button type="submit" class="btn btn-info me-2"><i class="mdi mdi-send"></i> SUBMIT</button>
               <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="mdi mdi-close-box"></i> CANCEL</button>
             </div>
           </div>
@@ -209,9 +207,6 @@
   </div>
 </div>
 <!-- END -->
-
-
-  
 
 <script>
   const baseUrl = "<?php echo base_url()?>";
@@ -779,4 +774,58 @@
     animation: blink 1s infinite;
   }
 
+</style>
+
+<style>
+  .table-responsive {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 3px;
+  }
+
+  tr:nth-child(even){background-color: #f2f2f2}
+</style>
+
+<style>
+  .nav-item1 {
+    list-style-type: none;
+  }
+
+  .nav-link1 {
+    display: inline-block;
+    padding: 10px;
+    padding-top:1px;
+    padding-bottom:1px;
+    text-decoration: none;
+    background-color: #e6e6e6;
+    color: #000;
+    border: 1px solid gray;
+    border-bottom: 3px solid gray;
+    border-radius: 15px;
+
+  }
+
+  .nav-link1:hover {
+    background-color: #002244;
+    color: #fff;
+    border: 1px solid #000;
+  }
+
+  .font-bold {
+    font-weight: bold;
+  }
+
+  .hidden-xs-down {
+    display: inline-block;
+  }
+
+  .fs-5 {
+    font-size: 1.2rem;
+  }
 </style>

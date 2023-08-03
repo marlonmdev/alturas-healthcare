@@ -147,7 +147,7 @@
                   </div>
                 </div> -->
                 <div class="form-group row" id="med-services-wrapper" hidden>
-                <div class="col-sm-8 mb-2  pe-2"  >
+                  <div class="col-sm-8 mb-2  pe-2"  >
                     <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Select Medical Service/s <small class="text-danger"> *Note: Press Tab or Enter to Add More Medical Service</small></label>
                     <input class="custom-input" id="med-services" name="med-services" placeholder="Type and press Enter|Tab">
                     <em id="med-services-error" class="text-danger"></em>
@@ -157,7 +157,6 @@
                   <input type="text" class="form-control" name="hospital-bill" id="hospital-bill" placeholder="Enter Hospital Bill" style="background-color:#ffff" autocomplete="off">
                   <em id="hospital-bill-error" class="text-danger"></em>
                 </div>
-              </div>
 
               <!-- <div class="form-group row">
                 <div class="col-sm-6 mb-4 d-none" id="med-services-div">

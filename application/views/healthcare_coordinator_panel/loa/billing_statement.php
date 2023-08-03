@@ -1,40 +1,24 @@
 <div class="page-wrapper">
-  <div class="page-breadcrumb">
-    <div class="row">
-      <div class="col-12 d-flex no-block align-items-center">
-        <!-- <h4 class="page-title ls-2">For Payment LOA</h4> -->
-        <div class="ms-auto text-end">
-         <!--  <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item">Healthcare Coordinator</li>
-              <li class="breadcrumb-item active" aria-current="page">Billing Statement</li>
-            </ol>
-          </nav> -->
-        </div>
-      </div>
-    </div>
-  </div>
-
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
         <ul class="nav nav-tabs mb-4" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/billed" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/billed" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">FINAL BILLING</span>
+              <span class="hidden-xs-down fs-12 font-bold">FINAL BILLING</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link active" href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/for-charging" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1 active" href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/for-charging" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">HISTORY</span>
+              <span class="hidden-xs-down fs-12 font-bold">HISTORY</span>
             </a>
           </li>
         </ul>
 
-        <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
+        <div class="col-lg-5 pb-3 offset-7">
           <div class="input-group">
             <div class="input-group-prepend">
               <span class="input-group-text bg-dark text-white"><i class="mdi mdi-filter"></i></span>
@@ -52,16 +36,16 @@
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-hover table-responsive" id="matchedLoaTable">
-                <thead class="fs-6" style="background-color:#00538C">
+                <thead style="background-color:#ADD8E6">
                   <tr>
-                    <th class="fw-bold" style="color: white;">Billing No.</th>
-                    <th class="fw-bold" style="color: white;">CONSOLIDATED BILLING</th>
-                    <th class="fw-bold" style="color: white;">HEALTHCARE PROVIDER</th>
-                    <th class="fw-bold" style="color: white;">STATUS</th>
-                    <th class="fw-bold" style="color: white;">ACTION</th>
+                    <th class="fw-bold" style="color: black;font-size:12px">BILL #</th>
+                    <th class="fw-bold" style="color: black;font-size:12px">CONSOLIDATED BILLING</th>
+                    <th class="fw-bold" style="color: black;font-size:12px">HEALTHCARE PROVIDER</th>
+                    <th class="fw-bold" style="color: black;font-size:12px">STATUS</th>
+                    <th class="fw-bold" style="color: black;font-size:12px">ACTION</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody style="color: black;font-size:12px">
                 </tbody>
               </table>
             </div>
@@ -496,3 +480,42 @@
       });
   }
 </script>
+
+
+<style>
+  .nav-item1 {
+    list-style-type: none;
+  }
+
+  .nav-link1 {
+    display: inline-block;
+    padding: 10px;
+    padding-top:1px;
+    padding-bottom:1px;
+    text-decoration: none;
+    background-color: #e6e6e6;
+    color: #000;
+    border: 1px solid gray;
+    border-bottom: 3px solid gray;
+    border-radius: 15px;
+
+  }
+
+  .nav-link1:hover {
+    background-color: #002244;
+    color: #fff;
+    border: 1px solid #000;
+  }
+
+  .font-bold {
+    font-weight: bold;
+  }
+
+  .hidden-xs-down {
+    display: inline-block;
+  }
+
+  .fs-5 {
+    font-size: 1.2rem;
+  }
+</style>

@@ -104,6 +104,8 @@ class Loa_controller extends CI_Controller {
 	//END
 	//====================================================================================================
 
+
+
 	function edit_loa_request() {
 		$loa_id = $this->uri->segment(5);
 		$this->load->model('super_admin/setup_model');
@@ -264,7 +266,11 @@ class Loa_controller extends CI_Controller {
 
 			$custom_actions = '<a href="JavaScript:void(0)" class="me-2" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Info"><i class="mdi mdi-information fs-4 text-info"></i></a>';
 
-			$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="Tagging"><i class="mdi mdi-tag-plus fs-4 text-primary"></i></a>';
+			if($loa['accredited'] == '0' && $loa['loa_request_type'] == 'Diagnostic Test'){
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="ChargeTypenotAffiliated(\'' . $loa_id . '\',\'' . $loa['hospital_receipt'] . '\',\'' . $loa['hospital_bill'] . '\')" data-bs-toggle="tooltip" title="Tagging"><i class="mdi mdi-tag-plus fs-4 text-primary"></i></a>';
+			}else{
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="Tagging"><i class="mdi mdi-tag-plus fs-4 text-primary"></i></a>';
+			}
 
 			if($loa['spot_report_file'] || $loa['incident_report_file'] || $loa['police_report_file'] != ''){
 				$custom_actions .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $loa_id . '\',\'' . $loa['work_related'] . '\',\'' . $loa['percentage'] . '\',\'' . $loa['spot_report_file'] . '\',\'' . $loa['incident_report_file'] . '\',\'' . $loa['police_report_file'] . '\')" data-bs-toggle="tooltip" title="View Reports"><i class="mdi mdi-teamviewer fs-4 text-warning"></i></a>';
@@ -275,15 +281,13 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
-			if ($loa['loa_request_type'] === 'Consultation') {
-				$view_file = 'None';
-				// if Healthcare Provider name is too long for displaying to the table, shorten it and add the ... characters at the end 
+			if($loa['loa_request_type'] === 'Diagnostic Test' && $loa['accredited'] === '0' ){
+				//shorten hospital name
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
-
-			} else {
+				$view_file = 'NONE';
+			}else {
+				//shorten hospital name
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
-
-				// link to the file attached during loa request
 				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
 			}
 
@@ -464,6 +468,93 @@ class Loa_controller extends CI_Controller {
 		}
 	}
 
+	function submit_charge_type_not_affiliated(){
+		$token = $this->security->get_csrf_hash();
+		$loa_id = $this->myhash->hasher($this->input->post('loa_id'), 'decrypt');
+		// var_dump($loa_id);
+		$charge_type = $this->input->post('charge-type', TRUE);
+		$percentage = $this->input->post('percentage', TRUE);
+
+		$this->form_validation->set_rules('charge-type', 'Charge Type', 'required');
+		if ($this->form_validation->run() == FALSE) {
+			$response = [
+				'token' => $token,
+				'status' => 'error',
+				'charge_type_error' => form_error('charge-type'),
+			];
+			echo json_encode($response);
+		}else{
+			$config['allowed_types'] = 'pdf|jpeg|jpg|png|gif|svg';
+			$config['encrypt_name'] = TRUE;
+			$this->load->library('upload', $config);
+
+			$uploaded_files = array();
+			$error_occurred = FALSE;
+
+			// Define the upload paths for each file
+			$file_paths = array(
+				'spot-report' => './uploads/spot_reports/',
+				'incident-report' => './uploads/incident_reports/',
+				'police-report' => './uploads/police_reports/',
+			);
+
+			// Iterate over each file input and perform the upload
+			$file_inputs = array('spot-report', 'incident-report','police-report');
+			foreach ($file_inputs as $input_name) {
+				$config['upload_path'] = $file_paths[$input_name];
+				$this->upload->initialize($config);
+
+				if ($_FILES[$input_name]['size']!== 0) {
+					if (!$this->upload->do_upload($input_name)) {
+						// Handle upload error
+						$error_occurred = TRUE;
+						break;
+					}
+				}
+				$uploaded_files[$input_name] = $this->upload->data();
+			}
+
+			if ($error_occurred) {
+				// Handle upload error response
+				$response = [
+					'token' => $token,
+					'status' => 'upload-error',
+					'message' => 'File Saving to Folder Failed',
+				];
+				echo json_encode($response);
+			} else {
+				$data = [
+					'work_related' => $charge_type,
+					'percentage' => $percentage,
+					'spot_report_file' => isset($uploaded_files['spot-report']) ? $uploaded_files['spot-report']['file_name'] : '',
+					'incident_report_file' => isset($uploaded_files['incident-report']) ? $uploaded_files['incident-report']['file_name'] : '',
+					'police_report_file' => isset($uploaded_files['police-report']) ? $uploaded_files['police-report']['file_name'] : '',
+					'date_uploaded' => date('Y-m-d')
+				];
+
+				$updated = $this->loa_model->db_update_loa_charge_type($loa_id, $data);
+
+				if (!$updated) {
+					$response = [
+						'token' => $token,
+						'status' => 'save-error',
+						'message' => 'Save Failed',
+					];
+				} else {
+					$response = [
+						'token' => $token,
+						'status' => 'success',
+						'message' => 'Saved Successfully',
+					];
+				}
+				echo json_encode($response);
+				// var_dump($updated);
+				// var_dump($response);
+
+			}
+		}
+	}
+
 	//==================================================
 	//END
 	//==================================================
@@ -493,10 +584,10 @@ class Loa_controller extends CI_Controller {
 			
 			$custom_actions .= '<a class="me-1" href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/generate-printable-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Print"><i class="mdi mdi-printer fs-4 text-primary"></i></a>';
 
-			if($loa['loa_request_type'] == 'Emergency'){
-				$custom_actions .= '';
-			}else{
+			if($loa['loa_request_type'] == 'Diagnostic Test' && $loa['accredited'] == '1'){
 				$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/' . $loa_id . '" data-bs-toggle="tooltip" title="Performed"><i class="mdi mdi-playlist-check fs-4 text-success"></i></a>';
+			}else{
+				$custom_actions .= '';
 			}
 
 			$exists = $this->loa_model->check_loa_no($loa['loa_id']);
@@ -514,24 +605,18 @@ class Loa_controller extends CI_Controller {
 				}
 			}				
 
-			$custom_actions .= '<a class="me-2" href="JavaScript:void(0)" onclick="loaCancellation(\'' . $loa_id . '\', \'' . $loa['loa_no'] . '\')" data-bs-toggle="tooltip" title="Cancel LOA Request"><i class="mdi mdi-close-circle fs-4 text-danger"></i></a>';
+			$custom_actions .= '<a class="me-2" href="JavaScript:void(0)" onclick="loaCancellation(\'' . $loa_id . '\', \'' . $loa['loa_no'] . '\')" data-bs-toggle="tooltip" title="Cancel Request"><i class="mdi mdi-close-circle fs-4 text-danger"></i></a>';
 	
 			$custom_status = '<span class="badge rounded-pill bg-success">' . $loa['status'] . '</span>';
 		
-			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
-			if ($loa['loa_request_type'] === 'Consultation') {
-				// if request is consultation set the view file to None
-				$view_file = 'None';
-
-				// if Healthcare Provider name is too long for displaying to the table, shorten it and add the ... characters at the end 
+			if($loa['loa_request_type'] === 'Diagnostic Test' && $loa['accredited'] === '0' ){
+				//shorten hospital name
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
-
-			} else {
-
+				$view_file = 'NONE';
+			}else {
+				//shorten hospital name
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
-
-				// link to the file attached during loa request
 				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
 			}
 
@@ -661,17 +746,13 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
-			if ($loa['loa_request_type'] === 'Consultation') {
-				// if request is consultation set the view file and medical services to None
-				$view_file = 'None';
-
-				// if Healthcare Provider name is too long for displaying to the table, shorten it and add the ... characters at the end 
+			if($loa['loa_request_type'] === 'Diagnostic Test' && $loa['accredited'] === '0' ){
+				//shorten hospital name
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
-
-			} else {
+				$view_file = 'NONE';
+			}else {
+				//shorten hospital name
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
-
-				// link to the file attached during loa request
 				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
 			}
 
@@ -938,6 +1019,154 @@ $med_serv = implode(' ', $ct_array);
 		];
 		echo json_encode($response);
 	}
+
+	function create_rescheduled_to_new_loa() {
+		$data['token'] = $this->security->get_csrf_hash();
+		$data['user_role'] = $this->session->userdata('user_role');
+		$approved_by = $this->uri->segment(6);
+		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$loa = $this->loa_model->get_rescheduled_loa_info($loa_id);
+
+		$data['resched_services'] = $this->loa_model->get_rescheduled_services($loa_id, $loa['hcare_provider']);
+		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
+		$data['fullname'] = $loa['first_name'].' '.$loa['middle_name'].' '.$loa['last_name'].' '.$loa['suffix'];
+		$data['address'] = $loa['home_address'];
+		$data['loa_no'] = $loa['loa_no'];
+		$data['request_type'] = $loa['loa_request_type'];
+		$data['hp_name'] = $loa['hp_name'];
+		$data['hp_id'] = $loa['hp_id'];
+		$data['emp_id'] = $loa['emp_id'];
+		$data['loa_id'] = $loa['loa_id'];
+		$data['approved_by'] = $approved_by;
+
+		$data['bar'] = $this->loa_model->bar_pending();
+		$data['bar1'] = $this->loa_model->bar_approved();
+		$data['bar2'] = $this->loa_model->bar_completed();
+		$data['bar3'] = $this->loa_model->bar_referral();
+		$data['bar4'] = $this->loa_model->bar_expired();
+		$data['bar_Billed'] = $this->loa_model->bar_billed();
+		$data['bar5'] = $this->loa_model->bar_pending_noa();
+		$data['bar6'] = $this->loa_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
+
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_coordinator_panel/loa/create_new_loa.php');
+		$this->load->view('templates/footer');
+	}
+
+	function get_hp_services1(){
+		$token = $this->security->get_csrf_hash();
+		$hp_id = $this->uri->segment(3);
+		$cost_types = $this->loa_model->db_get_cost_types_by_hp_ID($hp_id);
+		$response = '';
+
+		if(empty($cost_types)){
+			$response .= '<select class="chosen-select" id="med-services" name="med-services[]" multiple="multiple">';
+			$response .= '<option value="" disabled>No Available Services</option>';
+			$response .= '</select>';
+		}else{
+			$response .= '<select class="chosen-select" id="med-services" name="med-services[]" data-placeholder="Choose services..." multiple="multiple">';         
+			foreach ($cost_types as $cost_type) {
+				$response .= '<option value="'.$cost_type['ctype_id'].'">'.$cost_type['item_description'].'</option>';
+			}
+			$response .= '</select>';
+		}
+		echo json_encode($response);
+	}
+
+	function submit_rescheduled_loa_services() {
+    $token = $this->security->get_csrf_hash();
+    $config['upload_path'] = './uploads/referral/';
+    $config['allowed_types'] = 'pdf|jpeg|jpg|png|gif|svg';
+    $config['encrypt_name'] = TRUE;
+    $this->load->library('upload', $config);
+    
+    $loa_id = $this->input->post('loa-id', TRUE);
+    $loa = $this->loa_model->get_loa_request_info($loa_id);
+    $med_services = $this->input->post('med-services', TRUE);
+    $old_med_services = $this->input->post('old-ctype-id', TRUE);
+    
+    if($old_med_services > 1){
+       $med = implode(';', $old_med_services);
+    }else{
+      $med = $old_med_services;
+    }
+    
+    $created_on = date('Y-m-d');
+    $default = strtotime('+1 week', strtotime($created_on));
+    $expired_on = date('Y-m-d', $default);
+    
+    $result = $this->loa_model->db_get_max_loa_id();
+    $max_loa_id = !$result ? 0 : $result['loa_id'];
+    $add_loa = $max_loa_id + 1;
+    $current_year = date('Y');
+    
+    // Call function loa_number
+    $loa_no = $this->loa_number($add_loa, 7, 'LOA-'.$current_year);
+    
+    if (!$this->upload->do_upload('referralfile')) {
+      echo json_encode([
+        'token' => $token,
+        'status' => 'error',
+        'message' => 'File upload failed!'
+      ]);
+    }else{
+      $uploadData = $this->upload->data();
+      $post_data = [
+        'loa_no' => $loa_no,
+        'old_loa_no' => $this->input->post('loa-num', TRUE),
+        'emp_id' => $this->input->post('emp-id', TRUE),
+        'first_name' => $loa['first_name'],
+        'middle_name' => $loa['middle_name'],
+        'last_name' => $loa['last_name'],
+        'suffix' => $loa['suffix'],
+        'hcare_provider' => $this->input->post('healthcare-provider', TRUE),
+        'old_hc_provider' => $this->input->post('old-hp-id', TRUE),
+        'loa_request_type' => $loa['loa_request_type'],
+        'med_services' => implode(';', $med_services),
+        'old_med_services' => $med,
+        'health_card_no' => $loa['health_card_no'],
+        'requesting_company' => $loa['requesting_company'],
+        'request_date' => date("Y-m-d"),	
+        'chief_complaint' => $loa['chief_complaint'],
+        'requesting_physician' => $loa['requesting_physician'],
+        'rx_file' => $loa['rx_file'],
+        'requested_by' => $this->session->userdata('fullname'),
+        'approved_by' => $this->input->post('approved_by'),
+        'approved_on' => date("Y-m-d"),
+        'work_related' => $loa['work_related'],
+        'percentage' => $loa['percentage'],
+        'expiration_date' => $expired_on,
+        'status' => 'Referred',
+        'upload_referral' => $uploadData['file_name'],
+        'upload_referral_on' => date("Y-m-d"),
+      ];
+        
+      $inserted = $this->loa_model->db_insert_loa_request($post_data);
+      $this->loa_model->set_older_loa_rescheduled($loa_id);
+      $this->remove_number_from_field($loa_id, $med_services);
+        
+      $existing = $this->loa_model->check_if_loa_already_added($loa_id);
+      $resched = $this->loa_model->check_if_done_created_new_loa($loa_id);
+        
+      if ($existing && $resched['referred'] == 1) {
+        $this->loa_model->_set_loa_status_completed($loa_id);
+      }
+        
+      if ($inserted) {
+        echo json_encode([
+          'status' => 'success',
+          'message' => 'Successfully Added!',
+        ]);
+      }else{
+        echo json_encode([
+          'status' => 'failed',
+          'message' => 'Failed to save!',
+        ]);
+      }
+    }
+	}
 	//==================================================
 	//END
 	//==================================================
@@ -1118,17 +1347,13 @@ $med_serv = implode(' ', $ct_array);
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
-			if ($loa['loa_request_type'] === 'Consultation') {
-				// if request is consultation set the view file and medical services to None
-				$view_file = 'None';
-
-				// if Healthcare Provider name is too long for displaying to the table, shorten it and add the ... characters at the end 
+			if($loa['loa_request_type'] === 'Diagnostic Test' && $loa['accredited'] === '0' ){
+				//shorten hospital name
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
-
-			} else {
+				$view_file = 'NONE';
+			}else {
+				//shorten hospital name
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
-
-				// link to the file attached during loa request
 				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
 			}
 
@@ -1261,17 +1486,13 @@ $med_serv = implode(' ', $ct_array);
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
-			if ($loa['loa_request_type'] === 'Consultation') {
-				// if request is consultation set the view file and medical services to None
-				$view_file = 'None';
-
-				// if Healthcare Provider name is too long for displaying to the table, shorten it and add the ... characters at the end 
+			if($loa['loa_request_type'] === 'Diagnostic Test' && $loa['accredited'] === '0' ){
+				//shorten hospital name
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
-
-			} else {
+				$view_file = 'NONE';
+			}else {
+				//shorten hospital name
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
-
-				// link to the file attached during loa request
 				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
 			}
 
@@ -1500,18 +1721,12 @@ $med_serv = implode(' ', $ct_array);
 				$month = 'December';
 			}
 
-			$bill_no_custom = '<span class="fw-bold fs-5">'.$bill['bill_no'].'</span>';
-
-			$label_custom = '<span class="fw-bold fs-5">Month of '.$month.', '.$bill['year'].'</span>';
-			
-			$hospital_custom = '<span class="fw-bold fs-5">'.$bill['hp_name'].'</span>';
-
+			// $bill_no_custom = '<span class="fw-bold fs-5">'.$bill['bill_no'].'</span>';
+			$bill_no_custom = '<mark class="bg-cyan text-black"><b>'.$bill['bill_no'].'</b></mark>';
+			$label_custom = '<span class="fw-bold">Month of '.$month.', '.$bill['year'].'</span>';
+			$hospital_custom = '<span class="fw-bold">'.$bill['hp_name'].'</span>';
 			$status_custom = '<span class="badge rounded-pill bg-success text-white">'.$bill['status'].'</span>';
-
-			// $bill_no = $this->myhash->hasher($bill['bill_no'], 'encrypt');
-			// dapat maka encrypt sa bill_no
-
-			$action_customs = '<a href="'.base_url().'healthcare-coordinator/bill/billed/fetch-payable/'.$bill['bill_no'].'" data-bs-toggle="tooltip" title="View Hospital Bill"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
+			$action_customs = '<a href="'.base_url().'healthcare-coordinator/bill/billed/fetch-payable/'.$bill['bill_no'].'" data-bs-toggle="tooltip" title="View List"><i class="mdi mdi-format-list-bulleted fs-3 pe-2 text-info"></i></a>';
 
 			// $action_customs .= '<a href="'.base_url().'healthcare-coordinator/bill/billed/charging/'.$bill['bill_no'].'" data-bs-toggle="tooltip" title="View Charging"><i class="mdi mdi-file-document-box fs-2 text-danger"></i></a>';
 
@@ -1557,6 +1772,9 @@ $med_serv = implode(' ', $ct_array);
 		echo json_encode($output);
 	}
 
+	//====================================================================================================
+	//BILLED LOA (HISTORY)
+	//====================================================================================================
 	function fetch_monthly_bill() {
 		$token = $this->security->get_csrf_hash();
 		$bill_no = $this->uri->segment(5);
@@ -1566,10 +1784,11 @@ $med_serv = implode(' ', $ct_array);
 		foreach($billing as $bill){
 			$row = [];
 			$loa_id = $this->myhash->hasher($bill['loa_id'], 'encrypt');
+			$custom_loa_no = '<mark class="bg-cyan text-black"><b>'.$bill['billing_no'].'</b></mark>';
 			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
 			$coordinator_bill = '<a href="JavaScript:void(0)" onclick="viewCoordinatorBill(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Coordinator Billing"><i class="mdi mdi-eye text-dark"></i>View</a>';
-			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf text-danger"></i></a>';
-			$detailed_pdf_bill = '<a href="JavaScript:void(0)" onclick="viewDetailedPDFBill(\'' . $bill['itemized_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf text-danger"></i></a>';
+			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Summary of SOA"><i class="mdi mdi-file-pdf fs-4 text-danger"></i></a>';
+			$detailed_pdf_bill = '<a href="JavaScript:void(0)" onclick="viewDetailedPDFBill(\'' . $bill['itemized_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Detailed SOA"><i class="mdi mdi-file-pdf fs-4 text-danger"></i></a>';
 
 			// $record_diagnostic = '<a href="JavaScript:void(0)" onclick="PatientRecordDiagnostic(\'' . $bill['loa_no']. '\')" data-bs-toggle="tooltip" title="View Coordinator Billing"><i class="mdi mdi-eye text-dark"></i>View Record</a>';
 
@@ -1590,14 +1809,17 @@ $med_serv = implode(' ', $ct_array);
 					$percent = $bill['percentage'];
 				}
 			}
-			$percent_custom = '<span>'.$percent.'% '.$label.'</span>';
+			$percent_custom = '<span>'.$percent.'%- '.$label.'</span>';
 
-			$row[] = $bill['billing_no'];
+			$row[] = $custom_loa_no;
 			$row[] = $bill['loa_no'];
 			$row[] = $fullname;
 			$row[] = $bill['business_unit'];
 			$row[] = $percent_custom;
 			$row[] = $bill['loa_request_type'];
+			$row[] = number_format($bill['company_charge'], 2, '.', ',');
+			$row[] = number_format($bill['personal_charge'], 2, '.', ',');
+			$row[] = number_format($bill['cash_advance'], 2, '.', ',');
 			$row[] = number_format($bill['net_bill'], 2, '.', ',');
 			$row[] = $pdf_bill;
 			$row[] = $detailed_pdf_bill;
@@ -1609,6 +1831,9 @@ $med_serv = implode(' ', $ct_array);
 		];
 		echo json_encode($output);
 	}
+	//====================================================================================================
+	//BILLED LOA (HISTORY)
+	//====================================================================================================
 
 	function get_data_patient_record() {
 
@@ -1979,16 +2204,15 @@ $med_serv = implode(' ', $ct_array);
 
 	function cancel_approved_loa(){
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
-
 		$this->form_validation->set_rules('cancellation_reason', 'Reason for Cancellation', 'trim|required|max_length[2000]');
 
-		if ($this->form_validation->run() == FALSE) {
+		if ($this->form_validation->run() == FALSE){
 			$response = [
 				//'token' => $token,
 				'status' => 'error',
 				'cancellation_reason_error' => form_error('cancellation_reason'),
 			];
-		} else {
+		}else{
 			$post_data = [
 				'status'              => 'Cancelled',
 				'cancellation_reason' => $this->input->post('cancellation_reason', TRUE),
@@ -2001,12 +2225,12 @@ $med_serv = implode(' ', $ct_array);
 			if (!$updated) {
 				$response = [
 					'status' => 'save-error', 
-					'message' => 'LOA Request Cancel Failed'
+					'message' => 'Save Failed!'
 				];
 			}
 			$response = [
 				'status' => 'success', 
-				'message' => 'LOA Request Cancelled Successfully'
+				'message' => 'Request has been Cancelled!'
 			];
 		}
 
@@ -2416,157 +2640,9 @@ $med_serv = implode(' ', $ct_array);
 		}
 	}
 
-	function create_rescheduled_to_new_loa() {
-		$data['token'] = $this->security->get_csrf_hash();
-		$data['user_role'] = $this->session->userdata('user_role');
-		$approved_by = $this->uri->segment(6);
-		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
-		$loa = $this->loa_model->get_rescheduled_loa_info($loa_id);
 
-		$data['resched_services'] = $this->loa_model->get_rescheduled_services($loa_id, $loa['hcare_provider']);
-		$data['hcproviders'] = $this->loa_model->db_get_healthcare_providers();
-		$data['fullname'] = $loa['first_name'].' '.$loa['middle_name'].' '.$loa['last_name'].' '.$loa['suffix'];
-		$data['loa_no'] = $loa['loa_no'];
-		$data['request_type'] = $loa['loa_request_type'];
-		$data['hp_name'] = $loa['hp_name'];
-		$data['hp_id'] = $loa['hp_id'];
-		$data['emp_id'] = $loa['emp_id'];
-		$data['loa_id'] = $loa['loa_id'];
-		$data['approved_by'] = $approved_by;
 
-		$data['bar'] = $this->loa_model->bar_pending();
-		$data['bar1'] = $this->loa_model->bar_approved();
-		$data['bar2'] = $this->loa_model->bar_completed();
-		$data['bar3'] = $this->loa_model->bar_referral();
-		$data['bar4'] = $this->loa_model->bar_expired();
-		$data['bar_Billed'] = $this->loa_model->bar_billed();
-		$data['bar5'] = $this->loa_model->bar_pending_noa();
-		$data['bar6'] = $this->loa_model->bar_approved_noa();
-		$data['bar_Initial'] = $this->loa_model->bar_initial_noa();
-		$data['bar_Billed2'] = $this->loa_model->bar_billed_noa();
-
-		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_coordinator_panel/loa/create_new_loa.php');
-		$this->load->view('templates/footer');
-	}
-
-	function get_hp_services(){
-		$token = $this->security->get_csrf_hash();
-		$hp_id = $this->uri->segment(3);
-		$cost_types = $this->loa_model->db_get_cost_types_by_hp_ID($hp_id);
-		$response = '';
-
-		if(empty($cost_types)){
-			$response .= '<select class="chosen-select" id="med-services" name="med-services[]" multiple="multiple">';
-			
-			$response .= '<option value="" disabled>No Available Services</option>';
-
-			$response .= '</select>';
-		}else{
-			$response .= '<select class="chosen-select" id="med-services" name="med-services[]" data-placeholder="Choose services..." multiple="multiple">';
-                    
-			foreach ($cost_types as $cost_type) {
-				$response .= '<option value="'.$cost_type['ctype_id'].'">'.$cost_type['item_description'].'</option>';
-			}
-
-			$response .= '</select>';
-		}
-
-		echo json_encode($response);
-	}
-
-	function submit_rescheduled_loa_services() {
-    $token = $this->security->get_csrf_hash();
-    $config['upload_path'] = './uploads/referral/';
-    $config['allowed_types'] = 'pdf|jpeg|jpg|png|gif|svg';
-    $config['encrypt_name'] = TRUE;
-    $this->load->library('upload', $config);
-    
-    $loa_id = $this->input->post('loa-id', TRUE);
-    $loa = $this->loa_model->get_loa_request_info($loa_id);
-    $med_services = $this->input->post('med-services', TRUE);
-    $old_med_services = $this->input->post('old-ctype-id', TRUE);
-    
-    if($old_med_services > 1){
-       $med = implode(';', $old_med_services);
-    }else{
-      $med = $old_med_services;
-    }
-    
-    $created_on = date('Y-m-d');
-    $default = strtotime('+1 week', strtotime($created_on));
-    $expired_on = date('Y-m-d', $default);
-    
-    $result = $this->loa_model->db_get_max_loa_id();
-    $max_loa_id = !$result ? 0 : $result['loa_id'];
-    $add_loa = $max_loa_id + 1;
-    $current_year = date('Y');
-    
-    // Call function loa_number
-    $loa_no = $this->loa_number($add_loa, 7, 'LOA-'.$current_year);
-    
-    if (!$this->upload->do_upload('referralfile')) {
-      echo json_encode([
-        'token' => $token,
-        'status' => 'error',
-        'message' => 'File upload failed!'
-      ]);
-    }else{
-      $uploadData = $this->upload->data();
-      $post_data = [
-        'loa_no' => $loa_no,
-        'old_loa_no' => $this->input->post('loa-num', TRUE),
-        'emp_id' => $this->input->post('emp-id', TRUE),
-        'first_name' => $loa['first_name'],
-        'middle_name' => $loa['middle_name'],
-        'last_name' => $loa['last_name'],
-        'suffix' => $loa['suffix'],
-        'hcare_provider' => $this->input->post('healthcare-provider', TRUE),
-        'old_hc_provider' => $this->input->post('old-hp-id', TRUE),
-        'loa_request_type' => $loa['loa_request_type'],
-        'med_services' => implode(';', $med_services),
-        'old_med_services' => $med,
-        'health_card_no' => $loa['health_card_no'],
-        'requesting_company' => $loa['requesting_company'],
-        'request_date' => date("Y-m-d"),	
-        'chief_complaint' => $loa['chief_complaint'],
-        'requesting_physician' => $loa['requesting_physician'],
-        'rx_file' => $loa['rx_file'],
-        'requested_by' => $this->session->userdata('fullname'),
-        'approved_by' => $this->input->post('approved_by'),
-        'approved_on' => date("Y-m-d"),
-        'work_related' => $loa['work_related'],
-        'percentage' => $loa['percentage'],
-        'expiration_date' => $expired_on,
-        'status' => 'Referred',
-        'upload_referral' => $uploadData['file_name'],
-        'upload_referral_on' => date("Y-m-d"),
-      ];
-        
-      $inserted = $this->loa_model->db_insert_loa_request($post_data);
-      $this->loa_model->set_older_loa_rescheduled($loa_id);
-      $this->remove_number_from_field($loa_id, $med_services);
-        
-      $existing = $this->loa_model->check_if_loa_already_added($loa_id);
-      $resched = $this->loa_model->check_if_done_created_new_loa($loa_id);
-        
-      if ($existing && $resched['referred'] == 1) {
-        $this->loa_model->_set_loa_status_completed($loa_id);
-      }
-        
-      if ($inserted) {
-        echo json_encode([
-          'status' => 'success',
-          'message' => 'Successfully Added!',
-        ]);
-      }else{
-        echo json_encode([
-          'status' => 'failed',
-          'message' => 'Failed to save!',
-        ]);
-      }
-    }
-	}
+	
 
 	function loa_number($input, $pad_len = 7, $prefix = null) {
 		if ($pad_len <= strlen($input))
@@ -3223,6 +3299,26 @@ $med_serv = implode(' ', $ct_array);
     echo json_encode($response);
 	}
 
+	function get_hp_services(){
+		$token = $this->security->get_csrf_hash();
+		$hp_id = $this->uri->segment(4);
+		$cost_types = $this->loa_model->db_get_cost_types_by_hp($hp_id);
+		$response = array();
+
+		if(empty($cost_types)){
+		}else{
+			foreach ($cost_types as $cost_type) {
+				$data = [
+					'ctyp_id' => $cost_type['ctype_id'],
+					'ctyp_description' => $cost_type['item_description'],
+					'ctyp_price' => number_format($cost_type['op_price'],2,'.',','),
+				];
+				array_push($response,$data);
+			}
+		}
+		echo json_encode($response);
+	}
+
 	function submit_diagnostic_form() {
 		$token = $this->security->get_csrf_hash();
 		$input_post = $this->input->post(NULL, TRUE);
@@ -3231,17 +3327,19 @@ $med_serv = implode(' ', $ct_array);
 		$physician_arr = [];
 		$hp_id = $this->input->post('healthcare-provider');
 		$request_type = $this->input->post('loa-request-type');
-		// var_dump($request_type);  
+		$is_accredited =json_decode($_POST['is_accredited'],true);
+		$this->session->set_userdata('is_accredited', $is_accredited);
+
 		switch (true) {
 			case ($request_type == ''):
-				$this->loa_form_validation('Empty');
+				$this->loa_form_validation('Empty',$is_accredited);
 			break;
 
 			case ($request_type == 'Diagnostic Test'):
-				$this->loa_form_validation('Diagnostic Test');
+				$this->loa_form_validation('Diagnostic Test',$is_accredited);
 				// check if the selected healthcare provider exist from database
 				$hp_exist = $this->loa_model->db_check_healthcare_provider_exist($hp_id);
-				// var_dump($hp_exist);
+
 				if (!$hp_exist) {
 					$response = [
 						'status' => 'save-error',
@@ -3256,7 +3354,39 @@ $med_serv = implode(' ', $ct_array);
 					$config['encrypt_name'] = TRUE;
 					$this->load->library('upload', $config);
 
-					if (!$this->upload->do_upload('rx-file')) {
+					$file_paths = array(
+						'hospital-receipt' => './uploads/hospital_receipt/',
+						'rx-file' => './uploads/loa_attachments/'
+					);
+
+					$file_inputs = array('rx-file','hospital-receipt');
+					$uploaded_files = array();
+					$error_occurred = false;
+					foreach ($file_inputs as $input_name) {
+						if ($input_name === 'hospital-receipt' && empty($_FILES[$input_name]['name'])) {
+							// Skip the 'Medical-Abstract' field if it is empty
+							continue;
+						}
+						if ($input_name === 'rx-file' && empty($_FILES[$input_name]['name'])) {
+							// Skip the 'Medical-Abstract' field if it is empty
+							continue;
+						}
+		
+						$config['upload_path'] = $file_paths[$input_name];
+						$this->upload->initialize($config);
+		
+						if (!$this->upload->do_upload($input_name)) {
+							$error = $this->upload->display_errors();
+							if(!empty($error)){
+								// If error occurred for required files or any other file, set error flag
+								$error_occurred = TRUE;
+							}
+						}else{
+							$uploaded_files[$input_name] = $this->upload->data();
+						}
+					}
+
+					if($error_occurred){
 						$response = [
 							'status' => 'save-error',
 							'message' => 'File Not Uploaded'
@@ -3264,11 +3394,7 @@ $med_serv = implode(' ', $ct_array);
 						echo json_encode($response);
 						exit();
 					}else{
-						$upload_data = $this->upload->data();
-						$rx_file = $upload_data['file_name'];
-
 						$med_services = $this->input->post('med-services');
-
 						// for physician multi-tags input
 						if(empty($physicians_tags)) {
 							$attending_physician = '';
@@ -3280,7 +3406,7 @@ $med_serv = implode(' ', $ct_array);
 						}
 
 						// Call function insert_loa
-						$this->insert_loa1($input_post, $med_services, $attending_physician, $rx_file);
+						$this->insert_loa1($input_post, $med_services, $attending_physician, isset($uploaded_files['rx-file']['file_name'])?$uploaded_files['rx-file']['file_name']:null, isset($uploaded_files['hospital-receipt']['file_name'])?$uploaded_files['hospital-receipt']['file_name']:null);
 					}
 				}
 			break;
@@ -3294,83 +3420,102 @@ $med_serv = implode(' ', $ct_array);
 		}
 	}
 
-	function insert_loa1($input_post, $med_services, $attending_physician, $rx_file) {
+	function insert_loa1($input_post, $med_services, $attending_physician, $rx_file, $hospital_receipt) {
+		// select the max loa_id from DB
 		$result = $this->loa_model->db_get_max_loa_id();
 		$max_loa_id = !$result ? 0 : $result['loa_id'];
 		$add_loa = $max_loa_id + 1;
 		$current_year = date('Y');
 		$loa_no = $this->loa_number($add_loa, 7, 'LOA-'.$current_year);
-
 		$emp_id = $input_post['emp-id'];
-		// var_dump($member_id );
 		$member = $this->loa_model->db_get_member_details1($emp_id);
-		// var_dump($member);
+
+		$tagvalue = json_decode($med_services);
+		$services = [];
+
+		foreach($tagvalue as $value){
+			$services[] = (count(get_object_vars($value))>1)?$value->tagid:$value->value; 
+		}
 
 		$post_data = [
 			'loa_no' => $loa_no,
 			'emp_id' => $emp_id,
-			// 'emp_id' => $member['emp_id'],
 			'first_name' =>  $member['first_name'],
 			'middle_name' =>  $member['middle_name'],
 			'last_name' =>  $member['last_name'],
 			'suffix' =>  $member['suffix'],
 			'hcare_provider' => $input_post['healthcare-provider'],
 			'loa_request_type' => $input_post['loa-request-type'],
-			'med_services' => ($med_services!=="")?implode(';', $med_services):"",
+			'med_services' => ($services!=="")?implode(';', $services):"",
 			'health_card_no' => $member['health_card_no'],
 			'requesting_company' => $member['company'],
 			'request_date' => date("Y-m-d"),
+			'hospital_bill' => (isset($input_post['hospital-bill']))?$input_post['hospital-bill']:null,
 			'emerg_date' => (isset( $input_post['admission-date']))? $input_post['admission-date']:null,
 			'chief_complaint' => (isset($input_post['chief-complaint']))?strip_tags($input_post['chief-complaint']):"",
 			'requesting_physician' =>(isset($input_post['requesting-physician']))? ucwords($input_post['requesting-physician']):"",
 			'attending_physician' => $attending_physician,
-			'rx_file' => $rx_file,
+			'rx_file' => isset($rx_file)?$rx_file:null,
+			'hospital_receipt' => isset($hospital_receipt)?$hospital_receipt:null,
 			'status' => 'Pending',
+			// 'requested_by' => $emp_id,
 			'requested_by' =>$this->session->userdata('user_id'),
 		];
 
-		$inserted = $this->loa_model->insert_diagnostic_form($post_data);
-		// if loa request is not inserted
+		$inserted = $this->loa_model->db_insert_loa_request($post_data);
 		if (!$inserted) {
 			$response = [
 				'status' => 'save-error',
-				'message' => 'Failed to Save!'
+				'message' => 'Failed to Save'
 			];
 		}
 		$response = [
 			'status' => 'success',
-			'message' => 'Successfully Save!'
+			'message' => 'Successfully Save'
 		];
 		echo json_encode($response);
-		// var_dump($response);
 	}
 
-	function loa_form_validation($type) {
+	function loa_form_validation($type,$is_accredited) {
 		switch ($type) {
 			case 'Empty':
+			
 			case 'Diagnostic Test':
+				$this->form_validation->set_rules('healthcare-provider-category', 'HealthCare Provider Category', 'required');
 				$this->form_validation->set_rules('healthcare-provider', 'HealthCare Provider', 'required');
 				$this->form_validation->set_rules('loa-request-type', 'LOA Request Type', 'required');
 				$this->form_validation->set_rules('med-services', 'Medical Services', 'callback_multiple_select');
 				$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[1000]');
 				$this->form_validation->set_rules('requesting-physician', 'Requesting Physician', 'trim|required');
-				$this->form_validation->set_rules('rx-file', '', 'callback_check_rx_file');
+				
+				$is_accredited = $this->session->userdata('is_accredited');
+
+				if(!$is_accredited){
+					$this->form_validation->set_rules('hospital-receipt', '', 'callback_check_hospital_receipt');
+					$this->form_validation->set_rules('hospital-bill', 'Hospital Bill','required');
+				}else{
+					$this->form_validation->set_rules('rx-file', '', 'callback_check_rx_file');
+				}
+				$this->session->unset_userdata('is_accredited');
 				if ($this->form_validation->run() == FALSE) {
 					$response = [
 						'status' => 'error',
 						'healthcare_provider_error' => form_error('healthcare-provider'),
+						'healthcare_provider_category_error' => form_error('healthcare-provider-category'),
 						'loa_request_type_error' => form_error('loa-request-type'),
 						'med_services_error' => form_error('med-services'),
-						'chief_complaint_error' => form_error('chief_complaint'),
+						'chief_complaint_error' => form_error('chief-complaint'),
 						'requesting_physician_error' => form_error('requesting-physician'),
 						'rx_file_error' => form_error('rx-file'),
+						'hospital_receipt_error' => form_error('hospital-receipt'),
+						'hospital_bill_error' => form_error('hospital-bill'),
 					];
 
 					echo json_encode($response);
-					// var_dump($response);
 					exit();
 				}
 			break;
+			
 			case 'Diagnostic Test Update':
 				$this->form_validation->set_rules('healthcare-provider', 'HealthCare Provider', 'required');
 				$this->form_validation->set_rules('loa-request-type', 'LOA Request Type', 'required');
@@ -3389,10 +3534,9 @@ $med_serv = implode(' ', $ct_array);
 						'rx_file_error' => form_error('rx-file'),
 					];
 					echo json_encode($response);
-					// var_dump($response);
 					exit();
 				}
-				break;
+			break;
 		}
 	}
 
@@ -3691,9 +3835,11 @@ $med_serv = implode(' ', $ct_array);
     $data = [];
 
     foreach ($billing as $bill) {
+    	// var_dump($bill);
       $row = [];
       if ($bill['done_matching'] != 1) {
         $loa_id = $this->myhash->hasher($bill['tbl1_loa_id'], 'encrypt');
+        // var_dump($loa_id);
         $fullname = $bill['first_name'] . ' ' . $bill['middle_name'] . ' ' . $bill['last_name'] . ' ' . $bill['suffix'];
         $request_date=date("F d, Y", strtotime($bill['tbl1_request_date']));
         $workRelated = $bill['tbl1_work_related'] . ' (' . $bill['percentage'] . '%)';
@@ -3710,7 +3856,7 @@ $med_serv = implode(' ', $ct_array);
 				if (empty($bill['pdf_bill'])) {
     			$pdf_bill = 'Waiting for SOA';
 				}else{
-    			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf fs-2 text-info';
+    			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf fs-4 text-info';
 
     			if ($bill['done_re_upload'] == 'Done') {
         		$pdf_bill .= ' blink';
@@ -3731,100 +3877,104 @@ $med_serv = implode(' ', $ct_array);
 
         if ($bill['loa_request_type'] == 'Consultation'){
         	if ($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Approved'){
-        		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/consultation_schedule/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Appointment Schedule"><i class="mdi mdi-pen fs-2 text-warning"></i></a>';
+        		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/consultation_schedule/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Appointment Schedule"><i class="mdi mdi-pen fs-4 text-warning"></i></a>';
         		$billed_date=date("F d, Y", strtotime($bill['billed_on']));
 
         	}else if($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Performed'){
-        		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/consultation_fees1/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Service Fee"><i class="mdi mdi-pen fs-2 text-warning"></i></a>';
+        		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/consultation_fees1/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Service Fee"><i class="mdi mdi-pen fs-4 text-warning"></i></a>';
         		$billed_date=date("F d, Y", strtotime($bill['billed_on']));
 
         		if ($bill['re_upload'] =='0') {
-        			$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $loa_id . '\', \'' . $bill['loa_no'] . '\')" data-bs-toggle="tooltip" title="Re-Upload File"><i class="mdi mdi-key-plus fs-2 text-primary"></i></a>';
+        			$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $loa_id . '\', \'' . $bill['loa_no'] . '\')" data-bs-toggle="tooltip" title="Re-Upload File"><i class="mdi mdi-key-plus fs-4 text-primary"></i></a>';
         		}else{
-							$custom_actions .= '<i class="mdi mdi-key-plus fs-2 text-secondary" title="Re-Upload another SOA Already Sent"></i>';
+							$custom_actions .= '<i class="mdi mdi-key-plus fs-4 text-secondary" title="Re-Upload another SOA Already Sent"></i>';
 						}
     
 					}else if($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Processing'){
 						$billed_date=date("F d, Y", strtotime($bill['billed_on']));
 						if ($bill['performed_fees'] =='Processing') {
-        			$custom_actions .= '<i class="mdi mdi-pen fs-2 text-secondary" title="Detailed SOA Already Added"></i>';
+        			$custom_actions .= '<i class="mdi mdi-pen fs-4 text-secondary" title="Detailed SOA Already Added"></i>';
         		}else{
-							$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/consultation_fees1/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Service Fee"><i class="mdi mdi-pen fs-2 text-warning"></i></a>';
+							$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/consultation_fees1/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Service Fee"><i class="mdi mdi-pen fs-4 text-warning"></i></a>';
 						}
 
 						if ($bill['re_upload'] =='1') {
-        			$custom_actions .= '<i class="mdi mdi-key-plus fs-2 text-secondary" title="Re-Upload another SOA Already Sent"></i>';
+        			$custom_actions .= '<i class="mdi mdi-key-plus fs-4 text-secondary" title="Re-Upload another SOA Already Sent"></i>';
         		}else{
-							$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $loa_id . '\', \'' . $bill['loa_no'] . '\')" data-bs-toggle="tooltip" title="Re-Upload File"><i class="mdi mdi-key-plus fs-2 text-primary"></i></a>';
+							$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $loa_id . '\', \'' . $bill['loa_no'] . '\')" data-bs-toggle="tooltip" title="Re-Upload File"><i class="mdi mdi-key-plus fs-4 text-primary"></i></a>';
 						}
 
         		if ($bill['guarantee_letter'] =='') {
-        			$custom_actions .= '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $loa_id . '\',\'' . $bill['billing_id'] . '\')" data-bs-toggle="modal" data-bs-target="#GuaranteeLetter" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-2 text-danger"></i></a>';
+        			$custom_actions .= '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $loa_id . '\',\'' . $bill['billing_id'] . '\')" data-bs-toggle="modal" data-bs-target="#GuaranteeLetter" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-4 text-danger"></i></a>';
         		}else{
-							$custom_actions .= '<i class="mdi mdi-reply fs-2 text-secondary" title="Guarantee Letter Already Sent"></i>';
+							$custom_actions .= '<i class="mdi mdi-reply fs-4 text-secondary" title="Guarantee Letter Already Sent"></i>';
 						}
 
         	}else if($bill['tbl1_status'] == 'Approved' && $bill['performed_fees'] == 'Approved'){
-        		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Appointment Schedule"><i class="mdi mdi-pen fs-2 text-success"></i></a>';
+        		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Appointment Schedule"><i class="mdi mdi-pen fs-4 text-success"></i></a>';
         		$billed_date .='No Billing Date Yet';
         	}else if($bill['tbl1_status'] == 'Completed' && $bill['performed_fees'] == 'Performed'){
-        		$custom_actions .='<i class="mdi mdi-cached fs-2 text-info"></i>Processing...';
+        		$custom_actions .='<i class="mdi mdi-cached fs-4 text-info"></i>Processing...';
         		$billed_date .='No Billing Date Yet';
         	}
 
         }else if ($bill['loa_request_type'] == 'Diagnostic Test') {
         	if ($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Approved') {
-        		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/diagnostic_schedule/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Appointment Schedule"><i class="mdi mdi-pen fs-2 text-warning"></i></a>';
+        		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/diagnostic_schedule/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Appointment Schedule"><i class="mdi mdi-pen fs-4 text-warning"></i></a>';
         		$billed_date=date("F d, Y", strtotime($bill['billed_on']));
 
         	}else if($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Performed'){
-        		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/diagnostic_fees1/'. $loa_id . '" data-bs-toggle="tooltip" title="Check Detailed SOA"><i class="mdi mdi-pen fs-2 text-warning"></i></a>';
+        		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/diagnostic_fees1/'. $loa_id . '" data-bs-toggle="tooltip" title="Check Detailed SOA"><i class="mdi mdi-pen fs-4 text-warning"></i></a>';
         		$billed_date=date("F d, Y", strtotime($bill['billed_on']));
 
-        		if ($bill['re_upload'] =='0') {
-        			$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $loa_id . '\', \'' . $bill['loa_no'] . '\')" data-bs-toggle="tooltip" title="Re-Upload File"><i class="mdi mdi-key-plus fs-2 text-primary"></i></a>';
-        		}else{
-							$custom_actions .= '<i class="mdi mdi-key-plus fs-2 text-secondary" title="Re-Upload another SOA Already Sent"></i>';
+        		if ($bill['re_upload'] === '0' && $bill['done_re_upload'] === null) {
+        			$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $loa_id . '\', \'' . $bill['loa_no'] . '\')" data-bs-toggle="tooltip" title="Re-Upload File"><i class="mdi mdi-key-plus fs-4 text-primary"></i></a>';
+        		}
+        		if(($bill['re_upload'] ==='1' && $bill['done_re_upload'] === 'Done') || ($bill['re_upload'] ==='0' && $bill['done_re_upload'] === 'Done')){
+							$custom_actions .= '<i class="mdi mdi-key-plus fs-4 text-secondary" title="Re-Upload another SOA Already Sent"></i>';
 						}
 
 					}else if($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Processing'){
 						$billed_date=date("F d, Y", strtotime($bill['billed_on']));
 						if ($bill['performed_fees'] =='Processing') {
-        			$custom_actions .= '<i class="mdi mdi-pen fs-2 text-secondary" title="Detailed SOA Already Added"></i>';
+        			$custom_actions .= '<i class="mdi mdi-pen fs-4 text-secondary" title="Detailed SOA Already Added"></i>';
         		}else{
-							$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/diagnostic_fees1/'. $loa_id . '" data-bs-toggle="tooltip" title="Check Detailed SOA"><i class="mdi mdi-pen fs-2 text-warning"></i></a>';
+							$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/billed/diagnostic_fees1/'. $loa_id . '" data-bs-toggle="tooltip" title="Check Detailed SOA"><i class="mdi mdi-pen fs-4 text-warning"></i></a>';
 						}
 
 						if ($bill['re_upload'] =='1') {
-        			$custom_actions .= '<i class="mdi mdi-key-plus fs-2 text-secondary" title="Re-Upload another SOA Already Sent"></i>';
+        			$custom_actions .= '<i class="mdi mdi-key-plus fs-4 text-secondary" title="Re-Upload another SOA Already Sent"></i>';
         		}else{
-							$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $loa_id . '\', \'' . $bill['loa_no'] . '\')" data-bs-toggle="tooltip" title="Re-Upload File"><i class="mdi mdi-key-plus fs-2 text-primary"></i></a>';
+							$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $loa_id . '\', \'' . $bill['loa_no'] . '\')" data-bs-toggle="tooltip" title="Re-Upload File"><i class="mdi mdi-key-plus fs-4 text-primary"></i></a>';
 						}
 
         		if ($bill['guarantee_letter'] =='') {
-        			$custom_actions .= '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $loa_id . '\',\'' . $bill['billing_id'] . '\')" data-bs-toggle="modal" data-bs-target="#GuaranteeLetter" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-2 text-danger"></i></a>';
+        			$custom_actions .= '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $loa_id . '\',\'' . $bill['billing_id'] . '\')" data-bs-toggle="modal" data-bs-target="#GuaranteeLetter" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-4 text-danger"></i></a>';
         		}else{
-							$custom_actions .= '<i class="mdi mdi-reply fs-2 text-secondary" title="Guarantee Letter Already Sent"></i>';
+							$custom_actions .= '<i class="mdi mdi-reply fs-4 text-secondary" title="Guarantee Letter Already Sent"></i>';
 						}
 
-        	}else if($bill['tbl1_status'] == 'Approved' && $bill['performed_fees'] == 'Approved'){
-        		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Appointment Schedule"><i class="mdi mdi-pen fs-2 text-success"></i></a>';
+        	}else if($bill['tbl1_status'] == 'Approved' && $bill['performed_fees'] == 'Approved' && $bill['accredited'] == '1'){
+        		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Appointment Schedule"><i class="mdi mdi-pen fs-4 text-success"></i></a>';
+        		$billed_date .='No Billing Date Yet';
+        	}else if($bill['tbl1_status'] == 'Approved' && $bill['performed_fees'] == 'Approved' && $bill['accredited'] == '0'){
+        		$custom_actions .='<i class="mdi mdi-cached fs-4 text-success"></i>Processing...';
         		$billed_date .='No Billing Date Yet';
         	}else if($bill['tbl1_status'] == 'Completed' && $bill['performed_fees'] == 'Performed'){
-        		$custom_actions .='<i class="mdi mdi-cached fs-2 text-info"></i>Processing...';
+        		$custom_actions .='<i class="mdi mdi-cached fs-4 text-info"></i>Processing...';
         		$billed_date .='No Billing Date Yet';
         	}
 
         }else if ($bill['loa_request_type'] == 'Emergency') {
         	if($bill['tbl1_status'] == 'Approved' && $bill['performed_fees'] == 'Approved'){
-        		$custom_actions .='<i class="mdi mdi-cached fs-2 text-success"></i>Processing...';
+        		$custom_actions .='<i class="mdi mdi-cached fs-4 text-success"></i>Processing...';
         		$billed_date .='No Billing Date Yet';
         	}else if($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Approved'){
         		$billed_date=date("F d, Y", strtotime($bill['billed_on']));
         		if ($bill['guarantee_letter'] =='') {
-        			$custom_actions .= '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $loa_id . '\',\'' . $bill['billing_id'] . '\')" data-bs-toggle="modal" data-bs-target="#GuaranteeLetter" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-2 text-danger"></i></a>';
+        			$custom_actions .= '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $loa_id . '\',\'' . $bill['billing_id'] . '\')" data-bs-toggle="modal" data-bs-target="#GuaranteeLetter" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-4 text-danger"></i></a>';
         		}else{
-							$custom_actions .= '<i class="mdi mdi-reply fs-2 text-secondary" title="Guarantee Letter Already Sent"></i>';
+							$custom_actions .= '<i class="mdi mdi-reply fs-4 text-secondary" title="Guarantee Letter Already Sent"></i>';
 						}
         	}
         }
@@ -4934,6 +5084,15 @@ $med_serv = implode(' ', $ct_array);
 			return true;
 		} else {
 			$this->form_validation->set_message('update_check_rx_file', 'Please choose RX/Request Document file to upload.');
+			return false;
+		}
+	}
+
+	function check_hospital_receipt($str) {
+		if (isset($_FILES['hospital-receipt']['name']) && !empty($_FILES['hospital-receipt']['name'])) {
+			return true;
+		} else {
+			$this->form_validation->set_message('check_hospital_receipt', 'Please choose Hospital Receipt file to upload.');
 			return false;
 		}
 	}

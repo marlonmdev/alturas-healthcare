@@ -113,6 +113,7 @@ $route['member/requested-noa/generate-printable-noa/(:any)'] = 'member/noa_contr
 $route['member/requested-noa/billed/fetch'] = 'member/noa_controller/fetch_billed_noa';
 $route['member/requested-noa/paid/fetch'] = 'member/noa_controller/fetch_paid_noa';
 
+$route['member/requested-noa/view/(:any)'] = 'member/noa_controller/get_noa_info';
 // Member Personal Charges Routes
 $route['member/personal-charges/unpaid/fetch'] = 'member/pcharges_controller/fetch_unpaid_personal_charges';
 $route['member/personal-charges/requested/fetch'] = 'member/pcharges_controller/fetch_requested_personal_charges';
@@ -187,6 +188,7 @@ $route['hc-provider-accounting/patient_soa/soa-list'] = 'hc_provider_accounting/
 $route['hc-provider-accounting/patient/fetch-lis-of-soa'] = 'hc_provider_accounting/patient_controller/fetch_lis_of_soa';
 // NOA Billing
 $route['healthcare-provider/billing/bill-noa/upload-pdf/(:any)'] = 'healthcare_provider/billing_controller/upload_noa_pdf_bill_form';
+$route['healthcare-provider/billing/initial-bill-noa/upload-pdf/(:any)'] = 'healthcare_provider/billing_controller/upload_noa_pdf_bill_form';
 $route['healthcare-provider/billing/bill-noa/upload-pdf/(:any)/submit'] = 'healthcare_provider/billing_controller/submit_noa_pdf_bill';
 $route['healthcare-provider/initial_billing/bill-noa/upload-pdf/(:any)/submit'] = 'healthcare_provider/billing_controller/submit_initial_noa_pdf_bill';
 $route['healthcare-provider/fetch_initial_billing/fetch/(:any)'] = 'healthcare_provider/billing_controller/fetch_initial_billing';
@@ -551,8 +553,10 @@ $route['healthcare-coordinator/setup/company-doctors'] = 'healthcare_coordinator
 $route['healthcare-coordinator/setup/cost-types'] = 'healthcare_coordinator/pages_controller/view_all_cost_types';
 $route['healthcare-coordinator/setup/room-types'] = 'healthcare_coordinator/pages_controller/view_all_room_types';
 $route['healthcare-coordinator/loa/request-loa'] = 'healthcare_coordinator/pages_controller/view_request_loa_form';
-$route['healthcare-coordinator/loa/request-emergency'] = 'healthcare_coordinator/pages_controller/request_emegency_loa_form';
+
 // $route['healthcare-coordinator/loa/request-emergency/submit'] = 'healthcare_coordinator/loa_controller/submit_loa_request';
+
+
 
 
 
@@ -581,7 +585,7 @@ $route['healthcare-coordinator/noa/requests-list/approved'] = 'healthcare_coordi
 $route['healthcare-coordinator/noa/requests-list/disapproved'] = 'healthcare_coordinator/pages_controller/view_disapproved_noa_list';
 $route['healthcare-coordinator/noa/requests-list/expired'] = 'healthcare_coordinator/pages_controller/view_expired_noa_list';
 $route['healthcare-coordinator/noa/requests-list/completed'] = 'healthcare_coordinator/pages_controller/view_completed_noa_list';
-$route['healthcare-coordinator/noa/request-noa'] = 'healthcare_coordinator/pages_controller/request_noa_form';
+
 $route['healthcare-coordinator/bill/noa-requests/billed'] = 'healthcare_coordinator/pages_controller/view_final_billing';
 
 $route['healthcare-coordinator/bill/noa-requests/billed/initial'] = 'healthcare_coordinator/pages_controller/view_initial_billing';
@@ -625,7 +629,7 @@ $route['healthcare-coordinator/accounts/reset-password/(:any)'] = 'healthcare_co
 $route['healthcare-coordinator/accounts/delete/(:any)'] = 'healthcare_coordinator/accounts_controller/delete_user_account';
 
 // HealthCare Coordinator LOA Routes
-$route['healthcare-coordinator/loa/request-loa/submit'] = 'healthcare_coordinator/loa_controller/submit_loa_request';
+
 $route['healthcare-coordinator/loa/requested-loa/edit/(:any)'] = 'healthcare_coordinator/loa_controller/edit_loa_request';
 $route['healthcare-coordinator/loa/requested-loa/update/(:any)'] = 'healthcare_coordinator/loa_controller/update_loa_request';
 $route['healthcare-coordinator/loa/requests-list/fetch'] = 'healthcare_coordinator/loa_controller/fetch_all_pending_loa';
@@ -651,7 +655,9 @@ $route['healthcare-coordinator/loa/expired/view/(:any)'] = 'healthcare_coordinat
 $route['healthcare-coordinator/loa/requests-list/approve/(:any)'] = 'healthcare_coordinator/loa_controller/approve_loa_request';
 $route['healthcare-coordinator/loa/requests-list/disapprove/(:any)'] = 'healthcare_coordinator/loa_controller/disapprove_loa_request';
 $route['healthcare-coordinator/loa/requests-list/set-charge-type'] = 'healthcare_coordinator/loa_controller/set_charge_type';
+$route['healthcare-coordinator/loa/pending/submit_charge_type_not_affiliated'] = 'healthcare_coordinator/loa_controller/submit_charge_type_not_affiliated';
 $route['healthcare-coordinator/loa/member/search/(:any)'] = 'healthcare_coordinator/search_controller/get_searched_member_details';
+$route['healthcare-coordinator/loa/member/search1/(:any)'] = 'healthcare_coordinator/search_controller/get_searched_member_details';
 $route['healthcare-coordinator/loa/requested-loa/cancel/(:any)'] = 'healthcare_coordinator/loa_controller/cancel_loa_request';
 $route['healthcare-coordinator/loa/requested-loa/generate-printable-loa/(:any)'] = 'healthcare_coordinator/loa_controller/generate_printable_loa';
 $route['healthcare-coordinator/loa/scheduled-loa/generate-printable-loa/(:any)'] = 'healthcare_coordinator/loa_controller/generate_rescheduled_loa';
@@ -680,7 +686,7 @@ $route['healthcare-coordinator/loa/requests-list/billed/fetch'] = 'healthcare_co
 
 $route['healthcare-coordinator/loa/requests-list/for-charging/fetch'] = 'healthcare_coordinator/loa_controller/fetch_for_payment_loa';
 $route['healthcare-coordinator/loa/history'] = 'healthcare_coordinator/loa_controller/history';
-$route['healthcare-coordinator/get-services/(:any)'] = 'healthcare_coordinator/loa_controller/get_hp_services';
+$route['healthcare-coordinator/get-services/(:any)'] = 'healthcare_coordinator/loa_controller/get_hp_services1';
 
 $route['healthcare-coordinator/loa/total-bill/fetch'] = 'healthcare_coordinator/loa_controller/fetch_total_net_bill';
 $route['healthcare-coordinator/loa/charging/fetch/(:any)'] = 'healthcare_coordinator/loa_controller/get_loa_charging';
@@ -706,7 +712,7 @@ $route['healthcare-coordinator/noa/approved/view/(:any)'] = 'healthcare_coordina
 $route['healthcare-coordinator/noa/disapproved/view/(:any)'] = 'healthcare_coordinator/noa_controller/get_disapproved_noa_info';
 $route['healthcare-coordinator/noa/expired/view/(:any)'] = 'healthcare_coordinator/noa_controller/get_expired_noa_info';
 $route['healthcare-coordinator/noa/completed/view/(:any)'] = 'healthcare_coordinator/noa_controller/get_completed_noa_info';
-$route['healthcare-coordinator/noa/request-noa/submit'] = 'healthcare_coordinator/noa_controller/submit_noa_request';
+
 $route['healthcare-coordinator/noa/requested-loa/edit/(:any)'] = 'healthcare_coordinator/noa_controller/edit_noa_request';
 $route['healthcare-coordinator/noa/requested-noa/update/(:any)'] = 'healthcare_coordinator/noa_controller/update_noa_request';
 $route['healthcare-coordinator/noa/requested-noa/cancel/(:any)'] = 'healthcare_coordinator/noa_controller/cancel_noa_request';
@@ -930,13 +936,13 @@ $route['super-admin/loa/requests-list/cancelled/fetch'] = 'super_admin/loa_contr
 $route['super-admin/loa/requests-list/expired/fetch'] = 'super_admin/loa_controller/fetch_all_expired_loa';
 $route['super-admin/loa/requests-list/billed/fetch'] = 'super_admin/loa_controller/fetch_all_billed_loa';
 $route['super-admin/loa/requests-list/paid/fetch'] = 'super_admin/loa_controller/fetch_all_paid_loa';
-$route['super-admin/loa/pending/view/(:any)'] = 'super_admin/loa_controller/get_pending_loa_info';
-$route['super-admin/loa/approved/view/(:any)'] = 'super_admin/loa_controller/get_approved_loa_info';
-$route['super-admin/loa/disapproved/view/(:any)'] = 'super_admin/loa_controller/get_disapproved_loa_info';
-$route['super-admin/loa/completed/view/(:any)'] = 'super_admin/loa_controller/get_completed_loa_info';
-$route['super-admin/loa/cancelled/view/(:any)'] = 'super_admin/loa_controller/get_cancelled_loa_info';
-$route['super-admin/loa/expired/view/(:any)'] = 'super_admin/loa_controller/get_expired_loa_info';
-$route['super-admin/loa/billed/view/(:any)'] = 'super_admin/loa_controller/get_billed_loa_info';
+$route['super-admin/loa/pending/view/(:any)'] = 'super_admin/loa_controller/get_loa_info';
+$route['super-admin/loa/approved/view/(:any)'] = 'super_admin/loa_controller/get_loa_info';
+$route['super-admin/loa/disapproved/view/(:any)'] = 'super_admin/loa_controller/get_loa_info';
+$route['super-admin/loa/completed/view/(:any)'] = 'super_admin/loa_controller/get_loa_info';
+$route['super-admin/loa/cancelled/view/(:any)'] = 'super_admin/loa_controller/get_loa_info';
+$route['super-admin/loa/expired/view/(:any)'] = 'super_admin/loa_controller/get_loa_info';
+$route['super-admin/loa/billed/view/(:any)'] = 'super_admin/loa_controller/get_loa_info';
 $route['super-admin/loa/requests-list/approve/(:any)'] = 'super_admin/loa_controller/approve_loa_request';
 $route['super-admin/loa/requests-list/disapprove/(:any)'] = 'super_admin/loa_controller/disapprove_loa_request';
 $route['super-admin/loa/member/search/(:any)'] = 'super_admin/search_controller/get_searched_member_details';
@@ -1002,20 +1008,50 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 //COORDINATOR
 //=============================================================================================
 	//Letter of Authorization
-		$route['healthcare-coordinator/loa/requests-list'] = 'healthcare_coordinator/pages_controller/view_pending_loa_list';
-		$route['healthcare-coordinator/loa/requests-list/approved'] = 'healthcare_coordinator/pages_controller/view_approved_loa_list';
-		$route['healthcare-coordinator/loa/requests-list/disapproved'] = 'healthcare_coordinator/pages_controller/view_disapproved_loa_list';
-		$route['healthcare-coordinator/loa/requests-list/completed'] = 'healthcare_coordinator/pages_controller/view_completed_loa_list';
-		$route['healthcare-coordinator/members/final-diagnosis/(:any)/(:any)'] = 'healthcare_coordinator/pages_controller/view_final_diagnosis';
-		$route['healthcare-coordinator/members/medical-abstract/(:any)/(:any)'] = 'healthcare_coordinator/pages_controller/view_medical_abstract';
-		$route['healthcare-coordinator/members/take-home-meds/(:any)/(:any)'] = 'healthcare_coordinator/pages_controller/view_take_home_meds';
-		$route['healthcare-coordinator/members/soa/(:any)/(:any)'] = 'healthcare_coordinator/pages_controller/view_billed_soa';
-		$route['healthcare-coordinator/members/incident-spot-reports/(:any)/(:any)'] = 'healthcare_coordinator/pages_controller/view_incident_spot_reports';
+	$route['healthcare-coordinator/loa/requests-list'] = 'healthcare_coordinator/pages_controller/view_pending_loa_list';
+	$route['healthcare-coordinator/loa/requests-list/approved'] = 'healthcare_coordinator/pages_controller/view_approved_loa_list';
+	$route['healthcare-coordinator/loa/requests-list/disapproved'] = 'healthcare_coordinator/pages_controller/view_disapproved_loa_list';
+	$route['healthcare-coordinator/loa/requests-list/completed'] = 'healthcare_coordinator/pages_controller/view_completed_loa_list';
+	$route['healthcare-coordinator/members/final-diagnosis/(:any)/(:any)'] = 'healthcare_coordinator/pages_controller/view_final_diagnosis';
+	$route['healthcare-coordinator/members/medical-abstract/(:any)/(:any)'] = 'healthcare_coordinator/pages_controller/view_medical_abstract';
+	$route['healthcare-coordinator/members/take-home-meds/(:any)/(:any)'] = 'healthcare_coordinator/pages_controller/view_take_home_meds';
+	$route['healthcare-coordinator/members/soa/(:any)/(:any)'] = 'healthcare_coordinator/pages_controller/view_billed_soa';
+	$route['healthcare-coordinator/members/incident-spot-reports/(:any)/(:any)'] = 'healthcare_coordinator/pages_controller/view_incident_spot_reports';
 	//End
 
 	//Emergency LOA
-		$route['healthcare-coordinator/emergency_loa/pending/view_pending'] = 'healthcare_coordinator/pages_controller/view_emergency_loa_pending';
-		$route['healthcare-coordinator/emergency_loa/pending/emergency_loa_datatable_pending'] = 'healthcare_coordinator/pages_controller/emergency_loa_datatable_pending';
+	$route['healthcare-coordinator/emergency_loa/pending/view_pending'] = 'healthcare_coordinator/pages_controller/view_emergency_loa_pending';
+	$route['healthcare-coordinator/emergency_loa/pending/emergency_loa_datatable_pending'] = 'healthcare_coordinator/pages_controller/emergency_loa_datatable_pending';
+	//End
+
+	//Emergency Form
+	$route['healthcare-coordinator/emergency_loa/search_emergency'] = 'healthcare_coordinator/pages_controller/search_emergency';
+	$route['healthcare-coordinator/emergency_loa/managers_key/(:any)'] = 'healthcare_coordinator/pages_controller/emergency_managers_key';
+	$route['healthcare-coordinator/emergency_loa/emergency_managers_key'] = 'healthcare_coordinator/account_controller/emergency_managers_key';
+	$route['healthcare-coordinator/emergency_loa/emergency_form/(:any)'] = 'healthcare_coordinator/pages_controller/emergency_form';
+	$route['healthcare-coordinator/loa/member/search1/(:any)'] = 'healthcare_coordinator/search_controller/get_searched_member_details';
+	$route['healthcare-coordinator/loa/request-loa/submit'] = 'healthcare_coordinator/loa_controller/submit_loa_request';
+	//End
+
+	//Admission Form
+	$route['healthcare-coordinator/noa/search_noa'] = 'healthcare_coordinator/pages_controller/search_noa';
+	$route['healthcare-coordinator/noa/member/search/(:any)'] = 'healthcare_coordinator/search_controller/get_searched_member_details_for_noa';
+	$route['healthcare-coordinator/emergency_loa/noa_managers_key/(:any)'] = 'healthcare_coordinator/pages_controller/noa_managers_key';
+	// $route['healthcare-coordinator/noa/request-noa'] = 'healthcare_coordinator/pages_controller/request_noa_form';
+	$route['healthcare-coordinator/noa/admission_form/(:any)'] = 'healthcare_coordinator/pages_controller/admission_form';
+	$route['healthcare-coordinator/noa/member/search1/(:any)'] = 'healthcare_coordinator/search_controller/get_searched_member_details_for_noa';
+	$route['healthcare-coordinator/noa/request-noa/submit'] = 'healthcare_coordinator/noa_controller/submit_noa_request';
+	//End
+
+	//Diagnostic Form
+	$route['healthcare-coordinator/loa/managers_key'] = 'healthcare_coordinator/pages_controller/diagnostic_managers_key';
+	$route['healthcare-coordinator/loa/Diagnostic_form'] = 'healthcare_coordinator/pages_controller/Diagnostic_form';
+	$route['healthcare-coordinator/loa/diagnostic_managers_key'] = 'healthcare_coordinator/account_controller/diagnostic_managers_key';
+	$route['healthcare-coordinator/loa/Diagnostic/(:any)'] = 'healthcare_coordinator/pages_controller/Diagnostic_form';
+	$route['healthcare-coordinator/loa/Diagnostic/get_details_for_diagnostic/(:any)'] = 'healthcare_coordinator/search_controller/get_details_for_diagnostic';
+	$route['healthcare-coordinator/get_hospital_services/(:any)'] = 'healthcare_coordinator/loa_controller/get_hospital_services';
+	$route['healthcare-coordinator/loa/submit_diagnostic_form'] = 'healthcare_coordinator/loa_controller/submit_diagnostic_form';
+	$route['healthcare-coordinator/loa/med_services/(:any)'] = 'healthcare_coordinator/loa_controller/get_hp_services';
 	//End
 
 	//Final Billing
@@ -1055,6 +1091,8 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 	$route['healthcare-coordinator/healthcare_advance/healthcare_advance_modal_disapproved/(:any)'] = 'healthcare_coordinator/loa_controller/healthcare_advance_modal_disapproved';
 
 	//end
+
+	$route['healthcare-coordinator/noa/med_services/(:any)'] = 'healthcare_coordinator/noa_controller/get_hp_services';
 //=============================================================================================
 //END
 //=============================================================================================

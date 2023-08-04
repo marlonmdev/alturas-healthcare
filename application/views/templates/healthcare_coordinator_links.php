@@ -7,7 +7,7 @@
 
 <li class="sidebar-item">
   <a class="sidebar-link sidebar-link" href="<?php echo base_url(); ?>healthcare-coordinator/healthcare-providers" aria-expanded="false">
-    <i class="mdi mdi-hospital-building"></i>
+    <i class="icon mdi mdi-hospital-building"></i>
     <span class="hide-menu ls-1">Healthcare Providers</span>
   </a>
 </li>
@@ -19,18 +19,9 @@
   </a>
 </li>
 
-
-
-<!-- <li class="sidebar-item <?php echo $this->uri->segment(2) == 'emergency' ? 'selected' : ''; ?>">
-  <a class="sidebar-link sidebar-link" href="<?php echo base_url(); ?>healthcare-coordinator/emergency_loa/pending/view_pending" aria-expanded="false">
-    <i class="mdi mdi-file-document"></i>Emergency LOA 
-
-  </a>
-</li> -->
-
 <li class="sidebar-item <?php echo $this->uri->segment(2) == 'loa' ? 'selected' : ''; ?>">
   <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
-    <i class="mdi mdi-file-chart"></i>LOA
+    <i class="mdi mdi-note-plus"></i>Letter of Authorization
     <?php
        $total = $bar + $bar1 + $bar2 + $bar3 + $bar4;
        if ($total > 0) {
@@ -41,7 +32,7 @@
   <ul aria-expanded="false" class="collapse first-level">
     <li class="sidebar-item">
       <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list" class="sidebar-link">
-        <i class="mdi mdi-note-outline"></i>Request List
+        <i class="mdi mdi-thumb-up"><span class="mdi mdi-thumb-down"></span></i> Request List
         <?php
            $total = $bar + $bar1 + $bar2 + $bar3 + $bar4;
            if ($total > 0) {
@@ -50,10 +41,18 @@
         ?>
       </a>
     </li>
+
     <li class="sidebar-item">
-      <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/request-emergency" class="sidebar-link"
+      <a href="<?php echo base_url(); ?>healthcare-coordinator/emergency_loa/search_emergency" class="sidebar-link">
+        <i class="mdi mdi-note-plus"></i>
+        <span class="hide-menu ls-1">Emergency Form</span>
+      </a>
+    </li>
+
+    <li class="sidebar-item">
+      <a href="<?php echo base_url(); ?>healthcare-coordinator/loa/managers_key" class="sidebar-link"
         ><i class="mdi mdi-note-plus"></i
-        ><span class="hide-menu ls-1">Emergency LOA</span>
+        ><span class="hide-menu ls-1">Diagnostic Form</span>
       </a>
     </li>
   </ul>
@@ -61,7 +60,7 @@
 
 <li class="sidebar-item <?php echo $this->uri->segment(2) == 'noa' ? 'selected' : ''; ?>">
   <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
-    <i class="mdi mdi-file-chart"></i>NOA
+    <i class="mdi mdi-hospital"></i>Notice of Admission
     <?php
       $total2 = $bar5 + $bar6;
       if ($total2 > 0) {
@@ -72,7 +71,7 @@
   <ul aria-expanded="false" class="collapse first-level">
     <li class="sidebar-item">
       <a href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list" class="sidebar-link">
-        <i class="mdi mdi-note-outline"></i>Request List
+        <i class="mdi mdi-thumb-up"><span class="mdi mdi-thumb-down"></span></i> Request List
         <?php
           $total2 = $bar5 + $bar6;
           if ($total2 > 0) {
@@ -82,9 +81,9 @@
       </a>
     </li>
     <li class="sidebar-item">
-      <a href="<?php echo base_url(); ?>healthcare-coordinator/noa/request-noa" class="sidebar-link"
+      <a href="<?php echo base_url(); ?>healthcare-coordinator/noa/search_noa" class="sidebar-link"
         ><i class="mdi mdi-note-plus"></i
-        ><span class="hide-menu ls-1">NOA Requisition</span>
+        ><span class="hide-menu ls-1">Admission Form</span>
       </a>
     </li>  
   </ul>
@@ -92,7 +91,7 @@
 
 <li class="sidebar-item <?php echo $this->uri->segment(2) == 'personal-charges' ? 'selected' : ''; ?>">
   <a class="sidebar-link" href="<?php echo base_url(); ?>healthcare-coordinator/healthcare_advance/view_healthcare_advance_pending" aria-expanded="false">
-    <i class="mdi mdi-receipt"></i>
+    <i class="mdi mdi-cash-multiple"></i>
     <span class="hide-menu ls-1">Healthcare Advance</span>
   </a>
 </li>
@@ -152,12 +151,6 @@
         </li>
       </ul>
     </li>
-    <!-- <li class="sidebar-item">
-      <a href="<?php echo base_url(); ?>healthcare-coordinator/loa_controller/view_ledger" class="sidebar-link">
-        <i class="mdi mdi-book-open-page-variant"></i>
-        <span class="hide-menu ls-1">Ledger</span>
-      </a>
-    </li> -->
   </ul>
 </li> 
 
@@ -222,8 +215,25 @@
               
 <li class="sidebar-item">
   <a class="sidebar-link" href="javascript:void(0)" onclick="logout(`<?= base_url() ?>`)" aria-expanded="false">
-    <i class="mdi mdi-power"></i>
+    <i class="mdi mdi-power" style="color:red"></i>
     <span class="hide-menu ls-1">Logout</span>
   </a>
 </li> 
 
+<!-- <style type="text/css">
+  #main-wrapper .left-sidebar[data-sidebarbg="skin5"],
+  #main-wrapper .left-sidebar[data-sidebarbg="skin5"] ul {
+    background: #003153;
+  }
+  .sidebar-nav ul .sidebar-item.selected > .sidebar-link {
+    background: #003153;
+  }
+  .sidebar-nav > #sidebarnav > .sidebar-item > .sidebar-link:hover {
+    background-color: #074C6C;
+  }
+  .sidebar-nav ul .sidebar-item .sidebar-link {
+    color:#fff;
+  } 
+
+</style> 
+ -->

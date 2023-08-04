@@ -48,7 +48,12 @@ class Noa_controller extends CI_Controller {
 			}
 
 			$custom_actions .= '<a href="JavaScript:void(0)" onclick="disapproveNoaRequest(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Disapprove NOA"><i class="mdi mdi-thumb-down fs-2 text-danger"></i></a>';
-
+			$view_receipt = '';
+			if($noa['hospital_receipt']){
+				$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $noa['hospital_receipt'] . '\')"><strong>View</strong></a>';
+			}else{
+				$view_receipt ='None';
+			}
 			// shorten name of values from db if its too long for viewing and add ...
 			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];
 
@@ -58,6 +63,7 @@ class Noa_controller extends CI_Controller {
 			$row[] = $admission_date;
 			$row[] = $short_hosp_name;
 			$row[] = $request_date;
+			$row[] = $view_receipt;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;
@@ -99,6 +105,13 @@ class Noa_controller extends CI_Controller {
 			}else{
 				$custom_actions .= '';
 			}
+
+			$view_receipt = '';
+			if($noa['hospital_receipt']){
+				$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $noa['hospital_receipt'] . '\')"><strong>View</strong></a>';
+			}else{
+				$view_receipt ='None';
+			}
 			// shorten name of values from db if its too long for viewing and add ...
 			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];
 
@@ -108,6 +121,7 @@ class Noa_controller extends CI_Controller {
 			$row[] = $admission_date;
 			$row[] = $short_hosp_name;
 			$row[] = $expiry_date;
+			$row[] = $view_receipt;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;
@@ -168,13 +182,19 @@ class Noa_controller extends CI_Controller {
 
 			// shorten name of values from db if its too long for viewing and add ...
 			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];
-
+			$view_receipt = '';
+			if($noa['hospital_receipt']){
+				$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $noa['hospital_receipt'] . '\')"><strong>View</strong></a>';
+			}else{
+				$view_receipt ='None';
+			}
 			// this data will be rendered to the datatable
 			$row[] = $custom_noa_no;
 			$row[] = $full_name;
 			$row[] = $admission_date;
 			$row[] = $short_hosp_name;
 			$row[] = $request_date;
+			$row[] = $view_receipt;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;
@@ -211,13 +231,19 @@ class Noa_controller extends CI_Controller {
 
 			// shorten name of values from db if its too long for viewing and add ...
 			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];
-
+			$view_receipt = '';
+			if($noa['hospital_receipt']){
+				$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $noa['hospital_receipt'] . '\')"><strong>View</strong></a>';
+			}else{
+				$view_receipt ='None';
+			}
 			// this data will be rendered to the datatable
 			$row[] = $custom_noa_no;
 			$row[] = $full_name;
 			$row[] = $admission_date;
 			$row[] = $short_hosp_name;
 			$row[] = $request_date;
+			$row[] = $view_receipt;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;
@@ -254,13 +280,19 @@ class Noa_controller extends CI_Controller {
 
 			// shorten name of values from db if its too long for viewing and add ...
 			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];
-
+			$view_receipt = '';
+			if($noa['hospital_receipt']){
+				$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $noa['hospital_receipt'] . '\')"><strong>View</strong></a>';
+			}else{
+				$view_receipt ='None';
+			}
 			// this data will be rendered to the datatable
 			$row[] = $custom_noa_no;
 			$row[] = $full_name;
 			$row[] = $admission_date;
 			$row[] = $short_hosp_name;
 			$row[] = $expiry_date;
+			$row[] = $view_receipt;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;
@@ -315,7 +347,17 @@ class Noa_controller extends CI_Controller {
 		}else{
 			$billed_on = '';
 		}
-
+		$selected_cost_types = explode(';', $row['medical_services']);
+		$ct_array = [];
+		$is_empty = false;
+		foreach ($selected_cost_types as $selected_cost_type) :
+			if($selected_cost_type !== ''){
+				$is_empty = true;
+				array_push($ct_array, '[ <span class="text-success">'.$selected_cost_type.'</span> ]');
+			}
+			
+		endforeach;
+		$med_serv = implode(' ', $ct_array);
 		$response = array(
 			'status' => 'success',
 			'token' => $this->security->get_csrf_hash(),
@@ -332,6 +374,7 @@ class Noa_controller extends CI_Controller {
 			'hospital_name' => $row['hp_name'],
 			'admission_date' => date("F d, Y", strtotime($row['admission_date'])),
 			'chief_complaint' => $row['chief_complaint'],
+			'med_services' => ($is_empty)?$med_serv:'None',
 			// Full Month Date Year Format (F d Y)
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'work_related' => $row['work_related'],
@@ -365,7 +408,155 @@ class Noa_controller extends CI_Controller {
 	// 	}
 	// 	echo json_encode($response);
 	// }
+	public function get_personal_and_company_charge($noa_id,$old_billing) {
+        
+        $noa_info = $this->noa_model->db_get_noa_info($noa_id);
+       
+			$company_charge = 0;
+			$personal_charge = 0;
+			$remaining_mbl = 0;
+			
+			$wpercent = '';
+			$nwpercent = '';
+			$net_bill = $noa_info['hospital_bill'];
+            $prev_mbl = ($old_billing != null) ? $old_billing['after_remaining_bal'] : 0;
+			$max_mbl = floatval($noa_info['max_benefit_limit']);
+			$percentage = floatval($noa_info['percentage']);
+			$previous_mbl = 0;
+            // var_dump("status",$status);
+            // var_dump("prev mbl",$prevmbl);
+			if($old_billing){
+				$previous_mbl = $prev_mbl;
+			}else{
+				$previous_mbl =$noa_info['remaining_balance'];
+			}
 
+
+			if($noa_info['work_related'] == 'Yes'){
+               
+				if($noa_info['percentage'] == ''){
+                    if($previous_mbl <= 0){
+                        $company_charge = 0;
+                        $personal_charge =  $net_bill;
+                        $remaining_mbl =  0;
+                    }else{
+                        $company_charge = $net_bill;
+                        $personal_charge = 0;
+                        if($net_bill >= $previous_mbl){
+                            $remaining_mbl = 0;
+                        }else if($net_bill < $previous_mbl){
+                            $remaining_mbl = $previous_mbl - $net_bill;
+                        }
+                    }
+					
+                    
+				}else if($noa_info['percentage'] != ''){
+					if($previous_mbl <= 0){
+                        $company_charge = 0;
+                        $personal_charge =  $net_bill;
+                        $remaining_mbl =  0;
+                    }else{
+                        if($net_bill <= $previous_mbl){
+                            $company_charge = $net_bill;
+                            $personal_charge = 0;
+                            $remaining_mbl = $previous_mbl - $net_bill;
+                        }else if($net_bill > $previous_mbl){
+                            $converted_percent = $percentage/100;
+                            $initial_company_charge = floatval($converted_percent) * $net_bill;
+                            $initial_personal_charge = $net_bill - floatval($initial_company_charge);
+                            
+                            if(floatval($initial_company_charge) <= $previous_mbl){
+                                $result = $previous_mbl - floatval($initial_company_charge);
+                                $int_personal = floatval($initial_personal_charge) - floatval($result);
+                                $personal_charge = $int_personal;
+                                $company_charge = $previous_mbl;
+                                $remaining_mbl = 0;
+                        
+                            }else if(floatval($initial_company_charge) > $previous_mbl){
+                                $personal_charge = $initial_personal_charge;
+                                $company_charge = $initial_company_charge;
+                                $remaining_mbl = 0;
+                            }
+                        }
+                    }
+					
+				}
+			}else if($noa_info['work_related'] == 'No'){
+				if($noa_info['percentage'] == ''){
+                    if($previous_mbl <= 0){
+                        $company_charge = 0;
+                        $personal_charge =  $net_bill;
+                        $remaining_mbl =  0;
+                    }else{
+                        if($net_bill <= $previous_mbl){
+                            $company_charge = $net_bill;
+                            $personal_charge = 0;
+                            $remaining_mbl = $previous_mbl - $company_charge;
+                        }else if($net_bill > $previous_mbl){
+                            $company_charge = $previous_mbl;
+                            $personal_charge = $net_bill - $previous_mbl;
+                            $remaining_mbl = 0;
+                        }
+                    }
+					
+                   
+				}else if($noa_info['percentage'] != ''){
+                    if($previous_mbl <= 0){
+                        $company_charge = 0;
+                        $personal_charge =  $net_bill;
+                        $remaining_mbl =  0;
+                    }else{
+                        if($net_bill <= $previous_mbl){
+                            $company_charge = $net_bill;
+                            $personal_charge = 0;
+                            $remaining_mbl = $previous_mbl - floatval($net_bill);
+                        }else if($net_bill > $previous_mbl){
+                            $converted_percent = $percentage/100;
+                            $initial_personal_charge = $converted_percent * $net_bill;
+                            $initial_company_charge = $net_bill - floatval($initial_personal_charge);
+                            
+                            if($initial_company_charge <= $previous_mbl){
+                                $result = $previous_mbl - $initial_company_charge;
+                                $initial_personal = $initial_personal_charge - $result;
+                                if($initial_personal < 0 ){
+                                    $personal_charge = 0;
+                                    $company_charge = $initial_company_charge + $initial_personal_charge;
+                                    $remaining_mbl = $previous_mbl - floatval($company_charge);
+                                }else if($initial_personal >= 0){
+                                    $personal_charge = $initial_personal;
+                                    $company_charge = $previous_mbl;
+                                    $remaining_mbl = 0;
+                                }
+                            }else if($initial_company_charge > $previous_mbl){
+                                $personal_charge = $initial_personal_charge;
+                                $company_charge = $initial_company_charge;
+                                $remaining_mbl = 0;
+                            }
+                            
+                        }
+                    }
+				}
+			}
+		
+            
+            $data = array(
+                'company_charge' => $company_charge,
+                'personal_charge' => $personal_charge,
+                'remaining_balance' =>$rmbl = $remaining_mbl,
+                'used_mbl' =>  (($max_mbl-$rmbl)>0)? $max_mbl-$rmbl : $max_mbl,
+                'previous_mbl' => $previous_mbl,
+            );
+			return  $data;
+	}
+
+	function billing_number($input, $pad_len = 7, $prefix = null) {
+		if ($pad_len <= strlen($input))
+			trigger_error('<strong>$pad_len</strong> cannot be less than or equal to the length of <strong>$input</strong> to generate invoice number', E_USER_ERROR);
+		if (is_string($prefix))
+			return sprintf("%s%s", $prefix, str_pad($input, $pad_len, "0", STR_PAD_LEFT));
+
+		return str_pad($input, $pad_len, "0", STR_PAD_LEFT);
+	}
 
 	function approve_noa_request() {
 		$token = $this->security->get_csrf_hash();
@@ -374,6 +565,14 @@ class Noa_controller extends CI_Controller {
 		$expiration_date = $this->input->post('expiration-date', TRUE);
 		$approved_by = $this->session->userdata('doctor_id');
 		$approved_on = date("Y-m-d");
+		$noa_info = $this->noa_model->db_get_noa_info($noa_id);
+		$is_manual = json_decode($noa_info['is_manual']);
+		$result = $this->noa_model->db_get_max_billing_id();
+		$max_billing_id = !$result ? 0 : $result['billing_id'];
+		$add_billing = $max_billing_id + 1;
+		$current_year = date('Y').date('m');
+		// call function loa_number
+		$billing_no = $this->billing_number($add_billing, 5, 'BLN-'.$current_year);
 
 		if($expiration_type == 'custom'){
 			$this->form_validation->set_rules('expiration-date', 'Custom Expiration Date', 'required');
@@ -411,16 +610,60 @@ class Noa_controller extends CI_Controller {
 				break;
 		}
 
-		$data = [
-			'status'          => 'Approved',
+		$data_status = [
+			'status'          => ($is_manual === 1)?'Billed':'Approved',
 			'approved_by'     => $approved_by,
 			'approved_on'     => $approved_on,
 			'expiration_date' => $expired_on
 		];
 
-		$approved = $this->noa_model->db_approve_noa_request($noa_id, $data);
+		$approved = $this->noa_model->db_approve_noa_request($noa_id, $data_status);
+		
 		if ($approved) {
-			$response = ['token' => $token, 'status' => 'success', 'message' => 'NOA Request Approved Successfully'];
+			if($is_manual === 1){
+				$old_billing = $this->noa_model->get_billing_by_emp_id($noa_info['emp_id']);
+				$result_charge = $this->get_personal_and_company_charge($noa_id,$old_billing);
+				$data = [
+					'billing_no'            => $billing_no,
+					'billing_type'          => 'Reimburse',
+					'emp_id'                => $noa_info['emp_id'],
+					'noa_id'                => $noa_id,
+					'hp_id'                 => $noa_info['hospital_id'],
+					'work_related'          => $noa_info['work_related'],
+					// 'take_home_meds'        => isset($take_home_meds)?implode(',',$take_home_meds):$get_prev_meds,
+					'net_bill'              => $noa_info['hospital_bill'],
+					'company_charge'        =>  $result_charge['company_charge'],
+					'personal_charge'       =>  $result_charge['personal_charge'],
+					'before_remaining_bal'  =>  $result_charge['previous_mbl'],
+					'after_remaining_bal'   =>  $result_charge['remaining_balance'],
+					'pdf_bill'              => $noa_info['hospital_receipt'],
+					// 'itemized_bill'         => isset($uploaded_files['itemize-pdf-file']) ? $uploaded_files['itemize-pdf-file']['file_name'] : $get_prev_mbl_by_bill_no['itemize-pdf-file'],
+					// 'final_diagnosis_file'  => isset($uploaded_files['Final-Diagnosis']) ? $uploaded_files['Final-Diagnosis']['file_name'] : $get_prev_mbl_by_bill_no['final_diagnosis_file'],
+					// 'medical_abstract_file' => isset($uploaded_files['Medical-Abstract']) ? $uploaded_files['Medical-Abstract']['file_name'] : $get_prev_maf,
+					// 'prescription_file'     => isset($uploaded_files['Prescription']) ? $uploaded_files['Prescription']['file_name'] : $get_prev_pf,
+					'billed_by'             => $this->session->userdata('fullname'),
+					'billed_on'             => date('Y-m-d'),
+					'status'                => 'Billed',
+					// 'extracted_txt'         => $hospitalBillData,
+					// 'attending_doctors'      => $attending_doctor,
+					'request_date'          => $noa_info['request_date']
+				];    
+				$mbl = [
+					'used_mbl'            => $result_charge['used_mbl'],
+					'remaining_balance'      => $result_charge['remaining_balance']
+				];
+	
+				$insert = $this->noa_model->insert_billing($data);
+			
+				if($insert){
+					$this->noa_model->update_member_remaining_balance($noa_info['emp_id'], $mbl);
+					$response = ['token' => $token, 'status' => 'success', 'message' => 'NOA Request Approved Successfully','next_page'=>'Billed'];
+				}else{
+					$response = ['token' => $token, 'status' => 'save-error', 'message' => 'Unable to Approve NOA Request'];
+				}
+			}else{
+				$response = ['token' => $token, 'status' => 'success', 'message' => 'NOA Request Approved Successfully','next_page'=>'Approved'];
+			}
 		} else {
 			$response = ['token' => $token, 'status' => 'save-error', 'message' => 'Unable to Approve NOA Request'];
 		}

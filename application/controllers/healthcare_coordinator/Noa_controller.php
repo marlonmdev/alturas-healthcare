@@ -13,6 +13,26 @@ class Noa_controller extends CI_Controller {
 		}
 	}
 
+	function get_hp_services(){
+		$token = $this->security->get_csrf_hash();
+		$hp_id = $this->uri->segment(4);
+		$cost_types = $this->loa_model->db_get_cost_types_by_hp($hp_id);
+		$response = array();
+
+		if(empty($cost_types)){
+		}else{
+			foreach ($cost_types as $cost_type) {
+				$data = [
+					'ctyp_id' => $cost_type['ctype_id'],
+					'ctyp_description' => $cost_type['item_description'],
+					'ctyp_price' => number_format($cost_type['op_price'],2,'.',','),
+				];
+				array_push($response,$data);
+			}
+		}
+		echo json_encode($response);
+	}
+
 	function noa_number($input, $pad_len = 7, $prefix = null) {
 		if ($pad_len <= strlen($input))
 			trigger_error('<strong>$pad_len</strong> cannot be less than or equal to the length of <strong>$input</strong> to generate invoice number', E_USER_ERROR);
@@ -94,18 +114,21 @@ class Noa_controller extends CI_Controller {
 				if (!$saved) {
 					$response = [
 						'status' => 'save-error', 
-						'message' => 'NOA Request Failed'
+						'message' => 'Failed to save!'
 					];
 				}
 				$response = [
 					'status' => 'success', 
-					'message' => 'NOA Request Save Successfully'
+					'message' => 'Successfully Saved!'
 				];
 			}
 		}
 		echo json_encode($response);
 	}
 
+	//==================================================
+	//NOTICE OF ADMISSION (PENDING)
+	//==================================================
 	function fetch_all_pending_noa() {
 		$this->security->get_csrf_hash();
 		$status = 'Pending';
@@ -116,35 +139,32 @@ class Noa_controller extends CI_Controller {
 			$row = [];
 			$noa_id = $this->myhash->hasher($noa['noa_id'], 'encrypt');
 			$view_url = base_url() . 'healthcare-coordinator/noa/requested-loa/edit/' . $noa_id;
-
 			$full_name = $noa['first_name'] . ' ' . $noa['middle_name'] . ' ' . $noa['last_name'] . ' ' . $noa['suffix'];
-
 			$admission_date = date("m/d/Y", strtotime($noa['admission_date']));
 			$request_date = date("m/d/Y", strtotime($noa['request_date']));
-
-			$custom_noa_no = '<mark class="bg-primary text-white">'.$noa['noa_no'].'</mark>';
+			$custom_noa_no = '<mark class="bg-cyan text-black"><b>'.$noa['noa_no'].'</b></mark>';
 
 			/* Checking if the work_related column is empty. If it is empty, it will display the status column.
 			If it is not empty, it will display the text "for Approval". */
 			if($noa['work_related'] == ''){
-				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $noa['status'] . '</span></div>';
+				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-danger">' . $noa['status'] . '</span></div>';
 			}else{
 				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-cyan">for Approval</span></div>';
 			}
 
-			$custom_actions = '<a class="me-2" href="JavaScript:void(0)" onclick="viewNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			$custom_actions = '<a class="me-2" href="JavaScript:void(0)" onclick="viewNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View Info"><i class="mdi mdi-information fs-4 text-info"></i></a>';
 
-			$custom_actions .= '<a class="me-2" href="' . $view_url . '" data-bs-toggle="tooltip" title="Edit NOA" readonly><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a>';
+			$custom_actions .= '<a class="me-2" href="' . $view_url . '" data-bs-toggle="tooltip" title="Edit Admission Form" readonly><i class="mdi mdi-pencil-circle fs-4 text-success"></i></a>';
 
-			$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Tag NOA Charge Type"><i class="mdi mdi-tag-plus fs-2 text-primary"></i></a>';
+			$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Tagging"><i class="mdi mdi-tag-plus fs-4 text-primary"></i></a>';
 			
-			if($noa['spot_report_file'] && $noa['incident_report_file'] != ''){
-				$custom_actions .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $noa_id . '\',\'' . $noa['work_related'] . '\',\'' . $noa['percentage'] . '\',\'' . $noa['spot_report_file'] . '\',\'' . $noa['incident_report_file'] . '\')" data-bs-toggle="tooltip" title="View Uploaded Reports"><i class="mdi mdi-teamviewer fs-2 text-warning"></i></a>';
+			if($noa['spot_report_file'] || $noa['incident_report_file'] != '' || $noa['police_report_file'] != ''){
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $noa_id . '\',\'' . $noa['work_related'] . '\',\'' . $noa['percentage'] . '\',\'' . $noa['spot_report_file'] . '\',\'' . $noa['incident_report_file'] . '\',\'' . $noa['police_report_file'] . '\')" data-bs-toggle="tooltip" title="View Reports"><i class="mdi mdi-teamviewer fs-4 text-warning"></i></a>';
 			}else{
 				$custom_actions .= '';
 			}
 			
-			$custom_actions .= '<a href="Javascript:void(0)" onclick="cancelNoaRequest(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Delete NOA"><i class="mdi mdi-delete-circle fs-2 text-danger"></i></a>';
+			$custom_actions .= '<a href="Javascript:void(0)" onclick="cancelNoaRequest(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Delete Request"><i class="mdi mdi-delete-circle fs-4 text-danger"></i></a>';
 
 			
 			// shorten name of values from db if its too long for viewing and add ...
@@ -170,6 +190,48 @@ class Noa_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 
+	function update_noa_request() {
+		$this->security->get_csrf_hash();
+		$inputPost = $this->input->post(NULL, TRUE); // returns all POST items with XSS filter
+		$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$this->form_validation->set_rules('hospital-name', 'Name of Hospital', 'required');
+		$this->form_validation->set_rules('admission-date', 'Request Date of  Availment', 'required');
+		$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[1000]');
+		if ($this->form_validation->run() == FALSE) {
+			$response = [
+				'status' => 'error',
+				'hospital_name_error' => form_error('hospital-name'),
+				'admission_date_error' => form_error('admission-date'),
+				'chief_complaint_error' => form_error('chief-complaint'),
+			];
+		} else {
+			$post_data = [
+				'hospital_id' => $inputPost['hospital-name'],
+				'admission_date' => $inputPost['admission-date'],
+				'chief_complaint' => strip_tags($inputPost['chief-complaint']),
+			];
+			$saved = $this->noa_model->db_update_noa_request($noa_id, $post_data);
+			if ($saved) {
+				$response = [
+					'status' => 'success', 
+					'message' => 'Updated Successfully'
+				];
+			} else {
+				$response = [
+					'status' => 'save-error', 
+					'message' => 'Update Failed'
+				];
+			}
+		}
+		echo json_encode($response);
+	}
+	//==================================================
+	//END
+	//==================================================
+
+	//==================================================
+	//NOTICE OF ADMISSION (APPROVED)
+	//==================================================
 	function fetch_all_approved_noa() {
 		$this->security->get_csrf_hash();
 		$status = 'Approved';
@@ -180,22 +242,17 @@ class Noa_controller extends CI_Controller {
 			$row = [];
 			$noa_id = $this->myhash->hasher($noa['noa_id'], 'encrypt');
 			$full_name = $noa['first_name'] . ' ' . $noa['middle_name'] . ' ' . $noa['last_name'] . ' ' . $noa['suffix'];
-
 			$admission_date = date("m/d/Y", strtotime($noa['admission_date']));
 			$request_date = date("m/d/Y", strtotime($noa['request_date']));
 			$expiry_date = $noa['expiration_date'] ? date("m/d/Y", strtotime($noa['expiration_date'])) : 'None';
-
-			$custom_noa_no = '<mark class="bg-primary text-white">'.$noa['noa_no'].'</mark>';
-
+			$custom_noa_no = '<mark class="bg-cyan text-black"><b>'.$noa['noa_no'].'</b></mark>';
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $noa['status'] . '</span></div>';
-
-			$custom_actions = '<a class="me-2" href="JavaScript:void(0)" onclick="viewApprovedNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
-
-			$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/noa/requested-noa/generate-printable-noa/' . $noa_id . '" data-bs-toggle="tooltip" title="Print NOA"><i class="mdi mdi-printer fs-2 text-primary pe-2"></i></a>';
+			$custom_actions = '<a class="me-2" href="JavaScript:void(0)" onclick="viewApprovedNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View Info"><i class="mdi mdi-information fs-4 text-info"></i></a>';
+			$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/noa/requested-noa/generate-printable-noa/' . $noa_id . '" data-bs-toggle="tooltip" title="Print"><i class="mdi mdi-printer fs-4 text-primary pe-2"></i></a>';
 
 			
-			if($noa['spot_report_file'] && $noa['incident_report_file'] != ''){
-				$custom_actions .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $noa_id . '\',\'' . $noa['work_related'] . '\',\'' . $noa['percentage'] . '\',\'' . $noa['spot_report_file'] . '\',\'' . $noa['incident_report_file'] . '\')" data-bs-toggle="tooltip" title="View Uploaded Reports"><i class="mdi mdi-teamviewer fs-2 text-warning"></i></a>';
+			if($noa['spot_report_file'] || $noa['incident_report_file'] != '' || $noa['police_report_file'] != ''){
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $noa_id . '\',\'' . $noa['work_related'] . '\',\'' . $noa['percentage'] . '\',\'' . $noa['spot_report_file'] . '\',\'' . $noa['incident_report_file'] . '\',\'' . $noa['police_report_file'] . '\')" data-bs-toggle="tooltip" title="View Reports"><i class="mdi mdi-teamviewer fs-4 text-warning"></i></a>';
 			}else{
 				$custom_actions .= '';
 			}
@@ -221,6 +278,13 @@ class Noa_controller extends CI_Controller {
 		];
 		echo json_encode($output);
 	}
+	//==================================================
+	//END
+	//==================================================
+
+	//==================================================
+	//NOTICE OF ADMISSION (DISAPPROVED)
+	//==================================================
 
 	function fetch_all_disapproved_noa() {
 		$this->security->get_csrf_hash();
@@ -231,15 +295,11 @@ class Noa_controller extends CI_Controller {
 			$row = [];
 			$noa_id = $this->myhash->hasher($noa['noa_id'], 'encrypt');
 			$full_name = $noa['first_name'] . ' ' . $noa['middle_name'] . ' ' . $noa['last_name'] . ' ' . $noa['suffix'];
-
 			$admission_date = date("m/d/Y", strtotime($noa['admission_date']));
 			$request_date = date("m/d/Y", strtotime($noa['request_date']));
-
-			$custom_noa_no = '<mark class="bg-primary text-white">'.$noa['noa_no'].'</mark>';
-
+			$custom_noa_no = '<mark class="bg-cyan text-black"><b>'.$noa['noa_no'].'</b></mark>';
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-danger">' . $noa['status'] . '</span></div>';
-
-			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewDisapprovedNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewDisapprovedNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View Info"><i class="mdi mdi-information fs-4 text-info"></i></a>';
 
 			// shorten name of values from db if its too long for viewing and add ...
 			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];
@@ -306,7 +366,13 @@ class Noa_controller extends CI_Controller {
 		];
 		echo json_encode($output);
 	}
+	//==================================================
+	//END
+	//==================================================
 
+	//==================================================
+	//NOTICE OF ADMISSION (EXPIRED)
+	//==================================================
 
 	function fetch_all_expired_noa() {
 		$this->security->get_csrf_hash();
@@ -317,18 +383,15 @@ class Noa_controller extends CI_Controller {
 			$row = [];
 			$noa_id = $this->myhash->hasher($noa['noa_id'], 'encrypt');
 			$full_name = $noa['first_name'] . ' ' . $noa['middle_name'] . ' ' . $noa['last_name'] . ' ' . $noa['suffix'];
-
 			$admission_date = date("m/d/Y", strtotime($noa['admission_date']));
 			$request_date = date("m/d/Y", strtotime($noa['request_date']));
 			$expiry_date = $noa['expiration_date'] ? date("m/d/Y", strtotime($noa['expiration_date'])) : 'None';
-
-			$custom_noa_no = '<mark class="bg-primary text-white">'.$noa['noa_no'].'</mark>';
-
+			$custom_noa_no = '<mark class="bg-cyan text-black"><b>'.$noa['noa_no'].'</b></mark>';
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-danger">' . $noa['status'] . '</span></div>';
 
-			$custom_actions = '<a class="me-1" href="JavaScript:void(0)" onclick="viewExpiredNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
+			$custom_actions = '<a class="me-1" href="JavaScript:void(0)" onclick="viewExpiredNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View Info"><i class="mdi mdi-information fs-4 text-info"></i></a>';
 
-			$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $noa_id . '\', \'' . $noa['noa_no'] . '\')" data-bs-toggle="tooltip" title="Back Date NOA"><i class="mdi mdi-update fs-2 text-cyan"></i></a>';
+			$custom_actions .= '<a href="JavaScript:void(0)" onclick="backDate(\'' . $noa_id . '\', \'' . $noa['noa_no'] . '\')" data-bs-toggle="tooltip" title="Back Date"><i class="mdi mdi-update fs-4 text-cyan"></i></a>';
 
 			// shorten name of values from db if its too long for viewing and add ...
 			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];
@@ -352,6 +415,9 @@ class Noa_controller extends CI_Controller {
 		];
 		echo json_encode($output);
 	}
+	//==================================================
+	//END
+	//==================================================
 
 	//INITIAL BILLING====================================================
 	function initial_billing() {
@@ -1015,41 +1081,7 @@ class Noa_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
-	function update_noa_request() {
-		$this->security->get_csrf_hash();
-		$inputPost = $this->input->post(NULL, TRUE); // returns all POST items with XSS filter
-		$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
-		$this->form_validation->set_rules('hospital-name', 'Name of Hospital', 'required');
-		$this->form_validation->set_rules('admission-date', 'Request Date of  Availment', 'required');
-		$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[1000]');
-		if ($this->form_validation->run() == FALSE) {
-			$response = [
-				'status' => 'error',
-				'hospital_name_error' => form_error('hospital-name'),
-				'admission_date_error' => form_error('admission-date'),
-				'chief_complaint_error' => form_error('chief-complaint'),
-			];
-		} else {
-			$post_data = [
-				'hospital_id' => $inputPost['hospital-name'],
-				'admission_date' => $inputPost['admission-date'],
-				'chief_complaint' => strip_tags($inputPost['chief-complaint']),
-			];
-			$saved = $this->noa_model->db_update_noa_request($noa_id, $post_data);
-			if ($saved) {
-				$response = [
-					'status' => 'success', 
-					'message' => 'NOA Request Updated Successfully'
-				];
-			} else {
-				$response = [
-					'status' => 'save-error', 
-					'message' => 'NOA Request Update Failed'
-				];
-			}
-		}
-		echo json_encode($response);
-	}
+	
 
 	function cancel_noa_request() {
 		$token = $this->security->get_csrf_hash();
@@ -1133,10 +1165,11 @@ class Noa_controller extends CI_Controller {
 			$file_paths = array(
 				'spot-report' => './uploads/spot_reports/',
 				'incident-report' => './uploads/incident_reports/',
+				'police-report' => './uploads/police_reports/',
 			);
 
 			// Iterate over each file input and perform the upload
-			$file_inputs = array('spot-report', 'incident-report');
+			$file_inputs = array('spot-report', 'incident-report','police-report');
 			foreach ($file_inputs as $input_name) {
 				$config['upload_path'] = $file_paths[$input_name];
 				$this->upload->initialize($config);
@@ -1165,6 +1198,7 @@ class Noa_controller extends CI_Controller {
 					'percentage' => $percentage,
 					'spot_report_file' => isset($uploaded_files['spot-report']) ? $uploaded_files['spot-report']['file_name'] : '',
 					'incident_report_file' => isset($uploaded_files['incident-report']) ? $uploaded_files['incident-report']['file_name'] : '',
+					'police_report_file' => isset($uploaded_files['police-report']) ? $uploaded_files['police-report']['file_name'] : '',
 					'date_uploaded' => date('Y-m-d')
 
 				];
@@ -1500,55 +1534,61 @@ class Noa_controller extends CI_Controller {
 		// var_dump('loa_id',$loa_id);
 		$row = $this->noa_model->db_get_data_for_gurantee($noa_id);
 		// $loa = $this->loa_model->db_get_loa_detail($noa_id);
-		$companyChargeWords = $this->convertNumberToWords($row['company_charge']);
+		
 		// var_dump('companyChargeWords',$companyChargeWords);
 		$name = $this->session->userdata('fullname');
 		$doc = $this->noa_model->db_get_doctor_by_id(1);
-	
-	
+		$qr_count = $this->noa_model->count_all_generated_guarantee_letter();
+		$total = number_format($row['company_charge']+$row['cash_advance'],2,'.',',');
+		$companyChargeWords = $this->convertNumberToWords($total);
+		// Generate the qr code
+		$data = [
+			'Guarantee Payment no:' => $qr_count+1,
+			'Member`s Name:' => $row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] . ' ' . $row['suffix'] ,
+			'NOA no:' =>	$row['noa_no'],
+			'Billing no:' => $row['billing_no'],
+			'Total Billed Amount:' =>	number_format($row['net_bill'],2,'.',','),
+			'Company Charge:' => number_format($row['company_charge'],2,'.',','),
+			'Healthcare Advance:' => number_format($row['cash_advance'],2,'.',','),
+			'Total Guaranteed Amount:' => $total,
+		]; 
+		$formattedText = '';
+		foreach ($data as $key => $value) {
+			$formattedText .= $key . ' ' . $value . "\n";
+		}
+		$barcodeText = $row['health_card_no'];  // The text to be encoded in the barcode
+		$barcodeType = 'C128';        // The barcode type
+
 		// Generate the PDF content
 		$pdf = new TCPDF();
 	
 		// Disable the header and footer lines
 		$pdf->SetPrintHeader(false);
 		$pdf->SetPrintFooter(false);
-		// $title = '<img src="'.base_url().'assets/images/HC_logo.png" style="width:200px;height:80px">';
-		// // $title .= '<style>h3 { margin: 0; padding: 0; line-height: .5; }</style>';
-		// $title .= '<p>Corporate Center, North Wing</p>';
-		// $title .= '<p>Island City Mall Dampas Dist</p>';
-		// $title .= '<p>Tagbilaran City, Bohol, 6300</p>';
-		// $title .= '<p>Tel. no. 501-3000 local 1319</p>';
-
-		$title = '<div>
-							<p><img src="'.base_url().'assets/images/HC_logo.png" style="width:180px;height:80px">
-							</div>';
-
-		// $title = '<div class="col-lg-4" style="border-bottom:  1px solid black;">
-		// 						<img src="'.base_url().'assets/images/HC_logo.png" width="170px" height="45px">
-		// 						Corporate Center, North Wing
-		// 					</div>';
-							
-
-							
-
-
-
-
-
-		// Set the font and size for the letter content...
-		$pdf->SetFont('Helvetica', '', 12);
-	
-		// Add the letter content
+		$logo = '<img src="'.base_url().'assets/images/letter_logo_final.png" style="width:95px; 	height:70px;">';
+		$title = '<div >
+		
+		<p style="line-height: 0; margin-right: 0; font-size: 8px;">Corporate Center, North Wing</p>
+		<p style="line-height: 0; margin-right: 0; font-size: 8px;">Island City Mall Dampas Dist</p>
+		<p style="line-height: 0; margin-right: 0; font-size: 8px;">Tagbilaran City, Bohol, 6300</p>
+		<p style="line-height: 0; margin-right: 0; font-size: 8px;">Tel. no. 501-3000 local 1319</p>
+	  </div>';
+		
+		$pdf->SetMargins(25, 10, 15);
+		$pdf->setFont('times', '', 10);
 		$pdf->AddPage();
-	
-		$html1 = '<div >
-					   <p id="generated-date" style="font-weight: bold;">' . date("F j, Y") . '</p>
-					   <p></p>
-						  <p style="font-weight: bold;line-height: 0;">JONE SIEGFRED L. SEPE</p>
-						  <p style="line-height: 0;">CEO/PRESIDENT</p>
-						  <p style="line-height: 0;">0139 Gallares Street, Poblacion II,</p> 
-						  <p style="line-height: 0;">Tagbilaran City, Bohol, 0139</p>
-						  <p style="line-height: 2; font-weight: bold; ">RE: Guarantee Letter for Payment Covered by Alturas Healthcare;</p>
+		$html1 = '<div>  <p id="generated-date" style=" line-height: 0;">' . date("F j, Y") . '</p>
+					<p></p>
+					<p></p>
+					<p style="font-weight: bold;line-height: 0;">JONE SIEGFRED L. SEPE</p>
+					<p style="font-weight: bold;line-height: 0;">CEO/PRESIDENT</p>
+					<p style="font-weight: bold; line-height: 0;">RAMIRO COMMUNITY HOSPITAL</p>
+					<p style="line-height: 0;">0139 Gallares Street, Poblacion II,</p> 
+					<p style="line-height: 0;">Tagbilaran City, Bohol, 0139</p>
+		   		  </div>';
+
+		$html2 = '<div >
+						  <p style=" font-weight: bold; text-decoration: underline;">RE: Guarantee Letter for Payment Covered by Alturas Healthcare;</p>
 						  <p style="line-height: 2 ;">Dear DR. SEPE;</p>
 	
 							<p>We are writing to confirm that <span style="font-weight: bold;text-transform: uppercase">' . rtrim($row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] . ' ' . $row['suffix']) . '</span>, a valued member of the Alturas Healthcare Program, has received medical services and treatments from your esteemed healthcare facility. We would like to assure you that we will cover applicable expenses incurred by our member during their visit, as outlined in our agreement with your organization.</p>
@@ -1557,59 +1597,40 @@ class Noa_controller extends CI_Controller {
 							<p style="line-height: 0;">Patient Name: '.$row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] . ' ' . $row['suffix'] . ' </p>
 							<p style="line-height: 0;">Date of Birth: '.$row['date_of_birth'].'</p>
 							<p style="line-height: 0;">Alturas Healthcare Program ID: '.$row['health_card_no'].'</p>
-							<p style="line-height: 0;">LOA/NOA: '.$row['noa_no'].'</p>
-							<p >Therefore, in accordance with the terms and conditions of our agreement, Alturas Healthcare will be using this letter to guarantee payment of the bill amounting <span id="company_charge_words" style="font-weight: bold;text-transform: uppercase">' . $companyChargeWords . '</span> <span style="font-weight: bold">(PHP ' . number_format($row['company_charge'], 2,'.',',') . ')</span> only. We kindly request that you submit all relevant bills and supporting documentation for the services rendered to <span style="font-weight: bold;">' . rtrim($row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] . ' ' . $row['suffix']) . '</span> directly to our designated billing department.</p>
+							<p style="line-height: 0;">NOA No: '.$row['noa_no'].'</p>
+							<p></p>
+							<p></p>
+							<p >Therefore, in accordance with the terms and conditions of our agreement, Alturas Healthcare will be using this letter to guarantee payment of the bill amounting</span>'. (($row['cash_advance'] > 0) ? '<span style="font-weight: bold"> (PHP '.number_format($row['company_charge'], 2, '.', ',').')</span> to be charged to the company and <span style="font-weight: bold">(PHP '.number_format($row['cash_advance'], 2, '.', ',').')</span> as a cash advance payment, with the total amount of ' : '').'
+							<span id="company_charge_words" style="font-weight: bold;text-transform: uppercase">' . $companyChargeWords . '</span> <span style="font-weight: bold">(PHP ' . $total . ')</span> only. We kindly request that you submit all relevant bills and supporting documentation for the services rendered to <span style="font-weight: bold;">' . rtrim($row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] . ' ' . $row['suffix']) . '</span> directly to our designated billing department.</p>
 							<p >We appreciate your collaboration and dedication to providing exceptional healthcare services to our members. Your continued partnership with the Alturas Healthcare Program is instrumental in fulfilling our mission of delivering comprehensive and accessible healthcare to our beneficiaries.</p>
 							<p >Thank you for your attention to this matter, and we look forward to a continued successful relationship.</p>
-				</div>';
-		// $html2 ='<div><p style="font-weight: bold;">RE: Guarantee Letter for Payment Covered by Alturas Healthcare;</p></div>';
-		// $html3 = '<div style="text-align: justify;">
-		// 			<p style="line-height: 2 ;">Dear DR. SEPE;</p>
-	
-		// 			<p>We are writing to confirm that <span style="font-weight: bold;text-transform: uppercase">' . rtrim($row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] . ' ' . $row['suffix']) . '</span>, a valued member of the Alturas Healthcare Program, has received medical services and treatments from your esteemed healthcare facility. We would like to assure you that we will cover applicable expenses incurred by our member during their visit, as outlined in our agreement with your organization.</p>
-		// 			<p style="line-height: 0;">Patient Details:</p>
-		// 			<p></p>
-		// 			<p style="line-height: 0;">Patient Name: '.$row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] . ' ' . $row['suffix'] . ' </p>
-		// 			<p style="line-height: 0;">Date of Birth: '.$row['date_of_birth'].'</p>
-		// 			<p style="line-height: 0;">Alturas Healthcare Program ID: '.$row['health_card_no'].'</p>
-		// 			<p style="line-height: 0;">LOA/NOA: '.$row['loa_no'].'</p>
-		// 			<p >Therefore, in accordance with the terms and conditions of our agreement, Alturas Healthcare will be using this letter to guarantee payment of the bill amounting <span id="company_charge_words" style="font-weight: bold;text-transform: uppercase">' . $companyChargeWords . '</span> <span style="font-weight: bold">(PHP ' . number_format($row['company_charge'], 2,'.',',') . ')</span> only. We kindly request that you submit all relevant bills and supporting documentation for the services rendered to Patient Name directly to our designated billing department.</p>
-		// 			<p >We appreciate your collaboration and dedication to providing exceptional healthcare services to our members. Your continued partnership with the Alturas Healthcare Program is instrumental in fulfilling our mission of delivering comprehensive and accessible healthcare to our beneficiaries.</p>
-		// 			<p >Thank you for your attention to this matter, and we look forward to a continued successful relationship.</p>
-		// 			</div>';
-	
-		// $html4 = '<div style="text-align: justify;">
-	
-					// <p>Therefore, in accordance with the terms and conditions of our agreement, Alturas Healthcare will be using this letter to guarantee payment of the bill amounting <span id="company_charge_words" style="font-weight: bold;text-transform: uppercase">' . $companyChargeWords . '</span> <span style="font-weight: bold">(PHP ' . number_format($row['company_charge'], 2,'.',',') . ')</span> only. We kindly request that you submit all relevant bills and supporting documentation for the services rendered to Patient Name directly to our designated billing department.</p>
-					// <p>We appreciate your collaboration and dedication to providing exceptional healthcare services to our members. Your continued partnership with the Alturas Healthcare Program is instrumental in fulfilling our mission of delivering comprehensive and accessible healthcare to our beneficiaries.</p>
-					// <p>Thank you for your attention to this matter, and we look forward to a continued successful relationship.</p>
-					// </div>';
-	
-		$html5 = '<div>
-					<p>Yours sincerely,</p>
-					<img src="' . base_url() . 'uploads/doctor_signatures/' . $doc['doctor_signature'] . '" alt="Doctor Signature" style="height:auto;width:170px;vertical-align:baseline;">
-	
-					<p style="line-height: 0;text-transform: uppercase;">Dr. Michael D. Uy</span></p>
-	
-	
-					<p style="line-height: 1">Company Physician</p>
-				</div>';
-		$pdf->setTitle('Guarantee letter');
-		$pdf->setFont('times', '', 10);
-		// $pdf->AddPage('P', 'LEGAL');
-		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
-		// $pdf->writeHTML($title);
-		$pdf->writeHTML($html1);
-		// $pdf->writeHTML($html2);
-		// $pdf->writeHTML($html3);
-		// $pdf->writeHTML($html4);
+							<p  style="line-height: 3;">Yours sincerely,</p>
+							</div>';
 		
-		$pdf->WriteHtmlCell(0, 0, '', '', $html5, 0, 1, 0, true, 'L', true);
+							$signature = '<div><img src="' . base_url() . 'uploads/doctor_signatures/' . $doc['doctor_signature'] . '" alt="Doctor Signature" style="height:auto;width:170px;vertical-align:baseline;"> </div>';
+							$html3 = '<div>
+										<p style="line-height: 0;text-transform: uppercase;">Dr. Michael D. Uy</span></p>
+						
+						
+										<p style="line-height: 1">Company Physician</p>
+									</div>';
+							
+									$pdf->setTitle('Guarantee letter');
+									$pdf->WriteHtmlCell(0, 0, '', '', $logo, 0, 1, 0, true, 'R', true);
+									$pdf->SetY($pdf->GetY()-2);
+									$pdf->SetX($pdf->GetX()+133);
+									$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'L', true);
+									$pdf->SetY($pdf->GetY()-25);
+									$pdf->writeHTML($html1);
+									$pdf->writeHTML($html2);
+									$pdf->SetX($pdf->GetX()-20);
+									$pdf->WriteHtmlCell(0, 0, '', '', $signature, 0, 1, 0, true, 'L', true);
+									$pdf->SetY($pdf->GetY()-15);
+									$pdf->WriteHtmlCell(0, 0, '', '', $html3, 0, 1, 0, true, 'L', true);
+									$pdf->write1DBarcode($barcodeText, $barcodeType, 25, 149, 80, 5);
+									$pdf->write2DBarcode($formattedText, 'QRCODE', 155, 230, 30, 30);
+							
 	
-	
-		// Output the PDF to the browser
-		// $pdf->Output('guarantee_letter.pdf', 'I');
-		// $pdfPath = 'uploads/guarantee_letter/guarantee_letter.pdf';
 		$fileName = 'guarantee_letter' . $noa_id . '.pdf';
 		$pdf->Output(getcwd() . '/uploads/guarantee_letter/' . $fileName, 'F');
 		$response = [
@@ -1617,14 +1638,13 @@ class Noa_controller extends CI_Controller {
 			'filename' => $fileName
 		];
 		echo json_encode($response);
-	
-		// file_put_c	ontents($pdfPath, $pdfContent);
+
 		}
 
 
 	
 		function convertNumberToWords($number) {
-				$number= number_format($number,2,'.',',');
+				// $number= number_format($number,2,'.',',');
 				$number = str_replace(',', '', $number);
 				$decimal = '';
 				

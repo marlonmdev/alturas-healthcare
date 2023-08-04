@@ -70,6 +70,15 @@ class Loa_model extends CI_Model {
              ->where('status', $status);
     return $this->db->count_all_results();
   }
+   function db_get_affiliated_healthcare_providers() {
+    $query = $this->db->get_where('healthcare_providers',['accredited'=>1]);
+    return $query->result_array();
+  }
+  function db_get_not_affiliated_healthcare_providers() {
+    $query = $this->db->get_where('healthcare_providers',['accredited'=>0]);
+    return $query->result_array();
+  }
+
   //==================================================
   //END
   //==================================================
@@ -637,6 +646,10 @@ class Loa_model extends CI_Model {
     $query = $this->db->get('cost_types');
     return $query->result_array();
   }
+  function db_get_cost_types_by_hp($hp_id) {
+    $query = $this->db->get_where('cost_types', ['hp_id' => $hp_id]);
+    return $query->result_array();
+  }
 
   
 
@@ -1153,6 +1166,7 @@ function db_get_cost_types_by_hp_ID($hp_id) {
     $this->db->select('*')
             ->from('loa_requests as tbl_1')
             ->join('healthcare_providers as tbl_2', 'tbl_1.hcare_provider = tbl_2.hp_id')
+            ->join('members as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id')
             ->where('tbl_1.loa_id', $loa_id);
     return $this->db->get()->row_array();
   }
@@ -1437,16 +1451,18 @@ function db_get_cost_types_by_hp_ID($hp_id) {
   var $table_2_billed = 'billing';
   var $table_3_billed = 'hr_added_loa_fees';
   var $table_4_billed = 'max_benefit_limits';
+  var $table_5_billed = 'healthcare_providers';
   var $column_order_billed = ['loa_no', 'first_name', 'loa_request_type', 'hp_name', null, 'request_date'];
   var $column_search_billed = ['loa_no', 'first_name', 'middle_name', 'last_name', 'suffix', 'loa_request_type', 'med_services', 'emp_id', 'health_card_no', 'hp_name', 'request_date', 'CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)'];
   var $order_billed = ['loa_id' => 'desc'];
 
   private function _get_billed_datatables_query() {
-    $this->db->select('tbl_1.loa_id as tbl1_loa_id, tbl_1.status as tbl1_status, tbl_1.request_date as tbl1_request_date, tbl_1.work_related as tbl1_work_related, tbl_1.*, tbl_2.*, tbl_3.*, tbl_4.*');
+    $this->db->select('tbl_1.loa_id as tbl1_loa_id, tbl_1.status as tbl1_status, tbl_1.request_date as tbl1_request_date, tbl_1.work_related as tbl1_work_related, tbl_1.*, tbl_2.*, tbl_3.*, tbl_4.*, tbl_5.*');
     $this->db->from($this->table_1_billed . ' as tbl_1');
     $this->db->join($this->table_2_billed . ' as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id', 'left');
     $this->db->join($this->table_3_billed . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id', 'left');
     $this->db->join($this->table_4_billed . ' as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id', 'left');
+    $this->db->join($this->table_5_billed . ' as tbl_5', 'tbl_1.hcare_provider = tbl_5.hp_id', 'left');
     $this->db->where_in('tbl_1.status', ['Completed', 'Billed', 'Approved']);
 
     $filter = $this->input->post('filter');
@@ -1755,6 +1771,11 @@ function get_billed_for_charging($bill_no) {
     $this->db->from('cash_advance');
     $this->db->where('status', $status);
     return $this->db->count_all_results();
+  }
+  function count_all_generated_guarantee_letter() {
+    $this->db->from('billing');
+    $this->db->where('guarantee_letter !=', null);
+    return $this->db->get()->num_rows();
   }
 
   function get_healthcare_advance_data_disapproved($status) {
@@ -2067,6 +2088,30 @@ function get_billed_for_charging($bill_no) {
   // }
 
 //END==================================================
+
+//QUERY FOR DIAGNOSTIC TEST============================
+  function db_get_member_infos($emp_id){
+    $this->db->where('emp_id', $emp_id);
+    $query = $this->db->get('members');
+    return $query->num_rows() > 0 ? $query->row_array() : false;
+  }
+
+  function insert_diagnostic_form($post_data) {
+    $query = $this->db->insert('loa_requests', $post_data);
+    return $query ? $this->db->insert_id() : false;
+  }
+  function db_get_mbl($emp_id){
+    $this->db->where('emp_id', $emp_id);
+    $query = $this->db->get('max_benefit_limits');
+    return $query->num_rows() > 0 ? $query->row_array() : false;
+  }
+  function db_get_member_details1($member_id) {
+    $query = $this->db->get_where('members', ['emp_id' => $member_id]);
+    return $query->row_array();
+  }
+
+//END==================================================
+
 
 //Bar =================================================
   public function bar_pending(){

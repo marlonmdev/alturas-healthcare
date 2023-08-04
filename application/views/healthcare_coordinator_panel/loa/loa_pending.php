@@ -2,7 +2,7 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">PENDING REQUEST</h4>
+        <h4 class="page-title ls-2"style="font-size:14px">PENDING REQUEST</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -20,57 +20,57 @@
       <div class="col-lg-12">
 
         <ul class="nav nav-tabs mb-4" role="tablist">
-          <li class="nav-item">
-            <a class="nav-link active" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1 active" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">PENDING</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="pending mdi mdi-dots-horizontal"></i> PENDING</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/approved" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">APPROVED</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="approved mdi mdi-thumb-up"></i> APPROVED</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/disapproved" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/disapproved" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">DISAPPROVED</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="disapproved mdi mdi-thumb-down"></i> DISAPPROVED</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/completed" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">COMPLETED</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="completed mdi mdi-check"></i> COMPLETED</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/rescheduled" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/rescheduled" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">REFERRAL</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="referral mdi mdi-file-document-box"></i> REFERRAL</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/expired" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/expired" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">EXPIRED</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="expired mdi mdi-calendar-clock"></i> EXPIRED</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/cancelled" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/cancelled" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">CANCELLED</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="cancelled mdi mdi-close"></i> CANCELLED</span>
             </a>
           </li> 
         </ul>
 
-        <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
+        <!-- <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
           <div class="input-group">
             <div class="input-group-prepend">
               <span class="input-group-text bg-dark text-white"><i class="mdi mdi-filter"></i></span>
@@ -82,7 +82,7 @@
               <?php endforeach; ?>
             </select>
           </div>
-        </div>
+        </div> -->
 
         <div class="card shadow">
           <div class="card-body">
@@ -90,17 +90,17 @@
               <table class="table table-hover table-responsive" id="pendingLoaTable">
                 <thead style="background-color:#00538C">
                   <tr>
-                    <th class="fw-bold" style="color: white;">LOA NO.</th>
-                    <th class="fw-bold" style="color: white;">NAME OF PATIENT</th>
-                    <th class="fw-bold" style="color: white;">TYPE OF REQUEST</th>
-                    <th class="fw-bold" style="color: white;">HEALTHCARE PROVIDER</th>
-                    <th class="fw-bold" style="color: white;">RX FILE</th>
-                    <th class="fw-bold" style="color: white;">DATE OF REQUEST</th>
-                    <th class="fw-bold" style="color: white;">STATUS</th>
-                    <th class="fw-bold" style="color: white;">ACTION</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">LOA NO.</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">NAME OF PATIENT</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">TYPE OF REQUEST</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">HEALTHCARE PROVIDER</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">RX FILE</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">DATE OF REQUEST</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">STATUS</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">ACTION</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody style="color:black;font-size:12px">
                 </tbody>
               </table>
               <?php include 'charge_type.php'; ?>
@@ -130,7 +130,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
@@ -142,6 +142,7 @@
 <script>
   const baseUrl = `<?= base_url(); ?>`;
   const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
+  let hospital_receipt  = '';
   $(document).ready(function() {
 
     let pendingTable = $('#pendingLoaTable').DataTable({
@@ -187,10 +188,7 @@
         contentType: false,
         success: function(response) {
           const {
-            token,
-            status,
-            message,
-            charge_type_error,
+            token,status,message,charge_type_error,
           } = response;
           switch (status) {
             case 'error':
@@ -202,7 +200,7 @@
                 $('#charge-type-error').html('');
                 $('#charge-type').removeClass('is-invalid');
               }
-              break;
+            break;
             case 'save-error':
               swal({
                 title: 'Failed',
@@ -212,7 +210,7 @@
                 type: 'error'
               });
               $("#pendingLoaTable").DataTable().ajax.reload();
-              break;
+            break;
             case 'upload-error':
               swal({
                 title: 'Failed',
@@ -234,7 +232,71 @@
               
               $('#viewChargeTypeModal').modal('hide');
               $("#pendingLoaTable").DataTable().ajax.reload();
+            break;
+          }
+        },
+      })
+    });
+
+    $('#UpdateChargeTypeNotAffiliated').submit(function(event) {
+      event.preventDefault();
+
+      const ChargeForm = $('#UpdateChargeTypeNotAffiliated')[0];
+      const formdata = new FormData(ChargeForm);
+      $.ajax({
+        type: "post",
+        url: $(this).attr('action'),
+        data: formdata,
+        dataType: "json",
+        processData: false,
+        contentType: false,
+        success: function(response) {
+          const {
+            token,status,message,charge_type_error,
+          } = response;
+          switch (status) {
+            case 'error':
+              // is-invalid class is a built in classname for errors in bootstrap
+              if (charge_type_error !== '') {
+                $('#charge-type-error').html(charge_type_error);
+                $('#charge-type').addClass('is-invalid');
+              } else {
+                $('#charge-type-error').html('');
+                $('#charge-type').removeClass('is-invalid');
+              }
+            break;
+            case 'save-error':
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
+              $("#pendingLoaTable").DataTable().ajax.reload();
+            break;
+            case 'upload-error':
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
+              $("#pendingLoaTable").DataTable().ajax.reload();
               break;
+            case 'success':
+              swal({
+                title: 'Success',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'success'
+              });
+              
+              $('#viewChargeTypeModal').modal('hide');
+              $("#pendingLoaTable").DataTable().ajax.reload();
+            break;
           }
         },
       })
@@ -394,6 +456,29 @@
     $('#charge-type').val('');
   }
 
+  const ChargeTypenotAffiliated = (loa_id, hospital_receipt, hospital_bill) => {
+    console.log('Calling ChargeTypenotAffiliated with LOA ID:', loa_id);
+    $("#charge_type_modal_not_affiliated").modal("show");
+    $("#charge_type_modal_not_affiliated").find("form")[0].reset();
+    $('#loa_id').val(loa_id);
+    // Format the hospital_bill value with the currency symbol
+    const formattedHospitalBill = new Intl.NumberFormat('en-PH', {
+      style: 'currency',
+      currency: 'PHP',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(hospital_bill);
+
+    // Set the formatted hospital_bill value to the input field
+    $('#hospital_bill').val(formattedHospitalBill);
+
+    // Set the hospital_receipt attribute to the image element
+    $('#uploaded-hospital-receipt').attr("hospital_receipt", hospital_receipt);
+
+    // Set the src attribute of the image element
+    $('#uploaded-hospital-receipt').attr("src", baseUrl + 'uploads/hospital_receipt/' + hospital_receipt);
+  };
+
   let pdfinput = "";
   const  previewFile = (pdf_input) => {
       pdfinput = pdf_input;
@@ -514,6 +599,42 @@
     }
   }
 
+  const viewHospitalReceiptFile = () => {
+    // Retrieve the hospital_receipt attribute from the image element
+    const hospital_receipt = $('#uploaded-hospital-receipt').attr("hospital_receipt");
+
+    // Rest of your code remains unchanged
+    $('#viewFileModal').modal('show');
+    $('#cancel').hide();
+    $('#file-name-r').html('HOSPITAL RECEIPT');
+
+    let pdfFile = `${baseUrl}uploads/hospital_receipt/${hospital_receipt}`;
+    let fileExists = checkFileExists(pdfFile);
+
+    if (fileExists) {
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', pdfFile, true);
+      xhr.responseType = 'blob';
+
+      xhr.onload = function (e) {
+        if (this.status == 200) {
+          let blob = this.response;
+          let reader = new FileReader();
+
+          reader.onload = function (event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-file-viewer');
+            iframe.src = dataURL;
+          };
+          reader.readAsDataURL(blob);
+        }
+      };
+      xhr.send();
+    }
+  };
+
+  
+
     const checkFileExists = (fileUrl) => {
         let xhr = new XMLHttpRequest();
         xhr.open('HEAD', fileUrl, false);
@@ -632,3 +753,62 @@
     $('#uploaded-police-report').html(police_report);
   }
 </script>
+
+<style>
+  .nav-item1 {
+    list-style-type: none;
+  }
+
+  .nav-link1 {
+    display: inline-block;
+    padding: 10px;
+    padding-top:1px;
+    padding-bottom:1px;
+    text-decoration: none;
+    background-color: #e6e6e6;
+    color: #000;
+    border: 1px solid gray;
+    border-bottom: 3px solid gray;
+    border-radius: 15px;
+
+  }
+
+  .nav-link1:hover {
+    background-color: #002244;
+    color: #fff;
+    border: 1px solid #000;
+  }
+
+  .font-bold {
+    font-weight: bold;
+  }
+
+  .hidden-xs-down {
+    display: inline-block;
+  }
+
+  .fs-5 {
+    font-size: 1.2rem;
+  }
+  .pending{
+    color:red
+  }
+  .approved{
+    color:green
+  }
+  .disapproved{
+    color:red
+  }
+  .completed{
+    color:green
+  }
+  .referral{
+    color:orange
+  }
+  .expired{
+    color:#a32cc4
+  }
+  .cancelled{
+    color:red
+  }
+</style>

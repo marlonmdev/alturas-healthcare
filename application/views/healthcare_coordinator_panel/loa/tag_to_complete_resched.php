@@ -2,14 +2,14 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <a href="#" onclick="goBack()" type="submit" class="btn btn-outline-dark" data-bs-toggle="tooltip" title="Click to Go Back">
+        <a href="#" onclick="goBack()" type="submit" class="btn btn-danger" data-bs-toggle="tooltip" title="Click to Go Back">
           <strong class="ls-2" style="vertical-align:middle"><i class="mdi mdi-arrow-left-bold"></i> Back</strong>
         </a>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
-              <li class="breadcrumb-item active" aria-current="page">Diagnostic</li>
+              <li class="breadcrumb-item active" aria-current="page">HSR</li>
             </ol>
           </nav>
         </div>
@@ -18,40 +18,43 @@
   </div>
 
   <div class="container-fluid">
-    <hr style="color:red">
-      <div class="col-12">
-        <div class="text-center mb-4 mt-0"><h4 class="page-title ls-2">MEDICAL APPOINTMENT SCHEDULE</h4></div>
-      </div>
-    <hr style="color:red">
+    <div class="card pt-1 shadow">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-xs-12 d-flex justify-content-center align-items-center">
+            <img src="<?= base_url(); ?>assets/images/logo2.png" alt="Alturas Healthcare Logo" height="70" width="300">
+          </div>
+          <div class="col-12 pt-3">
+            <div class="text-center mb-4 mt-0"><h4 class="page-title ls-2" style="color:black;font-family:Times Roman">HEALTHCARE SERVICES RECORD</h4></div>
+          </div><hr style="color:gray">
+        </div>
                 
-    <form id="performedLoaInfo" method="post" action="<?php echo base_url();?>healthcare-coordinator/loa-requests/approved/performed-loa-info/submit" class="needs-validation" novalidate>
-      <div class="row">
-        <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
-        <input type="hidden" name="hp-id" value="<?php echo $hp_id ?>">
-        <input type="hidden" name="loa-id" value="<?php echo $loa_id ?>">
-        <input type="hidden" name="emp-id" value="<?php echo $emp_id ?>">
-        <input type="hidden" name="request-type" value="<?php echo $request_type ?>">
-          
-        <div class="col-lg-4">
-          <label class="fw-bold">Member's Name : </label>
-          <input class="form-control text-danger fw-bold" type="text" name="member-name" id="member-name" value="<?php echo $full_name ?>" readonly>
-        </div>
+        <form id="performedLoaInfo" method="post" action="<?php echo base_url();?>healthcare-coordinator/loa-requests/approved/performed-loa-info/submit" class="needs-validation" novalidate>
+          <div class="row pt-3">
+            <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
+            <input type="hidden" name="hp-id" value="<?php echo $hp_id ?>">
+            <input type="hidden" name="loa-id" value="<?php echo $loa_id ?>">
+            <input type="hidden" name="emp-id" value="<?php echo $emp_id ?>">
+            <input type="hidden" name="request-type" value="<?php echo $request_type ?>">
+              
+            <div class="col-lg-4">
+              <label>Member's Name : </label>
+              <input class="form-control" type="text" name="member-name" id="member-name" value="<?php echo $full_name ?>" readonly>
+            </div>
 
-        <div class="col-lg-4">
-          <label class="fw-bold">LOA Number : </label>
-          <input class="form-control text-danger fw-bold" type="text" name="loa-num" id="loa-num" value="<?php echo $loa_no?>" readonly>
-        </div>
+            <div class="col-lg-4">
+              <labe>LOA Number : </label>
+              <input class="form-control" type="text" name="loa-num" id="loa-num" value="<?php echo $loa_no?>" readonly>
+            </div>
 
-        <div class="col-lg-4">
-          <label class="fw-bold">Healthcare Provider : </label>
-          <input class="form-control text-danger fw-bold" type="text" name="hp-name" id="hp-name" value="<?php echo $hc_provider ?>" readonly>
-        </div>
-      </div>
+            <div class="col-lg-4">
+              <label>Healthcare Provider : </label>
+              <input class="form-control" type="text" name="hp-name" id="hp-name" value="<?php echo $hc_provider ?>" readonly>
+            </div>
+          </div>
 
-      <div class="card pt-1 shadow">
-        <div class="card-body">
-          <div class="row">
-
+      
+          <div class="row pt-3">
             <?php 
               $selectedOptions = explode(';', $med_services);
               foreach ($cost_types as $cost_type) :
@@ -62,13 +65,13 @@
               <input type="hidden" name="ctype_id[]" value="<?php echo $cost_type['ctype_id']; ?>">
               
               <div class="col-lg-4 pb-3">
-                <label class="fw-bold">Medical Services : </label>
-                <input type="text" class="form-control fw-bold ls-1" name="ct-name[]" value="<?php echo $cost_type['item_description']; ?>" readonly>
+                <label>Medical Services : </label>
+                <input type="text" class="form-control" name="ct-name[]" value="<?php echo $cost_type['item_description']; ?>" readonly>
               </div>
 
-              <div class="col-lg-2 pb-3">
-                <label class="fw-bold">Status : </label>
-                <select class="form-select fw-bold status" name="status[]" id="status" onchange="viewReschedDate();enableInput();enableReason();emptyStatus()">
+              <div class="col-lg-4 pb-3">
+                <label>Status : </label>
+                <select class="form-select status" name="status[]" id="status" onchange="viewReschedDate();enableInput();enableReason();emptyStatus()">
                   <option value="">-- Please Select --</option>
                   <option value="Performed">Performed</option>
                   <option value="Referred">Referral</option>
@@ -77,44 +80,44 @@
                 <span class="text-danger" id="status-error"></span>
               </div>
 
-              <div class ="col-lg-4 pb-3 referralFile" style="display: none;">
+              <!-- <div class ="col-lg-4 pb-3 referralFile" style="display: none;">
                 <label class="fw-bold">Upload File:</label>
                 <input type="file" class="form-control input-referral" name="referralFile[]" id="referralFile">
                 <span class="text-danger" id="referral-error"></span>
-              </div>
+              </div> -->
 
               <div class="col-lg-2 pb-3 performed-date">
-                <label class="fw-bold">Date Performed : </label>
-                <input class="form-control input-date fw-bold" name="date[]" id="date" type="text" onchange="dateValidity();" placeholder="Select Date" style="background-color:#ffff" required>
+                <label>Date Performed : </label>
+                <input class="form-control input-date" name="date[]" id="date" type="text" onchange="dateValidity();" placeholder="Select Date" style="background-color:#ffff" required>
                 <span class="text-danger" id="date-error"></span>
               </div>
 
               <div class="col-lg-2 pb-3 performed-time">
-                <label class="fw-bold">Time Performed : </label>
-                <input class="form-control input-time fw-bold" name="time[]" id="time" type="text" placeholder="Select Time" style="background-color:#ffff" required>
+                <label>Time Performed : </label>
+                <input class="form-control input-time" name="time[]" id="time" type="text" placeholder="Select Time" style="background-color:#ffff" required>
                 <span class="text-danger" id="time-error"></span>
               </div>
 
               <div class="col-lg-4 pb-3 reason" style="display:none">
-                <label class="fw-bold">Reason : </label> 
-                <input class="form-control fw-bold input-reason" name="reason[]" id="reason" type="text" placeholder="Enter reason" required>
+                <label>Reason : </label> 
+                <input class="form-control input-reason" name="reason[]" id="reason" type="text" placeholder="Enter reason" required>
                 <span class="text-danger" id="reason-error"></span>
               </div>
 
               <div class="row offset-4">
                 <div class="col-lg-2 pb-3">
-                  <label class="fw-bold label-physician">Physician : </label>
-                  <input class="form-control fw-bold fname" name="physician-fname[]" placeholder="First Name"  autocomplete="on" required>
+                  <label class="label-physician">Physician : </label>
+                  <input class="form-control fname" name="physician-fname[]" placeholder="First Name"  autocomplete="on" required>
                   <span class="text-danger" id="physician-fname-error"></span>
                 </div>
                 <div class="col-lg-2 pb-3 pt-2">
-                  <label class="fw-bold"> </label>
-                  <input class="form-control fw-bold mname" name="physician-mname[]" placeholder="Middle Name"  autocomplete="on" required>
+                  <label></label>
+                  <input class="form-control mname" name="physician-mname[]" placeholder="Middle Name"  autocomplete="on" required>
                   <span class="text-danger" id="physician-mname-error"></span>
                 </div>
                 <div class="col-lg-2 pb-3 pt-2">
-                  <label class="fw-bold"> </label>
-                  <input class="form-control fw-bold lname" name="physician-lname[]" placeholder="Last Name"  autocomplete="on" required> 
+                  <label></label>
+                  <input class="form-control lname" name="physician-lname[]" placeholder="Last Name"  autocomplete="on" required> 
                   <span class="text-danger" id="physician-lname-error"></span>
                 </div>
               </div>
@@ -124,8 +127,8 @@
             ?>
           </div>
 
-          <div class="offset-10 pt-3 pb-5">
-            <button class="btn btn-success fw-bold fs-4 badge" type="submit" name="submit-btn" id="submit-btn"><i class="mdi mdi-near-me"></i> Submit</button>
+          <div class="text-center pt-5 pb-5">
+            <button class="btn btn-info fw-bold fs-4 badge" type="submit" name="submit-btn" id="submit-btn"><i class="mdi mdi-near-me"></i> Submit</button>
           </div>
 
         </div>

@@ -42,35 +42,35 @@
                   aria-expanded="false"
                   >
                   <i class="mdi mdi-file-document"></i>
-                  <span class="hide-menu ls-1">LOA</span>
+                  <span class="hide-menu ls-1">LOA Request List</span>
                 </a>
               </li>
 
               <li class="sidebar-item 
               <?php echo $this->uri->segment(2) == 'noa' ? 'selected' : ''; ?>
               ">
-                <a
+                <!-- <a
                   class="sidebar-link has-arrow"
                   href="javascript:void(0)"
                   aria-expanded="false"
                   >
                   <i class="mdi mdi-file-chart"></i>
                   <span class="hide-menu ls-1">NOA</span>
-                </a>
-                <ul aria-expanded="false" class="collapse first-level">
-                  <li class="sidebar-item">
+                </a> -->
+                <!-- <ul aria-expanded="false" class="collapse first-level"> -->
+                  <!-- <li class="sidebar-item">
                     <a href="<?php echo base_url(); ?>super-admin/noa/request-noa" class="sidebar-link"
                       ><i class="mdi mdi-note-plus"></i
                       ><span class="hide-menu ls-1">NOA Requisition</span>
                     </a>
-                  </li>
-                  <li class="sidebar-item">
+                  </li> -->
+                  <!-- <li class="sidebar-item"> -->
                     <a href="<?php echo base_url(); ?>super-admin/noa/requests-list" class="sidebar-link"
                       ><i class="mdi mdi-note-outline"></i
                       ><span class="hide-menu ls-1">NOA Request List</span>
                     </a>
-                  </li>
-                </ul>
+                  <!-- </li>
+                </ul> -->
               </li>   
 
               <li class="sidebar-item 

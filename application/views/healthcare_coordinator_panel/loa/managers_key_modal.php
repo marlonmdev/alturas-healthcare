@@ -1,7 +1,7 @@
 <div class="modal fade" id="managersKeyModal" tabindex="-1" data-bs-backdrop="static">
   <div class="modal-dialog modal-md">
     <div class="modal-content">
-      <div class="modal-header bg-cyan">
+      <div class="modal-header bg-info">
         <h5 class="modal-title text-white ls-1"><i class="mdi mdi-account-key"></i> MANAGER'S KEY</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -29,8 +29,8 @@
           </div>              
 
           <div class="row mt-2">
-            <div class="col-sm-12 d-flex justify-content-end">
-              <button type="submit" class="btn btn-cyan me-2"><i class="mdi mdi-send"></i> SUBMIT</button>
+            <div class="col-sm-12 d-flex justify-content-center">
+              <button type="submit" class="btn btn-info me-2"><i class="mdi mdi-login"></i> Login</button>
               <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="mdi mdi-close-box"></i> CANCEL</button>
             </div>
           </div>

@@ -256,6 +256,28 @@ function db_insert_noa_request($post_data) {
   return $this->db->insert('noa_requests', $post_data);
 }
 
+function get_billing_by_emp_id ($emp_id){
+  $this->db->select('*')
+  ->where('emp_id', $emp_id)
+  ->where('YEAR(billed_on)', date('Y'))
+  ->order_by('billing_id', 'desc')
+  ->limit(1);
 
+  $query = $this->db->get('billing');
+  return $query->row_array();
+}
 
+function db_get_max_billing_id() {
+  $this->db->select_max('billing_id');
+  $query = $this->db->get('billing');
+  return $query->row_array();
+}
+
+function insert_billing($data) {
+  return $this->db->insert('billing', $data);
+}
+function update_member_remaining_balance($emp_id, $data) {
+  $this->db->where('emp_id', $emp_id);
+  return $this->db->update('max_benefit_limits', $data); 
+}
 }

@@ -19,7 +19,7 @@
       <div class="col-lg-12">
         <ul class="nav nav-tabs mb-4" role="tablist">
         <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/billed" role="tab">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/billed" role="tab">
               <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">FINAL BILLING</span>
             </a>

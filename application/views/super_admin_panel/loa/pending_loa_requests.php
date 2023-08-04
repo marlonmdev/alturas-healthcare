@@ -124,6 +124,7 @@
                     <th class="fw-bold">LOA Type</th>
                     <th class="fw-bold">Healthcare Provider</th>
                     <th class="fw-bold">RX File</th>
+                    <th class="fw-bold">Hospital Receipt</th>
                     <th class="fw-bold">Request Date</th>
                     <th class="fw-bold">Status</th>
                     <th class="fw-bold">Actions</th>
@@ -282,6 +283,9 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
+       
+        let wpercent = '';
+        let nwpercent = '';
         if(work_related != ''){
           if(work_related == 'Yes'){ 
 					if(percentage == ''){
@@ -309,10 +313,15 @@
 					   }else{
 						   wpercent = result+'%  W-R';
 					   }
-					 
+					
 					}
 			   }
-            $('#percentage').html(wpercent+', '+nwpercent);
+        if(wpercent !== '' && nwpercent !== ''){
+          $('#percentage').html(wpercent+', '+nwpercent);
+        }else{
+          $('#percentage-info').hide();
+        }
+           
         }else{
             $('#percentage-info').hide();
         }

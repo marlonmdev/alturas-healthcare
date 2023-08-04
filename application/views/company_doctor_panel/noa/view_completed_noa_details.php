@@ -66,6 +66,10 @@
                             <td class="fw-bold ls-1">Work-Related :</td>
                             <td class="fw-bold ls-1" id="work-related"></td>
                           </tr>
+                          <tr>
+                            <td class="fw-bold ls-1">Services :</td>
+                            <td class="fw-bold ls-1" id="med-services-list"></td>
+                          </tr>
                         </table>
                       </div>
                     </div>

@@ -1218,7 +1218,7 @@ class Billing_controller extends CI_Controller {
             if($check_bill){
                 $this->billing_model->insert_old_billing($billing_no);
                 $data += ['done_re_upload' => 'Done',
-                        're_upload' => 0,
+                        're_upload' => 3,
                         ];
                        
                 $inserted = $this->billing_model->update_billing($data,$billing_no);
@@ -1372,6 +1372,7 @@ class Billing_controller extends CI_Controller {
 
 	function upload_noa_pdf_bill_form() {
         $noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+        $bill_type = $this->uri->segment(3);
         $noa = $this->billing_model->get_noa_to_bill($noa_id);
         $mbl = $this->billing_model->get_member_mbl($noa['emp_id']);
         $hcare_provider_id = $this->session->userdata('dsg_hcare_prov');
@@ -1396,12 +1397,12 @@ class Billing_controller extends CI_Controller {
             $data['billing_no'] = $billing_no;
             $data['admission_date'] = intval(str_replace('-', '', $noa['admission_date']));
         }
-        
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_provider_panel/billing/upload_noa_bill_pdf');
+		$this->load->view('healthcare_provider_panel/billing/' . (($bill_type === 'bill-noa') ? "upload_noa_bill_pdf" : "upload_noa_initial_bill_pdf"));
+		// $this->load->view('healthcare_provider_panel/billing/upload_noa_bill_pdf');
 		$this->load->view('templates/footer');
-	}
+	}  
 
 	function re_upload_pdf_bill_form() {    
         $loa_noa = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
@@ -1727,23 +1728,13 @@ class Billing_controller extends CI_Controller {
         $net_b = $this->input->post('initial-net-bill', TRUE);
         // $initial_date = $this->input->post('initial-date',TRUE);
         $net_bill = floatval(str_replace(',', '', $net_b));
-        $hospitalBillData = $_POST['hospital_bill_data'];
         
-        // var_dump("initial date",$initial_date);
         // PDF File Upload
         $config['upload_path'] = './uploads/pdf_bills/';
         $config['allowed_types'] = 'pdf';
         $config['encrypt_name'] = TRUE;
         $this->load->library('upload', $config);
-        // var_dump("initial date", $initial_date);
-        // if(empty($initial_date)){
-        //     $response = [
-        //         'status'  => 'save-error',
-        //         'message' => 'Invalid Date'
-        //     ];
-
-        // }
-        // else 
+      
         if (!$this->upload->do_upload('pdf-file-initial')) {
             $response = [
                 'status'  => 'save-error',
@@ -1995,7 +1986,7 @@ class Billing_controller extends CI_Controller {
             $date_uploaded = date("Y-m-d", strtotime($noa['date_uploaded']));
             $custom_billing_no = '<mark class="bg-primary text-white">' . $noa['billing_no'] . '</mark>';
             $file_name = $noa['pdf_bill'];
-            $initial_bill = number_format($noa['initial_bill']);
+            $initial_bill = number_format($noa['initial_bill'],2,'.',',');
             $custom_actions = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $noa['pdf_bill'] . '\' , \''. $noa['billing_no'] .'\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i></a>';
     
             // This data will be rendered to the datatable

@@ -155,12 +155,23 @@ class Noa_model extends CI_Model {
   }
 
   function db_get_noa_info($noa_id) {
-    $this->db->select('*')
+    $this->db->select('tbl_1.noa_id as tbl_1_id,tbl_1.status as tbl_1_status,tbl_1.request_date as tbl_1_request_date, tbl_1.work_related as tbl_1_work_related, tbl_1.*,tbl_2.*,tbl_3.*,tbl_5.*')
              ->from('noa_requests as tbl_1')
              ->join('healthcare_providers as tbl_2', 'tbl_1.hospital_id = tbl_2.hp_id')
              ->join('members as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id')
+            //  ->join('company_doctors as tbl_4', 'tbl_1.requesting_physician = tbl_4.doctor_id','left')
+             ->join('billing as tbl_5', 'tbl_1.noa_id = tbl_5.noa_id','left')
              ->where('tbl_1.noa_id', $noa_id);
     return $this->db->get()->row_array();
+  }
+
+  function db_get_affiliated_healthcare_providers() {
+    $query = $this->db->get_where('healthcare_providers',['accredited'=>1]);
+    return $query->result_array();
+  }
+  function db_get_not_affiliated_healthcare_providers() {
+    $query = $this->db->get_where('healthcare_providers',['accredited'=>0]);
+    return $query->result_array();
   }
 
   function db_get_approved_noa_info($noa_id) {
@@ -223,13 +234,14 @@ class Noa_model extends CI_Model {
   }
 
   var $table_3 = 'billing';
-  var $column_order_history = array('tbl_1.noa_no', 'tbl_2.net_bill', 'tbl_1.status','tbl_1.approved_on','tbl_2.billed_on','tbl_1.request_date');
-  var $column_search_history = array('tbl_1.noa_no','tbl_2.net_bill','tbl_1.status','tbl_1.approved_on','tbl_2.billed_on','tbl_1.request_date'); //set column field database for datatable searchable 
+  var $column_order_history = array('tbl_1.noa_no', 'tbl_3.net_bill', 'tbl_1.status','tbl_1.approved_on','tbl_3.billed_on','tbl_1.request_date','tbl_2.hp_name');
+  var $column_search_history = array('tbl_1.noa_no','tbl_3.net_bill','tbl_1.status','tbl_1.approved_on','tbl_3.billed_on','tbl_1.request_date','tbl_2.hp_name'); //set column field database for datatable searchable 
   var $order_history = array('tbl_1.noa_id' => 'desc'); // default order 
   private function _get_noa_datatables_query($emp_id) {
-      $this->db->select('tbl_1.status as tbl1_status, tbl_1.noa_id as tbl1_noa_id, tbl_1.request_date as tbl1_request_date, tbl_1.*, tbl_2.*');
+      $this->db->select('tbl_1.status as tbl1_status, tbl_1.noa_id as tbl1_noa_id, tbl_1.request_date as tbl1_request_date, tbl_1.*, tbl_2.*, tbl_3.*');
       $this->db->from($this->table_1 . ' as tbl_1');
-      $this->db->join($this->table_3 . ' as tbl_2', 'tbl_1.noa_id = tbl_2.noa_id','left');
+      $this->db->join($this->table_2 . ' as tbl_2', 'tbl_1.hospital_id = tbl_2.hp_id','left');
+      $this->db->join($this->table_3 . ' as tbl_3', 'tbl_1.noa_id = tbl_3.noa_id','left');
       $this->db->where('tbl_1.emp_id', $emp_id);
       $i = 0;
       // loop column 

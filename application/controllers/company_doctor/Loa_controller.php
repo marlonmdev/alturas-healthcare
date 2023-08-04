@@ -184,6 +184,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
+			$view_receipt = '';
 			if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 				// if request is consultation set the view file and medical services to None
 				// $short_med_services = 'Npne';
@@ -195,7 +196,16 @@ class Loa_controller extends CI_Controller {
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
 
 				// link to the file attached during loa request
-				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
+				if($loa['rx_file']){
+					$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_file ='None';
+				}
+				if($loa['hospital_receipt']){
+					$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $loa['hospital_receipt'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_receipt ='None';
+				}
 			}
 
 			// this data will be rendered to the datatable
@@ -204,6 +214,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
 			$row[] = $view_file;
+			$row[] = $view_receipt;
 			$row[] = $custom_date;
 			$row[] = $totalFee;
 			$row[] = $wpercent. ', '.$nwpercent;
@@ -268,6 +279,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
+			$view_receipt = '';
 			if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 				// if request is consultation set the view file to None
 				$view_file = 'None';
@@ -279,7 +291,16 @@ class Loa_controller extends CI_Controller {
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
 
 				// link to the file attached during loa request
-				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
+				if($loa['rx_file']){
+					$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_file ='None';
+				}
+				if($loa['hospital_receipt']){
+					$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $loa['hospital_receipt'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_receipt ='None';
+				}
 			}
 
 			// this data will be rendered to the datatable
@@ -287,8 +308,8 @@ class Loa_controller extends CI_Controller {
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
-			$row[] = $view_file;
 			$row[] = $expiry_date;
+			$row[] = $view_receipt;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;
@@ -403,6 +424,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
+			$view_receipt = '';
 			if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 				// if request is consultation set the view file to None
 				$view_file = 'None';
@@ -415,7 +437,16 @@ class Loa_controller extends CI_Controller {
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
 
 				// link to the file attached during loa request
-				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
+				if($loa['rx_file']){
+					$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_file ='None';
+				}
+				if($loa['hospital_receipt']){
+					$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $loa['hospital_receipt'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_receipt ='None';
+				}
 			}
 
 			// this data will be rendered to the datatable
@@ -424,6 +455,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
 			$row[] = $view_file;
+			$row[] = $view_receipt;
 			$row[] = $custom_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
@@ -519,6 +551,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
+			$view_receipt = '';
 			if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 				// if request is consultation set the view file to None
 				$view_file =  'None';
@@ -530,7 +563,16 @@ class Loa_controller extends CI_Controller {
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
 
 				// link to the file attached during loa request
-				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
+				if($loa['rx_file']){
+					$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_file ='None';
+				}
+				if($loa['hospital_receipt']){
+					$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $loa['hospital_receipt'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_receipt ='None';
+				}
 			}
 
 			// this data will be rendered to the datatable
@@ -539,6 +581,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
 			$row[] = $view_file;
+			$row[] = $view_receipt;
 			$row[] = $custom_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
@@ -625,6 +668,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
+			$view_receipt = '';
 			if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 				// if request is consultation set the view file to None
 				$view_file = 'None';
@@ -637,8 +681,17 @@ class Loa_controller extends CI_Controller {
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
 
 				// link to the file attached during loa request
-				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
-			}
+				if($loa['rx_file']){
+					$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_file ='None';
+				}
+				if($loa['hospital_receipt']){
+					$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $loa['hospital_receipt'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_receipt ='None';
+				}
+				}
 
 			// this data will be rendered to the datatable
 			$row[] = $custom_loa_no;
@@ -646,6 +699,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
 			$row[] = $view_file;
+			$row[] = $view_receipt;
 			$row[] = $custom_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
@@ -684,6 +738,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
+			$view_receipt = '';
 			if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 				// if request is consultation set the view file to None
 				$view_file = 'None';
@@ -696,7 +751,16 @@ class Loa_controller extends CI_Controller {
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
 
 				// link to the file attached during loa request
-				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
+				if($loa['rx_file']){
+					$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_file ='None';
+				}
+				if($loa['hospital_receipt']){
+					$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $loa['hospital_receipt'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_receipt ='None';
+				}
 			}
 
 			// this data will be rendered to the datatable
@@ -705,6 +769,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
 			$row[] = $view_file;
+			$row[] = $view_receipt;
 			$row[] = $custom_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
@@ -743,6 +808,7 @@ class Loa_controller extends CI_Controller {
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
+			$view_receipt = '';
 			if ($loa['loa_request_type'] === 'Consultation' || $loa['loa_request_type'] === 'Emergency') {
 				// if request is consultation set the view file to None
 				$view_file = 'None';
@@ -755,8 +821,17 @@ class Loa_controller extends CI_Controller {
 				$short_hp_name = strlen($loa['hp_name']) > 24 ? substr($loa['hp_name'], 0, 24) . "..." : $loa['hp_name'];
 
 				// link to the file attached during loa request
-				$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
-			}
+				if($loa['rx_file']){
+					$view_file = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/loa_attachments/' . $loa['rx_file'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_file ='None';
+				}
+				if($loa['hospital_receipt']){
+					$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $loa['hospital_receipt'] . '\')"><strong>View</strong></a>';
+				}else{
+					$view_receipt ='None';
+				}
+				}
 
 			// this data will be rendered to the datatable
 			$row[] = $custom_loa_no;
@@ -764,6 +839,7 @@ class Loa_controller extends CI_Controller {
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
 			$row[] = $view_file;
+			$row[] = $view_receipt;
 			$row[] = $custom_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
@@ -818,11 +894,23 @@ class Loa_controller extends CI_Controller {
 		Then it implodes the ct_array into a string and assigns it to the  variable. */
 		$selected_cost_types = explode(';', $row['med_services']);
 		$ct_array = [];
+		$is_empty = true;
 		foreach ($cost_types as $cost_type) :
-			if (in_array($cost_type['ctype_id'], $selected_cost_types)) :
+			if (in_array($cost_type['ctype_id'], $selected_cost_types)) {
 				array_push($ct_array, '[ <span class="text-success">'.$cost_type['item_description'].'</span> ]');
-			endif;
+				$is_empty = false;
+			}
 		endforeach;
+		$selected_not_in_cost_types = array_diff($selected_cost_types, array_column($cost_types, 'ctype_id'));
+
+		foreach ($selected_not_in_cost_types as $selected_cost_type) {
+			// Handle the selected_cost_type that does not belong to $cost_types array
+			if($selected_cost_type !== ''){
+				$is_empty = false;
+				array_push($ct_array, '[ <span class="text-success">' . $selected_cost_type . '</span> ]');
+			}
+			
+		}
 		$med_serv = implode(' ', $ct_array);
 
 		/* Checking if the status is pending and the work related is not empty. If it is, then it will set
@@ -869,7 +957,7 @@ class Loa_controller extends CI_Controller {
 			'contact_person_no' => $row['contact_person_no'],
 			'healthcare_provider' => $row['hp_name'],
 			'loa_request_type' => $row['loa_request_type'],
-			'med_services' => $med_serv,
+			'med_services' => (!$is_empty)?$med_serv:'None',
 			'health_card_no' => $row['health_card_no'],
 			'requesting_company' => $row['requesting_company'],
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
@@ -899,6 +987,154 @@ class Loa_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
+	public function get_personal_and_company_charge($loa_id,$old_billing) {
+        
+        $loa_info = $this->loa_model->db_get_loa_info($loa_id);
+       
+			$company_charge = 0;
+			$personal_charge = 0;
+			$remaining_mbl = 0;
+			
+			$wpercent = '';
+			$nwpercent = '';
+			$net_bill = $loa_info['hospital_bill'];
+            $prev_mbl = ($old_billing != null) ? $old_billing['after_remaining_bal'] : 0;
+			$max_mbl = floatval($loa_info['max_benefit_limit']);
+			$percentage = floatval($loa_info['percentage']);
+			$previous_mbl = 0;
+            // var_dump("status",$status);
+            // var_dump("prev mbl",$prevmbl);
+			if($old_billing){
+				$previous_mbl = $prev_mbl;
+			}else{
+				$previous_mbl =$loa_info['remaining_balance'];
+			}
+
+			if($loa_info['work_related'] == 'Yes'){
+               
+				if($loa_info['percentage'] == ''){
+                    if($previous_mbl <= 0){
+                        $company_charge = 0;
+                        $personal_charge =  $net_bill;
+                        $remaining_mbl =  0;
+                    }else{
+                        $company_charge = $net_bill;
+                        $personal_charge = 0;
+                        if($net_bill >= $previous_mbl){
+                            $remaining_mbl = 0;
+                        }else if($net_bill < $previous_mbl){
+                            $remaining_mbl = $previous_mbl - $net_bill;
+                        }
+                    }
+					
+                    
+				}else if($loa_info['percentage'] != ''){
+					if($previous_mbl <= 0){
+                        $company_charge = 0;
+                        $personal_charge =  $net_bill;
+                        $remaining_mbl =  0;
+                    }else{
+                        if($net_bill <= $previous_mbl){
+                            $company_charge = $net_bill;
+                            $personal_charge = 0;
+                            $remaining_mbl = $previous_mbl - $net_bill;
+                        }else if($net_bill > $previous_mbl){
+                            $converted_percent = $percentage/100;
+                            $initial_company_charge = floatval($converted_percent) * $net_bill;
+                            $initial_personal_charge = $net_bill - floatval($initial_company_charge);
+                            
+                            if(floatval($initial_company_charge) <= $previous_mbl){
+                                $result = $previous_mbl - floatval($initial_company_charge);
+                                $int_personal = floatval($initial_personal_charge) - floatval($result);
+                                $personal_charge = $int_personal;
+                                $company_charge = $previous_mbl;
+                                $remaining_mbl = 0;
+                        
+                            }else if(floatval($initial_company_charge) > $previous_mbl){
+                                $personal_charge = $initial_personal_charge;
+                                $company_charge = $initial_company_charge;
+                                $remaining_mbl = 0;
+                            }
+                        }
+                    }
+					
+				}
+			}else if($loa_info['work_related'] == 'No'){
+				if($loa_info['percentage'] == ''){
+                    if($previous_mbl <= 0){
+                        $company_charge = 0;
+                        $personal_charge =  $net_bill;
+                        $remaining_mbl =  0;
+                    }else{
+                        if($net_bill <= $previous_mbl){
+                            $company_charge = $net_bill;
+                            $personal_charge = 0;
+                            $remaining_mbl = $previous_mbl - $company_charge;
+                        }else if($net_bill > $previous_mbl){
+                            $company_charge = $previous_mbl;
+                            $personal_charge = $net_bill - $previous_mbl;
+                            $remaining_mbl = 0;
+                        }
+                    }
+					
+                   
+				}else if($loa_info['percentage'] != ''){
+                    if($previous_mbl <= 0){
+                        $company_charge = 0;
+                        $personal_charge =  $net_bill;
+                        $remaining_mbl =  0;
+                    }else{
+                        if($net_bill <= $previous_mbl){
+                            $company_charge = $net_bill;
+                            $personal_charge = 0;
+                            $remaining_mbl = $previous_mbl - floatval($net_bill);
+                        }else if($net_bill > $previous_mbl){
+                            $converted_percent = $percentage/100;
+                            $initial_personal_charge = $converted_percent * $net_bill;
+                            $initial_company_charge = $net_bill - floatval($initial_personal_charge);
+                            
+                            if($initial_company_charge <= $previous_mbl){
+                                $result = $previous_mbl - $initial_company_charge;
+                                $initial_personal = $initial_personal_charge - $result;
+                                if($initial_personal < 0 ){
+                                    $personal_charge = 0;
+                                    $company_charge = $initial_company_charge + $initial_personal_charge;
+                                    $remaining_mbl = $previous_mbl - floatval($company_charge);
+                                }else if($initial_personal >= 0){
+                                    $personal_charge = $initial_personal;
+                                    $company_charge = $previous_mbl;
+                                    $remaining_mbl = 0;
+                                }
+                            }else if($initial_company_charge > $previous_mbl){
+                                $personal_charge = $initial_personal_charge;
+                                $company_charge = $initial_company_charge;
+                                $remaining_mbl = 0;
+                            }
+                            
+                        }
+                    }
+				}
+			}
+		
+            
+            $data = array(
+                'company_charge' => $company_charge,
+                'personal_charge' => $personal_charge,
+                'remaining_balance' =>$rmbl = $remaining_mbl,
+                'used_mbl' =>  (($max_mbl-$rmbl)>0)? $max_mbl-$rmbl : $max_mbl,
+                'previous_mbl' => $previous_mbl,
+            );
+			return  $data;
+	}
+
+	function billing_number($input, $pad_len = 7, $prefix = null) {
+		if ($pad_len <= strlen($input))
+			trigger_error('<strong>$pad_len</strong> cannot be less than or equal to the length of <strong>$input</strong> to generate invoice number', E_USER_ERROR);
+		if (is_string($prefix))
+			return sprintf("%s%s", $prefix, str_pad($input, $pad_len, "0", STR_PAD_LEFT));
+
+		return str_pad($input, $pad_len, "0", STR_PAD_LEFT);
+	}
 	function approve_loa_request() {
 		$token = $this->security->get_csrf_hash();
 		$loa_id = $this->myhash->hasher($this->input->post('loa-id', TRUE), 'decrypt');
@@ -906,7 +1142,14 @@ class Loa_controller extends CI_Controller {
 		$expiration_date = $this->input->post('expiration-date', TRUE);
 		$approved_by = $this->session->userdata('doctor_id');
 		$approved_on = date("Y-m-d");
-
+		$loa_info = $this->loa_model->db_get_loa_info($loa_id);
+		$is_manual = json_decode($loa_info['is_manual']);
+		$result = $this->loa_model->db_get_max_billing_id();
+		$max_billing_id = !$result ? 0 : $result['billing_id'];
+		$add_billing = $max_billing_id + 1;
+		$current_year = date('Y').date('m');
+		// call function loa_number
+		$billing_no = $this->billing_number($add_billing, 5, 'BLN-'.$current_year);
 		if($expiration_type == 'custom'){
 			$this->form_validation->set_rules('expiration-date', 'Custom Expiration Date', 'required');
 			if ($this->form_validation->run() == FALSE) {
@@ -946,20 +1189,63 @@ class Loa_controller extends CI_Controller {
 			break;
 		}
 
-		$data = [
+		$data_status = [
 			'performed_fees'  => 'Approved',
-			'status'          => 'Approved',
+			'status'          => ($is_manual === 1)?'Billed':'Approved',
 			'approved_by'     => $approved_by,
 			'approved_on'     => $approved_on,
 			'expiration_date' => $expired_on
 		];
 
-		$approved = $this->loa_model->db_approve_loa_request($loa_id, $data);
-
+		$approved = $this->loa_model->db_approve_loa_request($loa_id, $data_status);
+		
 		if ($approved) {
-			$response = ['token' => $token, 'status' => 'success', 'message' => 'LOA Request Approved Successfully'];
-		}else{
-			$response = ['token' => $token, 'status' => 'save-error', 'message' => 'Unable to Approve LOA Request'];
+			if($is_manual === 1){
+				$old_billing = $this->loa_model->get_billing_by_emp_id($loa_info['emp_id']);
+				$result_charge = $this->get_personal_and_company_charge($loa_id,$old_billing);
+				$data = [
+					'billing_no'            => $billing_no,
+					'billing_type'          => 'Reimburse',
+					'emp_id'                => $loa_info['emp_id'],
+					'loa_id'                => $loa_id,
+					'hp_id'                 => $loa_info['hcare_provider'],
+					'work_related'          => $loa_info['work_related'],
+					// 'take_home_meds'        => isset($take_home_meds)?implode(',',$take_home_meds):$get_prev_meds,
+					'net_bill'              => $loa_info['hospital_bill'],
+					'company_charge'        =>  $result_charge['company_charge'],
+					'personal_charge'       =>  $result_charge['personal_charge'],
+					'before_remaining_bal'  =>  $result_charge['previous_mbl'],
+					'after_remaining_bal'   =>  $result_charge['remaining_balance'],
+					'pdf_bill'              => $loa_info['hospital_receipt'],
+					// 'itemized_bill'         => isset($uploaded_files['itemize-pdf-file']) ? $uploaded_files['itemize-pdf-file']['file_name'] : $get_prev_mbl_by_bill_no['itemize-pdf-file'],
+					// 'final_diagnosis_file'  => isset($uploaded_files['Final-Diagnosis']) ? $uploaded_files['Final-Diagnosis']['file_name'] : $get_prev_mbl_by_bill_no['final_diagnosis_file'],
+					// 'medical_abstract_file' => isset($uploaded_files['Medical-Abstract']) ? $uploaded_files['Medical-Abstract']['file_name'] : $get_prev_maf,
+					// 'prescription_file'     => isset($uploaded_files['Prescription']) ? $uploaded_files['Prescription']['file_name'] : $get_prev_pf,
+					'billed_by'             => $this->session->userdata('fullname'),
+					'billed_on'             => date('Y-m-d'),
+					'status'                => 'Billed',
+					// 'extracted_txt'         => $hospitalBillData,
+					// 'attending_doctors'      => $attending_doctor,
+					'request_date'          => $loa_info['request_date']
+				];    
+				$mbl = [
+					'used_mbl'            => $result_charge['used_mbl'],
+					'remaining_balance'      => $result_charge['remaining_balance']
+				];
+	
+				$insert = $this->loa_model->insert_billing($data);
+			
+				if($insert){
+					$this->loa_model->update_member_remaining_balance($loa_info['emp_id'], $mbl);
+					$response = ['token' => $token, 'status' => 'success', 'message' => 'NOA Request Approved Successfully','next_page'=>'Billed'];
+				}else{
+					$response = ['token' => $token, 'status' => 'save-error', 'message' => 'Unable to Approve NOA Request'];
+				}
+			}else{
+				$response = ['token' => $token, 'status' => 'success', 'message' => 'NOA Request Approved Successfully','next_page'=>'Approved'];
+			}
+		} else {
+			$response = ['token' => $token, 'status' => 'save-error', 'message' => 'Unable to Approve NOA Request'];
 		}
 		echo json_encode($response);
 	}

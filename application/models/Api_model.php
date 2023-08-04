@@ -33,7 +33,7 @@ class Api_model extends CI_Model {
     $this->db->update('cash_advance'); 
   
   }
-
+ 
   //update cash advance in billing table
   function update_billing($data) {
     $this->db->set('cash_advance', $data['approved_amount']);

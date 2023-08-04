@@ -40,8 +40,8 @@
                   <div class="request-title">
                     <div class="row">
                       <div class="col-xs-12 d-flex justify-content-center align-items-center">
-                        <img src="<?= base_url(); ?>assets/images/hmo-logo.png" alt="Alturas Healthcare Logo" height="85">
-                        <span class="fw-bold fs-2 ls-1">Alturas Healthcare</span>
+                      <img src="<?= base_url(); ?>assets/images/HC_logo.png" alt="Alturas Healthcare Logo" height="110" width="200">
+                        <!-- <span class="fw-bold fs-2 ls-1">Alturas Healthcare</span> -->
                       </div>
                     </div>
                   </div>

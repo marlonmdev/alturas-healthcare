@@ -51,26 +51,43 @@
               </div>
 
               <div class="form-group row">
-                <div class="col-lg-8 col-sm-12 col-lg-offset-3 mb-2">
-                  <label class="colored-label"><i class="bx bx-health icon-red"></i> Name of Hospital</label>
-                  <select class="form-select" name="hospital-name" id="hospital-name">
-                    <option value="" selected>Select Hospital</option>
-                    <?php
-                    if (!empty($hospitals)) :
-                      foreach ($hospitals as $hospital) :
-                    ?>
-                        <option value="<?= $hospital['hp_id']; ?>"><?= $hospital['hp_name']; ?></option>
-                    <?php
-                      endforeach;
-                    endif;
-                    ?>
+
+                <div class="col-sm-4 mb-2">
+                  <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Hospital Provider Category</label>
+                  <select class="form-select" name="healthcare-provider-category" id="healthcare-provider-category" oninput="enableProvider()">
+                    <option value="" selected>Select Healthcare Provider Category</option>
+                    <option value="1">Affiliated</option>
+                    <option value="2">Not Affiliated</option>
+                  </select>
+                  <em id="healthcare-provider-category-error" class="text-danger"></em>
+                </div>
+
+                <div class="col-lg-4 col-sm-12 col-lg-offset-3 mb-2">
+                  <label class="colored-label"><i class="bx bx-health icon-red"></i>  Healthcare Provider</label>
+                  <select class="form-select" name="hospital-name" id="hospital-name" oninput="" disabled>
+                    <option value="" selected>Select Healthcare Provider</option>
                   </select>
                   <em id="hospital-name-error" class="text-danger"></em>
                 </div>
+
                 <div class="col-lg-4 col-sm-12 mb-2">
                   <label class="colored-label"><i class="bx bx-health icon-red"></i> Admission Date</label>
                   <input type="text" class="form-control" name="admission-date" id="admission-date" placeholder="Select Date" style="background-color:#ffff">
                   <em id="admission-date-error" class="text-danger"></em>
+                </div>
+              </div>
+
+              <div class="form-group row" id="med-services-wrapper" hidden>
+                  <div class="col-sm-8 mb-0 pe-2"  >
+                    <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Input Medical Service/s <small class="text-danger"> *Note: Press Tab or Enter to Add More Medical Service</small></label>
+                    <input class="form-control" id="noa-med-services" name="noa-med-services" placeholder="Type and press Enter|Tab">
+                    </input>
+                    <em id="noa-med-services-error" class="text-danger"></em>
+                  </div>
+                  <div class="col-lg-4 col-sm-12 mb-2">
+                  <label class="colored-label"><i class="bx bx-health icon-red"></i>Total Bill</label>
+                  <input type="text" class="form-control" name="hospital-bill" id="hospital-bill" placeholder="Enter Hospital Bill" style="background-color:#ffff" autocomplete="off">
+                  <em id="hospital-bill-error" class="text-danger"></em>
                 </div>
               </div>
 
@@ -81,6 +98,30 @@
                   <em id="chief-complaint-error" class="text-danger"></em>
                 </div>
               </div>
+
+              <section class="row" id="receipt-wrapper" hidden >
+                <div class="form-group">
+                 <span class="text-info fs-3 fw-bold ls-2"><i class="mdi mdi-attachment"></i> FILE ATTACHMENT</span>
+                </div>
+
+                <div class="form-group" >
+                  <div class="col-sm-12 mb-2">
+                    <p id="file-type-info">
+                      Allowed file types: <strong class="text-primary">jpg, jpeg, png</strong>.
+                    </p>
+                  </div>
+                </div>
+                <div class="form-group">
+                <div class="col-sm-12 mb-4" >
+                  <i class="mdi mdi-asterisk text-danger" id="mdi"></i><label class="colored-label mb-1" id="rx-title"> Hospital Receipt</label>
+                    <div id="hospital-receipt-wrapper">
+                      <input type="file" class="dropify" name="hospital-receipt" id="hospital-receipt" data-height="300" data-max-file-size="5M" accept=".jpg, .jpeg, .png">
+                    </div>
+                    <em id="hospital-receipt-error" class="text-danger"></em>
+                  </div>
+                </div>
+              </section>
+             
               <br>
               <div class="row">
                 <div class="col-sm-12 mb-2 d-flex justify-content-start">
@@ -103,21 +144,41 @@
 
 
 
+<style>
+ /* .custom-input {
+  width: 100%;
+} */
 
+</style>
 <script type="text/javascript">
   const baseUrl = `<?php echo base_url(); ?>`;
   const mbl = "<?=$mbl['remaining_balance']?>";
+  const ahcproviders_names = <?= json_encode($ahcproviders)?>;
+  const hospital_names = <?= json_encode($hcproviders)?>;
+  let is_accredited = false;
+  const input_bill = document.getElementById('hospital-bill');
+  const med_services = document.getElementById('noa-med-services');
   $(document).ready(function() {
+    new Tagify(med_services);
     $('#submit').prop('disabled',false); 
-
-
     $('#admission-date').flatpickr({
-      dateFormat: "Y-m-d"
+          dateFormat: "Y-m-d"
+        });
+        input_bill.setAttribute('autocomplete', 'off');
+        number_validator();
+    $('#hospital-bill').on('input',function(){
+      let value = $('#hospital-bill').val();
+      let length  = $('#hospital-bill').val().length;
+      console.log('value',value);
+      if(length <=1 && (value === '0'|| value === '.' || value ==='')){
+        $('#hospital-bill').val('');
+      }
     });
-
+    // new Tagify('noa-med-services');
     $('#memberNoaRequestForm').submit(function(event) {
       event.preventDefault();
         let $data = new FormData($(this)[0]);
+        $data.append('is_accredited',is_accredited);
         if(mbl<=0){
         $.alert({
           title: "<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Unable to Request</h3>",
@@ -149,7 +210,11 @@
               message,
               hospital_name_error,
               chief_complaint_error,
-              admission_date_error
+              admission_date_error,
+              hospital_receipt_error,
+              med_services_error,
+              hospital_bill_error,
+              healthcare_provider_category_error
             } = response;
 
             if (status === 'error') {
@@ -169,7 +234,9 @@
                 $('#admission-date-error').html('');
                 $('#admission-date').removeClass('is-invalid');
               }
-
+              console.log('hospital_receipt_error',hospital_receipt_error);
+              console.log('med_services_error',med_services_error);
+              console.log('hospital_bill_error',hospital_bill_error);
               if (chief_complaint_error !== '') {
                 $('#chief-complaint-error').html(chief_complaint_error);
                 $('#chief-complaint').addClass('is-invalid');
@@ -177,6 +244,37 @@
                 $('#chief-complaint-error').html('');
                 $('#chief-complaint').removeClass('is-invalid');
                 $('#chief-complaint').addClass('is-valid');
+              }
+
+              if (med_services_error !== '') {
+                $('#noa-med-services-error').html(med_services_error);
+                $('#noa-med-services').addClass('is-invalid');
+              } else {
+                $('#noa-med-services').html('');
+                $('#noa-med-services').removeClass('is-invalid');
+              }
+
+              if (hospital_bill_error !== '') {
+                $('#hospital-bill-error').html(hospital_bill_error);
+                $('#hospital-bill').addClass('is-invalid');
+              } else {
+                $('#hospital-bill-error').html('');
+                $('#hospital-bill').removeClass('is-invalid');
+              }
+
+              if (hospital_receipt_error !== '') {
+                $('#hospital-receipt-error').html(hospital_receipt_error);
+                $('#hospital-receipt').addClass('is-invalid');
+              } else {
+                $('#hospital-receipt-error').html('');
+                $('#hospital-receipt').removeClass('is-invalid');
+              }
+              if (healthcare_provider_category_error !== '') {
+                $('#healthcare-provider-category-error').html(healthcare_provider_category_error);
+                $('#healthcare-provider-category').addClass('is-invalid');
+              } else {
+                $('#healthcare-provider-category-error').html('');
+                $('#healthcare-provider-category').removeClass('is-invalid');
               }
 
             } else if (status === 'save-error') {
@@ -206,6 +304,84 @@
     }
     
     });
+
+    $('#healthcare-provider-category').on('change',function(){
+        $('#noa-med-services').val('');
+      });
+      $('#hospital-name').on('change',function(){
+        $('#noa-med-services').val('');
+      });
+   
   });
  
+  const number_validator = () => {
+	$('#hospital-bill').on('keydown',function(event){
+		let value = $('#hospital-bill').val();
+		let length  = $('#hospital-bill').val().length;
+		const key = event.key;
+		console.log('key',key);
+		console.log('length',length);
+		if(length+1 <=1 && (key === '0'|| key === '.' || key ==='')){
+		  event.preventDefault();
+		}
+		if(/^[a-zA-Z]$/.test(key)) {
+		  event.preventDefault(); 
+		}
+		if(/^[!@#$%^&*()\-_=+[\]{};':"\\|,<>/?`~]$/.test(key)) {
+		  event.preventDefault(); 
+		}
+		if(value.match(/\./) && /\./.test(key)) {
+		  event.preventDefault(); 
+		}
+		if(/\s/.test(key)){
+		  event.preventDefault();
+		}
+		  
+	  });
+  }
+
+  const enableProvider = () => {
+    const hc_provider = document.querySelector('#healthcare-provider-category').value;
+    console.log('hospital_names',hospital_names);
+    console.log('ahcproviders_names',ahcproviders_names);
+    const optionElement = document.createElement('option');
+    const request_type = document.querySelector('#hospital-name');
+      if( hc_provider != '' ){
+        removeOption();
+        request_type.disabled = false;
+        if(hc_provider === '1'){
+            ahcproviders_names.forEach( function(hospital){
+            optionElement.value = hospital.hp_id;
+            optionElement.text = hospital.hp_name;
+            request_type.appendChild(optionElement);
+          });
+          is_accredited = true;
+          $('#med-services-wrapper').prop('hidden',true)
+          $('#receipt-wrapper').prop('hidden',true)
+        }
+        if(hc_provider === '2'){
+            hospital_names.forEach( function(hospital){
+            optionElement.value = hospital.hp_id;
+            optionElement.text = hospital.hp_name;
+            request_type.appendChild(optionElement);
+          });
+          is_accredited = false;
+          $('#med-services-wrapper').prop('hidden',false)
+          $('#receipt-wrapper').prop('hidden',false)
+        }
+      }else{
+        request_type.disabled = true;
+        request_type.value = '';
+      }
+  } 
+
+  
+function removeOption() {
+  var selectElement = document.getElementById('hospital-name');
+  for (var i = 0; i < selectElement.options.length; i++) {
+    if (selectElement.options[i].value !== '' ) {
+      selectElement.remove(i);
+    }
+  }
+}
 </script>

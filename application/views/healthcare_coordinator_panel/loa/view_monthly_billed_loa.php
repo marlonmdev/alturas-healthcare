@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
 
-        <a href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/for-charging" type="submit" class="btn btn-info" data-bs-toggle="tooltip" title="Click to Go Back">
+        <a href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/for-charging" type="submit" class="btn btn-danger" data-bs-toggle="tooltip" title="Click to Go Back">
           <strong class="ls-2" style="vertical-align:middle"><i class="mdi mdi-arrow-left-bold"></i> Back</strong>
         </a>
 
@@ -52,30 +52,34 @@
   </div>
 
   <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
+ <!--  <div class="card shadow"> -->
   <div class="card-body pt-0">
-    <div class="table-responsive">
+    <!-- <div class="table-responsive"> -->
       <table class="table table-hover table-responsive" id="billedLoaTable">
-        <thead style="background-color:#00538C">
+        <thead style="background-color:#ADD8E6">
           <tr>
-            <th class="fw-bold" style="color: white;font-size:12px">Billing #</th>
-            <th class="fw-bold" style="color: white;font-size:12px">LOA #</th>
-            <th class="fw-bold" style="color: white;font-size:12px">PATIENT NAME</th>
-            <th class="fw-bold" style="color: white;font-size:12px">BUSINESS UNIT</th>
-            <th class="fw-bold" style="color: white;font-size:12px">PERCENTAGE</th>
-            <th class="fw-bold" style="color: white;font-size:12px">TYPE OF REQUEST</th>
-            <!-- <th class="fw-bold" style="color: white;font-size:12px">COORDINATOR BILL</th>
-            <th class="fw-bold" style="color: white;font-size:12px">VIEW</th> -->
-            <th class="fw-bold" style="color: white;font-size:12px">HOSPITAL BILL</th>
-            <th class="fw-bold" style="color: white;font-size:12px">SOA</th>
-            <th class="fw-bold" style="color: white;font-size:12px">DETAILED SOA</th>
+            <th class="fw-bold" style="color: black;font-size:10px">BILLING #</th>
+            <th class="fw-bold" style="color: black;font-size:10px">LOA #</th>
+            <th class="fw-bold" style="color: black;font-size:10px">PATIENT NAME</th>
+            <th class="fw-bold" style="color: black;font-size:10px">BUSINESS UNIT</th>
+            <th class="fw-bold" style="color: black;font-size:10px">PERCENTAGE</th>
+            <th class="fw-bold" style="color: black;font-size:10px">TYPE OF REQUEST</th>
+            <th class="fw-bold" style="color: black;font-size:10px">COMPANY CHARGE</th>
+            <th class="fw-bold" style="color: black;font-size:10px">PERSONAL CHARGE</th>
+            <th class="fw-bold" style="color: black;font-size:10px">HEALTHCARE ADVANCE</th>
+            <th class="fw-bold" style="color: black;font-size:10px">HOSPITAL BILL</th>
+            <th class="fw-bold" style="color: black;font-size:10px">SOA</th>
+            <th class="fw-bold" style="color: black;font-size:10px">DETAILED SOA</th>
           </tr>
         </thead>
-        <tbody id="billed-tbody" style="font-size: 12px"></tbody>
+        <tbody id="billed-tbody" style="font-size: 10px"></tbody>
       </table>
     </div>
-    <div class="row pt-4 pb-2">
-      <div class="col-lg-2 offset-8">
-        <label>Total Hospital Bill : </label>
+    <div class="row pt-2 pb-2 offset-8">
+      <div class="col-lg-5">
+        <label>Total Hospital Bill :</label>
+      </div>
+      <div class="col-lg-4">
         <input name="total-hospital-bill" id="total-hospital-bill" class="form-control text-center fw-bold" value="0" readonly>
       </div>
     </div>

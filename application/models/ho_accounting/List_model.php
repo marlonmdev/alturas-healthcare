@@ -247,6 +247,15 @@ class List_model extends CI_Model{
         }
     }
 //Payment Details
+    function set_details_no_other($billing_id,$details_no) {
+        $this->db->set('details_no', $details_no)
+                ->set('status', 'Paid')
+                ->where('status', 'Payment')
+                ->where('billing_type', 'Reimburse')
+                ->where('billing_id', $billing_id);
+        return $this->db->update('billing');
+    }
+
     function add_payment_details($data) {
         return $this->db->insert('payment_details', $data);
     }
@@ -270,6 +279,10 @@ class List_model extends CI_Model{
     function get_loa_noa_id($payment_no) {
         $this->db->where('payment_no', $payment_no);
         return $this->db->get('billing')->result_array();
+    }
+    function get_loa_noa_id_other($billing_id) {
+        $this->db->where('billing_id', $billing_id);
+        return $this->db->get('billing')->row_array();
     }
 
     function update_payable($bill_no) {
@@ -522,6 +535,7 @@ class List_model extends CI_Model{
        $this->db->join($this->table_4_billed . ' as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id');
        $this->db->join($this->table_5_billed . ' as tbl_5', 'tbl_1.hp_id = tbl_5.hp_id');
        $this->db->join($this->table_6_billed . ' as tbl_6', 'tbl_1.emp_id = tbl_6.emp_id');
+       $this->db->where('tbl_1.billing_type', 'PDF Billing');
        $this->db->where('tbl_1.done_matching', '1');
        $this->db->where('tbl_1.status', 'Payable');
        $this->db->order_by('tbl_1.billing_id','asc');
@@ -541,6 +555,75 @@ class List_model extends CI_Model{
 
    function get_for_payment_loa_noa() {
        $this->_get_billed_datatables_query();
+       if ($this->input->post('length') != -1)
+           $this->db->limit($this->input->post('length'), $this->input->post('start'));
+       $query = $this->db->get();
+       return $query->result_array();
+   }
+    // end datatable
+
+         // Start of server-side processing datatables
+   var $table_1_billed_other = 'billing';
+   var $table_2_billed_other = 'noa_requests';
+   var $table_3_billed_other = 'loa_requests';
+   var $table_4_billed_other = 'members';
+   var $table_5_billed_other = 'healthcare_providers';
+   var $table_6_billed_other = 'max_benefit_limits';
+   var $column_search_nonaccred_hosp = ['tbl_4.business_unit','tbl_4.first_name', 'tbl_4.middle_name', 'tbl_4.last_name', 'tbl_4.suffix', 'CONCAT(tbl_4.first_name, " ",tbl_4.last_name)',   'CONCAT(tbl_4.first_name, " ",tbl_4.last_name, " ", tbl_4.suffix)', 'CONCAT(tbl_4.first_name, " ",tbl_4.middle_name, " ",tbl_4.last_name)', 'CONCAT(tbl_4.first_name, " ",tbl_4.middle_name, " ",tbl_4.last_name, " ", tbl_4.suffix)'];
+   var $column_order_nonaccred_hosp = [null,'tbl_1.request_date',null,null,'tbl_4.first_name',null,null,null,null,null,null,null,null,null,null];
+   var $order_nonaccred_hosp = ['tbl_1.request_date' => 'asc'];
+
+   private function _get_other_billed_datatables_query() {
+       $this->db->select('*');
+       $this->db->from($this->table_1_billed_other . ' as tbl_1');
+       $this->db->join($this->table_2_billed_other . ' as tbl_2', 'tbl_1.noa_id = tbl_2.noa_id', 'left');
+       $this->db->join($this->table_3_billed_other . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id', 'left');
+       $this->db->join($this->table_4_billed_other . ' as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id');
+       $this->db->join($this->table_5_billed_other . ' as tbl_5', 'tbl_1.hp_id = tbl_5.hp_id');
+       $this->db->join($this->table_6_billed_other . ' as tbl_6', 'tbl_1.emp_id = tbl_6.emp_id');
+       $this->db->where('tbl_1.billing_type', 'Reimburse');
+       $this->db->where('tbl_1.status', 'Billed');
+       $this->db->order_by('tbl_1.request_date','asc');
+       $i = 0;
+
+      if ($this->input->post('startDate')) {
+        $startDate = date('Y-m-d', strtotime($this->input->post('startDate')));
+        $this->db->where('tbl_1.request_date >=', $startDate);
+      }
+      if ($this->input->post('endDate')){
+        $endDate = date('Y-m-d', strtotime($this->input->post('endDate')));
+        $this->db->where('tbl_1.request_date <=', $endDate);
+      }
+
+      	// loop column 
+		foreach ($this->column_search_nonaccred_hosp as $item) {
+			// if datatable send POST for search
+			if ($_POST['search']['value']) {
+				// first loop
+				if ($i === 0) {
+					$this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+					$this->db->like($item, $_POST['search']['value']);
+				} else {
+					$this->db->or_like($item, $_POST['search']['value']);
+				}
+
+				if (count($this->column_search_nonaccred_hosp) - 1 == $i) //last loop
+					$this->db->group_end(); //close bracket
+			}
+			$i++;
+		}
+
+		// here order processing
+		if (isset($_POST['order'])) {
+			$this->db->order_by($this->column_order_nonaccred_hosp[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+		} else if (isset($this->order_nonaccred_hosp)) {
+			$order = $this->order_nonaccred_hosp;
+			$this->db->order_by(key($order), $order[key($order)]);
+		}
+   }
+
+   function get_for_payment_other_hosp() {
+       $this->_get_other_billed_datatables_query();
        if ($this->input->post('length') != -1)
            $this->db->limit($this->input->post('length'), $this->input->post('start'));
        $query = $this->db->get();
@@ -611,6 +694,7 @@ class List_model extends CI_Model{
         $this->db->set('payment_no', $payment_no)
                 ->set('status', 'Payment')
                 ->where('done_matching', '1')
+                ->where('billing_type', 'PDF Billing')
                 ->where('status', 'Payable');
     
         if (!empty($this->input->post('hp_id'))) {
@@ -628,6 +712,23 @@ class List_model extends CI_Model{
             return $this->db->update('billing');
         }
     }
+
+    function other_submit_forPayment_bill($payment_no) {
+        $this->db->set('payment_no', $payment_no)
+                ->set('status', 'Payment')
+                ->where('billing_type', 'Reimburse')
+                ->where('status', 'Billed');
+
+        if (!empty($this->input->post('start_date'))) {
+            $startDate = date('Y-m-d', strtotime($this->input->post('start_date')));
+            $this->db->where('request_date >=', $startDate);
+        }
+        if (!empty($this->input->post('end_date'))) {
+            $endDate = date('Y-m-d', strtotime($this->input->post('end_date')));
+            $this->db->where('request_date <=', $endDate);
+        }
+            return $this->db->update('billing');
+    }
     
 
     function set_payment_no_date($payment_no,$user) {
@@ -644,16 +745,13 @@ class List_model extends CI_Model{
 
         $data = array(
             'payment_no' => $payment_no,
-            'hp_id' => $this->input->post('hp_id'),
             'startDate' => $start_date,
             'endDate' => $end_date,
             'total_payable' => floatval(str_replace(',','',$this->input->post('total_bill'))),
             'added_on' => date('Y-m-d'),
             'added_by' => $user
         );
-        if(!empty($this->input->post('hp_id'))){
             return $this->db->insert('monthly_payable', $data);
-        }
         
     }
 
@@ -664,6 +762,33 @@ class List_model extends CI_Model{
                 ->join('monthly_payable as tbl_3', 'tbl_1.payment_no = tbl_3.payment_no')
                 ->where('tbl_1.status', 'Payment')
                 ->order_by('tbl_3.bill_id', 'desc');
+        return $this->db->get()->result_array();
+    }
+
+    function fetch_for_payment_other() {
+        $this->db->select('*')
+                ->from('billing as tbl_1')
+                ->join('loa_requests as tbl_6', 'tbl_1.loa_id = tbl_6.loa_id', 'left')
+                ->join('noa_requests as tbl_7', 'tbl_1.noa_id = tbl_7.noa_id', 'left')
+                ->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
+                ->join('members as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id')
+                ->where('tbl_1.status', 'Payment')
+                ->where('tbl_1.billing_type', 'Reimburse')
+                ->order_by('tbl_1.request_date', 'desc');
+        return $this->db->get()->result_array();
+    }
+
+    function fetch_paid_bill_other() {
+        $this->db->select('*')
+                ->from('billing as tbl_1')
+                ->join('loa_requests as tbl_6', 'tbl_1.loa_id = tbl_6.loa_id', 'left')
+                ->join('noa_requests as tbl_7', 'tbl_1.noa_id = tbl_7.noa_id', 'left')
+                ->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
+                ->join('members as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id')
+                ->join('payment_details as tbl_8', 'tbl_1.details_no = tbl_8.details_no')
+                ->where('tbl_1.status', 'Paid')
+                ->where('tbl_1.billing_type', 'Reimburse')
+                ->order_by('tbl_1.request_date', 'desc');
         return $this->db->get()->result_array();
     }
 

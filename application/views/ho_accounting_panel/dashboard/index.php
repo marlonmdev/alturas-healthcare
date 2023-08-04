@@ -28,7 +28,7 @@
                 <div class="card-box bg-cyan">
                   <div class="inner">
                     <h3><?php echo $billed_count ?></h3>
-                    <p>Billed</p>
+                    <p>Billing</p>
                   </div>
                   <div class="icon">
                     <i class="mdi mdi-file-check" aria-hidden="true"></i>

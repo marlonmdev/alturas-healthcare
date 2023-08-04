@@ -92,7 +92,7 @@
                             <label class=" text-dark fw-bold ms-2 fs-5">Covered LOA & NOA Number: </label>
                         </div>
                         <div class="col-lg-8">
-                            <span class="text-danger">Click this to view Covered LOA/NOA details</span> <i class="mdi mdi-hand-pointing-right"></i> <u class="text-info"><a href="<?php echo base_url();?>head-office-accounting/bill/fetch_paid/" type="button" id="payment-link"></a></u>
+                            <span class="text-danger">Click this to view Covered LOA/NOA details</span> <i class="mdi mdi-hand-pointing-right"></i> <u class="text-info"><a data-bs-toggle="tooltip" type="button" id="payment-link"></a></u>
                             <textarea class="form-control text-dark fs-5" id="textbox" readonly></textarea>
                         </div>
                     </div>

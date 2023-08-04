@@ -46,7 +46,7 @@
                           <td id="cash-advance"></td>
                         </tr>
                         <tr>
-                          <td>Remaining MBL (* at the time of billing):</td>
+                          <td>Remaining MBL (* as of billing):</td>
                           <td id="remaining-mbl"></td>
                         </tr>
                         <tr>

@@ -26,7 +26,7 @@
                     <li class="nav-item">
                         <a
                             class="nav-link active"
-                            href="<?php echo base_url(); ?>head-office-accounting/bill/billing-list/billed-loa-noa"
+                            href="<?php echo base_url(); ?>head-office-accounting/bill/non-accredited/billed-loa-noa"
                             role="tab"
                             ><span class="hidden-sm-up"></span>
                             <span class="hidden-xs-down fs-5 font-bold">Billed</span></a
@@ -35,7 +35,7 @@
                     <l class="nav-item">
                         <a
                             class="nav-link"
-                            href="<?php echo base_url(); ?>head-office-accounting/billing-list/for-payment"
+                            href="<?php echo base_url(); ?>head-office-accounting/billing-list/other-hosp/for-payment"
                             role="tab"
                             ><span class="hidden-sm-up"></span>
                             <span class="hidden-xs-down fs-5 font-bold">For Payment</span></a
@@ -44,7 +44,7 @@
                     <li class="nav-item">
                        <a
                             class="nav-link"
-                            href="<?php echo base_url(); ?>head-office-accounting/billing-list/paid-bill"
+                            href="<?php echo base_url(); ?>head-office-accounting/billing-list/other-hosp/paid-bill"
                             role="tab"
                             ><span class="hidden-sm-up"></span>
                             <span class="hidden-xs-down fs-5 font-bold">Paid Bill</span></a
@@ -54,7 +54,7 @@
             </div>
             <div  id="billing-container" style="display:">
                 <div class="row pt-2 pb-2 gap-2">
-                    <div class="col-lg-4 ps-5 pb-3 pt-1 pb-4">
+                    <!-- <div class="col-lg-4 ps-5 pb-3 pt-1 pb-4">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text text-dark fw-bold">
@@ -68,30 +68,27 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                    </div>
-                    <div class="col-lg-4 pt-1">
+                    </div> -->
+                    <div class="col-lg-4 pt-1 offset-5">
                         <div class="input-group">
                             <div class="input-group-append">
                                 <span class="input-group-text text-dark ls-1 ms-2">
                                     <i class="mdi mdi-calendar-range"></i>
                                 </span>
                             </div>
-                            <input type="date" class="form-control" name="start_date" id="start-date" oninput="validateDateRange()" placeholder="Start Date" onchange="displayValue()">
+                            <input type="date" class="form-control" name="start_date" id="start-date" oninput="validateDateRange()" placeholder="Start Date">
 
                             <div class="input-group-append">
                                 <span class="input-group-text text-dark ls-1 ms-2">
                                     <i class="mdi mdi-calendar-range"></i>
                                 </span>
                             </div>
-                            <input type="date" class="form-control" name="end-date" id="end-date" oninput="validateDateRange()" placeholder="End Date" onchange="displayValue()">
+                            <input type="date" class="form-control" name="end-date" id="end-date" oninput="validateDateRange()" placeholder="End Date">
                         </div>
                     </div>
                     <div class="col-md-2 pb-4 pt-1">
-                            <button class="btn btn-info w-100" onclick="submitForPayment()" title="click to submit data for payment"><i class="mdi mdi-send"></i> For Payment </button>
-                        </div>
-                        <!-- <div class="col pb-2 pt-4">
-                            <button class="btn btn-danger ls-1" onclick="printPDF()" title="click to print data"><i class="mdi mdi-printer"></i> Print </button>
-                        </div> -->
+                        <button class="btn btn-info w-100" onclick="submitForPayment()" title="click to submit data for payment"><i class="mdi mdi-send"></i> For Payment </button>
+                    </div>
                 </div>
                 <div class="card shadow">
                     <div class="row" id="printableDiv">
@@ -112,8 +109,6 @@
                                                 <th class="fw-bold ls-2"><strong>Percentage</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Hospital Bill</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Company Charge</strong></th>
-                                                <th class="fw-bold ls-2"><strong>Healthcare Advance</strong></th>
-                                                <th class="fw-bold ls-2"><strong>Total Payable</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Personal Charge</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Remaining MBL</strong></th>
                                                 <th class="fw-bold ls-2"><strong>SOA</strong></th>
@@ -123,8 +118,6 @@
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <td></td>
-                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -164,12 +157,12 @@
 
       // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}head-office-accounting/bill/billed/fetch`,
+        url: `${baseUrl}head-office-accounting/bill/non-accredited-hosp/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
         data: function(data) {
            data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
-            data.hp_id = $('#billed-hospital-filter').val();
+            // data.hp_id = $('#billed-hospital-filter').val();
             data.endDate = $('#end-date').val();
             data.startDate = $('#start-date').val();
           
@@ -182,21 +175,18 @@
             { targets: 9, className: 'text-end' },
             { targets: 10, className: 'text-end' },
             { targets: 11, className: 'text-end' },
-            { targets: 12, className: 'text-end' },
-            { targets: 13, className: 'text-end' },
-            { targets: 14, className: 'text-center' },
+            { targets: 12, className: 'text-center' },
         ],
       data: [],  // Empty data array
       deferRender: true,  // Enable deferred rendering
       info: false,
       paging: false,
-      filter: false,
       lengthChange: false,
       responsive: true,
       fixedHeader: true,
     });
     billedTable.on('draw.dt', function() {
-        let columnIdx = 11;
+        let columnIdx = 9;
         let sum = 0;
         let rows = billedTable.rows().nodes();
 
@@ -273,9 +263,9 @@
     $('#start-date').change(function(){
         billedTable.draw();
     });
-    $('#billed-hospital-filter').change(function(){
-        billedTable.draw();
-    });
+    // $('#billed-hospital-filter').change(function(){
+    //     billedTable.draw();
+    // });
     $('#charging-end-date').change(function(){
         chargingTable.draw();
     });
@@ -291,82 +281,8 @@
 
  }) ;
 
- const displayValue = () => {
-    const hospitalSelect = document.querySelector('#billed-hospital-filter');
-    const hospitalOption = hospitalSelect.options[hospitalSelect.selectedIndex];
-    let hospital = hospitalOption.textContent;
-
-    // Capitalize the hospital value
-    hospital = hospital.toUpperCase();
-
-    const startDate = new Date(document.querySelector('#start-date').value);
-    const endDate = new Date(document.querySelector('#end-date').value);
-
-    const options = { month: 'long', day: '2-digit', year: 'numeric' };
-    const formattedStartDate = startDate.toLocaleDateString('en-US', options);
-    const formattedEndDate = endDate.toLocaleDateString('en-US', options);
-
-    const bHospital = document.querySelector('#b-hospital');
-    const bDate = document.querySelector('#b-date');
-
-    if(hospitalSelect.value != ''){
-        bHospital.textContent = 'Healthcare Provider : '+hospital;
-    }else{
-        bHospital.textContent = '';
-    }
-   
-    if(document.querySelector('#start-date').value || document.querySelector('#end-date').value != ''){
-        bDate.textContent = 'Date : '+formattedStartDate + ' to ' + formattedEndDate;
-    }else{
-        bDate.textContent = '';
-    }
-
-    
-}
-
-const viewValues = () => {
-    const hospitalSelect = document.querySelector('#charging-hospital-filter');
-    const hospitalOption = hospitalSelect.options[hospitalSelect.selectedIndex];
-    let hospital = hospitalOption.textContent;
-
-    // Capitalize the hospital value
-    hospital = hospital.toUpperCase();
-
-    const startDate = new Date(document.querySelector('#charging-start-date').value);
-    const endDate = new Date(document.querySelector('#charging-end-date').value);
-
-    const options = { month: 'long', day: '2-digit', year: 'numeric' };
-    const formattedStartDate = startDate.toLocaleDateString('en-US', options);
-    const formattedEndDate = endDate.toLocaleDateString('en-US', options);
-
-    const bDate = document.querySelector('#c-date');
-    const bHospital = document.querySelector('#c-hp');
-
-    if(hospitalSelect.value != ''){
-        bHospital.textContent = hospital;
-    }else{
-        bHospital.textContent = '';
-    }
-
-   
-    if(document.querySelector('#charging-start-date').value || document.querySelector('#charging-end-date').value != ''){
-        bDate.textContent = 'Date : '+formattedStartDate + ' to ' + formattedEndDate;
-    }else{
-        bDate.textContent = '';
-    }
-
-    const b_units = document.querySelector('#c-bu-units');
-    const bu_filter = document.querySelector('#charging-bu-filter').value;
-    if(bu_filter != ''){
-        b_units.textContent = 'BU :  '+bu_filter;
-    }else{
-        b_units.textContent = '';
-    }   
-}
-   
     
  const submitForPayment = () => {
-    const hp_id = document.querySelector('#billed-hospital-filter').value;
     const start_date = document.querySelector('#start-date').value;
     const end_date = document.querySelector('#end-date').value;
     const total = document.querySelector('#total_bill');
@@ -382,11 +298,10 @@ const viewValues = () => {
                             action: function(){
 
                                 $.ajax({
-                                    url: `${baseUrl}head-office-accounting/bill/submit-for-payment-bill`,
+                                    url: `${baseUrl}head-office-accounting/bill/submit-for-payment/other-hosp`,
                                     method: "POST",
                                     data: {
                                         'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
-                                        'hp_id' : hp_id,
                                         'start_date' : start_date,
                                         'end_date' : end_date,
                                         'total_bill' : spanValue,
@@ -410,8 +325,8 @@ const viewValues = () => {
                                                 printForPayment(payment_no);
                                             }
                                             setTimeout(function () {
-                                                window.location.href = '<?php echo base_url();?>head-office-accounting/billing-list/for-payment';
-                                            }, 2600);
+                                                window.location.href = '<?php echo base_url();?>head-office-accounting/billing-list/other-hosp/for-payment';
+                                            }, 2600);                                                                   
 
                                         }
                                         if(status == 'error'){
@@ -598,40 +513,14 @@ const viewValues = () => {
         $('#company-charge').html(company);
     }
 
-    const printPDF = () => { 
-        const hp_id = document.querySelector('#billed-hospital-filter').value;
-        const start_date = document.querySelector('#start-date').value;
-        const end_date = document.querySelector('#end-date').value;
-        
-        if(hp_id == ''){
-            hp_ids = 'none';
-          }else{
-            hp_ids = hp_id;
-          } if(start_date == ''){
-            start_dates = 'none';
-          }else{
-            start_dates = start_date;
-          } if(end_date == ''){
-            end_dates = 'none';
-          }else{
-            end_dates = end_date;
-          }
-
-        var base_url = `${baseUrl}`;
-        var win = window.open(base_url + "print/pdfbilling/" + btoa(hp_ids) + "/" + btoa(start_dates) + "/" + btoa(end_dates), '_blank');
-
-    }
-
     const printForPayment = (payment_no) => {
-        const hp_id = document.querySelector('#billed-hospital-filter').value;
         const start_date = document.querySelector('#start-date').value;
         const end_date = document.querySelector('#end-date').value;
 
-         if(hp_id == ''){
+       
             hp_ids = 'none';
-          }else{
-            hp_ids = hp_id;
-          } if(start_date == ''){
+        
+          if(start_date == ''){
             start_dates = 'none';
           }else{
             start_dates = start_date;
@@ -639,7 +528,7 @@ const viewValues = () => {
             end_dates = 'none';
           }else{
             end_dates = end_date;
-          }
+          } 
 
         const base_url = `${baseUrl}`;
         window.open(base_url + "printforpayment/pdfbilling/" + btoa(hp_ids) + "/" + btoa(start_dates) + "/" + btoa(end_dates) + "/" + btoa(payment_no), '_blank');

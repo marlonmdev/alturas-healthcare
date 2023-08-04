@@ -365,6 +365,97 @@ class Main_controller extends CI_Controller {
 		}
 	}
 
+	function add_payment_details_other_hosp() {
+		$token = $this->security->get_csrf_hash();
+
+		$this->form_validation->set_rules('acc-number', 'Account Number', 'required');
+		$this->form_validation->set_rules('acc-name', 'Account Name', 'required');
+		$this->form_validation->set_rules('check-number', 'Check Number', 'required');
+		$this->form_validation->set_rules('check-date', 'Check Date', 'required');
+		$this->form_validation->set_rules('bank', 'Bank', 'required');
+		$this->form_validation->set_rules('amount-paid', 'Amount Paid', 'required');
+		$this->form_validation->set_rules('supporting-docu', '', 'callback_check_image');
+
+		if(!$this->form_validation->run()){
+			echo json_encode([
+				'token' => $token,
+				'status' => 'validation-error',
+				'acc_num_error' => form_error('acc-number'),
+				'acc_name_error' => form_error('acc-name'),
+				'check_num_error' => form_error('check-number'),
+				'check_date_error' => form_error('check-date'),
+				'bank_error' => form_error('bank'),
+				'paid_error' => form_error('amount-paid'),
+				'image_error' => form_error('supporting-docu')
+			]);
+		}else{
+			$config['upload_path'] = './uploads/paymentDetails/';
+			$config['allowed_types'] = 'pdf|jpeg|jpg|png|gif|svg';
+			$config['encrypt_name'] = TRUE;
+			$this->load->library('upload', $config);
+			if(!$this->upload->do_upload('supporting-docu')){
+				echo json_encode([
+					'token' => $token,
+					'status' => 'error',
+					'message' => 'PDF upload failed!'
+				]);
+			}else{
+				$uploadData = $this->upload->data();
+				$counter = 1;
+				$counter++;
+				$details_no = "details-" . strtotime(date('h:i:s')).$counter;
+				
+				$added_by = $this->session->userdata('fullname');
+
+				$data = array(
+					"details_no" => $details_no,
+					"hp_id" => $this->input->post('pd-hp-id', TRUE),
+					"total_hp_bill" => str_replace(',', '', $this->input->post('p-total-bill')),
+					"acc_number" => $this->input->post('acc-number', TRUE),
+					"acc_name" => $this->input->post('acc-name', TRUE),
+					"check_num" => $this->input->post('check-number', TRUE),
+					"check_date" => $this->input->post('check-date', TRUE),
+					"bank" => $this->input->post('bank', TRUE),
+					"amount_paid" => $this->input->post('amount-paid', TRUE),
+					"supporting_file" => $uploadData['file_name'],
+					"date_add" => date('Y-m-d h:i:s'),
+					"added_by" => $added_by
+					
+				);
+				$this->List_model->add_payment_details($data);
+				$paid_by = $this->session->userdata('fullname');
+				$paid_on = $this->input->post('check-date', TRUE);
+				$billing_id = $this->input->post('pd-billing-id', TRUE);
+			
+				$this->List_model->set_details_no_other($billing_id,$details_no);
+				// $this->List_model->set_monthly_payable_other($billing_id,$paid_by,$paid_on);
+				$row = $this->List_model->get_loa_noa_id_other($billing_id);
+
+				if (!empty($row)) {
+						$total_paid = floatval($row['company_charge'] + 0);
+						$this->List_model->insert_total_paid($row['billing_id'], $total_paid);
+						// $this->List_model->update_payable($row['bill_no']);
+
+						$loa_id = $row['loa_id'];
+						$noa_id = $row['noa_id'];
+					
+						if (!empty($loa_id)) {
+							$this->List_model->set_loa_status($loa_id);
+						}
+						if (!empty($noa_id)) {
+							$this->List_model->set_noa_status($noa_id);
+						}
+				}
+	
+				echo json_encode([
+					'token' => $token,
+					'status' => 'success',
+					'message' => 'Data Added Successfully!'
+				]);
+			}
+		}
+	}
+
 	function fetch_closed() {
 		$this->security->get_csrf_hash();
 		$status = 'Paid';
@@ -690,20 +781,18 @@ class Main_controller extends CI_Controller {
 		$list = $this->List_model->get_payment_datatables();
 		$data = [];
 		$previous_payment_no = '';
-	
+		$number = 1;
 		foreach($list as $payment){
 			// Check if payment_no is the same as the previous iteration
 			if ($payment['payment_no'] !== $previous_payment_no) {
 				$row = [];
 				$details_id = $this->myhash->hasher($payment['details_id'], 'encrypt');
 	
-				$custom_details_no = '<span class="text-dark fw-bold">'.$payment['payment_no'].'</span>';
-	
 				$custom_actions = '<a class="text-info fw-bold ls-1 fs-4" href="JavaScript:void(0)" onclick="viewPaymentInfo(\'' . $details_id . '\',\'' . base_url() . 'uploads/paymentDetails/' . $payment['supporting_file'] . '\')"  data-bs-toggle="tooltip"><u><i class="mdi mdi-view-list fs-3" title="View Payment Details"></i></u></a>';
 	
 				$custom_actions .= '<a class="text-success fw-bold ls-1 ps-2 fs-4" href="javascript:void(0)" onclick="viewCheckVoucher(\'' . $payment['supporting_file'] . '\')" data-bs-toggle="tooltip"><u><i class="mdi mdi-file-pdf fs-3" title="View Proof"></i></u></a>';
 	
-				$row[] = $custom_details_no;
+				$row[] = $number++;
 				$row[] = $payment['acc_number'];
 				$row[] = $payment['acc_name'];
 				$row[] = $payment['check_num'];
@@ -766,7 +855,9 @@ class Main_controller extends CI_Controller {
 				'bank' => $payment['bank'],
 				'amount_paid' => number_format(floatval($payment['amount_paid']),2,'.',','),
 				'billed_date' => 'From '. date("F d, Y", strtotime($payment['startDate'])).' to '. date("F d, Y", strtotime($payment['endDate'])),
-				'covered_loa_no' => $loa_noa_no
+				'covered_loa_no' => $loa_noa_no,
+				'billing_id' => $this->myhash->hasher($payment['billing_id'],'encrypt'),
+				'billing_type' => $payment['billing_type']
 			]; 
 
 		echo json_encode($response);
@@ -1052,6 +1143,143 @@ class Main_controller extends CI_Controller {
 
 		echo json_encode($output);
 		 
+	}
+
+	function fetch_nonaccred_hosp_bill() {
+		$token = $this->security->get_csrf_hash();
+		$bill = $this->List_model->get_for_payment_other_hosp();
+		$data = [];
+		$number = 1;
+		foreach($bill as $pay){
+			if($pay['company_charge'] && $pay['cash_advance'] != ''){
+				$row = [];
+				$company_charge = '';
+				$personal_charge = '';
+				$remaining_mbl = '';
+	
+				$fullname =  $pay['first_name'] . ' ' . $pay['middle_name'] . ' ' . $pay['last_name'] . ' ' . $pay['suffix'];
+				$wpercent = '';
+				$nwpercent = '';
+				$net_bill = floatval($pay['net_bill']);
+				$previous_mbl = floatval($pay['remaining_balance']);
+	
+				$billing_id = $this->myhash->hasher($pay['billing_id'], 'encrypt');
+
+				if($pay['loa_id'] != ''){
+					$loa_noa = '<a href="JavaScript:void(0)" class="btn text-info text-decoration-underline" onclick="viewLOANOAdetails(\''.$billing_id.'\')" data-bs-toggle="tooltip">'.$pay['loa_no'].'</a>';
+					
+					$loa = $this->List_model->get_loa_info($pay['loa_id']);
+					$request_date = date('m/d/Y',strtotime($loa['request_date']));
+					if($loa['work_related'] == 'Yes'){ 
+						if($loa['percentage'] == ''){
+						   $wpercent = '100% W-R';
+						   $nwpercent = '';
+						}else{
+						   $wpercent = $loa['percentage'].'%  W-R';
+						   $result = 100 - floatval($loa['percentage']);
+						   if($loa['percentage'] == '100'){
+							   $nwpercent = '';
+						   }else{
+							   $nwpercent = $result.'% Non W-R';
+						   }
+						  
+						}	
+				   }else if($loa['work_related'] == 'No'){
+					   if($loa['percentage'] == ''){
+						   $wpercent = '';
+						   $nwpercent = '100% Non W-R';
+						}else{
+						   $nwpercent = $loa['percentage'].'% Non W-R';
+						   $result = 100 - floatval($loa['percentage']);
+						   if($loa['percentage'] == '100'){
+							   $wpercent = '';
+						   }else{
+							   $wpercent = $result.'%  W-R';
+						   }
+						 
+						}
+				   }
+				  
+				}else if($pay['noa_id'] != ''){
+					$loa_noa = '<a href="JavaScript:void(0)" class="btn text-info text-decoration-underline" onclick="viewLOANOAdetails(\''.$billing_id.'\')" data-bs-toggle="tooltip">'.$pay['noa_no'].'</a>';
+
+					$noa = $this->List_model->get_noa_info($pay['noa_id']);
+					$request_date = date('m/d/Y',strtotime($noa['request_date']));
+					if($noa['work_related'] == 'Yes'){ 
+						if($noa['percentage'] == ''){
+						   $wpercent = '100% W-R';
+						   $nwpercent = '';
+						}else{
+						   $wpercent = $noa['percentage'].'%  W-R';
+						   $result = 100 - floatval($noa['percentage']);
+						   if($noa['percentage'] == '100'){
+							   $nwpercent = '';
+						   }else{
+							   $nwpercent = $result.'% Non W-R';
+						   }
+						  
+						}	
+				   }else if($noa['work_related'] == 'No'){
+					   if($noa['percentage'] == ''){
+						   $wpercent = '';
+						   $nwpercent = '100% Non W-R';
+						}else{
+						   $nwpercent = $noa['percentage'].'% Non W-R';
+						   $result = 100 - floatval($noa['percentage']);
+						   if($noa['percentage'] == '100'){
+							   $wpercent = '';
+						   }else{
+							   $wpercent = $result.'%  W-R';
+						   }
+						 
+						}
+				   }
+				}
+	
+				if($pay['loa_id'] != ''){
+					$loa_id = $pay['loa_id'];
+					$no = $pay['loa_no'];
+				}else{
+					$loa_id = '';
+				}
+	
+				if($pay['noa_id'] != ''){
+					$noa_id = $pay['noa_id'];
+					$no = $pay['noa_no'];
+				}else{
+					$noa_id = '';
+				}
+	
+				$cash_advance = number_format(floatval($pay['cash_advance']),2, '.',',');
+				$hospital_bill = number_format(floatval($pay['net_bill']),2, '.',',');
+				$company_charge = number_format(floatval($pay['company_charge']),2, '.',',');
+	
+				$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $pay['pdf_bill'] . '\' , \''. $no .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-5"></i></a>';
+	
+				$row[] = $number++;
+				$row[] = $request_date;
+				$row[] = $pay['billing_no'];
+				$row[] = $loa_noa;
+				$row[] = $fullname;
+				$row[] = $pay['business_unit'];
+				$row[] = number_format($pay['before_remaining_bal'],2, '.',',');
+				$row[] = $wpercent. ', '.$nwpercent;
+				$row[] = number_format($pay['net_bill'],2, '.',',');
+				$row[] = number_format($pay['company_charge'],2, '.',',');
+				$row[] = number_format($pay['personal_charge'],2, '.',',');
+				$row[] = number_format($pay['after_remaining_bal'],2, '.',',');
+				$row[] = $pdf_bill;
+				$data[] = $row;
+			}
+			
+		}
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+			"token" => $token
+		];
+
+		echo json_encode($output);
 	}
 
 	function fetch_charging_billed() {
@@ -1359,6 +1587,276 @@ class Main_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 
+	function fetch_for_payment_other_hosp() {
+		$token = $this->security->get_csrf_hash();
+		$reimburse = $this->List_model->fetch_for_payment_other();
+		$data = [];
+		$number = 1;
+		foreach($reimburse as $pay){
+			if($pay['company_charge'] && $pay['cash_advance'] != ''){
+				$row = [];
+				$company_charge = '';
+				$personal_charge = '';
+				$remaining_mbl = '';
+	
+				$fullname =  $pay['first_name'] . ' ' . $pay['middle_name'] . ' ' . $pay['last_name'] . ' ' . $pay['suffix'];
+				$wpercent = '';
+				$nwpercent = '';
+				$net_bill = floatval($pay['net_bill']);
+	
+				$billing_id = $this->myhash->hasher($pay['billing_id'], 'encrypt');
+
+				if($pay['loa_id'] != ''){
+					$loa_noa = '<a href="JavaScript:void(0)" class="btn text-info text-decoration-underline" onclick="viewLOANOAdetails(\''.$billing_id.'\')" data-bs-toggle="tooltip">'.$pay['loa_no'].'</a>';
+					
+					$loa = $this->List_model->get_loa_info($pay['loa_id']);
+					$request_date = date('m/d/Y',strtotime($loa['request_date']));
+					if($loa['work_related'] == 'Yes'){ 
+						if($loa['percentage'] == ''){
+						   $wpercent = '100% W-R';
+						   $nwpercent = '';
+						}else{
+						   $wpercent = $loa['percentage'].'%  W-R';
+						   $result = 100 - floatval($loa['percentage']);
+						   if($loa['percentage'] == '100'){
+							   $nwpercent = '';
+						   }else{
+							   $nwpercent = $result.'% Non W-R';
+						   }
+						  
+						}	
+				   }else if($loa['work_related'] == 'No'){
+					   if($loa['percentage'] == ''){
+						   $wpercent = '';
+						   $nwpercent = '100% Non W-R';
+						}else{
+						   $nwpercent = $loa['percentage'].'% Non W-R';
+						   $result = 100 - floatval($loa['percentage']);
+						   if($loa['percentage'] == '100'){
+							   $wpercent = '';
+						   }else{
+							   $wpercent = $result.'%  W-R';
+						   }
+						 
+						}
+				   }
+				  
+				}else if($pay['noa_id'] != ''){
+					$loa_noa = '<a href="JavaScript:void(0)" class="btn text-info text-decoration-underline" onclick="viewLOANOAdetails(\''.$billing_id.'\')" data-bs-toggle="tooltip">'.$pay['noa_no'].'</a>';
+
+					$noa = $this->List_model->get_noa_info($pay['noa_id']);
+					$request_date = date('m/d/Y',strtotime($noa['request_date']));
+					if($noa['work_related'] == 'Yes'){ 
+						if($noa['percentage'] == ''){
+						   $wpercent = '100% W-R';
+						   $nwpercent = '';
+						}else{
+						   $wpercent = $noa['percentage'].'%  W-R';
+						   $result = 100 - floatval($noa['percentage']);
+						   if($noa['percentage'] == '100'){
+							   $nwpercent = '';
+						   }else{
+							   $nwpercent = $result.'% Non W-R';
+						   }
+						  
+						}	
+				   }else if($noa['work_related'] == 'No'){
+					   if($noa['percentage'] == ''){
+						   $wpercent = '';
+						   $nwpercent = '100% Non W-R';
+						}else{
+						   $nwpercent = $noa['percentage'].'% Non W-R';
+						   $result = 100 - floatval($noa['percentage']);
+						   if($noa['percentage'] == '100'){
+							   $wpercent = '';
+						   }else{
+							   $wpercent = $result.'%  W-R';
+						   }
+						 
+						}
+				   }
+				}
+	
+	
+				if($pay['loa_id'] != ''){
+					$loa_id = $pay['loa_id'];
+					$no = $pay['loa_no'];
+				}else{
+					$loa_id = '';
+				}
+	
+				if($pay['noa_id'] != ''){
+					$noa_id = $pay['noa_id'];
+					$no = $pay['noa_no'];
+				}else{
+					$noa_id = '';
+				}
+	
+				$cash_advance = number_format(floatval($pay['cash_advance']),2, '.',',');
+				$hospital_bill = number_format(floatval($pay['net_bill']),2, '.',',');
+				$company_charge = number_format(floatval($pay['company_charge']),2, '.',',');
+	
+				$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $pay['pdf_bill'] . '\' , \''. $no .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-5"></i></a>';
+
+				$action = '<a href="JavaScript:void(0)" onclick="tagAsDoneReimburse(\'' . $pay['billing_id'] .'\',\'' . $pay['payment_no'] .'\',\'' . number_format($pay['company_charge'],2,'.',',') .'\',\'' . $pay['hp_id'] .'\')" data-bs-toggle="tooltip" title="Tag As Reimbursed"><i class="mdi mdi-tag-plus text-danger fs-3"></i></a>';
+	
+				$row[] = $number++;
+				$row[] = $pay['hp_name'];
+				$row[] = $pay['billing_no'];
+				$row[] = $loa_noa;
+				$row[] = $fullname;
+				$row[] = $pay['business_unit'];
+				$row[] = number_format($pay['company_charge'],2, '.',',');
+				$row[] = $action;
+				$data[] = $row;
+			}
+			
+		}
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+			"token" => $token
+		];
+
+		echo json_encode($output);
+	}
+
+	function fetch_paid_other_hosp() {
+		$token = $this->security->get_csrf_hash();
+		$reimburse = $this->List_model->fetch_paid_bill_other();
+		$data = [];
+		$number = 1;
+		foreach($reimburse as $pay){
+			if($pay['company_charge'] && $pay['cash_advance'] != ''){
+				$row = [];
+				$company_charge = '';
+				$personal_charge = '';
+				$remaining_mbl = '';
+	
+				$fullname =  $pay['first_name'] . ' ' . $pay['middle_name'] . ' ' . $pay['last_name'] . ' ' . $pay['suffix'];
+				$wpercent = '';
+				$nwpercent = '';
+				$net_bill = floatval($pay['net_bill']);
+	
+				$billing_id = $this->myhash->hasher($pay['billing_id'], 'encrypt');
+
+				if($pay['loa_id'] != ''){
+					$loa_noa = '<a href="JavaScript:void(0)" class="btn text-info text-decoration-underline" onclick="viewLOANOAdetails(\''.$billing_id.'\')" data-bs-toggle="tooltip">'.$pay['loa_no'].'</a>';
+					
+					$loa = $this->List_model->get_loa_info($pay['loa_id']);
+					$request_date = date('m/d/Y',strtotime($loa['request_date']));
+					if($loa['work_related'] == 'Yes'){ 
+						if($loa['percentage'] == ''){
+						   $wpercent = '100% W-R';
+						   $nwpercent = '';
+						}else{
+						   $wpercent = $loa['percentage'].'%  W-R';
+						   $result = 100 - floatval($loa['percentage']);
+						   if($loa['percentage'] == '100'){
+							   $nwpercent = '';
+						   }else{
+							   $nwpercent = $result.'% Non W-R';
+						   }
+						  
+						}	
+				   }else if($loa['work_related'] == 'No'){
+					   if($loa['percentage'] == ''){
+						   $wpercent = '';
+						   $nwpercent = '100% Non W-R';
+						}else{
+						   $nwpercent = $loa['percentage'].'% Non W-R';
+						   $result = 100 - floatval($loa['percentage']);
+						   if($loa['percentage'] == '100'){
+							   $wpercent = '';
+						   }else{
+							   $wpercent = $result.'%  W-R';
+						   }
+						 
+						}
+				   }
+				  
+				}else if($pay['noa_id'] != ''){
+					$loa_noa = '<a href="JavaScript:void(0)" class="btn text-info text-decoration-underline" onclick="viewLOANOAdetails(\''.$billing_id.'\')" data-bs-toggle="tooltip">'.$pay['noa_no'].'</a>';
+
+					$noa = $this->List_model->get_noa_info($pay['noa_id']);
+					$request_date = date('m/d/Y',strtotime($noa['request_date']));
+					if($noa['work_related'] == 'Yes'){ 
+						if($noa['percentage'] == ''){
+						   $wpercent = '100% W-R';
+						   $nwpercent = '';
+						}else{
+						   $wpercent = $noa['percentage'].'%  W-R';
+						   $result = 100 - floatval($noa['percentage']);
+						   if($noa['percentage'] == '100'){
+							   $nwpercent = '';
+						   }else{
+							   $nwpercent = $result.'% Non W-R';
+						   }
+						  
+						}	
+				   }else if($noa['work_related'] == 'No'){
+					   if($noa['percentage'] == ''){
+						   $wpercent = '';
+						   $nwpercent = '100% Non W-R';
+						}else{
+						   $nwpercent = $noa['percentage'].'% Non W-R';
+						   $result = 100 - floatval($noa['percentage']);
+						   if($noa['percentage'] == '100'){
+							   $wpercent = '';
+						   }else{
+							   $wpercent = $result.'%  W-R';
+						   }
+						 
+						}
+				   }
+				}
+	
+	
+				if($pay['loa_id'] != ''){
+					$loa_id = $pay['loa_id'];
+					$no = $pay['loa_no'];
+				}else{
+					$loa_id = '';
+				}
+	
+				if($pay['noa_id'] != ''){
+					$noa_id = $pay['noa_id'];
+					$no = $pay['noa_no'];
+				}else{
+					$noa_id = '';
+				}
+	
+				$cash_advance = number_format(floatval($pay['cash_advance']),2, '.',',');
+				$hospital_bill = number_format(floatval($pay['net_bill']),2, '.',',');
+				$company_charge = number_format(floatval($pay['company_charge']),2, '.',',');
+	
+				$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $pay['pdf_bill'] . '\' , \''. $no .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-5"></i></a>';
+
+				$action = '<a href="JavaScript:void(0)" onclick="viewReimburseCV(\'' . $pay['supporting_file'] .'\')" data-bs-toggle="tooltip" title="View CV"><i class="mdi mdi-file-pdf-box text-info fs-2"></i></a>';
+
+				// $action .= '<a href="JavaScript:void(0)" onclick="tagAsDoneReimburse(\'' . $pay['billing_id'] .'\')" data-bs-toggle="tooltip" title="Tag As Reimbursed"><i class="mdi mdi-tag-plus text-danger fs-3 ps-2"></i></a>';
+	
+				$row[] = $number++;
+				$row[] = $pay['hp_name'];
+				$row[] = $pay['billing_no'];
+				$row[] = $loa_noa;
+				$row[] = $fullname;
+				$row[] = $pay['business_unit'];
+				$row[] = number_format($pay['company_charge'],2, '.',',');
+				$row[] = $action;
+				$data[] = $row;
+			}
+			
+		}
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+			"token" => $token
+		];
+
+		echo json_encode($output);
+	}
+
 	function fetch_payment_bill() {
 		$token = $this->security->get_csrf_hash();
 		$payment_no = $this->input->post('payment_no', TRUE);
@@ -1525,6 +2023,7 @@ class Main_controller extends CI_Controller {
 
 		echo json_encode($output);
 	}
+
 
 	function fetch_monthly_paid_bill() {
 		$token = $this->security->get_csrf_hash();
@@ -2182,10 +2681,30 @@ class Main_controller extends CI_Controller {
 	function submit_for_payment_bill() {
 		$token = $this->security->get_csrf_hash();
 		$user = $this->session->userdata('fullname');
-		$number = 0;
-		$number++;
-		$payment_no = 'PMT-' . date('Ymis') . $number;
+		$payment_no = 'PMT-' . date('Ymis');
 		$this->List_model->submit_forPayment_bill($payment_no);
+		$inserted = $this->List_model->set_payment_no_date($payment_no,$user);
+		if($inserted){
+			echo json_encode([
+				'token' => $token,
+				'payment_no' => $payment_no,
+				'status' => 'success',
+				'message' => 'Successfully Submitted!'
+			]);
+		}else{
+			echo json_encode([
+				'token' => $token,
+				'status' => 'error',
+				'message' => 'Failed to Submit!'
+			]);
+		}
+	}
+
+	function other_hosp_submit_for_payment() {
+		$token = $this->security->get_csrf_hash();
+		$user = $this->session->userdata('fullname');
+		$payment_no = 'PMT-' . date('Ymdis');
+		$this->List_model->other_submit_forPayment_bill($payment_no);
 		$inserted = $this->List_model->set_payment_no_date($payment_no,$user);
 		if($inserted){
 			echo json_encode([
@@ -2236,6 +2755,7 @@ class Main_controller extends CI_Controller {
 			$approved_on = date('F d, Y',strtotime($loa['approved_on']));
 			$hospitalized_on = date('F d, Y',strtotime($loa['emerg_date']));
 			$loa_noa_no = $loa['loa_no'];
+			$is_manual = $loa['is_manual'];
 
 				if($loa['work_related'] == 'Yes'){ 
 					if($loa['percentage'] == ''){
@@ -2275,6 +2795,8 @@ class Main_controller extends CI_Controller {
 			$admission_date = date('F d, Y',strtotime($noa['admission_date']));
 			$loa_noa_no = $noa['noa_no'];
 			$request_type = 'NOA';
+			$is_manual = $noa['is_manual'];
+
 
 			if($noa['work_related'] == 'Yes'){ 
 				if($noa['percentage'] == ''){
@@ -2340,6 +2862,7 @@ class Main_controller extends CI_Controller {
 			'total_payable' => number_format(floatval($data['cash_advance'] + $data['company_charge']),2,'.',','),
 			'before_remaining_bal' => number_format($data['before_remaining_bal'],2,'.',','),
 			'after_remaining_bal' => number_format($data['after_remaining_bal'],2,'.',','),
+			'is_manual' => $is_manual
 		];
 		
 		echo json_encode($response);
@@ -2683,6 +3206,194 @@ class Main_controller extends CI_Controller {
 		}
 		$pdf->Output($pdfname.'.pdf', 'I');
 
+	}
+
+	function print_payment_other_hosp($payment_no) {
+		$this->security->get_csrf_hash();
+		$this->load->library('tcpdf_library');
+
+		$payment_no =  base64_decode($payment_no);
+
+		$info = $this->List_model->get_bill_payment_details($payment_no);
+		$billed = $this->List_model->get_for_payment_bills($payment_no);
+		$pdf = new TCPDF();
+
+		if(!empty($start) || !empty($end)){
+			$formattedStart_date = date('F d, Y', strtotime($info['startDate']));
+			$formattedEnd_date = date('F d, Y', strtotime($info['endDate']));
+
+			$date = '<h3>From '.$formattedStart_date.' to '.$formattedEnd_date.'</h3>';
+		}else{
+			$date = '';
+		}
+
+		$title = '<img src="'.base_url().'assets/images/HC_logo.png" style="width:110px;height:70px">';
+
+		$title .= '<style>h3 { margin: 0; padding: 0; line-height: .5; }</style>
+            <h3>For Payment Summary Details</h3>
+			'.$date.'
+			<h3>'.$payment_no.'</h3><br>';
+			
+		$currentDate = '<small>Transaction Date: ' . date('m/d/Y h:i A').'</small>';
+		$PDFdata = '<table style="border:.5px solid #000; padding:3px" class="table table-bordered">';
+		$PDFdata .= ' <thead>
+						<tr class="border-secondary">
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px; width:40px"><strong>NO.</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Request Date</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Billing No</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>LOA/NOA #</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Patient Name</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Business Unit</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Current MBL</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Percentage</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Hospital Bill</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Company Charge</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Healthcare Advance</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Total Payable</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Personal Charge</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Remaining MBL</strong></th>
+						</tr>
+					</thead>';
+
+				$number = 1;
+				$totalPayableSum = 0;
+				foreach($billed as $bill){
+					if($bill['company_charge'] && $bill['cash_advance'] != ''){
+						$wpercent = '';
+						$nwpercent = '';
+						if($bill['loa_id'] != ''){
+								$loa_noa = $bill['loa_no'];
+								$loa = $this->List_model->get_loa_info($bill['loa_id']);
+								$request_date = date('m/d/Y', strtotime($loa['request_date']));
+								if($loa['work_related'] == 'Yes'){ 
+									if($loa['percentage'] == ''){
+									$wpercent = '100% W-R';
+									$nwpercent = '';
+									}else{
+									$wpercent = $loa['percentage'].'%  W-R';
+									$result = 100 - floatval($loa['percentage']);
+									if($loa['percentage'] == '100'){
+										$nwpercent = '';
+									}else{
+										$nwpercent = $result.'% NonW-R';
+									}
+									
+									}	
+							}else if($loa['work_related'] == 'No'){
+								if($loa['percentage'] == ''){
+									$wpercent = '';
+									$nwpercent = '100% NonW-R';
+									}else{
+									$nwpercent = $loa['percentage'].'% NonW-R';
+									$result = 100 - floatval($loa['percentage']);
+									if($loa['percentage'] == '100'){
+										$wpercent = '';
+									}else{
+										$wpercent = $result.'%  W-R';
+									}
+									
+									}
+							}
+	
+							}else if($bill['noa_id'] != ''){
+								$loa_noa = $bill['noa_no'];
+								$noa = $this->List_model->get_noa_info($bill['noa_id']);
+								$request_date = date('m/d/Y', strtotime($noa['request_date']));
+								if($noa['work_related'] == 'Yes'){ 
+									if($noa['percentage'] == ''){
+									$wpercent = '100% W-R';
+									$nwpercent = '';
+									}else{
+									$wpercent = $noa['percentage'].'%  W-R';
+									$result = 100 - floatval($noa['percentage']);
+									if($noa['percentage'] == '100'){
+										$nwpercent = '';
+									}else{
+										$nwpercent = $result.'% NonW-R';
+									}
+									
+									}	
+							}else if($noa['work_related'] == 'No'){
+								if($noa['percentage'] == ''){
+									$wpercent = '';
+									$nwpercent = '100% NonW-R';
+									}else{
+									$nwpercent = $noa['percentage'].'% NonW-R';
+									$result = 100 - floatval($noa['percentage']);
+									if($noa['percentage'] == '100'){
+										$wpercent = '';
+									}else{
+										$wpercent = $result.'%  W-R';
+									}
+									
+									}
+							}
+						}
+	
+						$fullname =  $bill['first_name'] . ' ' . $bill['middle_name'] . ' ' . $bill['last_name'] . ' ' . $bill['suffix'];
+						
+						$total_payable = floatval($bill['company_charge'] + $bill['cash_advance']);
+	
+						$PDFdata .= ' <tbody>
+							<tr>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px; width:40px">'.$number++.'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$request_date.'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$bill['billing_no'].'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$loa_noa.'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$fullname.'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$bill['business_unit'].'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['before_remaining_bal'],2,'.',',').'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$wpercent. ', '.$nwpercent.'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['net_bill'],2,'.',',').'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['company_charge'],2,'.',',').'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['cash_advance'],2,'.',',').'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($total_payable,2,'.',',').'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['personal_charge'],2,'.',',').'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['after_remaining_bal'],2,'.',',').'</td>
+							</tr>
+						</tbody>';
+	
+						$totalPayableSum += $total_payable;
+					}
+					
+				}
+
+		$PDFdata .= '<tfoot>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td class="fw-bold fs-5">TOTAL </td>
+					<td class="fw-bold fs-5">'.number_format($totalPayableSum,2,'.',',').'</td>
+					<td></td>
+					<td></td>
+				</tr>
+			</tfoot>';
+
+		$PDFdata .= '</table>';
+		$pdf->setPrintHeader(false);
+		$pdf->setTitle('For Payment Report');
+		$pdf->setFont('times', '', 10);
+		$pdf->AddPage('L', 'LEGAL');
+		$pdf->WriteHtmlCell(0, 0, '', '', $currentDate, 0, 1, 0, true, 'R', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', '', 0, 1, 0, true, 'C', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'J', true);
+		$pdf->lastPage();
+		$pageCount = $pdf->getAliasNumPage(); // Get the number of pages
+		for ($i = 1; $i <= $pageCount; $i++) {
+			$pdf->setPage($i); // Set the page number
+			$pdf->writeHTMLCell(0, 0, '', '', 'Page '.$i.' of '.$pageCount, 0, 1, 0, true, 'R', true);
+		}
+		$pdfname = $payment_no.'_'.date('mdHi');
+		$pdf->Output($pdfname.'.pdf', 'I');
 	}
 
 	function print_forPayment($hp_id,$start_date,$end_date,$payment_no) {

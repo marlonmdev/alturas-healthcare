@@ -185,7 +185,7 @@
     });
 
     ledgerTable.on('draw.dt', function() {
-            let columnIndices = [3, 4]; // Array of column indices to calculate sum
+            let columnIndices = [4, 5]; // Array of column indices to calculate sum
             let sums = [0, 0]; // Array to store the sums for each column
 
             if ($('#ledgertbody').DataTable().data().length > 0) {

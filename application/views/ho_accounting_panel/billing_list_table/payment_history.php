@@ -43,7 +43,7 @@
                     <table class="table table-hover" id="billedTable">
                         <thead style="background-color:#00538C">
                             <tr>
-                                <td class="text-white">Payment Number</td>
+                                <td class="text-white">#</td>
                                 <td class="text-white">Account Number</td>
                                 <td class="text-white">Account Name</td>
                                 <td class="text-white">Check Number</td>
@@ -60,8 +60,11 @@
         </div>
         <?php include 'view_check_voucher.php'; ?>
     </div> 
-</div>
  <?php include 'view_payment_details.php' ?>
+
+</div>
+<?php include 'view_paid_details_modal.php'; ?>
+
 <script>
         const baseUrl = "<?php echo base_url(); ?>";
         $(document).ready(function(){
@@ -117,6 +120,8 @@
                         amount_paid,
                         billed_date,
                         covered_loa_no,
+                        billing_id,
+                        billing_type
                     } = res;
            
                     $('#viewPaymentModal').modal('show');
@@ -132,10 +137,89 @@
                     $('#textbox').val(covered_loa_no);
                     $('#c-billed-date').val(billed_date);
 
-                    var paymentLink = document.getElementById('payment-link');
-                    var data = `${bill_id}`;
-                    paymentLink.innerHTML = data;
-                    paymentLink.href = "<?php echo base_url();?>head-office-accounting/bill/fetch_paid/" + data;
+                    if(billing_type == 'Reimburse'){
+                        var paymentLink = document.getElementById('payment-link');
+                        var data1 = `${billing_id}`;
+                        paymentLink.innerHTML = data1;
+                        paymentLink.href = 'JavaScript:void(0)';
+                        paymentLink.onclick = viewModal;
+
+                    }else{
+                        var data = `${bill_id}`;
+                        var paymentLink = document.getElementById('payment-link');
+                        paymentLink.innerHTML = data;
+                        paymentLink.href = "<?php echo base_url();?>head-office-accounting/bill/fetch_paid/" + data;
+                    }
+                    
+                }
+            });
+        }
+
+        const viewModal = () => {
+            $('#viewpaidLOANOAdetailsModal').modal('show');
+            var paymentLink = document.getElementById('payment-link');
+            var billing_id = paymentLink.innerHTML;
+            
+            $.ajax({
+                url: `${baseUrl}head-office-accounting/biling/loa-noa-details/fetch/${billing_id}`,
+                data: `<?php echo $this->security->get_csrf_hash(); ?>`,
+                type: 'GET',
+                success: function(response) {
+                    const res = JSON.parse(response);
+                    const {
+                    token,
+                    loa_noa_no,
+                    fullname,
+                    business_unit,
+                    hp_name,
+                    requested_on,
+                    approved_on,
+                    approved_by,
+                    request_type,
+                    percentage,
+                    services,
+                    admission_date,
+                    billed_on,
+                    billed_by,
+                    billing_no,
+                    net_bill,
+                    personal_charge,
+                    company_charge,
+                    cash_advance,
+                    total_payable,
+                    before_remaining_bal,
+                    after_remaining_bal,
+                    hospitalized_date,
+                    is_manual
+                    } = res;
+
+                    if(is_manual == 1){
+                        $('#request-type').html('Reimbursement');
+
+                    }else{
+                        $('#request-type').html(request_type);
+
+                    }
+                   
+                    $('#hospitalized-date').html(hospitalized_date);
+                    $('#noa-loa-no').html(loa_noa_no);
+                    $('#members-fullname').html(fullname);
+                    $('#member-bu').html(business_unit);
+                    $('#hc-provider').html(hp_name);
+                    $('#request-date').html(requested_on);
+                    $('#approved-on').html(approved_on);
+                    $('#approved-by').html(approved_by);
+                    $('#percentage-is').html(percentage);
+                    $('#med-services').html(services);
+                    $('#admission-date').html(admission_date);
+                    $('#billed-on').html(billed_on);
+                    $('#billed-by').html(billed_by);
+                    $('#billing-no').html(billing_no);
+                    $('#hp-bill').html(net_bill);
+                    $('#personal-chrg-bill').html(personal_charge);
+                    $('#company-chrg-bill').html(company_charge);
+                    $('#current-mbl').html(before_remaining_bal);
+                    $('#remaining-mbl').html(after_remaining_bal);
                 }
             });
         }
@@ -153,15 +237,15 @@
 
         xhr.onload = function(e) {
             if (this.status == 200) {
-            let blob = this.response;
-            let reader = new FileReader();
+                let blob = this.response;
+                let reader = new FileReader();
 
-            reader.onload = function(event) {
-                let dataURL = event.target.result;
-                let iframe = document.querySelector('#pdf-cv-viewer');
-                iframe.src = dataURL;
-            };
-            reader.readAsDataURL(blob);
+                reader.onload = function(event) {
+                    let dataURL = event.target.result;
+                    let iframe = document.querySelector('#pdf-cv-viewer');
+                    iframe.src = dataURL;
+                };
+                reader.readAsDataURL(blob);
             }
         };
         xhr.send();
@@ -175,6 +259,5 @@
 
         return xhr.status == "200" ? true: false;
     }
-
 
     </script>

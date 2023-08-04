@@ -1,36 +1,19 @@
 <div class="page-wrapper">
-  <!-- <div class="page-breadcrumb">
-    <div class="row">
-      <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">Final Billing (Inpatient)</h4>
-        <div class="ms-auto text-end">
-          <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item">Healthcare Coordinator</li>
-              <li class="breadcrumb-item active" aria-current="page">Final Billing</li>
-            </ol>
-          </nav>
-        </div>
-      </div>
-    </div>
-  </div> -->
-
-
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
         <ul class="nav nav-tabs mb-4" role="tablist">
-          <li class="nav-item">
-            <a class="nav-link active" href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/billed" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1 active" href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/billed" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">FINAL BILLING</span>
+              <span class="hidden-xs-down fs-12 font-bold">FINAL BILLING</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/for_payment" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/for_payment" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">HISTORY</span>
+              <span class="hidden-xs-down fs-12 font-bold">HISTORY</span>
             </a>
           </li>
         </ul>
@@ -39,7 +22,7 @@
           <input type="hidden" class="form-control" name="initial_status" id="initial_status" value="Payable">
           <div class="row pt-2 pb-2">
             <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
-            <div class="col-lg-5 ps-5 pb-3 pt-1 pb-4">
+            <div class="col-lg-5 pb-3 pt-1 pb-4">
               <div class="input-group">
                 <div class="input-group-prepend">
                   <span class="input-group-text bg-dark text-white"><i class="mdi mdi-filter"></i></span>
@@ -52,8 +35,7 @@
                 </select>
               </div>
             </div>
-
-                
+  
             <div class="col-lg-6 offset-1">
               <div class="input-group">
                 <div class="input-group-append">
@@ -69,41 +51,37 @@
             </div>
           </div>
           
-          <div class="card shadow" style="background-color:">
-            <div class="card-body">
-              <div class="">
-                <table class="table table-hover table-responsive" id="billedLoaTable">
-                  <thead style="background-color:#00538C">
-                    <tr>
-                      <th style="color: white">NOA NO.</th>
-                      <th style="color: white">NAME OF PATIENT</th>
-                      <th style="color: white">MBL REMAINING BALANCE</th>
-                      <th style="color: white">WORK RELATED</th>
-                      <th style="color: white">REQUEST DATE</th>
-                      <th style="color: white">BILLED DATE</th>
-                      <th style="color: white">COMPANY CHARGE</th>
-                      <th style="color: white">PERSONAL CHARGE</th>
-                      <th style="color: white">HEALTHCARE ADVANCE</th>
-                      <th style="color: white">VIEW SOA</th>
-                      <th style="color: white">HOSPITAL BILL</th>
-                      <th style="color: white">STATUS</th>
-                      <th style="color: white">ACTION</th>
-                    </tr>
-                  </thead>
-                  <tbody id="billed-tbody">
-                  </tbody>
-                </table>
-              </div>
-              <div class="row pt-4">
-                <div class="col-lg-2 offset-9">
-                  <label>Total Hospital Bill : </label>
-                  <input name="total-hospital-bill" id="total-hospital-bill" class="form-control text-center fw-bold" readonly>
-                </div>
-              </div>
-            </div><br><br>
-            <div class="offset-10 pt-2 pb-4">
-              <button class="btn btn-info fw-bold fs-5 btn-lg" type="submit" id="proceed-btn" ><i class="mdi mdi-send"></i> Proceed</button>
+          <table class="table-responsive table-hover" id="billedLoaTable">
+            <thead style="background-color:#ADD8E6">
+              <tr>
+                <th style="color: black;font-size:10px">NOA #</th>
+                <th style="color: black;font-size:10px">NAME PATIENT</th>
+                <th style="color: black;font-size:10px">REMAINING MBL</th>
+                <th style="color: black;font-size:10px">WORK RELATED</th>
+                <th style="color: black;font-size:10px">REQUEST DATE</th>
+                <th style="color: black;font-size:10px">BILLED DATE</th>
+                <th style="color: black;font-size:10px">COMPANY CHARGE</th>
+                <th style="color: black;font-size:10px">PERSONAL CHARGE</th>
+                <th style="color: black;font-size:10px">HEALTHCARE ADVANCE</th>
+                <th style="color: black;font-size:10px">VIEW SOA</th>
+                <th style="color: black;font-size:10px">HOSPITAL BILL</th>
+                <th style="color: black;font-size:10px">STATUS</th>
+                <th style="color: black;font-size:10px">ACTION</th>
+              </tr>
+            </thead>
+            <tbody id="billed-tbody" style="color:black;font-size:11px">
+            </tbody>
+          </table>
+
+          <!-- <div class="row pt-4">
+            <div class="col-lg-2 offset-9">
+              <label>Total Hospital Bill : </label>
+              <input name="total-hospital-bill" id="total-hospital-bill" class="form-control text-center fw-bold" readonly>
             </div>
+          </div> -->
+
+          <div class="offset-10 pt-2 pb-4">
+            <button class="btn btn-info fw-bold fs-5 btn-lg" type="submit" id="proceed-btn" ><i class="mdi mdi-send"></i> Proceed</button>
           </div>
 
         </form>
@@ -516,3 +494,57 @@
     });
   }
 </script>
+
+<style>
+  .table-responsive {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 3px;
+  }
+
+  tr:nth-child(even){background-color: #f2f2f2}
+</style>
+
+<style>
+  .nav-item1 {
+    list-style-type: none;
+  }
+
+  .nav-link1 {
+    display: inline-block;
+    padding: 10px;
+    padding-top:1px;
+    padding-bottom:1px;
+    text-decoration: none;
+    background-color: #e6e6e6;
+    color: #000;
+    border: 1px solid gray;
+    border-bottom: 3px solid gray;
+    border-radius: 15px;
+
+  }
+
+  .nav-link1:hover {
+    background-color: #002244;
+    color: #fff;
+    border: 1px solid #000;
+  }
+
+  .font-bold {
+    font-weight: bold;
+  }
+
+  .hidden-xs-down {
+    display: inline-block;
+  }
+
+  .fs-5 {
+    font-size: 1.2rem;
+  }
+</style>

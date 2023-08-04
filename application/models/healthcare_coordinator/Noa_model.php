@@ -159,6 +159,7 @@ class Noa_model extends CI_Model {
   var $initial1 = 'members';
   var $initial2 = 'initial_billing';
   var $initial3 = 'noa_requests';
+  var $initial4 = 'billing';
   var $column_order_initial = ['member_id', 'first_name', 'emp_type', 'status', 'business_unit', 'dept_name']; 
   var $column_search_initial= ['member_id', 'first_name', 'middle_name', 'last_name', 'suffix', 'emp_type', 'status', 'business_unit', 'dept_name', 'CONCAT(first_name, " ",last_name)', 'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)'];
   var $order_initial = ['emp_no' => 'desc']; // default order 
@@ -168,6 +169,7 @@ class Noa_model extends CI_Model {
     $this->db->from($this->initial1 . ' as tbl_1');
     $this->db->join($this->initial2 . ' as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id');
     $this->db->join($this->initial3 . ' as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id');
+    $this->db->join($this->initial4 . ' as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id');
     $this->db->where('tbl_2.status', $status);
 
     $i = 0;

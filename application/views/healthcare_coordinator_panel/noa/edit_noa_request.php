@@ -2,7 +2,7 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <a href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list" class="btn btn-dark"><i class="mdi mdi-arrow-left-bold"></i> Back</a>
+        <a href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list" class="btn btn-danger"><i class="mdi mdi-arrow-left-bold"></i> Back</a>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -20,8 +20,13 @@
       <div class="col-lg-12">
         <div class="card shadow">
           <div class="card-body mt-3">
+            <div class="col-xs-12 d-flex justify-content-center align-items-center">
+              <img src="<?= base_url(); ?>assets/images/logo2.png" alt="Alturas Healthcare Logo" height="70" width="300">
+            </div>
+            <div class="col-12 pt-2">
+              <div class="text-center mb-4 mt-0"><h4 class="page-title fs-3" style="color:black;font-family:Times Roman;">ADMISSION FORM</h4></div>
+            </div><hr>
             <form method="post" action="<?= base_url() ?>healthcare-coordinator/noa/requested-noa/update/<?= $this->myhash->hasher($row['noa_id'], 'encrypt') ?>" class="mt-2" id="noaRequestForm">
-              <!--  Start of Hidden Inputs -->
               <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
 
               <span class="text-info fs-3 fw-bold ls-2"><i class="mdi mdi-account-card-details"></i> PATIENT DETAILS</span><br><br>

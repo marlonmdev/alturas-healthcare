@@ -429,15 +429,20 @@ class Noa_controller extends CI_Controller {
 			$row = array();
 			$member_id = $this->myhash->hasher($member['emp_id'], 'encrypt');
 			$full_name = $member['first_name'] . ' ' . $member['middle_name'] . ' ' . $member['last_name'] . ' ' . $member['suffix'];
+			$workRelated = $member['work_related'] . ' (' . $member['percentage'] . '%)';
 			$view_url = base_url() . 'healthcare-coordinator/noa/billed/initial_billing2/' . $member_id;
-			$custom_actions = '<a href="' . $view_url . '"  data-bs-toggle="tooltip" title="View Member Profile"><i class="mdi mdi-eye fs-2 text-info me-2"></i></a>';
+			$custom_actions = '<a href="' . $view_url . '"  data-bs-toggle="tooltip" title="View Initial Bill"><i class="mdi mdi-eye fs-4 text-info me-2"></i></a>';
 
+			$row[] = $member['billing_no'];
 			$row[] = $member['noa_no'];
 			$row[] = $full_name;
-			$row[] = $member['emp_type'];
-			$row[] = $member['current_status'];
 			$row[] = $member['business_unit'];
 			$row[] = $member['dept_name'];
+			$row[] = $workRelated;
+			$row[] = number_format($member['company_charge'], 2, '.', ',');
+			$row[] = number_format($member['personal_charge'], 2, '.', ',');
+			$row[] = number_format($member['cash_advance'], 2, '.', ',');
+			
 			$row[] = $custom_actions;
 			$data[] = $row;
 		}
@@ -494,7 +499,7 @@ class Noa_controller extends CI_Controller {
 			if (empty($bill['pdf_bill'])) {
   			$pdf_bill = 'Waiting for SOA';
 			}else{
-  			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i></a>';
+  			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View SOA"><i class="mdi mdi-file-pdf fs-4 text-danger"></i></a>';
 			}
 
 			if($bill['tbl1_status'] !== 'Billed'){
@@ -507,13 +512,12 @@ class Noa_controller extends CI_Controller {
 			if($bill['tbl1_status'] == 'Billed'){
 
 				if ($bill['guarantee_letter'] =='') {
-	  			$custom_actions .= '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $noa_id . '\',\'' . $bill['billing_id'] . '\')" data-bs-toggle="modal" data-bs-target="#GuaranteeLetter" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-2 text-danger"></i></a>';
+	  			$custom_actions .= '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $noa_id . '\',\'' . $bill['billing_id'] . '\')" data-bs-toggle="modal" data-bs-target="#GuaranteeLetter" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-4 text-danger"></i></a>';
 	  		}else{
-					$custom_actions .= '<i class="mdi mdi-reply fs-2 text-secondary" title="Guarantee Letter Already Sent"></i>';
+					$custom_actions .= '<i class="mdi mdi-reply fs-4 text-secondary" title="Guarantee Letter Already Sent"></i>';
 				}
 			}else if($bill['tbl1_status'] == 'Approved'){
-				// $custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/noa/requests-list/approved/" data-bs-toggle="tooltip" title="Back to NOA"><i class="mdi mdi-pen fs-2 text-danger"></i></a>';
-				$custom_actions .='<i class="mdi mdi-cached fs-2 text-success"></i>Processing...';
+				$custom_actions .='<i class="mdi mdi-cached fs-4 text-success"></i>Processing...';
 			}
 
 			$row[] = $bill['noa_no'];
@@ -1092,13 +1096,13 @@ class Noa_controller extends CI_Controller {
 			$response = [
 				'token' => $token, 
 				'status' => 'success', 
-				'message' => 'NOA Request Cancelled Successfully'
+				'message' => 'Successfully Deleted!'
 			];
 		} else {
 			$response = [
 				'token' => $token, 
 				'status' => 'error', 
-				'message' => 'NOA Request Cancellation Failed'
+				'message' => 'Failed to Delete!'
 			];
 		}
 		echo json_encode($response);
@@ -1235,7 +1239,7 @@ class Noa_controller extends CI_Controller {
 				'status' 				    => 'error',
 				'expiry_date_error' => form_error('expiry-date'),
 			];
-		} else {
+		}else{
 			$post_data = [
 				'status'          => 'Approved',
 				'expiration_date' => date('Y-m-d', strtotime($expiry_date)),
@@ -1246,12 +1250,12 @@ class Noa_controller extends CI_Controller {
 			if (!$updated) {
 				$response = [
 					'status'  => 'save-error', 
-					'message' => 'NOA Request BackDate Failed'
+					'message' => 'Failed to Save!'
 				];
 			}
 			$response = [
 				'status'  => 'success', 
-				'message' => 'NOA Request BackDated Successfully'
+				'message' => 'Successfully Saved!'
 			];
 		}		
 		echo json_encode($response);

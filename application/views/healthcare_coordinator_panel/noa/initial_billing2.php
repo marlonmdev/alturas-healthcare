@@ -2,7 +2,7 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <a href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/billed/initial" type="submit" class="btn btn-info" data-bs-toggle="tooltip" title="Click to Go Back">
+        <a href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/billed/initial" type="submit" class="btn btn-danger" data-bs-toggle="tooltip" title="Click to Go Back">
           <strong class="ls-2" style="vertical-align:middle"><i class="mdi mdi-arrow-left-bold"></i> Back</strong>
         </a>
         <div class="ms-auto text-end">
@@ -19,29 +19,21 @@
 
   <div class="container-fluid">
     <div class="row">
-      <div class="col-12 offset-11 mb-4 mt-2">
-        <div class="input-group">
-        </div>
-      </div>
       <div class="col-lg-12">
       	<div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-hover table-responsive" id="ledgertable">
-                <thead class="fs-5" style="background-color:#00538C">
+                <thead class="fs-5" style="background-color:#ADD8E6">
                   <tr>
-                    <th class="fw-bold" style="color: white;">NAME OF PATIENT</th>
-                    <th class="fw-bold" style="color: white;">MBL REMAINING BALANCE</th>
-                    <!-- <th class="fw-bold" style="color: white;">WORK RELATED</th> -->
-                    <!-- <th class="fw-bold" style="color: white;">COMPANY CHARGE</th>
-                    <th class="fw-bold" style="color: white;">PERSONAL CHARGE</th> -->
-                    <!-- <th class="fw-bold" style="color: white;">BILLING #</th> -->
-                    <th class="fw-bold" style="color: white;">DATE UPLOAD</th>
-                    <th class="fw-bold" style="color: white;">VIEW SOA</th>
-                    <th class="fw-bold" style="color: white;">HOSPITAL BILL</th>
+                    <th class="fw-bold" style="color:black;font-weight:bold;font-size:11px">NAME OF PATIENT</th>
+                    <th class="fw-bold" style="color:black;font-weight:bold;font-size:11px">MBL BALANCE</th>
+                    <th class="fw-bold" style="color:black;font-weight:bold;font-size:11px">DATE UPLOAD</th>
+                    <th class="fw-bold" style="color:black;font-weight:bold;font-size:11px">VIEW SOA</th>
+                    <th class="fw-bold" style="color:black;font-weight:bold;font-size:11px">HOSPITAL BILL</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody style="color:black;font-size:11px">
                   <?php 
                   $totalBill = 0;
                   $showModal = false;
@@ -66,7 +58,7 @@
                     <td><?php echo date('F d, Y', strtotime($ledger['date_uploaded'])); ?></td>
                     <td>
                       <a href="JavaScript:void(0)" onclick="viewPDFBill('<?php echo $ledger['pdf_bill']; ?>', '<?php echo $ledger['noa_no']; ?>')" data-bs-toggle="tooltip" title="View SOA" style="color: white;">
-                        <i class="mdi mdi-file-pdf fs-2 text-danger"></i>
+                        <i class="mdi mdi-file-pdf fs-4 text-danger"></i>
                       </a>
                     </td>
                     <td><?php echo number_format($ledger['initial_bill'], 2); ?></td>
@@ -75,27 +67,31 @@
                   <tr>
                     <td colspan="1"></td>
                     <?php if ($showModal) { ?>
-                      <td colspan="1" style="text-align: right"><b style="font-size:15px">MBL EXCESS :</b></td>
-                      <td colspan="1"><b style="font-size:15px;color:red">₱ <?php echo number_format($excessMBL, 2); ?></b></td>
+                      <td colspan="1" style="text-align: right"><b style="font-size:12px">MBL EXCESS :</b></td>
+                      <td colspan="1"><b style="font-size:12px;color:red">₱ <?php echo number_format($excessMBL, 2); ?></b></td>
                     <?php } else { ?>
                       <td colspan="2"></td>
                     <?php } ?>
-                    <td colspan="1" style="text-align: right"><b style="font-size:15px">TOTAL :</b></td>
-                    <td colspan="2"><b style="font-size:15px">₱ <?php echo number_format($totalBill, 2); ?></b></td>
+                    <td colspan="1" style="text-align: right"><b style="font-size:12px">TOTAL :</b></td>
+                    <td colspan="2"><b style="font-size:12px">₱ <?php echo number_format($totalBill, 2); ?></b></td>
                   </tr>
                 </tbody> 
               </table>
 
               <?php if ($showModal) { ?>
-                <div class="modal" tabindex="-1" role="dialog" id="remainingBalanceModal">
+                <div class="modal" tabindex="-1" role="dialog" data-bs-backdrop="static" id="remainingBalanceModal" style="margin-top:150px">
                   <div class="modal-dialog" role="document">
                     <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title">Warning: Total Bill is greater than your MBL Balance</h5>
+                      <div class="modal-header bg-danger">
+                        <h5 class="modal-title text-white">Warning!</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <div class="modal-body">
-                        <p>Please ensure that the MBL remaining balance is sufficient to cover the total bill.</p>
+                        <p style="text-align:center;color:black">Total Bill is greater than your MBL Balance!</p>
+                        <p style="color:black;text-align:center">Please ensure your MBL Balance is sufficient to cover the total bill.</p>
+                      </div>
+                      <div class="d-flex justify-content-center pb-3">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">OK</button>
                       </div>
                     </div>
                   </div>
@@ -111,15 +107,15 @@
   <?php include 'view_pdf_bill_modal.php'; ?>
 </div>
 
-<style type="text/css">
+<!-- <style type="text/css">
   .modal-header{
-    background-color:#00538c;
+    background-color:red;
     color:#fff;
   }
   .noa-no-link {
     color: white;
   }
-</style>
+</style> -->
 
 
 

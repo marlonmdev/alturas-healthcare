@@ -20,7 +20,12 @@
       <div class="col-lg-12">
         <div class="card shadow">
           <div class="card-body">
-
+            <div class="col-xs-12 d-flex justify-content-center align-items-center">
+              <img src="<?= base_url(); ?>assets/images/logo2.png" alt="Alturas Healthcare Logo" height="70" width="300">
+            </div>
+            <div class="col-12 pt-2">
+              <div class="text-center mb-4 mt-0"><h4 class="page-title fs-3" style="color:black;font-family:Times Roman;">ADMISSION FORM</h4></div>
+            </div><hr>
             <form method="post" action="<?= base_url() ?>healthcare-coordinator/noa/request-noa/submit" enctype="multipart/form-data" class="mt-2" id="admissionform">
               <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
               <input type="hidden" name="emp-id" id="emp-id">

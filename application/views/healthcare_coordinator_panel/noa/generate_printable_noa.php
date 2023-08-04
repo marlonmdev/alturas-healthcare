@@ -34,7 +34,7 @@
               <div class="request-title">
                 <div class="row">
                   <div class="col-xs-12 d-flex justify-content-center align-items-center">
-                      <img src="<?= base_url(); ?>assets/images/HC_logo.png" alt="Alturas Healthcare Logo" height="110" width="200">
+                    <img src="<?= base_url(); ?>assets/images/Printlogo1.png" alt="Alturas Healthcare Logo" height="90" width="400">
                   </div>
                 </div>
               </div>

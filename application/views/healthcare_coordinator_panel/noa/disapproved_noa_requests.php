@@ -117,10 +117,7 @@
                           <td class="fw-bold ls-1">Disapproved By :</td>
                           <td class="fw-bold ls-1" id="disapproved_by"></td>
                         </tr>
-                        <tr>
-                          <td class="fw-bold ls-1">Reason for Disapproval :</td>
-                          <td class="fw-bold ls-1" id="disapprove_reason"></td>
-                        </tr>
+                        
                         <tr>
                           <td class="fw-bold ls-1">Percentage :</td>
                           <td class="fw-bold ls-1" id="percentage"></td>
@@ -196,6 +193,10 @@
                         <tr>
                           <td class="fw-bold ls-1">Chief Complaint :</td>
                           <td class="fw-bold ls-1" id="chief_complaint"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Reason for Disapproval :</td>
+                          <td class="fw-bold ls-1" id="disapprove_reason"></td>
                         </tr>
                       </table>
                     </div>

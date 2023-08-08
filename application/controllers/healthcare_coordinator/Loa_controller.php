@@ -1779,6 +1779,7 @@ $med_serv = implode(' ', $ct_array);
 		$token = $this->security->get_csrf_hash();
 		$bill_no = $this->uri->segment(5);
 		$billing = $this->loa_model->monthly_bill_datatable($bill_no);
+
 		$data = [];
 
 		foreach($billing as $bill){
@@ -1787,10 +1788,25 @@ $med_serv = implode(' ', $ct_array);
 			$custom_loa_no = '<mark class="bg-cyan text-black"><b>'.$bill['billing_no'].'</b></mark>';
 			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
 			$coordinator_bill = '<a href="JavaScript:void(0)" onclick="viewCoordinatorBill(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Coordinator Billing"><i class="mdi mdi-eye text-dark"></i>View</a>';
-			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Summary of SOA"><i class="mdi mdi-file-pdf fs-4 text-danger"></i></a>';
-			$detailed_pdf_bill = '<a href="JavaScript:void(0)" onclick="viewDetailedPDFBill(\'' . $bill['itemized_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Detailed SOA"><i class="mdi mdi-file-pdf fs-4 text-danger"></i></a>';
+			
+			
 
-			// $record_diagnostic = '<a href="JavaScript:void(0)" onclick="PatientRecordDiagnostic(\'' . $bill['loa_no']. '\')" data-bs-toggle="tooltip" title="View Coordinator Billing"><i class="mdi mdi-eye text-dark"></i>View Record</a>';
+			if ($bill['billing_type'] == 'Reimburse'){	
+				if (empty($bill['pdf_bill'])) {
+					$pdf_bill = 'No SOA';
+				}
+
+				if(empty($bill['itemized_bill'])){
+					$detailed_pdf_bill = 'No SOA';
+				}
+				
+				if(!empty($bill['pdf_bill'])){
+					$pdf_bill = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $bill['pdf_bill'] . '\')"><i class="mdi mdi-file-image fs-4 text-danger"></i></a>';
+				}
+			}else{
+				$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Summary of SOA"><i class="mdi mdi-file-pdf fs-4 text-danger"></i></a>';
+				$detailed_pdf_bill = '<a href="JavaScript:void(0)" onclick="viewDetailedPDFBill(\'' . $bill['itemized_bill'] . '\' , \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Detailed SOA"><i class="mdi mdi-file-pdf fs-4 text-danger"></i></a>';
+			}
 
 			if($bill['work_related'] == 'Yes'){
 				if($bill['percentage'] == ''){
@@ -1830,6 +1846,7 @@ $med_serv = implode(' ', $ct_array);
 			"data" => $data,
 		];
 		echo json_encode($output);
+		// var_dump($output);
 	}
 	//====================================================================================================
 	//BILLED LOA (HISTORY)
@@ -3844,7 +3861,6 @@ $med_serv = implode(' ', $ct_array);
         $request_date=date("F d, Y", strtotime($bill['tbl1_request_date']));
         $workRelated = $bill['tbl1_work_related'] . ' (' . $bill['percentage'] . '%)';
 
-
 				if($bill['tbl1_status'] == 'Billed'){
 					$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $bill['tbl1_status'] . '</span></div>';
 				}else if($bill['tbl1_status'] == 'Completed'){
@@ -3954,12 +3970,14 @@ $med_serv = implode(' ', $ct_array);
 							$custom_actions .= '<i class="mdi mdi-reply fs-4 text-secondary" title="Guarantee Letter Already Sent"></i>';
 						}
 
+
         	}else if($bill['tbl1_status'] == 'Approved' && $bill['performed_fees'] == 'Approved' && $bill['accredited'] == '1'){
         		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Appointment Schedule"><i class="mdi mdi-pen fs-4 text-success"></i></a>';
         		$billed_date .='No Billing Date Yet';
-        	}else if($bill['tbl1_status'] == 'Approved' && $bill['performed_fees'] == 'Approved' && $bill['accredited'] == '0'){
+        	}else if($bill['tbl1_status'] == 'Billed' && $bill['performed_fees'] == 'Billed' && $bill['accredited'] == '0'){
         		$custom_actions .='<i class="mdi mdi-cached fs-4 text-success"></i>Processing...';
         		$billed_date .='No Billing Date Yet';
+        		$pdf_bill = 'No PDF Bill';
         	}else if($bill['tbl1_status'] == 'Completed' && $bill['performed_fees'] == 'Performed'){
         		$custom_actions .='<i class="mdi mdi-cached fs-4 text-info"></i>Processing...';
         		$billed_date .='No Billing Date Yet';

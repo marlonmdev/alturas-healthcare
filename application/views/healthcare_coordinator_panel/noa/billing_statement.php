@@ -3,17 +3,17 @@
     <div class="row">
       <div class="col-lg-12">
         <ul class="nav nav-tabs mb-4" role="tablist">
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/billed" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/billed" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">FINAL BILLING</span>
+              <span class="hidden-xs-down fs-12 font-bold">FINAL BILLING</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link active" href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/for_payment" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1 active" href="<?php echo base_url(); ?>healthcare-coordinator/bill/noa-requests/for_payment" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">HISTORY</span>
+              <span class="hidden-xs-down fs-12 font-bold">HISTORY</span>
             </a>
           </li>
         </ul>
@@ -36,16 +36,16 @@
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-hover table-responsive" id="matchedLoaTable">
-                <thead class="" style="background-color:#00538C">
+                <thead class="" style="background-color:#ADD8E6">
                   <tr>
-                    <th style="color: white">Billing No.</th>
-                    <th style="color: white"></th>
-                    <th style="color: white">HEALTHCARE PROVIDER</th>
-                    <th style="color: white">STATUS</th>
-                    <th style="color: white">ACTION</th>
+                    <th style="color:black;font-size:11px;font-weight:bold">BILLING #</th>
+                    <th style="color:black;font-size:11px;font-weight:bold">CONSOLIDATED BILLING</th>
+                    <th style="color:black;font-size:11px;font-weight:bold">HEALTHCARE PROVIDER</th>
+                    <th style="color:black;font-size:11px;font-weight:bold">STATUS</th>
+                    <th style="color:black;font-size:11px;font-weight:bold">ACTION</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody style="color:black;font-size:11px">
                 </tbody>
               </table>
             </div>
@@ -307,3 +307,41 @@
       });
   }
 </script>
+
+<style>
+  .nav-item1 {
+    list-style-type: none;
+  }
+
+  .nav-link1 {
+    display: inline-block;
+    padding: 10px;
+    padding-top:1px;
+    padding-bottom:1px;
+    text-decoration: none;
+    background-color: #e6e6e6;
+    color: #000;
+    border: 1px solid gray;
+    border-bottom: 3px solid gray;
+    border-radius: 15px;
+
+  }
+
+  .nav-link1:hover {
+    background-color: #002244;
+    color: #fff;
+    border: 1px solid #000;
+  }
+
+  .font-bold {
+    font-weight: bold;
+  }
+
+  .hidden-xs-down {
+    display: inline-block;
+  }
+
+  .fs-5 {
+    font-size: 1.2rem;
+  }
+</style>

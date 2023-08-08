@@ -656,6 +656,7 @@ $route['healthcare-coordinator/loa/requests-list/approve/(:any)'] = 'healthcare_
 $route['healthcare-coordinator/loa/requests-list/disapprove/(:any)'] = 'healthcare_coordinator/loa_controller/disapprove_loa_request';
 $route['healthcare-coordinator/loa/requests-list/set-charge-type'] = 'healthcare_coordinator/loa_controller/set_charge_type';
 $route['healthcare-coordinator/loa/pending/submit_charge_type_not_affiliated'] = 'healthcare_coordinator/loa_controller/submit_charge_type_not_affiliated';
+$route['healthcare-coordinator/noa/pending/submit_charge_type_not_affiliated'] = 'healthcare_coordinator/noa_controller/submit_charge_type_not_affiliated';
 $route['healthcare-coordinator/loa/member/search/(:any)'] = 'healthcare_coordinator/search_controller/get_searched_member_details';
 $route['healthcare-coordinator/loa/member/search1/(:any)'] = 'healthcare_coordinator/search_controller/get_searched_member_details';
 $route['healthcare-coordinator/loa/requested-loa/cancel/(:any)'] = 'healthcare_coordinator/loa_controller/cancel_loa_request';

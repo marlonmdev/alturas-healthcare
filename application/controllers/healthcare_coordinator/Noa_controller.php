@@ -156,7 +156,13 @@ class Noa_controller extends CI_Controller {
 
 			$custom_actions .= '<a class="me-2" href="' . $view_url . '" data-bs-toggle="tooltip" title="Edit Admission Form" readonly><i class="mdi mdi-pencil-circle fs-4 text-success"></i></a>';
 
-			$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Tagging"><i class="mdi mdi-tag-plus fs-4 text-primary"></i></a>';
+			// $custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Tagging"><i class="mdi mdi-tag-plus fs-4 text-primary"></i></a>';
+
+			if($noa['accredited'] == '0' && $noa['type_request'] == 'Admission'){
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="ChargeTypenotAffiliated(\'' . $noa_id . '\',\'' . $noa['hospital_receipt'] . '\',\'' . $noa['hospital_bill'] . '\')" data-bs-toggle="tooltip" title="Tagging"><i class="mdi mdi-tag-plus fs-4 text-primary"></i></a>';
+			}else{
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Tagging"><i class="mdi mdi-tag-plus fs-4 text-primary"></i></a>';
+			}
 			
 			if($noa['spot_report_file'] || $noa['incident_report_file'] != '' || $noa['police_report_file'] != ''){
 				$custom_actions .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $noa_id . '\',\'' . $noa['work_related'] . '\',\'' . $noa['percentage'] . '\',\'' . $noa['spot_report_file'] . '\',\'' . $noa['incident_report_file'] . '\',\'' . $noa['police_report_file'] . '\')" data-bs-toggle="tooltip" title="View Reports"><i class="mdi mdi-teamviewer fs-4 text-warning"></i></a>';
@@ -191,39 +197,201 @@ class Noa_controller extends CI_Controller {
 	}
 
 	function update_noa_request() {
-		$this->security->get_csrf_hash();
+		$token = $this->security->get_csrf_hash();
 		$inputPost = $this->input->post(NULL, TRUE); // returns all POST items with XSS filter
+		$medical_services = json_decode($this->input->post('noa-med-services'), TRUE);
 		$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$is_accredited =json_decode($_POST['is_accredited'],true);
+		$is_hr_has_data = json_decode($_POST['is_hr_has_data'],true);
+		
+		$this->load->library('form_validation');
 		$this->form_validation->set_rules('hospital-name', 'Name of Hospital', 'required');
-		$this->form_validation->set_rules('admission-date', 'Request Date of  Availment', 'required');
 		$this->form_validation->set_rules('chief-complaint', 'Chief Complaint', 'required|max_length[1000]');
+		$this->form_validation->set_rules('admission-date', 'Admission Date', 'required');
+		$this->form_validation->set_rules('healthcare-provider-category', 'Healthcare Provider Category', 'required');
+		
+		if(!$is_accredited){
+			$this->form_validation->set_rules('noa-med-services', 'Medical Services', 'required');
+			if((!$is_hr_has_data && isset($_FILES['hospital-receipt']['name'])) || (!$is_hr_has_data && !isset($_FILES['hospital-receipt']['name']))){
+				$this->form_validation->set_rules('hospital-receipt', '', 'callback_check_hospital_receipt');
+			}
+			
+			$this->form_validation->set_rules('hospital-bill', 'Hospital Bill', 'required');
+		}
+		
 		if ($this->form_validation->run() == FALSE) {
-			$response = [
+			$response = array(
 				'status' => 'error',
 				'hospital_name_error' => form_error('hospital-name'),
-				'admission_date_error' => form_error('admission-date'),
 				'chief_complaint_error' => form_error('chief-complaint'),
-			];
-		} else {
-			$post_data = [
-				'hospital_id' => $inputPost['hospital-name'],
-				'admission_date' => $inputPost['admission-date'],
-				'chief_complaint' => strip_tags($inputPost['chief-complaint']),
-			];
-			$saved = $this->noa_model->db_update_noa_request($noa_id, $post_data);
-			if ($saved) {
-				$response = [
-					'status' => 'success', 
-					'message' => 'Updated Successfully'
-				];
-			} else {
-				$response = [
-					'status' => 'save-error', 
-					'message' => 'Update Failed'
-				];
+				'admission_date_error' => form_error('admission-date'),
+				'med_services_error' => form_error('noa-med-services'),
+				'hospital_receipt_error' => form_error('hospital-receipt'),
+				'hospital_bill_error' => form_error('hospital-bill'),
+				'healthcare_provider_category_error' => form_error('healthcare-provider-category'),
+			);
+			echo json_encode($response);
+			exit();
+		}else{
+			// check if the selected hospital exist from database
+			$config['upload_path'] = './uploads/hospital_receipt/';
+			$config['allowed_types'] = 'jpg|jpeg|png';
+			$config['encrypt_name'] = TRUE;
+			
+			$this->load->library('upload', $config);
+			$old_hr_file = $inputPost['file-attachment-receipt'];
+			if (!$this->upload->do_upload('hospital-receipt') && !$is_accredited && isset($_FILES['hospital-receipt']['name']) && !$is_hr_has_data) {
+					$response = [
+						'status'  => 'save-error',
+						'message' => 'PDF Bill Upload Failed'
+					];
+			}
+			 else {
+				$upload_data = $this->upload->data();
+				$pdf_file = $upload_data['file_name'];
+
+				$services = [];
+				if(!$is_accredited){
+					foreach($medical_services as $value){
+						$services[] = $value['value']; 
+					}
+				}
+				
+				$hospital_id = $this->input->post('hospital-name');
+				$hp_exist = $this->noa_model->db_check_hospital_exist($hospital_id);
+				if (!$hp_exist) {
+					$response = array('status' => 'save-error', 'message' => 'Hospital Does Not Exist');
+					echo json_encode($response);
+					exit();
+				}else{
+					$post_data = [];
+					if($is_accredited){
+						$post_data = [
+							'hospital_id' => $inputPost['hospital-name'],
+							'admission_date' => $inputPost['admission-date'],
+							'chief_complaint' => strip_tags($inputPost['chief-complaint']),
+							'medical_services' => null, 
+							'hospital_receipt' => null,
+							'hospital_bill' =>   null,
+							'is_manual' =>  0,
+						];
+					}else{
+						$post_data = [
+							'hospital_id' => $inputPost['hospital-name'],
+							'admission_date' => $inputPost['admission-date'],
+							'chief_complaint' => strip_tags($inputPost['chief-complaint']),
+							'medical_services' => ($services!=="")?implode(';', $services):"", 
+							'hospital_receipt' => $pdf_file,
+							'hospital_bill' =>   $inputPost['hospital-bill'],
+							'is_manual' => 1,
+						];
+					}
+				
+				$updated = $this->noa_model->db_update_noa_request($noa_id, $post_data);
+				// var_dump('noa_id',$noa_id);
+				if (!$updated) {
+					$response = array('status' => 'save-error', 'message' => 'Update Failed');
+				}else{
+					$response = array('status' => 'success', 'message' => 'Updated Successfully');
+				
+					if($old_hr_file !== ''){
+					$file_path = './uploads/hospital_receipt/' . $old_hr_file;
+					file_exists($file_path) ? unlink($file_path) : '';
+				}
+					
+				}
+				
+				}
 			}
 		}
 		echo json_encode($response);
+	}
+
+	function submit_charge_type_not_affiliated(){
+		$token = $this->security->get_csrf_hash();
+		$noa_id = $this->myhash->hasher($this->input->post('noa_id'), 'decrypt');
+		// var_dump($noa_id);
+		$charge_type = $this->input->post('charge-type', TRUE);
+		$percentage = $this->input->post('percentage', TRUE);
+
+		$this->form_validation->set_rules('charge-type', 'Charge Type', 'required');
+		if ($this->form_validation->run() == FALSE) {
+			$response = [
+				'token' => $token,
+				'status' => 'error',
+				'charge_type_error' => form_error('charge-type'),
+			];
+			echo json_encode($response);
+		}else{
+			$config['allowed_types'] = 'pdf|jpeg|jpg|png|gif|svg';
+			$config['encrypt_name'] = TRUE;
+			$this->load->library('upload', $config);
+
+			$uploaded_files = array();
+			$error_occurred = FALSE;
+
+			// Define the upload paths for each file
+			$file_paths = array(
+				'spot-report' => './uploads/spot_reports/',
+				'incident-report' => './uploads/incident_reports/',
+				'police-report' => './uploads/police_reports/',
+			);
+
+			// Iterate over each file input and perform the upload
+			$file_inputs = array('spot-report', 'incident-report','police-report');
+			foreach ($file_inputs as $input_name) {
+				$config['upload_path'] = $file_paths[$input_name];
+				$this->upload->initialize($config);
+
+				if ($_FILES[$input_name]['size']!== 0) {
+					if (!$this->upload->do_upload($input_name)) {
+						// Handle upload error
+						$error_occurred = TRUE;
+						break;
+					}
+				}
+				$uploaded_files[$input_name] = $this->upload->data();
+			}
+
+			if ($error_occurred) {
+				// Handle upload error response
+				$response = [
+					'token' => $token,
+					'status' => 'upload-error',
+					'message' => 'File Saving to Folder Failed',
+				];
+				echo json_encode($response);
+			} else {
+				$data = [
+					'work_related' => $charge_type,
+					'percentage' => $percentage,
+					'spot_report_file' => isset($uploaded_files['spot-report']) ? $uploaded_files['spot-report']['file_name'] : '',
+					'incident_report_file' => isset($uploaded_files['incident-report']) ? $uploaded_files['incident-report']['file_name'] : '',
+					'police_report_file' => isset($uploaded_files['police-report']) ? $uploaded_files['police-report']['file_name'] : '',
+					'date_uploaded' => date('Y-m-d')
+				];
+
+				$updated = $this->noa_model->db_update_noa_charge_type($noa_id, $data);
+
+				if (!$updated) {
+					$response = [
+						'token' => $token,
+						'status' => 'save-error',
+						'message' => 'Save Failed',
+					];
+				} else {
+					$response = [
+						'token' => $token,
+						'status' => 'success',
+						'message' => 'Saved Successfully',
+					];
+				}
+				echo json_encode($response);
+				// var_dump($updated);
+				// var_dump($response);
+
+			}
+		}
 	}
 	//==================================================
 	//END
@@ -429,15 +597,20 @@ class Noa_controller extends CI_Controller {
 			$row = array();
 			$member_id = $this->myhash->hasher($member['emp_id'], 'encrypt');
 			$full_name = $member['first_name'] . ' ' . $member['middle_name'] . ' ' . $member['last_name'] . ' ' . $member['suffix'];
+			$workRelated = $member['work_related'] . ' (' . $member['percentage'] . '%)';
 			$view_url = base_url() . 'healthcare-coordinator/noa/billed/initial_billing2/' . $member_id;
-			$custom_actions = '<a href="' . $view_url . '"  data-bs-toggle="tooltip" title="View Member Profile"><i class="mdi mdi-eye fs-2 text-info me-2"></i></a>';
+			$custom_actions = '<a href="' . $view_url . '"  data-bs-toggle="tooltip" title="View Initial Bill"><i class="mdi mdi-eye fs-4 text-info me-2"></i></a>';
 
+			$row[] = $member['billing_no'];
 			$row[] = $member['noa_no'];
 			$row[] = $full_name;
-			$row[] = $member['emp_type'];
-			$row[] = $member['current_status'];
 			$row[] = $member['business_unit'];
 			$row[] = $member['dept_name'];
+			$row[] = $workRelated;
+			$row[] = number_format($member['company_charge'], 2, '.', ',');
+			$row[] = number_format($member['personal_charge'], 2, '.', ',');
+			$row[] = number_format($member['cash_advance'], 2, '.', ',');
+			
 			$row[] = $custom_actions;
 			$data[] = $row;
 		}
@@ -491,10 +664,16 @@ class Noa_controller extends CI_Controller {
   			$billed_date = date("F d, Y", strtotime($bill['billed_on']));
 			}
 
-			if (empty($bill['pdf_bill'])) {
-  			$pdf_bill = 'Waiting for SOA';
+			// if (empty($bill['pdf_bill'])) {
+  	// 		$pdf_bill = 'Waiting for SOA';
+			// }else{
+  	// 		$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View SOA"><i class="mdi mdi-file-pdf fs-4 text-danger"></i></a>';
+			// }
+
+			if($bill['accredited']=='0'){
+				$pdf_bill = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $bill['pdf_bill'] . '\')"><i class="mdi mdi-file-image fs-4 text-danger"></i></a>';
 			}else{
-  			$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i></a>';
+				$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View SOA"><i class="mdi mdi-file-pdf fs-4 text-danger"></i></a>';
 			}
 
 			if($bill['tbl1_status'] !== 'Billed'){
@@ -507,13 +686,12 @@ class Noa_controller extends CI_Controller {
 			if($bill['tbl1_status'] == 'Billed'){
 
 				if ($bill['guarantee_letter'] =='') {
-	  			$custom_actions .= '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $noa_id . '\',\'' . $bill['billing_id'] . '\')" data-bs-toggle="modal" data-bs-target="#GuaranteeLetter" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-2 text-danger"></i></a>';
+	  			$custom_actions .= '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $noa_id . '\',\'' . $bill['billing_id'] . '\')" data-bs-toggle="modal" data-bs-target="#GuaranteeLetter" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-4 text-danger"></i></a>';
 	  		}else{
-					$custom_actions .= '<i class="mdi mdi-reply fs-2 text-secondary" title="Guarantee Letter Already Sent"></i>';
+					$custom_actions .= '<i class="mdi mdi-reply fs-4 text-secondary" title="Guarantee Letter Already Sent"></i>';
 				}
 			}else if($bill['tbl1_status'] == 'Approved'){
-				// $custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/noa/requests-list/approved/" data-bs-toggle="tooltip" title="Back to NOA"><i class="mdi mdi-pen fs-2 text-danger"></i></a>';
-				$custom_actions .='<i class="mdi mdi-cached fs-2 text-success"></i>Processing...';
+				$custom_actions .='<i class="mdi mdi-cached fs-4 text-success"></i>Processing...';
 			}
 
 			$row[] = $bill['noa_no'];
@@ -619,10 +797,10 @@ class Noa_controller extends CI_Controller {
 			}
 
 			$bill_no_custom = '<span class="fw-bold fs-5">'.$bill['bill_no'].'</span>';
-			$label_custom = '<span class="fw-bold fs-5">Consolidated Billing for the Month of '.$month.', '.$bill['year'].'</span>';
+			$label_custom = '<span class="fw-bold fs-5">Month of '.$month.', '.$bill['year'].'</span>';
 			$hospital_custom = '<span class="fw-bold fs-5">'.$bill['hp_name'].'</span>';
 			$status_custom = '<span class="badge rounded-pill bg-success text-white">'.$bill['status'].'</span>';
-			$action_customs = '<a href="'.base_url().'healthcare-coordinator/bill/billed-noa/charging/'.$bill['bill_no'].'" data-bs-toggle="tooltip" title="View Charging"><i class="mdi mdi-format-list-bulleted fs-2 text-danger"></i></a>';
+			$action_customs = '<a href="'.base_url().'healthcare-coordinator/bill/billed-noa/charging/'.$bill['bill_no'].'" data-bs-toggle="tooltip" title="View List"><i class="mdi mdi-format-list-bulleted fs-4 text-danger"></i></a>';
 
 			$row[] = $bill_no_custom;
 			$row[] = $label_custom;
@@ -674,6 +852,7 @@ class Noa_controller extends CI_Controller {
 		$this->security->get_csrf_hash();
 		$bill_no = $this->uri->segment(5);
 		$billing = $this->noa_model->get_billed_for_charging($bill_no);
+		// var_dump($billing);
 		$data = [];
 
 		foreach($billing as $bill){
@@ -683,6 +862,22 @@ class Noa_controller extends CI_Controller {
 			$remaining_mbl = '';
 
 			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
+
+			if ($bill['billing_type'] == 'Reimburse'){	
+				if (empty($bill['pdf_bill'])) {
+					$pdf_bill = 'No SOA';
+				}
+				if(empty($bill['itemized_bill'])){
+					$detailed_pdf_bill = 'No SOA';
+				}
+				if(!empty($bill['pdf_bill'])){
+					$pdf_bill = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $bill['pdf_bill'] . '\')"><i class="mdi mdi-file-image fs-4 text-danger"></i></a>';
+				}
+			}else{
+				$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View Summary of SOA"><i class="mdi mdi-file-pdf fs-4 text-danger"></i></a>';
+				$detailed_pdf_bill = '<a href="JavaScript:void(0)" onclick="viewDetailedPDFBill(\'' . $bill['itemized_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View Detailed SOA"><i class="mdi mdi-file-pdf fs-4 text-danger"></i></a>';
+			}
+			
 
 			if($bill['work_related'] == 'Yes'){
 				if($bill['percentage'] == ''){
@@ -784,16 +979,18 @@ class Noa_controller extends CI_Controller {
 				}
 			}
 			
+			$row[] = $bill['billing_no'];
 			$row[] = $bill['noa_no'];
 			$row[] = $fullname;
 			$row[] = $bill['business_unit'];
 			$row[] = $percent_custom;
-			$row[] = number_format($bill['net_bill'],2, '.',',');
+			$row[] = $bill['type_request'];
 			$row[] = number_format($bill['company_charge'],2, '.',',');
-			$row[] = number_format($bill['cash_advance'],2, '.',',');
 			$row[] = number_format($bill['personal_charge'],2, '.',',');
-			$row[] = number_format($bill['before_remaining_bal'],2, '.',',');
-			$row[] = number_format($bill['after_remaining_bal'],2, '.',',');
+			$row[] = number_format($bill['cash_advance'],2, '.',',');
+			$row[] = number_format($bill['net_bill'],2, '.',',');
+			$row[] = $pdf_bill;
+			$row[] = $detailed_pdf_bill;
 			$data[] = $row;
 		}
 		$output = [
@@ -802,6 +999,7 @@ class Noa_controller extends CI_Controller {
 		];
 
 		echo json_encode($output);
+		// var_dump($output);
 	}
 
 	function get_pending_noa_info() {
@@ -842,6 +1040,7 @@ class Noa_controller extends CI_Controller {
 			'contact_person_no' => $row['contact_person_no'],
 			'hospital_name' => $row['hp_name'],
 			'chief_complaint' => $row['chief_complaint'],
+			'medical_services' => $row['medical_services'],
 		];
 		echo json_encode($response);
 	}
@@ -953,6 +1152,7 @@ class Noa_controller extends CI_Controller {
 			'contact_person_no' => $row['contact_person_no'],
 			'hospital_name' => $row['hp_name'],
 			'chief_complaint' => $row['chief_complaint'],
+			'medical_services' => $row['medical_services'],
 		];
 		echo json_encode($response);
 	}
@@ -1063,9 +1263,18 @@ class Noa_controller extends CI_Controller {
 		$this->load->model('healthcare_coordinator/setup_model');
 		$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$data['user_role'] = $this->session->userdata('user_role');
-		$data['row'] = $this->noa_model->db_get_noa_info($noa_id);
+		// $data['row'] = $this->noa_model->db_get_noa_info($noa_id);
+		$data['row'] = $exist = $this->noa_model->db_get_noa_info($noa_id);
 		$data['hospitals'] = $this->setup_model->db_get_hospitals();
 		$data['costtypes'] = $this->setup_model->db_get_all_cost_types();
+		$data['ahcproviders'] = $this->noa_model->db_get_affiliated_healthcare_providers();
+		// var_dump($data['ahcproviders']);
+		$data['hcproviders'] = $this->noa_model->db_get_not_affiliated_healthcare_providers();
+		// var_dump($data['hcproviders']);
+		$data['old_services'] = explode(';',$exist['medical_services']);
+		// var_dump($data['old_services']);
+		$data['is_accredited'] = ($exist['is_manual'])?true:false;
+		// var_dump($data['is_accredited']);
 		$data['bar'] = $this->noa_model->bar_pending();
 		$data['bar1'] = $this->noa_model->bar_approved();
 		$data['bar2'] = $this->noa_model->bar_completed();
@@ -1092,13 +1301,13 @@ class Noa_controller extends CI_Controller {
 			$response = [
 				'token' => $token, 
 				'status' => 'success', 
-				'message' => 'NOA Request Cancelled Successfully'
+				'message' => 'Successfully Deleted!'
 			];
 		} else {
 			$response = [
 				'token' => $token, 
 				'status' => 'error', 
-				'message' => 'NOA Request Cancellation Failed'
+				'message' => 'Failed to Delete!'
 			];
 		}
 		echo json_encode($response);
@@ -1235,7 +1444,7 @@ class Noa_controller extends CI_Controller {
 				'status' 				    => 'error',
 				'expiry_date_error' => form_error('expiry-date'),
 			];
-		} else {
+		}else{
 			$post_data = [
 				'status'          => 'Approved',
 				'expiration_date' => date('Y-m-d', strtotime($expiry_date)),
@@ -1246,12 +1455,12 @@ class Noa_controller extends CI_Controller {
 			if (!$updated) {
 				$response = [
 					'status'  => 'save-error', 
-					'message' => 'NOA Request BackDate Failed'
+					'message' => 'Failed to Save!'
 				];
 			}
 			$response = [
 				'status'  => 'success', 
-				'message' => 'NOA Request BackDated Successfully'
+				'message' => 'Successfully Saved!'
 			];
 		}		
 		echo json_encode($response);

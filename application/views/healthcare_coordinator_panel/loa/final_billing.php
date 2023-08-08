@@ -628,15 +628,6 @@
     $('#bd-loa-no').html(loa_no);
   }
 
-  // function GuaranteeLetter(billing_id) {
-  //   $("#GuaranteeLetter").modal("show");
-  //   $('#billing-id').val(billing_id);
-  // }
-
-
-  
-
-
   function showPreview(input) {
     const preview = document.getElementById('preview');
     const imagePreview = document.getElementById('image-preview');

@@ -14,6 +14,9 @@
     <div class="col-lg-12">
       <div class="card shadow">
         <div class="card-body">
+         <!--  <div class="col-xs-12 d-flex justify-content-center align-items-center">
+            <img src="<?= base_url(); ?>assets/images/logo2.png" alt="Alturas Healthcare Logo" height="70" width="300">
+          </div> -->
           <div class="col-12  pt-2">
             <h5 style="text-align:center;color:black;font-size:20px;letter-spacing:4px">PATIENT INFORMATION</h5>
           </div><hr><br>

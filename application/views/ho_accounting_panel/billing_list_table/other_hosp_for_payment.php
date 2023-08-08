@@ -62,10 +62,9 @@
             </select>
           </div>
         </div> -->
-        <!-- <input type="hiden" id="payment-nos">
-        <div class="col-md-1 pb-3 pt-1 offset-9">
+        <div class="col-md-1 pb-3 pt-1 offset-10">
             <button class="btn btn-danger w-100" onclick="printForPaymentBill()" title="click to print data"><i class="mdi mdi-send"></i> Print </button>
-        </div> -->
+        </div>
         <div class="card shadow">
           <div class="card-body">
             <div class="">
@@ -154,9 +153,9 @@
                     action: function(){
                         const paymentDetailsForm = $('#payment_details_form')[0];
                         const formdata = new FormData(paymentDetailsForm);
-
+                        const type = 'nonaccredited';
                         $.ajax({
-                            url: "<?php echo base_url();?>head-office-accounting/billing-list/other-hosp/payment-details",
+                            url: `${baseUrl}head-office-accounting/billing-list/billed/payment-details/${type}`,
                             method: "POST",
                             data: formdata,
                             dataType: "json",
@@ -310,7 +309,8 @@
           total_payable,
           before_remaining_bal,
           after_remaining_bal,
-          hospitalized_date
+          hospitalized_date,
+          is_manual
         } = res;
 
         if(request_type == 'Diagnostic Test'){
@@ -323,11 +323,17 @@
         }else{
           $('#admitted-on').hide();
         }
-        if(request_type == 'Emergency'){
-          $('#hospitalized-on').show();
+        if(is_manual == 1){
+            $('#request-type').html('Reimbursement');
         }else{
-          $('#hospitalized-on').hide();
+            $('#request-type').html(request_type);
         }
+        if(services != ''){
+            $('#cost-types').show();
+        }else{
+            $('#cost-types').hide();
+        }
+        
         $('#hospitalized-date').html(hospitalized_date);
         $('#noa-loa-no').html(loa_noa_no);
         $('#members-fullname').html(fullname);
@@ -336,20 +342,16 @@
         $('#request-date').html(requested_on);
         $('#approved-on').html(approved_on);
         $('#approved-by').html(approved_by);
-        $('#request-type').html(request_type);
         $('#percentage-is').html(percentage);
         $('#med-services').html(services);
         $('#admission-date').html(admission_date);
         $('#billed-on').html(billed_on);
         $('#billed-by').html(billed_by);
         $('#billing-no').html(billing_no);
-        $('#net-bill').html(net_bill);
-        $('#personal-charge').html('-'+ personal_charge);
-        $('#company-charges').html(company_charge);
-        $('#cash-advance').html(cash_advance);
-        $('#total-payable').html(total_payable);
-        $('#totals-payable').html(total_payable);
-        $('#max-benefit').html(before_remaining_bal);
+        $('#hp-bill').html(net_bill);
+        $('#personal-chrg-bill').html(personal_charge);
+        $('#company-chrg-bill').html(company_charge);
+        $('#current-mbl').html(before_remaining_bal);
         $('#remaining-mbl').html(after_remaining_bal);
       }
     });
@@ -364,7 +366,7 @@
   const printForPaymentBill = () => {
 
     var base_url = `${baseUrl}`;
-    window.open(base_url + "printPaymentbill/pdfbilling/" + btoa(payment_no), '_blank');
+    window.open(base_url + "printPaymentbill/pdfbilling");
   }
 
   const addPaymentDetails = (payment_no,hp_id) => {

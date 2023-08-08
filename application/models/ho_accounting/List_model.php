@@ -742,6 +742,31 @@ class List_model extends CI_Model{
         }else{
             $end_date = '';
         }
+        $hp_id = $this->input->post('hp_id');
+        $data = array(
+            'payment_no' => $payment_no,
+            'startDate' => $start_date,
+            'endDate' => $end_date,
+            'hp_id' => $hp_id,
+            'total_payable' => floatval(str_replace(',','',$this->input->post('total_bill'))),
+            'added_on' => date('Y-m-d'),
+            'added_by' => $user
+        );
+            return $this->db->insert('monthly_payable', $data);
+        
+    }
+
+    function set_payment_no_dates($payment_no,$user) {
+        if(!empty($this->input->post('start_date'))){
+            $start_date = date('Y-m-d', strtotime($this->input->post('start_date')));
+        }else{
+            $start_date = '';
+        }
+        if(!empty($this->input->post('end_date'))){
+            $end_date = date('Y-m-d', strtotime($this->input->post('end_date')));
+        }else{
+            $end_date = '';
+        }
 
         $data = array(
             'payment_no' => $payment_no,
@@ -761,6 +786,7 @@ class List_model extends CI_Model{
                 ->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
                 ->join('monthly_payable as tbl_3', 'tbl_1.payment_no = tbl_3.payment_no')
                 ->where('tbl_1.status', 'Payment')
+                ->where('tbl_1.billing_type', 'PDF Billing')
                 ->order_by('tbl_3.bill_id', 'desc');
         return $this->db->get()->result_array();
     }
@@ -799,6 +825,7 @@ class List_model extends CI_Model{
                 ->join('monthly_payable as tbl_3', 'tbl_1.payment_no = tbl_3.payment_no')
                 ->join('payment_details as tbl_4', 'tbl_1.details_no = tbl_4.details_no')
                 ->where('tbl_1.status', 'Paid')
+                ->where('tbl_1.billing_type', 'PDF Billing')
                 ->order_by('tbl_3.bill_id', 'desc');
         return $this->db->get()->result_array();
     }
@@ -985,6 +1012,21 @@ class List_model extends CI_Model{
             $this->db->limit($_POST['length'], $_POST['start']);
         $query = $this->db->get();
         return $query->result_array();
+       }
+
+       function get_other_hos_for_payment_bills() {
+        $this->db->select('*')
+                ->from('billing as tbl_1')
+                ->join('loa_requests as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id', 'left')
+                ->join('noa_requests as tbl_3', 'tbl_1.noa_id = tbl_3.noa_id', 'left')
+                ->join('healthcare_providers as tbl_4', 'tbl_1.hp_id = tbl_4.hp_id')
+                ->join('members as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')
+                ->join('locate_business_unit as tbl_6', 'tbl_5.business_unit = tbl_6.business_unit')
+                ->join('max_benefit_limits as tbl_7', 'tbl_1.emp_id = tbl_7.emp_id')
+                ->where('tbl_1.status', 'Payment')
+                ->where('tbl_1.billing_type', 'Reimburse');
+
+        return $this->db->get()->result_array();
        }
 
        function get_for_payment_bills($payment_no) {

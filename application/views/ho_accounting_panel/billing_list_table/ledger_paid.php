@@ -189,7 +189,6 @@
             let sums = [0, 0]; // Array to store the sums for each column
 
             if ($('#ledgertbody').DataTable().data().length > 0) {
-                // The table is not empty
                 ledgerTable.rows().nodes().each(function(index, row) {
                 let rowData = ledgerTable.row(row).data();
 
@@ -199,9 +198,9 @@
                     let matches = columnValue.match(pattern);
 
                     if (matches && matches.length > 0) {
-                    let numberString = matches[0].replace(/,/g, '');
-                    let floatValue = parseFloat(numberString);
-                    sums[idx] += floatValue;
+                      let numberString = matches[0].replace(/,/g, '');
+                      let floatValue = parseFloat(numberString);
+                      sums[idx] += floatValue;
                     }
                 });
                 });

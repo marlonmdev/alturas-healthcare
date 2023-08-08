@@ -178,7 +178,8 @@
           total_payable,
           before_remaining_bal,
           after_remaining_bal,
-          hospitalized_date
+          hospitalized_date,
+          is_manual
         } = res;
 
         if(request_type == 'Diagnostic Test'){
@@ -196,6 +197,17 @@
         }else{
           $('#hospitalized-on').hide();
         }
+        if(is_manual == 1){
+            $('#request-type').html('Reimbursement');
+        }else{
+            $('#request-type').html(request_type);
+        }
+        if(services != ''){
+            $('#cost-types').show();
+        }else{
+            $('#cost-types').hide();
+        }
+        
         $('#hospitalized-date').html(hospitalized_date);
         $('#noa-loa-no').html(loa_noa_no);
         $('#members-fullname').html(fullname);
@@ -204,20 +216,16 @@
         $('#request-date').html(requested_on);
         $('#approved-on').html(approved_on);
         $('#approved-by').html(approved_by);
-        $('#request-type').html(request_type);
         $('#percentage-is').html(percentage);
         $('#med-services').html(services);
         $('#admission-date').html(admission_date);
         $('#billed-on').html(billed_on);
         $('#billed-by').html(billed_by);
         $('#billing-no').html(billing_no);
-        $('#net-bill').html(net_bill);
-        $('#personal-charge').html('-'+ personal_charge);
-        $('#company-charges').html(company_charge);
-        $('#cash-advance').html(cash_advance);
-        $('#total-payable').html(total_payable);
-        $('#totals-payable').html(total_payable);
-        $('#max-benefit').html(before_remaining_bal);
+        $('#hp-bill').html(net_bill);
+        $('#personal-chrg-bill').html(personal_charge);
+        $('#company-chrg-bill').html(company_charge);
+        $('#current-mbl').html(before_remaining_bal);
         $('#remaining-mbl').html(after_remaining_bal);
       }
     });

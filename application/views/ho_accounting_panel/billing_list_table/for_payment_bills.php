@@ -108,7 +108,7 @@
         // passing the token as data so that requests will be allowed
         data: function(data) {
           data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
-        //   data.filter = $('#matched-hospital-filter').val();
+          data.filter = $('#matched-hospital-filter').val();
         }
       },
 
@@ -145,9 +145,9 @@
                     action: function(){
                         const paymentDetailsForm = $('#payment_details_form')[0];
                         const formdata = new FormData(paymentDetailsForm);
-
+                        const type = 'accredited';
                         $.ajax({
-                            url: "<?php echo base_url();?>head-office-accounting/billing-list/billed/payment-details",
+                            url: `${baseUrl}head-office-accounting/billing-list/billed/payment-details/${type}`,
                             method: "POST",
                             data: formdata,
                             dataType: "json",

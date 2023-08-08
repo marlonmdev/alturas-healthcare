@@ -165,7 +165,6 @@
             // data.hp_id = $('#billed-hospital-filter').val();
             data.endDate = $('#end-date').val();
             data.startDate = $('#start-date').val();
-          
         },
       },
       //Set column definition initialisation properties.
@@ -205,10 +204,8 @@
             }
             });
         }
-
         $('#total_bill').html(sum.toLocaleString('PHP', { minimumFractionDigits: 2 }));
     });
-
 
     $('#adjustedAdvanceForm').submit(function(){
         $.ajax({
@@ -583,6 +580,7 @@
         }else{
           $('#hospitalized-on').hide();
         }
+        $('#third-table').hide();
         $('#hospitalized-date').html(hospitalized_date);
         $('#noa-loa-no').html(loa_noa_no);
         $('#members-fullname').html(fullname);

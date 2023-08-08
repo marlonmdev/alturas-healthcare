@@ -466,6 +466,122 @@ class Transaction_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 
+	function fetch_paid_bills() {
+		$token = $this->security->get_csrf_hash();
+		$payment_no = $this->input->post('payment_no');
+		$billing = $this->transaction_model->monthly_paid_bill_datatable($payment_no);
+		$data = [];
+		$number = 1;
+		foreach($billing as $bill){
+			if($bill['company_charge'] && $bill['cash_advance'] != ''){
+				$row = [];
+				$wpercent = '';
+				$nwpercent = '';
+				$billing_id = $this->myhash->hasher($bill['billing_id'], 'encrypt');
+	
+				$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
+	
+				if($bill['loa_id'] != ''){
+					$loa_noa = '<a href="JavaScript:void(0)" class="btn text-info text-decoration-underline" onclick="viewLOANOAdetails(\''.$billing_id.'\')" data-bs-toggle="tooltip">'.$bill['loa_no'].'</a>';
+	
+					$loa = $this->transaction_model->get_loa_info($bill['loa_id']);
+					if($loa['work_related'] == 'Yes'){ 
+						if($loa['percentage'] == ''){
+						   $wpercent = '100% W-R';
+						   $nwpercent = '';
+						}else{
+						   $wpercent = $loa['percentage'].'%  W-R';
+						   $result = 100 - floatval($loa['percentage']);
+						   if($loa['percentage'] == '100'){
+							   $nwpercent = '';
+						   }else{
+							   $nwpercent = $result.'% Non W-R';
+						   }
+						  
+						}	
+				   }else if($loa['work_related'] == 'No'){
+					   if($loa['percentage'] == ''){
+						   $wpercent = '';
+						   $nwpercent = '100% Non W-R';
+						}else{
+						   $nwpercent = $loa['percentage'].'% Non W-R';
+						   $result = 100 - floatval($loa['percentage']);
+						   if($loa['percentage'] == '100'){
+							   $wpercent = '';
+						   }else{
+							   $wpercent = $result.'%  W-R';
+						   }
+						 
+						}
+				   }
+	
+				}else if($bill['noa_id'] != ''){
+					$loa_noa = '<a href="JavaScript:void(0)" class="btn text-info text-decoration-underline" onclick="viewLOANOAdetails(\''.$billing_id.'\')" data-bs-toggle="tooltip">'.$bill['noa_no'].'</a>';
+					
+					$noa = $this->transaction_model->get_noa_info($bill['noa_id']);
+					if($noa['work_related'] == 'Yes'){ 
+						if($noa['percentage'] == ''){
+						   $wpercent = '100% W-R';
+						   $nwpercent = '';
+						}else{
+						   $wpercent = $noa['percentage'].'%  W-R';
+						   $result = 100 - floatval($noa['percentage']);
+						   if($noa['percentage'] == '100'){
+							   $nwpercent = '';
+						   }else{
+							   $nwpercent = $result.'% Non W-R';
+						   }
+						  
+						}	
+				   }else if($noa['work_related'] == 'No'){
+					   if($noa['percentage'] == ''){
+						   $wpercent = '';
+						   $nwpercent = '100% Non W-R';
+						}else{
+						   $nwpercent = $noa['percentage'].'% Non W-R';
+						   $result = 100 - floatval($noa['percentage']);
+						   if($noa['percentage'] == '100'){
+							   $wpercent = '';
+						   }else{
+							   $wpercent = $result.'%  W-R';
+						   }
+						 
+						}
+				   }
+				}
+	
+				$payable = floatval($bill['company_charge'] + floatval($bill['cash_advance']));
+	
+				
+				$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-5"></i></a>';
+	
+				$row[] = $number++;
+				$row[] = $bill['billing_no'];
+				$row[] = $loa_noa;
+				$row[] = $fullname;
+				$row[] = $bill['business_unit'];
+				$row[] = number_format($bill['before_remaining_bal'],2, '.',',');
+				$row[] = $wpercent .', '.$nwpercent;
+				$row[] = number_format($bill['net_bill'], 2, '.', ',');
+				$row[] = number_format($bill['company_charge'], 2, '.', ',');
+				$row[] = number_format($bill['cash_advance'], 2, '.', ',');
+				$row[] = number_format($payable, 2, '.', ',');
+				$row[] = number_format($bill['personal_charge'], 2, '.', ',');
+				$row[] = number_format($bill['after_remaining_bal'],2, '.',',');
+				$row[] = $pdf_bill;
+				$data[] = $row;
+	
+			}
+			
+		}
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
+
+		echo json_encode($output);
+	}
+
 	function fetch_payment_bill() {
 		$token = $this->security->get_csrf_hash();
 		$payment_no = $this->input->post('payment_no');

@@ -243,6 +243,7 @@ class Transaction_model extends CI_Model {
 				->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
 				->join('monthly_payable as tbl_3', 'tbl_1.payment_no = tbl_3.payment_no')
 				->where('tbl_3.status', 'Audited')
+				->where('tbl_1.status', 'Payment')
 				->where('tbl_3.payment_no !=', '')
 				->order_by('tbl_3.bill_id', 'desc');
 		return $this->db->get()->result_array();
@@ -253,7 +254,7 @@ class Transaction_model extends CI_Model {
 				->from('billing as tbl_1')
 				->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
 				->join('monthly_payable as tbl_3', 'tbl_1.payment_no = tbl_3.payment_no')
-				->where('tbl_3.status', 'Paid')
+				->where('tbl_1.status', 'Paid')
 				->where('tbl_3.payment_no !=', '')
 				->order_by('tbl_3.bill_id', 'desc');
 		return $this->db->get()->result_array();
@@ -296,6 +297,38 @@ class Transaction_model extends CI_Model {
 		   return $query->result_array();
 	  }
 	   // end datatable
+
+	   	  // Start of server-side processing datatables
+	  var $table_1_monthlypaid = 'billing';
+	  var $table_2_monthlypaid = 'noa_requests';
+	  var $table_3_monthlypaid = 'loa_requests';
+	  var $table_4_monthlypaid = 'members';
+	  var $table_5_monthlypaid = 'healthcare_providers';
+	  var $table_6_monthlypaid = 'locate_business_unit';
+	  var $table_7_monthlypaid = 'max_benefit_limits';
+   
+	  private function _get_paid_monthly_datatables_query($payment_no) {
+		  $this->db->select('*');
+		  $this->db->from($this->table_1_monthlypaid . ' as tbl_1');
+		  $this->db->join($this->table_2_monthlypaid . ' as tbl_2', 'tbl_1.noa_id = tbl_2.noa_id', 'left');
+		  $this->db->join($this->table_3_monthlypaid . ' as tbl_3', 'tbl_1.loa_id = tbl_3.loa_id', 'left');
+		  $this->db->join($this->table_4_monthlypaid . ' as tbl_4', 'tbl_1.emp_id = tbl_4.emp_id');
+		  $this->db->join($this->table_5_monthlypaid . ' as tbl_5', 'tbl_1.hp_id = tbl_5.hp_id');
+		  $this->db->join($this->table_6_monthlypaid . ' as tbl_6', 'tbl_4.business_unit = tbl_6.business_unit');
+		  $this->db->join($this->table_7_monthlypaid . ' as tbl_7', 'tbl_1.emp_id = tbl_7.emp_id');
+		  $this->db->where('tbl_1.payment_no', $payment_no);
+		  $this->db->where('tbl_1.status', 'Paid');
+	  }
+   
+	  public function monthly_paid_bill_datatable($payment_no) {
+		  $this->_get_paid_monthly_datatables_query($payment_no);
+		  if ($_POST['length'] != -1)
+			   $this->db->limit($_POST['length'], $_POST['start']);
+		   $query = $this->db->get();
+		   return $query->result_array();
+	  }
+	   // end datatable
+
 
 	   function get_loa_info($loa_id){
         return $this->db->get_where('loa_requests', ['loa_id' => $loa_id])->row_array();

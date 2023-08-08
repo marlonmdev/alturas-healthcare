@@ -58,18 +58,18 @@
       <table class="table table-hover table-responsive" id="billedLoaTable">
         <thead style="background-color:#ADD8E6">
           <tr>
-            <th class="fw-bold" style="color: black;font-size:10px">BILLING #</th>
-            <th class="fw-bold" style="color: black;font-size:10px">LOA #</th>
-            <th class="fw-bold" style="color: black;font-size:10px">PATIENT NAME</th>
-            <th class="fw-bold" style="color: black;font-size:10px">BUSINESS UNIT</th>
-            <th class="fw-bold" style="color: black;font-size:10px">PERCENTAGE</th>
-            <th class="fw-bold" style="color: black;font-size:10px">TYPE OF REQUEST</th>
-            <th class="fw-bold" style="color: black;font-size:10px">COMPANY CHARGE</th>
-            <th class="fw-bold" style="color: black;font-size:10px">PERSONAL CHARGE</th>
-            <th class="fw-bold" style="color: black;font-size:10px">HEALTHCARE ADVANCE</th>
-            <th class="fw-bold" style="color: black;font-size:10px">HOSPITAL BILL</th>
-            <th class="fw-bold" style="color: black;font-size:10px">SOA</th>
-            <th class="fw-bold" style="color: black;font-size:10px">DETAILED SOA</th>
+            <th class="fw-bold" style="color: black;font-size:9px">BILLING #</th>
+            <th class="fw-bold" style="color: black;font-size:9px">LOA #</th>
+            <th class="fw-bold" style="color: black;font-size:9px">PATIENT NAME</th>
+            <th class="fw-bold" style="color: black;font-size:9px">BUSINESS UNIT</th>
+            <th class="fw-bold" style="color: black;font-size:9px">PERCENTAGE</th>
+            <th class="fw-bold" style="color: black;font-size:9px">TYPE OF REQUEST</th>
+            <th class="fw-bold" style="color: black;font-size:9px">COMPANY CHARGE</th>
+            <th class="fw-bold" style="color: black;font-size:9px">PERSONAL CHARGE</th>
+            <th class="fw-bold" style="color: black;font-size:9px">HEALTHCARE ADVANCE</th>
+            <th class="fw-bold" style="color: black;font-size:9px">HOSPITAL BILL</th>
+            <th class="fw-bold" style="color: black;font-size:9px">SUMMARY SOA</th>
+            <th class="fw-bold" style="color: black;font-size:9px">DETAILED SOA</th>
           </tr>
         </thead>
         <tbody id="billed-tbody" style="font-size: 10px"></tbody>
@@ -201,36 +201,48 @@
     });
 
     billedTable.on('draw.dt', function() {
-        let columnId = 6;
-        let sum = 0;
-        let rowss = billedTable.rows().nodes();
+      let columnId = 6;
+      let sum = 0;
+      let rowss = billedTable.rows().nodes();
 
-        if ($('#billedLoaTable').DataTable().data().length > 0) {
-            // The table is not empty
-            rowss.each(function(index, row) {
-            let rowData = billedTable.row(row).data();
-            let columnValue = rowData[columnId];
-            let pattern = /-?[\d,]+(\.\d+)?/g;
-            let matches = columnValue.match(pattern);
+      if ($('#billedLoaTable').DataTable().data().length > 0) {
+        // The table is not empty
+        rowss.each(function(index, row) {
+          let rowData = billedTable.row(row).data();
+          let columnValue = rowData[columnId];
+          let pattern = /-?[\d,]+(\.\d+)?/g;
+          let matches = columnValue.match(pattern);
 
-            if (matches && matches.length > 0) {
-                let numberString = matches[0].replace(/,/g, ''); // Replace all commas
-                let floatValue = parseFloat(numberString);
-                sum += floatValue;
-            }
-            });
-        }
-
-        $('#total-hospital-bill').val(sum.toLocaleString('PHP', { minimumFractionDigits: 2 }));
+          if (matches && matches.length > 0) {
+            let numberString = matches[0].replace(/,/g, ''); // Replace all commas
+            let floatValue = parseFloat(numberString);
+            sum += floatValue;
+          }
+        });
+      }
+      $('#total-hospital-bill').val(sum.toLocaleString('PHP', { minimumFractionDigits: 2 }));
     });
-
   });
+
+  function viewImage(path) {
+    let item = [{
+      src: path, // path to image
+      title: 'Hospital Receipt' // If you skip it, there will display the original image name
+    }];
+    // define options (if needed)
+    let options = {
+      index: 0 // this option means you will start at first image
+    };
+    // Initialize the plugin
+    let photoviewer = new PhotoViewer(item, options);
+  }
 
 
   const viewPDFBill = (pdf_bill,loa_no) => {
     $('#viewPDFBillModal').modal('show');
     $('#pdf-loa-no').html(loa_no);
-
+    console.log('pdf',pdf_bill);
+     console.log('loa_no',loa_no);
     let pdfFile = `${baseUrl}uploads/pdf_bills/${pdf_bill}`;
     let fileExists = checkFileExists(pdfFile);
 
@@ -368,111 +380,5 @@
       }
     });
   }
-
-  // function PatientRecordDiagnostic(loa_no) {
-  //   $.ajax({
-  //     url: `${baseUrl}healthcare-coordinator/loa/monthly-bill/get_data_patient_record/${loa_no}`,
-  //     type: "GET",
-  //     success: function(response) {
-  //       const res = JSON.parse(response);
-  //       const {
-  //         status,token,loa_no,first_name,middle_name,last_name,suffix,home_address,date_of_birth,percentage
-  //       } = res;
-
-  //       // Open the modal
-  //       $("#patient_record_diagnostic").modal("show");
-
-  //       // Set the patient information in the modal
-  //       $('#patient_no').html(loa_no);
-  //       $('#patient_name').val(`${first_name} ${middle_name} ${last_name} ${suffix}`);
-  //       $('#patient_address').val(`${home_address}`);
-  //       // Calculate patient's age
-  //       const birthDate = new Date(date_of_birth);
-  //       const now = new Date();
-  //       const ageDiff = now - birthDate;
-  //       const ageDate = new Date(ageDiff);
-  //       const age = Math.abs(ageDate.getUTCFullYear() - 1970);
-  //       $('#patient_age').val(`${age}`);
-  //       $('#percentage').val(`${percentage}`);
-  //     }
-  //   });
-  // }
-
-  // const PatientRecordDiagnostic = (loa_no) => {
-  //   $('#patient_record_diagnostic').modal('show');
-  //   $.ajax({
-  //     url: `${baseUrl}healthcare-coordinator/loa/monthly-bill/get_data_patient_record/${loa_no}`,
-  //     type: 'GET',
-  //     dataType: 'json',
-  //     success: function(data){
-  //       let bill = data.bill;
-  //       let service = data.service;
-  //       let deduction = data.deduction;
-
-  //       let deduction_table = '';
-  //       let service_table = '';
-  //       let fullname = '';
-  //       let hp_name = '';
-
-  //       fullname += bill.first_name+' '+bill.middle_name+' '+bill.last_name+' '+bill.suffix;
-  //       hp_name += bill.hp_name;
-    
-  //       $.each(service, function(index, item){
-  //         let op_price = parseFloat(item.op_price);
-            
-  //         service_table += ' <tr> ' +
-  //                               '<td class="text-center ls-1">'+item.item_description+'</td>' +
-  //                               '<td class="text-center ls-1">'+op_price.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
-  //                           '</tr>' ;
-  //       });
-
-  //       let total_services = parseFloat(bill.total_services);
-  //       if(parseFloat(bill.medicines) != ''){
-  //         service_table +=  '<tr>' +
-  //                               '<tr><td></td><td></td></tr>' +
-  //                               '<td class="text-center ls-1">Medicines</td>' +
-  //                               '<td class="text-center ls-1">'+parseFloat(bill.medicines).toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
-  //                           '</tr>';
-  //       }
-  //       service_table +=  '<tr>' +
-  //                               '<td></td>' +
-  //                               '<td class="text-center">' +
-  //                                   '<span class="text-dark fs-6 fw-bold ls-1 me-2">Total: '+total_services.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</span>' +
-  //                               '</td>' +
-  //                         '</tr>';
-
-  //       $.each(deduction, function(index, item){
-  //         let deduction_amount = parseFloat(item.deduction_amount);
-
-  //         deduction_table += '<tr>'+
-  //                               '<td class="text-center ls-1">'+item.deduction_name+'</td>' +
-  //                               '<td class="text-center ls-1">'+deduction_amount.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
-  //                             '</tr>';
-  //       });
-
-  //       let total_deductions = parseFloat(bill.total_deductions);
-  //       let total_net_bill = parseFloat(bill.total_net_bill);
-  //       deduction_table += ' <tr>'+
-  //                                 '<td></td>' +
-  //                                 '<td class="text-center">' +
-  //                                     '<span class="text-dark fs-6 fw-bold ls-1 me-2">Total: '+total_deductions.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</span>' +
-  //                                 '</td>' +
-  //                           '</tr>'+
-  //                           '<tr>' +
-  //                                 '<td></td>' +
-  //                                 '<td>' +
-  //                                     '<span class="text-danger fs-6 fw-bold ls-1 me-2">Total Net Bill: '+total_net_bill.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</span>' +
-  //                                 '</td>' +
-  //                           '</tr>';
-
-  //       $('#deduction-table').html(deduction_table);
-  //       $('#service-table').html(service_table);
-  //       $('#bill-fullname').html(fullname);
-  //       $('#bill-hp-name').html(hp_name);
-  //       $('#bill-loa-no').html(bill.loa_no);
-           
-  //     }
-  //   });
-  // }
 
 </script>

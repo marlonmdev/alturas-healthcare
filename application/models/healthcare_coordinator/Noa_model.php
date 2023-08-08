@@ -3,6 +3,19 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Noa_model extends CI_Model {
 
+  function db_get_affiliated_healthcare_providers() {
+    $query = $this->db->get_where('healthcare_providers',['accredited'=>1]);
+    return $query->result_array();
+  }
+  function db_get_not_affiliated_healthcare_providers() {
+    $query = $this->db->get_where('healthcare_providers',['accredited'=>0]);
+    return $query->result_array();
+  }
+  // function db_update_noa_charge_type($noa_id, $data) {
+  //   $this->db->where('noa_id', $noa_id);
+  //   return $this->db->update('noa_requests', $data);
+  // }
+
   // Start of server-side processing datatables
   var $table_1 = 'noa_requests';
   var $table_2 = 'healthcare_providers';
@@ -267,15 +280,17 @@ class Noa_model extends CI_Model {
   var $table1_final='noa_requests';
   var $table2_final='billing';
   var $table3_final='max_benefit_limits';
+  var $table4_final='healthcare_providers';
   var $column_order_final=['noa_no', 'first_name','remaining_balance', 'net_bill'];
   var $column_search_final=['noa_no', 'first_name', 'middle_name', 'last_name', 'suffix','CONCAT(first_name, " ",last_name)',   'CONCAT(first_name, " ",last_name, " ", suffix)', 'CONCAT(first_name, " ",middle_name, " ",last_name)', 'CONCAT(first_name, " ",middle_name, " ",last_name, " ", suffix)'];
   var $order_final=['noa_no' => 'desc'];
 
   private function _get_final_datatables_query() {
-    $this->db->select('tbl_1.status as tbl1_status, tbl_1.work_related as tbl1_work_related,tbl_1.request_date as tbl1_request_date, tbl_1.*, tbl_2.*, tbl_3.*');
+    $this->db->select('tbl_1.status as tbl1_status, tbl_1.work_related as tbl1_work_related,tbl_1.request_date as tbl1_request_date, tbl_1.*, tbl_2.*, tbl_3.*,tbl_4.*');
     $this->db->from($this->table1_final . ' as tbl_1');
     $this->db->join($this->table2_final . ' as tbl_2', 'tbl_1.noa_id = tbl_2.noa_id', 'left');
     $this->db->join($this->table3_final . ' as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id', 'left');
+    $this->db->join($this->table4_final . ' as tbl_4', 'tbl_1.hospital_id = tbl_4.hp_id', 'left');
     // $this->db->where('tbl_1.status','Approved');
     // $this->db->or_where('tbl_1.status','Billed');
     $this->db->where_in('tbl_1.status', ['Approved', 'Billed']);

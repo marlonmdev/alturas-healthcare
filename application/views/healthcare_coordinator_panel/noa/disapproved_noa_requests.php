@@ -198,6 +198,10 @@
                           <td class="fw-bold ls-1">Reason for Disapproval :</td>
                           <td class="fw-bold ls-1" id="disapprove_reason"></td>
                         </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Services :</td>
+                          <td class="fw-bold ls-1" id="services"></td>
+                        </tr>
                       </table>
                     </div>
                   </div>
@@ -285,7 +289,7 @@
         const res = JSON.parse(response);
         const base_url = window.location.origin;
         const {
-          noa_no,req_status,request_date,admission_date,disapproved_on,disapproved_by,disapprove_reason,work_related,percentage,mbl,remaining_mbl,health_card_no,first_name,middle_name,last_name,suffix,date_of_birth,age,gender,blood_type,philhealth_no,home_address,city_address,contact_no,email,contact_person,contact_person_addr,contact_person_no,hospital_name,chief_complaint
+          noa_no,req_status,request_date,admission_date,disapproved_on,disapproved_by,disapprove_reason,work_related,percentage,mbl,remaining_mbl,health_card_no,first_name,middle_name,last_name,suffix,date_of_birth,age,gender,blood_type,philhealth_no,home_address,city_address,contact_no,email,contact_person,contact_person_addr,contact_person_no,hospital_name,chief_complaint,medical_services
         } = res;
 
         $("#viewNoaModal").modal("show");
@@ -302,6 +306,7 @@
         const cp = contact_person !== '' ? contact_person : 'None';
         const cpa = contact_person_addr !== '' ? contact_person_addr : 'None';
         const cpn = contact_person_no !== '' ? contact_person_no : 'None';
+        const serv = medical_services !== '' ? medical_services : 'None';
 
         switch (req_status) {
           case 'Pending':
@@ -394,6 +399,7 @@
         $('#contact_person_number').html(cpn);
         $('#healthcare_provider').html(hospital_name);
         $('#chief_complaint').html(chief_complaint);
+        $('#services').html(serv);
       }
     });
   }

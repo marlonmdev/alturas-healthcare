@@ -1190,7 +1190,8 @@ class Loa_controller extends CI_Controller {
 		}
 
 		$data_status = [
-			'performed_fees'  => 'Approved',
+			// 'performed_fees'  => 'Approved',
+			'performed_fees'  => ($is_manual === 1)?'Billed':'Approved',
 			'status'          => ($is_manual === 1)?'Billed':'Approved',
 			'approved_by'     => $approved_by,
 			'approved_on'     => $approved_on,

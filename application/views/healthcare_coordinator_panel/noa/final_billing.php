@@ -81,7 +81,7 @@
           </div> -->
 
           <div class="offset-10 pt-2 pb-4">
-            <button class="btn btn-info fw-bold fs-5 btn-lg" type="submit" id="proceed-btn" ><i class="mdi mdi-send"></i> Proceed</button>
+            <button class="btn btn-info fw-bold fs-5 btn-lg" type="submit" id="proceed-btn" disabled><i class="mdi mdi-send"></i> Proceed</button>
           </div>
 
         </form>
@@ -106,9 +106,6 @@
   </div>
 </div>
 <!-- END -->
-
-
-
 
 
 <script>
@@ -492,6 +489,19 @@
         // console.log ($('#pdf_file').val());
       }
     });
+  }
+
+  function viewImage(path) {
+    let item = [{
+      src: path, // path to image
+      title: 'Hospital Receipt' // If you skip it, there will display the original image name
+    }];
+    // define options (if needed)
+    let options = {
+      index: 0 // this option means you will start at first image
+    };
+    // Initialize the plugin
+    let photoviewer = new PhotoViewer(item, options);
   }
 </script>
 

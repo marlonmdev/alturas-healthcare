@@ -182,6 +182,10 @@
                           <td class="fw-bold ls-1">Chief Complaint :</td>
                           <td class="fw-bold ls-1" id="chief_complaint"></td>
                         </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Services :</td>
+                          <td class="fw-bold ls-1" id="services"></td>
+                        </tr>
                       </table>
                     </div>
                   </div>
@@ -331,6 +335,61 @@
         },
       })
     });
+    $('#UpdateChargeTypeNotAffiliated').submit(function(event) {
+      event.preventDefault();
+
+      const ChargeForm = $('#UpdateChargeTypeNotAffiliated')[0];
+      const formdata = new FormData(ChargeForm);
+      $.ajax({
+        type: "post",
+        url: $(this).attr('action'),
+        data: formdata,
+        dataType: "json",
+        processData: false,
+        contentType: false,
+        success: function(response) {
+          const {
+            token,
+            status,
+            message,
+            charge_type_error,
+          } = response;
+          switch (status) {
+            case 'error':
+              if (charge_type_error !== '') {
+                $('#charge-type-error').html(charge_type_error);
+                $('#charge-type').addClass('is-invalid');
+              } else {
+                $('#charge-type-error').html('');
+                $('#charge-type').removeClass('is-invalid');
+              }
+            break;
+            case 'save-error':
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
+              $("#pendingNoaTable").DataTable().ajax.reload();
+            break;
+            case 'success':
+              swal({
+                title: 'Success',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'success'
+              });
+              
+              $('#viewChargeTypeModal').modal('hide');
+              $("#pendingNoaTable").DataTable().ajax.reload();
+            break;
+          }
+        },
+      })
+    });
   });
 
   const saveAsImage = () => {
@@ -352,6 +411,29 @@
     $('#charge-type').val('');
   }
 
+  const ChargeTypenotAffiliated = (noa_id, hospital_receipt, hospital_bill) => {
+    console.log('Calling ChargeTypenotAffiliated with NOA ID:', noa_id);
+    $("#charge_type_modal_not_affiliated").modal("show");
+    $("#charge_type_modal_not_affiliated").find("form")[0].reset();
+    $('#noa_id').val(noa_id);
+    // Format the hospital_bill value with the currency symbol
+    const formattedHospitalBill = new Intl.NumberFormat('en-PH', {
+      style: 'currency',
+      currency: 'PHP',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(hospital_bill);
+
+    // Set the formatted hospital_bill value to the input field
+    $('#hospital_bill').val(formattedHospitalBill);
+
+    // Set the hospital_receipt attribute to the image element
+    $('#uploaded-hospital-receipt').attr("hospital_receipt", hospital_receipt);
+
+    // Set the src attribute of the image element
+    $('#uploaded-hospital-receipt').attr("src", baseUrl + 'uploads/hospital_receipt/' + hospital_receipt);
+  };
+
   function viewNoaInfo(noa_id) {
     $.ajax({
       url: `${baseUrl}healthcare-coordinator/noa/pending/view/${noa_id}`,
@@ -359,7 +441,7 @@
       success: function(response) {
         const res = JSON.parse(response);
         const {
-          status,token,noa_no,request_date,admission_date,mbl,remaining_mbl,health_card_no,requesting_company,first_name,middle_name,last_name,suffix,date_of_birth,age,gender,blood_type,philhealth_no,home_address,city_address,contact_no,email,contact_person,contact_person_addr,contact_person_no,hospital_name,chief_complaint,req_status,
+          status,token,noa_no,request_date,admission_date,mbl,remaining_mbl,health_card_no,requesting_company,first_name,middle_name,last_name,suffix,date_of_birth,age,gender,blood_type,philhealth_no,home_address,city_address,contact_no,email,contact_person,contact_person_addr,contact_person_no,hospital_name,chief_complaint,req_status,medical_services,
         } = res;
 
         $("#viewNoaModal").modal("show");
@@ -376,6 +458,7 @@
         const cp = contact_person !== '' ? contact_person : 'None';
         const cpa = contact_person_addr !== '' ? contact_person_addr : 'None';
         const cpn = contact_person_no !== '' ? contact_person_no : 'None';
+        const serv = medical_services !== '' ? medical_services : 'None';
 
 
         let rstat = '';
@@ -407,6 +490,7 @@
         $('#contact_person_number').html(cpn);
         $('#healthcare_provider').html(hospital_name);
         $('#chief_complaint').html(chief_complaint);
+        $('#services').html(serv);
       }
     });
   }
@@ -486,6 +570,40 @@
       reader.readAsDataURL(pdfFile);
     }
   }
+
+  const viewHospitalReceiptFile = () => {
+    // Retrieve the hospital_receipt attribute from the image element
+    const hospital_receipt = $('#uploaded-hospital-receipt').attr("hospital_receipt");
+
+    // Rest of your code remains unchanged
+    $('#viewFileModal').modal('show');
+    $('#cancel').hide();
+    $('#file-name-r').html('HOSPITAL RECEIPT');
+
+    let pdfFile = `${baseUrl}uploads/hospital_receipt/${hospital_receipt}`;
+    let fileExists = checkFileExists(pdfFile);
+
+    if (fileExists) {
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', pdfFile, true);
+      xhr.responseType = 'blob';
+
+      xhr.onload = function (e) {
+        if (this.status == 200) {
+          let blob = this.response;
+          let reader = new FileReader();
+
+          reader.onload = function (event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-file-viewer');
+            iframe.src = dataURL;
+          };
+          reader.readAsDataURL(blob);
+        }
+      };
+      xhr.send();
+    }
+  };
 
   const viewReports = (loa_id, work_related, percentage, spot_report, incident_report, police_report) => {
     $('#viewUploadedReportsModal').modal('show');

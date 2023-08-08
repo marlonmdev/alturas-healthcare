@@ -123,7 +123,8 @@
   var patient_name ="<?= $patient_name ?>";
   const form = document.querySelector('#pdfBillingForm');
   let hospital_charges ="";
-  let attending_doctors ="";
+  let att_doc_list ="";
+  let attending_doctors = {};
   let benefits_deductions = {};
   let json_final_charges = {};
   let valid_services = true;
@@ -525,7 +526,7 @@ function validate_name(patient, member) {
                         });
 
                         const doc = doctors.join("\n");
-                        
+                        return get_pro_fee(doc);
                         const excludedTerms = ["gross", "discount", "vat", "professional fee"];
 
                         const pattern = new RegExp("\\b(" + excludedTerms.join("|") + "|\\d{1,3}(?:,\\d{3})*(?:\\.\\d+)?)\\b", "gi");
@@ -537,10 +538,58 @@ function validate_name(patient, member) {
                         const pattern2 = /^(.*\S)(\s*)$/gm;
                         const modifiedDoc2 = modifiedDoc1.replace(pattern2, '$1;$2');
                         
-                        return modifiedDoc2.replace(/\s+/g, ' ');;
+                        att_doc_list = modifiedDoc2.replace(/\s+/g, ' ');;
                 }
 
             }
+
+            const get_pro_fee = (doc) =>{
+              const excludedTerms = ["gross", "discount", "vat", "professional fee"];
+              const pattern = new RegExp("\\b(" + excludedTerms.join("|") + ")\\b", "gi");
+              const excludedDoc = doc.replace(pattern, "");
+              const lines = excludedDoc.split('\n');
+              const data = lines.map(line => line.split(/\s{2,}/));
+              const filter_data = data.map((arr) => arr.filter((element) => element!==''));
+              let id_length_1 = 0;
+              let id_length_5 = 0;
+              const outputArray = filter_data.map((arr, index) => {
+              const currentLength = arr.length;
+              
+              if (index === 0) {
+                id_length_1 = index;
+                if(currentLength){
+                  return arr;
+                }
+          
+              } else {
+
+                let appendedArray = [];
+                  let doc_name = [];
+              
+                if (currentLength === 5) {
+                  id_length_5 = index;
+                  appendedArray = [filter_data[index][0],filter_data[index][currentLength-1]];
+                } else if(currentLength === 1) {
+                  doc_name = filter_data[id_length_5][0]+" "+filter_data[index];
+                  return appendedArray = [doc_name,filter_data[id_length_5][4]];
+                }else{
+                  appendedArray = arr;
+                }
+            
+              if(index+1 !== filter_data.length){
+                  if(filter_data[index+1].length !== 1){
+                  return appendedArray;
+                }
+              }else{
+                  return appendedArray;
+              }
+                
+              }
+              
+            });
+                  console.log('outputArray',outputArray);
+                  return outputArray.filter(arr => arr !== undefined);
+      }
 
     $(document).ready(function(){
     console.log("services",services);
@@ -576,6 +625,7 @@ function validate_name(patient, member) {
       // }
       formData.append('hospital_bill_data', hospital_charges);
       formData.append('attending_doctors', attending_doctors);
+      formData.append('att_doc_list', att_doc_list);
       formData.append('json_final_charges', json_final_charges);
       formData.append('benefits_deductions', benefits_deductions);
 
@@ -621,261 +671,6 @@ function validate_name(patient, member) {
       $('#pdfBillingForm')[0].reset();
       pdfPreview.innerHTML = "";
     });   
-
-// pdfs.forEach(async function(pdfid) {
-//   let pdfFileInput = document.getElementById(pdfid);
-  
-//   pdfFileInput.addEventListener('change', async function() {
-//     let reader = new FileReader();
-
-//     reader.onload = async function() {
-//       let typedarray = new Uint8Array(this.result);
-//       try {
-//         let pdf = await pdfjsLib.getDocument(typedarray).promise;
-//         let numPages = pdf.numPages;
-//         let promises = [];
-      
-//         console.log("number of pages", numPages);
-
-//         for (let page = 1; page <= numPages; page++) {
-//           let currentPage = await pdf.getPage(page);
-//           let textContent = await currentPage.getTextContent();
-
-//           const sortedItems = textContent.items
-//             .map(function(item) {
-//               return { text: item.str.toLowerCase(), x: item.transform[4], y: item.transform[5] };
-//             })
-//             .sort(function(a, b) {
-//               if (Math.abs(a.y - b.y) < 5) {
-//                 return a.x - b.x;
-//               } else {
-//                 return b.y - a.y;
-//               }
-//             })
-//             .reduce(function(groups, item) {
-//               const lastGroup = groups[groups.length - 1];
-//               if (lastGroup && Math.abs(lastGroup.y - item.y) < 5) {
-//                 lastGroup.text += ' ' + item.text;
-//               } else {
-//                 groups.push({ text: item.text, x: item.x, y: item.y });
-//               }
-//               return groups;
-//             }, []);
-
-        
-
-//           promises.push(sortedItems);
-//         }
-
-//         let results = await Promise.all(promises);
-//         let finalItems = results.flat();
-//         console.log(finalItems);
-
-//         let finalResult = finalItems.reduce(function(result, item) {
-//           const pattern = /\.{2,}(?!\.)/g;
-//           return (result = result + '\n' + item.text.replace(pattern, ''));
-//         }, '').trim();
-//         // Add conditions for extracted text
-//         // console.log(finalResult);
-//                       //validate loa 
-//                       const valid_loa = /registry\s{1,}no:/i;
-//                       if(!finalResult.match(valid_loa)){
-//                         $('#upload-btn').prop('disabled',true);
-//                         setTimeout(function() {
-//                             $.alert({
-//                                           title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>ERROR</h3>`,
-//                                           content:`<div style='font-size: 16px; color: #333;'>We sincerely apologize for any inconvenience caused and would like to inform you that the uploaded PDF does not meet the criteria of being an ${(pdfid !== 'pdf-file'?'itemized bill of':'')} LOA (Letter of Authorization). We highly value your understanding in this matter and extend our heartfelt gratitude for your unwavering cooperation.</div>`,
-//                                           buttons: {
-//                                               ok: {
-//                                                   text: "OK",
-//                                                   btnClass: "btn-danger",
-//                                                   // window.location.reload();
-//                                                   action : function(){(pdfid === 'pdf-file')?$('#pdf-file').val(''):$('#itemize-pdf-file').val('')}
-//                                               },
-//                                           },
-//                                       });
-//                                   }, 1000); // Delay of 2000 milliseconds (2 seconds)
-//                       }else{
-//                         const patient_pattern = /patient name:\s(.*?)\sregistry/si;
-//                         const matches_3 = finalResult.match(patient_pattern);
-//                         const result_3 = matches_3 ? matches_3[1] : null;
-//                         const doctor_pattern = /attending doctor\(s\):\s(.*?)\sregistry/si;
-//                         const matches_doc = finalResult.match(doctor_pattern);
-//                         const result_doc = (matches_doc[1].length>3) ? matches_doc[1] : null;
-                        
-//                         console.log("final result",finalResult);
-//                         console.log("doctor result",result_doc);
-//                         console.log("patient name", result_3);
-//                         console.log('final text',final_text(finalResult));
-
-//                         if (patient_name.length) {
-
-//                         const names = patient_name.toLowerCase().split(' ').filter(Boolean);
-
-//                         let removedElement ="";
-
-//                         if(names[names.length-1] === ".jr"){
-//                             removedElement = names.splice(names.length-2, 1);
-//                         }else{
-//                             removedElement = names.splice(names.length-1, 1);
-//                         }
-//                             const mem_name = removedElement + ", " + names.join(' ');
-
-//                         if(!validate_name(result_3,mem_name)){
-                        
-//                             $('#upload-btn').prop('disabled',true);
-
-//                             $.alert({
-//                                     title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
-//                                     content: `<div style='font-size: 16px; color: #333;'>The uploaded PDF bill does not match the member's name. Please ensure that you have uploaded the correct PDF bill.</div>`,
-//                                     type: "red",
-//                                     buttons: {
-//                                     ok: {
-//                                         text: "OK",
-//                                         btnClass: "btn-danger",
-//                                         action : function(){(pdfid === 'pdf-file')?$('#pdf-file').val(''):$('#itemize-pdf-file').val('')}
-//                                     },
-//                                 },
-//                             });
-//                         }
-
-//                        else{
-                         
-//                           if(pdfid === 'pdf-file'){
-//                                 var itemsPattern = /\s+date\s+description\s+qty\s+unit price\s+amount/;
-//                                 const regex = /please pay for this amount\s*\.*\s*([\d,\.]+)/i;
-//                                 const hosp_plan = /hospitalization plan:\s(.*?)\sage/si;
-//                                 const hpmatch = finalResult.match(hosp_plan);
-//                                 const match = finalResult.match(regex);
-                                
-//                                 console.log("match",hpmatch[1]);
-                                
-//                                 if (match) {
-//                                   const doc_pattern = /hospital charges(.*?)please pay for this amount/si;
-//                                   const matches_2 = finalResult.match(doc_pattern);
-//                                   const result_2 = matches_2 ? matches_2[1] : null;
-//                                   hospital_charges = result_2;
-
-//                                   if(hpmatch[1].replace(/\s/g, "")!=='self-pay'){
-//                                     benefits_deductions = JSON.stringify(get_ph_deduction(final_text(finalResult)));
-//                                   }else{
-//                                     benefits_deductions = JSON.stringify(get_selfpay_deduction(final_text(finalResult)));
-//                                   }
-                              
-//                                   attending_doctors = (result_doc !== null) ? get_doctors(final_text(finalResult)) : null;
-//                                   console.log("doctors", attending_doctors);
-//                                   console.log("hospital charges", hospital_charges);
-//                                   console.log("JSON deduction",benefits_deductions);
-//                                   subtotalValue = parseFloat(match[1].replace(/,/g, ""));
-//                                   net_bill=subtotalValue;
-                                 
-//                                   document.getElementsByName("net-bill")[0].value = match[1];
-//                                   $('#upload-btn').prop('disabled',false);
-                                  
-//                                   if(parseFloat(net_bill)>mbl){
-//                                   // $('#upload-btn').prop('disabled',true);
-//                                                 setTimeout(function() {
-//                                                 $.alert({
-//                                                     title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Warning</h3>`,
-//                                                     content: "<div style='font-size: 16px; color: #333;'>The uploaded PDF Bill exceeds the patient's MBL balance.</div>",
-//                                                     type: "red",
-//                                                     buttons: {
-//                                                         ok: {
-//                                                             text: "OK",
-//                                                             btnClass: "btn-danger",
-//                                                             // window.location.reload();
-//                                                         },
-//                                                     },
-//                                                 });
-//                                             }, 1000); // Delay of 2000 milliseconds (2 seconds)
-//                                     }
-
-//                                 } else {
-                        
-//                                 console.log("please pay for this amount is not found");
-//                                 $('#upload-btn').prop('disabled',true);
-//                                 $.alert({
-//                                         title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
-//                                         content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it appears that there was an issue with the uploaded PDF. Please review the PDF file and try again.</div>",
-//                                         type: "red",
-//                                         buttons: {
-//                                         ok: {
-//                                             text: "OK",
-//                                             btnClass: "btn-danger",
-//                                             action : function(){(pdfid === 'pdf-file')?$('#pdf-file').val(''):$('#itemize-pdf-file').val('')}
-//                                         },
-//                                     },
-//                                 });
-//                                 }
-//                               }else{
-//                                 var itemPattern = /\s+date\s+description\s+qty\s+unit price\s+amount/;
-                                
-//                                 if (itemPattern.test(finalResult)) {
-//                                   $('#upload-btn').prop('disabled',false);
-//                                   get_all_item(final_text(finalResult));
-//                                   json_final_charges = JSON.stringify(get_all_item(final_text(finalResult)));
-//                                   console.log("JSON item",json_final_charges);
-//                                   if(!valid_services){
-//                                     $.alert({
-//                                                       title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>WARNING</h3>`,
-//                                                       content: "<div style='font-size: 16px; color: #333;'>We sincerely apologize for any inconvenience caused. It has come to our attention that there may be discrepancies or possible overages in the hospital charges. We deeply appreciate your patience and understanding as we address this matter promptly.</div>",
-//                                                       type: "red",
-//                                                       buttons: {
-//                                                           ok: {
-//                                                               text: "OK",
-//                                                               btnClass: "btn-danger",
-                                                
-//                                                               // window.location.reload();
-//                                                           },
-//                                                       },
-//                                                   });
-//                                   }
-//                                 } else {
-//                                   $('#upload-btn').prop('disabled',true);
-//                                   $.alert({
-//                                           title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
-//                                           content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it appears that the uploaded pdf is not an itemized bill. Please review the PDF file and try again.</div>",
-//                                           type: "red",
-//                                           buttons: {
-//                                           ok: {
-//                                               text: "OK",
-//                                               btnClass: "btn-danger",
-//                                                 action : function(){(pdfid === 'pdf-file')?$('#pdf-file').val(''):$('#itemize-pdf-file').val('')}
-//                                           },
-//                                       },
-//                                   });
-//                                 }
-                                
-//                               }
-//                             }
-//                             }
-//                           }
-                  
-//                       console.log("netbill",net_bill);
-//                       console.log("mbl",mbl);
-//       } catch (error) {
-//         console.error(error);
-//                                   $.alert({
-//                                           title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Error</h3>`,
-//                                           content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience. The system encountered an error. Please refresh current window. Thank you for your understanding.</div>",
-//                                           type: "red",
-//                                           buttons: {
-//                                           ok: {
-//                                               text: "OK",
-//                                               btnClass: "btn-danger",
-//                                           },
-//                                       },
-//                                   });
-//       }
-//     };
-//     //end of async function
-//     if (this.files[0]) {
-//       reader.readAsArrayBuffer(this.files[0]);
-//     }
-//   });
-// });
-// end of the text extraction
-      // Assuming pdfs is an array of PDF IDs
     pdfs.forEach((pdfid) => handlePDFChange(pdfid));
   });
 
@@ -1037,7 +832,7 @@ async function handlePDFChange(pdfid) {
                                     benefits_deductions = JSON.stringify(get_selfpay_deduction(final_text(finalResult)));
                                   }
                               
-                                  attending_doctors = (result_doc !== null) ? get_doctors(final_text(finalResult)) : null;
+                                  attending_doctors = (result_doc !== null) ? JSON.stringify(get_doctors(final_text(finalResult))) : null;
                                   console.log("doctors", attending_doctors);
                                   console.log("hospital charges", hospital_charges);
                                   console.log("JSON deduction",benefits_deductions);
@@ -1130,8 +925,18 @@ async function handlePDFChange(pdfid) {
                       console.log("mbl",mbl);
       console.log('promises',promises);
     } catch (error) {
-      console.error(error);
-      // Handle the error appropriately
+                                  $.alert({
+                                          title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>PDF Error</h3>`,
+                                          content: "<div style='font-size: 16px; color: #333;'>Sorry, we encountered an issue with the uploaded PDF. Please check the file and try again. For any assistance, please don't hesitate to get in touch with our dedicated support team.</div>",
+                                          type: "red",
+                                          buttons: {
+                                          ok: {
+                                              text: "OK",
+                                              btnClass: "btn-danger",
+                                                action : function(){(pdfid === 'pdf-file')?$('#pdf-file').val(''):$('#itemize-pdf-file').val('')}
+                                          },
+                                      },
+                                  });
     }
   });
 }

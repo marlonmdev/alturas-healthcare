@@ -41,6 +41,17 @@
                         <td id="cost-types"><span class="">Services : <span class="fw-bold fs-5" id="med-services"></span></span></td>
                     </tr>
                 </table>
+                <table class="table table-sm" id="third-table">
+                    <tr class="border-secondary border-2 border-0 border-top border-bottom">
+                        <td><span class="">Hospital Bill : <span class="fw-bold fs-5" id="hp-bill"></span></span></td>
+                        <td><span class="">Company Charge : <span class="fw-bold fs-5" id="company-chrg-bill"></span></span></td>
+                        <td><span class="">Personal Charge : <span class="fw-bold fs-5" id="personal-chrg-bill"></span></span></td>
+                    </tr>
+                    <tr class="border-secondary border-2 border-0 border-top border-bottom">
+                        <td><span class="">Current MBL : <span class="fw-bold fs-5" id="current-mbl"></span></span></td>
+                        <td><span class="">Remaining MBL <small>(* as of billing)</small> : <span class="fw-bold fs-5" id="remaining-mbl"></span></span></td>
+                    </tr>
+                </table>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">OK</button>

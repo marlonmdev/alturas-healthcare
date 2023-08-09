@@ -285,6 +285,7 @@
         }else{
           $('#hospitalized-on').hide();
         }
+        $('#third-table').hide();
         $('#hospitalized-date').html(hospitalized_date);
         $('#noa-loa-no').html(loa_noa_no);
         $('#members-fullname').html(fullname);

@@ -3629,14 +3629,14 @@ fieldset:disabled .btn {
 }
 @keyframes logoScale {
 	0% { transform: scale(1); }
-	20% { transform: scale(1.1); }
+	20% { transform: scale(1); }
 	80% { transform: scale(1); }
   }
   
   /* Applying the animation to the .light-logo class */
   .light-logo {
 	/* Add any other styles you want for the logo here */
-	animation: logoScale 1s infinite;
+	/* animation: logoScale 1s infinite; */
 	/* animation: colorAnimation 4s infinite; */
   }
   .mdi {
@@ -3721,7 +3721,7 @@ fieldset:disabled .btn {
 .nav-link {
 	display: block;
 	padding: 0.5rem 1rem;
-	margin-left: 20px;
+	/* margin-left: 20px; */
 	text-decoration: none;
 	transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
 		border-color 0.15s ease-in-out;
@@ -9213,6 +9213,9 @@ html[dir="ltr"] body .p-l-0 {
 	background: #ffffff;
 	position: relative;
 }
+/* .sidebartoggler {
+	margin-left: 20px;
+} */
 .page-wrapper > .container-fluid,
 .page-wrapper > .container-lg,
 .page-wrapper > .container-md,
@@ -9865,6 +9868,7 @@ select.form-select.form-control-line {
 	padding: 0 15px;
 }
 #navbarSupportedContent {
+	margin-left: 20px;
 	background: #141619 !important;
 }
 .search-box .app-search {

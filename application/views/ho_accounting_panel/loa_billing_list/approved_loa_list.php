@@ -146,7 +146,7 @@
 
     });
 
-    function viewApprovedLoaInfo(loa_id) {
+    const viewApprovedLoaInfo = (loa_id) => {
         $.ajax({
         url: `${baseUrl}head-office-accounting/loa-request-list/loa-approved/view/${loa_id}`,
         type: "GET",
@@ -257,7 +257,7 @@
         });
     }
 
-    function viewImage(path) {
+    const viewImage = (path) => {
         let item = [{
             src: path, // path to image
             title: 'Attached RX File' // If you skip it, there will display the original image name

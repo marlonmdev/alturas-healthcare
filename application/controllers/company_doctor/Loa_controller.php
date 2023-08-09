@@ -169,7 +169,6 @@ class Loa_controller extends CI_Controller {
 			}else{
 				$custom_actions .= '';
 			}
-			
 
 			// if work_related field is set to either yes or no, show either disabled or not disabled approve button 
 			if($loa['work_related'] == ''){

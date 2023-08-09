@@ -224,9 +224,13 @@ class Billing_model extends CI_Model {
         $query = $this->db->get_where('billing', array('billing_no' => $billing_no));
         return $query->row_array();
     }
-    function get_billing_no($loa_noa){
-        $this->db->where('loa_id', $loa_noa);
-        $this->db->or_where('noa_id', $loa_noa);
+    function get_billing_no($loa_noa, $type){
+        if($type === 'loa'){
+            $this->db->where('loa_id', $loa_noa);
+        }
+        if($type === 'noa'){
+            $this->db->where('noa_id', $loa_noa);
+        }
         $query = $this->db->get('billing');
         return $query->row_array();
     }
@@ -342,11 +346,59 @@ class Billing_model extends CI_Model {
             }
             return $this->db->insert_batch('re_upload_billing', $updatedResult);
         }
-        // $this->db->where('billing_no', $billing_no);
-        // $this->db->where('re_upload', 1);
-        // return $this->db->insert('billing', $data);
+       
+    }
+    function insert_old_itemized_bill($billing_id) {
+        $query = $this->db->get_where('itemized_bill', ['billing_id' => $billing_id]);
+        $result = $query->result_array();
+
+        // var_dump('old item', $result);
+        if($result){
+            $this->db->insert_batch('re_upload_itemize_bill', $result);
+        }
+        
+    }
+    function insert_old_benefits_deductions($billing_id) {
+        $query = $this->db->get_where('benefits_deductions', ['billing_id' => $billing_id]);
+        $result = $query->result_array();
+       
+        if($result){
+            $this->db->insert_batch('re_upload_benefits_deductions', $result);
+        }
+        
+    }
+    function insert_old_attending_doctors($billing_id) {
+        $query = $this->db->get_where('attending_doctors', ['billing_id' => $billing_id]);
+        $result = $query->result_array();
+       
+        if($result){
+            $this->db->insert_batch('re_upload_doctors', $result);
+        }
+        
     }
 
+    function delete_data($table,$billing_id,$hp_id,$emp_id){
+        $this->db->where('billing_id',$billing_id)
+                 ->where('hp_id',$hp_id)
+                 ->where('emp_id',$emp_id)
+                 ->delete($table);
+    }
+
+    function update_itemized_bill($billing_id,$data){
+        $this->delete_data('itemized_bill',$data['billing_id'],$data['hp_id'],$data['emp_id']);
+        $this->db->where('billing_id',$billing_id);
+        return $this->db->insert('itemized_bill',$data);
+    }
+    function update_benefits_deductions($billing_id,$data){
+        $this->delete_data('benefits_deductions',$data['billing_id'],$data['hp_id'],$data['emp_id']);
+        $this->db->where('billing_id',$billing_id);
+        return $this->db->insert('benefits_deductions',$data);
+    }
+    function update_attending_doctors($billing_id,$data){
+        $this->delete_data('attending_doctors',$data['billing_id'],$data['hp_id'],$data['emp_id']);
+        $this->db->where('billing_id',$billing_id);
+        return $this->db->insert('attending_doctors',$data);
+    }
     function update_billing($data,$billing_no) {
         $this->db->where('billing_no', $billing_no);
         return $this->db->update('billing', $data); 
@@ -430,5 +482,8 @@ class Billing_model extends CI_Model {
     }
     function benefits_deduction($data) {
         return $this->db->insert('benefits_deductions', $data);
+    }
+    function attending_doctors($data) {
+        return $this->db->insert('attending_doctors', $data);
     }
 }

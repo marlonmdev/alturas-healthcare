@@ -133,87 +133,87 @@
 
     });
 
-    function viewApprovedNoaInfo(noa_id) {
-    $.ajax({
-      url: `${baseUrl}head-office-accounting/noa-request-list/noa-approved/view/${noa_id}`,
-      type: "GET",
-      success: function(response) {
-        const res = JSON.parse(response);
-        const base_url = window.location.origin;
-        const {
-          status,
-          token,
-          noa_no,
-          approved_by,
-          approved_on,
-          member_mbl,
-          remaining_mbl,
-          first_name,
-          middle_name,
-          last_name,
-          suffix,
-          date_of_birth,
-          age,
-          hospital_name,
-          health_card_no,
-          requesting_company,
-          admission_date,
-          chief_complaint,
-          work_related,
-          percentage,
-          request_date,
-          req_status,
-          billed_on,
-          paid_on
-        } = res;
+    const viewApprovedNoaInfo = (noa_id) => {
+        $.ajax({
+        url: `${baseUrl}head-office-accounting/noa-request-list/noa-approved/view/${noa_id}`,
+        type: "GET",
+        success: function(response) {
+            const res = JSON.parse(response);
+            const base_url = window.location.origin;
+            const {
+            status,
+            token,
+            noa_no,
+            approved_by,
+            approved_on,
+            member_mbl,
+            remaining_mbl,
+            first_name,
+            middle_name,
+            last_name,
+            suffix,
+            date_of_birth,
+            age,
+            hospital_name,
+            health_card_no,
+            requesting_company,
+            admission_date,
+            chief_complaint,
+            work_related,
+            percentage,
+            request_date,
+            req_status,
+            billed_on,
+            paid_on
+            } = res;
 
-        $("#viewNoaModal").modal("show");
-        $('#noa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
-        $('#noa-no').html(noa_no);
-        $('#approved-by').html(approved_by);
-        $('#approved-on').html(approved_on);
-        $('#billed-on').html(billed_on);
-        $('#paid-on').html(paid_on);
-        $('#member-mbl').html(member_mbl);
-        $('#remaining-mbl').html(remaining_mbl);
-        $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
-        $('#date-of-birth').html(date_of_birth);
-        $('#age').html(age);
-        $('#hospital-name').html(hospital_name);
-        $('#admission-date').html(admission_date);
-        $('#chief-complaint').html(chief_complaint);
-        $('#request-date').html(request_date);
-        if(work_related == 'Yes'){ 
-					if(percentage == ''){
-					  wpercent = '100% W-R';
-					  nwpercent = '';
-					}else{
-					   wpercent = percentage+'%  W-R';
-					   result = 100 - parseFloat(percentage);
-					   if(percentage == '100'){
-						   nwpercent = '';
-					   }else{
-						   nwpercent = result+'% Non W-R';
-					   }
-					  
-					}	
-			   }else if(work_related == 'No'){
-				   if(percentage == ''){
-					   wpercent = '';
-					   nwpercent = '100% Non W-R';
-					}else{
-					   nwpercent = percentage+'% Non W-R';
-					   result = 100 - parseFloat(percentage);
-					   if(percentage == '100'){
-						   wpercent = '';
-					   }else{
-						   wpercent = result+'%  W-R';
-					   }
-					 
-					}
-			   }
-        $('#percentage').html(wpercent+', '+nwpercent);
-      }
-    });
+            $("#viewNoaModal").modal("show");
+            $('#noa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
+            $('#noa-no').html(noa_no);
+            $('#approved-by').html(approved_by);
+            $('#approved-on').html(approved_on);
+            $('#billed-on').html(billed_on);
+            $('#paid-on').html(paid_on);
+            $('#member-mbl').html(member_mbl);
+            $('#remaining-mbl').html(remaining_mbl);
+            $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
+            $('#date-of-birth').html(date_of_birth);
+            $('#age').html(age);
+            $('#hospital-name').html(hospital_name);
+            $('#admission-date').html(admission_date);
+            $('#chief-complaint').html(chief_complaint);
+            $('#request-date').html(request_date);
+            if(work_related == 'Yes'){ 
+                        if(percentage == ''){
+                        wpercent = '100% W-R';
+                        nwpercent = '';
+                        }else{
+                        wpercent = percentage+'%  W-R';
+                        result = 100 - parseFloat(percentage);
+                        if(percentage == '100'){
+                            nwpercent = '';
+                        }else{
+                            nwpercent = result+'% Non W-R';
+                        }
+                        
+                        }	
+                }else if(work_related == 'No'){
+                    if(percentage == ''){
+                        wpercent = '';
+                        nwpercent = '100% Non W-R';
+                        }else{
+                        nwpercent = percentage+'% Non W-R';
+                        result = 100 - parseFloat(percentage);
+                        if(percentage == '100'){
+                            wpercent = '';
+                        }else{
+                            wpercent = result+'%  W-R';
+                        }
+                        
+                        }
+                }
+            $('#percentage').html(wpercent+', '+nwpercent);
+        }
+        });
   }
 </script>

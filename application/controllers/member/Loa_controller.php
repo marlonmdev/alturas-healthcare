@@ -742,6 +742,7 @@ class Loa_controller extends CI_Controller {
 				'is_manual' => 0,
 			];
 		}else{
+			// var_dump('hospital_bill',$input_post['hospital-bill']);
 			$post_data = [
 				'emp_id' => $this->session->userdata('emp_id'),
 				'hcare_provider' => $input_post['healthcare-provider'],
@@ -749,7 +750,7 @@ class Loa_controller extends CI_Controller {
 				'med_services' => implode(';', $services),
 				'chief_complaint' => strip_tags($input_post['chief-complaint']),
 				'requesting_physician' => ucwords($input_post['requesting-physician']),
-				'hospital_bill' =>  floatval($input_post['hospital-bill']),
+				'hospital_bill' =>  $input_post['hospital-bill'],
 				'attending_physician' => $attending_physician,
 				'rx_file' => null,
 				'hospital_receipt' => $hospital_receipt,

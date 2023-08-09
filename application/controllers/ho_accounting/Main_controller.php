@@ -273,7 +273,7 @@ class Main_controller extends CI_Controller {
 
 	function add_payment_details() {
 		$token = $this->security->get_csrf_hash();
-
+		$type = $this->uri->segment(5);
 		$this->form_validation->set_rules('acc-number', 'Account Number', 'required');
 		$this->form_validation->set_rules('acc-name', 'Account Name', 'required');
 		$this->form_validation->set_rules('check-number', 'Check Number', 'required');
@@ -331,36 +331,67 @@ class Main_controller extends CI_Controller {
 				$this->List_model->add_payment_details($data);
 				$paid_by = $this->session->userdata('fullname');
 				$paid_on = $this->input->post('check-date', TRUE);
-				$payment_no = $this->input->post('pd-payment-no', TRUE);
+				if($type == 'accredited'){
+					$payment_no = $this->input->post('pd-payment-no', TRUE);
 			
-				$this->List_model->set_details_no($payment_no,$details_no);
-				$this->List_model->set_monthly_payable($payment_no,$paid_by,$paid_on);
-				$result = $this->List_model->get_loa_noa_id($payment_no);
-
-				if (!empty($result)) {
-					foreach ($result as $row) {
-						$total_paid = floatval($row['company_charge'] + $row['cash_advance']);
-						$this->List_model->insert_total_paid($row['billing_id'], $total_paid);
-						$this->List_model->update_payable($row['bill_no']);
-
-						$loa_id = $row['loa_id'];
-						$noa_id = $row['noa_id'];
-					
-						if (!empty($loa_id)) {
-							$this->List_model->set_loa_status($loa_id);
-						}
-						if (!empty($noa_id)) {
-							$this->List_model->set_noa_status($noa_id);
+					$this->List_model->set_details_no($payment_no,$details_no);
+					$this->List_model->set_monthly_payable($payment_no,$paid_by,$paid_on);
+					$result = $this->List_model->get_loa_noa_id($payment_no);
+	
+					if (!empty($result)) {
+						foreach ($result as $row) {
+							$total_paid = floatval($row['company_charge'] + $row['cash_advance']);
+							$this->List_model->insert_total_paid($row['billing_id'], $total_paid);
+							$this->List_model->update_payable($row['bill_no']);
+	
+							$loa_id = $row['loa_id'];
+							$noa_id = $row['noa_id'];
+						
+							if (!empty($loa_id)) {
+								$this->List_model->set_loa_status($loa_id);
+							}
+							if (!empty($noa_id)) {
+								$this->List_model->set_noa_status($noa_id);
+							}
 						}
 					}
-				}
+					echo json_encode([
+						'token' => $token,
+						'payment_no' => $payment_no,
+						'status' => 'success',
+						'message' => 'Data Added Successfully!'
+					]);
+
+				}else if($type == 'nonaccredited'){
+					$billing_id = $this->input->post('pd-billing-id', TRUE);
+			
+					$this->List_model->set_details_no_other($billing_id,$details_no);
+					// $this->List_model->set_monthly_payable_other($billing_id,$paid_by,$paid_on);
+					$row = $this->List_model->get_loa_noa_id_other($billing_id);
+
+					if (!empty($row)) {
+							$total_paid = floatval($row['company_charge'] + 0);
+							$this->List_model->insert_total_paid($row['billing_id'], $total_paid);
+							// $this->List_model->update_payable($row['bill_no']);
+
+							$loa_id = $row['loa_id'];
+							$noa_id = $row['noa_id'];
+						
+							if (!empty($loa_id)) {
+								$this->List_model->set_loa_status($loa_id);
+							}
+							if (!empty($noa_id)) {
+								$this->List_model->set_noa_status($noa_id);
+							}
+					}
+					echo json_encode([
+						'token' => $token,
+						'status' => 'success',
+						'message' => 'Data Added Successfully!'
+					]);
 	
-				echo json_encode([
-					'token' => $token,
-					'payment_no' => $payment_no,
-					'status' => 'success',
-					'message' => 'Data Added Successfully!'
-				]);
+				}
+				
 			}
 		}
 	}
@@ -2681,7 +2712,7 @@ class Main_controller extends CI_Controller {
 	function submit_for_payment_bill() {
 		$token = $this->security->get_csrf_hash();
 		$user = $this->session->userdata('fullname');
-		$payment_no = 'PMT-' . date('Ymis');
+		$payment_no = 'PMT-' . date('Ymdis');
 		$this->List_model->submit_forPayment_bill($payment_no);
 		$inserted = $this->List_model->set_payment_no_date($payment_no,$user);
 		if($inserted){
@@ -2705,7 +2736,7 @@ class Main_controller extends CI_Controller {
 		$user = $this->session->userdata('fullname');
 		$payment_no = 'PMT-' . date('Ymdis');
 		$this->List_model->other_submit_forPayment_bill($payment_no);
-		$inserted = $this->List_model->set_payment_no_date($payment_no,$user);
+		$inserted = $this->List_model->set_payment_no_dates($payment_no,$user);
 		if($inserted){
 			echo json_encode([
 				'token' => $token,
@@ -3208,33 +3239,28 @@ class Main_controller extends CI_Controller {
 
 	}
 
-	function print_payment_other_hosp($payment_no) {
+	function print_payment_other_hosp() {
 		$this->security->get_csrf_hash();
 		$this->load->library('tcpdf_library');
 
-		$payment_no =  base64_decode($payment_no);
-
-		$info = $this->List_model->get_bill_payment_details($payment_no);
-		$billed = $this->List_model->get_for_payment_bills($payment_no);
+		$billed = $this->List_model->get_other_hos_for_payment_bills();
 		$pdf = new TCPDF();
 
-		if(!empty($start) || !empty($end)){
-			$formattedStart_date = date('F d, Y', strtotime($info['startDate']));
-			$formattedEnd_date = date('F d, Y', strtotime($info['endDate']));
+		// if(!empty($start) || !empty($end)){
+		// 	$formattedStart_date = date('F d, Y', strtotime($info['startDate']));
+		// 	$formattedEnd_date = date('F d, Y', strtotime($info['endDate']));
 
-			$date = '<h3>From '.$formattedStart_date.' to '.$formattedEnd_date.'</h3>';
-		}else{
-			$date = '';
-		}
+		// 	$date = '<h3>From '.$formattedStart_date.' to '.$formattedEnd_date.'</h3>';
+		// }else{
+		// 	$date = '';
+		// }
 
 		$title = '<img src="'.base_url().'assets/images/HC_logo.png" style="width:110px;height:70px">';
 
 		$title .= '<style>h3 { margin: 0; padding: 0; line-height: .5; }</style>
-            <h3>For Payment Summary Details</h3>
-			'.$date.'
-			<h3>'.$payment_no.'</h3><br>';
+            <h3>For Payment Summary Details</h3><br>';
 			
-		$currentDate = '<small>Transaction Date: ' . date('m/d/Y h:i A').'</small>';
+		$currentDate = '<small>Transaction Date: ' . date('m/d/Y h:i A').' (Reprinted Copy)</small>';
 		$PDFdata = '<table style="border:.5px solid #000; padding:3px" class="table table-bordered">';
 		$PDFdata .= ' <thead>
 						<tr class="border-secondary">
@@ -3392,7 +3418,7 @@ class Main_controller extends CI_Controller {
 			$pdf->setPage($i); // Set the page number
 			$pdf->writeHTMLCell(0, 0, '', '', 'Page '.$i.' of '.$pageCount, 0, 1, 0, true, 'R', true);
 		}
-		$pdfname = $payment_no.'_'.date('mdHi');
+		$pdfname = 'forPayment_'.date('mdHi');
 		$pdf->Output($pdfname.'.pdf', 'I');
 	}
 

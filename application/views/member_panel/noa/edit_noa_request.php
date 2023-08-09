@@ -79,7 +79,7 @@
               <div class="form-group row" id="med-hr-wrapper" hidden>
                   <div class="col-sm-8 mb-0 pe-2" id="med-services-wrapper">
                     <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Input Medical Service/s <small class="text-danger"> *Note: Press Tab or Enter to Add More Medical Service</small></label>
-                    <input class="form-control" id="noa-med-services" name="noa-med-services" placeholder="Type and press Enter|Tab" >
+                    <input class="custom-input" id="noa-med-services" name="noa-med-services" placeholder="Type and press Enter|Tab" >
                     </input>
                     <em id="noa-med-services-error" class="text-danger"></em>
                   </div>
@@ -145,9 +145,9 @@
 <!-- End Wrapper -->
 </div>
 <style>
-   /* .custom-input {
+   .custom-input {
   width: 100%;
-} */
+}
 </style>
 <script type="text/javascript">
   const baseUrl = `<?php echo $this->config->base_url(); ?>`;
@@ -218,10 +218,13 @@
     }
 
     $('#editNoaRequestForm').submit(function(event) {
+      let hp_bill = $('#hospital-bill').val();
+      $('#hospital-bill').val(hp_bill.replace(/,/g,''));
       event.preventDefault();
       let $data = new FormData($(this)[0]);
       $data.append('is_accredited',is_accredited);
       $data.append('is_hr_has_data',is_hr_has_data);
+      
       $.ajax({
         type: "post",
         url: $(this).attr('action'),
@@ -245,6 +248,7 @@
           // const base_url = window.location.origin;
 
           if (status === 'error') {
+            $('#hospital-bill').val(hp_bill);
             // is-invalid class is a built in classname for errors in bootstrap
             if (hospital_name_error !== '') {
               $('#hospital-name-error').html(hospital_name_error);
@@ -302,6 +306,7 @@
                 $('#healthcare-provider-category').removeClass('is-invalid');
               }
           } else if (status === 'save-error') {
+            $('#hospital-bill').val(hp_bill);
             swal({
               title: 'Failed',
               text: message,
@@ -352,8 +357,14 @@
 		if(/\s/.test(key)){
 		  event.preventDefault();
 		}
-		  
 	  });
+    $('#hospital-bill').on('keyup',function(event){
+      let val = event.key;
+      if(val!=='.' && $(this).val() !==''){
+        $(this).val(Number($(this).val().replace(/,/g,'')).toLocaleString(2));
+      }
+      
+    });
   }
 
   const enableProvider = () => {

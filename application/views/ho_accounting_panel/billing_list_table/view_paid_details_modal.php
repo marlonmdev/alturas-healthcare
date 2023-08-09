@@ -35,11 +35,11 @@
                         <td><span class="">Billed on : <span class="fw-bold fs-5" id="billed-on"></span></span></td>
                     </tr>
                 </table>
-                <!-- <table class="table table-sm">
+                <table class="table table-sm">
                     <tr class="border-secondary border-2 border-0 border-top border-bottom">
                         <td id="cost-types"><span class="">Services : <span class="fw-bold fs-5" id="med-services"></span></span></td>
                     </tr>
-                </table> -->
+                </table>
                 <table class="table table-sm">
                     <tr class="border-secondary border-2 border-0 border-top border-bottom">
                         <td><span class="">Hospital Bill : <span class="fw-bold fs-5" id="hp-bill"></span></span></td>

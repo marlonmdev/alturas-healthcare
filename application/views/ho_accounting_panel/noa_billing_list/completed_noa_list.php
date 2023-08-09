@@ -120,7 +120,7 @@
 
     });
 
-    function viewNoaInfo(noa_id) {
+    const viewNoaInfo = (noa_id) => {
         $.ajax({
             url: `${baseUrl}head-office-accounting/noa-request-list/noa-completed/view/${noa_id}`,
             type: "GET",

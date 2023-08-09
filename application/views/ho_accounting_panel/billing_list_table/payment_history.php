@@ -195,10 +195,13 @@
 
                     if(is_manual == 1){
                         $('#request-type').html('Reimbursement');
-
                     }else{
                         $('#request-type').html(request_type);
-
+                    }
+                    if(services != ''){
+                        $('#cost-types').show();
+                    }else{
+                        $('#cost-types').hide();
                     }
                    
                     $('#hospitalized-date').html(hospitalized_date);

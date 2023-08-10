@@ -94,6 +94,10 @@ $route['member/requested-loa/expired/fetch'] = 'member/loa_controller/fetch_expi
 $route['member/requested-loa/cancelled/fetch'] = 'member/loa_controller/fetch_cancelled_loa';
 $route['member/requested-loa/billed/fetch'] = 'member/loa_controller/fetch_billed_loa';
 $route['member/requested-loa/paid/fetch'] = 'member/loa_controller/fetch_paid_loa';
+ 
+// update member notification
+$route['company-doctor/update/notification/fetch'] = 'company_doctor/notification_update/update_doctor_notification';
+$route['healthcare-provider/update/notification/fetch'] = 'healthcare_provider/notification_update/update_provider_notification';
 
 
 // Member NOA Routes

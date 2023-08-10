@@ -3977,7 +3977,8 @@ $med_serv = implode(' ', $ct_array);
         	}else if($bill['tbl1_status'] == 'Billed' && $bill['performed_fees'] == 'Billed' && $bill['accredited'] == '0'){
         		$custom_actions .='<i class="mdi mdi-cached fs-4 text-success"></i>Processing...';
         		$billed_date .='No Billing Date Yet';
-        		$pdf_bill = 'No PDF Bill';
+        		// $pdf_bill = 'No PDF Bill';
+        		$pdf_bill = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $bill['pdf_bill'] . '\')"><i class="mdi mdi-file-image fs-4 text-danger"></i></a>';
         	}else if($bill['tbl1_status'] == 'Completed' && $bill['performed_fees'] == 'Performed'){
         		$custom_actions .='<i class="mdi mdi-cached fs-4 text-info"></i>Processing...';
         		$billed_date .='No Billing Date Yet';

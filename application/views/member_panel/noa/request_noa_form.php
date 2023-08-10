@@ -80,7 +80,7 @@
               <div class="form-group row" id="med-services-wrapper" hidden>
                   <div class="col-sm-8 mb-0 pe-2"  >
                     <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Input Medical Service/s <small class="text-danger"> *Note: Press Tab or Enter to Add More Medical Service</small></label>
-                    <input class="form-control" id="noa-med-services" name="noa-med-services" placeholder="Type and press Enter|Tab">
+                    <input class="custom-input" id="noa-med-services" name="noa-med-services" placeholder="Type and press Enter|Tab">
                     </input>
                     <em id="noa-med-services-error" class="text-danger"></em>
                   </div>
@@ -125,7 +125,7 @@
               <br>
               <div class="row">
                 <div class="col-sm-12 mb-2 d-flex justify-content-start">
-                  <button type="submit" class="btn btn-primary me-2">
+                  <button type="submit" class="btn btn-primary me-2" id="submit">
                     <i class="mdi mdi-content-save"></i> SUBMIT
                   </button>
                   <a href="JavaScript:void(0)" onclick="window.history.back()" class="btn btn-danger">
@@ -145,9 +145,9 @@
 
 
 <style>
- /* .custom-input {
+ .custom-input {
   width: 100%;
-} */
+}
 
 </style>
 <script type="text/javascript">
@@ -160,12 +160,13 @@
   const med_services = document.getElementById('noa-med-services');
   $(document).ready(function() {
     new Tagify(med_services);
-    $('#submit').prop('disabled',false); 
+    
     $('#admission-date').flatpickr({
           dateFormat: "Y-m-d"
         });
-        input_bill.setAttribute('autocomplete', 'off');
-        number_validator();
+
+    input_bill.setAttribute('autocomplete', 'off');
+    number_validator();
     $('#hospital-bill').on('input',function(){
       let value = $('#hospital-bill').val();
       let length  = $('#hospital-bill').val().length;
@@ -174,28 +175,49 @@
         $('#hospital-bill').val('');
       }
     });
+
+    if(mbl<=0){
+    $('#submit').prop('disabled',true); 
+    $('#healthcare-provider-category').prop('disabled',true); 
+    $('#admission-date').prop('disabled',true); 
+    $('#chief-complaint').prop('disabled',true); 
+    $.alert({
+          title: `<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Unable to Request: Insufficient MBL Balance</h3>`,
+          content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it appears that your MBL balance in your account is currently empty. Before proceeding with your request, please ensure that you have sufficient MBL balance. Thank you for your understanding.</div>",
+          type: "red",
+          buttons: {
+            ok: {
+              text: "OK",
+              btnClass: "btn-danger",
+            }
+          }
+        });
+    }
     // new Tagify('noa-med-services');
     $('#memberNoaRequestForm').submit(function(event) {
+      let hp_bill = $('#hospital-bill').val();
+      $('#hospital-bill').val(hp_bill.replace(/,/g,''));
       event.preventDefault();
         let $data = new FormData($(this)[0]);
         $data.append('is_accredited',is_accredited);
-        if(mbl<=0){
-        $.alert({
-          title: "<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Unable to Request</h3>",
-          content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it looks like your MBL balance is currently empty. Please ensure that you have enough MBL in your account before attempting to make a request. Thank you for your understanding.</div>",
-          type: "red",
-          buttons: {
-              ok: {
-                  text: "OK",
-                  btnClass: "btn-danger",
-                  // action: function(){
-                  //   window.history.back()
-                  // },
-              },
-          },
-      });
-          // $('#submit').prop('disabled',true);      
-      }else{
+      //   if(mbl<=0){
+      //   $.alert({
+      //     title: "<h3 style='font-weight: bold; color: #dc3545; margin-top: 0;'>Unable to Request</h3>",
+      //     content: "<div style='font-size: 16px; color: #333;'>We apologize for the inconvenience, but it looks like your MBL balance is currently empty. Please ensure that you have enough MBL in your account before attempting to make a request. Thank you for your understanding.</div>",
+      //     type: "red",
+      //     buttons: {
+      //         ok: {
+      //             text: "OK",
+      //             btnClass: "btn-danger",
+      //             // action: function(){
+      //             //   window.history.back()
+      //             // },
+      //         },
+      //     },
+      // });
+      //     // $('#submit').prop('disabled',true);      
+      // }else{
+       
         $.ajax({
           type: "post",
           url: $(this).attr('action'),
@@ -218,6 +240,7 @@
             } = response;
 
             if (status === 'error') {
+              $('#hospital-bill').val(hp_bill);
               // is-invalid class is a built in classname for errors in bootstrap
               if (hospital_name_error !== '') {
                 $('#hospital-name-error').html(hospital_name_error);
@@ -278,6 +301,7 @@
               }
 
             } else if (status === 'save-error') {
+              $('#hospital-bill').val(hp_bill);
               swal({
                 title: 'Failed',
                 text: message,
@@ -301,7 +325,7 @@
           },
         });
       // End of AJAX Request
-    }
+    // }
     
     });
 
@@ -338,6 +362,14 @@
 		}
 		  
 	  });
+
+    $('#hospital-bill').on('keyup',function(event){
+      let val = event.key;
+      if(val!=='.' && $(this).val() !==''){
+        $(this).val(Number($(this).val().replace(/,/g,'')).toLocaleString(2));
+      }
+      
+    });
   }
 
   const enableProvider = () => {

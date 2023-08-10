@@ -160,7 +160,7 @@
               <div class="form-group row" id="edit-med-services-wrapper" >
                   <div class="col-sm-8 mb-2  pe-2"  >
                     <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Select Medical Service/s <small class="text-danger"> *Note: Press Tab or Enter to Add More Medical Service</small></label>
-                    <input class="form-control" id="edit-med-services" name="edit-med-services" placeholder="Type and press Enter|Tab">
+                    <input class="custom-input" id="edit-med-services" name="edit-med-services" placeholder="Type and press Enter|Tab">
                     <em id="edit-med-services-error" class="text-danger"></em>
                   </div>
                   <div class="col-lg-4 col-sm-12 mb-2" id="hospital-bill-wrapper" hidden >
@@ -286,9 +286,9 @@
 <!-- End Wrapper -->
 </div>
 <style>
- /* .custom-input {
+ .custom-input {
   width: 100%;
-} */
+}
 
 /* input[type="text"]::-webkit-inner-spin-button,
 input[type="text"]::-webkit-outer-spin-button {
@@ -374,12 +374,16 @@ input[type="text"]::-webkit-outer-spin-button {
       });
 
     $('#memberLoaRequestForm').submit(function(event) {
+      let hp_bill = $('#hospital-bill').val();
+      $('#hospital-bill').val(hp_bill.replace(/,/g,''));
+  
       event.preventDefault();
       let $data = new FormData($(this)[0]);
       // console('data',data);
       $data.append('is_accredited',is_accredited);
       $data.append('is_hr_has_data',is_hr_has_data);
       $data.append('is_rx_has_data',is_rx_has_data);
+     
       $.ajax({
         type: "post",
         url: $(this).attr('action'),
@@ -403,6 +407,7 @@ input[type="text"]::-webkit-outer-spin-button {
           } = response;
           switch (status) {
             case 'error':
+              $('#hospital-bill').val(hp_bill);
               // is-invalid class is a built in classname for errors in bootstrap
               if (healthcare_provider_error !== '') {
                 $('#healthcare-provider-error').html(healthcare_provider_error);
@@ -467,6 +472,7 @@ input[type="text"]::-webkit-outer-spin-button {
               }
               break;
             case 'save-error':
+              $('#hospital-bill').val(hp_bill);
               swal({
                 title: 'Failed',
                 text: message,
@@ -572,8 +578,14 @@ input[type="text"]::-webkit-outer-spin-button {
 		if(/\s/.test(key)){
 		  event.preventDefault();
 		}
-		  
 	  });
+    $('#hospital-bill').on('keyup',function(event){
+      let val = event.key;
+      if(val!=='.' && $(this).val() !==''){
+        $(this).val(Number($(this).val().replace(/,/g,'')).toLocaleString(2));
+      }
+      
+    });
 }
   // const enableRequestType = () => {
   //   const hc_provider = document.querySelector('#healthcare-provider').value;

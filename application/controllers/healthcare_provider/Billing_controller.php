@@ -40,7 +40,7 @@ class Billing_controller extends CI_Controller {
 			$net_bill = floatval($net_b);
             $last_bill = ($old_billing != null)? floatval($old_billing): 0;
             // var_dump("status",$status);
-            // var_dump("prev mbl",$prevmbl);
+            // var_dump("net_bill",$net_bill);
 
 			if($label === "loa"){
                 
@@ -59,7 +59,7 @@ class Billing_controller extends CI_Controller {
                     $previous_mbl = ($status) ? floatval($prevmbl) : $last_bill;
                    
                 }
-                
+                // var_dump('prev_mbl',$previous_mbl);
                 $used_mbl = floatval($loa_info['used_mbl']);
                 $max_mbl = floatval($loa_info['max_benefit_limit']);
                 // var_dump($previous_mbl);
@@ -211,7 +211,7 @@ class Billing_controller extends CI_Controller {
                 else{
                     $previous_mbl = ($status) ? floatval($prevmbl) : $last_bill;
                 }
-                
+                // var_dump('prev_mbl',$previous_mbl);
                 $used_mbl = floatval($noa_info['used_mbl']);
                 $max_mbl = floatval($noa_info['max_benefit_limit']);
                 // var_dump($previous_mbl);
@@ -1112,12 +1112,14 @@ class Billing_controller extends CI_Controller {
         $net_b = $this->input->post('net-bill', TRUE);
         $net_bill = floatval(str_replace(',','',$net_b));
         $hospitalBillData = $_POST['hospital_bill_data'];
-        $attending_doctor= $_POST['attending_doctors'];
+        $att_doc_list = $_POST['att_doc_list'];
+        $jsonData_attending_doctor= $_POST['attending_doctors'];
         $jsonData_item = $_POST['json_final_charges'];
         $jsonData_benefits = $_POST['benefits_deductions'];
         $itemize_bill = json_decode($jsonData_item);
         $benefits_deductions = json_decode($jsonData_benefits);
-        // var_dump("benefits",$benefits_deductions);
+        $attending_doctor = json_decode($jsonData_attending_doctor);
+        // var_dump("attending_doctor",$attending_doctor);
         // PDF File Upload
         //$config['upload_path'] = './uploads/pdf_bills/';
         $config['allowed_types'] = 'pdf';
@@ -1183,7 +1185,7 @@ class Billing_controller extends CI_Controller {
             //  var_dump("re upload",$check_bill);
             //  var_dump("done reupload",$check_bill)
             $existed = $this->billing_model->check_billing_loa($loa_id);
-            $bill_no = $this->billing_model->get_billing_no($loa_id);
+            $bill_no = $this->billing_model->get_billing_no($loa_id,'loa');
             $data = [
                 'billing_no'            => ($existed)? $bill_no['billing_no'] : $billing_no,
                 'billing_type'          => 'PDF Billing',
@@ -1202,7 +1204,7 @@ class Billing_controller extends CI_Controller {
                 'billed_on'             => date('Y-m-d'),
                 'status'                => 'Billed',
                 'extracted_txt'         => $hospitalBillData,
-                'attending_doctors'     => $attending_doctor,
+                'attending_doctors'     => $att_doc_list,
                 'request_date'          => $loa['request_date']
             ];   
 
@@ -1216,9 +1218,11 @@ class Billing_controller extends CI_Controller {
                     // var_dump("personal",$check_bill);
                     // var_dump("billing no",$billing_no);
             if($check_bill){
-                $this->billing_model->insert_old_billing($billing_no);
+                // var_dump('billing no',$billing_no);
+                $this->billing_model->insert_old_billing($bill_no['billing_no']);
+                // $this->billing_model->insert_old_itemized_bill($billing_id);
                 $data += ['done_re_upload' => 'Done',
-                        're_upload' => 3,
+                        're_upload' => 0,
                         ];
                        
                 $inserted = $this->billing_model->update_billing($data,$billing_no);
@@ -1255,8 +1259,63 @@ class Billing_controller extends CI_Controller {
                         //  var_dump("affected",$data1);
                         $this->billing_model->update_affected_billing($data1,$n['billing_no']);
                         $this->billing_model->update_member_remaining_balance($n['emp_id'], $mbl1);
-                    //    var_dump("affected",$data);
                     }
+                        $this->billing_model->update_member_remaining_balance($loa['emp_id'], $mbl);
+                        $this->billing_model->insert_old_itemized_bill($get_prev_mbl_by_bill_no['billing_id']);
+                        $this->billing_model->insert_old_benefits_deductions($get_prev_mbl_by_bill_no['billing_id']);
+                        $this->billing_model->insert_old_attending_doctors($get_prev_mbl_by_bill_no['billing_id']);
+                    // if(count($itemize_bill)){
+                        // $bill_id = $this->billing_model->get_billing_id($data['billing_no'],$data['emp_id'],$data['hp_id']);
+                        foreach($itemize_bill as $items){
+                                $item = [
+                                    'emp_id'        => $data['emp_id'], 
+                                    'billing_id'    => $get_prev_mbl_by_bill_no['billing_id'], 
+                                    'hp_id'         => $data['hp_id'], 
+                                    'labels'        => $items[0], 
+                                    'discription'   => $items[2], 
+                                    'qty'           => $items[3], 
+                                    'unit_price'    => $items[4], 
+                                    'amount'        => $items[5], 
+                                    'date'          => $items[1],
+                                ];
+                              
+                                $this->billing_model->update_itemized_bill($get_prev_mbl_by_bill_no['billing_id'],$item);
+                            }
+                        // }
+                        // var_dump('itemized_bill',$itemize_bill);
+                        // var_dump('billing_id',$get_prev_mbl_by_bill_no['billing_id']);
+                        // var_dump('benfits',$benefits_deductions);
+                        // var_dump('benfits count',count($benefits_deductions));
+                    // if(count($benefits_deductions)){
+                        foreach($benefits_deductions as $items){
+                            $item = [
+                                'emp_id'        => $data['emp_id'], 
+                                'billing_id'    => $get_prev_mbl_by_bill_no['billing_id'], 
+                                'loa_id'         => $loa_id, 
+                                'hp_id'         => $data['hp_id'], 
+                                'benefits_name'        => $items[0], 
+                                'benefits_amount'   => floatval(str_replace(array(',', '(', ')'), '', $items[1])),
+                            ];
+                            // var_dump($get_prev_mbl_by_bill_no['billing_id']);
+                            $this->billing_model->update_benefits_deductions($get_prev_mbl_by_bill_no['billing_id'],$item);
+                        }
+                    // }
+                    if($attending_doctor!==null){
+                        foreach($attending_doctor as $items){
+                            $item = [
+                                'billing_id'    =>  $get_prev_mbl_by_bill_no['billing_id'], 
+                                'emp_id'        => $data['emp_id'], 
+                                'hp_id'         => $data['hp_id'], 
+                                'doc_name'        => $items[0], 
+                                'fee'   => floatval(str_replace(array(','), '', $items[1])),
+                            ];
+                            // var_dump($get_prev_mbl_by_bill_no['billing_id']);
+                            $this->billing_model->update_attending_doctors($get_prev_mbl_by_bill_no['billing_id'],$item);
+                            
+                        }
+                    }
+                   
+                       
                 }
             }else{
                 
@@ -1290,13 +1349,26 @@ class Billing_controller extends CI_Controller {
                             $item = [
                                 'emp_id'        => $data['emp_id'], 
                                 'billing_id'    => $bill_id['billing_id'], 
-                                'loa_id'         => $data['hp_id'], 
+                                'loa_id'         => $loa_id, 
                                 'hp_id'         => $data['hp_id'], 
                                 'benefits_name'        => $items[0], 
                                 'benefits_amount'   => floatval(str_replace(array(',', '(', ')'), '', $items[1])),
                             ];
                             
                             $this->billing_model->benefits_deduction($item);
+            
+                        }
+                        
+                        foreach($attending_doctor as $items){
+                            $item = [
+                                'billing_id'    => $bill_id['billing_id'], 
+                                'emp_id'        => $data['emp_id'], 
+                                'hp_id'         => $data['hp_id'], 
+                                'doc_name'        => $items[0], 
+                                'fee'   => floatval(str_replace(array(','), '', $items[1])),
+                            ];
+                            
+                            $this->billing_model->attending_doctors($item);
             
                         }
 
@@ -1408,7 +1480,7 @@ class Billing_controller extends CI_Controller {
         $loa_noa = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
         $type = $this->uri->segment(6);
         $hcare_provider_id = $this->session->userdata('dsg_hcare_prov');
-        $bill_number = $this->billing_model->get_billing_no($loa_noa);
+        $bill_number = $this->billing_model->get_billing_no($loa_noa, $type);
         if($type == 'loa'){
             $loa = $this->billing_model->get_loa_to_bill($loa_noa);
             $prv_mbl = $this->billing_model->get_prev_mbl( $bill_number['billing_no'],$loa['emp_id']);
@@ -1416,6 +1488,7 @@ class Billing_controller extends CI_Controller {
             $data['loa_id'] = $this->uri->segment(5);
             $data['loa_no'] = $loa['loa_no'];
             $data['healthcard_no'] = $loa['health_card_no'];
+            // $data['remaining_balance'] =$prv_mbl;
             $data['remaining_balance'] =($prv_mbl != null)?$prv_mbl['after_remaining_bal']:$mbl_by_bill_no['before_remaining_bal'];
             $data['patient_name'] = $loa['first_name'].' '. $loa['middle_name'].' '. $loa['last_name'].' '.$loa['suffix'];
             $data['billing_no'] = $bill_number['billing_no'];
@@ -1423,7 +1496,9 @@ class Billing_controller extends CI_Controller {
             $data['re_upload'] = true;
             $data['prev_billing'] = $mbl_by_bill_no['pdf_bill'];
             $data['net_bill'] = $mbl_by_bill_no['net_bill'];
-
+            // var_dump('loa no',$loa_noa);
+            // var_dump('type',$type);
+            // var_dump('bill number',$bill_number);
             if($loa['loa_request_type'] === 'Diagnostic Test'){
                 $med_services = [];
                 $exploded_med_services = explode(";", $loa['med_services']);
@@ -1485,11 +1560,13 @@ class Billing_controller extends CI_Controller {
         $net_bill = floatval(str_replace(',','',$net_b));
         $take_home_meds = $this->input->post('med-services',true);
         $hospitalBillData = $_POST['hospital_bill_data'];
-        $attending_doctor= $_POST['attending_doctors'];
+        $att_doc_list = $_POST['att_doc_list'];
+        $jsonData_attending_doctor= $_POST['attending_doctors'];
         $jsonData_item = $_POST['json_final_charges'];
         $jsonData_benefits = $_POST['benefits_deductions'];
         $itemize_bill = json_decode($jsonData_item);
         $benefits_deductions = json_decode($jsonData_benefits);
+        $attending_doctor = json_decode($jsonData_attending_doctor);
 
         //  var_dump("items",$itemize_bill);
         // $hospitalBillArray = json_decode($hospitalBillData, true);
@@ -1513,6 +1590,8 @@ class Billing_controller extends CI_Controller {
                 'Prescription' => './uploads/prescription/'
             ];
     
+            // var_dump('billing_no',$billing_no);
+            // var_dump('check bill',$check_bill);
         // Iterate over each file input and perform the upload
             $file_inputs = ['pdf-file','itemize-pdf-file', 'Final-Diagnosis', 'Medical-Abstract', 'Prescription'];
             foreach ($file_inputs as $input_name) {
@@ -1526,18 +1605,21 @@ class Billing_controller extends CI_Controller {
                     continue;
                 }
 
-                if($check_bill !=0){
+                if($check_bill !== 0){
                     if ($input_name === 'Final-Diagnosis' && empty($_FILES[$input_name]['name'])) {
                         // Skip the 'Medical-Abstract' field if it is empty
                         continue;
                     }
                 }
-
+                // var_dump('file',$_FILES[$input_name]['name']);
+                // var_dump('input name',$input_name);
+                // var_dump('files',$_FILES[$input_name]['name']);
                 $config['upload_path'] = $file_paths[$input_name];
                 $this->upload->initialize($config);
-
+               
                 if (!$this->upload->do_upload($input_name)) {
                     $error = $this->upload->display_errors();
+                    // var_dump('error',$error);
                     if ($input_name !== 'Prescription' || !empty($error)) {
                         // If error occurred for required files or any other file, set error flag
                         $error_occurred = TRUE;
@@ -1565,7 +1647,7 @@ class Billing_controller extends CI_Controller {
             $get_prev_pf = ($get_prev_mbl_by_bill_no != null) ? $get_prev_mbl_by_bill_no['prescription_file'] : null;
             $result_charge = $this->get_personal_and_company_charge("noa",$noa_id,$net_bill,($check_bill !=0)? true : false, ($get_prev_mbl !=null)?$get_prev_mbl['after_remaining_bal']:$get_prev_balance,($old_billing !=null)? $old_billing['after_remaining_bal'] : null);
             $existed = $this->billing_model->check_billing_noa($noa_id);
-            $bill_no = $this->billing_model->get_billing_no($noa_id);
+            $bill_no = $this->billing_model->get_billing_no($noa_id,'noa');
             $data = [
                 'billing_no'            => ($existed) ?  $bill_no['billing_no'] : $billing_no,
                 'billing_type'          => 'PDF Billing',
@@ -1588,7 +1670,7 @@ class Billing_controller extends CI_Controller {
                 'billed_on'             => date('Y-m-d'),
                 'status'                => 'Billed',
                 'extracted_txt'         => $hospitalBillData,
-                'attending_doctors'      => $attending_doctor,
+                'attending_doctors'      => $att_doc_list,
                 'request_date'          => $noa['request_date']
             ];    
             $mbl = [
@@ -1599,6 +1681,7 @@ class Billing_controller extends CI_Controller {
             // var_dump("check bill",$check_bill);
             // var_dump("billing no",$billing_no);
             if($check_bill){
+                // var_dump('get_prev_mbl_by_bill_no',$get_prev_mbl_by_bill_no);
                 $this->billing_model->insert_old_billing($billing_no);
                 $data += ['done_re_upload' => 'Done',
                 're_upload' => 0,
@@ -1634,11 +1717,62 @@ class Billing_controller extends CI_Controller {
                                         'status'                => 'Pending'];
                             $this->billing_model->insert_cash_advance($advances);
                         }
-                        //  var_dump("affected",$data1);
+                        //  var_dump("mbl1",$mbl1);
                         $this->billing_model->update_affected_billing($data1,$n['billing_no']);
                         $this->billing_model->update_member_remaining_balance($n['emp_id'], $mbl1);
                     //    var_dump("affected",$data);
                     }
+                    $this->billing_model->update_member_remaining_balance($noa['emp_id'], $mbl);
+                    $this->billing_model->insert_old_itemized_bill($get_prev_mbl_by_bill_no['billing_id']);
+                    $this->billing_model->insert_old_benefits_deductions($get_prev_mbl_by_bill_no['billing_id']);
+                    $this->billing_model->insert_old_attending_doctors($get_prev_mbl_by_bill_no['billing_id']);
+                    // if(count($itemize_bill)){
+                        // $bill_id = $this->billing_model->get_billing_id($data['billing_no'],$data['emp_id'],$data['hp_id']);
+                        foreach($itemize_bill as $items){
+                                $item = [
+                                    'emp_id'        => $data['emp_id'], 
+                                    'billing_id'    => $get_prev_mbl_by_bill_no['billing_id'], 
+                                    'hp_id'         => $data['hp_id'], 
+                                    'labels'        => $items[0], 
+                                    'discription'   => $items[2], 
+                                    'qty'           => $items[3], 
+                                    'unit_price'    => $items[4], 
+                                    'amount'        => $items[5], 
+                                    'date'          => $items[1],
+                                ];
+                
+                                $this->billing_model->update_itemized_bill($get_prev_mbl_by_bill_no['billing_id'],$item);
+                            }
+                        // }
+                       
+                        // if(count($benefits_deductions)){
+                            foreach($benefits_deductions as $items){
+                                $item = [
+                                    'emp_id'        => $data['emp_id'], 
+                                    'billing_id'    => $get_prev_mbl_by_bill_no['billing_id'], 
+                                    'noa_id'         => $noa_id, 
+                                    'hp_id'         => $data['hp_id'], 
+                                    'benefits_name'        => $items[0], 
+                                    'benefits_amount'   => floatval(str_replace(array(',', '(', ')'), '', $items[1])),
+                                ];
+                                // var_dump($get_prev_mbl_by_bill_no['billing_id']);
+                                $this->billing_model->update_benefits_deductions($get_prev_mbl_by_bill_no['billing_id'],$item);
+                                
+                            }
+
+                            foreach($attending_doctor as $items){
+                                $item = [
+                                    'billing_id'    =>  $get_prev_mbl_by_bill_no['billing_id'], 
+                                    'emp_id'        => $data['emp_id'], 
+                                    'hp_id'         => $data['hp_id'], 
+                                    'doc_name'        => $items[0], 
+                                    'fee'   => floatval(str_replace(array(','), '', $items[1])),
+                                ];
+                                // var_dump($get_prev_mbl_by_bill_no['billing_id']);
+                                $this->billing_model->update_attending_doctors($get_prev_mbl_by_bill_no['billing_id'],$item);
+                                
+                            }
+                        // }
                 }
 
             }else{
@@ -1671,13 +1805,26 @@ class Billing_controller extends CI_Controller {
                             $item = [
                                 'emp_id'        => $data['emp_id'], 
                                 'billing_id'    => $bill_id['billing_id'], 
-                                'loa_id'         => $data['hp_id'], 
+                                'noa_id'         => $noa_id, 
                                 'hp_id'         => $data['hp_id'], 
                                 'benefits_name'        => $items[0], 
                                 'benefits_amount'   => floatval(str_replace(array(',', '(', ')'), '', $items[1])),
                             ];
             
                             $this->billing_model->benefits_deduction($item);
+            
+                        }
+
+                        foreach($attending_doctor as $items){
+                            $item = [
+                                'billing_id'    => $bill_id['billing_id'], 
+                                'emp_id'        => $data['emp_id'], 
+                                'hp_id'         => $data['hp_id'], 
+                                'doc_name'        => $items[0], 
+                                'fee'   => floatval(str_replace(array(','), '', $items[1])),
+                            ];
+                            
+                            $this->billing_model->attending_doctors($item);
             
                         }
 

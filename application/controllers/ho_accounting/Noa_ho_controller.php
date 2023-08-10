@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Noa_ho_controller extends CI_Controller {
 
-    public function __construct() {
+    function __construct() {
         parent::__construct();
         $this->load->model('ho_accounting/Noa_model');
         $user_role = $this->session->userdata('user_role');
@@ -46,12 +46,12 @@ class Noa_ho_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->Noa_model->count_all($status),
 			"recordsFiltered" => $this->Noa_model->count_filtered($status),
 			"data" => $data,
-		);
+		];
 
 		echo json_encode($output);
     }
@@ -89,12 +89,12 @@ class Noa_ho_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->Noa_model->count_all_billed($status),
 			"recordsFiltered" => $this->Noa_model->count_filtered_billed($status),
 			"data" => $data,
-		);
+		];
 
 		echo json_encode($output);
 	}
@@ -132,12 +132,12 @@ class Noa_ho_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->Noa_model->count_all($status),
 			"recordsFiltered" => $this->Noa_model->count_filtered($status),
 			"data" => $data,
-		);
+		];
 
 		echo json_encode($output);
     }

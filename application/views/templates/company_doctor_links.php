@@ -33,6 +33,26 @@
                 </a>
               </li>
 
+              <li class="sidebar-item <?php echo $this->uri->segment(2) == 'override' ? 'selected' : ''; ?>">
+                <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false" title="Request for Zero MBL Employee">
+                  <i class="mdi mdi-file-multiple"></i>Request LOA/NOA
+                </a>
+                <ul aria-expanded="false" class="collapse first-level">
+                  <li class="sidebar-item">
+                    <a href="JavaScript:void(0)" onclick="LOAManagersKey()" data-bs-toggle="tooltip"  class="sidebar-link"
+                      ><i class="mdi mdi-note-plus"></i
+                      ><span class="hide-menu ls-1">LOA Requisition</span>
+                    </a>
+                  </li>
+                  <li class="sidebar-item">
+                    <a href="JavaScript:void(0)" onclick="NOAManagersKey()" data-bs-toggle="tooltip"  class="sidebar-link">
+                      <i class="mdi mdi-shape-rectangle-plus"></i><span class="hide-menu ls-1">NOA Requisition</span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+
               <li class="sidebar-item 
               <?php echo $this->uri->segment(2) == 'loa' ? 'selected' : ''; ?>
               ">
@@ -58,26 +78,6 @@
                   <span class="hide-menu ls-1">NOA Requests</span>
                 </a>
               </li>
-
-              <li class="sidebar-item <?php echo $this->uri->segment(2) == 'override' ? 'selected' : ''; ?>">
-                <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false" title="Request for Zero MBL Employee">
-                  <i class="mdi mdi-file-multiple"></i>Overide LOA/NOA
-                </a>
-                <ul aria-expanded="false" class="collapse first-level">
-                  <li class="sidebar-item">
-                    <a href="JavaScript:void(0)" onclick="LOAManagersKey()" data-bs-toggle="tooltip"  class="sidebar-link"
-                      ><i class="mdi mdi-note-plus"></i
-                      ><span class="hide-menu ls-1">LOA Requisition</span>
-                    </a>
-                  </li>
-                  <li class="sidebar-item">
-                    <a href="JavaScript:void(0)" onclick="NOAManagersKey()" data-bs-toggle="tooltip"  class="sidebar-link">
-                      <i class="mdi mdi-shape-rectangle-plus"></i><span class="hide-menu ls-1">NOA Requisition</span>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-
              
               <li class="sidebar-item">
                  <!-- $account_settings_url is defined in the header.php file -->

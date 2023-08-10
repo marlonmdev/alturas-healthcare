@@ -8,6 +8,12 @@ class Loa_model extends CI_Model {
     $query = $this->db->get('loa_requests');
     return $query->row_array();
   }
+
+  function db_get_company_doctor($doctor_id) {
+    $query = $this->db->get_where('company_doctors', ['doctor_id' => $doctor_id]);
+    return $query->row_array();
+  }
+
 //end
   //==================================================
   //LETTER OF AUTHORIZATION

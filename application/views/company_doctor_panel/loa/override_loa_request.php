@@ -184,16 +184,7 @@
                 <div class="col-lg-6 col-sm-12 col-lg-offset-3 mb-2" id="req-physician-div">
                   <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Requesting Physician</label>
                   <select class="form-select" id="requesting-physician" name="requesting-physician">
-                    <option value="">Select Requesting Physician</option>
-                    <?php
-                    if (!empty($doctors)) :
-                      foreach ($doctors as $doctor) :
-                    ?>
-                        <option value="<?= $doctor['doctor_id']; ?>"><?= $doctor['doctor_name']; ?></option>
-                    <?php
-                      endforeach;
-                    endif;
-                    ?>
+                    <option value="<?php echo $doctor['doctor_id']; ?>"><?php echo $doctor['doctor_name']; ?></option>
                   </select>
                   <em id="requesting-physician-error" class="text-danger"></em>
                 </div>

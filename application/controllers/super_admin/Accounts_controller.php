@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Accounts_controller extends CI_Controller {
 
-	public function __construct() {
+	function __construct() {
 		parent::__construct();
 		$this->load->model('super_admin/accounts_model');
 		$user_role = $this->session->userdata('user_role');
@@ -13,7 +13,7 @@ class Accounts_controller extends CI_Controller {
 		}
 	}
 
-	public function fetch_all_accounts() {
+	function fetch_all_accounts() {
 		$this->security->get_csrf_hash();
 		$list = $this->accounts_model->get_datatables();
 		$data = [];
@@ -74,7 +74,7 @@ class Accounts_controller extends CI_Controller {
 	}
 
 	// Start of Register User Account
-	public function register_user_account_validation() {
+	function register_user_account_validation() {
 		$this->security->get_csrf_hash();
 		$input_post = $this->input->post(NULL, TRUE); // returns all POST items with XSS filter
 		$emp_id = $this->input->post('emp-id') != '' ? $this->input->post('emp-id') : 'n/a';
@@ -122,7 +122,7 @@ class Accounts_controller extends CI_Controller {
 	}
 	// End of Register User Account
 
-	public function insert_user_account($emp_id, $input_post) {
+	function insert_user_account($emp_id, $input_post) {
 		$post_data = [
 			'emp_id' => $emp_id,
 			'full_name' => ucwords(strip_tags($input_post['full-name'])),
@@ -147,7 +147,7 @@ class Accounts_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	public function check_username_exist($username) {
+	function check_username_exist($username) {
 		$exists = $this->accounts_model->db_check_username($username);
 		if (!$exists) {
 			return true;
@@ -157,7 +157,7 @@ class Accounts_controller extends CI_Controller {
 		}
 	}
 
-	public function get_user_account_details() {
+	function get_user_account_details() {
 		$user_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
 		$row = $this->accounts_model->db_get_user_by_id($user_id);
 		// get user designated hospital if exist
@@ -192,7 +192,7 @@ class Accounts_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	public function edit_user_account_details() {
+	function edit_user_account_details() {
 		$user_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
 		$row = $this->accounts_model->db_get_user_by_id($user_id);
 		$response = [
@@ -210,7 +210,7 @@ class Accounts_controller extends CI_Controller {
 	}
 
 
-	public function update_user_account_validation() {
+	function update_user_account_validation() {
 		/* The below code is a validation for the user account update. */
 		$this->security->get_csrf_hash();
 		$input_post = $this->input->post(NULL, TRUE);
@@ -252,7 +252,7 @@ class Accounts_controller extends CI_Controller {
 		}
 	}
 
-	public function db_update_user_account($user_id, $input_post, $dsg_hcare_prov) {
+	function db_update_user_account($user_id, $input_post, $dsg_hcare_prov) {
 		/* Updating the user details in the database. */
 		$post_data = [
 			'full_name' => ucwords($input_post['full-name']),
@@ -275,7 +275,7 @@ class Accounts_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	public function change_user_password() {
+	function change_user_password() {
 		$token = $this->security->get_csrf_hash();
 		$user_id = $this->input->post('user-id');
 		$new_password = strip_tags($this->input->post('new-password'));
@@ -310,7 +310,7 @@ class Accounts_controller extends CI_Controller {
 	}
 
 
-	public function change_user_account_status() {
+	function change_user_account_status() {
 		$token = $this->security->get_csrf_hash();
 		$user_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
 		$this->load->model('super_admin/accounts_model');
@@ -346,7 +346,7 @@ class Accounts_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	public function reset_user_password() {
+	function reset_user_password() {
 		$token = $this->security->get_csrf_hash();
 		$user_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
 		$default_password = $this->config->item('def_user_password');
@@ -372,7 +372,7 @@ class Accounts_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	public function delete_user_account() {
+	function delete_user_account() {
 		$token = $this->security->get_csrf_hash();
 		$user_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
 		$deleted = $this->accounts_model->db_delete_user_account($user_id);

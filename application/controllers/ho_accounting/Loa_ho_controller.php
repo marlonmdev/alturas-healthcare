@@ -4,7 +4,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Loa_ho_controller extends CI_Controller
 {
 
-    public function __construct() {
+    function __construct() {
         parent::__construct();
         $this->load->model('ho_accounting/Loa_model');
         $user_role = $this->session->userdata('user_role');

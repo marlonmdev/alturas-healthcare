@@ -18,7 +18,7 @@ class Applicants_controller extends CI_Controller {
 		$list = $this->applicants_model->get_datatables();
 		$data = [];
 		foreach ($list as $member) {
-			$row = array();
+			$row = [];
 			$employee_id = $member['emp_id'];
 			$member_id = $this->myhash->hasher($member['app_id'], 'encrypt');
 			// split employee id number through the dash(-) separator

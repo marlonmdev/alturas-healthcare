@@ -7,7 +7,7 @@
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Head Office Accounting</li>
-              <li class="breadcrumb-item active" aria-current="page">Non Accredited Hospital</li>
+              <li class="breadcrumb-item active" aria-current="page">Non-Affiliated Hospital</li>
             </ol>
           </nav>
         </div>

@@ -35,7 +35,7 @@
 
               <li class="sidebar-item <?php echo $this->uri->segment(2) == 'override' ? 'selected' : ''; ?>">
                 <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false" title="Request for Zero MBL Employee">
-                  <i class="mdi mdi-file-multiple"></i>Request LOA/NOA
+                  <i class="mdi mdi-file-multiple"></i>Request for LOA/NOA
                 </a>
                 <ul aria-expanded="false" class="collapse first-level">
                   <li class="sidebar-item">
@@ -51,7 +51,6 @@
                   </li>
                 </ul>
               </li>
-
 
               <li class="sidebar-item 
               <?php echo $this->uri->segment(2) == 'loa' ? 'selected' : ''; ?>
@@ -101,4 +100,6 @@
                   <i class="mdi mdi-power"></i>
                   <span class="hide-menu ls-1">Logout</span>
                 </a>
-              </li> 
+              </li>
+ 
+  

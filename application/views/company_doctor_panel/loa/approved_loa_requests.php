@@ -111,7 +111,7 @@
                     <th class="fw-bold" style="color: white">TYPE OF REQUEST</th>
                     <th class="fw-bold" style="color: white">HEALTHCARE PROVIDER</th>
                     <th class="fw-bold" style="color: white">RX FILE</th>
-                    <th class="fw-bold" style="color: white">SOA</th>
+                    <!-- <th class="fw-bold" style="color: white">SOA</th> -->
                     <th class="fw-bold" style="color: white">DATE OF EXPIRATION</th>
                     <th class="fw-bold" style="color: white">STATUS</th>
                     <th class="fw-bold" style="color: white">ACTION</th>
@@ -184,7 +184,7 @@
         "targets": [4, 6, 7], // numbering column
         "orderable": false, //set not orderable
       }, ],
-      responsive: true,
+      responsive: false,
       fixedHeader: true,
     });
 

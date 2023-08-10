@@ -336,6 +336,11 @@ class Patient_controller extends CI_Controller {
 		
 		//  var_dump("row",$row);
 		$billing = $this->billing_model->get_loa_billing_info($row['loa_id']); 
+		$attending_doctors =[];
+		$docs = $this->billing_model->get_attending_doctors($billing['billing_id'],$billing['emp_id']);
+		foreach($docs as $doctors){
+			array_push($attending_doctors,$doctors["doc_name"]);
+		}
 		// var_dump($billing['attending_doctors']);
 		$paid_loa = $this->loa_model->paid_loa(isset($billing['details_no'])?$billing['details_no']:null);
 		$doctor_name = "";
@@ -412,7 +417,7 @@ class Patient_controller extends CI_Controller {
 			'paid_on' => isset($paid_loa['date_add'])?date("F d, Y", strtotime($paid_loa['date_add'])):"",
 			'net_bill' => isset($billing['net_bill'])?number_format($billing['net_bill'],2, '.',','):"",
 			'paid_amount' =>isset($paid_loa['amount_paid'])?number_format($paid_loa['amount_paid'],2,'.',','):"",
-			'attending_doctors' =>isset($billing['attending_doctors'])?explode(';', $billing['attending_doctors']): ""
+			'attending_doctors' =>isset($attending_doctors)?$attending_doctors: ""
 		];
 		echo json_encode($response);
 	}
@@ -422,10 +427,11 @@ class Patient_controller extends CI_Controller {
 		$row = $this->noa_model->db_get_noa_info($noa_id);
 		$billing = $this->billing_model->get_noa_billing_info($noa_id);
 		$paid_noa = $this->noa_model->paid_noa(isset($billing['details_no'])?$billing['details_no']:null);
-		// var_dump("noa ",$row);
-		// var_dump("billing",$billing);
-		// var_dump("paid noa",$paid_noa);
-		// $doctor_name = "";
+		$attending_doctors =[];
+		$docs = $this->billing_model->get_attending_doctors($billing['billing_id'],$billing['emp_id']);
+		foreach($docs as $doctors){
+			array_push($attending_doctors,$doctors["doc_name"]);
+		}
 		if ($row['approved_by']) {
 			$doc = $this->noa_model->db_get_doctor_name_by_id($row['approved_by']);
 			$doctor_name = $doc['doctor_name'];
@@ -488,7 +494,7 @@ class Patient_controller extends CI_Controller {
 			'paid_on' => isset($paid_noa['date_add'])?date("F d, Y", strtotime($paid_noa['date_add'])):"",
 			'net_bill' => isset($billing['net_bill'])?number_format($billing['net_bill'],2,'.',','):"",
 			'paid_amount' =>isset($paid_noa['amount_paid'])?number($paid_noa['amount_paid'],2,'.',','):"",
-			'attending_doctors' =>isset($billing['attending_doctors'])?explode(';', $billing['attending_doctors']):""
+			'attending_doctors' =>isset($attending_doctors)?$attending_doctors: ""
 		);
 		// var_dump("response",$response);
 		echo json_encode($response);

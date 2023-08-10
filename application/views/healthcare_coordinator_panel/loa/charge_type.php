@@ -114,7 +114,7 @@
 
             <div class="col pt-3 pb-3">
               <label class="fs-5 colored-label">Hospital Bill :</label>
-              <input class="form-control" id="hospital_bill" readonly>
+              <input class="form-control" id="hospital_bill">
             </div>
 
             <div class="col pt-3 pb-3">

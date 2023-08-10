@@ -11,3 +11,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |	https://codeigniter.com/userguide3/general/hooks.html
 |
 */
+// $hook['post_controller_constructor '][] = array(
+//     'class'    => 'Notification_update',
+//     'function' => 'updateSpan',
+//     'filename' => 'Notification_update.php',
+//     'filepath' => 'hooks',
+// );

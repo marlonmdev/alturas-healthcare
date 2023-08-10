@@ -157,7 +157,7 @@
                 "targets": [4, 6, 7], // numbering column
                 "orderable": false, //set not orderable
             }, ],
-            responsive: true,
+            responsive: false,
             fixedHeader: true,
         });
 

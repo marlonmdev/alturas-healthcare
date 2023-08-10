@@ -116,9 +116,9 @@
 <script type="text/javascript">
   const baseUrl = `<?php echo base_url(); ?>`;
   const mbl = "<?=$mbl['remaining_balance']?>";
+  let is_accredited = false;
   $(document).ready(function() {
     $('#submit').prop('disabled',false); 
-
     $('#admission-date').flatpickr({
       dateFormat: "Y-m-d"
     });
@@ -158,6 +158,7 @@
     $('#memberNoaRequestForm').submit(function(event) {
       event.preventDefault();
         let $data = new FormData($(this)[0]);
+        $data.append('is_accredited',is_accredited);
         $.ajax({
           type: "post",
           url: $(this).attr('action'),

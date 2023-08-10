@@ -65,7 +65,7 @@ class Pages_controller extends CI_Controller {
 		$data['pending'] = $this->loa_model->db_get_status_pending($emp_id);
 		$mbl = $this->loa_model->db_get_mbl($emp_id);
 		$get_pac_loa = $this->loa_model->get_pac_loa($emp_id); 
-
+		$hospital_bill = $this->loa_model->get_hospital_bill($emp_id);
 		$med_services = 0;
     
         foreach ($get_pac_loa as $loa) :
@@ -83,7 +83,7 @@ class Pages_controller extends CI_Controller {
 			endforeach;
 
         endforeach;
-		$r_mbl = floatval($mbl['remaining_balance'])-floatval($med_services);
+		$r_mbl = floatval($mbl['remaining_balance'])-floatval($med_services+$hospital_bill);
 		$data['mbl'] =  number_format(($r_mbl > 1) ? $r_mbl : 0,2);
 		//var_dump($data['mbl']);
 		$this->load->view('templates/header', $data);

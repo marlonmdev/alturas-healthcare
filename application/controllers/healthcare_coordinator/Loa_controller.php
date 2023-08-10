@@ -526,6 +526,7 @@ class Loa_controller extends CI_Controller {
 				$data = [
 					'work_related' => $charge_type,
 					'percentage' => $percentage,
+					'hospital_bill' => str_replace(array("₱", ","), "", $this->input->post('hospital_bill', TRUE)),
 					'spot_report_file' => isset($uploaded_files['spot-report']) ? $uploaded_files['spot-report']['file_name'] : '',
 					'incident_report_file' => isset($uploaded_files['incident-report']) ? $uploaded_files['incident-report']['file_name'] : '',
 					'police_report_file' => isset($uploaded_files['police-report']) ? $uploaded_files['police-report']['file_name'] : '',

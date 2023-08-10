@@ -408,4 +408,15 @@ class Loa_model extends CI_Model {
       $this->db->where('emp_id', $emp_id);
       return $this->db->update('max_benefit_limits', $data); 
     }
+    public function get_count_pending()
+    {
+        $this->db->select('COUNT(*) as count');
+        $this->db->from('loa_requests');
+        $this->db->where('status', 'Pending');
+        $query = $this->db->get();
+        $result= $query->row();
+        $count = $result->count;
+        
+        return $count;
+    }
 }

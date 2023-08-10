@@ -27,6 +27,7 @@ class Setup_controller extends CI_Controller {
         $value['hp_id'],
         $value['hp_name'],
         $value['hp_type'],
+        ($value['accredited'] === "1")?"Affiliated":"Non-Affiliated",
         $value['hp_address'],
         $actions
       ];
@@ -38,6 +39,7 @@ class Setup_controller extends CI_Controller {
     $this->security->get_csrf_hash();
     $input_post = $this->input->post();
     $this->form_validation->set_rules('hp-type', 'Type', 'required');
+    $this->form_validation->set_rules('hp-category', 'Category', 'required');
     $this->form_validation->set_rules('hp-name', 'Name', 'trim|required|callback_check_healthcare_provider_exist');
     $this->form_validation->set_rules('hp-address', 'Address', 'trim|required');
     $this->form_validation->set_rules('hp-contact', 'Contact Number', 'trim|required');
@@ -46,6 +48,7 @@ class Setup_controller extends CI_Controller {
       $response = [
         'status' => 'error',
         'type_error' => form_error('hp-type'),
+        'category_error' => form_error('hp-category'),
         'name_error' => form_error('hp-name'),
         'address_error' =>  form_error('hp-address'),
         'contact_error' => form_error('hp-contact')
@@ -53,6 +56,7 @@ class Setup_controller extends CI_Controller {
     } else {
       $post_data = [
         'hp_type' => strip_tags($input_post['hp-type']),
+        'accredited' => strip_tags($input_post['hp-category']),
         'hp_name' => ucwords(strip_tags($input_post['hp-name'])),
         'hp_address' => strip_tags($input_post['hp-address']),
         'hp_contact' => strip_tags($input_post['hp-contact']),

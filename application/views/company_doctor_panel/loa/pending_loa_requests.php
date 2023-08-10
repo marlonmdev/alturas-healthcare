@@ -183,7 +183,7 @@
         "targets": [], // numbering column
         "orderable": false,
       }, ],
-      responsive: true,
+      responsive: false,
       fixedHeader: true,
     });
 

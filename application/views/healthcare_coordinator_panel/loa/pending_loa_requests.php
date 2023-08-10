@@ -203,7 +203,7 @@
       })
     });
 
-
+    number_validator();
   });
 
   function viewImage(path) {
@@ -425,6 +425,40 @@
           }
         },
       }
+    });
+  }
+
+  const number_validator = () => {
+	$('#hospital_bill').on('keydown',function(event){
+		let value = $('#hospital-bill').val();
+		let length  = $('#hospital-bill').val().length;
+		const key = event.key;
+		console.log('key',key);
+		console.log('length',length);
+		if(length+1 <=1 && (key === '0'|| key === '.' || key ==='')){
+		  event.preventDefault();
+		}
+		if(/^[a-zA-Z]$/.test(key)) {
+		  event.preventDefault(); 
+		}
+		if(/^[!@#$%^&*()\-_=+[\]{};':"\\|,<>/?`~]$/.test(key)) {
+		  event.preventDefault(); 
+		}
+		if(value.match(/\./) && /\./.test(key)) {
+		  event.preventDefault(); 
+		}
+		if(/\s/.test(key)){
+		  event.preventDefault();
+		}
+		  
+	  });
+
+    $('#hospital-bill').on('keyup',function(event){
+      let val = event.key;
+      if(val!=='.' && $(this).val() !==''){
+        $(this).val(Number($(this).val().replace(/,/g,'')).toLocaleString(2));
+      }
+      
     });
   }
 </script>

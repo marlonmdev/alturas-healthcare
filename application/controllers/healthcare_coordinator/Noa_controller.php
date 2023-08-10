@@ -671,8 +671,10 @@ class Noa_controller extends CI_Controller {
 			// }
 
 			if($bill['accredited']=='0'){
+				if($bill['st'])
 				$pdf_bill = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $bill['pdf_bill'] . '\')"><i class="mdi mdi-file-image fs-4 text-danger"></i></a>';
 			}else{
+
 				$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View SOA"><i class="mdi mdi-file-pdf fs-4 text-danger"></i></a>';
 			}
 

@@ -16,7 +16,7 @@ class Noa_controller extends CI_Controller {
   function fetch_pending_noa_requests() {
 		$this->security->get_csrf_hash();
 		$status = 'Pending';
-    $hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
+    	$hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
 		$list = $this->noa_model->get_datatables($status, $hcare_provider_id);
 		$data = [];
 		foreach ($list as $noa) {
@@ -53,12 +53,12 @@ class Noa_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->noa_model->count_all($status, $hcare_provider_id),
 			"recordsFiltered" => $this->noa_model->count_filtered($status, $hcare_provider_id),
 			"data" => $data,
-		);
+		];
 
 		echo json_encode($output);
 	}
@@ -127,12 +127,12 @@ class Noa_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->noa_model->count_all($status, $hcare_provider_id),
 			"recordsFiltered" => $this->noa_model->count_filtered($status, $hcare_provider_id),
 			"data" => $data,
-		);
+		];
 
 		echo json_encode($output);
 	}
@@ -171,12 +171,12 @@ class Noa_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->noa_model->count_all($status, $hcare_provider_id),
 			"recordsFiltered" => $this->noa_model->count_filtered($status, $hcare_provider_id),
 			"data" => $data,
-		);
+		];
 
 		echo json_encode($output);
 	}
@@ -215,12 +215,12 @@ class Noa_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->noa_model->count_all($status, $hcare_provider_id),
 			"recordsFiltered" => $this->noa_model->count_filtered($status, $hcare_provider_id),
 			"data" => $data,
-		);
+		];
 
 		echo json_encode($output);
 	}
@@ -262,12 +262,12 @@ class Noa_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->noa_model->count_all($status, $hcare_provider_id),
 			"recordsFiltered" => $this->noa_model->count_filtered($status, $hcare_provider_id),
 			"data" => $data,
-		);
+		];
 
 		echo json_encode($output);
 	}
@@ -299,7 +299,7 @@ class Noa_controller extends CI_Controller {
 			$req_stat = $row['status'];
 		}
 
-		$response = array(
+		$response = [
 			'status' => 'success',
 			'token' => $this->security->get_csrf_hash(),
 			'noa_id' => $row['noa_id'],
@@ -327,7 +327,7 @@ class Noa_controller extends CI_Controller {
 			'disapproved_on' => date("F d, Y", strtotime($row['disapproved_on'])),
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
-		);
+		];
 
 		echo json_encode($response);
 	}

@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Noa_controller extends CI_Controller {
 
-	public function __construct() {
+	function __construct() {
 		parent::__construct();
 		$this->load->model('company_doctor/noa_model');
 		$user_role = $this->session->userdata('user_role');
@@ -69,12 +69,12 @@ class Noa_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->noa_model->count_all($status),
 			"recordsFiltered" => $this->noa_model->count_filtered($status),
 			"data" => $data,
-		);
+		];
 
 		echo json_encode($output);
 	}
@@ -106,12 +106,12 @@ class Noa_controller extends CI_Controller {
 				$custom_actions .= '';
 			}
 
-			$view_receipt = '';
-			if($noa['hospital_receipt']){
-				$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $noa['hospital_receipt'] . '\')"><strong>View</strong></a>';
-			}else{
-				$view_receipt ='None';
-			}
+			// $view_receipt = '';
+			// if($noa['hospital_receipt']){
+			// 	$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $noa['hospital_receipt'] . '\')"><strong>View</strong></a>';
+			// }else{
+			// 	$view_receipt ='None';
+			// }
 			// shorten name of values from db if its too long for viewing and add ...
 			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];
 
@@ -121,18 +121,18 @@ class Noa_controller extends CI_Controller {
 			$row[] = $admission_date;
 			$row[] = $short_hosp_name;
 			$row[] = $expiry_date;
-			$row[] = $view_receipt;
+			// $row[] = $view_receipt;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->noa_model->count_all($status),
 			"recordsFiltered" => $this->noa_model->count_filtered($status),
 			"data" => $data,
-		);
+		];
 
 		echo json_encode($output);
 	}
@@ -200,12 +200,12 @@ class Noa_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->noa_model->count_all($status),
 			"recordsFiltered" => $this->noa_model->count_filtered($status),
 			"data" => $data,
-		);
+		];
 
 		echo json_encode($output);
 	}
@@ -249,12 +249,12 @@ class Noa_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->noa_model->count_all($status),
 			"recordsFiltered" => $this->noa_model->count_filtered($status),
 			"data" => $data,
-		);
+		];
 
 		echo json_encode($output);
 	}
@@ -298,12 +298,12 @@ class Noa_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->noa_model->count_all_billed($status),
 			"recordsFiltered" => $this->noa_model->count_filtered_billed($status),
 			"data" => $data,
-		);
+		];
 
 		echo json_encode($output);
 	}
@@ -358,7 +358,7 @@ class Noa_controller extends CI_Controller {
 			
 		endforeach;
 		$med_serv = implode(' ', $ct_array);
-		$response = array(
+		$response = [
 			'status' => 'success',
 			'token' => $this->security->get_csrf_hash(),
 			'noa_id' => $row['noa_id'],
@@ -390,12 +390,12 @@ class Noa_controller extends CI_Controller {
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
 			'billed_on' => $billed_on,
 			'paid_on' => $paid_on,
-		);
+		];
 
 		echo json_encode($response);
 	}
 
-	// public function approve_noa_request() {
+	// function approve_noa_request() {
 	// 	$token = $this->security->get_csrf_hash();
 	// 	$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 	// 	$approved_by = $this->session->userdata('doctor_id');
@@ -408,7 +408,7 @@ class Noa_controller extends CI_Controller {
 	// 	}
 	// 	echo json_encode($response);
 	// }
-	public function get_personal_and_company_charge($noa_id,$old_billing) {
+	function get_personal_and_company_charge($noa_id,$old_billing) {
         
         $noa_info = $this->noa_model->db_get_noa_info($noa_id);
        
@@ -539,13 +539,13 @@ class Noa_controller extends CI_Controller {
 			}
 		
             
-            $data = array(
+            $data = [
                 'company_charge' => $company_charge,
                 'personal_charge' => $personal_charge,
                 'remaining_balance' =>$rmbl = $remaining_mbl,
                 'used_mbl' =>  (($max_mbl-$rmbl)>0)? $max_mbl-$rmbl : $max_mbl,
                 'previous_mbl' => $previous_mbl,
-            );
+			];
 			return  $data;
 	}
 
@@ -670,7 +670,7 @@ class Noa_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	public function disapprove_noa_request() {
+	function disapprove_noa_request() {
 		$token = $this->security->get_csrf_hash();
 		$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 		$disapprove_reason = $this->input->post('disapprove-reason');
@@ -678,18 +678,18 @@ class Noa_controller extends CI_Controller {
 		$disapproved_on = date("Y-m-d");
 		$this->form_validation->set_rules('disapprove-reason', 'Reason for Disapproval', 'required|max_length[500]');
 		if ($this->form_validation->run() == FALSE) {
-			$response = array(
+			$response = [
 				'token' => $token,
 				'status' => 'error',
 				'disapprove_reason_error' => form_error('disapprove-reason'),
-			);
+			];
 			echo json_encode($response);
 		} else {
 			$disapproved = $this->noa_model->db_disapprove_noa_request($noa_id, $disapproved_by, $disapprove_reason, $disapproved_on);
 			if (!$disapproved) {
-				$response = array('token' => $token, 'status' => 'error', 'message' => 'Unable to Disapprove NOA Request!');
+				$response = ['token' => $token, 'status' => 'error', 'message' => 'Unable to Disapprove NOA Request!'];
 			}
-			$response = array('token' => $token, 'status' => 'success', 'message' => 'NOA Request Disapproved Successfully');
+			$response = ['token' => $token, 'status' => 'success', 'message' => 'NOA Request Disapproved Successfully'];
 			echo json_encode($response);
 		}
 	}

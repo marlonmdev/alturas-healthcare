@@ -183,7 +183,7 @@ class Transaction_controller extends CI_Controller {
 	//END ===============================================================
 
 	//MEMBERS ==================================================
-	public function members(){
+	function members(){
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
 		$this->load->view('ho_iad_panel/member/member');
@@ -194,9 +194,9 @@ class Transaction_controller extends CI_Controller {
 		$this->security->get_csrf_hash();
 		$approval_status = 'Paid';
 		$list = $this->transaction_model->get_datatables($approval_status);
-		$data = array();
+		$data = [];
 		foreach ($list as $member){
-			$row = array();
+			$row = [];
 			$member_id = $this->myhash->hasher($member['member_id'], 'encrypt');
 			$full_name = $member['first_name'] . ' ' . $member['middle_name'] . ' ' . $member['last_name'] . ' ' . $member['suffix'];
 			$view_url = base_url() . 'head-office-iad/transaction/view_information/' . $member_id;
@@ -215,16 +215,16 @@ class Transaction_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->transaction_model->count_all($approval_status),
 			"recordsFiltered" => $this->transaction_model->count_filtered($approval_status),
 			"data" => $data,
-		);
+		];
 		echo json_encode($output);
 	}
 
-	public function view_information(){
+	function view_information(){
 		$member_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['member'] = $member = $this->transaction_model->db_get_member_details($member_id);
@@ -236,7 +236,7 @@ class Transaction_controller extends CI_Controller {
 	//END ===============================================================
 
 	//ACCOUNT SETTINGS ==================================================
-	public function account_settings() {
+	function account_settings() {
 		$user_id = $this->session->userdata('user_id');
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['row'] = $this->transaction_model->get_user_account_details($user_id);
@@ -244,7 +244,7 @@ class Transaction_controller extends CI_Controller {
 		$this->load->view('ho_iad_panel/dashboard/account_setting');
 		$this->load->view('templates/footer');
 	}
-	public function update_password() {
+	function update_password() {
 		$token = $this->security->get_csrf_hash();
 		$input_post = $this->input->post(NULL, TRUE); // returns all POST items with XSS filter
 		$user_id = $this->session->userdata('user_id');
@@ -252,28 +252,28 @@ class Transaction_controller extends CI_Controller {
 		$this->form_validation->set_rules('new-password', 'New Password', 'trim|required|min_length[8]');
 		$this->form_validation->set_rules('confirm-password', 'Confirm Password', 'trim|required|matches[new-password]');
 		if ($this->form_validation->run() == FALSE) {
-			$response = array(
+			$response = [
 				'status' => 'error',
 				'current_password_error' => form_error('current-password'),
 				'new_password_error' => form_error('new-password'),
 				'confirm_password_error' => form_error('confirm-password'),
-			);
+			];
 		} else {
-			$post_data = array(
+			$post_data = [
 				'password' => $this->_hash_password($input_post['confirm-password']),
 				'updated_on' =>  date("Y-m-d"),
 				'updated_by' => $this->session->userdata('fullname'),
-			);
+			];
 			$updated = $this->transaction_model->db_update_user_account($user_id, $post_data);
 			if (!$updated) {
-				$response = array('status' => 'save-error', 'message' => 'Password Update Failed');
+				$response = ['status' => 'save-error', 'message' => 'Password Update Failed'];
 			}
-			$response = array('status' => 'success', 'message' => 'Password Updated Successfully');
+			$response = ['status' => 'success', 'message' => 'Password Updated Successfully'];
 		}
 		echo json_encode($response);
 	}
 
-	public function check_current_password($current_password) {
+	function check_current_password($current_password) {
 		$user_id = $this->session->userdata('user_id');
 		$row = $this->transaction_model->get_user_account_details($user_id);
 		$db_password = $row['password'];
@@ -293,7 +293,7 @@ class Transaction_controller extends CI_Controller {
 		return $result;
 	}
 
-	public function update_username() {
+	function update_username() {
 		$token = $this->security->get_csrf_hash();
 		$input_post = $this->input->post(NULL, TRUE); // returns all POST items with XSS filter
 		$user_id = $this->session->userdata('user_id');
@@ -301,27 +301,27 @@ class Transaction_controller extends CI_Controller {
 		$this->form_validation->set_rules('new-username', 'New Username', 'trim|required|min_length[6]|callback_check_username_exist');
 		$this->form_validation->set_rules('confirm-username', 'Confirm Username', 'trim|required|matches[new-username]');
 		if ($this->form_validation->run() == FALSE) {
-			$response = array(
+			$response = [
 				'status' => 'error',
 				'current_username_error' => form_error('current-username'),
 				'new_username_error' => form_error('new-username'),
 				'confirm_username_error' => form_error('confirm-username'),
-			);
+			];
 		} else {
-			$post_data = array(
+			$post_data = [
 				'username' => $input_post['confirm-username'],
 				'updated_on' =>  date("Y-m-d"),
 				'updated_by' => $this->session->userdata('fullname'),
-			);
+			];
 			$updated = $this->transaction_model->db_update_user_account($user_id, $post_data);
 			if (!$updated) {
-				$response = array('status' => 'save-error', 'message' => 'Username Update Failed');
+				$response = ['status' => 'save-error', 'message' => 'Username Update Failed'];
 			}
-			$response = array('status' => 'success', 'message' => 'Username Updated Successfully');
+			$response = ['status' => 'success', 'message' => 'Username Updated Successfully'];
 		}
 		echo json_encode($response);
 	}
-	public function check_current_username($current_username) {
+	function check_current_username($current_username) {
 		$user_id = $this->session->userdata('user_id');
 		$row = $this->transaction_model->get_user_account_details($user_id);
 		$db_username = $row['username'];
@@ -332,7 +332,7 @@ class Transaction_controller extends CI_Controller {
 		}
 		return true;
 	}
-	public function check_username_exist($new_username) {
+	function check_username_exist($new_username) {
 		$exists = $this->transaction_model->db_check_username($new_username);
 		if (!$exists) {
 			return true;
@@ -356,7 +356,11 @@ class Transaction_controller extends CI_Controller {
 
 				$date = '<span>'.date('F d, Y', strtotime($bill['startDate'])).' to '.date('F d, Y', strtotime($bill['endDate'])).'</span>';
 
-				$hp_name = '<span>'.$bill['hp_name'].'</span>';
+				if($bill['billing_type'] == 'PDF Billing'){
+					$hp_name = '<span>'.$bill['hp_name'].'</span>';
+				}else if($bill['billing_type'] == 'Reimburse'){
+					$hp_name = '<span>Non-Affiliated Hospitals</span>';
+				}
 
 				$status = '<span class="text-center badge rounded-pill bg-warning">Billed</span>'; 
 				
@@ -397,7 +401,11 @@ class Transaction_controller extends CI_Controller {
 
 				$date = '<span>'.date('F d, Y', strtotime($bill['startDate'])).' to '.date('F d, Y', strtotime($bill['endDate'])).'</span>';
 
-				$hp_name = '<span>'.$bill['hp_name'].'</span>';
+				if($bill['billing_type'] == 'PDF Billing'){
+					$hp_name = '<span>'.$bill['hp_name'].'</span>';
+				}else if($bill['billing_type'] == 'Reimburse'){
+					$hp_name = '<span>Non-Affiliated Hospitals</span>';
+				}
 
 				$status = '<span class="text-center badge rounded-pill bg-info">Audited</span>'; 
 
@@ -436,11 +444,14 @@ class Transaction_controller extends CI_Controller {
 
 				$date = '<span>'.date('F d, Y', strtotime($bill['startDate'])).' to '.date('F d, Y', strtotime($bill['endDate'])).'</span>';
 
-				$hp_name = '<span>'.$bill['hp_name'].'</span>';
+				if($bill['billing_type'] == 'PDF Billing'){
+					$hp_name = '<span>'.$bill['hp_name'].'</span>';
+				}else if($bill['billing_type'] == 'Reimburse'){
+					$hp_name = '<span>Non-Affiliated Hospitals</span>';
+				}
 
 				$status = '<span class="text-center badge rounded-pill bg-success">Paid</span>'; 
 				
-
 				$payment_id = $this->myhash->hasher($bill['bill_id'], 'encrypt');
 
 				$action_customs = '<a href="'.base_url().'head-office-iad/biling/paid-list/'.$payment_id.'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';

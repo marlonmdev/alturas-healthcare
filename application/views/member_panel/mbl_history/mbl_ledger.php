@@ -37,12 +37,12 @@
                     <div class="col-lg-4 pt-1 offset- pb-2">
                             <div class="input-group">
                                 <div class="input-group-append">
-                                    <span class="input-group-text text-dark ls-1 ms-2">
+                                    <span class="input-group-text text-dark ls-1 ms-2" title="Year History List">
                                         <i class="mdi mdi-calendar-range"></i>
                                     </span>
                                 </div>
                                 <div class="dropdown">
-                                <input type="text" class="form-control dropdown-toggle" id="yearDropdown" data-bs-toggle="dropdown" aria-expanded="false" value="Select Year" readonly>
+                                <input type="text" class="form-control dropdown-toggle" id="yearDropdown" title="Year History List" data-bs-toggle="dropdown" aria-expanded="false" value="Select Year" readonly>
                                   <ul class="dropdown-menu dropdown-menu-scrollable" aria-labelledby="yearDropdown" id ="yearList">
 
                                   </ul>
@@ -361,7 +361,7 @@
                       $('#loa_details_2').append(`<h6>NET BILL: <strong><span class="text-primary">${hospital_bill}</span></strong></h6>`); 
                     }
                 break;
-                case 'Billed' || 'Payment' || 'Payable':
+                case 'Billed': case 'Payment': case 'Payable':
                     $('#loa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>APPROVED DATE: <strong><span class="text-primary">${approved_on}</span></strong></h6>`); 
                     $('#loa_details_1').append(`<h6>APPROVED BY: <strong><span class="text-primary">${approved_by}</span></strong></h6>`); 

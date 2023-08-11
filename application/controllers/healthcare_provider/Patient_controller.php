@@ -23,7 +23,7 @@ class Patient_controller extends CI_Controller {
 		exit();
 	}
 	//List of Patient
-	public function design(){
+	function design(){
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_provider_panel/patient/list_of_patient');
@@ -34,9 +34,9 @@ class Patient_controller extends CI_Controller {
 		$hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
 		$list = $this->patient_model->get_datatables($hcare_provider_id);
 		
-		$data = array();
+		$data = [];
 		foreach ($list as $member){
-			$row = array(); 
+			$row = []; 
 
 			$member_id = $this->myhash->hasher($member['member_id'], 'encrypt');
 			$full_name = $member['first_name'] . ' ' . $member['middle_name'] . ' ' . $member['last_name'] . ' ' . $member['suffix'];
@@ -93,15 +93,15 @@ class Patient_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->patient_model->count_all($hcare_provider_id),
 			"recordsFiltered" => $this->patient_model->count_filtered($hcare_provider_id),
 			"data" => $data,
-		);
+		];
 		echo json_encode($output);
 	}
-	public function view_information(){
+	function view_information(){
 		$member_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
 		$hp_id = $this->session->userdata('dsg_hcare_prov');
 		$data['user_role'] = $this->session->userdata('user_role');
@@ -266,10 +266,10 @@ class Patient_controller extends CI_Controller {
 		$hp_id = $this->input->post('hp_id');
 		$list = $this->loa_model->get_loa_datatables($emp_id, $hp_id);
 
-		$data = array();
+		$data = [];
 		$custom_actions = '';
 		foreach ($list as $loa){
-			$row = array(); 
+			$row = []; 
 			$loa_id = $this->myhash->hasher($loa['tbl1_loa_id'], 'encrypt');
 			
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewLoaHistoryInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
@@ -282,12 +282,12 @@ class Patient_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->loa_model->count_all_loa($emp_id, $hp_id),
 			"recordsFiltered" => $this->loa_model->count_loa_filtered($emp_id, $hp_id),
 			"data" => $data,
-		);
+		];
 		echo json_encode($output);	
 	}
 	function fetch_all_patient_noa(){
@@ -296,9 +296,9 @@ class Patient_controller extends CI_Controller {
 		$hp_id = $this->input->post('hp_id');
 		$list = $this->noa_model->get_noa_datatables($emp_id, $hp_id);
 		
-		$data = array();
+		$data = [];
 		foreach ($list as $noa){
-			$row = array(); 
+			$row = []; 
 
 			$noa_id = $this->myhash->hasher($noa['tbl1_noa_id'], 'encrypt');
 			
@@ -312,12 +312,12 @@ class Patient_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->noa_model->count_all_noa($emp_id, $hp_id),
 			"recordsFiltered" => $this->noa_model->count_noa_filtered($emp_id, $hp_id),
 			"data" => $data,
-		);
+		];
 		echo json_encode($output);
 	}
 	
@@ -336,6 +336,11 @@ class Patient_controller extends CI_Controller {
 		
 		//  var_dump("row",$row);
 		$billing = $this->billing_model->get_loa_billing_info($row['loa_id']); 
+		$attending_doctors =[];
+		$docs = $this->billing_model->get_attending_doctors($billing['billing_id'],$billing['emp_id']);
+		foreach($docs as $doctors){
+			array_push($attending_doctors,$doctors["doc_name"]);
+		}
 		// var_dump($billing['attending_doctors']);
 		$paid_loa = $this->loa_model->paid_loa(isset($billing['details_no'])?$billing['details_no']:null);
 		$doctor_name = "";
@@ -412,7 +417,7 @@ class Patient_controller extends CI_Controller {
 			'paid_on' => isset($paid_loa['date_add'])?date("F d, Y", strtotime($paid_loa['date_add'])):"",
 			'net_bill' => isset($billing['net_bill'])?number_format($billing['net_bill'],2, '.',','):"",
 			'paid_amount' =>isset($paid_loa['amount_paid'])?number_format($paid_loa['amount_paid'],2,'.',','):"",
-			'attending_doctors' =>isset($billing['attending_doctors'])?explode(';', $billing['attending_doctors']): ""
+			'attending_doctors' =>isset($attending_doctors)?$attending_doctors: ""
 		];
 		echo json_encode($response);
 	}
@@ -422,10 +427,11 @@ class Patient_controller extends CI_Controller {
 		$row = $this->noa_model->db_get_noa_info($noa_id);
 		$billing = $this->billing_model->get_noa_billing_info($noa_id);
 		$paid_noa = $this->noa_model->paid_noa(isset($billing['details_no'])?$billing['details_no']:null);
-		// var_dump("noa ",$row);
-		// var_dump("billing",$billing);
-		// var_dump("paid noa",$paid_noa);
-		// $doctor_name = "";
+		$attending_doctors =[];
+		$docs = $this->billing_model->get_attending_doctors($billing['billing_id'],$billing['emp_id']);
+		foreach($docs as $doctors){
+			array_push($attending_doctors,$doctors["doc_name"]);
+		}
 		if ($row['approved_by']) {
 			$doc = $this->noa_model->db_get_doctor_name_by_id($row['approved_by']);
 			$doctor_name = $doc['doctor_name'];
@@ -452,7 +458,7 @@ class Patient_controller extends CI_Controller {
 		// 	$req_stat = $row['status'];
 		// }
 			
-		$response = array(
+		$response = [
 			'status' => 'success',
 			'token' => $this->security->get_csrf_hash(),
 			'noa_id' => $row['noa_id'],
@@ -488,8 +494,8 @@ class Patient_controller extends CI_Controller {
 			'paid_on' => isset($paid_noa['date_add'])?date("F d, Y", strtotime($paid_noa['date_add'])):"",
 			'net_bill' => isset($billing['net_bill'])?number_format($billing['net_bill'],2,'.',','):"",
 			'paid_amount' =>isset($paid_noa['amount_paid'])?number($paid_noa['amount_paid'],2,'.',','):"",
-			'attending_doctors' =>isset($billing['attending_doctors'])?explode(';', $billing['attending_doctors']):""
-		);
+			'attending_doctors' =>isset($attending_doctors)?$attending_doctors: ""
+		];
 		// var_dump("response",$response);
 		echo json_encode($response);
 	}

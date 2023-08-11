@@ -26,7 +26,7 @@ class Billing_controller extends CI_Controller {
         exit();
     }
 
-    public function get_personal_and_company_charge($label,$loa_noa,$net_b,$status,$prevmbl,$old_billing) {
+    function get_personal_and_company_charge($label,$loa_noa,$net_b,$status,$prevmbl,$old_billing) {
         
         $loa_info = $this->loa_model->db_get_loa_info($loa_noa);
         $noa_info = $this->noa_model->db_get_noa_info($loa_noa);
@@ -354,13 +354,13 @@ class Billing_controller extends CI_Controller {
 			}
 			}
             
-            $data = array(
+            $data = [
                 'company_charge' => $company_charge,
                 'personal_charge' => $personal_charge,
                 'remaining_balance' =>$rmbl = $remaining_mbl,
                 'used_mbl' =>  (($max_mbl-$rmbl)>0)? $max_mbl-$rmbl : $max_mbl,
                 'previous_mbl' => $previous_mbl,
-            );
+            ];
 			return  $data;
 	}
     function billing_search_member() {
@@ -1086,7 +1086,7 @@ class Billing_controller extends CI_Controller {
                     
             include realpath('assets/pdf_extract/vendor/autoload.php'); 
             
-            $allowTypes = array('pdf'); 
+            $allowTypes = ['pdf']; 
             if(in_array($PDFfileType,$allowTypes)){
                 
                 $parser   = new \Smalot\PdfParser\Parser(); 
@@ -1134,16 +1134,16 @@ class Billing_controller extends CI_Controller {
 
         // } 
 
-        $uploaded_files = array();
+        $uploaded_files = [];
         $error_occurred = FALSE;
         // Define the upload paths for each file
-            $file_paths = array(
+            $file_paths = [
                 'pdf-file' => './uploads/pdf_bills/',
                 'itemize-pdf-file' => './uploads/itemize_bills/',
-            );
+            ];
     
         // Iterate over each file input and perform the upload
-            $file_inputs = array('pdf-file','itemize-pdf-file');
+            $file_inputs = ['pdf-file','itemize-pdf-file'];
 
             foreach ($file_inputs as $input_name) {
 
@@ -1577,23 +1577,23 @@ class Billing_controller extends CI_Controller {
         $config['encrypt_name'] = TRUE;
         $this->load->library('upload', $config);
         
-        $uploaded_files = array();
+        $uploaded_files = [];
         $error_occurred = FALSE;
 
         $check_bill = $this->billing_model->check_re_upload_billing($billing_no);
         // Define the upload paths for each file
-            $file_paths = array(
+            $file_paths = [
                 'pdf-file' => './uploads/pdf_bills/',
                 'itemize-pdf-file' => './uploads/itemize_bills/',
                 'Final-Diagnosis' => './uploads/final_diagnosis/',
                 'Medical-Abstract' => './uploads/medical_abstract/',
                 'Prescription' => './uploads/prescription/'
-            );
+            ];
     
             // var_dump('billing_no',$billing_no);
             // var_dump('check bill',$check_bill);
         // Iterate over each file input and perform the upload
-            $file_inputs = array('pdf-file','itemize-pdf-file', 'Final-Diagnosis', 'Medical-Abstract', 'Prescription');
+            $file_inputs = ['pdf-file','itemize-pdf-file', 'Final-Diagnosis', 'Medical-Abstract', 'Prescription'];
             foreach ($file_inputs as $input_name) {
                 if ($input_name === 'Medical-Abstract' && empty($_FILES[$input_name]['name'])) {
                     // Skip the 'Medical-Abstract' field if it is empty

@@ -295,10 +295,10 @@ class Loa_controller extends CI_Controller {
 				}else{
 					$view_file ='None';
 				}
-				if($loa['hospital_receipt']){
+				if(!empty($loa['hospital_receipt'])){
 					$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $loa['hospital_receipt'] . '\')"><strong>View</strong></a>';
 				}else{
-					$view_receipt ='None';
+					$view_receipt = 'None';
 				}
 			}
 
@@ -307,8 +307,9 @@ class Loa_controller extends CI_Controller {
 			$row[] = $full_name;
 			$row[] = $loa['loa_request_type'];
 			$row[] = $short_hp_name;
-			$row[] = $expiry_date;
+			$row[] = $view_file;
 			$row[] = $view_receipt;
+			$row[] = $expiry_date;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;

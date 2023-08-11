@@ -280,4 +280,15 @@ function update_member_remaining_balance($emp_id, $data) {
   $this->db->where('emp_id', $emp_id);
   return $this->db->update('max_benefit_limits', $data); 
 }
+public function get_count_pending()
+{
+    $this->db->select('COUNT(*) as count');
+    $this->db->from('noa_requests');
+    $this->db->where('status', 'Pending');
+    $query = $this->db->get();
+    $result= $query->row();
+    $count = $result->count;
+    
+    return $count;
+}
 }

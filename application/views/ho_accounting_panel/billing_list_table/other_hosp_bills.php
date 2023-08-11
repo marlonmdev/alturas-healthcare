@@ -4,13 +4,13 @@
         <div class="page-breadcrumb">
         <div class="row">
             <div class="col-12 d-flex no-block flex-column flex-sm-row align-items-left">
-                <h4 class="page-title ls-2"> <i class="mdi mdi-file-document-box"></i> Non Accredited Hospital Billing</h4>
+                <h4 class="page-title ls-2"> <i class="mdi mdi-file-document-box"></i> Non-Affiliated Hospital Billing</h4>
                 <div class="ms-auto text-end order-first order-sm-last">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                     <li class="breadcrumb-item">Head Office Accounting</li>
                     <li class="breadcrumb-item active" aria-current="page">
-                    Non Accredited Hospital
+                    Non-Affiliated Hospital
                     </li>
                     </ol>
                 </nav>
@@ -101,6 +101,7 @@
                                             <tr class="border-secondary border-2 border-0 border-top border-bottom">
                                                 <th class="fw-bold ls-2"><strong>#</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Request Date</strong></th>
+                                                <th class="fw-bold ls-2"><strong>Healthcare Provider</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Billing No</strong></th>
                                                 <th class="fw-bold ls-2"><strong>LOA/NOA #</strong></th>
                                                 <th class="fw-bold ls-2"><strong>Patient Name</strong></th>
@@ -118,6 +119,7 @@
                                         </tbody>
                                         <tfoot>
                                             <tr>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -169,12 +171,12 @@
       },
       //Set column definition initialisation properties.
       columnDefs: [
-            { targets: 6, className: 'text-end' },
-            { targets: 8, className: 'text-end' },
+            { targets: 7, className: 'text-end' },
             { targets: 9, className: 'text-end' },
             { targets: 10, className: 'text-end' },
             { targets: 11, className: 'text-end' },
-            { targets: 12, className: 'text-center' },
+            { targets: 12, className: 'text-end' },
+            { targets: 13, className: 'text-center' },
         ],
       data: [],  // Empty data array
       deferRender: true,  // Enable deferred rendering
@@ -185,7 +187,7 @@
       fixedHeader: true,
     });
     billedTable.on('draw.dt', function() {
-        let columnIdx = 9;
+        let columnIdx = 10;
         let sum = 0;
         let rows = billedTable.rows().nodes();
 
@@ -526,9 +528,10 @@
           }else{
             end_dates = end_date;
           } 
+          type = 'nonaffiliated';
 
         const base_url = `${baseUrl}`;
-        window.open(base_url + "printforpayment/pdfbilling/" + btoa(hp_ids) + "/" + btoa(start_dates) + "/" + btoa(end_dates) + "/" + btoa(payment_no), '_blank');
+        window.open(base_url + "printforpayment/pdfbilling/" + btoa(type) + "/" + btoa(hp_ids) + "/" + btoa(start_dates) + "/" + btoa(end_dates) + "/" + btoa(payment_no), '_blank');
     }
 
     const viewLOANOAdetails = (billing_id) => {

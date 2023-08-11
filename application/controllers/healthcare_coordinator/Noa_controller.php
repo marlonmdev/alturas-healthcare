@@ -17,7 +17,7 @@ class Noa_controller extends CI_Controller {
 		$token = $this->security->get_csrf_hash();
 		$hp_id = $this->uri->segment(4);
 		$cost_types = $this->loa_model->db_get_cost_types_by_hp($hp_id);
-		$response = array();
+		$response = [];
 
 		if(empty($cost_types)){
 		}else{
@@ -220,7 +220,7 @@ class Noa_controller extends CI_Controller {
 		}
 		
 		if ($this->form_validation->run() == FALSE) {
-			$response = array(
+			$response = [
 				'status' => 'error',
 				'hospital_name_error' => form_error('hospital-name'),
 				'chief_complaint_error' => form_error('chief-complaint'),
@@ -229,7 +229,7 @@ class Noa_controller extends CI_Controller {
 				'hospital_receipt_error' => form_error('hospital-receipt'),
 				'hospital_bill_error' => form_error('hospital-bill'),
 				'healthcare_provider_category_error' => form_error('healthcare-provider-category'),
-			);
+			];
 			echo json_encode($response);
 			exit();
 		}else{
@@ -260,7 +260,7 @@ class Noa_controller extends CI_Controller {
 				$hospital_id = $this->input->post('hospital-name');
 				$hp_exist = $this->noa_model->db_check_hospital_exist($hospital_id);
 				if (!$hp_exist) {
-					$response = array('status' => 'save-error', 'message' => 'Hospital Does Not Exist');
+					$response = ['status' => 'save-error', 'message' => 'Hospital Does Not Exist'];
 					echo json_encode($response);
 					exit();
 				}else{
@@ -290,9 +290,9 @@ class Noa_controller extends CI_Controller {
 				$updated = $this->noa_model->db_update_noa_request($noa_id, $post_data);
 				// var_dump('noa_id',$noa_id);
 				if (!$updated) {
-					$response = array('status' => 'save-error', 'message' => 'Update Failed');
+					$response = ['status' => 'save-error', 'message' => 'Update Failed'];
 				}else{
-					$response = array('status' => 'success', 'message' => 'Updated Successfully');
+					$response = ['status' => 'success', 'message' => 'Updated Successfully'];
 				
 					if($old_hr_file !== ''){
 					$file_path = './uploads/hospital_receipt/' . $old_hr_file;
@@ -327,18 +327,18 @@ class Noa_controller extends CI_Controller {
 			$config['encrypt_name'] = TRUE;
 			$this->load->library('upload', $config);
 
-			$uploaded_files = array();
+			$uploaded_files = [];
 			$error_occurred = FALSE;
 
 			// Define the upload paths for each file
-			$file_paths = array(
+			$file_paths = [
 				'spot-report' => './uploads/spot_reports/',
 				'incident-report' => './uploads/incident_reports/',
 				'police-report' => './uploads/police_reports/',
-			);
+			];
 
 			// Iterate over each file input and perform the upload
-			$file_inputs = array('spot-report', 'incident-report','police-report');
+			$file_inputs = ['spot-report', 'incident-report','police-report'];
 			foreach ($file_inputs as $input_name) {
 				$config['upload_path'] = $file_paths[$input_name];
 				$this->upload->initialize($config);
@@ -592,9 +592,9 @@ class Noa_controller extends CI_Controller {
 		$this->security->get_csrf_hash();
 		$status = 'Initial';
 		$list = $this->noa_model->get_datatables_ledger($status);
-		$data = array();
+		$data = [];
 		foreach ($list as $member){
-			$row = array();
+			$row = [];
 			$member_id = $this->myhash->hasher($member['emp_id'], 'encrypt');
 			$full_name = $member['first_name'] . ' ' . $member['middle_name'] . ' ' . $member['last_name'] . ' ' . $member['suffix'];
 			$workRelated = $member['work_related'] . ' (' . $member['percentage'] . '%)';
@@ -615,17 +615,17 @@ class Noa_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->noa_model->count_all_ledger($status),
 			"recordsFiltered" => $this->noa_model->count_filtered_ledger($status),
 			"data" => $data,
-		);
+		];
 		echo json_encode($output);
 	}
 
 	
-	public function initial_billing2() {
+	function initial_billing2() {
 	    $token = $this->security->get_csrf_hash();
 	    $emp_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
 	    $data['user_role'] = $this->session->userdata('user_role');
@@ -651,9 +651,9 @@ class Noa_controller extends CI_Controller {
 		$token = $this->security->get_csrf_hash(); 
 		$billing = $this->noa_model->get_final_datatables();
 
-		$data = array();
+		$data = [];
 		foreach ($billing as $bill){
-			$row = array();
+			$row = [];
 			$noa_id = $this->myhash->hasher($bill['noa_id'], 'encrypt');
 			$fullname = $bill['first_name'].' '.$bill['middle_name'].' '.$bill['last_name'].' '.$bill['suffix'];
 			$request_date=date("F d, Y", strtotime($bill['tbl1_request_date']));
@@ -665,6 +665,16 @@ class Noa_controller extends CI_Controller {
 			}
 
 
+<<<<<<< HEAD
+=======
+			if($bill['accredited']=='0'){
+				if($bill['st'])
+				$pdf_bill = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $bill['pdf_bill'] . '\')"><i class="mdi mdi-file-image fs-4 text-danger"></i></a>';
+			}else{
+
+				$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View SOA"><i class="mdi mdi-file-pdf fs-4 text-danger"></i></a>';
+			}
+>>>>>>> bdac135bdc065667859a14878e9d58327ba799d1
 
 			if($bill['tbl1_status'] !== 'Billed'){
 				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $bill['tbl1_status'] . '</span></div>';
@@ -1363,18 +1373,18 @@ class Noa_controller extends CI_Controller {
 			$config['encrypt_name'] = TRUE;
 			$this->load->library('upload', $config);
 
-			$uploaded_files = array();
+			$uploaded_files = [];
 			$error_occurred = FALSE;
 
 			// Define the upload paths for each file
-			$file_paths = array(
+			$file_paths = [
 				'spot-report' => './uploads/spot_reports/',
 				'incident-report' => './uploads/incident_reports/',
 				'police-report' => './uploads/police_reports/',
-			);
+			];
 
 			// Iterate over each file input and perform the upload
-			$file_inputs = array('spot-report', 'incident-report','police-report');
+			$file_inputs = ['spot-report', 'incident-report','police-report'];
 			foreach ($file_inputs as $input_name) {
 				$config['upload_path'] = $file_paths[$input_name];
 				$this->upload->initialize($config);
@@ -1732,7 +1742,7 @@ class Noa_controller extends CI_Controller {
 
 	// 	}
 
-	public function guarantee_pdf($noa_id){
+	function guarantee_pdf($noa_id){
 		$this->security->get_csrf_hash();
 		$this->load->library('tcpdf_library');
 		$noa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');

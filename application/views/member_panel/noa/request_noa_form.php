@@ -85,7 +85,7 @@
                     <em id="noa-med-services-error" class="text-danger"></em>
                   </div>
                   <div class="col-lg-4 col-sm-12 mb-2">
-                  <label class="colored-label"><i class="bx bx-health icon-red"></i>Total Bill</label>
+                  <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i></i> Total Bill</label>
                   <input type="text" class="form-control" name="hospital-bill" id="hospital-bill" placeholder="Enter Hospital Bill" style="background-color:#ffff" autocomplete="off">
                   <em id="hospital-bill-error" class="text-danger"></em>
                 </div>
@@ -376,13 +376,13 @@
     const hc_provider = document.querySelector('#healthcare-provider-category').value;
     console.log('hospital_names',hospital_names);
     console.log('ahcproviders_names',ahcproviders_names);
-    const optionElement = document.createElement('option');
     const request_type = document.querySelector('#hospital-name');
       if( hc_provider != '' ){
         removeOption();
         request_type.disabled = false;
         if(hc_provider === '1'){
             ahcproviders_names.forEach( function(hospital){
+            const optionElement = document.createElement('option');
             optionElement.value = hospital.hp_id;
             optionElement.text = hospital.hp_name;
             request_type.appendChild(optionElement);
@@ -393,6 +393,7 @@
         }
         if(hc_provider === '2'){
             hospital_names.forEach( function(hospital){
+            const optionElement = document.createElement('option');
             optionElement.value = hospital.hp_id;
             optionElement.text = hospital.hp_name;
             request_type.appendChild(optionElement);

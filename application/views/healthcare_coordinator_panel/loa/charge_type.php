@@ -121,7 +121,11 @@
 
             <div class="col pt-3 pb-3">
               <label class="fs-5 colored-label">Hospital Bill :</label>
+<<<<<<< HEAD
               <input class="form-control" id="hospital_bill" name="hospital_bill" oninput="formatHospitalBill(this)">
+=======
+              <input class="form-control" id="hospital_bill">
+>>>>>>> bdac135bdc065667859a14878e9d58327ba799d1
             </div>
 
             <div class="col pt-3 pb-3">

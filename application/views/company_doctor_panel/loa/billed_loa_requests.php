@@ -152,10 +152,10 @@
 
             //Set column definition initialisation properties.
             columnDefs: [{
-                "targets": [4, 6, 7], // numbering column
+                "targets": [], // numbering column
                 "orderable": false, //set not orderable
             }, ],
-            responsive: true,
+            responsive: false,
             fixedHeader: true,
         });
 

@@ -146,7 +146,7 @@
                     <em id="med-services-error" class="text-danger"></em>
                   </div>
                   <div class="col-lg-4 col-sm-12 mb-2" id="hospital-bill-wrapper" hidden>
-                  <label class="colored-label"><i class="bx bx-health icon-red"></i>Total Bill</label>
+                  <label class="colored-label"><i class="mdi mdi-asterisk text-danger"></i> Total Bill</label>
                   <input type="text" class="form-control" name="hospital-bill" id="hospital-bill" placeholder="Enter Hospital Bill" style="background-color:#ffff" autocomplete="off">
                   <em id="hospital-bill-error" class="text-danger"></em>
                 </div>
@@ -276,7 +276,8 @@ input[type="text"]::-webkit-outer-spin-button {
   let is_accredited = false;
   const input_bill = document.getElementById('hospital-bill');
   $(document).ready(function() {
-   console.log('hc providers', hc_providers);
+  //  console.log('hc providers', hospital_names);
+  //  console.log('hc providers', hc_providers);
     $("#remaining_mbl").css("border-color", "default");
     input_bill.setAttribute('autocomplete', 'off');
     if( parseFloat($('#remaining_mbl').val().replace(',', ''))<1){
@@ -592,13 +593,14 @@ const number_validator = () => {
 
   const enableProvider = () => {
     const hc_provider = document.querySelector('#healthcare-provider-category').value;
-    const optionElement = document.createElement('option');
+   
     const request_type = document.querySelector('#healthcare-provider');
       if( hc_provider != '' ){
         removeOption();
         request_type.disabled = false;
         if(hc_provider === '1'){
             ahcproviders_names.forEach( function(hospital){
+            const optionElement = document.createElement('option');
             optionElement.value = hospital.hp_id;
             optionElement.text = hospital.hp_name;
             request_type.appendChild(optionElement);
@@ -610,6 +612,7 @@ const number_validator = () => {
         }
         if(hc_provider === '2'){
             hospital_names.forEach( function(hospital){
+            const optionElement = document.createElement('option');
             optionElement.value = hospital.hp_id;
             optionElement.text = hospital.hp_name;
             request_type.appendChild(optionElement);

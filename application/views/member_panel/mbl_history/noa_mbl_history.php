@@ -324,7 +324,7 @@
                       $('#noa_details_2').append(`<h6>NET BILL: <strong><span class="text-primary">${hospital_bill}</span></strong></h6>`); 
                     }
                 break;
-                case 'Billed' || 'Payment' || 'Payable':
+                case 'Billed': case 'Payment': case 'Payable':
                     $('#noa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
                     $('#noa_details_2').append(`<h6>APPROVED DATE: <strong><span class="text-primary">${approved_on}</span></strong></h6>`); 
                     $('#noa_details_1').append(`<h6>APPROVED BY: <strong><span class="text-primary">${approved_by}</span></strong></h6>`); 
@@ -378,12 +378,12 @@
             // $('#request-date').html(request_date);
             // $('#chief-complaint').html(chief_complaint);
             // $('#requesting-physician').html(requesting_physician);
+            // console.log("doctors",attending_doctors);
             if(attending_doctors.length){
               $.each(attending_doctors, function(index, item) {
-                if(item.length > 1){
+                // if(item.length > 1){
                   $('#physician-noa').append('<li>' +'Dr. '+ item + '</li>');
-                }
-                
+                // }
               });
             }
 

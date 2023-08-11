@@ -157,8 +157,8 @@
       </div>
     </div>
   </div>
-<?php include 'view_pdf_file_modal.php';?>
 </div>
+<?php include 'view_pdf_file_modal.php';?>
 
 <script>
   const baseUrl = `<?php echo base_url(); ?>`;
@@ -183,7 +183,7 @@
         "targets": [], // numbering column
         "orderable": false,
       }, ],
-      responsive: true,
+      responsive: false,
       fixedHeader: true,
     });
 

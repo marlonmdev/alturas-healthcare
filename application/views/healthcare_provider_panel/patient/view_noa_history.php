@@ -50,9 +50,7 @@
           <li class="list-group-item" id="p_physician">
             <h6>Attending Doctors</h6>
             <ul id="physician-noa">
-              <li>
-                
-              </li>
+           
             </ul>
           </li>
         </ul>

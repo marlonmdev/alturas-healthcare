@@ -170,7 +170,7 @@
         const type = document.querySelector('#type-data').value;
 
         var base_url = `${baseUrl}`;
-        window.open(base_url + "printBUCharge/pdfReceivablesCharging/" + btoa(b_units) + "/" + btoa(charging_no) + "/" + btoa(type), '_blank');
+        window.open(base_url + "printBUCharge/pdfReceivables-Charging/" + btoa(b_units) + "/" + btoa(charging_no) + "/" + btoa(type), '_blank');
     }
 
     let pdfinput = "";

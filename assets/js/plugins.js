@@ -1,4 +1,7 @@
+
+
 $(document).ready(function () {
+	  
 	// Dropify Plugin
 	$(".dropify").dropify({
 		messages: {
@@ -30,3 +33,5 @@ $(document).ready(function () {
 	// Input Mask Plugin
 	// $("#hospital-phone-number").inputmask({"mask": "(999) 999 9999"});
 });
+
+

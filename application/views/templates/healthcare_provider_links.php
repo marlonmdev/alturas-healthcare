@@ -92,9 +92,24 @@
     <span class="hide-menu ls-1">Logout</span>
   </a>
 </li> 
+<!-- 
+<style>
+  .badge-animation {
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+  }
+</style> -->
 <script>
  let lastSelectedItem = null;
- const baseurl = '<?php echo base_url(); ?>';
+ 
 
 function toggleSelected(item) {
   // Deselect all other items
@@ -112,54 +127,34 @@ function toggleSelected(item) {
 }
 
 // const eventSource = new EventSource(baseurl+'auto_update/notification');
-
+const baseurl = '<?php echo base_url(); ?>';
 $(document).ready(function(){
-  // update_notification('auto_update/notification/guarantee-letter',0);
-  // update_notification('auto_update/notification/to-bill',1);
-//   eventSource.addEventListener('message', function (event) {
-//   const data = JSON.parse(event.data);
-//   console.log('Received update:', data);
-//   $('#letter-count').text(data);
-//   // Update your notification UI with the received data
-//   });
+  
+  $.ajax({
+      url: `${baseurl}healthcare-provider/update/notification/fetch`,
+      type: "GET",
+      data: {token:'<?php echo $this->security->get_csrf_hash(); ?>'},
+      dataType: "json",
+      success:function(response){
+         $('#billing-count').text(response.patient);
+         $('#letter-count').text(response.guarantee);
+      }
+  });
 });
 
 // Get the CSRF token from your application's source and assign it to a JavaScript variable
-const csrfToken = '<?php echo $this->security->get_csrf_hash(); ?>';
+// const csrfToken = '<?php echo $this->security->get_csrf_hash(); ?>';
 
-// Create a new XMLHttpRequest to set the CSRF token in the header
+// // Create a new XMLHttpRequest to set the CSRF token in the header
 
- const update_notification = (route,index) =>{
-  const xhr = new XMLHttpRequest();
-    xhr.open('GET', baseurl + route, true);
-    xhr.setRequestHeader('X-CSRF-Token', csrfToken);
-    xhr.send();
-
-    // After the above request, start the EventSource
-    const eventSource = new EventSource(baseurl + route);
-    eventSource.withCredentials = true; // Include credentials (cookies) in the request
-
-    eventSource.onmessage = function (event) {
-      // Handle incoming messages from the EventSource
-      // console.log(event.data);
-      if(index === 0){
-        if(event.data > 0){
-          $('#letter-count').text(event.data);
-        }else{
-          $('#letter-count').text("");
-        }
-      }
-
-      if(index === 1){
-        if(event.data > 0){
-          $('#billing-count').text(event.data);
-        }else{
-          $('#billing-count').text("");
-        }
-        
-      }
-      
-    }
- }
+//  const update_notification = (route,) =>{
+//     $.ajax({
+//         url: baseurl+"healthcare-provider/update/notification/fetch",
+//         type:'POST',
+//         success: function(res){
+//           console.log('result',res);
+//         }
+//     });
+//  }
   
 </script>

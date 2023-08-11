@@ -41,10 +41,10 @@ class Member_profile_controller extends CI_Controller {
         $member = $this->Member_profile_model->find_member_profile_by_id($healthCardNo);
         if ($member) {
             $this->load->view('templates/header', $data);
-            $this->load->view('healthcare_provider_panel/member_profile/member_profile_info.php', array('member' => $member));
+            $this->load->view('healthcare_provider_panel/member_profile/member_profile_info.php', ['member' => $member]);
             $this->load->view('templates/footer');
         } else {
-            $arr = array('error' => 'No Members Found!');
+            $arr = ['error' => 'No Members Found!'];
             $this->session->set_flashdata($arr);
             $this->redirectBack();
         }
@@ -63,10 +63,10 @@ class Member_profile_controller extends CI_Controller {
         $member = $this->Member_profile_model->find_member_profile($firstNameMember, $lastNameMember, $dateMember);
         if ($member) {
             $this->load->view('templates/header', $data);
-            $this->load->view('healthcare_provider_panel/member_profile/member_profile_info.php', array('member' => $member));
+            $this->load->view('healthcare_provider_panel/member_profile/member_profile_info.php', ['member' => $member]);
             $this->load->view('templates/footer');
         } else {
-            $arr = array('error' => 'No Members Found!');
+            $arr = ['error' => 'No Members Found!'];
             $this->session->set_flashdata($arr);
             $this->redirectBack();
         }
@@ -80,7 +80,7 @@ class Member_profile_controller extends CI_Controller {
         $data['page_title'] = 'HMO - HealthCare Provider';
         $data['user_role'] = $this->session->userdata('user_role');
         $this->load->view('templates/header', $data);
-        $this->load->view('healthcare_provider_panel/member_profile/member_profile_info_mbl.php', array('member' => $member));
+        $this->load->view('healthcare_provider_panel/member_profile/member_profile_info_mbl.php', ['member' => $member]);
         $this->load->view('templates/footer');
     }
 }

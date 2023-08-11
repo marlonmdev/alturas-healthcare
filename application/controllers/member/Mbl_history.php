@@ -23,7 +23,7 @@ class Mbl_history extends CI_Controller {
 		$data = array();
 		$custom_actions = '';
 		foreach ($list as $loa){
-			$row = array(); 
+			$row = []; 
 			// var_dump('loa',$loa['tbl1_loa_id']);
 			$loa_id = $this->myhash->hasher($loa['tbl1_loa_id'], 'encrypt');
 			
@@ -65,12 +65,12 @@ class Mbl_history extends CI_Controller {
 		// 	$data[] = $row;
 		// }
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->loa_model->count_all_loa($emp_id),
 			"recordsFiltered" => $this->loa_model->count_loa_filtered($emp_id),
 			"data" => $data,
-		);
+		];
 		echo json_encode($output);	
 	}
 
@@ -79,11 +79,11 @@ class Mbl_history extends CI_Controller {
 		$emp_id = $this->input->post('emp_id');
 		$list = $this->noa_model->get_noa_datatables($emp_id);
 		
-		$data = array();
+		$data = [];
 		
 		// var_dump('list',$list);
 		foreach ($list as $noa){
-			$row = array(); 
+			$row = []; 
 
 			$noa_id = $this->myhash->hasher($noa['tbl1_noa_id'], 'encrypt');
 			
@@ -110,12 +110,12 @@ class Mbl_history extends CI_Controller {
 		// 	$data[] = $row;
 		// }
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->noa_model->count_all_noa($emp_id),
 			"recordsFiltered" => $this->noa_model->count_noa_filtered($emp_id),
 			"data" => $data,
-		);
+		];
 		echo json_encode($output);
 	}
 
@@ -127,14 +127,14 @@ class Mbl_history extends CI_Controller {
 		$startmbl = $this->history_model->get_start_mbl($emp_id);
 		$max_mbl = $this->loa_model->db_get_member_mbl($emp_id);
 		// var_dump("start mbl",$startmbl);
-		$row1 = array();
-		$data = array();
+		$row1 = [];
+		$data = [];
 		$counter = true;
 				
 				
 
 			foreach ($list as $bill){
-			 $row = array();
+			 $row = [];
 				if($this->input->post('loa_noa') === "NOA"){
 					if($bill['loa_id']){
 					  continue;
@@ -361,7 +361,7 @@ class Mbl_history extends CI_Controller {
 
 		// var_dump('hospital receipt',$row['hospital_receipt']);
 		// var_dump('medical_services',$row['medical_services']);
-		$response = array(
+		$response = [
 			'status' => 'success',
 			'token' => $this->security->get_csrf_hash(),
 			'noa_id' => $row['noa_id'],
@@ -402,7 +402,7 @@ class Mbl_history extends CI_Controller {
 			'paid_amount' =>isset($paid_noa['amount_paid'])?$paid_noa['amount_paid']:"",
 			'attending_doctors' =>isset($billing['attending_doctors'])?$attending_doctors:""
 			// 'attending_doctors' =>isset($billing['attending_doctors'])?explode(';', $billing['attending_doctors']):""
-		);
+		];
 		// var_dump("response",$response);
 		echo json_encode($response);
 	}

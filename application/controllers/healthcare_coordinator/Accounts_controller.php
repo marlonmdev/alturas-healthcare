@@ -16,7 +16,7 @@ class Accounts_controller extends CI_Controller {
 	function fetch_all_accounts() {
 		$this->security->get_csrf_hash();
 		$list = $this->accounts_model->get_datatables();
-		$data = array();
+		$data = [];
 		foreach ($list as $account) {
 			$row = [];
 			// calling Myhash custom library inside application/libraries folder

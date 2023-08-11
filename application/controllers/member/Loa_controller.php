@@ -198,7 +198,7 @@ class Loa_controller extends CI_Controller {
 		$token = $this->security->get_csrf_hash();
 		$hp_id = $this->uri->segment(3);
 		$cost_types = $this->loa_model->db_get_cost_types_by_hp($hp_id);
-		$response = array();
+		$response = [];
 
 		if(empty($cost_types)){
 			
@@ -327,12 +327,12 @@ class Loa_controller extends CI_Controller {
 					$config['allowed_types'] = 'jpg|jpeg|png';
 					$config['encrypt_name'] = TRUE;
 					$this->load->library('upload', $config);
-					$file_paths = array(
+					$file_paths = [
 						'hospital-receipt' => './uploads/hospital_receipt/',
 						'rx-file' => './uploads/loa_attachments/'
-					);
-					$file_inputs = array('rx-file','hospital-receipt');
-					$uploaded_files = array();
+					];
+					$file_inputs = ['rx-file','hospital-receipt'];
+					$uploaded_files = [];
 					$error_occurred = false;
 					foreach ($file_inputs as $input_name) {
 						if ($input_name === 'hospital-receipt' && empty($_FILES[$input_name]['name'])) {
@@ -603,7 +603,7 @@ class Loa_controller extends CI_Controller {
 				$hp_exist = $this->loa_model->db_check_healthcare_provider_exist($hp_id);
 
 				if (!$hp_exist) {
-					$response = array('status' => 'save-error', 'message' => 'Healthcare Provider Does Not Exist');
+					$response = ['status' => 'save-error', 'message' => 'Healthcare Provider Does Not Exist'];
 					echo json_encode($response);
 					exit();
 				} else {
@@ -629,12 +629,12 @@ class Loa_controller extends CI_Controller {
 						$config['allowed_types'] = 'jpg|jpeg|png';
 						$config['encrypt_name'] = TRUE;
 						$this->load->library('upload', $config);
-						$file_paths = array(
+						$file_paths = [
 							'hospital-receipt' => './uploads/hospital_receipt/',
 							'rx-file' => './uploads/loa_attachments/'
-						);
-						$file_inputs = array('rx-file','hospital-receipt');
-						$uploaded_files = array();
+						];
+						$file_inputs = ['rx-file','hospital-receipt'];
+						$uploaded_files = [];
 						$error_occurred = false;
 						$is_file_exist = false;
 						$is_file_empty = true;
@@ -842,7 +842,7 @@ class Loa_controller extends CI_Controller {
 				// var_dump('hospital_receipt',$value['hospital_receipt']);
 			}
 
-			$result['data'][] = array(
+			$result['data'][] = [
 				$custom_loa_no,
 				$short_hp_name,
 				$value['loa_request_type'],
@@ -851,7 +851,7 @@ class Loa_controller extends CI_Controller {
 				$view_receipt,
 				$custom_status,
 				$button
-			);
+			];
 		}
 		echo json_encode($result);
 	}
@@ -931,7 +931,7 @@ class Loa_controller extends CI_Controller {
 				}
 				}
 
-			$result['data'][] = array(
+			$result['data'][] = [
 				$custom_loa_no,
 				$short_hp_name,
 				$value['loa_request_type'],
@@ -940,7 +940,7 @@ class Loa_controller extends CI_Controller {
 				$view_receipt,
 				'<span class="badge rounded-pill bg-success">' . $value['status'] . '</span>',
 				$buttons
-			);
+			];
 		}
 		echo json_encode($result);
 	}
@@ -1004,7 +1004,7 @@ class Loa_controller extends CI_Controller {
 				}
 				}
 
-			$result['data'][] = array(
+			$result['data'][] = [
 				$custom_loa_no,
 				date("m/d/Y", strtotime($value['request_date'])),
 				$short_hp_name,
@@ -1014,7 +1014,7 @@ class Loa_controller extends CI_Controller {
 				$view_receipt,
 				'<span class="badge rounded-pill bg-danger">' . $value['status'] . '</span>',
 				$button
-			);
+			];
 		}
 		echo json_encode($result);
 	}
@@ -1085,12 +1085,12 @@ class Loa_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->loa_model->count_all($status, $emp_id),
 			"recordsFiltered" => $this->loa_model->count_filtered($status, $emp_id),
 			"data" => $data,
-		);
+		];
 		echo json_encode($output);
 	}
 
@@ -1161,12 +1161,12 @@ class Loa_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->loa_model->count_all($status, $emp_id),
 			"recordsFiltered" => $this->loa_model->count_filtered($status, $emp_id),
 			"data" => $data,
-		);
+		];
 		echo json_encode($output);
 	}
 	
@@ -1235,9 +1235,9 @@ class Loa_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"data" => $data,
-		);
+		];
 		echo json_encode($output);
 	}
 
@@ -1306,9 +1306,9 @@ class Loa_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"data" => $data,
-		);
+		];
 		echo json_encode($output);
 	}
 
@@ -1588,12 +1588,12 @@ class Loa_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->loa_model->count_all($status, $emp_id),
 			"recordsFiltered" => $this->loa_model->count_filtered($status, $emp_id),
 			"data" => $data,
-		);
+		];
 		echo json_encode($output);
 	}
 

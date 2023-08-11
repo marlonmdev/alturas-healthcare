@@ -4,13 +4,13 @@
         <div class="page-breadcrumb">
             <div class="row">
             <div class="col-12 d-flex no-block flex-column flex-sm-row align-items-left">
-                <h4 class="page-title ls-2"> <i class="mdi mdi-file-document-box"></i> Accredited Hospital Billing</h4>
+                <h4 class="page-title ls-2"> <i class="mdi mdi-file-document-box"></i> Affiliated Hospital Billing</h4>
                 <div class="ms-auto text-end order-first order-sm-last">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                     <li class="breadcrumb-item">Head Office Accounting</li>
                     <li class="breadcrumb-item active" aria-current="page">
-                    Accredited Hospital
+                    Affiliated Hospital
                     </li>
                     </ol>
                 </nav>
@@ -640,9 +640,10 @@ const viewValues = () => {
           }else{
             end_dates = end_date;
           }
+          type = 'affiliated';
 
         const base_url = `${baseUrl}`;
-        window.open(base_url + "printforpayment/pdfbilling/" + btoa(hp_ids) + "/" + btoa(start_dates) + "/" + btoa(end_dates) + "/" + btoa(payment_no), '_blank');
+        window.open(base_url + "printforpayment/pdfbilling/" + btoa(type) + "/"+ btoa(hp_ids) + "/" + btoa(start_dates) + "/" + btoa(end_dates) + "/" + btoa(payment_no), '_blank');
     }
 
     const viewLOANOAdetails = (billing_id) => {

@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class TableList extends CI_Controller {
 
-    public function __construct() {
+    function __construct() {
         parent::__construct();
         $this->load->model('ho_accounting/List_model');
         $user_role = $this->session->userdata('user_role');
@@ -13,7 +13,7 @@ class TableList extends CI_Controller {
         }
     }
 
-    public function index() {
+    function index() {
         $this->security->get_csrf_hash();
         $data['user_role'] = $this->session->userdata('user_role');
         $data_options['options'] = $this->List_model->get_hc_provider();
@@ -22,7 +22,7 @@ class TableList extends CI_Controller {
         $this->load->view('templates/footer');
     }
 
-    public function billed_record(){
+    function billed_record(){
         $this->security->get_csrf_hash();
         $data['user_role'] = $this->session->userdata('user_role');
         $data_options['options'] = $this->List_model->get_hc_provider();
@@ -31,7 +31,7 @@ class TableList extends CI_Controller {
         $this->load->view('templates/footer');
     }
 
-    public function closed_record(){
+    function closed_record(){
         $this->security->get_csrf_hash();
         $data['user_role'] = $this->session->userdata('user_role');
         $data_options['options'] = $this->List_model->get_hc_provider();
@@ -40,7 +40,7 @@ class TableList extends CI_Controller {
         $this->load->view('templates/footer');
     }
 
-    public function searchTableList() {
+    function searchTableList() {
         $this->security->get_csrf_hash();
         $data['user_role'] = $this->session->userdata('user_role');
         $search = $this->input->post('search');
@@ -51,7 +51,7 @@ class TableList extends CI_Controller {
         $this->load->view('templates/footer');
     }
 
-    public function listByHopital() {
+    function listByHopital() {
         $this->security->get_csrf_hash();
         $data['user_role'] = $this->session->userdata('user_role');
 
@@ -67,7 +67,7 @@ class TableList extends CI_Controller {
         $this->load->view('templates/footer');
     }
 
-    public function listInfoSummary() {
+    function listInfoSummary() {
         $this->security->get_csrf_hash();
         $payloadLoa =  $this->List_model->loa_member();
         $this->load->view('templates/header');

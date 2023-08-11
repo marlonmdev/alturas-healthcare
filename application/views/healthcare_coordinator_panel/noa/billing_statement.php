@@ -36,7 +36,7 @@
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-hover table-responsive" id="matchedLoaTable">
-                <thead class="" style="background-color:#ADD8E6">
+                <thead style="background-color:#ADD8E6">
                   <tr>
                     <th style="color:black;font-size:11px;font-weight:bold">BILLING #</th>
                     <th style="color:black;font-size:11px;font-weight:bold">CONSOLIDATED BILLING</th>
@@ -45,7 +45,7 @@
                     <th style="color:black;font-size:11px;font-weight:bold">ACTION</th>
                   </tr>
                 </thead>
-                <tbody style="color:black;font-size:11px">
+                <tbody style="color:black;font-size:10px">
                 </tbody>
               </table>
             </div>
@@ -55,10 +55,6 @@
     </div>
   </div>
 </div>
-
-
-
-
 
 
 
@@ -276,35 +272,35 @@
 
   const submitCharging = () => {
     const data = $('#confirmChargingForm').serialize();
-      $.ajax({
-        url: `${baseUrl}healthcare-coordinator/loa/charging/confirm`,
-        data: data,
-        type: 'POST',
-        dataType: 'json',
-        success: function(response){
-          const { token, status, message } = response;
+    $.ajax({
+      url: `${baseUrl}healthcare-coordinator/loa/charging/confirm`,
+      data: data,
+      type: 'POST',
+      dataType: 'json',
+      success: function(response){
+        const { token, status, message } = response;
 
-          if(status = 'success'){
-            swal({
-                title: 'Success',
-                text: message,
-                timer: 3000,
-                showConfirmButton: false,
-                type: 'success'
-            });
-            window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/for-charging';
-          }else{
-            swal({
-                title: 'Failed',
-                text: message,
-                timer: 3000,
-                showConfirmButton: false,
-                type: 'error'
-            });
-          }
-
+        if(status = 'success'){
+          swal({
+              title: 'Success',
+              text: message,
+              timer: 3000,
+              showConfirmButton: false,
+              type: 'success'
+          });
+          window.location.href = '<?php echo base_url(); ?>healthcare-coordinator/loa/requests-list/for-charging';
+        }else{
+          swal({
+              title: 'Failed',
+              text: message,
+              timer: 3000,
+              showConfirmButton: false,
+              type: 'error'
+          });
         }
-      });
+
+      }
+    });
   }
 </script>
 

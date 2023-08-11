@@ -560,7 +560,7 @@ class Setup_controller extends CI_Controller {
         'new_inpatient_price_error' => form_error('new_inpatient_price'),
       ];
     } else {
-      $post_data = array(
+      $post_data = [
         'item_id' => $item_id,
         'item_description' => $item_description,
         'op_price' => $new_outpatient_price,
@@ -568,7 +568,7 @@ class Setup_controller extends CI_Controller {
         'old_op_price' => $old_outpatient_price,
         'old_ip_price' => $old_inpatient_price,
         'date_updated' => date("Y-m-d"),
-      );
+      ];
       $updated = $this->setup_model->db_update_cost_type($ctype_id, $post_data);
       if (!$updated) {
         $response = [

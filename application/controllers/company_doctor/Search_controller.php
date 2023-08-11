@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Search_controller extends CI_Controller {
 
-    public function __construct() {
+    function __construct() {
 		parent::__construct();
 		$user_role = $this->session->userdata('user_role');
 		$logged_in = $this->session->userdata('logged_in');
@@ -12,7 +12,7 @@ class Search_controller extends CI_Controller {
 		}
 	}
 
-    // public function permission() {
+    // function permission() {
     //     $user_role = $this->session->userdata('user_role');
     //     $logged_in = $this->session->userdata('logged_in');
     //     if(isset($logged_in) && !empty($logged_in) && $user_role === 'company-doctor') {
@@ -22,7 +22,7 @@ class Search_controller extends CI_Controller {
     //     }
     // }
 
-    public function search_autocomplete(){
+    function search_autocomplete(){
         $this->security->get_csrf_hash();
         $this->load->model('super_admin/search_model');
         $search_data = $this->input->post('search');
@@ -45,11 +45,11 @@ class Search_controller extends CI_Controller {
         }
     }
 
-    public function get_searched_member_details(){
+    function get_searched_member_details(){
         $emp_id = $this->uri->segment(5);
         $this->load->model('super_admin/search_model');
         $row = $this->search_model->db_get_member_details($emp_id);
-        $response = array(
+        $response = [
             'status' => 'success', 
             'token' => $this->security->get_csrf_hash(),
             'member_id' => $row['member_id'],
@@ -61,7 +61,7 @@ class Search_controller extends CI_Controller {
             'mobile_number' => $row['contact_no'], 
             'email' => $row['email'],
             'date_regularized' => $row['date_regularized']
-        );
+        ];
         echo json_encode($response);
     }
 

@@ -28,6 +28,7 @@
     <button id="scrollButton"></button>
   </body>
   <?php include 'managers_key_modal.php' ?>
+
 </html>
 <style>
     #scrollButton {
@@ -86,7 +87,7 @@
     }
 
     $(document).ready(function(){
-      $('#managersKeyReqLOANOA').submit(function(event){
+      $('#managersKeyReqLOANOAForm').submit(function(event){
       event.preventDefault();
 
         $.ajax({

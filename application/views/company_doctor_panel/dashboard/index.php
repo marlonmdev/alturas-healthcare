@@ -77,7 +77,6 @@
             </div>
           <!-- End of Row  -->
           </div>
-
         <!-- End Container fluid  -->
         </div>
       <!-- End Page wrapper  -->

@@ -175,7 +175,7 @@ class List_model extends CI_Model{
         return $sum;
     }
 
-    public function get_hc_provider(){
+    function get_hc_provider(){
         return $this->db->get('healthcare_providers')->result_array();
     }
 
@@ -468,7 +468,7 @@ class List_model extends CI_Model{
        $this->db->where('tbl_1.payment_no', $payment_no);
    }
 
-   public function monthly_bill_datatable($payment_no) {
+   function monthly_bill_datatable($payment_no) {
        $this->_get_monthly_datatables_query($payment_no);
        if ($_POST['length'] != -1)
             $this->db->limit($_POST['length'], $_POST['start']);
@@ -582,7 +582,7 @@ class List_model extends CI_Model{
        $this->db->join($this->table_5_billed_other . ' as tbl_5', 'tbl_1.hp_id = tbl_5.hp_id');
        $this->db->join($this->table_6_billed_other . ' as tbl_6', 'tbl_1.emp_id = tbl_6.emp_id');
        $this->db->where('tbl_1.billing_type', 'Reimburse');
-       $this->db->where('tbl_1.status', 'Billed');
+       $this->db->where('tbl_1.status', 'Payable');
        $this->db->order_by('tbl_1.request_date','asc');
        $i = 0;
 
@@ -717,7 +717,7 @@ class List_model extends CI_Model{
         $this->db->set('payment_no', $payment_no)
                 ->set('status', 'Payment')
                 ->where('billing_type', 'Reimburse')
-                ->where('status', 'Billed');
+                ->where('status', 'Payable');
 
         if (!empty($this->input->post('start_date'))) {
             $startDate = date('Y-m-d', strtotime($this->input->post('start_date')));
@@ -1122,12 +1122,12 @@ class List_model extends CI_Model{
     }
 //=================================================
 
-    public function loa_member()
+    function loa_member()
     {
         return $this->db->get('loa_requests')->result_array();
     }
 
-    public function billingList()
+    function billingList()
     {
 
         $this->db->select('*');
@@ -1140,7 +1140,7 @@ class List_model extends CI_Model{
 
     
 
-    public function billing_search($search)
+    function billing_search($search)
     {
         $this->db->select('*');
         $this->db->from('billing');
@@ -1152,7 +1152,7 @@ class List_model extends CI_Model{
 
 
 
-    public function getLoaClose()
+    function getLoaClose()
     {
         $this->db->select('*');
         $this->db->from('loa_requests');
@@ -1162,7 +1162,7 @@ class List_model extends CI_Model{
         return $query->result();
     }
 
-    public function getNoaClose()
+    function getNoaClose()
     {
         $this->db->select('*');
         $this->db->from('noa_requests');
@@ -1174,7 +1174,7 @@ class List_model extends CI_Model{
 
 
 
-    public function getBilling()
+    function getBilling()
     {
         $this->db->select('*');
         $this->db->from('billing');
@@ -1185,7 +1185,7 @@ class List_model extends CI_Model{
     }
 
 
-    public function getInHospitalDate($hospital, $month, $year)
+    function getInHospitalDate($hospital, $month, $year)
     {
         $this->db->select('*');
         $this->db->from('billing');

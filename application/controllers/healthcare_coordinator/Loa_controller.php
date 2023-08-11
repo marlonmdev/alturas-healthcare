@@ -404,18 +404,18 @@ class Loa_controller extends CI_Controller {
 			$config['encrypt_name'] = TRUE;
 			$this->load->library('upload', $config);
 
-			$uploaded_files = array();
+			$uploaded_files = [];
 			$error_occurred = FALSE;
 
 			// Define the upload paths for each file
-			$file_paths = array(
+			$file_paths = [
 				'spot-report' => './uploads/spot_reports/',
 				'incident-report' => './uploads/incident_reports/',
 				'police-report' => './uploads/police_reports/',
-			);
+			];
 
 			// Iterate over each file input and perform the upload
-			$file_inputs = array('spot-report', 'incident-report','police-report');
+			$file_inputs = ['spot-report', 'incident-report','police-report'];
 			foreach ($file_inputs as $input_name) {
 				$config['upload_path'] = $file_paths[$input_name];
 				$this->upload->initialize($config);
@@ -488,18 +488,18 @@ class Loa_controller extends CI_Controller {
 			$config['encrypt_name'] = TRUE;
 			$this->load->library('upload', $config);
 
-			$uploaded_files = array();
+			$uploaded_files = [];
 			$error_occurred = FALSE;
 
 			// Define the upload paths for each file
-			$file_paths = array(
+			$file_paths = [
 				'spot-report' => './uploads/spot_reports/',
 				'incident-report' => './uploads/incident_reports/',
 				'police-report' => './uploads/police_reports/',
-			);
+			];
 
 			// Iterate over each file input and perform the upload
-			$file_inputs = array('spot-report', 'incident-report','police-report');
+			$file_inputs = ['spot-report', 'incident-report','police-report'];
 			foreach ($file_inputs as $input_name) {
 				$config['upload_path'] = $file_paths[$input_name];
 				$this->upload->initialize($config);
@@ -3321,7 +3321,7 @@ $med_serv = implode(' ', $ct_array);
 		$token = $this->security->get_csrf_hash();
 		$hp_id = $this->uri->segment(4);
 		$cost_types = $this->loa_model->db_get_cost_types_by_hp($hp_id);
-		$response = array();
+		$response = [];
 
 		if(empty($cost_types)){
 		}else{
@@ -3372,13 +3372,13 @@ $med_serv = implode(' ', $ct_array);
 					$config['encrypt_name'] = TRUE;
 					$this->load->library('upload', $config);
 
-					$file_paths = array(
+					$file_paths = [
 						'hospital-receipt' => './uploads/hospital_receipt/',
 						'rx-file' => './uploads/loa_attachments/'
-					);
+					];
 
-					$file_inputs = array('rx-file','hospital-receipt');
-					$uploaded_files = array();
+					$file_inputs = ['rx-file','hospital-receipt'];
+					$uploaded_files = [];
 					$error_occurred = false;
 					foreach ($file_inputs as $input_name) {
 						if ($input_name === 'hospital-receipt' && empty($_FILES[$input_name]['name'])) {
@@ -3978,7 +3978,8 @@ $med_serv = implode(' ', $ct_array);
         	}else if($bill['tbl1_status'] == 'Billed' && $bill['performed_fees'] == 'Billed' && $bill['accredited'] == '0'){
         		$custom_actions .='<i class="mdi mdi-cached fs-4 text-success"></i>Processing...';
         		$billed_date .='No Billing Date Yet';
-        		$pdf_bill = 'No PDF Bill';
+        		// $pdf_bill = 'No PDF Bill';
+        		$pdf_bill = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $bill['pdf_bill'] . '\')"><i class="mdi mdi-file-image fs-4 text-danger"></i></a>';
         	}else if($bill['tbl1_status'] == 'Completed' && $bill['performed_fees'] == 'Performed'){
         		$custom_actions .='<i class="mdi mdi-cached fs-4 text-info"></i>Processing...';
         		$billed_date .='No Billing Date Yet';
@@ -4132,7 +4133,7 @@ $med_serv = implode(' ', $ct_array);
 	}
 
 
-	public function guarantee_pdf($loa_id){
+	function guarantee_pdf($loa_id){
 		$this->security->get_csrf_hash();
 		$this->load->library('tcpdf_library');
 		$loa_id =  $this->myhash->hasher($this->uri->segment(5), 'decrypt');
@@ -4860,9 +4861,9 @@ $med_serv = implode(' ', $ct_array);
 		$this->security->get_csrf_hash();
 		$status = 'Paid';
 		$list = $this->loa_model->get_datatables_ledger($status);
-		$data = array();
+		$data = [];
 		foreach ($list as $member){
-			$row = array();
+			$row = [];
 			$member_id = $this->myhash->hasher($member['emp_id'], 'encrypt');
 			$full_name = $member['first_name'] . ' ' . $member['middle_name'] . ' ' . $member['last_name'] . ' ' . $member['suffix'];
 			$view_url = base_url() . 'healthcare-coordinator/loa_controller/fetch_ledger/'.$member['emp_id'];
@@ -4879,12 +4880,12 @@ $med_serv = implode(' ', $ct_array);
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->loa_model->count_all_ledger($status),
 			"recordsFiltered" => $this->loa_model->count_filtered_ledger($status),
 			"data" => $data,
-		);
+		];
 		echo json_encode($output);
 	}
 
@@ -4894,9 +4895,9 @@ $med_serv = implode(' ', $ct_array);
 		$emp_id = $this->input->post('emp_id');
 	
 		$list = $this->loa_model->get_datatables_ledger2($status,$emp_id);
-		$data = array();
+		$data = [];
 		foreach ($list as $member){
-			$row = array();
+			$row = [];
 			$member_id = $this->myhash->hasher($member['emp_id'], 'encrypt');
 			$full_name = $member['first_name'] . ' ' . $member['middle_name'] . ' ' . $member['last_name'] . ' ' . $member['suffix'];
 			$image_cv = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $member['supporting_file'] . '\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-file-image fs-2 text-info"></i></a>';
@@ -4919,12 +4920,12 @@ $med_serv = implode(' ', $ct_array);
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->loa_model->count_all_ledger2($status),
 			"recordsFiltered" => $this->loa_model->count_filtered_ledger2($status,$emp_id),
 			"data" => $data,
-		);
+		];
 		echo json_encode($output);
 	}
 

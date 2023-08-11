@@ -559,7 +559,7 @@ class Loa_controller extends CI_Controller {
 
 	function submit_hospital_receipt(){
 		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
-		// var_dump('Loa:',$loa_id);
+		// var_dump($loa_id);
 		$this->form_validation->set_rules('resubmit', 'Reason for Resubmit', 'trim|required|max_length[2000]');
 
 		if ($this->form_validation->run() == FALSE){
@@ -576,12 +576,11 @@ class Loa_controller extends CI_Controller {
 				'resubmit_by' 				=> $this->session->userdata('fullname'),
 			];
 
-
 			$updated = $this->loa_model->db_update_loa_request1($loa_id, $post_data);
 			if (!$updated) {
 				$response = [
 					'status' => 'save-error', 
-					'message' => 'Save Failed!'
+					'message' => 'Re-submit Failed!'
 				];
 			}
 			$response = [
@@ -589,7 +588,6 @@ class Loa_controller extends CI_Controller {
 				'message' => 'Re-submit Successfully!'
 			];
 		}
-
 		echo json_encode($response);
 		// var_dump($response);
 	}

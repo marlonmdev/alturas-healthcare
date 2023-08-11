@@ -78,7 +78,7 @@
           <form method="post" action="<?php echo base_url(); ?>healthcare-coordinator/loa/pending/submit_charge_type_not_affiliated" id="UpdateChargeTypeNotAffiliated">
             <div class="row mb-4">
               <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
-              <input type="text" name="loa_id" id="loa_id">
+              <input type="hidden" name="loa_id" id="loa_id">
               <div class="col-6 pt-3">
                 <label class="colored-label fs-5">Select Type :</label>
                 <select class="form-select chargetype fs-5" name="charge-type" id="charge-type">
@@ -104,24 +104,24 @@
             <div class="col pb-3">
               <label class="fs-5 colored-label">Spot Report :</label>
               <input type="file" accept=".pdf, image/*" class="form-control" name="spot-report"  id="spot-report" onchange="previewFile('spot-report')">
-              <span id="uploaded-spot-report-link1">Last file you saved : <a class="text-info" href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewSpotFile()" id="uploaded-spot-report1"></a></span>
+              <span id="uploaded-spot-report-link1">Last file you saved : <a class="text-info" href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewSpotFile1()" id="uploaded-spot-report1"></a></span>
             </div>  
 
             <div class="col pb-3">
               <label class="fs-5 colored-label">Incident Report :</label>
               <input type="file" accept=".pdf, image/*" class="form-control" name="incident-report" id="incident-report" onchange="previewFile('incident-report')">
-              <span id="uploaded-incident-report-link1">Last file you saved : <a class="text-info" href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewIncidentFile()" id="uploaded-incident-report1"></a></span>
+              <span id="uploaded-incident-report-link1">Last file you saved : <a class="text-info" href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewIncidentFile1()" id="uploaded-incident-report1"></a></span>
             </div>
 
             <div class="col pb-3">
               <label class="fs-5 colored-label">Police Report :</label>
               <input type="file" accept=".pdf, image/*" class="form-control" name="police-report" id="police-report" onchange="previewFile('police-report')">
-              <span id="uploaded-police-report-link1">Last file you saved : <a class="text-info" href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewPoliceFile()" id="uploaded-police-report1"></a></span>
+              <span id="uploaded-police-report-link1">Last file you saved : <a class="text-info" href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewPoliceFile1()" id="uploaded-police-report1"></a></span>
             </div>
 
             <div class="col pt-3 pb-3">
               <label class="fs-5 colored-label">Hospital Bill :</label>
-              <input class="form-control" id="hospital_bill">
+              <input class="form-control" id="hospital_bill" name="hospital_bill" oninput="formatHospitalBill(this)">
             </div>
 
             <div class="col pt-3 pb-3">
@@ -157,7 +157,7 @@
       <div class="modal-body">
         <form method="post" id="resubmitform">
           <input type="hidden" name="token" id="token" value="<?= $this->security->get_csrf_hash(); ?>">
-          <input type="text" name="loa_id" id="loaid" readonly>
+          <input type="text" name="loa_id" id="loaid">
           <input type="hidden" class="form-control fw-bold ls-2" name="loa_no" id="cur-loa-no" readonly>
 
           <div class="row form-group mt-2">

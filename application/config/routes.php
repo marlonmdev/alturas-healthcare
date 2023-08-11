@@ -448,11 +448,7 @@ $route['head-office-accounting/setup/update-bank-account'] = 'ho_accounting/main
 $route['head-office-accounting/charging/view-details'] = 'ho_accounting/main_controller/fetch_charge_details';
 $route['head-office-accounting/bill/submit-for-payment/other-hosp'] = 'ho_accounting/main_controller/other_hosp_submit_for_payment';
 $route['head-office-accounting/bill/other-hosp/for-payment/fetch'] = 'ho_accounting/main_controller/fetch_for_payment_other_hosp';
-<<<<<<< HEAD
-$route['head-office-accounting/billing-list/other-hosp/payment-details'] = 'ho_accounting/main_controller/add_payment_details_other_hosp';
-=======
 // $route['head-office-accounting/billing-list/other-hosp/payment-details'] = 'ho_accounting/main_controller/add_payment_details_other_hosp';
->>>>>>> 801ae76c31c3e1cbe874918867578e31c7be3a9e
 $route['head-office-accounting/bill/other-hosp/paid-bill/fetch'] = 'ho_accounting/main_controller/fetch_paid_other_hosp';
 
 $route['print/pdfbilling/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_bills/$1/$2/$3';

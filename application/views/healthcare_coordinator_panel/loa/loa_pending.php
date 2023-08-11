@@ -320,7 +320,7 @@
               if (resubmit_error !== '') {
                 $('#resubmit-error').html(resubmit_error);
                 $('#resubmit').addClass('is-invalid');
-              } else {
+              }else{
                 $('#resubmit-error').html('');
                 $('#resubmit').removeClass('is-invalid');
               }
@@ -643,6 +643,39 @@
     }
   }
 
+  const viewSpotFile1 = () => {
+    const sport_report = document.querySelector('#uploaded-spot-report1');
+    const anchorText = sport_report.textContent;
+
+    $('#viewFileModal').modal('show');
+    $('#cancel').hide();
+    $('#file-name-r').html('SPOT REPORT');
+
+    let pdfFile = `${baseUrl}uploads/spot_reports/${anchorText}`;
+    let fileExists = checkFileExists(pdfFile);
+
+    if(fileExists){
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', pdfFile, true);
+    xhr.responseType = 'blob';
+
+    xhr.onload = function(e) {
+        if (this.status == 200) {
+        let blob = this.response;
+        let reader = new FileReader();
+
+        reader.onload = function(event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-file-viewer');
+            iframe.src = dataURL;
+        };
+        reader.readAsDataURL(blob);
+        }
+    };
+    xhr.send();
+    }
+  }
+
   const viewIncidentFile = () => {
     const sport_report = document.querySelector('#uploaded-incident-report');
     const anchorText = sport_report.textContent;
@@ -676,8 +709,74 @@
     }
   }
 
+  const viewIncidentFile1 = () => {
+    const sport_report = document.querySelector('#uploaded-incident-report1');
+    const anchorText = sport_report.textContent;
+
+    $('#viewFileModal').modal('show');
+    $('#cancel').hide();
+    $('#file-name-r').html('INCIDENT REPORT');
+
+    let pdfFile = `${baseUrl}uploads/incident_reports/${anchorText}`;
+    let fileExists = checkFileExists(pdfFile);
+
+    if(fileExists){
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', pdfFile, true);
+    xhr.responseType = 'blob';
+
+    xhr.onload = function(e) {
+        if (this.status == 200) {
+        let blob = this.response;
+        let reader = new FileReader();
+
+        reader.onload = function(event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-file-viewer');
+            iframe.src = dataURL;
+        };
+        reader.readAsDataURL(blob);
+        }
+    };
+    xhr.send();
+    }
+  }
+
   const viewPoliceFile = () => {
     const sport_report = document.querySelector('#uploaded-police-report');
+    const anchorText = sport_report.textContent;
+
+    $('#viewFileModal').modal('show');
+    $('#cancel').hide();
+    $('#file-name-r').html('POLICE REPORT');
+
+    let pdfFile = `${baseUrl}uploads/police_reports/${anchorText}`;
+    let fileExists = checkFileExists(pdfFile);
+
+    if(fileExists){
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', pdfFile, true);
+    xhr.responseType = 'blob';
+
+    xhr.onload = function(e) {
+        if (this.status == 200) {
+        let blob = this.response;
+        let reader = new FileReader();
+
+        reader.onload = function(event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-file-viewer');
+            iframe.src = dataURL;
+        };
+        reader.readAsDataURL(blob);
+        }
+    };
+    xhr.send();
+    }
+  }
+
+  const viewPoliceFile1 = () => {
+    const sport_report = document.querySelector('#uploaded-police-report1');
     const anchorText = sport_report.textContent;
 
     $('#viewFileModal').modal('show');
@@ -743,7 +842,6 @@
     }
   };
 
-  
 
     const checkFileExists = (fileUrl) => {
         let xhr = new XMLHttpRequest();
@@ -863,32 +961,18 @@
     $('#uploaded-police-report').html(police_report);
   }
 
-  //View Send Back Modal
-  // document.getElementById("send-back-button").addEventListener("click", function () {
-  //   const loa_id = $('#loa_id').val();
-  //   $("#charge_type_modal_not_affiliated").modal("hide");
-  //   $("#sendbackmodal").modal("show");
-  //   console.log('LOA ID:',loa_id);
-  //   // $('#loa_id').val(loa_id);
-
-  //   $('#resubmit').val('');
-  //   $('#resubmit').removeClass('is-invalid');
-  //   $('#resubmit-error').html('');
-  //   $("#loaCancellationForm").attr("action", `${baseUrl}healthcare-coordinator/loa/requests-list/submit_hospital_receipt/${loa_id}`);
-
-  // });
 
   document.getElementById("send-back-button").addEventListener("click", function () {
     const originalLoaId = $('#loa_id').val();
     const formattedLoaId = originalLoaId;
 
-    console.log('LOA1:', originalLoaId);
-    console.log('LOA2:', formattedLoaId);
+    // console.log('LOA1:', originalLoaId);
+    // console.log('LOA2:', formattedLoaId);
 
     $("#charge_type_modal_not_affiliated").modal("hide");
     $("#sendbackmodal").modal("show");
     
-    $('#loa-id').val(formattedLoaId);
+    $('#loaid').val(formattedLoaId);
     $('#resubmit').val('');
     $('#resubmit').removeClass('is-invalid');
     $('#resubmit-error').html('');

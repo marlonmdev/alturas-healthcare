@@ -354,7 +354,7 @@
 <!-- End -->
 
 <!-- PDF DETAILED SOA -->
-<!-- <div class="modal fade" id="viewPDFBillModal1" tabindex="-1" data-bs-backdrop="static" style="height:100%">
+<div class="modal fade" id="viewPDFBillModal1" tabindex="-1" data-bs-backdrop="static" style="height:100%">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header" style="background-color:#00538c">
@@ -368,7 +368,7 @@
       </div>
     </div>
   </div>
-</div> -->
+</div>
 <!-- End -->
 
 
@@ -378,6 +378,8 @@
   const form = document.querySelector('#performedLoaInfo');
   const baseurl = `<?php echo base_url();?>`;
   const pdff = `<?php echo $pdf_bill ?>`;
+  const item = `<?php echo $item ?>`;
+  console.log(pdff);
   $(document).ready(function(){
     $('#performedLoaInfo').submit(function(event){
       event.preventDefault();
@@ -437,6 +439,10 @@
     $("#summary").click(function() {
       viewPDFBill();
     });
+
+    $("#detailed").click(function() {
+      viewItemizePDFBill();
+    });
   });
 
   const viewPDFBill = () => {
@@ -457,6 +463,33 @@
           reader.onload = function(event) {
             let dataURL = event.target.result;
             let iframe = document.querySelector('#pdf-viewer');
+            iframe.src = dataURL;
+          };
+          reader.readAsDataURL(blob);
+        }
+      };
+      xhr.send();
+    }
+  }
+
+  const viewItemizePDFBill = () => {
+    $('#viewPDFBillModal1').modal('show');
+    let pdfFile = `${baseurl}uploads/itemize_bills/${item}`;
+    let fileExists = checkFileExists(pdfFile);
+    // console.log("pdfFilename",pdfFile);
+    if(fileExists){
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', pdfFile, true);
+      xhr.responseType = 'blob';
+
+      xhr.onload = function(e) {
+        if (this.status == 200) {
+          let blob = this.response;
+          let reader = new FileReader();
+
+          reader.onload = function(event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-viewer1');
             iframe.src = dataURL;
           };
           reader.readAsDataURL(blob);

@@ -15,7 +15,7 @@
 <li class="sidebar-item <?php echo ($this->uri->segment(2) == 'members' || $this->uri->segment(2) == 'member') ? 'selected' : ''; ?>">
   <a class="sidebar-link sidebar-link" href="<?php echo base_url(); ?>healthcare-coordinator/members" aria-expanded="false">
     <i class="mdi mdi-account-multiple"></i>
-    <span class="hide-menu ls-1">Members</span>
+    <span class="hide-menu ls-1">Membership</span>
   </a>
 </li>
 

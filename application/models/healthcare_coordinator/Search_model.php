@@ -4,19 +4,21 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Search_model extends CI_Model {
 
   function get_autocomplete($search_data) {
-    $this->db->select('member_id, emp_id, first_name, middle_name, last_name, suffix, approval_status')
-             ->like('first_name', $search_data)
-             ->or_like('middle_name', $search_data)
-             ->or_like('last_name', $search_data)
-             ->or_like('suffix', $search_data)
-             ->or_like('CONCAT(first_name, " ",last_name)', $search_data)
-             ->or_like('CONCAT(first_name, " ",middle_name, " ", last_name)', $search_data)
-             ->or_like('CONCAT(first_name, " ",middle_name, " ", last_name, " ", suffix)', $search_data)
-             ->group_start()
-                ->where('approval_status', 'Approved')
-                ->or_where('approval_status', 'Done')
-             ->group_end();
-    return $this->db->get_where('members')->result_array();
+    $this->db->select('tbl_1.member_id, tbl_1.emp_id, tbl_1.first_name, tbl_1.middle_name, tbl_1.last_name, tbl_1.suffix')
+    ->from('members as tbl_1')
+    ->join('max_benefit_limits as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+    ->where_in('tbl_1.approval_status', array('Approved', 'Done'))
+    ->where('tbl_2.remaining_balance ', 0)
+    ->group_start()
+        ->like('tbl_1.first_name', $search_data)
+        ->or_like('tbl_1.middle_name', $search_data)
+        ->or_like('tbl_1.last_name', $search_data)
+        ->or_like('tbl_1.suffix', $search_data)
+        ->or_like('CONCAT(tbl_1.first_name, " ",tbl_1.last_name)', $search_data)
+        ->or_like('CONCAT(tbl_1.first_name, " ",tbl_1.middle_name, " ", tbl_1.last_name)', $search_data)
+        ->or_like('CONCAT(tbl_1.first_name, " ",tbl_1.middle_name, " ", tbl_1.last_name, " ", tbl_1.suffix)', $search_data)
+    ->group_end();
+  return $this->db->get()->result_array();
 }
 
   public function db_get_member_details($member_id) {

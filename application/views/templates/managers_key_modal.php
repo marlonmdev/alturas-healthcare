@@ -7,6 +7,7 @@
       </div>
 
       <div class="modal-body">
+        <input type="hidden" id="base_url" value="<?= base_url()?>" >
         <form id="managersKeyReqLOANOAForm" autocomplete="off">
           <span class="text-danger">This requisition is for Members with Zero MBL and Company Related situations.</span>
           <input type="hidden" name="token" id="token" value="<?= $this->security->get_csrf_hash(); ?>">

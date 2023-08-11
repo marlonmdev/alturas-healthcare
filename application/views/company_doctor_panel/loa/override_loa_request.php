@@ -432,8 +432,9 @@
   } 
 
   function load_member_data(token, search) {
+   
     $.ajax({
-      url: `${baseUrl}company-doctor/member/search`,
+      url: `${baseUrl}company-doctor/member/search-loa`,
       method: "POST",
       data: {
         token: token,

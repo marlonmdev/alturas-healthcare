@@ -194,7 +194,7 @@
 
   function load_member_data(token, search) {
     $.ajax({
-      url: `${baseUrl}company-doctor/member/search`,
+      url: `${baseUrl}company-doctor/member/search-noa`,
       method: "POST",
       data: {
         token: token,

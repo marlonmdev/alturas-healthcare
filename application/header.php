@@ -39,7 +39,6 @@
   </head>
   
   <body>
- 
     <!-- Start of Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModal" aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -219,4 +218,4 @@
         <!-- End Sidebar scroll-->
       </aside>
       <!-- End Left Sidebar  -->
-      <?php include 'managers_key_modal.php' ?>
+     

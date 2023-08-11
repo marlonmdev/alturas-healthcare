@@ -20,6 +20,14 @@
       <div class="col-lg-12">
         <div class="card shadow">
           <div class="card-body">
+            <div class="row">
+              <div class="col-xs-12 d-flex justify-content-center align-items-center">
+                <img src="<?= base_url(); ?>assets/images/logo2.png" alt="Alturas Healthcare Logo" height="70" width="300">
+              </div>
+              <div class="col-12 pt-3">
+                <div class="text-center mb-4 mt-0"><h4 class="page-title ls-2" style="color:black;font-family:Times Roman">DIAGNOSTIC FORM</h4></div>
+              </div><hr style="color:gray">
+            </div>
 
             <form method="post" action="<?= base_url(); ?>healthcare-coordinator/loa/submit_diagnostic_form" class="mt-2" id="diagnosticform" enctype="multipart/form-data">
 

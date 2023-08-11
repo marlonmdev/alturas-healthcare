@@ -241,8 +241,8 @@
     $('#UpdateChargeTypeNotAffiliated').submit(function(event) {
       event.preventDefault();
 
-      const ChargeForm = $('#UpdateChargeTypeNotAffiliated')[0];
-      const formdata = new FormData(ChargeForm);
+      const ChargeForm1 = $('#UpdateChargeTypeNotAffiliated')[0];
+      const formdata = new FormData(ChargeForm1);
       $.ajax({
         type: "post",
         url: $(this).attr('action'),
@@ -260,7 +260,7 @@
               if (charge_type_error !== '') {
                 $('#charge-type-error').html(charge_type_error);
                 $('#charge-type').addClass('is-invalid');
-              } else {
+              }else{
                 $('#charge-type-error').html('');
                 $('#charge-type').removeClass('is-invalid');
               }
@@ -300,6 +300,56 @@
           }
         },
       })
+    });
+
+    $('#resubmitform').submit(function(event) {
+      const nextPage = `${baseUrl}healthcare-coordinator/loa/requests-list`;
+      event.preventDefault();
+      $.ajax({
+        type: "post",
+        url: $(this).attr('action'),
+        data: $(this).serialize(),
+        dataType: "json",
+        success: function(response) {
+          const {
+            token,status,message,resubmit_error
+          } = response;
+          switch (status) {
+            case 'error':
+              // is-invalid class is a built in classname for errors in bootstrap
+              if (resubmit_error !== '') {
+                $('#resubmit-error').html(resubmit_error);
+                $('#resubmit').addClass('is-invalid');
+              } else {
+                $('#resubmit-error').html('');
+                $('#resubmit').removeClass('is-invalid');
+              }
+            break;
+            case 'save-error':
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
+            break;
+            case 'success':
+              swal({
+                title: 'Success',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'success'
+              });
+              $('#sendbackmodal').modal('hide');
+              setTimeout(function() {
+                window.location.href = nextPage;
+              }, 3200);
+            break;
+          }
+        }
+      });
     });
   });
 
@@ -449,19 +499,84 @@
     });
   }
 
-  const showTagChargeType = (loa_id) => {
+  const showTagChargeType = (loa_id,percentage,work_related,spot_report_file,police_report_file,incident_report_file) => {
+
     $("#viewChargeTypeModal").modal("show");
     $("#viewChargeTypeModal").find("form")[0].reset();
     $('#loa-id').val(loa_id);
-    $('#charge-type').val('');
+
+    const translatedWorkRelated = (work_related === 'Yes') ? 'Work related' : 'Non-work related';
+    // Set the value and mark the appropriate option as selected
+    $('#charge-type').val(translatedWorkRelated);
+    if (work_related == 'Yes') {
+      $('#charge-type option[value="Yes"]').prop("selected", true);
+    }else if(work_related == 'No'){
+      $('#charge-type option[value="No"]').prop("selected", true);
+    }else{
+      $('#charge-type option[value=""]').prop("selected", true);
+    }
+
+    $('#percentage').val(percentage);
+
+    if (spot_report_file !=='') {
+      $('#uploaded-spot-report-link').show();
+      $('#uploaded-spot-report').html(spot_report_file);
+    } else {
+      $('#uploaded-spot-report-link').hide();
+    }
+    if (incident_report_file !=='') {
+      $('#uploaded-incident-report-link').show();
+      $('#uploaded-incident-report').html(incident_report_file);
+    } else {
+      $('#uploaded-incident-report-link').hide();
+    }
+    if (police_report_file !=='') {
+      $('#uploaded-police-report-link').show();
+      $('#uploaded-police-report').html(police_report_file);
+    } else {
+      $('#uploaded-police-report-link').hide();
+    }
   }
 
-  const ChargeTypenotAffiliated = (loa_id, hospital_receipt, hospital_bill) => {
-    console.log('Calling ChargeTypenotAffiliated with LOA ID:', loa_id);
+  const ChargeTypenotAffiliated = (loa_id,hospital_receipt,hospital_bill,percentage,work_related,spot_report_file,police_report_file,incident_report_file) => {
+
     $("#charge_type_modal_not_affiliated").modal("show");
     $("#charge_type_modal_not_affiliated").find("form")[0].reset();
     $('#loa_id').val(loa_id);
-    // Format the hospital_bill value with the currency symbol
+
+    const translatedWorkRelated = (work_related === 'Yes') ? 'Work related' : 'Non-work related';
+    // Set the value and mark the appropriate option as selected
+    $('#charge-type').val(translatedWorkRelated);
+    if (work_related == 'Yes') {
+      $('#charge-type option[value="Yes"]').prop("selected", true);
+    }else if(work_related == 'No'){
+      $('#charge-type option[value="No"]').prop("selected", true);
+    }else{
+      $('#charge-type option[value=""]').prop("selected", true);
+    }
+
+    $('#percentage1').val(percentage);
+
+    if (spot_report_file !=='') {
+      $('#uploaded-spot-report-link1').show();
+      $('#uploaded-spot-report1').html(spot_report_file);
+    } else {
+      $('#uploaded-spot-report-link1').hide();
+    }
+    if (incident_report_file !=='') {
+      $('#uploaded-incident-report-link1').show();
+      $('#uploaded-incident-report1').html(incident_report_file);
+    } else {
+      $('#uploaded-incident-report-link1').hide();
+    }
+    if (police_report_file !=='') {
+      $('#uploaded-police-report-link1').show();
+      $('#uploaded-police-report1').html(police_report_file);
+    } else {
+      $('#uploaded-police-report-link1').hide();
+    }
+
+
     const formattedHospitalBill = new Intl.NumberFormat('en-PH', {
       style: 'currency',
       currency: 'PHP',
@@ -469,35 +584,30 @@
       maximumFractionDigits: 2,
     }).format(hospital_bill);
 
-    // Set the formatted hospital_bill value to the input field
     $('#hospital_bill').val(formattedHospitalBill);
 
-    // Set the hospital_receipt attribute to the image element
     $('#uploaded-hospital-receipt').attr("hospital_receipt", hospital_receipt);
-
-    // Set the src attribute of the image element
     $('#uploaded-hospital-receipt').attr("src", baseUrl + 'uploads/hospital_receipt/' + hospital_receipt);
   };
 
   let pdfinput = "";
   const  previewFile = (pdf_input) => {
-      pdfinput = pdf_input;
-      let pdfFileInput = document.getElementById(pdf_input);
-      let pdfFile = pdfFileInput.files[0];
-      let reader = new FileReader();
-      if(pdfFile){
-          $('#viewFileModal').modal('show');
-          $('#file-name-r').html('Attached File');
-          $('#cancel').show();
+    pdfinput = pdf_input;
+    let pdfFileInput = document.getElementById(pdf_input);
+    let pdfFile = pdfFileInput.files[0];
+    let reader = new FileReader();
+    if(pdfFile){
+      $('#viewFileModal').modal('show');
+      $('#file-name-r').html('Attached File');
+      $('#cancel').show();
 
-          reader.onload = function(event) {
-          let dataURL = event.target.result;
-          let iframe = document.querySelector('#pdf-file-viewer');
-          iframe.src = dataURL;
-      };
-          reader.readAsDataURL(pdfFile);
-      }
-
+      reader.onload = function(event) {
+      let dataURL = event.target.result;
+      let iframe = document.querySelector('#pdf-file-viewer');
+      iframe.src = dataURL;
+    };
+      reader.readAsDataURL(pdfFile);
+    }
   }
 
   const viewSpotFile = () => {
@@ -752,6 +862,22 @@
     $('#uploaded-incident-report').html(incident_report);
     $('#uploaded-police-report').html(police_report);
   }
+
+  // Add an event listener to the "Send Back" button
+  document.getElementById("send-back-button").addEventListener("click", function () {
+    const loa_id = $('#loa_id').val();
+    $("#charge_type_modal_not_affiliated").modal("hide");
+    $("#sendbackmodal").modal("show");
+    console.log('LOA ID:',loa_id);
+    // $('#loa_id').val(loa_id);
+
+    $('#resubmit').val('');
+    $('#resubmit').removeClass('is-invalid');
+    $('#resubmit-error').html('');
+    $("#loaCancellationForm").attr("action", `${baseUrl}healthcare-coordinator/loa/requests-list/submit_hospital_receipt/${loa_id}`);
+
+  });
+
 </script>
 
 <style>

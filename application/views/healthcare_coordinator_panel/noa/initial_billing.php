@@ -20,26 +20,24 @@
       <div class="col-lg-12">
         <div class="card shadow" style="background-color:">
           <div class="card-body">
-            <div class="">
-              <table class="table table-hover table-responsive" id="initial_billing">
-                <thead style="background-color:#ADD8E6">
-                  <tr>
-                    <th style="color:black;font-weight:bold;font-size:10px">BILLING #</th>
-                    <th style="color:black;font-weight:bold;font-size:10px">NOA NO.</th>
-                    <th style="color:black;font-weight:bold;font-size:10px">NAME OF PATIENT</th>
-                    <th style="color:black;font-weight:bold;font-size:10px">BUSINESS UNIT</th>
-                    <th style="color:black;font-weight:bold;font-size:10px">DEPARTMENT</th>
-                    <th style="color:black;font-weight:bold;font-size:10px">WORK RELATED</th>
-                    <th style="color:black;font-weight:bold;font-size:10px">COMPANY CHARGE</th>
-                    <th style="color:black;font-weight:bold;font-size:10px">PERSONAL CHARGE</th>
-                    <th style="color:black;font-weight:bold;font-size:10px">HEALTHCARE ADVANCE</th>
-                    <th style="color:black;font-weight:bold;font-size:10px">ACTION</th>
-                  </tr>
-                </thead>
-                <tbody id="billed-tbody" style="color:black;font-size:11px">
-                </tbody> 
-              </table>
-            </div>
+            <table class="table table-hover table-responsive" id="initial_billing">
+              <thead style="background-color:#ADD8E6">
+                <tr>
+                  <th style="color:black;font-weight:bold;font-size:10px">BILLING #</th>
+                  <th style="color:black;font-weight:bold;font-size:10px">NOA NO.</th>
+                  <th style="color:black;font-weight:bold;font-size:10px">NAME OF PATIENT</th>
+                  <th style="color:black;font-weight:bold;font-size:10px">BUSINESS UNIT</th>
+                  <th style="color:black;font-weight:bold;font-size:10px">DEPARTMENT</th>
+                  <th style="color:black;font-weight:bold;font-size:10px">WORK RELATED</th>
+                  <th style="color:black;font-weight:bold;font-size:10px">COMPANY CHARGE</th>
+                  <th style="color:black;font-weight:bold;font-size:10px">PERSONAL CHARGE</th>
+                  <th style="color:black;font-weight:bold;font-size:10px">HEALTHCARE ADVANCE</th>
+                  <th style="color:black;font-weight:bold;font-size:10px">ACTION</th>
+                </tr>
+              </thead>
+              <tbody id="billed-tbody" style="color:black;font-size:11px">
+              </tbody> 
+            </table>
           </div>
         </div>
       </div>

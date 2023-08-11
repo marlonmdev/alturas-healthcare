@@ -48,29 +48,27 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
-        <div class="row pt-2 pb-2">
-          <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
-          <table class="table-responsive table-hover" id="billedLoaTable">
-            <thead style="background-color:#ADD8E6">
-              <tr>
-                <th style="color:black;font-size:10px">BILLING #</th>
-                <th style="color:black;font-size:10px">NOA NO.</th>
-                <th style="color:black;font-size:10px">PATIENT NAME</th>
-                <th style="color:black;font-size:10px">BUSINESS UNIT</th>
-                <th style="color:black;font-size:10px">PERCENTAGE</th>
-                <th style="color:black;font-size:10px">TYPE OF REQUEST</th>
-                <th style="color:black;font-size:10px">COMPANY CHARGE</th>
-                <th style="color:black;font-size:10px">PERSONAL CHARGE</th>
-                <th style="color:black;font-size:10px">CASH ADVANCE</th>
-                <th style="color:black;font-size:10px">HOSPITAL BILL</th>
-                <th style="color:black;font-size:10px">SUMMARY SOA</th>
-                <th style="color:black;font-size:10px">DETAILED SOA</th>
-              </tr>
-            </thead>
-            <tbody id="billed-tbody" style="color:black;font-size:10px">
-            </tbody>
-          </table>
-        </div>
+        <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
+        <table class="table-responsive table-hover" id="billedLoaTable">
+          <thead style="background-color:#ADD8E6">
+            <tr>
+              <th style="color:black;font-size:10px">BILLING #</th>
+              <th style="color:black;font-size:10px">NOA NO.</th>
+              <th style="color:black;font-size:10px">PATIENT NAME</th>
+              <th style="color:black;font-size:10px">BUSINESS UNIT</th>
+              <th style="color:black;font-size:10px">PERCENTAGE</th>
+              <th style="color:black;font-size:10px">TYPE OF REQUEST</th>
+              <th style="color:black;font-size:10px">COMPANY CHARGE</th>
+              <th style="color:black;font-size:10px">PERSONAL CHARGE</th>
+              <th style="color:black;font-size:10px">CASH ADVANCE</th>
+              <th style="color:black;font-size:10px">HOSPITAL BILL</th>
+              <th style="color:black;font-size:10px">SUMMARY SOA</th>
+              <th style="color:black;font-size:10px">DETAILED SOA</th>
+            </tr>
+          </thead>
+          <tbody id="billed-tbody" style="color:black;font-size:10px">
+          </tbody>
+        </table>
         <div class="row pt-2 pb-2 offset-8">
           <div class="col-lg-5">
             <label>Total Hospital Bill :</label>
@@ -88,119 +86,64 @@
 <script>
   const baseUrl = "<?php echo base_url(); ?>";
   const bill_no = document.querySelector('#bill-no').value;
-    
-  // $(document).ready(function(){
-    
-  //   let billedTable = $('#billedLoaTable').DataTable({
-  //     processing: true,
-  //     serverSide: true,
-  //     order: [],
-
-  //     // Load data for the table's content from an Ajax source
-  //     ajax: {
-  //       url: `${baseUrl}healthcare-coordinator/noa/monthly-bill/charging/${bill_no}`,
-  //       type: "POST",
-  //       // passing the token as data so that requests will be allowed
-  //       data: function(data) {
-  //           data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
-  //       }
-  //     },
-  //     //Set column definition initialisation properties.
-  //     columnDefs: [{
-  //       "orderable": false, //set not orderable
-  //     }, ],
-  //     data: [],  // Empty data array
-  //     deferRender: true,  // Enable deferred rendering
-  //     info: false,
-  //     paging: false,
-  //     filter: false,
-  //     lengthChange: false,
-  //     responsive: true,
-  //     fixedHeader: true,
-  //   });
-
-  //   billedTable.on('draw.dt', function() {
-  //     let columnId = 9;
-  //     let sum = 0;
-  //     let rowss = billedTable.rows().nodes();
-
-  //     if ($('#billedLoaTable').DataTable().data().length > 0) {
-  //       // The table is not empty
-  //       rowss.each(function(index, row) {
-  //         let rowData = billedTable.row(row).data();
-  //         let columnValue = rowData[columnId];
-  //         let pattern = /-?[\d,]+(\.\d+)?/g;
-  //         let matches = columnValue.match(pattern);
-
-  //         if (matches && matches.length > 0) {
-  //           let numberString = matches[0].replace(/,/g, ''); // Replace all commas
-  //           let floatValue = parseFloat(numberString);
-  //           sum += floatValue;
-  //         }
-  //       });
-  //     }
-  //     $('#total-hospital-bill').html(sum.toLocaleString('PHP', { minimumFractionDigits: 2 }));
-  //   });
-  // });
 
   $(document).ready(function() {
     let billedTable = $('#billedLoaTable').DataTable({
-        processing: true,
-        serverSide: true,
-        order: [],
+      processing: true,
+      serverSide: true,
+      order: [],
 
-        // Load data for the table's content from an Ajax source
-        ajax: {
-            url: `${baseUrl}healthcare-coordinator/noa/monthly-bill/charging/${bill_no}`,
-            type: "POST",
-            // passing the token as data so that requests will be allowed
-            data: function(data) {
-                data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
-            }
-        },
-        // Set column definition initialisation properties.
-        columnDefs: [{
-            "orderable": false, // set not orderable
-        }, ],
-        data: [], // Empty data array
-        deferRender: true, // Enable deferred rendering
-        info: false,
-        paging: false,
-        filter: false,
-        lengthChange: false,
-        responsive: true,
-        fixedHeader: true,
+      // Load data for the table's content from an Ajax source
+      ajax: {
+        url: `${baseUrl}healthcare-coordinator/noa/monthly-bill/charging/${bill_no}`,
+        type: "POST",
+        // passing the token as data so that requests will be allowed
+        data: function(data) {
+          data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
+        }
+      },
+      // Set column definition initialisation properties.
+      columnDefs: [{
+        "orderable": false, // set not orderable
+      }, ],
+      data: [], // Empty data array
+      deferRender: true, // Enable deferred rendering
+      info: false,
+      paging: false,
+      filter: false,
+      lengthChange: false,
+      responsive: true,
+      fixedHeader: true,
     });
 
     billedTable.on('draw.dt', function() {
-        let columnId = 9; // Column index for "HOSPITAL BILL"
-        let sum = 0;
-        let rowss = billedTable.rows().nodes();
+      let columnId = 9; // Column index for "HOSPITAL BILL"
+      let sum = 0;
+      let rowss = billedTable.rows().nodes();
 
-        if ($('#billedLoaTable').DataTable().data().length > 0) {
-            // The table is not empty
-            rowss.each(function(index, row) {
-                let rowData = billedTable.row(row).data();
-                let columnValue = rowData[columnId];
-                let pattern = /-?[\d,]+(\.\d+)?/g;
-                let matches = columnValue.match(pattern);
+      if ($('#billedLoaTable').DataTable().data().length > 0) {
+        // The table is not empty
+        rowss.each(function(index, row) {
+          let rowData = billedTable.row(row).data();
+          let columnValue = rowData[columnId];
+          let pattern = /-?[\d,]+(\.\d+)?/g;
+          let matches = columnValue.match(pattern);
 
-                if (matches && matches.length > 0) {
-                    let numberString = matches[0].replace(/,/g, ''); // Replace all commas
-                    let floatValue = parseFloat(numberString);
-                    sum += floatValue;
-                }
-            });
-        }
-        $('#total-hospital-bill').val(sum.toLocaleString('PHP', { minimumFractionDigits: 2 }));
+          if (matches && matches.length > 0) {
+            let numberString = matches[0].replace(/,/g, ''); // Replace all commas
+            let floatValue = parseFloat(numberString);
+            sum += floatValue;
+          }
+        });
+      }
+      $('#total-hospital-bill').val(sum.toLocaleString('PHP', { minimumFractionDigits: 2 }));
     });
-});
+  });
 
   const viewPDFBill = (pdf_bill,noa_no) => {
     $('#viewPDFBillModal').modal('show');
     $('#pdf-loa-no').html(noa_no);
-    // console.log('pdf',pdf_bill);
-    //  console.log('noa_no',noa_no);
+    
     let pdfFile = `${baseUrl}uploads/pdf_bills/${pdf_bill}`;
     let fileExists = checkFileExists(pdfFile);
 

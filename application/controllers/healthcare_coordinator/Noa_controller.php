@@ -664,12 +664,9 @@ class Noa_controller extends CI_Controller {
   			$billed_date = date("F d, Y", strtotime($bill['billed_on']));
 			}
 
-			// if (empty($bill['pdf_bill'])) {
-  	// 		$pdf_bill = 'Waiting for SOA';
-			// }else{
-  	// 		$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View SOA"><i class="mdi mdi-file-pdf fs-4 text-danger"></i></a>';
-			// }
 
+<<<<<<< HEAD
+=======
 			if($bill['accredited']=='0'){
 				if($bill['st'])
 				$pdf_bill = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $bill['pdf_bill'] . '\')"><i class="mdi mdi-file-image fs-4 text-danger"></i></a>';
@@ -677,6 +674,7 @@ class Noa_controller extends CI_Controller {
 
 				$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View SOA"><i class="mdi mdi-file-pdf fs-4 text-danger"></i></a>';
 			}
+>>>>>>> bdac135bdc065667859a14878e9d58327ba799d1
 
 			if($bill['tbl1_status'] !== 'Billed'){
 				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $bill['tbl1_status'] . '</span></div>';
@@ -686,14 +684,20 @@ class Noa_controller extends CI_Controller {
 
 			$custom_actions = '';
 			if($bill['tbl1_status'] == 'Billed'){
-
-				if ($bill['guarantee_letter'] =='') {
-	  			$custom_actions .= '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $noa_id . '\',\'' . $bill['billing_id'] . '\')" data-bs-toggle="modal" data-bs-target="#GuaranteeLetter" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-4 text-danger"></i></a>';
-	  		}else{
-					$custom_actions .= '<i class="mdi mdi-reply fs-4 text-secondary" title="Guarantee Letter Already Sent"></i>';
+				if($bill['accredited']=='1'){
+					$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\')" data-bs-toggle="tooltip" title="View SOA"><i class="mdi mdi-file-pdf fs-4 text-danger"></i></a>';
+					if ($bill['guarantee_letter'] =='') {
+		  			$custom_actions .= '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $noa_id . '\',\'' . $bill['billing_id'] . '\')" data-bs-toggle="modal" data-bs-target="#GuaranteeLetter" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-4 text-danger"></i></a>';
+		  		}else{
+						$custom_actions .= '<i class="mdi mdi-reply fs-4 text-secondary" title="Guarantee Letter Already Sent"></i>';
+					}
+				}else if($bill['accredited']=='0'){
+					$pdf_bill = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $bill['pdf_bill'] . '\')"><i class="mdi mdi-file-image fs-4 text-danger"></i></a>';
+					$custom_actions .='<i class="mdi mdi-cached fs-4 text-success"></i>Processing...';
 				}
-			}else if($bill['tbl1_status'] == 'Approved'){
+			}else if($bill['tbl1_status'] == 'Approved' && $bill['accredited']=='1'){
 				$custom_actions .='<i class="mdi mdi-cached fs-4 text-success"></i>Processing...';
+				$pdf_bill ='Waiting for SOA';
 			}
 
 			$row[] = $bill['noa_no'];
@@ -706,9 +710,9 @@ class Noa_controller extends CI_Controller {
 			$row[] = '₱' . number_format($bill['company_charge'], 2, '.', ',');
 			$row[] = '₱' . number_format($bill['personal_charge'], 2, '.', ',');
 			$row[] = '₱' . number_format($bill['cash_advance'], 2, '.', ',');
-			$row[] = $pdf_bill;
 			$netBill = '₱' . number_format($bill['net_bill'], 2, '.', ',');
 			$row[] = $netBill;
+			$row[] = $pdf_bill;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;

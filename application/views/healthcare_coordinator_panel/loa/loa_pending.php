@@ -863,19 +863,37 @@
     $('#uploaded-police-report').html(police_report);
   }
 
-  // Add an event listener to the "Send Back" button
+  //View Send Back Modal
+  // document.getElementById("send-back-button").addEventListener("click", function () {
+  //   const loa_id = $('#loa_id').val();
+  //   $("#charge_type_modal_not_affiliated").modal("hide");
+  //   $("#sendbackmodal").modal("show");
+  //   console.log('LOA ID:',loa_id);
+  //   // $('#loa_id').val(loa_id);
+
+  //   $('#resubmit').val('');
+  //   $('#resubmit').removeClass('is-invalid');
+  //   $('#resubmit-error').html('');
+  //   $("#loaCancellationForm").attr("action", `${baseUrl}healthcare-coordinator/loa/requests-list/submit_hospital_receipt/${loa_id}`);
+
+  // });
+
   document.getElementById("send-back-button").addEventListener("click", function () {
-    const loa_id = $('#loa_id').val();
+    const originalLoaId = $('#loa_id').val();
+    const formattedLoaId = originalLoaId;
+
+    console.log('LOA1:', originalLoaId);
+    console.log('LOA2:', formattedLoaId);
+
     $("#charge_type_modal_not_affiliated").modal("hide");
     $("#sendbackmodal").modal("show");
-    console.log('LOA ID:',loa_id);
-    // $('#loa_id').val(loa_id);
-
+    
+    $('#loa-id').val(formattedLoaId);
     $('#resubmit').val('');
     $('#resubmit').removeClass('is-invalid');
     $('#resubmit-error').html('');
-    $("#loaCancellationForm").attr("action", `${baseUrl}healthcare-coordinator/loa/requests-list/submit_hospital_receipt/${loa_id}`);
-
+    
+    $("#loaCancellationForm").attr("action", `${baseUrl}healthcare-coordinator/loa/requests-list/submit_hospital_receipt/${originalLoaId}`);
   });
 
 </script>

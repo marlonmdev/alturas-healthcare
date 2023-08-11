@@ -78,7 +78,7 @@
           <form method="post" action="<?php echo base_url(); ?>healthcare-coordinator/loa/pending/submit_charge_type_not_affiliated" id="UpdateChargeTypeNotAffiliated">
             <div class="row mb-4">
               <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
-              <input type="text" name="loa_id" id="loa_id">
+              <input type="hidden" name="loa_id" id="loa_id">
               <div class="col-6 pt-3">
                 <label class="colored-label fs-5">Select Type :</label>
                 <select class="form-select chargetype fs-5" name="charge-type" id="charge-type">
@@ -121,11 +121,7 @@
 
             <div class="col pt-3 pb-3">
               <label class="fs-5 colored-label">Hospital Bill :</label>
-<<<<<<< HEAD
               <input class="form-control" id="hospital_bill" name="hospital_bill" oninput="formatHospitalBill(this)">
-=======
-              <input class="form-control" id="hospital_bill">
->>>>>>> bdac135bdc065667859a14878e9d58327ba799d1
             </div>
 
             <div class="col pt-3 pb-3">
@@ -161,7 +157,7 @@
       <div class="modal-body">
         <form method="post" id="resubmitform">
           <input type="hidden" name="token" id="token" value="<?= $this->security->get_csrf_hash(); ?>">
-          <input type="text" name="loa_id" id="loa_id" readonly>
+          <input type="text" name="loa_id" id="loa-id">
           <input type="hidden" class="form-control fw-bold ls-2" name="loa_no" id="cur-loa-no" readonly>
 
           <div class="row form-group mt-2">

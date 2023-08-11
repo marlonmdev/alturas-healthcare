@@ -201,18 +201,22 @@
       $('#healthcare-provider-category').on('change', function(event){
           enableProvider();
       }); 
-
+     
       if(is_manual){
       $('#healthcare-provider-category').val(2);
-      enableProvider();
       $('#hospital-name').val(row.hospital_id);
+      // console.log('hospital name',row.hospital_id);
+      enableProvider();
+      // $('#hospital-name').val(row.hospital_id);
       $('#med-hr-wrapper').prop('hidden',false);
       $('#hospital-bill').val(row.hospital_bill);
       // get_services(services,row.med_services);
     }else{
       $('#healthcare-provider-category').val(1);
-      enableProvider();
       $('#hospital-name').val(row.hospital_id);
+      // console.log('hospital name',row.hospital_id);
+      enableProvider();
+      // $('#hospital-name').val(row.hospital_id);
       $('#med-hr-wrapper').prop('hidden',true);
       // get_services(services,row.med_services);
     }
@@ -372,6 +376,7 @@
     console.log('hospital_names',hospital_names);
     console.log('hospital_names',hospital_names);
     console.log('ahcproviders_names',ahcproviders_names);
+    console.log('ahcproviders val',hc_provider);
     const optionElement = document.createElement('option');
     const request_type = document.querySelector('#hospital-name');
       if( hc_provider != '' ){

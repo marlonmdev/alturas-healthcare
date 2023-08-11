@@ -168,7 +168,7 @@
 
   function load_member_data(token, search) {
     $.ajax({
-      url: `${baseUrl}healthcare-coordinator/member/search`,
+      url: `${baseUrl}healthcare-coordinator/member/search-affilliated`,
       method: "POST",
       data: {
         token: token,

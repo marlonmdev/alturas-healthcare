@@ -506,15 +506,17 @@ input[type="text"]::-webkit-outer-spin-button {
 
       if(is_manual){
       $('#healthcare-provider-category').val(2);
-      enableProvider();
       $('#healthcare-provider').val(row.hcare_provider);
+      enableProvider();
+     
       $('#loa-request-type').val(row.loa_request_type);
       $('#hospital-bill-wrapper').prop('hidden',false);
       // get_services(services,row.med_services);
     }else{
       $('#healthcare-provider-category').val(1);
-      enableProvider();
       $('#healthcare-provider').val(row.hcare_provider);
+      enableProvider();
+    
       $('#loa-request-type').val(row.loa_request_type);
       $('#hospital-bill-wrapper').prop('hidden',true);
       // get_services(services,row.med_services);

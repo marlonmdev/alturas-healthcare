@@ -377,6 +377,7 @@
     console.log('hospital_names',hospital_names);
     console.log('ahcproviders_names',ahcproviders_names);
     const request_type = document.querySelector('#hospital-name');
+    request_type.innerHTML = '<option value="" selected>Select Healthcare Provider</option>';
       if( hc_provider != '' ){
         removeOption();
         request_type.disabled = false;

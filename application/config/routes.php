@@ -615,6 +615,7 @@ $route['healthcare-coordinator/members/approved/fetch'] = 'healthcare_coordinato
 $route['healthcare-coordinator/members/view/(:any)'] = 'healthcare_coordinator/members_controller/view_member_info';
 // $route['healthcare-coordinator/members/user-account/create'] = 'healthcare_coordinator/members_controller/create_member_user_account';
 $route['healthcare-coordinator/member/search'] = 'healthcare_coordinator/search_controller/search_autocomplete';
+$route['healthcare-coordinator/member/search-affilliated'] = 'healthcare_coordinator/search_controller/search_autocomplete_affiliated';
 $route['healthcare-coordinator/members/approved/insert-hc-id'] = 'healthcare_coordinator/members_controller/insert_scanned_hc_id';
 $route['healthcare-coordinator/members/approved/uploaded-scanned-id'] = 'healthcare_coordinator/members_controller/fetch_uploaded_hc_id';
 $route['healthcare-coordinator/members/helthcard/view-id/(:any)'] = 'healthcare_coordinator/members_controller/get_hc_id';

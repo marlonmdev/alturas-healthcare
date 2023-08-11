@@ -595,6 +595,7 @@ const number_validator = () => {
     const hc_provider = document.querySelector('#healthcare-provider-category').value;
    
     const request_type = document.querySelector('#healthcare-provider');
+    request_type.innerHTML = '<option value="" selected>Select Healthcare Provider</option>';
       if( hc_provider != '' ){
         removeOption();
         request_type.disabled = false;

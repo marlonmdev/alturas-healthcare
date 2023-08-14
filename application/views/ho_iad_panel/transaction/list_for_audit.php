@@ -293,8 +293,46 @@
       }else{
         $('#pdf-loa-no').html(loa_no);
       }
+      $('#cv-title').hide();
+      $('#bill-title').show();
 
         let pdfFile = `${baseUrl}uploads/pdf_bills/${pdf_bill}`;
+        let fileExists = checkFileExists(pdfFile);
+
+        if(fileExists){
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', pdfFile, true);
+        xhr.responseType = 'blob';
+
+        xhr.onload = function(e) {
+            if (this.status == 200) {
+            let blob = this.response;
+            let reader = new FileReader();
+
+            reader.onload = function(event) {
+                let dataURL = event.target.result;
+                let iframe = document.querySelector('#pdf-viewer');
+                iframe.src = dataURL;
+            };
+            reader.readAsDataURL(blob);
+            }
+        };
+        xhr.send();
+        }
+    }
+
+    const viewPDFBillReimburse = (pdf_bill,noa_no,loa_no) => {
+      $('#viewPDFBillModal').modal('show');
+      if(noa_no != ''){
+        $('#pdf-loa-no').html(noa_no);
+      }else{
+        $('#pdf-loa-no').html(loa_no);
+      }
+      $('#cv-title').hide();
+      $('#bill-title').show();
+
+  
+        let pdfFile = `${baseUrl}uploads/hospital_receipt/${pdf_bill}`;
         let fileExists = checkFileExists(pdfFile);
 
         if(fileExists){

@@ -27,7 +27,7 @@
             if (!empty($hospitals)) :
           ?>
             <div class="mb-3">
-              <h2>Hospitals<i class="mdi mdi-arrow-right-bold"></i><strong class="text-danger"><?= $hospitals_count ?></strong></h2>
+              <h2>Accredited Hospitals<i class="mdi mdi-arrow-right-bold"></i><strong class="text-danger"><?= $hospitals_count ?></strong></h2>
               <div class="border border-2 border-dark"></div>
             </div>
             <?php

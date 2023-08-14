@@ -19,7 +19,7 @@
                                     <div class="input-group-prepend pt-2">
                                         <span class="text-danger fs-5 fw-bold pe-2">Total Payable : </span>
                                     </div>
-                                        <input class="form-control text-dark fw-bold ls-1 fs-5" name="p-total-bill" id="p-total-bill">
+                                        <input class="form-control text-dark fw-bold ls-1 fs-5" name="p-total-bill" id="p-total-bill" readonly>
                                 </div>
                             </div>
                         </div>
@@ -29,19 +29,27 @@
                     </div>
                     <div class="row pt-2">
                         <div class="row col-lg-4 pb-3 pt-2">
-                            <label class=" text-dark fw-bold ms-2 fs-5"><span class="text-danger">*</span> Account Name: </label>
+                            <label class=" text-dark fw-bold ms-2 fs-5"><span class="text-danger">*</span> CV Date: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="text" class="form-control text-dark fs-5" name="acc-name" id="acc-name">
-                            <span id="acc-name-error" class="text-danger"></span>
+                            <input type="date" class="form-control text-dark fs-5" name="cv-date" id="cv-date" placeholder="Select Date">
+                            <span id="cv-date-error" class="text-danger"></span>
                         </div>
 
                         <div class="row col-lg-4 pb-3 pt-2">
-                            <label class=" text-dark fw-bold ms-2 fs-5"><span class="text-danger">*</span> Account Number: </label>
+                            <label class=" text-dark fw-bold ms-2 fs-5"><span class="text-danger">*</span> CV Number: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="text" class="form-control text-dark fs-5" name="acc-number" id="acc-number">
-                            <span id="acc-number-error" class="text-danger"></span>
+                            <input type="text" class="form-control text-dark fs-5" name="cv-number" id="cv-number">
+                            <span id="cv-number-error" class="text-danger"></span>
+                        </div>
+
+                        <div class="row col-lg-4 pb-3 pt-2">
+                            <label class=" text-dark fw-bold ms-2 fs-5"><span class="text-danger">*</span> Payee: </label>
+                        </div>
+                        <div class="col-lg-8">
+                            <input type="text" class="form-control text-dark fs-5" name="payee" id="payee" readonly>
+                            <span id="payee-error" class="text-danger"></span>
                         </div>
 
                         <div class="row col-lg-4 pb-3 pt-2">

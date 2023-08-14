@@ -159,7 +159,6 @@
                         data.start_date    = $('#start-date').val();
                         data.end_date    = $('#end-date').val();
                     },
-                
                 },
 
                 //Set column definition initialisation properties.

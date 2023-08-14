@@ -444,11 +444,6 @@ class Transaction_controller extends CI_Controller {
 
 				$date = '<span>'.date('F d, Y', strtotime($bill['startDate'])).' to '.date('F d, Y', strtotime($bill['endDate'])).'</span>';
 
-				if($bill['billing_type'] == 'PDF Billing'){
-					$hp_name = '<span>'.$bill['hp_name'].'</span>';
-				}else if($bill['billing_type'] == 'Reimburse'){
-					$hp_name = '<span>Non-Affiliated Hospitals</span>';
-				}
 
 				$status = '<span class="text-center badge rounded-pill bg-success">Paid</span>'; 
 				
@@ -457,8 +452,17 @@ class Transaction_controller extends CI_Controller {
 				$action_customs = '<a href="'.base_url().'head-office-iad/biling/paid-list/'.$payment_id.'" data-bs-toggle="tooltip" title="View Billing"><i class="mdi mdi-format-list-bulleted fs-2 pe-2 text-info"></i></a>';
 
 				$check = $this->transaction_model->get_paymentdetails($bill['details_no']);
+				
+				if($bill['billing_type'] == 'PDF Billing'){
+					$hp_name = '<span>'.$bill['hp_name'].'</span>';
 
-				$action_customs .= '<a href="JavaScript:void(0)" onclick="viewCheckVoucher(\''.$check['supporting_file'].'\')" data-bs-toggle="tooltip" title="View Check Voucher"><i class="mdi mdi-file-pdf fs-2 pe-2 text-danger"></i></a>';
+					$action_customs .= '<a href="JavaScript:void(0)" onclick="viewCheckVoucher(\''.$check['supporting_file'].'\')" data-bs-toggle="tooltip" title="View Check Voucher"><i class="mdi mdi-file-pdf fs-2 pe-2 text-danger"></i></a>';
+					
+				}else if($bill['billing_type'] == 'Reimburse'){
+					$hp_name = '<span>Non-Affiliated Hospitals</span>';
+
+					$action_customs .= '';
+				}
 
 				$row[] = $consolidated;
 				$row[] = $date;
@@ -562,9 +566,21 @@ class Transaction_controller extends CI_Controller {
 				}
 	
 				$payable = floatval($bill['company_charge'] + floatval($bill['cash_advance']));
-	
+
 				
-				$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-5"></i></a>';
+				if($bill['billing_type'] == 'PDF Billing'){
+					$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-3"></i></a>';
+
+					$action_custom = '';
+
+				}else if($bill['billing_type'] == 'Reimburse'){
+					$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBillReimburse(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-3"></i></a>';
+
+					$check = $this->transaction_model->get_paymentdetails($bill['details_no']);
+
+					$action_custom = '<a href="JavaScript:void(0)" onclick="viewCVReimburse(\'' . $check['supporting_file'] . '\')" data-bs-toggle="tooltip" title="View Check Voucher"><i class="mdi mdi-file-pdf text-danger fs-3"></i></a>';
+				}
+				
 	
 				$row[] = $number++;
 				$row[] = $bill['billing_no'];
@@ -580,6 +596,7 @@ class Transaction_controller extends CI_Controller {
 				$row[] = number_format($bill['personal_charge'], 2, '.', ',');
 				$row[] = number_format($bill['after_remaining_bal'],2, '.',',');
 				$row[] = $pdf_bill;
+				$row[] = $action_custom;
 				$data[] = $row;
 	
 			}
@@ -679,9 +696,23 @@ class Transaction_controller extends CI_Controller {
 	
 				$payable = floatval($bill['company_charge'] + floatval($bill['cash_advance']));
 	
+				if($bill['billing_type'] == 'PDF Billing'){
+					$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-3"></i></a>';
+
+				}else if($bill['billing_type'] == 'Reimburse'){
+					$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBillReimburse(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-3"></i></a>';
+					
+				}
+
+				if(!empty($bill['details_no'])){
+					$check = $this->transaction_model->get_paymentdetails($bill['details_no']);
+
+					$action_custom = '<a href="JavaScript:void(0)" onclick="viewCVReimburse(\'' . $check['supporting_file'] . '\')" data-bs-toggle="tooltip" title="View Check Voucher"><i class="mdi mdi-file-pdf text-danger fs-3"></i></a>';
+				}else{
+					$action_custom = '';
+				}
 				
-				$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-5"></i></a>';
-	
+
 				$row[] = $number++;
 				$row[] = $bill['billing_no'];
 				$row[] = $loa_noa;
@@ -696,6 +727,7 @@ class Transaction_controller extends CI_Controller {
 				$row[] = number_format($bill['personal_charge'], 2, '.', ',');
 				$row[] = number_format($bill['after_remaining_bal'],2, '.',',');
 				$row[] = $pdf_bill;
+				$row[] = $action_custom;
 				$data[] = $row;
 	
 			}
@@ -1311,6 +1343,530 @@ class Transaction_controller extends CI_Controller {
 
 		echo json_encode($data);
 	}
+
+	function fetch_payment_history() {
+		$this->security->get_csrf_hash();
+	
+		$list = $this->transaction_model->get_payment_datatables();
+		$data = [];
+		$previous_payment_no = '';
+		$number = 1;
+		foreach($list as $payment){
+			// Check if payment_no is the same as the previous iteration
+			if ($payment['payment_no'] !== $previous_payment_no) {
+				$row = [];
+				$details_id = $this->myhash->hasher($payment['details_id'], 'encrypt');
+	
+				$custom_actions = '<a class="text-info fw-bold ls-1 fs-4" href="JavaScript:void(0)" onclick="viewPaymentInfo(\'' . $details_id . '\',\'' . base_url() . 'uploads/paymentDetails/' . $payment['supporting_file'] . '\')"  data-bs-toggle="tooltip"><u><i class="mdi mdi-view-list fs-3" title="View Payment Details"></i></u></a>';
+	
+				$custom_actions .= '<a class="text-success fw-bold ls-1 ps-2 fs-4" href="javascript:void(0)" onclick="viewCheckVoucher(\'' . $payment['supporting_file'] . '\')" data-bs-toggle="tooltip"><u><i class="mdi mdi-file-pdf fs-3" title="View Proof"></i></u></a>';
+	
+				if(!empty($payment['acc_number'])){
+					$acc_number = $payment['acc_number'];
+				}else{
+					$acc_number = 'None';
+				}
+				if(!empty($payment['acc_name'])){
+					$acc_name = $payment['acc_name'];
+				}else{
+					$acc_name = 'None';
+				}
+
+				$row[] = $number++;
+				$row[] = $payment['cv_number'];
+				$row[] = $acc_number;
+				$row[] = $acc_name;
+				$row[] = $payment['check_num'];
+				$row[] = $payment['check_date'];
+				$row[] = $payment['bank'];
+				$row[] = $custom_actions;
+				$data[] = $row;
+				
+				// Update the previous_payment_no variable
+				$previous_payment_no = $payment['payment_no'];
+			}
+		}
+		$output = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->transaction_model->count_payment_all(),
+			"recordsFiltered" => $this->transaction_model->count_payment_filtered(),
+			"data" => $data
+		];
+		echo json_encode($output);
+	}
+
+	function fetch_details_payment() {
+		$details_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$payment = $this->transaction_model->get_payment_details($details_id);
+		
+		$loa_no = $this->transaction_model->get_loa($payment['details_no']);
+		$noa_no = $this->transaction_model->get_noa($payment['details_no']);
+		$noa_loa_array = [];
+		foreach($loa_no as $covered_loa){
+			if($covered_loa['company_charge'] && $covered_loa['cash_advance'] != ''){
+				if($covered_loa['loa_id'] != '' ){
+					array_push($noa_loa_array, $covered_loa['loa_no']);
+				}
+			}
+		}
+
+		foreach($noa_no as $covered_noa){
+			if($covered_noa['company_charge'] && $covered_noa['cash_advance'] != ''){
+				if($covered_noa['noa_id'] != ''){
+					array_push($noa_loa_array, $covered_noa['noa_no']);
+				}
+			}
+		}
+
+		$loa_noa_no = implode(',    ', $noa_loa_array);
+		$bill_id = $this->myhash->hasher($payment['bill_id'], 'encrypt');
+
+			$response = [
+				'status' => 'success',
+				'token' => $this->security->get_csrf_hash(),
+				'payment_no' => $payment['payment_no'],
+				'bill_id' => $bill_id,
+				'hp_name' => $payment['hp_name'],
+				'added_on' => date("F d, Y", strtotime($payment['date_add'])),
+				'acc_number' => $payment['acc_number'],
+				'acc_name' => $payment['acc_name'],
+				'check_num' => $payment['check_num'],
+				'check_date' => $payment['check_date'],
+				'bank' => $payment['bank'],
+				'amount_paid' => number_format(floatval($payment['amount_paid']),2,'.',','),
+				'billed_date' => 'From '. date("F d, Y", strtotime($payment['startDate'])).' to '. date("F d, Y", strtotime($payment['endDate'])),
+				'covered_loa_no' => $loa_noa_no,
+				'billing_id' => $this->myhash->hasher($payment['billing_id'],'encrypt'),
+				'billing_type' => $payment['billing_type'],
+				'cv_number' => $payment['cv_number'],
+				'cv_date' => $payment['cv_date'],
+				'payee' => $payment['payee'],
+			]; 
+
+		echo json_encode($response);
+	}
+
+	function fetch_paid_bill_ledger() {
+		$ledger = $this->transaction_model->get_debit_credit_yearly();
+		$data = [];
+		$fullnameData = [];
+	
+		foreach ($ledger as $bill) {
+			if ($bill['company_charge'] && $bill['cash_advance'] != '') {
+				$fullname = $bill['first_name'] . ' ' . $bill['middle_name'] . ' ' . $bill['last_name'] . ' ' . $bill['suffix'];
+				$date_add = $bill['date_add'];
+
+				$company_charge = floatval($bill['company_charge']);
+				$cash_advance = floatval($bill['cash_advance']);
+				$total_paid_amount = floatval($bill['total_paid_amount']);
+	
+				$key = $fullname . '_' . $date_add;
+				if (!isset($fullnameData[$key])) {
+					$fullnameData[$key] = [
+						'total_debit' => 0,
+						'total_paid_amount' => 0,
+						'business_unit' => $bill['business_unit'],
+					];
+				}
+	
+				$fullnameData[$key]['total_debit'] += ($company_charge + $cash_advance);
+				$fullnameData[$key]['total_paid_amount'] += $total_paid_amount;
+			}
+		}
+		$number = 1;
+		foreach ($fullnameData as $key => $totals) {
+			list($fullname, $date_add) = explode('_', $key);
+
+			$row = [];
+			$row[] = $number++;
+			$row[] = date('F d,Y',strtotime($date_add));
+			$row[] = $fullname;
+			$row[] = $totals['business_unit'];
+			$row[] = number_format($totals['total_debit'], 2, '.', ',');
+			$row[] = number_format($totals['total_paid_amount'], 2, '.', ',');
+			$data[] = $row;
+
+			// $scndrow = ['','','','',number_format($totals['total_paid_amount'], 2, '.', ',')];
+			// $data[] = $scndrow;
+		}
+	
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
+	
+		echo json_encode($output);
+	}
+
+	function fetch_mbl_ledger() {
+		$filteredYear = $this->input->post('year', TRUE);
+		$currentYear = date('Y');
+	
+		if ($filteredYear == $currentYear) {
+			$mbl = $this->transaction_model->get_ledger_mbl();
+		} else if ($filteredYear == '') {
+			$mbl = $this->transaction_model->get_ledger_mbl();
+		} else if ($filteredYear != $currentYear) {
+			$mbl = $this->transaction_model->get_ledger_history_mbl();
+		}
+	
+		$data = [];
+		$fullnameData = [];
+	
+		foreach ($mbl as $max) {
+			$healcardno = $max['health_card_no'];
+			$fullname = $max['first_name'] . ' ' . $max['middle_name'] . ' ' . $max['last_name'] . ' ' . $max['suffix'];
+			$business_unit = $max['business_unit'];
+	
+			$company_charge = floatval($max['company_charge']);
+			$mbl = floatval($max['max_benefit_limit']);
+	
+			$key = $healcardno . '_' . $fullname . '_' . $business_unit;
+	
+			if (!isset($fullnameData[$key])) {
+				$fullnameData[$key] = [
+					'date_used' => [],
+					'used_mbl' => [],
+					'max_benefit' => $max['max_benefit_limit'],
+					'remaining_mbl' => 0,
+				];
+			}
+	
+			$fullnameData[$key]['date_used'][] = date('F d,Y', strtotime($max['billed_on']));
+			$fullnameData[$key]['used_mbl'][] = $max['company_charge'];
+		}
+	
+		$previous_fullname = '';
+		$number = 1;
+		foreach ($fullnameData as $key => $totals) {
+			list($healcardno, $fullname, $business_unit) = explode('_', $key);
+
+			$max_benefit = number_format($totals['max_benefit'], 2, '.', ',');
+
+			$dates_used = $totals['date_used'];
+			$used_mbls = $totals['used_mbl'];
+			$remaining_mbl = $totals['max_benefit'];
+
+			$num_entries = count($dates_used);
+
+			for ($i = 0; $i < $num_entries; $i++) {
+				$used_mbl = floatval($used_mbls[$i]);
+
+				if ($fullname !== $previous_fullname) {
+					$first_row = [
+						$number++,
+						$healcardno,
+						$fullname,
+						$business_unit,
+						'<span class="text-success">-----</span>',
+						'<span class="text-success">-----</span>',
+						number_format($remaining_mbl, 2, '.', ',')
+					];
+
+					$data[] = $first_row;
+				}
+
+				$row = [
+					'',
+					'',
+					'',
+					'',
+					$dates_used[$i],
+					number_format($used_mbl, 2, '.', ','),
+					number_format(max($remaining_mbl - $used_mbl, 0), 2, '.', ',')
+				];
+
+				$data[] = $row;
+
+				$remaining_mbl = max($remaining_mbl - $used_mbl, 0);
+				$previous_fullname = $fullname;
+			}
+		}
+
+	
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
+	
+		echo json_encode($output);
+	}
+
+	function ho_print_paid_ledger($month, $year, $bu_filter) {
+		$this->security->get_csrf_hash();
+		$this->load->library('tcpdf_library');
+		$pdf = new TCPDF();
+
+		$month =  base64_decode($month);
+		$year =  base64_decode($year);
+		$bu_filter =  base64_decode($bu_filter);
+
+		if($month != 'none'){
+			$months = $month; 
+		}else{
+			$months = '';
+		}
+
+		if($year != 'none'){
+			$years = $year; 
+		}else{
+			$years = '';
+		}
+
+		if($bu_filter != 'none'){
+			$bu_unit = $bu_filter; 
+			$bu_header = '<h3>'.$bu_unit.'</h3>';
+		}else{
+			$bu_unit = '';
+			$bu_header = '';
+
+		}
+
+		if(!empty($years || $months)){
+			if($months == ''){
+				$monthN = '';
+				if($years != ''){
+					$yearsF = 'For the Year '.$years;
+				}else{
+					$yearsF = '';
+				}
+			}else{
+				$Numberedmonth = intval($months);
+				$timestamp = mktime(0, 0, 0, $Numberedmonth, 1);
+				$monthName = date('F', $timestamp);
+				$monthN = 'For the Month of '.$monthName;
+				$yearsF = $years;
+			}
+			$header = '<h3>'.$monthN.' '.$yearsF.'</h3>';
+		}else{
+			$header = '';
+		}
+
+		$ledger = $this->transaction_model->get_employee_paid_ledger($years, $months, $bu_unit);
+
+		$title = '<img src="'.base_url().'assets/images/HC_logo.png" style="width:110px;height:70px">';
+		$title .= '<style>h3 { margin: 0; padding: 0; line-height: .5; }</style>
+					<h3>Paid Bill Ledger</h3>
+					'.$bu_header.'
+					'.$header.'<br>';
+
+		$dateGenerate = '<small>Date Generated : '.date('F d, Y').'</small><br>';
+		$PDFdata = '<table style="border:.5px solid #000; padding:3px" class="table table-bordered">';
+		$PDFdata .= ' <thead>
+						<tr class="border-secondary">
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Date Paid</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Member`s Name</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Business Unit</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Debit</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Credit</strong></th>
+						</tr>
+					</thead>';
+
+		$fullnameData = [];
+		$totalDebit = 0;
+		$totalCredit = 0;
+		foreach ($ledger as $bill) {
+			if ($bill['company_charge'] && $bill['cash_advance'] != '') {
+				$fullname = $bill['first_name'] . ' ' . $bill['middle_name'] . ' ' . $bill['last_name'] . ' ' . $bill['suffix'];
+				$date_add = $bill['date_add'];
+
+				$company_charge = floatval($bill['company_charge']);
+				$cash_advance = floatval($bill['cash_advance']);
+				$total_paid_amount = floatval($bill['total_paid_amount']);
+	
+				$key = $fullname . '_' . $date_add;
+				if (!isset($fullnameData[$key])) {
+					$fullnameData[$key] = [
+						'total_debit' => 0,
+						'total_paid_amount' => 0,
+						'business_unit' => $bill['business_unit'],
+					];
+				}
+	
+				$fullnameData[$key]['total_debit'] += ($company_charge + $cash_advance);
+				$fullnameData[$key]['total_paid_amount'] += $total_paid_amount;
+			}
+		}
+	
+		foreach ($fullnameData as $key => $totals) {
+			list($fullname, $date_add) = explode('_', $key);
+			
+			$PDFdata .= '<tbody><tr>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.date('m/d/Y',strtotime($date_add)).'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$fullname.'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$totals['business_unit'].'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($totals['total_debit'], 2, '.', ',').'</td>
+							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($totals['total_paid_amount'], 2, '.', ',').'</td>
+						</tr>';
+
+			$totalDebit += floatval($totals['total_debit']);
+			$totalCredit += floatval($totals['total_paid_amount']);
+		}
+		$PDFdata .=  '<tfoot>
+						<tr>
+							<td></td>
+							<td></td>
+							<td class="fw-bold">TOTALS</td>
+							<td class="fw-bold">'.number_format($totalDebit,2,'.',',').'</td>
+							<td class="fw-bold">'.number_format($totalCredit,2,'.',',').'</td>
+						</tr>
+					</tfoot>';
+		$PDFdata .= '</table>';
+
+		$pdf->setPrintHeader(false);
+		$pdf->setTitle('Paid Bill Ledger');
+		$pdf->setFont('times', '', 10);
+		$pdf->AddPage('L');
+		$pdf->WriteHtmlCell(0, 0, '', '', $dateGenerate, 0, 1, 0, true, 'R', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', '', 0, 1, 0, true, 'C', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'R', true);
+		$pdf->lastPage();
+		$pageCount = $pdf->getAliasNumPage(); // Get the number of pages
+		for ($i = 1; $i <= $pageCount; $i++) {
+			$pdf->setPage($i); // Set the page number
+			$pdf->writeHTMLCell(0, 0, '', '', 'Page '.$i.' of '.$pageCount, 0, 1, 0, true, 'R', true);
+		}
+		$pdfname = 'LedgerPaid_'.date('YmdHi');
+		$pdf->Output($pdfname.'.pdf', 'I');
+	}
+
+	function print_mbl_ledger($year, $bu_filter){
+		$this->security->get_csrf_hash();
+		$this->load->library('tcpdf_library');
+		$pdf = new TCPDF();
+
+		$year =  base64_decode($year);
+		$bu_filter =  base64_decode($bu_filter);
+
+		if($year != 'none'){
+			$years = $year; 
+			$yr_header = '<h3>For the Year '.$years.'</h3>';
+		}else{
+			$years = '';
+			$yr_header = '';
+		}
+
+		if($bu_filter != 'none'){
+			$bu_unit = $bu_filter; 
+			$bu_header = '<h3>'.$bu_unit.'</h3>';
+		}else{
+			$bu_unit = '';
+			$bu_header = '';
+
+		}
+
+		if($years == date('Y') || $years ==''){
+			$mbls = $this->transaction_model->get_employee_ledger_mbl($years, $bu_unit);
+		}else{
+			$mbls = $this->transaction_model->get_employee_history_mbl($years, $bu_unit);
+		}
+
+		$title = '<img src="'.base_url().'assets/images/HC_logo.png" style="width:110px;height:70px">';
+		$title .= '<style>h3 { margin: 0; padding: 0; line-height: .5; }</style>
+					<h3>Max Benefit Limit Ledger</h3>
+					'.$bu_header.'
+					'.$yr_header.'<br>';
+
+		$dateGenerate = '<small>Date Generated : '.date('F d, Y').'</small><br>';
+		$PDFdata = '<table style="border:.5px solid #000; padding:3px" class="table table-bordered">';
+		$PDFdata .= ' <thead>
+						<tr class="border-secondary">
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Healthcard No.</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Member`s Name</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Business Unit</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Date Used</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Used MBL</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Remaining MBL</strong></th>
+						</tr>
+					</thead>';
+		$PDFdata .= '<tbody>';
+
+		$fullnameData = [];
+	
+		foreach ($mbls as $max) {
+			$healcardno = $max['health_card_no'];
+			$fullname = $max['first_name'] . ' ' . $max['middle_name'] . ' ' . $max['last_name'] . ' ' . $max['suffix'];
+			$business_unit = $max['business_unit'];
+	
+			$company_charge = floatval($max['company_charge']);
+			$mbl = floatval($max['max_benefit_limit']);
+	
+			$key = $healcardno . '_' . $fullname . '_' . $business_unit;
+	
+			if (!isset($fullnameData[$key])) {
+				$fullnameData[$key] = [
+					'date_used' => [],
+					'used_mbl' => [],
+					'max_benefit' => $max['max_benefit_limit'],
+					'remaining_mbl' => 0,
+				];
+			}
+	
+			$fullnameData[$key]['date_used'][] = $max['billed_on'];
+			$fullnameData[$key]['used_mbl'][] = $max['company_charge'];
+		}
+	
+		$previous_fullname = '';
+
+		foreach ($fullnameData as $key => $totals) {
+			list($healcardno, $fullname, $business_unit) = explode('_', $key);
+
+			$max_benefit = number_format($totals['max_benefit'], 2, '.', ',');
+
+			$dates_used = $totals['date_used'];
+			$used_mbls = $totals['used_mbl'];
+			$remaining_mbl = $totals['max_benefit'];
+
+			$num_entries = count($dates_used);
+
+			for ($i = 0; $i < $num_entries; $i++) {
+				$used_mbl = floatval($used_mbls[$i]);
+
+				if ($fullname !== $previous_fullname) {
+					$PDFdata .= '<tr>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$healcardno.'</td>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$fullname.'</td>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$business_unit.'</td>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">----</td>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">----</td>
+									<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($remaining_mbl, 2, '.', ',').'</td>
+								</tr>';
+				}
+				$PDFdata .= '<tr>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px"></td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px"></td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px"></td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$dates_used[$i].'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($used_mbl, 2, '.', ',').'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format(max($remaining_mbl - $used_mbl, 0), 2, '.', ',').'</td>
+							</tr>';
+
+				$remaining_mbl = max($remaining_mbl - $used_mbl, 0);
+				$previous_fullname = $fullname;
+			}
+		}
+				
+		$PDFdata .= '</tbody></table>';
+
+		$pdf->setPrintHeader(false);
+		$pdf->setTitle('Max Benefit Limit Ledger');
+		$pdf->setFont('times', '', 10);
+		$pdf->AddPage('L');
+		$pdf->WriteHtmlCell(0, 0, '', '', $dateGenerate, 0, 1, 0, true, 'R', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', '', 0, 1, 0, true, 'C', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'R', true);
+		$pdf->lastPage();
+		$pageCount = $pdf->getAliasNumPage(); // Get the number of pages
+		for ($i = 1; $i <= $pageCount; $i++) {
+			$pdf->setPage($i); // Set the page number
+			$pdf->writeHTMLCell(0, 0, '', '', 'Page '.$i.' of '.$pageCount, 0, 1, 0, true, 'R', true);
+		}
+		$pdfname = 'LedgerMbl_'.date('YmdHi');
+		$pdf->Output($pdfname.'.pdf', 'I');
+	}
+
 
 
 	//END ==================================================

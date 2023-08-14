@@ -25,7 +25,7 @@
     <div class="row">
       <div class="col-6 pb-2">
           <div class="input-group">
-              <a href="<?php echo base_url(); ?>head-office-iad/biling/paid" type="submit" class="btn btn-info" data-bs-toggle="tooltip" title="Click to Go Back">
+              <a href="JavaScript:void(0)" onclick="goback()" class="btn btn-dark" data-bs-toggle="tooltip" title="Click to Go Back">
                   <strong class="ls-2" style="vertical-align:middle">
                       <i class="mdi mdi-arrow-left-bold"></i> Go Back
                   </strong>
@@ -59,6 +59,7 @@
                             <th class="fw-bold ls-2"><strong>Personal Charge</strong></th>
                             <th class="fw-bold ls-2"><strong>Remaining MBL</strong></th>
                             <th class="fw-bold ls-2"><strong>SOA</strong></th>
+                            <th class="fw-bold ls-2"><strong></strong></th>
                         </tr>
                       </thead>
                       <tbody id="billed-tbody">
@@ -75,6 +76,7 @@
                         <td></td>
                         <td class="fw-bold">TOTAL BILL </td>
                         <td><span class="text-danger fw-bold fs-5" id="mt-total-bill"></span></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -153,6 +155,10 @@
     });
 
  });
+ 
+ const goback = () =>{
+      window.history.back();
+  }
 
  const viewLOANOAdetails = (billing_id) => {
     $('#viewLOANOAdetailsModal').modal('show');
@@ -237,7 +243,9 @@
       }else{
         $('#pdf-loa-no').html(loa_no);
       }
-
+      $('#cv-title').hide();
+      $('#bill-title').show();
+      
         let pdfFile = `${baseUrl}uploads/pdf_bills/${pdf_bill}`;
         let fileExists = checkFileExists(pdfFile);
 
@@ -262,6 +270,72 @@
         xhr.send();
         }
     }
+
+    const viewPDFBillReimburse = (pdf_bill,noa_no,loa_no) => {
+      $('#viewPDFBillModal').modal('show');
+      if(noa_no != ''){
+        $('#pdf-loa-no').html(noa_no);
+      }else{
+        $('#pdf-loa-no').html(loa_no);
+      }
+      $('#cv-title').hide();
+      $('#bill-title').show();
+  
+        let pdfFile = `${baseUrl}uploads/hospital_receipt/${pdf_bill}`;
+        let fileExists = checkFileExists(pdfFile);
+
+        if(fileExists){
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', pdfFile, true);
+        xhr.responseType = 'blob';
+
+        xhr.onload = function(e) {
+            if (this.status == 200) {
+            let blob = this.response;
+            let reader = new FileReader();
+
+            reader.onload = function(event) {
+                let dataURL = event.target.result;
+                let iframe = document.querySelector('#pdf-viewer');
+                iframe.src = dataURL;
+            };
+            reader.readAsDataURL(blob);
+            }
+        };
+        xhr.send();
+        }
+    }
+
+    const viewCVReimburse = (suuporting_file) => {
+      $('#viewPDFBillModal').modal('show');
+      $('#cv-title').show();
+      $('#bill-title').hide();
+
+        let pdfFile = `${baseUrl}uploads/paymentDetails/${suuporting_file}`;
+        let fileExists = checkFileExists(suuporting_file);
+
+        if(fileExists){
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', pdfFile, true);
+        xhr.responseType = 'blob';
+
+        xhr.onload = function(e) {
+            if (this.status == 200) {
+            let blob = this.response;
+            let reader = new FileReader();
+
+            reader.onload = function(event) {
+                let dataURL = event.target.result;
+                let iframe = document.querySelector('#pdf-viewer');
+                iframe.src = dataURL;
+            };
+            reader.readAsDataURL(blob);
+            }
+        };
+        xhr.send();
+        }
+    }
+
 
     const checkFileExists = (fileUrl) => {
         let xhr = new XMLHttpRequest();

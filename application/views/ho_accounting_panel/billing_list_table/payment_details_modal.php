@@ -38,6 +38,22 @@
                     </div>
                     <div class="row pt-2">
                         <div class="row col-lg-4 pb-3 pt-2">
+                            <label class=" text-dark fw-bold ms-2 fs-5"><span class="text-danger">*</span> CV Date: </label>
+                        </div>
+                        <div class="col-lg-8">
+                            <input type="date" class="form-control text-dark fs-5" name="cv-date" id="cv-date" placeholder="Select Date">
+                            <span id="cv-date-error" class="text-danger"></span>
+                        </div>
+
+                        <div class="row col-lg-4 pb-3 pt-2">
+                            <label class=" text-dark fw-bold ms-2 fs-5"><span class="text-danger">*</span> CV Number: </label>
+                        </div>
+                        <div class="col-lg-8">
+                            <input type="text" class="form-control text-dark fs-5" name="cv-number" id="cv-number">
+                            <span id="cv-number-error" class="text-danger"></span>
+                        </div>
+
+                        <div class="row col-lg-4 pb-3 pt-2">
                             <label class=" text-dark fw-bold ms-2 fs-5"><span class="text-danger">*</span> Bank Name: </label>
                         </div>
                         <div class="col-lg-8">
@@ -90,7 +106,7 @@
                             <label class=" text-dark fw-bold ms-2 fs-5"><span class="text-danger">*</span> Amount Paid: </label>
                         </div>
                         <div class="col-lg-8">
-                            <input type="number" step="any" class="form-control text-dark fs-5" name="amount-paid" id="amount-paid" oninput="validateNumberInputs()">
+                            <input type="text" step="any" class="form-control text-dark fs-5" name="amount-paid" id="amount-paid" oninput="validateNumberInputs()">
                             <span id="paid-error" class="text-danger"></span>
                         </div>
 
@@ -102,7 +118,6 @@
                             <small class="text-danger">( Accepts images and pdf )</small>
                             <span id="file-error" class="text-danger"></span>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -114,6 +129,20 @@
     </div>
 </div>
 <script>
+    
+  const validateNumberInputs = () => {
+        const number_input = document.querySelector("#amount-paid");
+        number_input.addEventListener("input", function(event) {
+            // Remove any minus sign from the input value
+            this.value = this.value.replace(/-/g, '');
+
+            // Validate if the input is a number
+            if (isNaN(this.value)) {
+                this.value = "";
+            }
+        });
+    }
+
     const convertToUppercase = (input) => {
         input.value = input.value.toUpperCase();
     }

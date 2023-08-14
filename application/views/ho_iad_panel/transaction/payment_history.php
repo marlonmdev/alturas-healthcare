@@ -8,7 +8,7 @@
             <div class="ms-auto text-end order-first order-sm-last">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                    <li class="breadcrumb-item">Head Office Accounting</li>
+                    <li class="breadcrumb-item">Head Office IAD</li>
                     <li class="breadcrumb-item active" aria-current="page">
                         Payment History
                     </li>
@@ -77,7 +77,7 @@
 
                 // Load data for the table's content from an Ajax source
                 ajax: {
-                    url: `${baseUrl}head-office-accounting/billing-list/payment-history/fetch`,
+                    url: `${baseUrl}head-office-iad/billing-list/payment-history/fetch`,
                     type: "POST",
                     data: function(data) {
                         data.token     = '<?php echo $this->security->get_csrf_hash(); ?>';
@@ -104,7 +104,7 @@
         const viewPaymentInfo = (details_id,check_image) => {
             $.ajax({
                 type: 'GET',
-                url: `${baseUrl}head-office-accounting/billing-list/view-payment-details/${details_id}`,
+                url: `${baseUrl}head-office-iad/billing-list/view-payment-details/${details_id}`,
                 success: function(response){
                     const res = JSON.parse(response);
                     const {
@@ -173,7 +173,7 @@
                         var data = `${bill_id}`;
                         var paymentLink = document.getElementById('payment-link');
                         paymentLink.innerHTML = data;
-                        paymentLink.href = "<?php echo base_url();?>head-office-accounting/bill/fetch_paid/" + data;
+                        paymentLink.href = "<?php echo base_url();?>head-office-iad/bill/fetch_paid/" + data;
                     }
                     
                 }
@@ -186,7 +186,7 @@
             var billing_id = paymentLink.innerHTML;
             
             $.ajax({
-                url: `${baseUrl}head-office-accounting/biling/loa-noa-details/fetch/${billing_id}`,
+                url: `${baseUrl}head-office-iad/biling/loa-noa-details/fetch/${billing_id}`,
                 data: `<?php echo $this->security->get_csrf_hash(); ?>`,
                 type: 'GET',
                 success: function(response) {
@@ -254,6 +254,7 @@
 
         const viewCheckVoucher = (pdf_check_v) => {
         $('#viewCVModal').modal('show');
+        $('#cancel').hide();
         let pdfFile = `${baseUrl}uploads/paymentDetails/${pdf_check_v}`;
         let fileExists = checkFileExists(pdfFile);
 
@@ -269,7 +270,7 @@
 
                 reader.onload = function(event) {
                     let dataURL = event.target.result;
-                    let iframe = document.querySelector('#pdf-cv-viewer');
+                    let iframe = document.querySelector('#pdf-vc-viewer');
                     iframe.src = dataURL;
                 };
                 reader.readAsDataURL(blob);

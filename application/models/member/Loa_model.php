@@ -473,8 +473,29 @@ class Loa_model extends CI_Model {
     $this->db->select('*')
     ->from('loa_requests')
     ->where('emp_id', $emp_id)
+    ->where('YEAR(request_date)', date('Y'))
+    ->or_where('YEAR(approved_on)', date('Y'))
     ->where_in('status', array('Pending', 'Approved', 'Completed'));
     return $this->db->get()->result_array();
+   }
+  function get_hospital_bill($emp_id) {
+    $this->db->select_sum('hospital_bill')
+    ->from('loa_requests')
+    ->where('emp_id', $emp_id)
+    ->where('YEAR(request_date)', date('Y'))
+    ->or_where('YEAR(approved_on)', date('Y'))
+    ->where_in('status', array('Pending', 'Approved', 'Completed'));
+    $loa = $this->db->get()->row()->hospital_bill;
+
+    $this->db->select_sum('hospital_bill')
+    ->from('noa_requests')
+    ->where('emp_id', $emp_id)
+    ->where('YEAR(request_date)', date('Y'))
+    ->or_where('YEAR(approved_on)', date('Y'))
+    ->where('status', 'Pending');
+    $noa = $this->db->get()->row()->hospital_bill;
+
+    return $loa + $noa;
    }
 
 }

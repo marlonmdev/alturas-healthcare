@@ -106,12 +106,12 @@ class Noa_controller extends CI_Controller {
 				$custom_actions .= '';
 			}
 
-			$view_receipt = '';
-			if($noa['hospital_receipt']){
-				$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $noa['hospital_receipt'] . '\')"><strong>View</strong></a>';
-			}else{
-				$view_receipt ='None';
-			}
+			// $view_receipt = '';
+			// if($noa['hospital_receipt']){
+			// 	$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $noa['hospital_receipt'] . '\')"><strong>View</strong></a>';
+			// }else{
+			// 	$view_receipt ='None';
+			// }
 			// shorten name of values from db if its too long for viewing and add ...
 			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];
 
@@ -121,7 +121,7 @@ class Noa_controller extends CI_Controller {
 			$row[] = $admission_date;
 			$row[] = $short_hosp_name;
 			$row[] = $expiry_date;
-			$row[] = $view_receipt;
+			// $row[] = $view_receipt;
 			$row[] = $custom_status;
 			$row[] = $custom_actions;
 			$data[] = $row;

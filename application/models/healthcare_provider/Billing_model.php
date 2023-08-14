@@ -486,4 +486,52 @@ class Billing_model extends CI_Model {
     function attending_doctors($data) {
         return $this->db->insert('attending_doctors', $data);
     }
+
+    public function get_count_guarantee()
+    {
+        $this->db->select('COUNT(*) as count');
+        $this->db->from('billing');
+        $this->db->where('guarantee_letter', 1);
+        $query = $this->db->get();
+        $result1 = $query->row();
+        $count1 = $result1->count;
+    
+        $this->db->select('COUNT(*) as count');
+        $this->db->from('billing');
+        $this->db->where('re_upload', 1);
+        $query = $this->db->get();
+        $result2 = $query->row();
+        $count2 = $result2->count;
+        
+        return $count1+$count2;
+    }
+    
+    public function get_count_to_bill()
+        {
+            // Subquery for loa_requests table
+        $this->db->select('COUNT(*) as count');
+        $this->db->from('loa_requests');
+        $this->db->where_in('status', array('Approved', 'Completed', 'Referred'));
+        $subquery_loa = $this->db->get_compiled_select();
+    
+        // Subquery for noa_requests table
+        $this->db->select('COUNT(*) as count');
+        $this->db->from('noa_requests');
+        $this->db->where_in('status', array('Approved'));
+        $subquery_noa = $this->db->get_compiled_select();
+    
+        // Combine both subqueries with UNION ALL
+        $query = $this->db->query($subquery_loa . ' UNION ALL ' . $subquery_noa);
+    
+        // Get the total count by summing up the counts from both subqueries
+        $total_count = 0;
+        foreach ($query->result() as $row) {
+            $total_count += $row->count;
+        }
+    
+        return $total_count;
+        }
+        public function get_attending_doctors($billing_id,$emp_id){
+            return $this->db->get_where('attending_doctors',['billing_id'=>$billing_id,'emp_id'=>$emp_id])->result_array();
+        }
 }

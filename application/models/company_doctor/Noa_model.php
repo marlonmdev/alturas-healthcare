@@ -213,22 +213,20 @@ class Noa_model extends CI_Model {
 
   function get_autocomplete($search_data) {
     $this->db->select('tbl_1.member_id, tbl_1.emp_id, tbl_1.first_name, tbl_1.middle_name, tbl_1.last_name, tbl_1.suffix')
-             ->from('members as tbl_1')
-             ->join('max_benefit_limits as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
-             ->like('tbl_1.first_name', $search_data)
-             ->or_like('tbl_1.middle_name', $search_data)
-             ->or_like('tbl_1.last_name', $search_data)
-             ->or_like('tbl_1.suffix', $search_data)
-             ->or_like('CONCAT(tbl_1.first_name, " ",tbl_1.last_name)', $search_data)
-             ->or_like('CONCAT(tbl_1.first_name, " ",tbl_1.middle_name, " ", tbl_1.last_name)', $search_data)
-             ->or_like('CONCAT(tbl_1.first_name, " ",tbl_1.middle_name, " ", tbl_1.last_name, " ", tbl_1.suffix)', $search_data)
-             ->group_start()
-                ->where('tbl_1.approval_status', 'Approved')
-                ->or_where('tbl_1.approval_status', 'Done')
-              ->group_end()
-              ->where('tbl_2.remaining_balance <=', 0);
-
-    return $this->db->get()->result_array();
+    ->from('members as tbl_1')
+    ->join('max_benefit_limits as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+    ->where_in('tbl_1.approval_status', array('Approved', 'Done'))
+    ->where('tbl_2.remaining_balance ', 0)
+    ->group_start()
+        ->like('tbl_1.first_name', $search_data)
+        ->or_like('tbl_1.middle_name', $search_data)
+        ->or_like('tbl_1.last_name', $search_data)
+        ->or_like('tbl_1.suffix', $search_data)
+        ->or_like('CONCAT(tbl_1.first_name, " ",tbl_1.last_name)', $search_data)
+        ->or_like('CONCAT(tbl_1.first_name, " ",tbl_1.middle_name, " ", tbl_1.last_name)', $search_data)
+        ->or_like('CONCAT(tbl_1.first_name, " ",tbl_1.middle_name, " ", tbl_1.last_name, " ", tbl_1.suffix)', $search_data)
+    ->group_end();
+  return $this->db->get()->result_array();
 }
 
 function db_get_member_details($member_id) {
@@ -279,5 +277,16 @@ function insert_billing($data) {
 function update_member_remaining_balance($emp_id, $data) {
   $this->db->where('emp_id', $emp_id);
   return $this->db->update('max_benefit_limits', $data); 
+}
+public function get_count_pending()
+{
+    $this->db->select('COUNT(*) as count');
+    $this->db->from('noa_requests');
+    $this->db->where('status', 'Pending');
+    $query = $this->db->get();
+    $result= $query->row();
+    $count = $result->count;
+    
+    return $count;
 }
 }

@@ -267,16 +267,16 @@ class Loa_controller extends CI_Controller {
 			$custom_actions = '<a href="JavaScript:void(0)" class="me-2" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Info"><i class="mdi mdi-information fs-4 text-info"></i></a>';
 
 			if($loa['accredited'] == '0' && $loa['loa_request_type'] == 'Diagnostic Test'){
-				$custom_actions .= '<a href="JavaScript:void(0)" onclick="ChargeTypenotAffiliated(\'' . $loa_id . '\',\'' . $loa['hospital_receipt'] . '\',\'' . $loa['hospital_bill'] . '\')" data-bs-toggle="tooltip" title="Tagging"><i class="mdi mdi-tag-plus fs-4 text-primary"></i></a>';
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="ChargeTypenotAffiliated(\'' . $loa_id . '\',\'' . $loa['hospital_receipt'] . '\',\'' . $loa['hospital_bill'] . '\',\'' . $loa['percentage'] . '\',\'' . $loa['work_related'] . '\',\'' . $loa['spot_report_file'] . '\',\'' . $loa['police_report_file'] . '\',\'' . $loa['incident_report_file'] . '\')" data-bs-toggle="tooltip" title="Tagging"><i class="mdi mdi-tag-plus fs-4 text-primary"></i></a>';
 			}else{
-				$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="Tagging"><i class="mdi mdi-tag-plus fs-4 text-primary"></i></a>';
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $loa_id . '\',\'' . $loa['percentage'] . '\',\'' . $loa['work_related'] . '\',\'' . $loa['spot_report_file'] . '\',\'' . $loa['police_report_file'] . '\',\'' . $loa['incident_report_file'] . '\')" data-bs-toggle="tooltip" title="Tagging"><i class="mdi mdi-tag-plus fs-4 text-primary"></i></a>';
 			}
 
-			if($loa['spot_report_file'] || $loa['incident_report_file'] || $loa['police_report_file'] != ''){
-				$custom_actions .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $loa_id . '\',\'' . $loa['work_related'] . '\',\'' . $loa['percentage'] . '\',\'' . $loa['spot_report_file'] . '\',\'' . $loa['incident_report_file'] . '\',\'' . $loa['police_report_file'] . '\')" data-bs-toggle="tooltip" title="View Reports"><i class="mdi mdi-teamviewer fs-4 text-warning"></i></a>';
-			}else{
-				$custom_actions .= '';
-			}
+			// if($loa['spot_report_file'] || $loa['incident_report_file'] || $loa['police_report_file'] != ''){
+			// 	$custom_actions .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $loa_id . '\',\'' . $loa['work_related'] . '\',\'' . $loa['percentage'] . '\',\'' . $loa['spot_report_file'] . '\',\'' . $loa['incident_report_file'] . '\',\'' . $loa['police_report_file'] . '\')" data-bs-toggle="tooltip" title="View Reports"><i class="mdi mdi-teamviewer fs-4 text-warning"></i></a>';
+			// }else{
+			// 	$custom_actions .= '';
+			// }
 			
 
 			// initialize multiple varibles at once
@@ -474,13 +474,16 @@ class Loa_controller extends CI_Controller {
 		// var_dump($loa_id);
 		$charge_type = $this->input->post('charge-type', TRUE);
 		$percentage = $this->input->post('percentage', TRUE);
+		// $hospital = $this->input->post('hospital_bill', TRUE);
 
 		$this->form_validation->set_rules('charge-type', 'Charge Type', 'required');
+		// $this->form_validation->set_rules('percentage', 'Percentage', 'required');
 		if ($this->form_validation->run() == FALSE) {
 			$response = [
 				'token' => $token,
 				'status' => 'error',
 				'charge_type_error' => form_error('charge-type'),
+				// 'percentage' => form_error('percentage'),
 			];
 			echo json_encode($response);
 		}else{
@@ -522,10 +525,11 @@ class Loa_controller extends CI_Controller {
 					'message' => 'File Saving to Folder Failed',
 				];
 				echo json_encode($response);
-			} else {
+			}else{
 				$data = [
 					'work_related' => $charge_type,
 					'percentage' => $percentage,
+					'hospital_bill' => str_replace(array("₱", ","), "", $this->input->post('hospital_bill', TRUE)),
 					'spot_report_file' => isset($uploaded_files['spot-report']) ? $uploaded_files['spot-report']['file_name'] : '',
 					'incident_report_file' => isset($uploaded_files['incident-report']) ? $uploaded_files['incident-report']['file_name'] : '',
 					'police_report_file' => isset($uploaded_files['police-report']) ? $uploaded_files['police-report']['file_name'] : '',
@@ -548,11 +552,44 @@ class Loa_controller extends CI_Controller {
 					];
 				}
 				echo json_encode($response);
-				// var_dump($updated);
 				// var_dump($response);
-
 			}
 		}
+	}
+
+	function submit_hospital_receipt(){
+		$loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		// var_dump($loa_id);
+		$this->form_validation->set_rules('resubmit', 'Reason for Resubmit', 'trim|required|max_length[2000]');
+
+		if ($this->form_validation->run() == FALSE){
+			$response = [
+				//'token' => $token,
+				'status' => 'error',
+				'resubmit_error' => form_error('resubmit'),
+			];
+		}else{
+			$post_data = [
+				'resubmit'              => 'Resubmit',
+				'resubmit_reason' => $this->input->post('resubmit', TRUE),
+				'resubmit_on' 				=> date("Y-m-d"),
+				'resubmit_by' 				=> $this->session->userdata('fullname'),
+			];
+
+			$updated = $this->loa_model->db_update_loa_request1($loa_id, $post_data);
+			if (!$updated) {
+				$response = [
+					'status' => 'save-error', 
+					'message' => 'Re-submit Failed!'
+				];
+			}
+			$response = [
+				'status' => 'success', 
+				'message' => 'Re-submit Successfully!'
+			];
+		}
+		echo json_encode($response);
+		// var_dump($response);
 	}
 
 	//==================================================
@@ -4063,6 +4100,8 @@ $med_serv = implode(' ', $ct_array);
     }
 	}
 
+
+
 	function reason_adjustment(){
 		$loa_id = $this->myhash->hasher($this->input->post('loa-id', TRUE), 'decrypt');
 		$reason = $this->input->post('reason_adjustment', TRUE);
@@ -4762,9 +4801,7 @@ $med_serv = implode(' ', $ct_array);
 		$data['loa'] = $loa;
 		$data['billing_id'] = $loa['billing_id'];
 		$data['emp_id'] = $loa['emp_id'];
-		// $data['itemized_bill'] = $this->loa_model->get_itemized_bill($loa['emp_id'],$loa['billing_id']);
 		$data['itemized_bill'] = $this->loa_model->get_itemized_bill($loa['billing_id']);
-		// $data['benefits'] = $this->loa_model->get_benefits_deduction($loa['emp_id'],$loa['billing_id']);
 		$data['benefits'] = $this->loa_model->get_benefits_deduction($loa['billing_id']);
 		$data['full_name'] = $loa['first_name'] .' '. $loa['middle_name'] .' '. $loa['last_name'] .' '. $loa['suffix'];
 		$data['home_address'] = $loa['home_address'];
@@ -4783,6 +4820,7 @@ $med_serv = implode(' ', $ct_array);
 		$data['med_services'] = $loa['med_services'];
 		$data['request_type'] = $loa['loa_request_type'];
 		$data['pdf_bill'] = $loa['pdf_bill'];
+		$data['item'] = $loa['itemized_bill'];
 		$data['max_benefit_limit'] = number_format($loa['max_benefit_limit'],2);
 		$data['remaining_balance'] = number_format($loa['remaining_balance'],2);
 		// $data['fees'] = $this->loa_model->db_get_hr_added_loa_fees($loa_id);

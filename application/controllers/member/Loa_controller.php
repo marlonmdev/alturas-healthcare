@@ -274,7 +274,7 @@ class Loa_controller extends CI_Controller {
 		$physician_arr = [];
 		$hp_id = $this->input->post('healthcare-provider');
 		$request_type = $this->input->post('loa-request-type'); 
-		$is_accredited =$request_type !== "Emergency"?(json_decode($_POST['is_accredited'],true)):false;
+		$is_accredited =$request_type !== "Emergency"?(json_decode($_POST['is_accredited'],true)):true;
 		$this->session->set_userdata('is_accredited', $is_accredited);
 		// var_dump('hp_id',$hp_id);
 		switch (true) {

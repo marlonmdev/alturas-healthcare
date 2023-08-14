@@ -16,7 +16,7 @@ class Loa_controller extends CI_Controller {
 	function fetch_all_pending_loa() {
 		$this->security->get_csrf_hash();
 		$status = 'Pending';
-		$list = $this->loa_model->get_pending_datatables($status);
+		$list = $this->loa_model->get_datatables($status);
 		$data = [];
 		foreach ($list as $loa) {
 			$row = [];
@@ -224,12 +224,12 @@ class Loa_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = [
+		$output = array(
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->loa_model->count_all($status),
 			"recordsFiltered" => $this->loa_model->count_filtered($status),
 			"data" => $data,
-		];
+		);
 		echo json_encode($output);
 	}
 
@@ -315,12 +315,12 @@ class Loa_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = [
+		$output = array(
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->loa_model->count_all($status),
 			"recordsFiltered" => $this->loa_model->count_filtered($status),
 			"data" => $data,
-		];
+		);
 		echo json_encode($output);
 	}
 
@@ -520,12 +520,12 @@ class Loa_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = [
+		$output = array(
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->loa_model->count_all($status),
 			"recordsFiltered" => $this->loa_model->count_filtered($status),
 			"data" => $data,
-		];
+		);
 		echo json_encode($output);
 	}
 
@@ -636,12 +636,12 @@ class Loa_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = [
+		$output = array(
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->loa_model->count_all($status),
 			"recordsFiltered" => $this->loa_model->count_filtered($status),
 			"data" => $data,
-		];
+		);
 		echo json_encode($output);
 	}
 
@@ -987,7 +987,7 @@ class Loa_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	function get_personal_and_company_charge($loa_id,$old_billing) {
+	public function get_personal_and_company_charge($loa_id,$old_billing) {
         
         $loa_info = $this->loa_model->db_get_loa_info($loa_id);
        
@@ -1117,13 +1117,13 @@ class Loa_controller extends CI_Controller {
 			}
 		
             
-            $data = [
+            $data = array(
                 'company_charge' => $company_charge,
                 'personal_charge' => $personal_charge,
                 'remaining_balance' =>$rmbl = $remaining_mbl,
                 'used_mbl' =>  (($max_mbl-$rmbl)>0)? $max_mbl-$rmbl : $max_mbl,
                 'previous_mbl' => $previous_mbl,
-			];
+            );
 			return  $data;
 	}
 
@@ -1260,18 +1260,18 @@ class Loa_controller extends CI_Controller {
 		$disapproved_on = date("Y-m-d");
 		$this->form_validation->set_rules('disapprove-reason', 'Reason for Disapproval', 'required|max_length[500]');
 		if ($this->form_validation->run() == FALSE) {
-			$response = [
+			$response = array(
 				'token' => $token,
 				'status' => 'error',
 				'disapprove_reason_error' => form_error('disapprove-reason'),
-			];
+			);
 			echo json_encode($response);
 		}else{
 			$disapproved = $this->loa_model->db_disapprove_loa_request($loa_id, $disapproved_by, $disapprove_reason, $disapproved_on);
 			if (!$disapproved) {
-				$response = ['token' => $token, 'status' => 'error', 'message' => 'Unable to Disapprove LOA Request'];
+				$response = array('token' => $token, 'status' => 'error', 'message' => 'Unable to Disapprove LOA Request');
 			}
-			$response = ['token' => $token, 'status' => 'success', 'message' => 'LOA Request Disapproved Successfully'];
+			$response = array('token' => $token, 'status' => 'success', 'message' => 'LOA Request Disapproved Successfully');
 			echo json_encode($response);
 		}
 

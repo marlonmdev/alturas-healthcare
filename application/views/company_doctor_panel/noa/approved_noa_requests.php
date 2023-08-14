@@ -97,7 +97,7 @@
                     <th class="fw-bold" style="color: white">DATE OF ADMISSION</th>
                     <th class="fw-bold" style="color: white">NAME OF HOSPITAL</th>
                     <th class="fw-bold" style="color: white">DATE OF EXPIRATION</th>
-                    <th class="fw-bold" style="color: white">SOA</th>
+                    <!-- <th class="fw-bold" style="color: white">SOA</th> -->
                     <th class="fw-bold" style="color: white">STATUS</th>
                     <th class="fw-bold" style="color: white">ACTION</th>
                   </tr>

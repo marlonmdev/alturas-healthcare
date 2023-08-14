@@ -1,4 +1,20 @@
 <div class="page-wrapper">
+  <div class="page-breadcrumb">
+    <div class="row">
+      <div class="col-12 d-flex no-block align-items-center">
+        <h4 class="page-title ls-2"style="font-size:13px">Note: Checking of Billing</h4>
+        <div class="ms-auto text-end">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">Healthcare Coordinator</li>
+              <li class="breadcrumb-item active" aria-current="page">Matching</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
@@ -63,8 +79,8 @@
                 <th style="color: black;font-size:10px">COMPANY CHARGE</th>
                 <th style="color: black;font-size:10px">PERSONAL CHARGE</th>
                 <th style="color: black;font-size:10px">HEALTHCARE ADVANCE</th>
-                <th style="color: black;font-size:10px">VIEW SOA</th>
                 <th style="color: black;font-size:10px">HOSPITAL BILL</th>
+                <th style="color: black;font-size:10px">SOA</th>
                 <th style="color: black;font-size:10px">STATUS</th>
                 <th style="color: black;font-size:10px">ACTION</th>
               </tr>

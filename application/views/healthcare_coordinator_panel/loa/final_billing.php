@@ -83,7 +83,7 @@
                 <th style="color: black;font-size:10px">PERSONAL CHARGE</th>
                 <th style="color: black;font-size:10px">HEALTHCARE ADVANCE</th>
                 <th style="color: black;font-size:10px">HOSPITAL BILL</th>
-                <th style="color: black;font-size:10px">VIEW BILL</th>
+                <th style="color: black;font-size:10px">SOA</th>
                 <th style="color: black;font-size:10px">STATUS</th> 
                 <th style="color: black;font-size:10px">ACTION</th> 
               </tr>
@@ -603,9 +603,9 @@
         'endDate' : end_date,
       },
       success: function(response){
-        hospital_bill.value = response.total_hospital_bill;
-        coordinator_bill.value = response.total_coordinator_bill;
-        variance.value = response.total_variance;
+        // hospital_bill.value = response.total_hospital_bill;
+        // coordinator_bill.value = response.total_coordinator_bill;
+        // variance.value = response.total_variance;
       },
     });
   }
@@ -744,6 +744,18 @@
     });
   }
 
+  function viewImage(path) {
+    let item = [{
+      src: path, // path to image
+      title: 'Hospital Receipt' // If you skip it, there will display the original image name
+    }];
+    // define options (if needed)
+    let options = {
+      index: 0 // this option means you will start at first image
+    };
+    // Initialize the plugin
+    let photoviewer = new PhotoViewer(item, options);
+  }
   
 </script>
 

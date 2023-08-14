@@ -1,4 +1,19 @@
 <div class="page-wrapper">
+  <div class="page-breadcrumb">
+    <div class="row">
+      <div class="col-12 d-flex no-block align-items-center">
+        <h4 class="page-title ls-2"style="font-size:13px">HISTORY</h4>
+        <div class="ms-auto text-end">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">Healthcare Coordinator</li>
+              <li class="breadcrumb-item active" aria-current="page">History</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
@@ -38,14 +53,14 @@
               <table class="table table-hover table-responsive" id="matchedLoaTable">
                 <thead style="background-color:#ADD8E6">
                   <tr>
-                    <th style="color:black;font-size:11px;font-weight:bold">BILLING #</th>
-                    <th style="color:black;font-size:11px;font-weight:bold">CONSOLIDATED BILLING</th>
-                    <th style="color:black;font-size:11px;font-weight:bold">HEALTHCARE PROVIDER</th>
-                    <th style="color:black;font-size:11px;font-weight:bold">STATUS</th>
-                    <th style="color:black;font-size:11px;font-weight:bold">ACTION</th>
+                    <th class="fw-bold" style="color: black;font-size:12px">BILLING #</th>
+                    <th class="fw-bold" style="color: black;font-size:12px">CONSOLIDATED BILLING</th>
+                    <th class="fw-bold" style="color: black;font-size:12px">HEALTHCARE PROVIDER</th>
+                    <th class="fw-bold" style="color: black;font-size:12px">STATUS</th>
+                    <th class="fw-bold" style="color: black;font-size:12px">ACTION</th>
                   </tr>
                 </thead>
-                <tbody style="color:black;font-size:10px">
+                <tbody style="color: black;font-size:12px">
                 </tbody>
               </table>
             </div>

@@ -10,7 +10,7 @@
                   <form method="post" action="<?php echo base_url(); ?>healthcare-coordinator/setup/healthcare-providers/register/submit" id="registerHPForm">
                     <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash(); ?>">
                     <div class="form-group row">
-                      <div class="col-sm-12 mb-2">
+                      <div class="col-sm-6 mb-2">
                         <label class="colored-label"><i class="bx bx-health icon-red"></i> Type</label>
                         <select class="form-select" name="hp-type" id="hp-type">
                           <option value="" selected>Select Type</option>
@@ -19,6 +19,15 @@
                           <option value="Clinic">Clinic</option>
                         </select>
                           <span id="hp-type-error" class="text-danger"></span>
+                      </div> 
+                      <div class="col-sm-6 mb-2">
+                        <label class="colored-label"><i class="bx bx-health icon-red"></i>Category</label>
+                        <select class="form-select" name="hp-category" id="hp-category">
+                          <option value="" selected>Select Category</option>
+                          <option value="1">Affiliated</option>
+                          <option value="0">Non-Affiliated</option>
+                        </select>
+                          <span id="hp-category-error" class="text-danger"></span>
                       </div> 
                     </div>
                     <div class="form-group row">

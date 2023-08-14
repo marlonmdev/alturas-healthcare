@@ -25,21 +25,34 @@
   </a>
 </li>
 
-<li class="sidebar-item <?php echo $this->uri->segment(3) == 'search' ? 'selected' : ''; ?>">
+<li class="sidebar-item <?php echo $this->uri->segment(3) == 'history' ? 'selected' : ''; ?>">
   <a class="sidebar-link"
-    href="<?php echo base_url(); ?>head-office-iad/transaction/search"
+    href="<?php echo base_url(); ?>head-office-iad/transaction/history"
     aria-expanded="false">
     <i class="mdi mdi-receipt"></i>
     <span class="hide-menu ls-1">Payment History</span>
   </a>
 </li>
 
-<!-- <li class="sidebar-item <?php echo $this->uri->segment(3) == 'members' ? 'selected' : ''; ?>">
-  <a class="sidebar-link sidebar-link" href="<?php echo base_url(); ?>head-office-iad/transaction/members" aria-expanded="false">
-    <i class="mdi mdi-account-multiple"></i>
-    <span class="hide-menu ls-1">Employee Member</span>
+<li class="sidebar-item <?php echo ($this->uri->segment(3) == 'ledger') ? 'selected' : '' ; ?>">
+  <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
+    <i class="mdi mdi-book-open-page-variant ls-1"></i>Ledger
+    
   </a>
-</li> -->
+  <ul aria-expanded="false" class="collapse first-level">
+    <li class="sidebar-item">
+      <a href="<?php echo base_url(); ?>head-office-iad/ledger" class="sidebar-link"
+        ><i class="mdi mdi-note"></i
+        ><span class="hide-menu ls-1">Paid Bill</span>
+      </a>
+    </li>
+    <li class="sidebar-item">
+      <a href="<?php echo base_url(); ?>head-office-iad/ledger/mbl" class="sidebar-link">
+        <i class="mdi mdi-note-outline ls-1"></i>Max Benefit Limit
+      </a>
+    </li>
+  </ul>
+</li>
 
 <li class="sidebar-item <?php echo $this->uri->segment(3) == 'account_setting' ? 'selected' : ''; ?>">
   <a class="sidebar-link sidebar-link" href="<?php echo base_url(); ?>head-office-iad/transaction/account_setting" aria-expanded="false">

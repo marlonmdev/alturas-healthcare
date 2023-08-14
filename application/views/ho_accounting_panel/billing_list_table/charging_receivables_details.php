@@ -46,21 +46,32 @@
             <input value="<?php echo $charging_no; ?>" type="hidden" id="charging-no" name="charging-no">
             <input value="<?php echo $business_unit; ?>" type="hidden" id="business-unit">
             <input value="<?php echo $type; ?>" type="hidden" id="type-data">
+            <input value="<?php echo $total; ?>" type="hidden" id="receivables">
             <div class="card bg-light">
                 <div class="card-body">
                     <?php echo $table; ?>
                 </div>
             </div>
             <?php if($type == 'unpaid') { ?>
-                <div class="ps-2 pe-2" id="paidFormSubmit">
+                <div class=" border ps-2 pe-2" id="paidFormSubmit">
                     <small class="text-danger">Please upload the supporting document ( Accept Images and PDF )</small>
-                    <div class="row border ps-2 pe-2 pt-4 pb-2">
+                    <div class="row ps-2 pe-2 pt-4 pb-2">
                         <div class="row col-lg-2 pb-3 pt-2 pe-2">
                             <label class=" text-dark fw-bold ms-2 fs-5"><span class="text-danger">*</span> Supporting Document : </label>
                         </div>
                         <div class="col-lg-5">
                             <input type="file" class="form-control text-dark fs-5" accept=".pdf, image/*" name="supporting-docu" id="supporting-docu" onchange="previewPdfFile('supporting-docu')" required>
                             <span id="file-error" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="row col-lg-2 pb-3 pt-2 pe-2">
+                            <label class=" text-dark fw-bold ms-3 fs-5"><span class="text-danger">*</span> Total Amount : </label>
+                        </div>
+                        <div class="col-lg-3">
+                            <input type="text" class="form-control text-dark fs-5 ms-1" name="total-amount" id="total-amount" oninput="validateNumberInputs()" required>
+
+                            <span id="total-amount-error" class="text-danger"></span>
                         </div>
                         <div class="col-lg-2">
                             <button class="btn btn-success rounded-pill btn-lg fs-6" type="submit" id="submitTaggedPaid" title="Click to Tag as Paid"><i class="mdi mdi-send"></i> Submit</button>
@@ -85,9 +96,18 @@
             event.preventDefault();
 
             if (!form.checkValidity()) {
-            form.classList.add('was-validated');
-            return;
-        }
+                form.classList.add('was-validated');
+                return;
+            }
+
+            const receivablesValue = $('#receivables').val().replace(/,/g, '');
+            const receivables = parseFloat(receivablesValue);
+            const inputtedTotal = parseFloat($('#total-amount').val());
+
+            if (inputtedTotal > receivables) {
+                alert('Inputted Total must not exceeds Receivables Total!');
+            } else {
+                
             $.confirm({
                 title: '<strong>Confirmation!</strong>',
                 content: 'Are you sure? Please review before you proceed.',
@@ -109,7 +129,7 @@
                                 contentType: false,
                                 success: function(response){
                                     const {
-                                        token, charging_no, status, message, image_error
+                                        token, charging_no, status, message, image_error, total_error
                                     } = response;
 
                                     if(status == 'validation-error'){
@@ -120,6 +140,14 @@
                                             $("#file-error").html("");
                                             $("#supporting-docu").removeClass('is-invalid');
                                         }
+                                        if(total_error != ''){
+                                            $("#total-amount").html(total_error);
+                                            $("#total-amount-error").addClass('is-invalid');
+                                        }else{
+                                            $("#total-amount").html("");
+                                            $("#total-amount-error").removeClass('is-invalid');
+                                        }
+
                                     }else if(status == 'success'){
                                         swal({
                                             title: 'Success',
@@ -152,8 +180,23 @@
                     },
                 }
             });
+        }
         });
     });
+
+    const validateNumberInputs = () => {
+        const number_input = document.querySelector("#total-amount");
+        number_input.addEventListener("input", function(event) {
+            // Remove any minus sign from the input value
+            this.value = this.value.replace(/-/g, '');
+
+            // Validate if the input is a number
+            if (isNaN(this.value)) {
+                this.value = "";
+            }
+        });
+    }
+
 
     const goback = () =>{
         window.history.back();

@@ -123,6 +123,11 @@
       lengthChange: false,
       responsive: true,
       fixedHeader: true,
+
+    });
+
+    $('#cv-date').flatpickr({
+      dateFormat: 'Y-m-d',
     });
 
     const form = document.querySelector('#payment_details_form');
@@ -155,10 +160,26 @@
                             contentType: false,
                             success: function(response){
                                 const {
-                                    token, status, payment_no, message, acc_num_error, acc_name_error, check_num_error, check_date_error, bank_error,paid_error,image_error
+                                    token, status, payment_no, message, acc_num_error, acc_name_error, check_num_error, check_date_error, bank_error,paid_error,image_error,cv_date_error,cv_number_error
                                 } = response;
 
                                 if(status == 'validation-error'){
+                                    if(cv_date_error != ''){
+                                        $("#cv-date-error").html(cv_date_error);
+                                        $("#cv-date").addClass('is-invalid');
+                                    }else{
+                                        $("#cv-date-error").html("");
+                                        $("#cv-date").removeClass('is-invalid');
+                                    }
+
+                                    if(cv_number_error != ''){
+                                        $("#cv-number-error").html(cv_number_error);
+                                        $("#cv-number").addClass('is-invalid');
+                                    }else{
+                                        $("#cv-number-error").html("");
+                                        $("#cv-number").removeClass('is-invalid');
+                                    }
+
                                     if(acc_num_error != ''){
                                         $("#acc-number-error").html(acc_num_error);
                                         $("#acc-number").addClass('is-invalid');
@@ -321,7 +342,29 @@
         $('#pd-payment-no').val(payment_no);
         $('#p-total-bill').val(total);
         $('#bank-options').html(bank_acc);
-        }
+
+        $("#cv-date-error").html("");
+        $("#cv-date").removeClass('is-invalid');
+        $("#cv-number-error").html("");
+        $("#cv-number").removeClass('is-invalid');
+        $("#payee-error").html("");
+        $("#payee").removeClass('is-invalid');
+        $("#check-number-error").html("");
+        $("#check-number").removeClass('is-invalid');
+        $("#check-date-error").html("");
+        $("#check-date").removeClass('is-invalid');
+        $("#bank-error").html("");
+        $("#bank").removeClass('is-invalid');
+        $("#paid-error").html("");
+        $("#amount-paid").removeClass('is-invalid');
+        $("#file-error").html("");
+        $("#supporting-docu").removeClass('is-invalid');
+        $("#acc-number-error").html("");
+        $("#acc-number").removeClass('is-invalid');
+        $("#acc-name-error").html("");
+        $("#acc-name").removeClass('is-invalid');
+
+      }
 
     });
   }
@@ -364,14 +407,4 @@
         }
 
     };
-
-    const validateNumberInputs = () => {
-        const number_input = document.querySelector('#amount-paid');
-        number_input.addEventListener('input', function(event) {
-            if (this.value < 0) {
-                this.value = '';
-            }
-        });
-    }
-
 </script>

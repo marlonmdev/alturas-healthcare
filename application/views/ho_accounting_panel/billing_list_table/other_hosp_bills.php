@@ -362,7 +362,7 @@
         $('#pdf-loa-no').html(loa_noa_no);
       }
 
-        let pdfFile = `${baseUrl}uploads/pdf_bills/${pdf_bill}`;
+        let pdfFile = `${baseUrl}uploads/hospital_receipt/${pdf_bill}`;
         let fileExists = checkFileExists(pdfFile);
 
         if(fileExists){

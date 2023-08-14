@@ -176,7 +176,7 @@ class List_model extends CI_Model{
     }
 
     function get_hc_provider(){
-        return $this->db->get('healthcare_providers')->result_array();
+        return $this->db->get_where('healthcare_providers',['accredited' => 1])->result_array();
     }
 
     function get_hcare_provider($hp_id){
@@ -317,7 +317,7 @@ class List_model extends CI_Model{
 	var $table_payment_1 = 'payment_details';
     var $table_payment_2 = 'billing';
 	var $column_payment_order = ['payment_no', 'acc_number', 'acc_name', 'check_num', 'check_date', 'bank', NULL]; //set column field database for datatable orderable
-	var $column_payment_search = ['payment_no', 'acc_number', 'acc_name', 'check_num', 'check_date', 'bank']; //set column field database for datatable searchable 
+	var $column_payment_search = ['payment_no', 'cv_number', 'acc_number', 'acc_name', 'check_num', 'check_date', 'bank']; //set column field database for datatable searchable 
 	var $order_payment = ['details_id' => 'desc']; // default order 
 
 	private function _get_payment_datatables_query() {
@@ -326,9 +326,12 @@ class List_model extends CI_Model{
         $this->db->join($this->table_payment_2. ' as tbl_2', 'tbl_1.details_no = tbl_2.details_no');
 		$i = 0;
 
-        if($this->input->post('filter')){
-			$this->db->like('tbl_1.hp_id', $this->input->post('filter'));
-		}
+        if($this->input->post('filter') == 'nonaffiliated'){
+			$this->db->where('tbl_1.acc_number', '');
+		}else{
+            $this->db->like('tbl_1.hp_id', $this->input->post('filter'));
+        }
+
 
 		// loop column 
 		foreach ($this->column_payment_search as $item) {
@@ -815,6 +818,40 @@ class List_model extends CI_Model{
                 ->where('tbl_1.status', 'Paid')
                 ->where('tbl_1.billing_type', 'Reimburse')
                 ->order_by('tbl_1.request_date', 'desc');
+
+        if ($this->input->post('startDate')) {
+            $startDate = date('Y-m-d', strtotime($this->input->post('startDate')));
+            $this->db->where('tbl_1.request_date >=', $startDate);
+            }
+            if ($this->input->post('endDate')){
+            $endDate = date('Y-m-d', strtotime($this->input->post('endDate')));
+            $this->db->where('tbl_1.request_date <=', $endDate);
+            }
+
+        return $this->db->get()->result_array();
+    }
+
+    function get_other_hos_paid_bills($start,$end) {
+        $this->db->select('*')
+                ->from('billing as tbl_1')
+                ->join('loa_requests as tbl_6', 'tbl_1.loa_id = tbl_6.loa_id', 'left')
+                ->join('noa_requests as tbl_7', 'tbl_1.noa_id = tbl_7.noa_id', 'left')
+                ->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
+                ->join('members as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id')
+                ->join('payment_details as tbl_8', 'tbl_1.details_no = tbl_8.details_no')
+                ->where('tbl_1.status', 'Paid')
+                ->where('tbl_1.billing_type', 'Reimburse')
+                ->order_by('tbl_1.request_date', 'desc');
+
+        if (!empty($start)) {
+            $startDate = date('Y-m-d', strtotime($start));
+            $this->db->where('tbl_1.request_date >=', $startDate);
+        }
+        if (!empty($end)){
+            $endDate = date('Y-m-d', strtotime($end));
+            $this->db->where('tbl_1.request_date <=', $endDate);
+        }
+
         return $this->db->get()->result_array();
     }
 
@@ -1014,7 +1051,7 @@ class List_model extends CI_Model{
         return $query->result_array();
        }
 
-       function get_other_hos_for_payment_bills() {
+       function get_other_hos_for_payment_bills($billing_id) {
         $this->db->select('*')
                 ->from('billing as tbl_1')
                 ->join('loa_requests as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id', 'left')
@@ -1024,6 +1061,7 @@ class List_model extends CI_Model{
                 ->join('locate_business_unit as tbl_6', 'tbl_5.business_unit = tbl_6.business_unit')
                 ->join('max_benefit_limits as tbl_7', 'tbl_1.emp_id = tbl_7.emp_id')
                 ->where('tbl_1.status', 'Payment')
+                ->where('tbl_1.billing_id', $billing_id)
                 ->where('tbl_1.billing_type', 'Reimburse');
 
         return $this->db->get()->result_array();
@@ -1113,10 +1151,11 @@ class List_model extends CI_Model{
         return $this->db->get_where('billing', ['bu_charging_no' => $charging_no])->result_array();
     }
 
-    function tag_charge_as_paid($charging_no, $bu_proof_payment) {
+    function tag_charge_as_paid($charging_no, $bu_proof_payment, $inputted_total) {
         $this->db->set('bu_charging_status', 'Paid')
                 ->set('bu_tagged_paid_on', date('Y-m-d'))
                 ->set('bu_proof_payment', $bu_proof_payment)
+                ->set('bu_total_paid', $inputted_total)
                 ->where('bu_charging_no', $charging_no);
         return $this->db->update('billing');
     }

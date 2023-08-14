@@ -2,7 +2,8 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <span class="fw-bold fs-4">Statement of Account of : [ <span class="text-info fw-bold" id="pdf-loa-no"></span> ]</span>
+                <span class="fw-bold fs-4" id="bill-title">Statement of Account of : [ <span class="text-info fw-bold" id="pdf-loa-no"></span> ]</span>
+                <span class="fw-bold fs-4" id="cv-title">Attached Check Voucher</span>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>

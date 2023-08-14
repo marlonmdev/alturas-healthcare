@@ -48,7 +48,28 @@
                 </li>
             </ul>
         </div>
+       <div class="row">
+          <div class="col-lg-4 pt-1 offset-5 pb-4">
+              <div class="input-group">
+                  <div class="input-group-append">
+                      <span class="input-group-text text-dark ls-1 ms-2">
+                          <i class="mdi mdi-calendar-range"></i>
+                      </span>
+                  </div>
+                  <input type="date" class="form-control" name="start_date" id="start-date" oninput="validateDateRange()" placeholder="Start Date">
 
+                  <div class="input-group-append">
+                      <span class="input-group-text text-dark ls-1 ms-2">
+                          <i class="mdi mdi-calendar-range"></i>
+                      </span>
+                  </div>
+                  <input type="date" class="form-control" name="end-date" id="end-date" oninput="validateDateRange()" placeholder="End Date">
+              </div>
+          </div>
+          <div class="col-md-1 pb-3 pt-1">
+              <button class="btn btn-danger w-100" onclick="printPaidBill()" title="click to print data"><i class="mdi mdi-send"></i> Print </button>
+          </div>
+       </div>
         <div class="card shadow">
           <div class="card-body">
             <div class="">
@@ -56,6 +77,7 @@
                 <thead>
                   <tr class="border-secondary border-2 border-0 border-top border-bottom">
                       <th class="fw-bold"><strong>#</strong></th>
+                      <th class="fw-bold"><strong>Request Date</strong></th>
                       <th class="fw-bold"><strong>Healthcare Provider</strong></th>
                       <th class="fw-bold"><strong>Billing No</strong></th>
                       <th class="fw-bold"><strong>LOA/NOA #</strong></th>
@@ -92,7 +114,8 @@
         // passing the token as data so that requests will be allowed
         data: function(data) {
           data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
-        //   data.filter = $('#matched-hospital-filter').val();
+          data.endDate = $('#end-date').val();
+          data.startDate = $('#start-date').val();
         }
       },
 
@@ -108,7 +131,61 @@
       responsive: true,
       fixedHeader: true,
     });
+
+    $('#end-date').change(function(){
+        matchedTable.draw();
+    });
+    $('#start-date').change(function(){
+        matchedTable.draw();
+    });
+    $("#start-date").flatpickr({
+        dateFormat: 'Y-m-d',
+    });
+    $("#end-date").flatpickr({
+        dateFormat: 'Y-m-d',
+    });
   });
+
+  const printPaidBill = () => {
+    const start_date = document.querySelector('#start-date').value;
+    const end_date = document.querySelector('#end-date').value;
+
+      if(start_date == ''){
+        start_dates = 'none';
+      }else{
+        start_dates = start_date;
+      } if(end_date == ''){
+        end_dates = 'none';
+      }else{
+        end_dates = end_date;
+      }
+
+    const base_url = `${baseUrl}`;
+    window.open(base_url + "printPaidBill/pdfbilling/" + btoa(start_dates) + "/" + btoa(end_dates), '_blank');
+  }
+
+  const validateDateRange = () => {
+        const startDateInput = document.querySelector('#start-date');
+        const endDateInput = document.querySelector('#end-date');
+        const startDate = new Date(startDateInput.value);
+        const endDate = new Date(endDateInput.value);
+
+        if (startDateInput.value === '' || endDateInput.value === '') {
+            return; // Don't do anything if either input is empty
+        }
+
+        if (endDate < startDate) {
+            // alert('End date must be greater than or equal to the start date');
+            swal({
+                title: 'Failed',
+                text: 'End date must be greater than or equal to the start date',
+                showConfirmButton: true,
+                type: 'error'
+            });
+            endDateInput.value = '';
+            return;
+        }          
+    }
 
   const viewReimburseCV = (supporting_file) => {
     $('#viewCVModal').modal('show');

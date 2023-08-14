@@ -462,6 +462,7 @@ $route['printBUCharge/pdfPaidCharges/(:any)'] = 'ho_accounting/main_controller/p
 $route['printledger/ledgermbl/(:any)/(:any)'] = 'ho_accounting/main_controller/print_mbl_ledger/$1/$2';
 $route['printledger/ledgerpaid/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_paid_ledger/$1/$2/$3';
 $route['printPaymentbill/pdfbilling/(:any)'] = 'ho_accounting/main_controller/print_payment_other_hosp/$1';
+$route['printPaidBill/pdfbilling/(:any)/(:any)'] = 'ho_accounting/main_controller/print_paid_bill_otherhosp/$1/$2';
 
 //Pages
 $route['head-office-accounting/billing-list'] = 'ho_accounting/TableList';
@@ -1117,6 +1118,10 @@ $route['head-office-iad/biling/audited-list/(:any)'] = 'ho_iad/pages_controller/
 $route['head-office-iad/biling/paid'] = 'ho_iad/pages_controller/view_paid_bill';
 $route['head-office-iad/biling/paid-list/(:any)'] = 'ho_iad/pages_controller/view_paid_list';
 $route['head-office-iad/charges/bu-charges/paid'] = 'ho_iad/pages_controller/view_bu_paid_charges';
+$route['head-office-iad/transaction/history'] = 'ho_iad/pages_controller/view_payment_history';
+$route['head-office-iad/bill/fetch_paid/(:any)'] = 'ho_iad/pages_controller/view_paid_list';
+$route['head-office-iad/ledger'] = 'ho_iad/pages_controller/view_ledger_paid';
+$route['head-office-iad/ledger/mbl'] = 'ho_iad/pages_controller/view_ledger_mbl';
 
 // Summary of Billing
 $route['head-office-iad/transaction/search'] = 'ho_iad/transaction_controller/search';
@@ -1136,6 +1141,14 @@ $route['head-office-iad/charging/bu-receivables/fetch/(:any)/(:any)'] = 'ho_iad/
 $route['printBUCharge/pdfReceivablesCharging/(:any)/(:any)/(:any)'] = 'ho_iad/transaction_controller/print_rcv_bu_charging/$1/$2/$3';
 $route['head-office-iad/charging/paid/business-units/fetch'] = 'ho_iad/transaction_controller/fetch_bu_paid_charge';
 $route['head-office-iad/charging/view-details'] = 'ho_iad/transaction_controller/fetch_charge_details';
+$route['head-office-iad/billing-list/payment-history/fetch'] = 'ho_iad/transaction_controller/fetch_payment_history';
+$route['head-office-iad/billing-list/view-payment-details/(:any)'] = 'ho_iad/transaction_controller/fetch_details_payment';
+$route['head-office-iad/ledger/fetch'] = 'ho_iad/transaction_controller/fetch_paid_bill_ledger';
+$route['head-office-iad/ledger/mbl/fetch'] = 'ho_iad/transaction_controller/fetch_mbl_ledger';
+
+$route['ho-iad-printledger/ledgerpaid/(:any)/(:any)/(:any)'] = 'ho_iad/transaction_controller/ho_print_paid_ledger/$1/$2/$3';
+$route['ho-iad-printledger/ledgermbl/(:any)/(:any)'] = 'ho_iad/transaction_controller/print_mbl_ledger/$1/$2';
+
 
 //end
 // Payment Details

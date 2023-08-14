@@ -274,18 +274,35 @@ class Main_controller extends CI_Controller {
 	function add_payment_details() {
 		$token = $this->security->get_csrf_hash();
 		$type = $this->uri->segment(5);
-		$this->form_validation->set_rules('acc-number', 'Account Number', 'required');
-		$this->form_validation->set_rules('acc-name', 'Account Name', 'required');
-		$this->form_validation->set_rules('check-number', 'Check Number', 'required');
-		$this->form_validation->set_rules('check-date', 'Check Date', 'required');
-		$this->form_validation->set_rules('bank', 'Bank', 'required');
-		$this->form_validation->set_rules('amount-paid', 'Amount Paid', 'required');
-		$this->form_validation->set_rules('supporting-docu', '', 'callback_check_image');
+		
+		if($type == 'accredited'){
+			$this->form_validation->set_rules('cv-date', 'CV Date', 'required');
+			$this->form_validation->set_rules('cv-number', 'CV Number', 'required');
+			$this->form_validation->set_rules('acc-number', 'Account Number', 'required');
+			$this->form_validation->set_rules('acc-name', 'Account Name', 'required');
+			$this->form_validation->set_rules('check-number', 'Check Number', 'required');
+			$this->form_validation->set_rules('check-date', 'Check Date', 'required');
+			$this->form_validation->set_rules('bank', 'Bank', 'required');
+			$this->form_validation->set_rules('amount-paid', 'Amount Paid', 'required');
+			$this->form_validation->set_rules('supporting-docu', '', 'callback_check_image');
+		}else if($type == 'nonaccredited'){
+			$this->form_validation->set_rules('cv-date', 'CV Date', 'required');
+			$this->form_validation->set_rules('cv-number', 'CV Number', 'required');
+			$this->form_validation->set_rules('payee', 'Payee', 'required');
+			$this->form_validation->set_rules('check-number', 'Check Number', 'required');
+			$this->form_validation->set_rules('check-date', 'Check Date', 'required');
+			$this->form_validation->set_rules('bank', 'Bank', 'required');
+			$this->form_validation->set_rules('amount-paid', 'Amount Paid', 'required');
+			$this->form_validation->set_rules('supporting-docu', '', 'callback_check_image');
+		}
 
 		if(!$this->form_validation->run()){
 			echo json_encode([
 				'token' => $token,
 				'status' => 'validation-error',
+				'cv_date_error' => form_error('cv-date'),
+				'cv_number_error' => form_error('cv-number'),
+				'payee_error' => form_error('payee'),
 				'acc_num_error' => form_error('acc-number'),
 				'acc_name_error' => form_error('acc-name'),
 				'check_num_error' => form_error('check-number'),
@@ -313,27 +330,30 @@ class Main_controller extends CI_Controller {
 				
 				$added_by = $this->session->userdata('fullname');
 
-				$data = [
-					"details_no" => $details_no,
-					"hp_id" => $this->input->post('pd-hp-id', TRUE),
-					"total_hp_bill" => str_replace(',', '', $this->input->post('p-total-bill')),
-					"acc_number" => $this->input->post('acc-number', TRUE),
-					"acc_name" => $this->input->post('acc-name', TRUE),
-					"check_num" => $this->input->post('check-number', TRUE),
-					"check_date" => $this->input->post('check-date', TRUE),
-					"bank" => $this->input->post('bank', TRUE),
-					"amount_paid" => $this->input->post('amount-paid', TRUE),
-					"supporting_file" => $uploadData['file_name'],
-					"date_add" => date('Y-m-d h:i:s'),
-					"added_by" => $added_by
-					
-				];
-				$this->List_model->add_payment_details($data);
 				$paid_by = $this->session->userdata('fullname');
 				$paid_on = $this->input->post('check-date', TRUE);
 
 				if($type == 'accredited'){
 					$payment_no = $this->input->post('pd-payment-no', TRUE);
+
+					$data = [
+						"details_no" => $details_no,
+						"hp_id" => $this->input->post('pd-hp-id', TRUE),
+						"total_hp_bill" => str_replace(',', '', $this->input->post('p-total-bill')),
+						"cv_date" => $this->input->post('cv-date', TRUE),
+						"cv_number" => $this->input->post('cv-number', TRUE),
+						"acc_number" => $this->input->post('acc-number', TRUE),
+						"acc_name" => $this->input->post('acc-name', TRUE),
+						"check_num" => $this->input->post('check-number', TRUE),
+						"check_date" => $this->input->post('check-date', TRUE),
+						"bank" => $this->input->post('bank', TRUE),
+						"amount_paid" => $this->input->post('amount-paid', TRUE),
+						"supporting_file" => $uploadData['file_name'],
+						"date_add" => date('Y-m-d h:i:s'),
+						"added_by" => $added_by
+						
+					];
+					$this->List_model->add_payment_details($data);
 			
 					$this->List_model->set_details_no($payment_no,$details_no);
 					$this->List_model->set_monthly_payable($payment_no,$paid_by,$paid_on);
@@ -365,6 +385,24 @@ class Main_controller extends CI_Controller {
 
 				}else if($type == 'nonaccredited'){
 					$billing_id = $this->input->post('pd-billing-id', TRUE);
+
+					$data = [
+						"details_no" => $details_no,
+						"hp_id" => $this->input->post('pd-hp-id', TRUE),
+						"total_hp_bill" => str_replace(',', '', $this->input->post('p-total-bill')),
+						"cv_date" => $this->input->post('cv-date', TRUE),
+						"cv_number" => $this->input->post('cv-number', TRUE),
+						"payee" => $this->input->post('payee', TRUE),
+						"check_num" => $this->input->post('check-number', TRUE),
+						"check_date" => $this->input->post('check-date', TRUE),
+						"bank" => $this->input->post('bank', TRUE),
+						"amount_paid" => $this->input->post('amount-paid', TRUE),
+						"supporting_file" => $uploadData['file_name'],
+						"date_add" => date('Y-m-d h:i:s'),
+						"added_by" => $added_by
+						
+					];
+					$this->List_model->add_payment_details($data);
 			
 					$this->List_model->set_details_no_other($billing_id,$details_no);
 					// $this->List_model->set_monthly_payable_other($billing_id,$paid_by,$paid_on);
@@ -731,9 +769,21 @@ class Main_controller extends CI_Controller {
 	
 				$custom_actions .= '<a class="text-success fw-bold ls-1 ps-2 fs-4" href="javascript:void(0)" onclick="viewCheckVoucher(\'' . $payment['supporting_file'] . '\')" data-bs-toggle="tooltip"><u><i class="mdi mdi-file-pdf fs-3" title="View Proof"></i></u></a>';
 	
+				if(!empty($payment['acc_number'])){
+					$acc_number = $payment['acc_number'];
+				}else{
+					$acc_number = 'None';
+				}
+				if(!empty($payment['acc_name'])){
+					$acc_name = $payment['acc_name'];
+				}else{
+					$acc_name = 'None';
+				}
+
 				$row[] = $number++;
-				$row[] = $payment['acc_number'];
-				$row[] = $payment['acc_name'];
+				$row[] = $payment['cv_number'];
+				$row[] = $acc_number;
+				$row[] = $acc_name;
 				$row[] = $payment['check_num'];
 				$row[] = $payment['check_date'];
 				$row[] = $payment['bank'];
@@ -796,7 +846,10 @@ class Main_controller extends CI_Controller {
 				'billed_date' => 'From '. date("F d, Y", strtotime($payment['startDate'])).' to '. date("F d, Y", strtotime($payment['endDate'])),
 				'covered_loa_no' => $loa_noa_no,
 				'billing_id' => $this->myhash->hasher($payment['billing_id'],'encrypt'),
-				'billing_type' => $payment['billing_type']
+				'billing_type' => $payment['billing_type'],
+				'cv_number' => $payment['cv_number'],
+				'cv_date' => $payment['cv_date'],
+				'payee' => $payment['payee'],
 			]; 
 
 		echo json_encode($response);
@@ -1638,7 +1691,9 @@ class Main_controller extends CI_Controller {
 	
 				$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $pay['pdf_bill'] . '\' , \''. $no .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-5"></i></a>';
 
-				$action = '<a href="JavaScript:void(0)" onclick="tagAsDoneReimburse(\'' . $pay['billing_id'] .'\',\'' . $pay['payment_no'] .'\',\'' . number_format($pay['company_charge'],2,'.',',') .'\',\'' . $pay['hp_id'] .'\')" data-bs-toggle="tooltip" title="Tag As Reimbursed"><i class="mdi mdi-tag-plus text-danger fs-3"></i></a>';
+				$action = '<a href="JavaScript:void(0)" onclick="tagAsDoneReimburse(\'' . $pay['billing_id'] .'\',\'' . $pay['payment_no'] .'\',\'' . number_format($pay['company_charge'],2,'.',',') .'\',\'' . $pay['hp_id'] .'\',\''.$fullname.'\')" data-bs-toggle="tooltip" title="Tag As Reimbursed"><i class="mdi mdi-tag-plus text-info fs-3"></i></a>';
+
+				$action .= '<a href="JavaScript:void(0)" onclick="generatePDF(\'' . $pay['billing_id'] .'\')" data-bs-toggle="tooltip" title="Generate PDF"><i class="mdi mdi-file-pdf text-danger ps-2 fs-3"></i></a>';
 	
 				$row[] = $number++;
 				$row[] = $pay['hp_name'];
@@ -1777,6 +1832,7 @@ class Main_controller extends CI_Controller {
 				// $action .= '<a href="JavaScript:void(0)" onclick="tagAsDoneReimburse(\'' . $pay['billing_id'] .'\')" data-bs-toggle="tooltip" title="Tag As Reimbursed"><i class="mdi mdi-tag-plus text-danger fs-3 ps-2"></i></a>';
 	
 				$row[] = $number++;
+				$row[] = $request_date;
 				$row[] = $pay['hp_name'];
 				$row[] = $pay['billing_no'];
 				$row[] = $loa_noa;
@@ -2411,13 +2467,15 @@ class Main_controller extends CI_Controller {
 					<td></td>
 					<td></td>
 					<td class="fw-bold text-end">TOTAL</td>
-					<td class="fw-bold text-end">'.number_format($totalPayableSum,2,'.',',').'</td>
+					<td class="fw-bold text-end" id="receivables-total">'.number_format($totalPayableSum,2,'.',',').'</td>
 					<td></td>
 				</tr>
 			</tfoot>';
-
+		
 		$table .= '</table></div>';
+
 		$data['table'] = $table;
+		$data['total'] = $totalPayableSum;
 		$this->load->view('templates/header', $data);
 		$this->load->view('ho_accounting_panel/billing_list_table/charging_receivables_details.php');
 		$this->load->view('templates/footer');
@@ -2428,12 +2486,14 @@ class Main_controller extends CI_Controller {
 		$token = $this->security->get_csrf_hash();
 		$charging_no = $this->input->post('charging-no', TRUE);
 		$this->form_validation->set_rules('supporting-docu', '', 'callback_check_image');
+		$this->form_validation->set_rules('total-amount', 'Total Amount', 'required');
 
 		if(!$this->form_validation->run()){
 			echo json_encode([
 				'token' => $token,
 				'status' => 'validation-error',
-				'image_error' => form_error('supporting-docu')
+				'image_error' => form_error('supporting-docu'),
+				'total_error' => form_error('total-amount')
 			]);
 		}else{
 			$config['upload_path'] = './uploads/bu_charges_docs/';
@@ -2449,8 +2509,9 @@ class Main_controller extends CI_Controller {
 			}else{
 				$uploadData = $this->upload->data();
 				$bu_proof_payment = $uploadData['file_name'];
+				$inputted_total = $this->input->post('total-amount', TRUE);
 
-				$updated = $this->List_model->tag_charge_as_paid($charging_no, $bu_proof_payment);
+				$updated = $this->List_model->tag_charge_as_paid($charging_no, $bu_proof_payment, $inputted_total);
 				if(!$updated){
 					echo json_encode([
 						'token' => $token,
@@ -2634,6 +2695,7 @@ class Main_controller extends CI_Controller {
 		}else{
 			echo json_encode([
 				'token' => $token,
+				'payment_no' => $payment_no,
 				'status' => 'error',
 				'message' => 'Failed to Submit!'
 			]);
@@ -3148,20 +3210,22 @@ class Main_controller extends CI_Controller {
 
 	}
 
-	function print_payment_other_hosp() {
+	function print_payment_other_hosp($billing_id) {
 		$this->security->get_csrf_hash();
 		$this->load->library('tcpdf_library');
 
-		$billed = $this->List_model->get_other_hos_for_payment_bills();
+		$billing_id =  base64_decode($billing_id);
+		
+		$billed = $this->List_model->get_other_hos_for_payment_bills($billing_id);
 		$pdf = new TCPDF();
 
 		$title = '<img src="'.base_url().'assets/images/HC_logo.png" style="width:110px;height:70px">';
 
 		$title .= '<style>h3 { margin: 0; padding: 0; line-height: .5; }</style>
             <h3>For Payment Summary Details</h3>
-			<h3>Non-Affiliated Hospitals</h3><br>';
+			<h3>Non-Affiliated Hospital</h3><br>';
 			
-		$currentDate = '<small>Transaction Date: ' . date('m/d/Y h:i A').' (Reprinted Copy)</small>';
+		$currentDate = '<small>Transaction Date: ' . date('m/d/Y h:i A').'</small>';
 		$PDFdata = '<table style="border:.5px solid #000; padding:3px" class="table table-bordered">';
 		$PDFdata .= ' <thead>
 						<tr class="border-secondary">
@@ -3176,8 +3240,6 @@ class Main_controller extends CI_Controller {
 							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Percentage</strong></th>
 							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Hospital Bill</strong></th>
 							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Company Charge</strong></th>
-							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Healthcare Advance</strong></th>
-							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Total Payable</strong></th>
 							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Personal Charge</strong></th>
 							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Remaining MBL</strong></th>
 						</tr>
@@ -3260,7 +3322,7 @@ class Main_controller extends CI_Controller {
 	
 						$fullname =  $bill['first_name'] . ' ' . $bill['middle_name'] . ' ' . $bill['last_name'] . ' ' . $bill['suffix'];
 						
-						$total_payable = floatval($bill['company_charge'] + $bill['cash_advance']);
+						$total_payable = floatval($bill['company_charge'] + 0);
 	
 						$PDFdata .= ' <tbody>
 							<tr>
@@ -3275,8 +3337,6 @@ class Main_controller extends CI_Controller {
 								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$wpercent. ', '.$nwpercent.'</td>
 								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['net_bill'],2,'.',',').'</td>
 								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['company_charge'],2,'.',',').'</td>
-								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['cash_advance'],2,'.',',').'</td>
-								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($total_payable,2,'.',',').'</td>
 								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['personal_charge'],2,'.',',').'</td>
 								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['after_remaining_bal'],2,'.',',').'</td>
 							</tr>
@@ -3289,8 +3349,6 @@ class Main_controller extends CI_Controller {
 
 		$PDFdata .= '<tfoot>
 				<tr>
-					<td></td>
-					<td></td>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -3315,7 +3373,204 @@ class Main_controller extends CI_Controller {
 		$pdf->WriteHtmlCell(0, 0, '', '', $currentDate, 0, 1, 0, true, 'R', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', '', 0, 1, 0, true, 'C', true);
-		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'J', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'R', true);
+		$pdf->lastPage();
+		$pageCount = $pdf->getAliasNumPage(); // Get the number of pages
+		for ($i = 1; $i <= $pageCount; $i++) {
+			$pdf->setPage($i); // Set the page number
+			$pdf->writeHTMLCell(0, 0, '', '', 'Page '.$i.' of '.$pageCount, 0, 1, 0, true, 'R', true);
+		}
+		$pdfname = 'forPayment_'.date('mdHi');
+		$pdf->Output($pdfname.'.pdf', 'I');
+	}
+
+	function print_paid_bill_otherhosp($start_date,$end_date) {
+		$this->security->get_csrf_hash();
+		$this->load->library('tcpdf_library');
+
+		$start_date =  base64_decode($start_date);
+		$end_date =  base64_decode($end_date);
+		
+		if($start_date == 'none'){
+			$start = '';
+		}else{
+			$start = $start_date;
+		}
+		if($end_date == 'none'){
+			$end = '';
+		}else{
+			$end = $end_date;
+		}
+
+		if(!empty($start) || !empty($end)){
+			$formattedStart_date = date('F d, Y', strtotime($start));
+			$formattedEnd_date = date('F d, Y', strtotime($end));
+
+			$date = '<h3>From '.$formattedStart_date.' to '.$formattedEnd_date.'</h3>';
+		}else{
+			$date = '';
+		}
+
+
+		$billed = $this->List_model->get_other_hos_paid_bills($start,$end);
+		$pdf = new TCPDF();
+
+		$title = '<img src="'.base_url().'assets/images/HC_logo.png" style="width:110px;height:70px">';
+
+		$title .= '<style>h3 { margin: 0; padding: 0; line-height: .5; }</style>
+            <h3>Paid Summary Details</h3>
+			<h3>Non-Affiliated Hospital</h3>
+			<h4>'.$date.'</h4><br>';
+			
+		$currentDate = '<small>Transaction Date: ' . date('m/d/Y h:i A').'</small>';
+		$PDFdata = '<table style="border:.5px solid #000; padding:3px" class="table table-bordered">';
+		$PDFdata .= ' <thead>
+						<tr class="border-secondary">
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px; width:40px"><strong>NO.</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Request Date</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Healthcare Provider</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Billing No</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>LOA/NOA #</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Patient Name</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Business Unit</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Current MBL</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Percentage</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Hospital Bill</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Company Charge</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Personal Charge</strong></th>
+							<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Remaining MBL</strong></th>
+						</tr>
+					</thead>';
+
+				$number = 1;
+				$totalPayableSum = 0;
+				foreach($billed as $bill){
+					if($bill['company_charge'] && $bill['cash_advance'] != ''){
+						$wpercent = '';
+						$nwpercent = '';
+						if($bill['loa_id'] != ''){
+								$loa_noa = $bill['loa_no'];
+								$loa = $this->List_model->get_loa_info($bill['loa_id']);
+								$request_date = date('m/d/Y', strtotime($loa['request_date']));
+								if($loa['work_related'] == 'Yes'){ 
+									if($loa['percentage'] == ''){
+									$wpercent = '100% W-R';
+									$nwpercent = '';
+									}else{
+									$wpercent = $loa['percentage'].'%  W-R';
+									$result = 100 - floatval($loa['percentage']);
+									if($loa['percentage'] == '100'){
+										$nwpercent = '';
+									}else{
+										$nwpercent = $result.'% NonW-R';
+									}
+									
+									}	
+							}else if($loa['work_related'] == 'No'){
+								if($loa['percentage'] == ''){
+									$wpercent = '';
+									$nwpercent = '100% NonW-R';
+									}else{
+									$nwpercent = $loa['percentage'].'% NonW-R';
+									$result = 100 - floatval($loa['percentage']);
+									if($loa['percentage'] == '100'){
+										$wpercent = '';
+									}else{
+										$wpercent = $result.'%  W-R';
+									}
+									
+									}
+							}
+	
+							}else if($bill['noa_id'] != ''){
+								$loa_noa = $bill['noa_no'];
+								$noa = $this->List_model->get_noa_info($bill['noa_id']);
+								$request_date = date('m/d/Y', strtotime($noa['request_date']));
+								if($noa['work_related'] == 'Yes'){ 
+									if($noa['percentage'] == ''){
+									$wpercent = '100% W-R';
+									$nwpercent = '';
+									}else{
+									$wpercent = $noa['percentage'].'%  W-R';
+									$result = 100 - floatval($noa['percentage']);
+									if($noa['percentage'] == '100'){
+										$nwpercent = '';
+									}else{
+										$nwpercent = $result.'% NonW-R';
+									}
+									
+									}	
+							}else if($noa['work_related'] == 'No'){
+								if($noa['percentage'] == ''){
+									$wpercent = '';
+									$nwpercent = '100% NonW-R';
+									}else{
+									$nwpercent = $noa['percentage'].'% NonW-R';
+									$result = 100 - floatval($noa['percentage']);
+									if($noa['percentage'] == '100'){
+										$wpercent = '';
+									}else{
+										$wpercent = $result.'%  W-R';
+									}
+									
+									}
+							}
+						}
+	
+						$fullname =  $bill['first_name'] . ' ' . $bill['middle_name'] . ' ' . $bill['last_name'] . ' ' . $bill['suffix'];
+						
+						$total_payable = floatval($bill['company_charge'] + 0);
+	
+						$PDFdata .= ' <tbody>
+							<tr>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px; width:40px">'.$number++.'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$request_date.'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$bill['hp_name'].'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$bill['billing_no'].'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$loa_noa.'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$fullname.'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$bill['business_unit'].'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['before_remaining_bal'],2,'.',',').'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$wpercent. ', '.$nwpercent.'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['net_bill'],2,'.',',').'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['company_charge'],2,'.',',').'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['personal_charge'],2,'.',',').'</td>
+								<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['after_remaining_bal'],2,'.',',').'</td>
+							</tr>
+						</tbody>';
+	
+						$totalPayableSum += $total_payable;
+					}
+					
+				}
+
+		$PDFdata .= '<tfoot>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td class="fw-bold fs-5">TOTAL </td>
+					<td class="fw-bold fs-5">'.number_format($totalPayableSum,2,'.',',').'</td>
+					<td></td>
+					<td></td>
+				</tr>
+			</tfoot>';
+
+		$PDFdata .= '</table>';
+		$pdf->setPrintHeader(false);
+		$pdf->setTitle('Paid Report');
+		$pdf->setFont('times', '', 10);
+		$pdf->AddPage('L', 'LEGAL');
+		$pdf->WriteHtmlCell(0, 0, '', '', $currentDate, 0, 1, 0, true, 'R', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', '', 0, 1, 0, true, 'C', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'R', true);
 		$pdf->lastPage();
 		$pageCount = $pdf->getAliasNumPage(); // Get the number of pages
 		for ($i = 1; $i <= $pageCount; $i++) {
@@ -3383,8 +3638,8 @@ class Main_controller extends CI_Controller {
 			'.$date.'
             <h3>'.$hospital.'</h3>
 			<h3>'.$payment_no.'</h3><br>';
-		
-		$currentDate = '<small>Transaction Date: ' . date('m/d/Y h:i A').'</small>';
+
+			$currentDate = '<small>Transaction Date: ' . date('m/d/Y h:i A').'</small>';
 		$PDFdata = '<table style="border:.5px solid #000; padding:3px" class="table table-bordered">';
 		if($type == 'affiliated'){
 			$PDFdata .= ' <thead>
@@ -3543,8 +3798,6 @@ class Main_controller extends CI_Controller {
 								<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Percentage</strong></th>
 								<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Hospital Bill</strong></th>
 								<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Company Charge</strong></th>
-								<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Healthcare Advance</strong></th>
-								<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Total Payable</strong></th>
 								<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Personal Charge</strong></th>
 								<th class="fw-bold" style="border:.5px solid #000; padding:1px"><strong>Remaining MBL</strong></th>
 							</tr>
@@ -3627,7 +3880,7 @@ class Main_controller extends CI_Controller {
 
 					$fullname =  $bill['first_name'] . ' ' . $bill['middle_name'] . ' ' . $bill['last_name'] . ' ' . $bill['suffix'];
 					
-					$total_payable = floatval($bill['company_charge'] + $bill['cash_advance']);
+					$total_payable = floatval($bill['company_charge'] + 0);
 
 					$PDFdata .= ' <tbody>
 						<tr>
@@ -3642,8 +3895,6 @@ class Main_controller extends CI_Controller {
 							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$wpercent. ', '.$nwpercent.'</td>
 							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['net_bill'],2,'.',',').'</td>
 							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['company_charge'],2,'.',',').'</td>
-							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['cash_advance'],2,'.',',').'</td>
-							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($total_payable,2,'.',',').'</td>
 							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['personal_charge'],2,'.',',').'</td>
 							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($bill['after_remaining_bal'],2,'.',',').'</td>
 						</tr>
@@ -3656,8 +3907,6 @@ class Main_controller extends CI_Controller {
 
 		$PDFdata .= '<tfoot>
 			<tr>
-				<td></td>
-				<td></td>
 				<td></td>
 				<td></td>
 				<td></td>
@@ -3683,7 +3932,7 @@ class Main_controller extends CI_Controller {
 		$pdf->WriteHtmlCell(0, 0, '', '', $currentDate, 0, 1, 0, true, 'R', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', '', 0, 1, 0, true, 'C', true);
-		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'J', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'R', true);
 		$pdf->lastPage();
 		$pageCount = $pdf->getAliasNumPage(); // Get the number of pages
 		for ($i = 1; $i <= $pageCount; $i++) {
@@ -4310,10 +4559,10 @@ class Main_controller extends CI_Controller {
 
 		$charging = $this->List_model->get_receivables_charging($charge_no);
 		if($type == 'unpaid'){
-			$header = '<h3>Business Unit Charges</h3>';
+			$header = '<h3>Business Unit Charging Summary</h3>';
 			$pdfname = 'Charge_'.$business_unit .'_'.date('YmdHi');
 		}else{
-			$header = '<h3>Paid Business Unit Charges</h3>';
+			$header = '<h3>Paid Business Unit Charging Summary</h3>';
 			$pdfname = 'PaidCharge_'.$business_unit .'_'.date('YmdHi');
 		}
 
@@ -4447,7 +4696,7 @@ class Main_controller extends CI_Controller {
 		foreach ($charging as $charge) {
 			$title = '<img src="'.base_url().'assets/images/HC_logo.png" style="width:110px;height:70px">';
 			$title .= '<style>h3 { margin: 0; padding: 0; line-height: .5; }</style>
-					<h3>Paid Business Unit Charges</h3>
+					<h3>Paid Business Unit Charging Summary</h3>
 					<h3>'.$charge['business_unit'].'</h3>
 					<h3>'.$charging_no.'</h3><br>';
 			$business_unit = $charge['business_unit'];
@@ -4537,11 +4786,11 @@ class Main_controller extends CI_Controller {
 			$bu_unit = '';
 		}
 
-		$charging = $this->List_model->get_bu_charging($charging_no);;
+		$charging = $this->List_model->get_bu_charging($charging_no);
 
 		$title = '<img src="'.base_url().'assets/images/HC_logo.png" style="width:110px;height:70px">';
 		$title .= '<style>h3 { margin: 0; padding: 0; line-height: .5; }</style>
-					<h3>Business Unit Charges</h3>
+					<h3>Business Unit Charging Summary</h3>
 					<h3>'.$bu_unit.'</h3>
 					<h3>'.$charging_no.'</h3><br>';
 
@@ -5023,15 +5272,8 @@ class Main_controller extends CI_Controller {
 							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$fullname.'</td>
 							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.$totals['business_unit'].'</td>
 							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($totals['total_debit'], 2, '.', ',').'</td>
-							<td class="fs-5" style="border:.5px solid #000; padding:1px">----</td>
-						</tr>';
-			$PDFdata .= '<tr>
-							<td class="fs-5" style="border:.5px solid #000; padding:1px"></td>
-							<td class="fs-5" style="border:.5px solid #000; padding:1px"></td>
-							<td class="fs-5" style="border:.5px solid #000; padding:1px"></td>
-							<td class="fs-5" style="border:.5px solid #000; padding:1px"></td>
 							<td class="fs-5" style="border:.5px solid #000; padding:1px">'.number_format($totals['total_paid_amount'], 2, '.', ',').'</td>
-						</tr></tbody>';
+						</tr>';
 
 			$totalDebit += floatval($totals['total_debit']);
 			$totalCredit += floatval($totals['total_paid_amount']);

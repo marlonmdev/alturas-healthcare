@@ -174,12 +174,13 @@ class Loa_controller extends CI_Controller {
 			if($loa['work_related'] == ''){
 				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $loa['status'] . '</span></div>';
 				$custom_actions .= '<a class="me-2" data-bs-toggle="tooltip" title="Charge type is not yet set by HRD Coordinator" disabled><i class="mdi mdi-thumb-up fs-2 icon-disabled"></i></a>';
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="disapproveLoaRequest(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="Disapprove LOA"><i class="mdi mdi-thumb-down fs-2 text-danger"></i></a>';
 			}else{
 				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-cyan">for Approval</span></div>';
 				$custom_actions .= '<a class="me-2" href="JavaScript:void(0)" onclick="approveLoaRequest(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="Approve LOA"><i class="mdi mdi-thumb-up fs-2 text-success"></i></a>';
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="disapproveLoaRequest(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="Disapprove LOA"><i class="mdi mdi-thumb-down fs-2 text-danger"></i></a>';
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="editpercentage(\'' . $loa_id . '\',\'' . $loa['loa_no'] . '\',\'' . $loa['percentage'] . '\')" data-bs-toggle="tooltip" title="Edit LOA Percentage"><i class="mdi mdi-pen fs-2 text-success"></i></a>';
 			}
-
-			$custom_actions .= '<a href="JavaScript:void(0)" onclick="disapproveLoaRequest(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="Disapprove LOA"><i class="mdi mdi-thumb-down fs-2 text-danger"></i></a>';
 
 			// initialize multiple varibles at once
 			$view_file = $short_hp_name = '';
@@ -1059,64 +1060,64 @@ class Loa_controller extends CI_Controller {
                     }
 					
 				}
-			}else if($loa_info['work_related'] == 'No'){
-				if($loa_info['percentage'] == ''){
-                    if($previous_mbl <= 0){
-                        $company_charge = 0;
-                        $personal_charge =  $net_bill;
-                        $remaining_mbl =  0;
-                    }else{
-                        if($net_bill <= $previous_mbl){
-                            $company_charge = $net_bill;
-                            $personal_charge = 0;
-                            $remaining_mbl = $previous_mbl - $company_charge;
-                        }else if($net_bill > $previous_mbl){
-                            $company_charge = $previous_mbl;
-                            $personal_charge = $net_bill - $previous_mbl;
-                            $remaining_mbl = 0;
-                        }
-                    }
+			}
+			// else if($loa_info['work_related'] == 'No'){
+			// 	if($loa_info['percentage'] == ''){
+            //         if($previous_mbl <= 0){
+            //             $company_charge = 0;
+            //             $personal_charge =  $net_bill;
+            //             $remaining_mbl =  0;
+            //         }else{
+            //             if($net_bill <= $previous_mbl){
+            //                 $company_charge = $net_bill;
+            //                 $personal_charge = 0;
+            //                 $remaining_mbl = $previous_mbl - $company_charge;
+            //             }else if($net_bill > $previous_mbl){
+            //                 $company_charge = $previous_mbl;
+            //                 $personal_charge = $net_bill - $previous_mbl;
+            //                 $remaining_mbl = 0;
+            //             }
+            //         }
 					
                    
-				}else if($loa_info['percentage'] != ''){
-                    if($previous_mbl <= 0){
-                        $company_charge = 0;
-                        $personal_charge =  $net_bill;
-                        $remaining_mbl =  0;
-                    }else{
-                        if($net_bill <= $previous_mbl){
-                            $company_charge = $net_bill;
-                            $personal_charge = 0;
-                            $remaining_mbl = $previous_mbl - floatval($net_bill);
-                        }else if($net_bill > $previous_mbl){
-                            $converted_percent = $percentage/100;
-                            $initial_personal_charge = $converted_percent * $net_bill;
-                            $initial_company_charge = $net_bill - floatval($initial_personal_charge);
+			// 	}else if($loa_info['percentage'] != ''){
+            //         if($previous_mbl <= 0){
+            //             $company_charge = 0;
+            //             $personal_charge =  $net_bill;
+            //             $remaining_mbl =  0;
+            //         }else{
+            //             if($net_bill <= $previous_mbl){
+            //                 $company_charge = $net_bill;
+            //                 $personal_charge = 0;
+            //                 $remaining_mbl = $previous_mbl - floatval($net_bill);
+            //             }else if($net_bill > $previous_mbl){
+            //                 $converted_percent = $percentage/100;
+            //                 $initial_personal_charge = $converted_percent * $net_bill;
+            //                 $initial_company_charge = $net_bill - floatval($initial_personal_charge);
                             
-                            if($initial_company_charge <= $previous_mbl){
-                                $result = $previous_mbl - $initial_company_charge;
-                                $initial_personal = $initial_personal_charge - $result;
-                                if($initial_personal < 0 ){
-                                    $personal_charge = 0;
-                                    $company_charge = $initial_company_charge + $initial_personal_charge;
-                                    $remaining_mbl = $previous_mbl - floatval($company_charge);
-                                }else if($initial_personal >= 0){
-                                    $personal_charge = $initial_personal;
-                                    $company_charge = $previous_mbl;
-                                    $remaining_mbl = 0;
-                                }
-                            }else if($initial_company_charge > $previous_mbl){
-                                $personal_charge = $initial_personal_charge;
-                                $company_charge = $initial_company_charge;
-                                $remaining_mbl = 0;
-                            }
+            //                 if($initial_company_charge <= $previous_mbl){
+            //                     $result = $previous_mbl - $initial_company_charge;
+            //                     $initial_personal = $initial_personal_charge - $result;
+            //                     if($initial_personal < 0 ){
+            //                         $personal_charge = 0;
+            //                         $company_charge = $initial_company_charge + $initial_personal_charge;
+            //                         $remaining_mbl = $previous_mbl - floatval($company_charge);
+            //                     }else if($initial_personal >= 0){
+            //                         $personal_charge = $initial_personal;
+            //                         $company_charge = $previous_mbl;
+            //                         $remaining_mbl = 0;
+            //                     }
+            //                 }else if($initial_company_charge > $previous_mbl){
+            //                     $personal_charge = $initial_personal_charge;
+            //                     $company_charge = $initial_company_charge;
+            //                     $remaining_mbl = 0;
+            //                 }
                             
-                        }
-                    }
-				}
-			}
-		
-            
+            //             }
+            //         }
+			// 	}
+			// }
+
             $data = array(
                 'company_charge' => $company_charge,
                 'personal_charge' => $personal_charge,
@@ -1285,7 +1286,7 @@ class Loa_controller extends CI_Controller {
         if (!empty($result)) {
             foreach ($result as $row) :
                 $member_id = $this->myhash->hasher($row['member_id'], 'encrypt');
-                echo '<strong class="d-block mx-2 p-1 my-1"><a href="#" onclick="getMemberValues(\'' . $member_id . '\')" class="text-secondary" data-toggle="tooltip" data-placement="top" title="Click to fill form with Data">'
+                echo '<strong class="d-block members-list mx-2 p-1 my-1"><a href="#" onclick="getMemberValues(\'' . $member_id . '\')" class="text-secondary" data-toggle="tooltip" data-placement="top" title="Click to fill form with Data">'
                     . $row['first_name'] . ' '
                     . $row['middle_name'] . ' '
                     . $row['last_name'] . ' '
@@ -1527,6 +1528,31 @@ class Loa_controller extends CI_Controller {
 				];
 				echo json_encode($response);
 		}
+	}
+
+	function submit_edited_percentage(){
+		$input_post = $this->input->post(null,true);
+		$loa_id =  $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+
+		$data = [
+			'percentage' => $input_post['percentage_edit']
+		];
+
+		$inserted = $this->loa_model->db_update_loa_request($loa_id, $data);
+
+		if($inserted){
+			$response = [
+				'status' => 'success',
+				'message' => 'Updated Successfully'
+			];
+		}else{
+			$response = [
+				'status' => 'error',
+				'message' => 'Unable to submit'
+			];
+		}
+
+		echo json_encode($response);
 	}
 
 	function insert_loa($input_post, $med_services, $attending_physician, $rx_file) {

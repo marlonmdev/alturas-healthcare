@@ -32,9 +32,18 @@
                 <div class="col-lg-5 mt-3 mb-3" id="search-member-div">
                   <input type="text" class="form-control" name="search-member" id="input-search-member" onkeyup="searchHmoMember()" placeholder="Search Member Here..." />
                   <div id="member-search-div">
-                    <div id="search-results" class="border-top-0"></div>
+                    <div id="search-results" class="border"></div>
                   </div>
                 </div>
+                <!-- <div class="col-lg-5 mt-3 mb-3" id="search-member-div">
+                 
+                  <div id="member-search-div">
+                  <input type="text" class="form-control" name="search-member" id="input-search-member" placeholder="Search Member Here..." />
+                      <ul id="search_member_list" class="border">
+
+                      </ul>
+                  </div>
+                </div> -->
                 <input type="number" id="mbl" hidden>
                 <input id="member-id" hidden>
               </div>
@@ -117,9 +126,11 @@
                     <?php
                     if (!empty($hcproviders)) :
                       foreach ($hcproviders as $hcprovider) :
+                        if($hcprovider['accredited']==1){
                     ?>
                         <option value="<?= $hcprovider['hp_id']; ?>"><?= $hcprovider['hp_name']; ?></option>
                     <?php
+                        }
                       endforeach;
                     endif;
                     ?>

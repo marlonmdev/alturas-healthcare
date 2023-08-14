@@ -157,7 +157,7 @@
       <div class="modal-body">
         <form method="post" id="resubmitform">
           <input type="hidden" name="token" id="token" value="<?= $this->security->get_csrf_hash(); ?>">
-          <input type="text" name="loa_id" id="loaid">
+          <input type="text" name="loa_id" id="loaid" hidden>
           <input type="hidden" class="form-control fw-bold ls-2" name="loa_no" id="cur-loa-no" readonly>
 
           <div class="row form-group mt-2">

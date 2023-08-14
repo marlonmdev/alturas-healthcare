@@ -184,7 +184,7 @@
         "targets": [], // numbering column
         "orderable": false, //set not orderable
       }, ],
-      responsive: false,
+      responsive: true,
       fixedHeader: true,
     });
 

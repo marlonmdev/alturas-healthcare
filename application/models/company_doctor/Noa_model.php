@@ -289,4 +289,10 @@ public function get_count_pending()
     
     return $count;
 }
+
+function db_update_noa_request($noa_id, $post_data) {
+  $this->db->where('noa_id', $noa_id);
+  return $this->db->update('noa_requests', $post_data);
+}
+
 }

@@ -159,6 +159,7 @@
   </div>
 </div>
 <?php include 'view_pdf_file_modal.php';?>
+<?php include 'view_edit_percentage_modal.php';?>
 
 <script>
   const baseUrl = `<?php echo base_url(); ?>`;
@@ -183,7 +184,7 @@
         "targets": [], // numbering column
         "orderable": false,
       }, ],
-      responsive: false,
+      responsive: true,
       fixedHeader: true,
     });
 
@@ -200,6 +201,58 @@
     $("#expiration-date").flatpickr({
       minDate: tomorrow
     });
+
+    number_validator();
+
+    $('#edit_submit').on('click',function(){
+      $('#edit-percentage-form').submit();
+    });
+
+    $('#edit-percentage-form').on('submit',function(event){
+      console.log('percentage form');
+      const loa_id = $('#edit_loa_id').val();
+      event.preventDefault();
+      var formData = $('#edit-percentage-form').serialize();
+      $.ajax({
+        url: `${baseUrl}company-doctor/update/loa-percentage/${loa_id}`,
+        type:'POST',
+        data: formData,
+        dataType: "json",
+        success:(response)=>{
+          console.log(response);
+                  if(response.status === 'success'){
+                    swal({
+                      title: 'Success',
+                      text: response.message,
+                      timer: 2000,
+                      showConfirmButton: false,
+                      type: 'success',
+                    }).then(function(){
+                      $('#edit_percentage_Modal').modal('hide');
+                      window.location.href = `${baseUrl}company-doctor/loa/requests-list`;
+                    });
+                  }else{
+                    swal({
+                      title: 'Error',
+                      text: response.message,
+                      timer: 2000,
+                      showConfirmButton: true,
+                      type: 'error'
+                    });
+                  }
+              }
+      });
+    });
+
+    $('#expiration-type').on('change',function(){
+      const exp_type = $('#expiration-type').val();
+      if(exp_type === 'custom'){
+        $('#expiration-date').prop('required',true);
+      }else{
+        $('#expiration-date').prop('required',false);
+      }
+    });
+
   });
 
   //SAVE IMAGE 
@@ -215,6 +268,43 @@
     });
   }
   //END
+
+const editpercentage = (loa_id, loa_no, percentage) =>{
+  // console.log('percentage', percentage);
+  $('#edit_percentage_Modal').modal('show');
+  $('#loa_no').text(loa_no);
+  $('#percentage_edit').val(percentage);
+  $('#edit_loa_id').val(loa_id);
+}
+
+const number_validator = () => {
+	$('#percentage_edit').on('keydown',function(event){
+		let value = $('#percentage_edit').val();
+		let length  = $('#percentage_edit').val().length;
+		const key = event.key;
+	
+		if(length+1 <=1 && (key === '0'|| key ==='')){
+		  event.preventDefault();
+		}
+		if(/^[a-zA-Z]$/.test(key)) {
+		  event.preventDefault(); 
+		}
+		if(/^[!@#$%^&*()\-_=+[\]{};.':"\\|,<>/?`~]$/.test(key)) {
+		  event.preventDefault(); 
+		}
+		if(/\s/.test(key)){
+		  event.preventDefault();
+		}
+	  });
+
+    $('#percentage_edit').on('keyup',function(event){
+      if(Number($(this).val()) > 100){
+        $(this).val(100);
+      }
+      
+    });
+}
+
 
   //VIEW IMAGE 
   const viewImage = (path) => {

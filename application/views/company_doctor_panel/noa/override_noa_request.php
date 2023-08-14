@@ -34,7 +34,7 @@
                 <div class="col-lg-5 mt-3 mb-3" id="search-member-div">
                   <input type="text" class="form-control" name="search-member" id="input-search-member" onkeyup="searchHmoMember()" placeholder="Search Member Here..." />
                   <div id="member-search-div">
-                    <div id="search-results" class="border-top-0"></div>
+                    <div id="search-results" class="border"></div>
                   </div>
                 </div>
                 <input type="number" id="mbl" hidden>
@@ -62,9 +62,11 @@
                     <?php
                     if (!empty($hospitals)) :
                       foreach ($hospitals as $hospital) :
+                        if($hospital['accredited'] == 1):
                     ?>
                         <option value="<?= $hospital['hp_id']; ?>"><?= $hospital['hp_name']; ?></option>
                     <?php
+                      endif;
                       endforeach;
                     endif;
                     ?>

@@ -30,7 +30,7 @@
   
 
 </html>
-<!-- <style>
+<style>
     #scrollButton {
       display: none;
       position: fixed;
@@ -42,34 +42,34 @@
       border-radius: 4px;
       cursor: pointer;
     }
-  </style> -->
+  </style>
  <script>
-    // // Create the scroll button
-    // var scrollButton = document.createElement('button');
-    // scrollButton.id = 'scrollButton';
+    // Create the scroll button
+    var scrollButton = document.createElement('button');
+    scrollButton.id = 'scrollButton';
 
-    // // Create the icon element
-    // var iconElement = document.createElement('i');
-    // iconElement.className = 'mdi mdi-chevron-double-up';
+    // Create the icon element
+    var iconElement = document.createElement('i');
+    iconElement.className = 'mdi mdi-chevron-double-up';
 
-    // // Append the icon element to the scroll button
-    // scrollButton.appendChild(iconElement);
-    // scrollButton.title = 'Scroll back to top';
-    // document.body.appendChild(scrollButton);
+    // Append the icon element to the scroll button
+    scrollButton.appendChild(iconElement);
+    scrollButton.title = 'Scroll back to top';
+    document.body.appendChild(scrollButton);
 
-    // // Show/hide the scroll button based on the user's scroll position
-    // window.addEventListener('scroll', function() {
-    //   if (window.pageYOffset > 100) {
-    //     scrollButton.style.display = 'block';
-    //   } else {
-    //     scrollButton.style.display = 'none';
-    //   }
-    // });
+    // Show/hide the scroll button based on the user's scroll position
+    window.addEventListener('scroll', function() {
+      if (window.pageYOffset > 100) {
+        scrollButton.style.display = 'block';
+      } else {
+        scrollButton.style.display = 'none';
+      }
+    });
 
-    // // Scroll to the top when the button is clicked
-    // scrollButton.addEventListener('click', function() {
-    //   window.scrollTo({ top: 0, behavior: 'smooth' });
-    // });
+    // Scroll to the top when the button is clicked
+    scrollButton.addEventListener('click', function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 
    
   </script>

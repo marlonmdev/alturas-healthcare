@@ -57,7 +57,7 @@
                   <select class="form-select" name="healthcare-provider-category" id="healthcare-provider-category" oninput="enableProvider()">
                     <option value="" selected>Select Healthcare Provider Category</option>
                     <option value="1">Affiliated</option>
-                    <option value="2">Not Affiliated</option>
+                    <option value="2">Non-Affiliated</option>
                   </select>
                   <em id="healthcare-provider-category-error" class="text-danger"></em>
                 </div>

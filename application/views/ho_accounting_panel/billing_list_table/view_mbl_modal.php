@@ -30,3 +30,10 @@
         </div>
     </div>
 </div>
+<script>
+    // const BaseUrl = "<?php echo base_url(); ?>";
+   
+    // $(document).ready(function(){
+
+    // });
+</script>

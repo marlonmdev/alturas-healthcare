@@ -586,7 +586,7 @@ const number_validator = () => {
       if( hc_provider != '' ){
         request_type.disabled = false;
       }else{
-        request_type.disabled = true;
+        request_type.disabled = true; 
         request_type.value = '';
       }
   } 

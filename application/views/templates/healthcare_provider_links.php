@@ -136,8 +136,12 @@ $(document).ready(function(){
       data: {token:'<?php echo $this->security->get_csrf_hash(); ?>'},
       dataType: "json",
       success:function(response){
-         $('#billing-count').text(response.patient);
-         $('#letter-count').text(response.guarantee);
+        if(response.patient){
+          $('#billing-count').text(response.patient);
+        }
+        if(response.guarantee){
+          $('#letter-count').text(response.guarantee);
+        }
       }
   });
 });

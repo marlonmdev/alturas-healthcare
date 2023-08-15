@@ -98,7 +98,7 @@ $route['member/requested-loa/paid/fetch'] = 'member/loa_controller/fetch_paid_lo
 // update member notification
 $route['company-doctor/update/notification/fetch'] = 'company_doctor/notification_update/update_doctor_notification';
 $route['healthcare-provider/update/notification/fetch'] = 'healthcare_provider/notification_update/update_provider_notification';
-
+$route['member/resubmit/notification/fetch/(:any)'] = 'member/notification_update/update_member_notification';
 
 // Member NOA Routes
 $route['member/request-noa/submit'] = 'member/noa_controller/submit_noa_request';
@@ -809,6 +809,7 @@ $route['company-doctor/loa/requests-list/paid'] = 'company_doctor/pages_controll
 $route['company-doctor/override/loa-request/(:any)'] = 'company_doctor/pages_controller/view_request_loa';
 $route['company-doctor/override/noa-request/(:any)'] = 'company_doctor/pages_controller/view_request_noa';
 
+
 // Company Doctor User Account Routes
 $route['company-doctor/account-settings'] = 'company_doctor/account_controller/account_settings';
 $route['company-doctor/account-settings/password/update'] = 'company_doctor/account_controller/update_account_password';
@@ -842,7 +843,8 @@ $route['company-doctor/member/search-loa'] = 'company_doctor/loa_controller/sear
 $route['company-doctor/loa/member/search/(:any)'] = 'company_doctor/loa_controller/fetch_member_details';
 $route['company-doctor/get-services/(:any)'] = 'company_doctor/loa_controller/get_hp_services';
 $route['company-doctor/override/loa/submit'] = 'company_doctor/loa_controller/submit_loa_override';
-
+$route['company-doctor/update/loa-percentage/(:any)'] = 'company_doctor/loa_controller/submit_edited_percentage';
+$route['company-doctor/update/noa-percentage/(:any)'] = 'company_doctor/noa_controller/submit_edited_percentage';
 // Company Doctor NOA Routes
 $route['company-doctor/noa/requests-list/fetch'] = 'company_doctor/noa_controller/fetch_all_pending_noa';
 $route['company-doctor/noa/requests-list/approved/fetch'] = 'company_doctor/noa_controller/fetch_all_approved_noa';

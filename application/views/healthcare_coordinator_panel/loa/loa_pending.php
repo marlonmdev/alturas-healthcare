@@ -304,10 +304,11 @@
 
     $('#resubmitform').submit(function(event) {
       const nextPage = `${baseUrl}healthcare-coordinator/loa/requests-list`;
+      const loaid = $('#loaid').val(); 
       event.preventDefault();
       $.ajax({
         type: "post",
-        url: $(this).attr('action'),
+        url:`${baseUrl}healthcare-coordinator/loa/requests-list/submit_hospital_receipt/${loaid}`,
         data: $(this).serialize(),
         dataType: "json",
         success: function(response) {

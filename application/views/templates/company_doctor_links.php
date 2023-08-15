@@ -35,7 +35,8 @@
 
               <li class="sidebar-item <?php echo $this->uri->segment(2) == 'override' ? 'selected' : ''; ?>">
                 <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false" title="Request for Zero MBL Employee">
-                  <i class="mdi mdi-file-multiple"></i>Request for LOA/NOA
+                  <i class=" mdi mdi-file-multiple"></i>
+                  <span class="hide-menu ls-1">Request for LOA/NOA</span>
                 </a>
                 <ul aria-expanded="false" class="collapse first-level">
                   <li class="sidebar-item">
@@ -117,8 +118,10 @@
                         data: {token:'<?php echo $this->security->get_csrf_hash(); ?>'},
                         dataType: "json",
                         success:function(response){
-                          $('#pending-loa-count').text(response.pending_loa);
-                          $('#pending-noa-count').text(response.pending_noa);
+                          if(response.pending_loa)
+                            $('#pending-loa-count').text(response.pending_loa);
+                          if(response.pending_noa)
+                            $('#pending-noa-count').text(response.pending_noa);
                         }
                     });
                   });

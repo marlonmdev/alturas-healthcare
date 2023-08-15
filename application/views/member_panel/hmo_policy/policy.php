@@ -22,12 +22,12 @@
         <!-- End Bread crumb and right sidebar toggle -->
         <!-- Start of Container fluid  -->
         <div class="container">
-          <div class="row mt-4">
+          <div class="row mt-4 mb-4">
           
               <h2 class="mt-3">DATA PRIVACY POLICY</h2>
 
-              <p class="fs-5 "><strong>Effectivity Date:</strong> MMDDYYYY<br>
-              <strong>Last Modified:</strong> MMDDYYYY</p>
+              <p class="fs-5 ps-3"><strong>Effectivity Date:</strong><br>
+              <strong>Last Modified:</strong> </p>
 
               <p class="fs-5 ps-3">Alturas Supermarket Corporation (ASC) including its parent company, subsidiaries, affiliates, and related companies, collectively known as “Alturas Group of Companies (AGC)”, is committed to protecting your right to privacy. We ensure that our activities involving the collection and/or use of personal data are performed in accordance with the Data Privacy Act of 2012 (“the Act”), its Implementing Rules and Regulations (“IRR”), and other relevant policies, including issuances of the National Privacy Commission.</p>
 

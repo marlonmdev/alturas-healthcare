@@ -1484,6 +1484,56 @@ class List_model extends CI_Model{
        
     }
 
+    private function fetch_current_mbl_ledger() {
+        $filteredYear = $this->input->post('filteredYear');
+		$emp_id = $this->input->post('emp_id');
+      
+        $this->db->from('billing as tbl_1')
+            ->join('max_benefit_limits as tbl_6', 'tbl_1.emp_id = tbl_6.emp_id')
+            ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+            ->where('tbl_1.company_charge !=', 0)
+            ->where('tbl_1.emp_id', $emp_id)
+            ->where('YEAR(tbl_1.billed_on)', date('Y'))
+            ->order_by('tbl_1.billing_id', 'asc');
+            
+    }
+
+    function get_current_ledger_mbl() {
+        $this->fetch_current_mbl_ledger(); // Call the function to set up the query conditions
+        if (!empty($_POST['length']) && $_POST['length'] != -1) {
+            $this->db->limit($_POST['length'], $_POST['start']);
+        }
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    private function fetch_history_mbl_details() {
+        $filteredYear = $this->input->post('filteredYear');
+		$emp_id = $this->input->post('emp_id');
+
+        $this->db->from('members as tbl_1')
+            ->join('mbl_history as tbl_6', 'tbl_1.emp_id = tbl_6.emp_id', 'left')
+            ->join('billing as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id','left')
+            ->where('tbl_2.company_charge !=', 0)
+            ->where('tbl_1.emp_id', $emp_id)
+            ->where('YEAR(tbl_2.billed_on) !=', date('Y'))
+            ->order_by('tbl_2.billing_id', 'asc');
+    
+        if ($filteredYear) {
+            $this->db->where("YEAR(tbl_6.start_date)", $filteredYear);
+        }
+    }
+
+    function get_history_mbl_details() {
+        $this->fetch_history_mbl_details(); // Call the function to set up the query conditions
+        if (!empty($_POST['length']) && $_POST['length'] != -1) {
+            $this->db->limit($_POST['length'], $_POST['start']);
+        }
+        $query = $this->db->get();
+        return $query->result_array();
+            
+    }
+
     function get_employee_paid_ledger($years, $months, $bu_unit) {
         $this->db->from('billing as tbl_1')
                 ->join('members as tbl_5', 'tbl_1.emp_id = tbl_5.emp_id')

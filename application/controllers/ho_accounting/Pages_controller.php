@@ -206,15 +206,6 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
-	function view_generate_reports() {
-		$data['user_role'] = $this->session->userdata('user_role');
-		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
-		$data['bu'] = $this->List_model->get_business_units();
-		$this->load->view('templates/header', $data);
-		$this->load->view('ho_accounting_panel/reports/generate_reports.php', $hc_provider);
-		$this->load->view('templates/footer');
-	}
-
 	function view_cash_advances() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();

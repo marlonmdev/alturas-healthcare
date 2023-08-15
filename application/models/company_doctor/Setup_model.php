@@ -4,17 +4,17 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Setup_model extends CI_Model {
 
 	function db_get_hospitals() {
-		$query = $this->db->get_where('healthcare_providers', ['hp_type' => 'Hospital']);
+		$query = $this->db->get_where('healthcare_providers', ['hp_type' => 'Hospital', 'accredited' => 1]);
 		return $query->result_array();
 	}
 
 	function db_get_laboratories() {
-		$query = $this->db->get_where('healthcare_providers', ['hp_type' => 'Laboratory']);
+		$query = $this->db->get_where('healthcare_providers', ['hp_type' => 'Laboratory', 'accredited' => 1]);
 		return $query->result_array();
 	}
 
 	function db_get_clinics() {
-		$query = $this->db->get_where('healthcare_providers', ['hp_type' => 'Clinic']);
+		$query = $this->db->get_where('healthcare_providers', ['hp_type' => 'Clinic', 'accredited' => 1]);
 		return $query->result_array();
 	}
 

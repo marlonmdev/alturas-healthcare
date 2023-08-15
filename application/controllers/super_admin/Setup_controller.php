@@ -337,7 +337,7 @@ class Setup_controller extends CI_Controller {
       $config['encrypt_name'] = TRUE;
       $this->load->library('upload', $config);
       if (!$this->upload->do_upload('edit-signature')) {
-        $response = ['status' => 'save-error', 'message' => 'Image Not Uploaded'];
+        $response = array('status' => 'save-error', 'message' => 'Image Not Uploaded');
         echo json_encode($response);
         exit();
       } else {

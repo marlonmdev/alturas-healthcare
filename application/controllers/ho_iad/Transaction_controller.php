@@ -562,9 +562,14 @@ class Transaction_controller extends CI_Controller {
 				}
 	
 				$payable = floatval($bill['company_charge'] + floatval($bill['cash_advance']));
-	
+
 				
-				$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-5"></i></a>';
+				if($bill['billing_type'] == 'PDF Billing'){
+					$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-5"></i></a>';
+				}else if($bill['billing_type'] == 'Reimburse'){
+					$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBillReimburse(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-5"></i></a>';
+				}
+				
 	
 				$row[] = $number++;
 				$row[] = $bill['billing_no'];
@@ -679,8 +684,12 @@ class Transaction_controller extends CI_Controller {
 	
 				$payable = floatval($bill['company_charge'] + floatval($bill['cash_advance']));
 	
+				if($bill['billing_type'] == 'PDF Billing'){
+					$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-5"></i></a>';
+				}else if($bill['billing_type'] == 'Reimburse'){
+					$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBillReimburse(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-5"></i></a>';
+				}
 				
-				$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-5"></i></a>';
 	
 				$row[] = $number++;
 				$row[] = $bill['billing_no'];

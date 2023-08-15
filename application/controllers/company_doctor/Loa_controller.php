@@ -1191,7 +1191,7 @@ class Loa_controller extends CI_Controller {
 
 		$data_status = [
 			// 'performed_fees'  => 'Approved',
-			'performed_fees'  => ($is_manual === 1)?'Billed':'Approved',
+			'performed_fees'  => ($loa_info['loa_request_type'] === 'Emergency' || $is_manual === 1)?'Processing':'Approved',
 			'status'          => ($is_manual === 1)?'Billed':'Approved',
 			'approved_by'     => $approved_by,
 			'approved_on'     => $approved_on,
@@ -1225,6 +1225,7 @@ class Loa_controller extends CI_Controller {
 					'billed_by'             => $this->session->userdata('fullname'),
 					'billed_on'             => date('Y-m-d'),
 					'status'                => 'Billed',
+					'check_status'                => 'Processing',
 					// 'extracted_txt'         => $hospitalBillData,
 					// 'attending_doctors'      => $attending_doctor,
 					'request_date'          => $loa_info['request_date']

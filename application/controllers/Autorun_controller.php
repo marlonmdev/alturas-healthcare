@@ -2,7 +2,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 class Autorun_controller extends CI_Controller {
 
-	function __construct() {
+	public function __construct() {
 		parent::__construct();
 		$this->load->model('autorun_model');
 	}
@@ -49,8 +49,9 @@ class Autorun_controller extends CI_Controller {
 					$this->autorun_model->update_noa_expired($row['noa_id']);
 				}
 			}
-		}           
+		}
 	} 
+
 
 	function update_member_expired_loa(){
 		$this->security->get_csrf_hash();
@@ -58,7 +59,7 @@ class Autorun_controller extends CI_Controller {
 		$rows = $this->autorun_model->get_member_approved_loa($emp_id);
 		if(!empty($rows)){
 			foreach ($rows as $row) {
-				$date_result = '';     
+				$date_result = '';
 				// call another function to determined if expired or not
 				if(!empty($row['expiration_date'])){
 					$date_result = $this->checkExpiration($row['expiration_date']);
@@ -69,6 +70,7 @@ class Autorun_controller extends CI_Controller {
 				}
 			}
 		}
+	
 	} 
 
 	function update_member_expired_noa(){
@@ -98,4 +100,6 @@ class Autorun_controller extends CI_Controller {
 		// Alternative way: $result = $date_diff->invert ? "Expired" : "Not Expired";
 		return $result;
 	}
+
+
 }

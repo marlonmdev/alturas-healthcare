@@ -3,6 +3,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Loa_model extends CI_Model {
 
+  // function db_update_loa_request1($loa_id, $post_data) {
+  //   $this->db->where('loa_id', $loa_id);
+  //   return $this->db->update('loa_requests', $post_data);
+  // }
+
   public function get_performed_fees() {
     $this->db->from('loa_requests')
              ->where('status', 'Billed')
@@ -1111,11 +1116,19 @@ function db_get_cost_types_by_hp_ID($hp_id) {
             ->where('loa_id', $loa_id);
     return $this->db->update('loa_requests');
   }
+
   function update_performed_fees1($loa_id) {
     $this->db->set('performed_fees', 'Processing')
             ->where('loa_id', $loa_id);
     return $this->db->update('loa_requests');
   }
+
+  function update_billing_check_status($loa_id) {
+    $this->db->where('status', 'Billed')
+            ->where('loa_id', $loa_id);
+    return $this->db->update('billing',['check_status' => 'Processing']);
+  } 
+
 
   function _set_loa_status_completed($loa_id) {
     $this->db->set('completed', '')
@@ -1361,6 +1374,7 @@ function db_get_cost_types_by_hp_ID($hp_id) {
             ->set('status', 'Payable')
             ->set('bill_no', $bill_no)
             ->where('status', 'Billed')
+            // ->where('check_status', 'Processing')
             ->where('hp_id', $hp_id)
             ->where('request_date >=', $start_date)
             ->where('request_date <=', $end_date)
@@ -1382,7 +1396,7 @@ function db_get_cost_types_by_hp_ID($hp_id) {
   function update_loa_request_status($hp_id, $start_date, $end_date) {
     $this->db->set('status', 'Payable')
             ->where('status', 'Billed')
-            // ->where('performed_fees', 'Processing')
+            ->where('performed_fees', 'Processing')
             ->where('hcare_provider', $hp_id)
             ->where('request_date >=', $start_date)
             ->where('request_date <=', $end_date);

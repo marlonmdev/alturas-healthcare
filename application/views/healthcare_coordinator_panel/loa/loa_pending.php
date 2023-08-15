@@ -304,10 +304,11 @@
 
     $('#resubmitform').submit(function(event) {
       const nextPage = `${baseUrl}healthcare-coordinator/loa/requests-list`;
+      const loaid = $('#loaid').val(); 
       event.preventDefault();
       $.ajax({
         type: "post",
-        url: $(this).attr('action'),
+        url:`${baseUrl}healthcare-coordinator/loa/requests-list/submit_hospital_receipt/${loaid}`,
         data: $(this).serialize(),
         dataType: "json",
         success: function(response) {
@@ -980,6 +981,8 @@
     $("#loaCancellationForm").attr("action", `${baseUrl}healthcare-coordinator/loa/requests-list/submit_hospital_receipt/${originalLoaId}`);
   });
 
+
+
 </script>
 
 <style>
@@ -1038,5 +1041,18 @@
   }
   .cancelled{
     color:red
+  }
+
+  .blink-icon {
+    animation: blink-animation 1s infinite;
+  }
+
+  @keyframes blink-animation {
+    0%, 50%, 100% {
+      opacity: 1;
+    }
+    25%, 75% {
+      opacity: 0;
+    }
   }
 </style>

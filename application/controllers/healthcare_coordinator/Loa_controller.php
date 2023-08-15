@@ -267,7 +267,11 @@ class Loa_controller extends CI_Controller {
 			$custom_actions = '<a href="JavaScript:void(0)" class="me-2" onclick="viewLoaInfo(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View Info"><i class="mdi mdi-information fs-4 text-info"></i></a>';
 
 			if($loa['accredited'] == '0' && $loa['loa_request_type'] == 'Diagnostic Test'){
-				$custom_actions .= '<a href="JavaScript:void(0)" onclick="ChargeTypenotAffiliated(\'' . $loa_id . '\',\'' . $loa['hospital_receipt'] . '\',\'' . $loa['hospital_bill'] . '\',\'' . $loa['percentage'] . '\',\'' . $loa['work_related'] . '\',\'' . $loa['spot_report_file'] . '\',\'' . $loa['police_report_file'] . '\',\'' . $loa['incident_report_file'] . '\')" data-bs-toggle="tooltip" title="Tagging"><i class="mdi mdi-tag-plus fs-4 text-primary"></i></a>';
+				if ($loa['resubmit'] === 'Done') {
+					$custom_actions .= '<a href="JavaScript:void(0)" onclick="ChargeTypenotAffiliated(\'' . $loa_id . '\',\'' . $loa['hospital_receipt'] . '\',\'' . $loa['hospital_bill'] . '\',\'' . $loa['percentage'] . '\',\'' . $loa['work_related'] . '\',\'' . $loa['spot_report_file'] . '\',\'' . $loa['police_report_file'] . '\',\'' . $loa['incident_report_file'] . '\')" class="blink-icon" data-bs-toggle="tooltip" title="Tagging"><i class="mdi mdi-tag-plus fs-4 text-primary"></i></a>';
+				}else{
+					$custom_actions .= '<a href="JavaScript:void(0)" onclick="ChargeTypenotAffiliated(\'' . $loa_id . '\',\'' . $loa['hospital_receipt'] . '\',\'' . $loa['hospital_bill'] . '\',\'' . $loa['percentage'] . '\',\'' . $loa['work_related'] . '\',\'' . $loa['spot_report_file'] . '\',\'' . $loa['police_report_file'] . '\',\'' . $loa['incident_report_file'] . '\')" data-bs-toggle="tooltip" title="Tagging"><i class="mdi mdi-tag-plus fs-4 text-primary"></i></a>';
+				}
 			}else{
 				$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $loa_id . '\',\'' . $loa['percentage'] . '\',\'' . $loa['work_related'] . '\',\'' . $loa['spot_report_file'] . '\',\'' . $loa['police_report_file'] . '\',\'' . $loa['incident_report_file'] . '\')" data-bs-toggle="tooltip" title="Tagging"><i class="mdi mdi-tag-plus fs-4 text-primary"></i></a>';
 			}
@@ -3987,7 +3991,7 @@ $med_serv = implode(' ', $ct_array);
 							$custom_actions .= '<i class="mdi mdi-key-plus fs-4 text-secondary" title="Re-Upload another SOA Already Sent"></i>';
 						}
 
-					}else if($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Processing'){
+					}else if($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Processing' && $bill['accredited'] == '1'){
 						$billed_date=date("F d, Y", strtotime($bill['billed_on']));
 						if ($bill['performed_fees'] =='Processing') {
         			$custom_actions .= '<i class="mdi mdi-pen fs-4 text-secondary" title="Detailed SOA Already Added"></i>';
@@ -4011,7 +4015,7 @@ $med_serv = implode(' ', $ct_array);
         	}else if($bill['tbl1_status'] == 'Approved' && $bill['performed_fees'] == 'Approved' && $bill['accredited'] == '1'){
         		$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/loa/requested-loa/update-loa/'. $loa_id . '" data-bs-toggle="tooltip" title="Add Appointment Schedule"><i class="mdi mdi-pen fs-4 text-success"></i></a>';
         		$billed_date .='No Billing Date Yet';
-        	}else if($bill['tbl1_status'] == 'Billed' && $bill['performed_fees'] == 'Billed' && $bill['accredited'] == '0'){
+        	}else if($bill['tbl1_status'] == 'Billed' && $bill['performed_fees'] == 'Processing' && $bill['accredited'] == '0'){
         		$custom_actions .='<i class="mdi mdi-cached fs-4 text-success"></i>Processing...';
         		$billed_date .='No Billing Date Yet';
         		// $pdf_bill = 'No PDF Bill';
@@ -4022,10 +4026,10 @@ $med_serv = implode(' ', $ct_array);
         	}
 
         }else if ($bill['loa_request_type'] == 'Emergency') {
-        	if($bill['tbl1_status'] == 'Approved' && $bill['performed_fees'] == 'Approved'){
+        	if($bill['tbl1_status'] == 'Approved' && $bill['performed_fees'] == 'Processing'){
         		$custom_actions .='<i class="mdi mdi-cached fs-4 text-success"></i>Processing...';
         		$billed_date .='No Billing Date Yet';
-        	}else if($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Approved'){
+        	}else if($bill['status'] == 'Billed' && $bill['performed_fees'] == 'Processing'){
         		$billed_date=date("F d, Y", strtotime($bill['billed_on']));
         		if ($bill['guarantee_letter'] =='') {
         			$custom_actions .= '<a href="JavaScript:void(0)" onclick="GuaranteeLetter(\'' . $loa_id . '\',\'' . $bill['billing_id'] . '\')" data-bs-toggle="modal" data-bs-target="#GuaranteeLetter" data-bs-toggle="tooltip" title="Guarantee Letter"><i class="mdi mdi-reply fs-4 text-danger"></i></a>';
@@ -4869,6 +4873,7 @@ $med_serv = implode(' ', $ct_array);
 		];
 		$inserted = $this->loa_model->insert_added_loa_fees($post_data);
 		$inserted = $this->loa_model->update_performed_fees_processing($loa_id);
+		$inserted = $this->loa_model->update_billing_check_status($loa_id);
 		//end
 
 		if ($inserted) {

@@ -176,7 +176,7 @@ class List_model extends CI_Model{
     }
 
     function get_hc_provider(){
-        return $this->db->get('healthcare_providers')->result_array();
+        return $this->db->get_where('healthcare_providers',['accredited' => 1])->result_array();
     }
 
     function get_hcare_provider($hp_id){

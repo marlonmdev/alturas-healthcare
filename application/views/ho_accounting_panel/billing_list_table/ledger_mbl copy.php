@@ -68,14 +68,16 @@
             </div>
             <div class="card shadow">
                 <div class="table-responsive pt-2 ps-4 pe-4 pb-2">
-                  <table class="table table-lg table-hover table-responsive table-stripped"  id="ledgermbl">
+                  <table class="table table-sm table-hover table-responsive table-stripped"  id="ledgermbl">
                     <thead style="background-color:#eddcb7">
                       <tr>
                         <th class="fw-bold">NO.</th>
                         <th class="fw-bold">HEALTHCARD NO.</th>
                         <th class="fw-bold">MEMBER NAME</th>
                         <th class="fw-bold">BUSINESS UNIT</th>
-                        <th class="fw-bold">ACTION</th>
+                        <th class="fw-bold">DATE USED</th>
+                        <th class="fw-bold">USED MBL</th>
+                        <th class="fw-bold">REMAINING MBL</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -89,9 +91,9 @@
       </div>
     <!-- End Container fluid  -->
     </div>
-    <?php include 'view_mbl_modal.php'; ?>
   <!-- End Page wrapper  -->
   </div>
+
 <!-- End Wrapper -->
 
 <script>
@@ -116,7 +118,8 @@
       },
       //Set column definition initialisation properties.
       columnDefs: [
-          
+            { targets: 5, className: 'text-end' },
+            { targets: 6, className: 'text-end' },
         ],
       data: [],  // Empty data array
       deferRender: true,  // Enable deferred rendering
@@ -127,35 +130,6 @@
       responsive: true,
       fixedHeader: true,
     });
-
-        let MblLedgerTable = $('#mbltablemodal').DataTable({
-        processing: true, //Feature control the processing indicator.
-        serverSide: true, //Feature control DataTables' server-side processing mode.
-        order: [], //Initial no order.
-
-        // Load data for the table's content from an Ajax source
-        ajax: {
-            url: `${baseUrl}head-office-accounting/ledger/mbl-details/fetch`,
-            type: "POST",
-            // passing the token as data so that requests will be allowed
-            data: function(data) {
-                data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
-                data.emp_id =  $('#mbl-emp-id').val();
-                data.filteredYear = $('#mbl-filtered-year').val();
-            },
-        },
-        //Set column definition initialisation properties.
-        columnDefs: [],
-        data: [],  // Empty data array
-        deferRender: true,  // Enable deferred rendering
-        info: false,
-        paging: false,
-        filter: false,
-        lengthChange: false,
-        responsive: true,
-        fixedHeader: true,
-        });
-        
 
     $('#selectedYear').change(function(){
       ledgerTable.draw();
@@ -172,19 +146,6 @@
       
 
     });
-    
-    const viewMBLDetails = (emp_id,filteredYear,fullname) => {
-      $('#viewMBLModal').modal('show');
-      $('#mbl-emp-id').val(emp_id);
-      $('#mbl-filtered-year').val(filteredYear);
-      $('#mbl-fullname').html(fullname);
-      if(filteredYear != ''){
-        $('#year-div').show();
-      }else{
-        $('#year-div').hide();
-      }
-      $('#mbl-year').html(filteredYear);
-    }
 
     const printMBLledger = () => {
       const years = document.querySelector('#selectedYear').value;

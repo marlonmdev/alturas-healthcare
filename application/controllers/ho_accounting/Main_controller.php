@@ -3191,6 +3191,43 @@ class Main_controller extends CI_Controller {
 			</tfoot>';
 
 		$PDFdata .= '</table><br><br><br>';
+		$user = '<table>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>Prepared By:</strong></td>
+					<td></td>
+					<td><strong>Noted By:</strong></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>'.strtoupper($this->session->userdata('fullname')).'</strong></td>
+					<td></td>
+					<td><strong>_____________________________</strong></td>
+					<td></td>
+				</tr>';
+		$user .= '</table>';
 
 		$pdf->setPrintHeader(true);
 		$pdf->setTitle('Billing Report');
@@ -3199,6 +3236,7 @@ class Main_controller extends CI_Controller {
 		$pdf->WriteHtmlCell(0, 0, '', '', $currentDate, 0, 1, 0, true, 'R', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'R', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $user, 0, 1, 0, true, 'J', true);
 		$pdf->lastPage();
 		$pdfname = 'BILL_'.$hospital .'_'.time();
 		$pageCount = $pdf->getAliasNumPage(); // Get the number of pages
@@ -3366,6 +3404,44 @@ class Main_controller extends CI_Controller {
 			</tfoot>';
 
 		$PDFdata .= '</table>';
+		$user = '<br><br><br><br><table>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>Prepared By:</strong></td>
+					<td></td>
+					<td><strong>Noted By:</strong></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>'.strtoupper($this->session->userdata('fullname')).'</strong></td>
+					<td></td>
+					<td><strong>_____________________________</strong></td>
+					<td></td>
+				</tr>';
+		$user .= '</table>';
+
 		$pdf->setPrintHeader(false);
 		$pdf->setTitle('For Payment Report');
 		$pdf->setFont('times', '', 10);
@@ -3374,6 +3450,7 @@ class Main_controller extends CI_Controller {
 		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', '', 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'R', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $user, 0, 1, 0, true, 'J', true);
 		$pdf->lastPage();
 		$pageCount = $pdf->getAliasNumPage(); // Get the number of pages
 		for ($i = 1; $i <= $pageCount; $i++) {
@@ -3563,6 +3640,44 @@ class Main_controller extends CI_Controller {
 			</tfoot>';
 
 		$PDFdata .= '</table>';
+		$user = '<br><br><br><br><table>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>Prepared By:</strong></td>
+					<td></td>
+					<td><strong>Noted By:</strong></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>'.strtoupper($this->session->userdata('fullname')).'</strong></td>
+					<td></td>
+					<td><strong>_____________________________</strong></td>
+					<td></td>
+				</tr>';
+		$user .= '</table>';
+
 		$pdf->setPrintHeader(false);
 		$pdf->setTitle('Paid Report');
 		$pdf->setFont('times', '', 10);
@@ -3571,6 +3686,7 @@ class Main_controller extends CI_Controller {
 		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', '', 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'R', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $user, 0, 1, 0, true, 'J', true);
 		$pdf->lastPage();
 		$pageCount = $pdf->getAliasNumPage(); // Get the number of pages
 		for ($i = 1; $i <= $pageCount; $i++) {
@@ -3606,7 +3722,6 @@ class Main_controller extends CI_Controller {
 		}else{
 			$end = $end_date;
 		}
-
 		$billed = $this->List_model->get_for_payment_bills($payment_no);
 		$hospital = $this->List_model->db_get_hp_name($hp);
 		$pdf = new TCPDF();
@@ -3664,7 +3779,7 @@ class Main_controller extends CI_Controller {
 					$number = 1;
 					$totalPayableSum = 0;
 					foreach($billed as $bill){
-						if($bill['company_charge'] && $bill['cash_advance'] != ''){
+						if(!empty($bill['company_charge'])){
 							$wpercent = '';
 							$nwpercent = '';
 							if($bill['loa_id'] != ''){
@@ -3806,7 +3921,7 @@ class Main_controller extends CI_Controller {
 			$number = 1;
 			$totalPayableSum = 0;
 			foreach($billed as $bill){
-				if($bill['company_charge'] && $bill['cash_advance'] != ''){
+				if(!empty($bill['company_charge'])){
 					$wpercent = '';
 					$nwpercent = '';
 					if($bill['loa_id'] != ''){
@@ -3925,6 +4040,44 @@ class Main_controller extends CI_Controller {
 		}
 
 		$PDFdata .= '</table>';
+		$user = '<br><br><br><br><table>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>Prepared By:</strong></td>
+					<td></td>
+					<td><strong>Noted By:</strong></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>'.strtoupper($this->session->userdata('fullname')).'</strong></td>
+					<td></td>
+					<td><strong>_____________________________</strong></td>
+					<td></td>
+				</tr>';
+		$user .= '</table>';
+
 		$pdf->setPrintHeader(false);
 		$pdf->setTitle('For Payment Report');
 		$pdf->setFont('times', '', 10);
@@ -3933,6 +4086,7 @@ class Main_controller extends CI_Controller {
 		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', '', 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'R', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $user, 0, 1, 0, true, 'J', true);
 		$pdf->lastPage();
 		$pageCount = $pdf->getAliasNumPage(); // Get the number of pages
 		for ($i = 1; $i <= $pageCount; $i++) {
@@ -4125,6 +4279,45 @@ class Main_controller extends CI_Controller {
 			</tfoot>';
 
 		$PDFdata .= '</table>';
+
+		$user = '<br><br><br><br><table>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>Prepared By:</strong></td>
+					<td></td>
+					<td><strong>Noted By:</strong></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>'.strtoupper($this->session->userdata('fullname')).'</strong></td>
+					<td></td>
+					<td><strong>_____________________________</strong></td>
+					<td></td>
+				</tr>';
+		$user .= '</table>';
+
 		$payment_no = $payment_no['payment_no'];
 
 		$pdf->setPrintHeader(false);
@@ -4135,6 +4328,7 @@ class Main_controller extends CI_Controller {
 		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', '', 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'R', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $user, 0, 1, 0, true, 'J', true);
 		$pdf->lastPage();
 
 		$pageCount = $pdf->getAliasNumPage(); // Get the number of pages
@@ -4324,6 +4518,45 @@ class Main_controller extends CI_Controller {
 			</tfoot>';
 
 		$PDFdata .= '</table>';
+
+		$user = '<br><br><br><br><table>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>Prepared By:</strong></td>
+					<td></td>
+					<td><strong>Noted By:</strong></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>'.strtoupper($this->session->userdata('fullname')).'</strong></td>
+					<td></td>
+					<td><strong>_____________________________</strong></td>
+					<td></td>
+				</tr>';
+		$user .= '</table>';
+
 		$pdf->setPrintHeader(false);
 		$pdf->setTitle('Paid Report');
 		$pdf->setFont('times', '', 10);
@@ -4332,6 +4565,8 @@ class Main_controller extends CI_Controller {
 		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', '', 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'R', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $user, 0, 1, 0, true, 'J', true);
+
 		$pdf->lastPage();
 
 		$pageCount = $pdf->getAliasNumPage(); // Get the number of pages
@@ -4528,6 +4763,45 @@ class Main_controller extends CI_Controller {
 			</tfoot>';
 
 		$PDFdata .= '</table>';
+
+		$user = '<br><br><br><br><table>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>Prepared By:</strong></td>
+					<td></td>
+					<td><strong>Noted By:</strong></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>'.strtoupper($this->session->userdata('fullname')).'</strong></td>
+					<td></td>
+					<td><strong>_____________________________</strong></td>
+					<td></td>
+				</tr>';
+		$user .= '</table>';
+		
 		$payment_nos = $payment_no['payment_no'];
 		$pdf->setPrintHeader(false);
 		$pdf->setTitle('Paid Report');
@@ -4537,6 +4811,8 @@ class Main_controller extends CI_Controller {
 		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', '', 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'R', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $user, 0, 1, 0, true, 'J', true);
+
 		$pdf->lastPage();
 
 		$pageCount = $pdf->getAliasNumPage(); // Get the number of pages
@@ -4645,7 +4921,46 @@ class Main_controller extends CI_Controller {
 					</tr>
 				</tfoot>';
 
-		$PDFdata .= '</table>';
+		$PDFdata .= '</table><br><br><br><br>';
+
+		$user = '<table>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>Prepared By:</strong></td>
+					<td></td>
+					<td><strong>Noted By:</strong></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>'.strtoupper($this->session->userdata('fullname')).'</strong></td>
+					<td></td>
+					<td><strong>_____________________________</strong></td>
+					<td></td>
+				</tr>';
+		$user .= '</table>';
+		
 
 		$pdf->setPrintHeader(false);
 		$pdf->setTitle('Business Unit Charging Report');
@@ -4655,6 +4970,7 @@ class Main_controller extends CI_Controller {
 		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', '', 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'R', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $user, 0, 1, 0, true, 'J', true);
 		$pdf->lastPage();
 		$pageCount = $pdf->getAliasNumPage(); // Get the number of pages
 		for ($i = 1; $i <= $pageCount; $i++) {
@@ -4753,6 +5069,44 @@ class Main_controller extends CI_Controller {
 				</tfoot>';
 
 		$PDFdata .= '</table>';
+		$user = '<br><br><br><br><table>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>Prepared By:</strong></td>
+					<td></td>
+					<td><strong>Noted By:</strong></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>'.strtoupper($this->session->userdata('fullname')).'</strong></td>
+					<td></td>
+					<td><strong>_____________________________</strong></td>
+					<td></td>
+				</tr>';
+		$user .= '</table>';
+
 
 		$pdf->setPrintHeader(false);
 		$pdf->setTitle('Business Unit Charging Report');
@@ -4762,6 +5116,7 @@ class Main_controller extends CI_Controller {
 		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', '', 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'R', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $user, 0, 1, 0, true, 'J', true);
 		$pdf->lastPage();
 		$pageCount = $pdf->getAliasNumPage(); // Get the number of pages
 		for ($i = 1; $i <= $pageCount; $i++) {
@@ -4772,25 +5127,43 @@ class Main_controller extends CI_Controller {
 		$pdf->Output($pdfname.'.pdf', 'I');
 	}
 
-	function print_bu_charging($business_unit,$charging_no){
+	function print_bu_charging($business_unit,$charging_no,$start_dates,$end_dates){
 		$this->security->get_csrf_hash();
 		$this->load->library('tcpdf_library');
 		$pdf = new TCPDF();
 
 		$business_unit =  base64_decode($business_unit);
 		$charging_no =  base64_decode($charging_no);
+		$start_dates =  base64_decode($start_dates);
+		$end_dates =  base64_decode($end_dates);
 
 		if($business_unit != 'none'){
 			$bu_unit = $business_unit; 
 		}else{
 			$bu_unit = '';
 		}
+		if($start_dates != 'none'){
+			$start_date = $start_dates; 
+		}else{
+			$start_date = '';
+		}
+		if($end_dates != 'none'){
+			$end_date = $end_dates; 
+		}else{
+			$end_date = '';
+		}
+
+		$formattedStart_date = date('F d, Y', strtotime($start_date));
+		$formattedEnd_date = date('F d, Y', strtotime($end_date));
+
+		$date = '<h3>From '.$formattedStart_date.' to '.$formattedEnd_date.'</h3>';
 
 		$charging = $this->List_model->get_bu_charging($charging_no);
 
 		$title = '<img src="'.base_url().'assets/images/HC_logo.png" style="width:110px;height:70px">';
 		$title .= '<style>h3 { margin: 0; padding: 0; line-height: .5; }</style>
 					<h3>Business Unit Charging Summary</h3>
+					'.$date.'
 					<h3>'.$bu_unit.'</h3>
 					<h3>'.$charging_no.'</h3><br>';
 
@@ -4867,6 +5240,43 @@ class Main_controller extends CI_Controller {
 				</tfoot>';
 
 		$PDFdata .= '</table>';
+		$user = '<br><br><br><br><table>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>Prepared By:</strong></td>
+					<td></td>
+					<td><strong>Noted By:</strong></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>'.strtoupper($this->session->userdata('fullname')).'</strong></td>
+					<td></td>
+					<td><strong>_____________________________</strong></td>
+					<td></td>
+				</tr>';
+		$user .= '</table>';
 
 		$pdf->setPrintHeader(false);
 		$pdf->setTitle('Business Unit Charging Report');
@@ -4876,6 +5286,7 @@ class Main_controller extends CI_Controller {
 		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', '', 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'R', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $user, 0, 1, 0, true, 'J', true);
 		$pdf->lastPage();
 		$pageCount = $pdf->getAliasNumPage(); // Get the number of pages
 		for ($i = 1; $i <= $pageCount; $i++) {
@@ -4938,6 +5349,100 @@ class Main_controller extends CI_Controller {
 		echo json_encode($output);
 	}
 	
+	// function fetch_ledger_mbl() {
+	// 	$filteredYear = $this->input->post('year', TRUE);
+	// 	$currentYear = date('Y');
+	
+	// 	if ($filteredYear == $currentYear) {
+	// 		$mbl = $this->List_model->get_ledger_mbl();
+	// 	} else if ($filteredYear == '') {
+	// 		$mbl = $this->List_model->get_ledger_mbl();
+	// 	} else if ($filteredYear != $currentYear) {
+	// 		$mbl = $this->List_model->get_ledger_history_mbl();
+	// 	}
+	
+	// 	$data = [];
+	// 	$fullnameData = [];
+	
+	// 	foreach ($mbl as $max) {
+	// 		$healcardno = $max['health_card_no'];
+	// 		$fullname = $max['first_name'] . ' ' . $max['middle_name'] . ' ' . $max['last_name'] . ' ' . $max['suffix'];
+	// 		$business_unit = $max['business_unit'];
+	
+	// 		$company_charge = floatval($max['company_charge']);
+	// 		$mbl = floatval($max['max_benefit_limit']);
+	
+	// 		$key = $healcardno . '_' . $fullname . '_' . $business_unit;
+	
+	// 		if (!isset($fullnameData[$key])) {
+	// 			$fullnameData[$key] = [
+	// 				'date_used' => [],
+	// 				'used_mbl' => [],
+	// 				'max_benefit' => $max['max_benefit_limit'],
+	// 				'remaining_mbl' => 0,
+	// 			];
+	// 		}
+	
+	// 		$fullnameData[$key]['date_used'][] = date('F d,Y', strtotime($max['billed_on']));
+	// 		$fullnameData[$key]['used_mbl'][] = $max['company_charge'];
+	// 	}
+	
+	// 	$previous_fullname = '';
+	// 	$number = 1;
+	// 	foreach ($fullnameData as $key => $totals) {
+	// 		list($healcardno, $fullname, $business_unit) = explode('_', $key);
+
+	// 		$max_benefit = number_format($totals['max_benefit'], 2, '.', ',');
+
+	// 		$dates_used = $totals['date_used'];
+	// 		$used_mbls = $totals['used_mbl'];
+	// 		$remaining_mbl = $totals['max_benefit'];
+
+	// 		$num_entries = count($dates_used);
+
+	// 		for ($i = 0; $i < $num_entries; $i++) {
+	// 			$used_mbl = floatval($used_mbls[$i]);
+
+	// 			if ($fullname !== $previous_fullname) {
+	// 				$first_row = [
+	// 					$number++,
+	// 					$healcardno,
+	// 					$fullname,
+	// 					$business_unit,
+	// 					'<span class="text-success">-----</span>',
+	// 					'<span class="text-success">-----</span>',
+	// 					number_format($remaining_mbl, 2, '.', ',')
+	// 				];
+
+	// 				$data[] = $first_row;
+	// 			}
+
+	// 			$row = [
+	// 				'',
+	// 				'',
+	// 				'',
+	// 				'',
+	// 				$dates_used[$i],
+	// 				number_format($used_mbl, 2, '.', ','),
+	// 				number_format(max($remaining_mbl - $used_mbl, 0), 2, '.', ',')
+	// 			];
+
+	// 			$data[] = $row;
+
+	// 			$remaining_mbl = max($remaining_mbl - $used_mbl, 0);
+	// 			$previous_fullname = $fullname;
+	// 		}
+	// 	}
+
+	
+	// 	$output = [
+	// 		"draw" => $_POST['draw'],
+	// 		"data" => $data,
+	// 	];
+	
+	// 	echo json_encode($output);
+	// }
+
 	function fetch_ledger_mbl() {
 		$filteredYear = $this->input->post('year', TRUE);
 		$currentYear = date('Y');
@@ -4949,80 +5454,23 @@ class Main_controller extends CI_Controller {
 		} else if ($filteredYear != $currentYear) {
 			$mbl = $this->List_model->get_ledger_history_mbl();
 		}
-	
+		
 		$data = [];
-		$fullnameData = [];
-	
-		foreach ($mbl as $max) {
-			$healcardno = $max['health_card_no'];
-			$fullname = $max['first_name'] . ' ' . $max['middle_name'] . ' ' . $max['last_name'] . ' ' . $max['suffix'];
-			$business_unit = $max['business_unit'];
-	
-			$company_charge = floatval($max['company_charge']);
-			$mbl = floatval($max['max_benefit_limit']);
-	
-			$key = $healcardno . '_' . $fullname . '_' . $business_unit;
-	
-			if (!isset($fullnameData[$key])) {
-				$fullnameData[$key] = [
-					'date_used' => [],
-					'used_mbl' => [],
-					'max_benefit' => $max['max_benefit_limit'],
-					'remaining_mbl' => 0,
-				];
-			}
-	
-			$fullnameData[$key]['date_used'][] = date('F d,Y', strtotime($max['billed_on']));
-			$fullnameData[$key]['used_mbl'][] = $max['company_charge'];
-		}
-	
-		$previous_fullname = '';
 		$number = 1;
-		foreach ($fullnameData as $key => $totals) {
-			list($healcardno, $fullname, $business_unit) = explode('_', $key);
+		foreach ($mbl as $max) {
+			$row = [];
 
-			$max_benefit = number_format($totals['max_benefit'], 2, '.', ',');
+			$fullname = $max['first_name'] . ' ' . $max['middle_name'] . ' ' . $max['last_name'] . ' ' . $max['suffix'];
+			$action = '<a href="JavaScript:void(0)" onclick="viewMBLDetails(\''.$max['emp_id'].'\',\''.$filteredYear.'\',\''.$fullname.'\')" title="View MBL Details" class="btn-success btn-sm"><i class="mdi mdi-magnify"></i> View</a>';
 
-			$dates_used = $totals['date_used'];
-			$used_mbls = $totals['used_mbl'];
-			$remaining_mbl = $totals['max_benefit'];
-
-			$num_entries = count($dates_used);
-
-			for ($i = 0; $i < $num_entries; $i++) {
-				$used_mbl = floatval($used_mbls[$i]);
-
-				if ($fullname !== $previous_fullname) {
-					$first_row = [
-						$number++,
-						$healcardno,
-						$fullname,
-						$business_unit,
-						'<span class="text-success">-----</span>',
-						'<span class="text-success">-----</span>',
-						number_format($remaining_mbl, 2, '.', ',')
-					];
-
-					$data[] = $first_row;
-				}
-
-				$row = [
-					'',
-					'',
-					'',
-					'',
-					$dates_used[$i],
-					number_format($used_mbl, 2, '.', ','),
-					number_format(max($remaining_mbl - $used_mbl, 0), 2, '.', ',')
-				];
-
-				$data[] = $row;
-
-				$remaining_mbl = max($remaining_mbl - $used_mbl, 0);
-				$previous_fullname = $fullname;
-			}
+			$row[] = $number++;
+			$row[] = $max['health_card_no'];
+			$row[] = $fullname;
+			$row[] = $max['business_unit'];
+			$row[] = $action;
+			$data[] = $row;
+			
 		}
-
 	
 		$output = [
 			"draw" => $_POST['draw'],
@@ -5030,6 +5478,92 @@ class Main_controller extends CI_Controller {
 		];
 	
 		echo json_encode($output);
+	}
+
+	function fetch_mbl_details_ledger() {
+			$filteredYear = $this->input->post('filteredYear');
+			$currentYear = date('Y');
+
+			if ($filteredYear == $currentYear) {
+				$mbl = $this->List_model->get_current_ledger_mbl();
+			} else if ($filteredYear == '') {
+				$mbl = $this->List_model->get_current_ledger_mbl();
+			} else if ($filteredYear != $currentYear) {
+				$mbl = $this->List_model->get_history_mbl_details();
+			}
+
+			$data = [];
+			$fullnameData = [];
+		
+			foreach ($mbl as $max) {
+				$healcardno = $max['health_card_no'];
+				$fullname = $max['first_name'] . ' ' . $max['middle_name'] . ' ' . $max['last_name'] . ' ' . $max['suffix'];
+				$business_unit = $max['business_unit'];
+		
+				$company_charge = floatval($max['company_charge']);
+				$mbl = floatval($max['max_benefit_limit']);
+		
+				$key = $healcardno . '_' . $fullname . '_' . $business_unit;
+		
+				if (!isset($fullnameData[$key])) {
+					$fullnameData[$key] = [
+						'date_used' => [],
+						'used_mbl' => [],
+						'max_benefit' => $max['max_benefit_limit'],
+						'remaining_mbl' => 0,
+					];
+				}
+		
+				$fullnameData[$key]['date_used'][] = date('F d,Y', strtotime($max['billed_on']));
+				$fullnameData[$key]['used_mbl'][] = $max['company_charge'];
+			}
+		
+			$previous_fullname = '';
+			$number = 1;
+			foreach ($fullnameData as $key => $totals) {
+				list($healcardno, $fullname, $business_unit) = explode('_', $key);
+
+				$max_benefit = number_format($totals['max_benefit'], 2, '.', ',');
+
+				$dates_used = $totals['date_used'];
+				$used_mbls = $totals['used_mbl'];
+				$remaining_mbl = $totals['max_benefit'];
+
+				$num_entries = count($dates_used);
+
+				for ($i = 0; $i < $num_entries; $i++) {
+					$used_mbl = floatval($used_mbls[$i]);
+
+					if ($fullname !== $previous_fullname) {
+						$first_row = [
+							'<span class="text-success">-----</span>',
+							'<span class="text-success">-----</span>',
+							'<span class="text-success">-----</span>',
+							number_format($remaining_mbl, 2, '.', ',')
+						];
+
+						$data[] = $first_row;
+					}
+
+					$row = [
+						$number++,
+						$dates_used[$i],
+						number_format($used_mbl, 2, '.', ','),
+						number_format(max($remaining_mbl - $used_mbl, 0), 2, '.', ',')
+					];
+
+					$data[] = $row;
+
+					$remaining_mbl = max($remaining_mbl - $used_mbl, 0);
+					$previous_fullname = $fullname;
+				}
+			}
+				$output = [
+				"draw" => $_POST['draw'],
+				"data" => $data,
+			];
+		
+			echo json_encode($output);
 	}
 
 	function print_mbl_ledger($year, $bu_filter){
@@ -5150,6 +5684,45 @@ class Main_controller extends CI_Controller {
 				
 		$PDFdata .= '</tbody></table>';
 
+		$user = '<br><br><br><br><br><br><table>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>Prepared By:</strong></td>
+					<td></td>
+					<td><strong>Noted By:</strong></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>'.strtoupper($this->session->userdata('fullname')).'</strong></td>
+					<td></td>
+					<td><strong>_____________________________</strong></td>
+					<td></td>
+				</tr>';
+		$user .= '</table>';
+
+
 		$pdf->setPrintHeader(false);
 		$pdf->setTitle('Max Benefit Limit Ledger');
 		$pdf->setFont('times', '', 10);
@@ -5158,6 +5731,8 @@ class Main_controller extends CI_Controller {
 		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', '', 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'R', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $user, 0, 1, 0, true, 'J', true);
+
 		$pdf->lastPage();
 		$pageCount = $pdf->getAliasNumPage(); // Get the number of pages
 		for ($i = 1; $i <= $pageCount; $i++) {
@@ -5288,6 +5863,44 @@ class Main_controller extends CI_Controller {
 						</tr>
 					</tfoot>';
 		$PDFdata .= '</table>';
+		$user = '<br><br><br><br><br><br><table>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>Prepared By:</strong></td>
+					<td></td>
+					<td><strong>Noted By:</strong></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>'.strtoupper($this->session->userdata('fullname')).'</strong></td>
+					<td></td>
+					<td><strong>_____________________________</strong></td>
+					<td></td>
+				</tr>';
+		$user .= '</table>';
+
 
 		$pdf->setPrintHeader(false);
 		$pdf->setTitle('Paid Bill Ledger');
@@ -5297,6 +5910,7 @@ class Main_controller extends CI_Controller {
 		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', '', 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'R', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $user, 0, 1, 0, true, 'J', true);
 		$pdf->lastPage();
 		$pageCount = $pdf->getAliasNumPage(); // Get the number of pages
 		for ($i = 1; $i <= $pageCount; $i++) {

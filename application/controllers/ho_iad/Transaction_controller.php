@@ -1179,6 +1179,44 @@ class Transaction_controller extends CI_Controller {
 
 		$PDFdata .= '</table>';
 
+		$user = '<br><br><br><br><table>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>Prepared By:</strong></td>
+					<td></td>
+					<td><strong>Noted By:</strong></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>'.strtoupper($this->session->userdata('fullname')).'</strong></td>
+					<td></td>
+					<td><strong>_____________________________</strong></td>
+					<td></td>
+				</tr>';
+		$user .= '</table>';
+
 		$pdf->setPrintHeader(false);
 		$pdf->setTitle('Business Unit Charging Report');
 		$pdf->setFont('times', '', 10);
@@ -1187,6 +1225,7 @@ class Transaction_controller extends CI_Controller {
 		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', '', 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'R', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $user, 0, 1, 0, true, 'J', true);
 		$pdf->lastPage();
 		$pageCount = $pdf->getAliasNumPage(); // Get the number of pages
 		for ($i = 1; $i <= $pageCount; $i++) {
@@ -1713,6 +1752,44 @@ class Transaction_controller extends CI_Controller {
 					</tfoot>';
 		$PDFdata .= '</table>';
 
+		$user = '<br><br><br><br><table>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>Prepared By:</strong></td>
+					<td></td>
+					<td><strong>Noted By:</strong></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>'.strtoupper($this->session->userdata('fullname')).'</strong></td>
+					<td></td>
+					<td><strong>_____________________________</strong></td>
+					<td></td>
+				</tr>';
+		$user .= '</table>';
+
 		$pdf->setPrintHeader(false);
 		$pdf->setTitle('Paid Bill Ledger');
 		$pdf->setFont('times', '', 10);
@@ -1721,6 +1798,7 @@ class Transaction_controller extends CI_Controller {
 		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', '', 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'R', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $user, 0, 1, 0, true, 'J', true);
 		$pdf->lastPage();
 		$pageCount = $pdf->getAliasNumPage(); // Get the number of pages
 		for ($i = 1; $i <= $pageCount; $i++) {
@@ -1848,6 +1926,43 @@ class Transaction_controller extends CI_Controller {
 		}
 				
 		$PDFdata .= '</tbody></table>';
+		$user = '<br><br><br><br><table>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>Prepared By:</strong></td>
+					<td></td>
+					<td><strong>Noted By:</strong></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>';
+		$user .='<tr>
+					<td></td>
+					<td><strong>'.strtoupper($this->session->userdata('fullname')).'</strong></td>
+					<td></td>
+					<td><strong>_____________________________</strong></td>
+					<td></td>
+				</tr>';
+		$user .= '</table>';
 
 		$pdf->setPrintHeader(false);
 		$pdf->setTitle('Max Benefit Limit Ledger');
@@ -1857,6 +1972,7 @@ class Transaction_controller extends CI_Controller {
 		$pdf->WriteHtmlCell(0, 0, '', '', $title, 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', '', 0, 1, 0, true, 'C', true);
 		$pdf->WriteHtmlCell(0, 0, '', '', $PDFdata, 0, 1, 0, true, 'R', true);
+		$pdf->WriteHtmlCell(0, 0, '', '', $user, 0, 1, 0, true, 'J', true);
 		$pdf->lastPage();
 		$pageCount = $pdf->getAliasNumPage(); // Get the number of pages
 		for ($i = 1; $i <= $pageCount; $i++) {

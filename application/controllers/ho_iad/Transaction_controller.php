@@ -569,11 +569,6 @@ class Transaction_controller extends CI_Controller {
 
 				
 				if($bill['billing_type'] == 'PDF Billing'){
-<<<<<<< HEAD
-					$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-5"></i></a>';
-				}else if($bill['billing_type'] == 'Reimburse'){
-					$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBillReimburse(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-5"></i></a>';
-=======
 					$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-3"></i></a>';
 
 					$action_custom = '';
@@ -584,7 +579,6 @@ class Transaction_controller extends CI_Controller {
 					$check = $this->transaction_model->get_paymentdetails($bill['details_no']);
 
 					$action_custom = '<a href="JavaScript:void(0)" onclick="viewCVReimburse(\'' . $check['supporting_file'] . '\')" data-bs-toggle="tooltip" title="View Check Voucher"><i class="mdi mdi-file-pdf text-danger fs-3"></i></a>';
->>>>>>> e3c19705785f8e571496ea5fa665446cd5623f2e
 				}
 				
 	
@@ -703,14 +697,6 @@ class Transaction_controller extends CI_Controller {
 				$payable = floatval($bill['company_charge'] + floatval($bill['cash_advance']));
 	
 				if($bill['billing_type'] == 'PDF Billing'){
-<<<<<<< HEAD
-					$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-5"></i></a>';
-				}else if($bill['billing_type'] == 'Reimburse'){
-					$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBillReimburse(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-5"></i></a>';
-				}
-				
-	
-=======
 					$pdf_bill = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $bill['pdf_bill'] . '\' , \''. $bill['noa_no'] .'\', \''. $bill['loa_no'] .'\')" data-bs-toggle="tooltip" title="View Hospital SOA"><i class="mdi mdi-magnify text-danger fs-3"></i></a>';
 
 				}else if($bill['billing_type'] == 'Reimburse'){
@@ -727,7 +713,6 @@ class Transaction_controller extends CI_Controller {
 				}
 				
 
->>>>>>> e3c19705785f8e571496ea5fa665446cd5623f2e
 				$row[] = $number++;
 				$row[] = $bill['billing_no'];
 				$row[] = $loa_noa;

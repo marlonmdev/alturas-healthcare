@@ -74,6 +74,7 @@ $(document).ready(function () {
 		  });
 		});
 
+		// setInterval(toggleClass, 500);
 });
 
 const LOAManagersKey = () => {
@@ -90,3 +91,15 @@ const LOAManagersKey = () => {
 	$('#mgr-username-req-loa').val('');
 	$('#mgr-password-req-loa').val('');
   }
+
+//   function toggleClass() {
+// 	var editIcon = $("#resubmit-loa-member");
+
+// 	if (editIcon.hasClass("text-success")) {
+// 		editIcon.removeClass("text-success").addClass("text-danger");
+// 	} else {
+// 		editIcon.removeClass("text-danger").addClass("text-success");
+// 	}
+// }
+
+// Set interval to call the toggleClass function every 0.5 seconds

@@ -225,12 +225,14 @@
                         dataType: "json",
                         success:function(response){
                           console.log('response',response.resubmit_noa);
-                          if(response.resubmit_loa)
+                          if(response.resubmit_loa){
                             $('#resubmit-loa-count').text(response.resubmit_loa);
                             $('#resubmit-loa-count2').text(response.resubmit_loa);
-                          if(response.resubmit_noa)
+                          }
+                          if(response.resubmit_noa){
                             $('#resubmit-noa-count').text(response.resubmit_noa);
                             $('#resubmit-noa-count2').text(response.resubmit_noa);
+                          }
                         }
                     });
                   });

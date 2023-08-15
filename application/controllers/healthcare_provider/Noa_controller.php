@@ -332,22 +332,45 @@ class Noa_controller extends CI_Controller {
 		echo json_encode($response);
 	}
 
+	// function get_takehome_meds(){
+	// 	$token = $this->security->get_csrf_hash();
+	// 	$medicine = $this->noa_model->get_generic_meds();
+	// 	$response = '';
+	
+	// 	if(empty($medicine)){
+	// 		$response .= '<select class="chosen-select" id="med-services" name="med-services[]" multiple="multiple">';
+	// 		$response .= '<option value="" disabled>No Available Services</option>';
+	// 		$response .= '</select>';
+	// 	}else{
+	// 		$response .= '<select class="chosen-select" id="med-services" name="med-services[]" data-placeholder="Choose medicines..." multiple="multiple">';
+	// 		foreach ($medicine as $meds) {
+	// 			$response .= '<option value="'.$meds['medno'].'" data-price="'.$meds['ceiling_price'].'">'.$meds['generic_name'].''.' ₱'.''.$meds['ceiling_price'].'</option>';
+	// 		}
+	// 		$response .= '</select>';
+	// 	}
+	// 	echo json_encode($response);
+	// }
+
 	function get_takehome_meds(){
 		$token = $this->security->get_csrf_hash();
-		$medicine = $this->noa_model->get_generic_meds();
-		$response = '';
-	
-		if(empty($medicine)){
-			$response .= '<select class="chosen-select" id="med-services" name="med-services[]" multiple="multiple">';
-			$response .= '<option value="" disabled>No Available Services</option>';
-			$response .= '</select>';
+		// $hp_id = $this->uri->segment(3);
+		$cost_types = $this->noa_model->get_generic_meds();
+		$response = [];
+
+		if(empty($cost_types)){
+			
 		}else{
-			$response .= '<select class="chosen-select" id="med-services" name="med-services[]" data-placeholder="Choose medicines..." multiple="multiple">';
-			foreach ($medicine as $meds) {
-				$response .= '<option value="'.$meds['medno'].'" data-price="'.$meds['ceiling_price'].'">'.$meds['generic_name'].''.' ₱'.''.$meds['ceiling_price'].'</option>';
+			foreach ($cost_types as $cost_type) {
+				$data = [
+					'med_no' => $cost_type['medno'],
+					'ctyp_description' => $cost_type['generic_name'],
+					'meds_price' => $cost_type['ceiling_price'],
+				];
+				array_push($response,$data);
 			}
-			$response .= '</select>';
+			
 		}
+		// var_dump('response',$response);
 		echo json_encode($response);
 	}
 

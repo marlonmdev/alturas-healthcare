@@ -720,6 +720,7 @@ class Loa_controller extends CI_Controller {
 		$tagvalue = json_decode($med_services);
 		$services = [];
 		$post_data = [];
+		$loa_info = $this->loa_model->db_get_loa_info($loa_id);
 		// var_dump('rx_file',$rx_file);
 		if($tagvalue!==null){
 			foreach($tagvalue as $value){
@@ -755,6 +756,7 @@ class Loa_controller extends CI_Controller {
 				'rx_file' => null,
 				'hospital_receipt' => $hospital_receipt,
 				'is_manual' => 1,
+				'resubmit' => ($loa_info['resubmit'] == 'Resubmit')?'Done': null
 			];
 		}
 		
@@ -791,9 +793,18 @@ class Loa_controller extends CI_Controller {
 			/* Checking if the work_related column is empty. If it is empty, it will display the status column.
 			If it is not empty, it will display the text "for Approval". */
 			if($value['work_related'] == ''){
-				$custom_status = '<span class="badge rounded-pill bg-warning">' . $value['status'] . '</span>';
+				if($value['resubmit'] == "Resubmit"){
+					$custom_status = '<span class="badge rounded-pill bg-red" title="">' . $value['resubmit'] . '</span>';
+				}else{
+					$custom_status = '<span class="badge rounded-pill bg-warning">' . $value['status'] . '</span>';
+				}
 			}else{
-				$custom_status = '<span class="badge rounded-pill bg-cyan">for Approval</span>';
+				if($value['resubmit'] == "Resubmit"){
+					$custom_status = '<span class="badge rounded-pill bg-red" title="">' . $value['resubmit'] . '</span>';
+				}else{
+					$custom_status = '<span class="badge rounded-pill bg-cyan">for Approval</span>';
+				}
+				
 			}
 
 			$button = '<a class="me-2 align-top" style="top:-20px!important;" href="JavaScript:void(0)" onclick="viewLoaInfoModal(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
@@ -804,7 +815,12 @@ class Loa_controller extends CI_Controller {
 				$button .= '';
 			}
 
-			$button .= '<a class="me-2 align-top" style="top:-20px!important;" href="' . base_url() . 'member/requested-loa/edit/' . $loa_id . '" data-bs-toggle="tooltip" title="Edit LOA"><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a>';
+			if($value['resubmit'] == 'Resubmit'){
+				$button .= '<a class="me-2 align-top" style="top:-20px!important;" href="' . base_url() . 'member/requested-loa/edit/' . $loa_id . '" data-bs-toggle="tooltip" title="Resubmit LOA"><i class="mdi mdi-redo fs-2 text-warning"></i></a>';
+			}else{
+				$button .= '<a class="me-2 align-top" style="top:-20px!important;" href="' . base_url() . 'member/requested-loa/edit/' . $loa_id . '" data-bs-toggle="tooltip" title="Edit LOA"><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a>';
+			}
+			
 
 			$button .= '<a class="align-top" style="top:-20px!important;" href="JavaScript:void(0)" onclick="cancelPendingLoa(\'' . $loa_id . '\')" data-bs-toggle="tooltip" title="Delete LOA"><i class="mdi mdi-delete-circle fs-2 text-danger"></i></a>';
 

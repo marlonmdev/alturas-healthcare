@@ -179,7 +179,7 @@ class Noa_controller extends CI_Controller {
 		$noa_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
 		$is_accredited =json_decode($_POST['is_accredited'],true);
 		$is_hr_has_data = json_decode($_POST['is_hr_has_data'],true);
-		
+		$noa_info = $this->noa_model->db_get_noa_info($noa_id);
 		// $this->session->set_userdata(['is_accredited'=> $is_accredited,
 		// 									'hospital_receipt' => $_FILES['hospital-receipt']['name'],
 		// 									'is_hr_has_data' => $is_hr_has_data]);
@@ -264,6 +264,7 @@ class Noa_controller extends CI_Controller {
 							'hospital_receipt' => $pdf_file,
 							'hospital_bill' =>   $inputPost['hospital-bill'],
 							'is_manual' => 1,
+							'resubmit' => ($noa_info['resubmit'] == 'Resubmit')?'Done': null
 						];
 					}
 				
@@ -305,7 +306,12 @@ class Noa_controller extends CI_Controller {
 				$button .= '';
 			}
 
-			$button .= '<a class="me-2" href="' . base_url() . 'member/requested-noa/edit/' . $noa_id . '" data-bs-toggle="tooltip" title="Edit NOA"><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a>';
+			if($value['resubmit'] == 'Resubmit'){
+				// var_dump('resubmit',$value['resubmit']);
+				$button .= '<a class="me-2" href="' . base_url() . 'member/requested-noa/edit/' . $noa_id . '" data-bs-toggle="tooltip" title="Resubmit NOA"><i class="mdi mdi-redo fs-2 text-warning"></i></a>';
+			}else{
+				$button .= '<a class="me-2" href="' . base_url() . 'member/requested-noa/edit/' . $noa_id . '" data-bs-toggle="tooltip" title="Edit NOA"><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a>';
+			}
 
 			$button .= '<a href="JavaScript:void(0)" onclick="cancelPendingNoa(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Delete NOA"><i class="mdi mdi-delete-circle fs-2 text-danger"></i></a>';
 			
@@ -319,13 +325,28 @@ class Noa_controller extends CI_Controller {
 				$view_receipt ='None';
 			}
 
+			if($value['work_related'] == ''){
+				if($value['resubmit'] == "Resubmit"){
+					$custom_status = '<span class="badge rounded-pill bg-red" title="">' . $value['resubmit'] . '</span>';
+				}else{
+					$custom_status = '<span class="badge rounded-pill bg-warning">' . $value['status'] . '</span>';
+				}
+			}else{
+				if($value['resubmit'] == "Resubmit"){
+					$custom_status = '<span class="badge rounded-pill bg-red" title="">' . $value['resubmit'] . '</span>';
+				}else{
+					$custom_status = '<span class="badge rounded-pill bg-cyan">for Approval</span>';
+				}
+				
+			}
+
 			$result['data'][] = [
 				$custom_noa_no,
 				date("m/d/Y", strtotime($value['admission_date'])),
 				$short_hosp_name,
 				date("m/d/Y", strtotime($value['request_date'])),
 				$view_receipt,
-				'<span class="badge rounded-pill bg-warning">' . $value['status'] . '</span>',
+				$custom_status,
 				$button
 			];
 		}

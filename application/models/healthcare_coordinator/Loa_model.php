@@ -2194,6 +2194,12 @@ function get_billed_for_charging($bill_no) {
     $query = $this->db->get_where('members', ['member_id' => $member_id]);
     return $query->row_array();
   }
+
+  function update_billing_check_status($loa_id) {
+    $this->db->where('status', 'Billed')
+            ->where('loa_id', $loa_id);
+    return $this->db->update('billing',['check_status' => 'Processing']);
+  } 
 }
 
 

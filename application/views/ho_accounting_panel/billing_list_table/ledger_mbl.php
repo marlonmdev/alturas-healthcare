@@ -96,7 +96,7 @@
 
 <script>
      const baseUrl = "<?php echo base_url(); ?>";
- 
+     let MblLedgerTable;
     $(document).ready(function(){
       let ledgerTable = $('#ledgermbl').DataTable({
       processing: true, //Feature control the processing indicator.
@@ -127,8 +127,8 @@
       responsive: true,
       fixedHeader: true,
     });
-
-        let MblLedgerTable = $('#mbltablemodal').DataTable({
+        
+    MblLedgerTable = $('#mbltablemodal').DataTable({
         processing: true, //Feature control the processing indicator.
         serverSide: true, //Feature control DataTables' server-side processing mode.
         order: [], //Initial no order.
@@ -155,7 +155,6 @@
         responsive: true,
         fixedHeader: true,
         });
-        
 
     $('#selectedYear').change(function(){
       ledgerTable.draw();
@@ -178,6 +177,7 @@
       $('#mbl-emp-id').val(emp_id);
       $('#mbl-filtered-year').val(filteredYear);
       $('#mbl-fullname').html(fullname);
+      MblLedgerTable.draw();
       if(filteredYear != ''){
         $('#year-div').show();
       }else{

@@ -136,10 +136,10 @@ $(document).ready(function(){
       data: {token:'<?php echo $this->security->get_csrf_hash(); ?>'},
       dataType: "json",
       success:function(response){
-        if(response.patient){
+        if(response.patient > 0){
           $('#billing-count').text(response.patient);
         }
-        if(response.guarantee){
+        if(response.guarantee > 0){
           $('#letter-count').text(response.guarantee);
         }
       }

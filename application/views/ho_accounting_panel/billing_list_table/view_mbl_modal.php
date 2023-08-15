@@ -31,9 +31,9 @@
     </div>
 </div>
 <script>
-    const BaseUrl = "<?php echo base_url(); ?>";
+    // const BaseUrl = "<?php echo base_url(); ?>";
    
-    $(document).ready(function(){
+    // $(document).ready(function(){
 
-    });
+    // });
 </script>

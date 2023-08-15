@@ -128,7 +128,7 @@
       fixedHeader: true,
     });
 
-        let MblLedgerTable = $('#mbltablemodal').DataTable({
+      MblLedgerTable = $('#mbltablemodal').DataTable({
         processing: true, //Feature control the processing indicator.
         serverSide: true, //Feature control DataTables' server-side processing mode.
         order: [], //Initial no order.
@@ -154,9 +154,8 @@
         lengthChange: false,
         responsive: true,
         fixedHeader: true,
-        });
+      });
         
-
     $('#selectedYear').change(function(){
       ledgerTable.draw();
     });
@@ -166,11 +165,10 @@
     });
 
     $("#print-btn").animate({
-        width: "100px",
-        opacity: 0.9
-      }, 1000);
-      
-
+      width: "100px",
+      opacity: 0.9
+    }, 1000);
+    
     });
     
     const viewMBLDetails = (emp_id,filteredYear,fullname) => {

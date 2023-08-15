@@ -7,8 +7,8 @@
                 </button>
             </div>
             <div class="modal-body">
-                <input type="text" id="mbl-emp-id">
-                <input type="text" id="mbl-filtered-year">
+                <input type="hidden" id="mbl-emp-id">
+                <input type="hidden" id="mbl-filtered-year">
                 <div class="offset-9" id="year-div">
                     <span class="fw-bold fs-5">Year : <span class="text-info fw-bold" id="mbl-year"></span></span>
                 </div>
@@ -30,10 +30,3 @@
         </div>
     </div>
 </div>
-<script>
-    const BaseUrl = "<?php echo base_url(); ?>";
-   
-    $(document).ready(function(){
-
-    });
-</script>

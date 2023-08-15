@@ -1558,7 +1558,16 @@ class Billing_controller extends CI_Controller {
         $net_b = $_POST['net_bill'];
         // var_dump('net bill', $net_b);
         $net_bill = floatval(str_replace(',','',$net_b));
-        $take_home_meds = $this->input->post('med-services',true);
+        $med_services = $this->input->post('med-services',true);
+        $tagvalue = json_decode($med_services);
+		$take_home_meds = [];
+		// var_dump('rx_file',$rx_file);
+		if($tagvalue!==null){
+			foreach($tagvalue as $value){
+				$take_home_meds[] = (count(get_object_vars($value))>1)?$value->tagid:$value->value; 
+			}
+		}
+        
         $hospitalBillData = $_POST['hospital_bill_data'];
         $att_doc_list = $_POST['att_doc_list'];
         $jsonData_attending_doctor= $_POST['attending_doctors'];

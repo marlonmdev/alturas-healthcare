@@ -98,7 +98,7 @@ $route['member/requested-loa/paid/fetch'] = 'member/loa_controller/fetch_paid_lo
 // update member notification
 $route['company-doctor/update/notification/fetch'] = 'company_doctor/notification_update/update_doctor_notification';
 $route['healthcare-provider/update/notification/fetch'] = 'healthcare_provider/notification_update/update_provider_notification';
-
+$route['member/resubmit/notification/fetch/(:any)'] = 'member/notification_update/update_member_notification';
 
 // Member NOA Routes
 $route['member/request-noa/submit'] = 'member/noa_controller/submit_noa_request';
@@ -450,18 +450,21 @@ $route['head-office-accounting/bill/submit-for-payment/other-hosp'] = 'ho_accoun
 $route['head-office-accounting/bill/other-hosp/for-payment/fetch'] = 'ho_accounting/main_controller/fetch_for_payment_other_hosp';
 // $route['head-office-accounting/billing-list/other-hosp/payment-details'] = 'ho_accounting/main_controller/add_payment_details_other_hosp';
 $route['head-office-accounting/bill/other-hosp/paid-bill/fetch'] = 'ho_accounting/main_controller/fetch_paid_other_hosp';
+$route['head-office-accounting/ledger/mbl-details/fetch'] = 'ho_accounting/main_controller/fetch_mbl_details_ledger';
 
 $route['print/pdfbilling/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_bills/$1/$2/$3';
-$route['printforpayment/pdfbilling/(:any)/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_forPayment/$1/$2/$3/$4';
+$route['printforpayment/pdfbilling/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_forPayment/$1/$2/$3/$4/$5';
 $route['printpayment/pdfbilling/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_payment/$1/$2/$3';
 $route['printpaid/pdfbilling/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_paid/$1/$2/$3';
 $route['printpaidbill/pdfbilling/(:any)'] = 'ho_accounting/main_controller/print_paid_bill/$1';
-$route['printBUCharge/pdfBUCharging/(:any)/(:any)'] = 'ho_accounting/main_controller/print_bu_charging/$1/$2';
+$route['printBUCharge/pdfBUCharging/(:any)/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_bu_charging/$1/$2/$3/$4';
 $route['printBUCharge/pdfReceivablesCharging/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_rcv_bu_charging/$1/$2/$3';
 $route['printBUCharge/pdfPaidCharges/(:any)'] = 'ho_accounting/main_controller/print_paid_bu_charges/$1';
 $route['printledger/ledgermbl/(:any)/(:any)'] = 'ho_accounting/main_controller/print_mbl_ledger/$1/$2';
 $route['printledger/ledgerpaid/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_paid_ledger/$1/$2/$3';
 $route['printPaymentbill/pdfbilling/(:any)'] = 'ho_accounting/main_controller/print_payment_other_hosp/$1';
+$route['printPaidBill/pdfbilling/(:any)/(:any)'] = 'ho_accounting/main_controller/print_paid_bill_otherhosp/$1/$2';
+$route['printBUCharge/pdfReceivables-Charging/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_rcv_bu_charging/$1/$2/$3';
 
 //Pages
 $route['head-office-accounting/billing-list'] = 'ho_accounting/TableList';
@@ -485,7 +488,6 @@ $route['head-office-accounting/billing-list/for-payment'] = 'ho_accounting/Pages
 $route['head-office-accounting/bill/fetch_payments/(:any)'] = 'ho_accounting/Pages_controller/view_payments';
 $route['head-office-accounting/billing-list/paid-bill'] = 'ho_accounting/Pages_controller/view_paid_bill';
 $route['head-office-accounting/bill/fetch_paid/(:any)'] = 'ho_accounting/Pages_controller/view_monthly_paid_bill';
-$route['head-office-accounting/reports'] = 'ho_accounting/Pages_controller/view_generate_reports';
 $route['head-office-accounting/reports/cash-advance'] = 'ho_accounting/Pages_controller/view_cash_advances';
 $route['head-office-accounting/reports/charging'] = 'ho_accounting/Pages_controller/view_charging';
 $route['head-office-accounting/charging/business-unit'] = 'ho_accounting/Pages_controller/view_bu_charging';
@@ -615,6 +617,7 @@ $route['healthcare-coordinator/members/approved/fetch'] = 'healthcare_coordinato
 $route['healthcare-coordinator/members/view/(:any)'] = 'healthcare_coordinator/members_controller/view_member_info';
 // $route['healthcare-coordinator/members/user-account/create'] = 'healthcare_coordinator/members_controller/create_member_user_account';
 $route['healthcare-coordinator/member/search'] = 'healthcare_coordinator/search_controller/search_autocomplete';
+$route['healthcare-coordinator/member/search-affilliated'] = 'healthcare_coordinator/search_controller/search_autocomplete_affiliated';
 $route['healthcare-coordinator/members/approved/insert-hc-id'] = 'healthcare_coordinator/members_controller/insert_scanned_hc_id';
 $route['healthcare-coordinator/members/approved/uploaded-scanned-id'] = 'healthcare_coordinator/members_controller/fetch_uploaded_hc_id';
 $route['healthcare-coordinator/members/helthcard/view-id/(:any)'] = 'healthcare_coordinator/members_controller/get_hc_id';
@@ -806,6 +809,7 @@ $route['company-doctor/loa/requests-list/paid'] = 'company_doctor/pages_controll
 $route['company-doctor/override/loa-request/(:any)'] = 'company_doctor/pages_controller/view_request_loa';
 $route['company-doctor/override/noa-request/(:any)'] = 'company_doctor/pages_controller/view_request_noa';
 
+
 // Company Doctor User Account Routes
 $route['company-doctor/account-settings'] = 'company_doctor/account_controller/account_settings';
 $route['company-doctor/account-settings/password/update'] = 'company_doctor/account_controller/update_account_password';
@@ -839,7 +843,8 @@ $route['company-doctor/member/search-loa'] = 'company_doctor/loa_controller/sear
 $route['company-doctor/loa/member/search/(:any)'] = 'company_doctor/loa_controller/fetch_member_details';
 $route['company-doctor/get-services/(:any)'] = 'company_doctor/loa_controller/get_hp_services';
 $route['company-doctor/override/loa/submit'] = 'company_doctor/loa_controller/submit_loa_override';
-
+$route['company-doctor/update/loa-percentage/(:any)'] = 'company_doctor/loa_controller/submit_edited_percentage';
+$route['company-doctor/update/noa-percentage/(:any)'] = 'company_doctor/noa_controller/submit_edited_percentage';
 // Company Doctor NOA Routes
 $route['company-doctor/noa/requests-list/fetch'] = 'company_doctor/noa_controller/fetch_all_pending_noa';
 $route['company-doctor/noa/requests-list/approved/fetch'] = 'company_doctor/noa_controller/fetch_all_approved_noa';
@@ -1119,6 +1124,10 @@ $route['head-office-iad/biling/audited-list/(:any)'] = 'ho_iad/pages_controller/
 $route['head-office-iad/biling/paid'] = 'ho_iad/pages_controller/view_paid_bill';
 $route['head-office-iad/biling/paid-list/(:any)'] = 'ho_iad/pages_controller/view_paid_list';
 $route['head-office-iad/charges/bu-charges/paid'] = 'ho_iad/pages_controller/view_bu_paid_charges';
+$route['head-office-iad/transaction/history'] = 'ho_iad/pages_controller/view_payment_history';
+$route['head-office-iad/bill/fetch_paid/(:any)'] = 'ho_iad/pages_controller/view_paid_list';
+$route['head-office-iad/ledger'] = 'ho_iad/pages_controller/view_ledger_paid';
+$route['head-office-iad/ledger/mbl'] = 'ho_iad/pages_controller/view_ledger_mbl';
 
 // Summary of Billing
 $route['head-office-iad/transaction/search'] = 'ho_iad/transaction_controller/search';
@@ -1138,6 +1147,14 @@ $route['head-office-iad/charging/bu-receivables/fetch/(:any)/(:any)'] = 'ho_iad/
 $route['printBUCharge/pdfReceivablesCharging/(:any)/(:any)/(:any)'] = 'ho_iad/transaction_controller/print_rcv_bu_charging/$1/$2/$3';
 $route['head-office-iad/charging/paid/business-units/fetch'] = 'ho_iad/transaction_controller/fetch_bu_paid_charge';
 $route['head-office-iad/charging/view-details'] = 'ho_iad/transaction_controller/fetch_charge_details';
+$route['head-office-iad/billing-list/payment-history/fetch'] = 'ho_iad/transaction_controller/fetch_payment_history';
+$route['head-office-iad/billing-list/view-payment-details/(:any)'] = 'ho_iad/transaction_controller/fetch_details_payment';
+$route['head-office-iad/ledger/fetch'] = 'ho_iad/transaction_controller/fetch_paid_bill_ledger';
+$route['head-office-iad/ledger/mbl/fetch'] = 'ho_iad/transaction_controller/fetch_mbl_ledger';
+
+$route['ho-iad-printledger/ledgerpaid/(:any)/(:any)/(:any)'] = 'ho_iad/transaction_controller/ho_print_paid_ledger/$1/$2/$3';
+$route['ho-iad-printledger/ledgermbl/(:any)/(:any)'] = 'ho_iad/transaction_controller/print_mbl_ledger/$1/$2';
+
 
 //end
 // Payment Details

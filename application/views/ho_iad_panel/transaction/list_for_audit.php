@@ -293,6 +293,8 @@
       }else{
         $('#pdf-loa-no').html(loa_no);
       }
+      $('#cv-title').hide();
+      $('#bill-title').show();
 
         let pdfFile = `${baseUrl}uploads/pdf_bills/${pdf_bill}`;
         let fileExists = checkFileExists(pdfFile);
@@ -326,6 +328,11 @@
       }else{
         $('#pdf-loa-no').html(loa_no);
       }
+<<<<<<< HEAD
+=======
+      $('#cv-title').hide();
+      $('#bill-title').show();
+>>>>>>> e3c19705785f8e571496ea5fa665446cd5623f2e
 
   
         let pdfFile = `${baseUrl}uploads/hospital_receipt/${pdf_bill}`;

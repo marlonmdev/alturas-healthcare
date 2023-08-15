@@ -62,9 +62,9 @@
             </select>
           </div>
         </div> -->
-        <div class="col-md-1 pb-3 pt-1 offset-10">
+        <!-- <div class="col-md-1 pb-3 pt-1 offset-10">
             <button class="btn btn-danger w-100" onclick="printForPaymentBill()" title="click to print data"><i class="mdi mdi-send"></i> Print </button>
-        </div>
+        </div> -->
         <div class="card shadow">
           <div class="card-body">
             <div class="">
@@ -163,24 +163,32 @@
                             contentType: false,
                             success: function(response){
                                 const {
-                                    token, status, message, acc_num_error, acc_name_error, check_num_error, check_date_error, bank_error,paid_error,image_error
+                                    token, status, message, check_num_error, check_date_error, bank_error,paid_error,image_error,cv_date_error,cv_number_error,payee_error
                                 } = response;
 
                                 if(status == 'validation-error'){
-                                    if(acc_num_error != ''){
-                                        $("#acc-number-error").html(acc_num_error);
-                                        $("#acc-number").addClass('is-invalid');
+                                    if(cv_date_error != ''){
+                                        $("#cv-date-error").html(cv_date_error);
+                                        $("#cv-date").addClass('is-invalid');
                                     }else{
-                                        $("#acc-number-error").html("");
-                                        $("#acc-number").removeClass('is-invalid');
+                                        $("#cv-date-error").html("");
+                                        $("#cv-date").removeClass('is-invalid');
                                     }
 
-                                    if(acc_name_error != ''){
-                                        $("#acc-name-error").html(acc_name_error);
-                                        $("#acc-name").addClass('is-invalid');
+                                    if(cv_number_error != ''){
+                                        $("#cv-number-error").html(cv_number_error);
+                                        $("#cv-number").addClass('is-invalid');
                                     }else{
-                                        $("#acc-name-error").html("");
-                                        $("#acc-name").removeClass('is-invalid');
+                                        $("#cv-number-error").html("");
+                                        $("#cv-number").removeClass('is-invalid');
+                                    }
+
+                                    if(payee_error != ''){
+                                        $("#payee-error").html(payee_error);
+                                        $("#payee").addClass('is-invalid');
+                                    }else{
+                                        $("#payee-error").html("");
+                                        $("#payee").removeClass('is-invalid');
                                     }
 
                                     if(check_num_error != ''){
@@ -268,14 +276,36 @@
     $("#check-date").flatpickr({
         dateFormat: 'Y-m-d',
     });
+
+    $('#cv-date').flatpickr({
+      dateFormat: 'Y-m-d',
+    });
   });
 
-  const tagAsDoneReimburse = (billing_id,payment_no,company_charge,hp_id) => {
+  const tagAsDoneReimburse = (billing_id,payment_no,company_charge,hp_id,fullname) => {
       $('#submitReimbursementModal').modal('show');
       $('#p-payment-no').html(payment_no);
       $('#p-total-bill').val(company_charge);
       $('#pd-billing-id').val(billing_id);
       $('#pd-hp-id').val(hp_id);
+      $('#payee').val(fullname);
+
+      $("#cv-date-error").html("");
+      $("#cv-date").removeClass('is-invalid');
+      $("#cv-number-error").html("");
+      $("#cv-number").removeClass('is-invalid');
+      $("#payee-error").html("");
+      $("#payee").removeClass('is-invalid');
+      $("#check-number-error").html("");
+      $("#check-number").removeClass('is-invalid');
+      $("#check-date-error").html("");
+      $("#check-date").removeClass('is-invalid');
+      $("#bank-error").html("");
+      $("#bank").removeClass('is-invalid');
+      $("#paid-error").html("");
+      $("#amount-paid").removeClass('is-invalid');
+      $("#file-error").html("");
+      $("#supporting-docu").removeClass('is-invalid');
   }
 
   const viewLOANOAdetails = (billing_id) => {
@@ -357,16 +387,25 @@
     });
  }
 
-  // const printPaidBill = (payment_no) => {
+ const validateNumberInputs = () => {
+      const number_input = document.querySelector("#amount-paid");
+      number_input.addEventListener("input", function(event) {
+          // Remove any minus sign from the input value
+          this.value = this.value.replace(/-/g, '');
 
-  //   var base_url = `${baseUrl}`;
-  //   window.open(base_url + "printpaidbill/pdfbilling/" + btoa(payment_no), '_blank');
-  // }
+          // Validate if the input is a number
+          if (isNaN(this.value)) {
+              this.value = "";
+          }
+      });
+  }
 
-  const printForPaymentBill = () => {
+
+  const generatePDF = (billing_id) => {
 
     var base_url = `${baseUrl}`;
-    window.open(base_url + "printPaymentbill/pdfbilling");
+    window.open(base_url + "printPaymentbill/pdfbilling/" + btoa(billing_id));
+
   }
 
   const addPaymentDetails = (payment_no,hp_id) => {
@@ -462,13 +501,5 @@
 
     };
 
-    const validateNumberInputs = () => {
-        const number_input = document.querySelector('#amount-paid');
-        number_input.addEventListener('input', function(event) {
-            if (this.value < 0) {
-                this.value = '';
-            }
-        });
-    }
 
 </script>

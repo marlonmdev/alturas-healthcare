@@ -12566,7 +12566,15 @@ label {
 	border-color: #14a44d !important;
 }
 
-#scrollButton {
+#search-results {
+	max-height: 100px;
+	overflow-y: auto;
+  }
+.members-list:hover{
+	background-color: #66D8FE;
+}
+
+/* #scrollButton {
 	display: none;
 	position: fixed;
 	bottom: 20px;
@@ -12576,4 +12584,9 @@ label {
 	border: none;
 	border-radius: 4px;
 	cursor: pointer;
-  }
+  } */
+
+/* #search-results{
+	max-height: 60px;
+	background-color: #00aff0;
+} */

@@ -118,8 +118,13 @@
                         data: {token:'<?php echo $this->security->get_csrf_hash(); ?>'},
                         dataType: "json",
                         success:function(response){
-                          $('#pending-loa-count').text(response.pending_loa);
-                          $('#pending-noa-count').text(response.pending_noa);
+                          if(response.pending_loa > 0){
+                            $('#pending-loa-count').text(response.pending_loa);
+                          }
+                          if(response.pending_noa > 0){
+                            $('#pending-noa-count').text(response.pending_noa);
+                          }
+                           
                         }
                     });
                   });

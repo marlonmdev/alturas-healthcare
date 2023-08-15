@@ -112,5 +112,29 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('ho_iad_panel/transaction/bu_charges_paid');
 		$this->load->view('templates/footer');
 	}
+	
+	function view_payment_history() {
+		$data['user_role'] = $this->session->userdata('user_role'); 
+		$hc_provider['hc_provider'] = $this->transaction_model->get_hc_provider();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_iad_panel/transaction/payment_history.php', $hc_provider);
+		$this->load->view('templates/footer');
+	}
+
+	function view_ledger_paid() {
+		$data['user_role'] = $this->session->userdata('user_role'); 
+		$data['bu'] = $this->transaction_model->get_business_units();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_iad_panel/transaction/ledger_paid.php');
+		$this->load->view('templates/footer');
+	}
+
+	function view_ledger_mbl() {
+		$data['user_role'] = $this->session->userdata('user_role'); 
+		$data['bu'] = $this->transaction_model->get_business_units();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_iad_panel/transaction/ledger_mbl.php');
+		$this->load->view('templates/footer');
+	}
 
 }

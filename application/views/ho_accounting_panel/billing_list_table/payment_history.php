@@ -33,6 +33,7 @@
                         <?php foreach($hc_provider as $option) : ?>
                         <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
                         <?php endforeach; ?>
+                        <option value="nonaffiliated">Non-Affiliated Hosp.</option>
                 </select>
             </div>
         </div>
@@ -44,6 +45,7 @@
                         <thead style="background-color:#00538C">
                             <tr>
                                 <td class="text-white">#</td>
+                                <td class="text-white">CV Number</td>
                                 <td class="text-white">Account Number</td>
                                 <td class="text-white">Account Name</td>
                                 <td class="text-white">Check Number</td>
@@ -121,14 +123,20 @@
                         billed_date,
                         covered_loa_no,
                         billing_id,
-                        billing_type
+                        billing_type,
+                        cv_number,
+                        cv_date,
+                        payee
                     } = res;
-           
+                    
                     $('#viewPaymentModal').modal('show');
                     $('#hospital_filtered').val(hp_name);
                     $('#start_date').val(added_on);
                     $('#payment-num').val(payment_no);
                     $('#acc-number').val(acc_number);
+                    $('#cv-number').val(cv_number);
+                    $('#cv-date').val(cv_date);
+                    $('#payee').val(payee);
                     $('#acc-name').val(acc_name);
                     $('#check-number').val(check_num);
                     $('#check-date').val(check_date);
@@ -138,6 +146,15 @@
                     $('#c-billed-date').val(billed_date);
 
                     if(billing_type == 'Reimburse'){
+                        $('#acc-num-div').hide();
+                        $('#acc-num-input-div').hide();
+                        $('#acc-name-div').hide();
+                        $('#acc-name-input-div').hide();
+                        $('#payment-num-div').hide();
+                        $('#payment-num-div-input').hide();
+                        $('#payee-div').show();
+                        $('#payee-input-div').show();
+
                         var paymentLink = document.getElementById('payment-link');
                         var data1 = `${billing_id}`;
                         paymentLink.innerHTML = data1;
@@ -145,6 +162,14 @@
                         paymentLink.onclick = viewModal;
 
                     }else{
+                        $('#payee-div').hide();
+                        $('#payee-input-div').hide();
+                        $('#acc-num-div').show();
+                        $('#acc-num-input-div').show();
+                        $('#acc-name-div').show();
+                        $('#acc-name-input-div').show();
+                        $('#payment-num-div').show();
+                        $('#payment-num-div-input').show();
                         var data = `${bill_id}`;
                         var paymentLink = document.getElementById('payment-link');
                         paymentLink.innerHTML = data;
@@ -229,7 +254,6 @@
 
         const viewCheckVoucher = (pdf_check_v) => {
         $('#viewCVModal').modal('show');
-        $('#cancel').hide();
         let pdfFile = `${baseUrl}uploads/paymentDetails/${pdf_check_v}`;
         let fileExists = checkFileExists(pdfFile);
 

@@ -39,15 +39,16 @@ class Noa_controller extends CI_Controller {
 			// if work_related field is set to either yes or no, show either disabled or not disabled approve button 
 			if($noa['work_related'] == ''){
 				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-warning">' . $noa['status'] . '</span></div>';
-
 				$custom_actions .= '<a class="me-2" data-bs-toggle="tooltip" title="Charge type is not yet set by HRD Coordinator" disabled><i class="mdi mdi-thumb-up fs-2 icon-disabled"></i></a>';
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="disapproveNoaRequest(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Disapprove NOA"><i class="mdi mdi-thumb-down fs-2 text-danger"></i></a>';
 			}else{
 				$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-cyan">for Approval</span></div>';
-
 				$custom_actions .= '<a class="me-2" href="JavaScript:void(0)" onclick="approveNoaRequest(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Approve NOA"><i class="mdi mdi-thumb-up fs-2 text-success"></i></a>';
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="disapproveNoaRequest(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Disapprove NOA"><i class="mdi mdi-thumb-down fs-2 text-danger"></i></a>';
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="editpercentage(\'' . $noa_id . '\',\'' . $noa['noa_no'] . '\',\'' . $noa['percentage'] . '\')" data-bs-toggle="tooltip" title="Edit NOA Percentage"><i class="mdi mdi-pen fs-2 text-success"></i></a>';
 			}
 
-			$custom_actions .= '<a href="JavaScript:void(0)" onclick="disapproveNoaRequest(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Disapprove NOA"><i class="mdi mdi-thumb-down fs-2 text-danger"></i></a>';
+			
 			$view_receipt = '';
 			if($noa['hospital_receipt']){
 				$view_receipt = '<a href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/hospital_receipt/' . $noa['hospital_receipt'] . '\')"><strong>View</strong></a>';
@@ -434,7 +435,7 @@ class Noa_controller extends CI_Controller {
 
 			if($noa_info['work_related'] == 'Yes'){
                
-				if($noa_info['percentage'] == ''){
+				if($noa_info['percentage'] == '' && $noa_info['$percentage'] == "100"){
                     if($previous_mbl <= 0){
                         $company_charge = 0;
                         $personal_charge =  $net_bill;
@@ -450,7 +451,7 @@ class Noa_controller extends CI_Controller {
                     }
 					
                     
-				}else if($noa_info['percentage'] != ''){
+				}else if($noa_info['percentage'] != ''  && $noa_info['$percentage'] != "100"){
 					if($previous_mbl <= 0){
                         $company_charge = 0;
                         $personal_charge =  $net_bill;
@@ -481,62 +482,63 @@ class Noa_controller extends CI_Controller {
                     }
 					
 				}
-			}else if($noa_info['work_related'] == 'No'){
-				if($noa_info['percentage'] == ''){
-                    if($previous_mbl <= 0){
-                        $company_charge = 0;
-                        $personal_charge =  $net_bill;
-                        $remaining_mbl =  0;
-                    }else{
-                        if($net_bill <= $previous_mbl){
-                            $company_charge = $net_bill;
-                            $personal_charge = 0;
-                            $remaining_mbl = $previous_mbl - $company_charge;
-                        }else if($net_bill > $previous_mbl){
-                            $company_charge = $previous_mbl;
-                            $personal_charge = $net_bill - $previous_mbl;
-                            $remaining_mbl = 0;
-                        }
-                    }
+			}
+			// else if($noa_info['work_related'] == 'No'){
+			// 	if($noa_info['percentage'] == ''){
+            //         if($previous_mbl <= 0){
+            //             $company_charge = 0;
+            //             $personal_charge =  $net_bill;
+            //             $remaining_mbl =  0;
+            //         }else{
+            //             if($net_bill <= $previous_mbl){
+            //                 $company_charge = $net_bill;
+            //                 $personal_charge = 0;
+            //                 $remaining_mbl = $previous_mbl - $company_charge;
+            //             }else if($net_bill > $previous_mbl){
+            //                 $company_charge = $previous_mbl;
+            //                 $personal_charge = $net_bill - $previous_mbl;
+            //                 $remaining_mbl = 0;
+            //             }
+            //         }
 					
                    
-				}else if($noa_info['percentage'] != ''){
-                    if($previous_mbl <= 0){
-                        $company_charge = 0;
-                        $personal_charge =  $net_bill;
-                        $remaining_mbl =  0;
-                    }else{
-                        if($net_bill <= $previous_mbl){
-                            $company_charge = $net_bill;
-                            $personal_charge = 0;
-                            $remaining_mbl = $previous_mbl - floatval($net_bill);
-                        }else if($net_bill > $previous_mbl){
-                            $converted_percent = $percentage/100;
-                            $initial_personal_charge = $converted_percent * $net_bill;
-                            $initial_company_charge = $net_bill - floatval($initial_personal_charge);
+			// 	}else if($noa_info['percentage'] != ''){
+            //         if($previous_mbl <= 0){
+            //             $company_charge = 0;
+            //             $personal_charge =  $net_bill;
+            //             $remaining_mbl =  0;
+            //         }else{
+            //             if($net_bill <= $previous_mbl){
+            //                 $company_charge = $net_bill;
+            //                 $personal_charge = 0;
+            //                 $remaining_mbl = $previous_mbl - floatval($net_bill);
+            //             }else if($net_bill > $previous_mbl){
+            //                 $converted_percent = $percentage/100;
+            //                 $initial_personal_charge = $converted_percent * $net_bill;
+            //                 $initial_company_charge = $net_bill - floatval($initial_personal_charge);
                             
-                            if($initial_company_charge <= $previous_mbl){
-                                $result = $previous_mbl - $initial_company_charge;
-                                $initial_personal = $initial_personal_charge - $result;
-                                if($initial_personal < 0 ){
-                                    $personal_charge = 0;
-                                    $company_charge = $initial_company_charge + $initial_personal_charge;
-                                    $remaining_mbl = $previous_mbl - floatval($company_charge);
-                                }else if($initial_personal >= 0){
-                                    $personal_charge = $initial_personal;
-                                    $company_charge = $previous_mbl;
-                                    $remaining_mbl = 0;
-                                }
-                            }else if($initial_company_charge > $previous_mbl){
-                                $personal_charge = $initial_personal_charge;
-                                $company_charge = $initial_company_charge;
-                                $remaining_mbl = 0;
-                            }
+            //                 if($initial_company_charge <= $previous_mbl){
+            //                     $result = $previous_mbl - $initial_company_charge;
+            //                     $initial_personal = $initial_personal_charge - $result;
+            //                     if($initial_personal < 0 ){
+            //                         $personal_charge = 0;
+            //                         $company_charge = $initial_company_charge + $initial_personal_charge;
+            //                         $remaining_mbl = $previous_mbl - floatval($company_charge);
+            //                     }else if($initial_personal >= 0){
+            //                         $personal_charge = $initial_personal;
+            //                         $company_charge = $previous_mbl;
+            //                         $remaining_mbl = 0;
+            //                     }
+            //                 }else if($initial_company_charge > $previous_mbl){
+            //                     $personal_charge = $initial_personal_charge;
+            //                     $company_charge = $initial_company_charge;
+            //                     $remaining_mbl = 0;
+            //                 }
                             
-                        }
-                    }
-				}
-			}
+            //             }
+            //         }
+			// 	}
+			// }
 		
             
             $data = [
@@ -701,7 +703,7 @@ class Noa_controller extends CI_Controller {
         if (!empty($result)) {
             foreach ($result as $row) :
                 $member_id = $this->myhash->hasher($row['member_id'], 'encrypt');
-                echo '<strong class="d-block mx-2 p-1 my-1"><a href="#" onclick="getMemberValues(\'' . $member_id . '\')" class="text-secondary" data-toggle="tooltip" data-placement="top" title="Click to fill form with Data">'
+                echo '<strong class="d-block members-list mx-2 p-1 my-1"><a href="#" onclick="getMemberValues(\'' . $member_id . '\')" class="text-secondary" data-toggle="tooltip" data-placement="top" title="Click to fill form with Data">'
                     . $row['first_name'] . ' '
                     . $row['middle_name'] . ' '
                     . $row['last_name'] . ' '
@@ -832,5 +834,31 @@ class Noa_controller extends CI_Controller {
 				}
 			}
 			echo json_encode($response);
+	}
+
+	function submit_edited_percentage(){
+		$input_post = $this->input->post(null,true);
+		$noa_id =  $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+
+		$data = [
+			'work_related' => $input_post['percentage_edit'],
+			'percentage' => $input_post['percentage_edit']
+		];
+
+		$inserted = $this->noa_model->db_update_noa_request($noa_id, $data);
+
+		if($inserted){
+			$response = [
+				'status' => 'success',
+				'message' => 'Updated Successfully'
+			];
+		}else{
+			$response = [
+				'status' => 'error',
+				'message' => 'Unable to submit'
+			];
+		}
+
+		echo json_encode($response);
 	}
 }

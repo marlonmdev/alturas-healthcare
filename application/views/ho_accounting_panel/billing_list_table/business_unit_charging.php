@@ -55,7 +55,7 @@
             </div>
             <div class="row gap-4 pt-2 pb-2">
                 <div class="col-lg-4 ps-5 pb-2">
-                    <small class="text-danger">* Required Field</small>
+                    <!-- <small class="text-danger">* Required Field</small> -->
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text bg-dark text-white">
@@ -77,7 +77,7 @@
                     </div>
                 </div>
                 <div class="col-lg-4">
-                    <small class="text-danger">* Required Fields</small>
+                    <!-- <small class="text-danger">* Required Fields</small> -->
                     <div class="input-group">
                         <div class="input-group-append">
                             <span class="input-group-text text-dark ls-1 ms-2">
@@ -94,7 +94,7 @@
                         <input type="date" class="form-control" name="end-date" id="end-date" oninput="validateDateRange()" placeholder="End Date" required>
                     </div>
                 </div>
-                <div class="col-lg-2 pt-4">
+                <div class="col-lg-2 pt-1">
                     <button class="btn btn-danger rounded-pill btn-sm fs-6" type="button" id="print-btn" onclick="forCollection()" title="tag charges for receivables"><i class="mdi mdi-printer"></i> CONSOLIDATE</button>
                 </div>
             </div>
@@ -159,7 +159,6 @@
                         data.start_date    = $('#start-date').val();
                         data.end_date    = $('#end-date').val();
                     },
-                
                 },
 
                 //Set column definition initialisation properties.
@@ -323,15 +322,28 @@
 
         const printBUCharging = (charging_no) => {
             const bu_filters = document.querySelector('#charging-bu-filter').value;
+            const start_date = document.querySelector('#start-date').value;
+            const end_date = document.querySelector('#end-date').value;
 
             if(bu_filters != ''){
                 bu_filter = bu_filters;
             }else{
                 bu_filter = 'none';
             }
+            if(start_date != ''){
+                start_dates = start_date;
+            }else{
+                start_dates = 'none';
+            }
+            if(end_date != ''){
+                end_dates = end_date;
+            }else{
+                end_dates = 'none';
+            }
+
 
             var base_url = `${baseUrl}`;
-            var win = window.open(base_url + "printBUCharge/pdfBUCharging/" + btoa(bu_filter) + "/" + btoa(charging_no), '_blank');
+            var win = window.open(base_url + "printBUCharge/pdfBUCharging/" + btoa(bu_filter) + "/" + btoa(charging_no) + "/" + btoa(start_dates) + "/" + btoa(end_dates), '_blank');
         }
 
         const viewChargeDetails = (billing_id) => {

@@ -3115,6 +3115,7 @@ $med_serv = implode(' ', $ct_array);
 		// 	}
 		// }
 		$inserted = $this->loa_model->update_performed_fees1($loa_id);
+		$inserted = $this->loa_model->update_billing_check_status($loa_id);
 		$inserted = $this->loa_model->_set_loa_status_completed($loa_id);
 		
 		if($inserted){

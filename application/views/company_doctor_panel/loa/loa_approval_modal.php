@@ -19,7 +19,7 @@
                 <option value="2 weeks">2 weeks</option>
                 <option value="3 weeks">3 weeks</option>
                 <option value="4 weeks">4 weeks</option>
-                <option value="custom">Custom</option>
+                <option value="custom" >Custom</option>
               </select>
             </div> 
 

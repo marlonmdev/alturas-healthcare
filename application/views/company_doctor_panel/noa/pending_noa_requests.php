@@ -145,7 +145,7 @@
   </div>
 
   <?php include 'view_pdf_file_modal.php';?>
-
+  <?php include 'view_edit_percentage_modal.php';?>                      
 <script>
   const baseUrl = `<?php echo base_url(); ?>`;
   const fileName = `<?php echo strtotime(date('Y-m-d h:i:s')); ?>`;
@@ -192,8 +192,85 @@
       minDate: tomorrow
     });
 
+    number_validator();
+
+$('#edit_submit').on('click',function(){
+  $('#edit-percentage-form').submit();
+});
+
+$('#edit-percentage-form').on('submit',function(event){
+  console.log('percentage form');
+  const noa_id = $('#edit_noa_id').val();
+  event.preventDefault();
+  var formData = $('#edit-percentage-form').serialize();
+  $.ajax({
+    url: `${baseUrl}company-doctor/update/noa-percentage/${noa_id}`,
+    type:'POST',
+    data: formData,
+    dataType: "json",
+    success:(response)=>{
+      console.log(response);
+              if(response.status === 'success'){
+                swal({
+                  title: 'Success',
+                  text: response.message,
+                  timer: 2000,
+                  showConfirmButton: false,
+                  type: 'success',
+                }).then(function(){
+                  $('#edit_percentage_Modal').modal('hide');
+                  window.location.href = `${baseUrl}company-doctor/noa/requests-list`;
+                });
+              }else{
+                swal({
+                  title: 'Error',
+                  text: response.message,
+                  timer: 2000,
+                  showConfirmButton: true,
+                  type: 'error'
+                });
+              }
+          }
+  });
+});
 
   });
+
+  const editpercentage = (noa_id, noa_no, percentage) =>{
+  console.log('percentage', percentage);
+  $('#edit_percentage_Modal').modal('show');
+  $('#noa_no').text(noa_no);
+  $('#percentage_edit').val(percentage);
+  $('#edit_noa_id').val(noa_id);
+}
+
+const number_validator = () => {
+	$('#percentage_edit').on('keydown',function(event){
+		let value = $('#percentage_edit').val();
+		let length  = $('#percentage_edit').val().length;
+		const key = event.key;
+	
+		if(length+1 <=1 && (key === '0'|| key ==='')){
+		  event.preventDefault();
+		}
+		if(/^[a-zA-Z]$/.test(key)) {
+		  event.preventDefault(); 
+		}
+		if(/^[!@#$%^&*()\-_=+[\]{};.':"\\|,<>/?`~]$/.test(key)) {
+		  event.preventDefault(); 
+		}
+		if(/\s/.test(key)){
+		  event.preventDefault();
+		}
+	  });
+
+    $('#percentage_edit').on('keyup',function(event){
+      if(Number($(this).val()) > 100){
+        $(this).val(100);
+      }
+      
+    });
+}
 
   const saveAsImage = () => {
     // Get the div element you want to save as an image

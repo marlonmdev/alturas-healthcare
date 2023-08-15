@@ -317,7 +317,7 @@ class List_model extends CI_Model{
 	var $table_payment_1 = 'payment_details';
     var $table_payment_2 = 'billing';
 	var $column_payment_order = ['payment_no', 'acc_number', 'acc_name', 'check_num', 'check_date', 'bank', NULL]; //set column field database for datatable orderable
-	var $column_payment_search = ['payment_no', 'acc_number', 'acc_name', 'check_num', 'check_date', 'bank']; //set column field database for datatable searchable 
+	var $column_payment_search = ['payment_no', 'cv_number', 'acc_number', 'acc_name', 'check_num', 'check_date', 'bank']; //set column field database for datatable searchable 
 	var $order_payment = ['details_id' => 'desc']; // default order 
 
 	private function _get_payment_datatables_query() {
@@ -326,9 +326,12 @@ class List_model extends CI_Model{
         $this->db->join($this->table_payment_2. ' as tbl_2', 'tbl_1.details_no = tbl_2.details_no');
 		$i = 0;
 
-        if($this->input->post('filter')){
-			$this->db->like('tbl_1.hp_id', $this->input->post('filter'));
-		}
+        if($this->input->post('filter') == 'nonaffiliated'){
+			$this->db->where('tbl_1.acc_number', '');
+		}else{
+            $this->db->like('tbl_1.hp_id', $this->input->post('filter'));
+        }
+
 
 		// loop column 
 		foreach ($this->column_payment_search as $item) {
@@ -815,6 +818,40 @@ class List_model extends CI_Model{
                 ->where('tbl_1.status', 'Paid')
                 ->where('tbl_1.billing_type', 'Reimburse')
                 ->order_by('tbl_1.request_date', 'desc');
+
+        if ($this->input->post('startDate')) {
+            $startDate = date('Y-m-d', strtotime($this->input->post('startDate')));
+            $this->db->where('tbl_1.request_date >=', $startDate);
+            }
+            if ($this->input->post('endDate')){
+            $endDate = date('Y-m-d', strtotime($this->input->post('endDate')));
+            $this->db->where('tbl_1.request_date <=', $endDate);
+            }
+
+        return $this->db->get()->result_array();
+    }
+
+    function get_other_hos_paid_bills($start,$end) {
+        $this->db->select('*')
+                ->from('billing as tbl_1')
+                ->join('loa_requests as tbl_6', 'tbl_1.loa_id = tbl_6.loa_id', 'left')
+                ->join('noa_requests as tbl_7', 'tbl_1.noa_id = tbl_7.noa_id', 'left')
+                ->join('healthcare_providers as tbl_2', 'tbl_1.hp_id = tbl_2.hp_id')
+                ->join('members as tbl_3', 'tbl_1.emp_id = tbl_3.emp_id')
+                ->join('payment_details as tbl_8', 'tbl_1.details_no = tbl_8.details_no')
+                ->where('tbl_1.status', 'Paid')
+                ->where('tbl_1.billing_type', 'Reimburse')
+                ->order_by('tbl_1.request_date', 'desc');
+
+        if (!empty($start)) {
+            $startDate = date('Y-m-d', strtotime($start));
+            $this->db->where('tbl_1.request_date >=', $startDate);
+        }
+        if (!empty($end)){
+            $endDate = date('Y-m-d', strtotime($end));
+            $this->db->where('tbl_1.request_date <=', $endDate);
+        }
+
         return $this->db->get()->result_array();
     }
 
@@ -1014,7 +1051,7 @@ class List_model extends CI_Model{
         return $query->result_array();
        }
 
-       function get_other_hos_for_payment_bills() {
+       function get_other_hos_for_payment_bills($billing_id) {
         $this->db->select('*')
                 ->from('billing as tbl_1')
                 ->join('loa_requests as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id', 'left')
@@ -1024,6 +1061,7 @@ class List_model extends CI_Model{
                 ->join('locate_business_unit as tbl_6', 'tbl_5.business_unit = tbl_6.business_unit')
                 ->join('max_benefit_limits as tbl_7', 'tbl_1.emp_id = tbl_7.emp_id')
                 ->where('tbl_1.status', 'Payment')
+                ->where('tbl_1.billing_id', $billing_id)
                 ->where('tbl_1.billing_type', 'Reimburse');
 
         return $this->db->get()->result_array();
@@ -1113,10 +1151,11 @@ class List_model extends CI_Model{
         return $this->db->get_where('billing', ['bu_charging_no' => $charging_no])->result_array();
     }
 
-    function tag_charge_as_paid($charging_no, $bu_proof_payment) {
+    function tag_charge_as_paid($charging_no, $bu_proof_payment, $inputted_total) {
         $this->db->set('bu_charging_status', 'Paid')
                 ->set('bu_tagged_paid_on', date('Y-m-d'))
                 ->set('bu_proof_payment', $bu_proof_payment)
+                ->set('bu_total_paid', $inputted_total)
                 ->where('bu_charging_no', $charging_no);
         return $this->db->update('billing');
     }
@@ -1443,6 +1482,56 @@ class List_model extends CI_Model{
         }
         return $this->db->get()->result_array();
        
+    }
+
+    private function fetch_current_mbl_ledger() {
+        $filteredYear = $this->input->post('filteredYear');
+		$emp_id = $this->input->post('emp_id');
+      
+        $this->db->from('billing as tbl_1')
+            ->join('max_benefit_limits as tbl_6', 'tbl_1.emp_id = tbl_6.emp_id')
+            ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+            ->where('tbl_1.company_charge !=', 0)
+            ->where('tbl_1.emp_id', $emp_id)
+            ->where('YEAR(tbl_1.billed_on)', date('Y'))
+            ->order_by('tbl_1.billing_id', 'asc');
+            
+    }
+
+    function get_current_ledger_mbl() {
+        $this->fetch_current_mbl_ledger(); // Call the function to set up the query conditions
+        if (!empty($_POST['length']) && $_POST['length'] != -1) {
+            $this->db->limit($_POST['length'], $_POST['start']);
+        }
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    private function fetch_history_mbl_details() {
+        $filteredYear = $this->input->post('filteredYear');
+		$emp_id = $this->input->post('emp_id');
+
+        $this->db->from('members as tbl_1')
+            ->join('mbl_history as tbl_6', 'tbl_1.emp_id = tbl_6.emp_id', 'left')
+            ->join('billing as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id','left')
+            ->where('tbl_2.company_charge !=', 0)
+            ->where('tbl_1.emp_id', $emp_id)
+            ->where('YEAR(tbl_2.billed_on) !=', date('Y'))
+            ->order_by('tbl_2.billing_id', 'asc');
+    
+        if ($filteredYear) {
+            $this->db->where("YEAR(tbl_6.start_date)", $filteredYear);
+        }
+    }
+
+    function get_history_mbl_details() {
+        $this->fetch_history_mbl_details(); // Call the function to set up the query conditions
+        if (!empty($_POST['length']) && $_POST['length'] != -1) {
+            $this->db->limit($_POST['length'], $_POST['start']);
+        }
+        $query = $this->db->get();
+        return $query->result_array();
+            
     }
 
     function get_employee_paid_ledger($years, $months, $bu_unit) {

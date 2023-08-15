@@ -164,8 +164,17 @@
         // "targets": [5, 6, 7], // 6th and 7th column / numbering column
         "targets": [4, 5, 6 ], // 6th and 7th column / numbering column
         "orderable": false, //set not orderable
+        // "createdCell": function(td, cellData, rowData, row, col) {
+        //   var pattern = /\bResubmit\b/i;
+        //     if (col === 6) { // Assuming status is in the 5th column
+        //         if (pattern.test(cellData)) {
+        //             $(row).addClass('bg-warning');
+        //         }
+        //     }
+        // }
       }, ],
     });
+
   });
 
   const viewImage = (path) => {

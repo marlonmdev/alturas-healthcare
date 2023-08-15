@@ -111,7 +111,7 @@
                   <select class="form-select" name="healthcare-provider-category" id="healthcare-provider-category" oninput="enableProvider()">
                     <option value="" selected>Select Healthcare Provider Category</option>
                     <option value="1">Affiliated</option>
-                    <option value="2">Not Affiliated</option>
+                    <option value="2">Non-Affiliated</option>
                   </select>
                   <em id="healthcare-provider-category-error" class="text-danger"></em>
                 </div>
@@ -586,7 +586,7 @@ const number_validator = () => {
       if( hc_provider != '' ){
         request_type.disabled = false;
       }else{
-        request_type.disabled = true;
+        request_type.disabled = true; 
         request_type.value = '';
       }
   } 
@@ -595,6 +595,7 @@ const number_validator = () => {
     const hc_provider = document.querySelector('#healthcare-provider-category').value;
    
     const request_type = document.querySelector('#healthcare-provider');
+    request_type.innerHTML = '<option value="" selected>Select Healthcare Provider</option>';
       if( hc_provider != '' ){
         removeOption();
         request_type.disabled = false;

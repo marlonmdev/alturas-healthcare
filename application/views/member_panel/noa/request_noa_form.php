@@ -57,7 +57,7 @@
                   <select class="form-select" name="healthcare-provider-category" id="healthcare-provider-category" oninput="enableProvider()">
                     <option value="" selected>Select Healthcare Provider Category</option>
                     <option value="1">Affiliated</option>
-                    <option value="2">Not Affiliated</option>
+                    <option value="2">Non-Affiliated</option>
                   </select>
                   <em id="healthcare-provider-category-error" class="text-danger"></em>
                 </div>
@@ -377,6 +377,7 @@
     console.log('hospital_names',hospital_names);
     console.log('ahcproviders_names',ahcproviders_names);
     const request_type = document.querySelector('#hospital-name');
+    request_type.innerHTML = '<option value="" selected>Select Healthcare Provider</option>';
       if( hc_provider != '' ){
         removeOption();
         request_type.disabled = false;

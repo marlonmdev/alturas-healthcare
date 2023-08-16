@@ -3,6 +3,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Noa_model extends CI_Model {
 
+  function db_update_loa_request1($noa_id, $post_data) {
+    $this->db->where('noa_id', $noa_id);
+    return $this->db->update('noa_requests', $post_data);
+  }
+
   function db_get_affiliated_healthcare_providers() {
     $query = $this->db->get_where('healthcare_providers',['accredited'=>1]);
     return $query->result_array();

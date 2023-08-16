@@ -187,7 +187,7 @@ class Members_controller extends CI_Controller {
 
 		$result = $this->members_model->db_get_member($emp_id);
 		if (!$result) {
-			$response = ['status' => 'save-error', 'message' => 'Member Does Not Exist'];
+			$response = array('status' => 'save-error', 'message' => 'Member Does Not Exist');
 		} else {
 			$first_name = $result['first_name'];
 			$middle_name = $result['middle_name'];
@@ -212,13 +212,13 @@ class Members_controller extends CI_Controller {
 			$this->load->model('super_admin/accounts_model');
 			$saved = $this->accounts_model->db_insert_account($post_data);
 			if (!$saved) {
-				$response = ['status' => 'save-error', 'message' => 'User Account Create Failed'];
+				$response = array('status' => 'save-error', 'message' => 'User Account Create Failed');
 			} else {
 				// after inserting user account, update the members healthcard number and approval status to approved
 				$date_approved = date("Y-m-d");
 				$approved = $this->members_model->db_update_member_status($emp_id, $healthcard_no, $date_approved);
 				if (!$approved) {
-					$response = ['status' => 'error', 'message' => 'Unable to Update Member Status'];
+					$response = array('status' => 'error', 'message' => 'Unable to Update Member Status');
 				} else {
 					// if approved insert the members max benefit limit based on months from day of regularization and current position level
 					$year_regular = date("Y", strtotime($date_regularized));

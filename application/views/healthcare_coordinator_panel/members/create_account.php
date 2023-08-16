@@ -2,7 +2,7 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">AGC EMPLOYEE</h4>
+        <h4 class="page-title ls-2" style="font-size:14px">AGC EMPLOYEE</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -19,22 +19,22 @@
     <div class="row">
       <div class="col-lg-12">
         <ul class="nav nav-tabs mb-4" role="tablist">
-          <li class="nav-item">
-            <a class="nav-link active" href="<?php echo base_url(); ?>healthcare-coordinator/members" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1 active" href="<?php echo base_url(); ?>healthcare-coordinator/members" role="tab">
               <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">CREATE ACCOUNT</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/members/approved" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/members/approved" role="tab">
               <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">UPLOAD HEALTHCARD ID</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/members/approved/uploaded-scanned-id-form" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/members/approved/uploaded-scanned-id-form" role="tab">
               <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">HEALTHCARD ID</span>
             </a>
@@ -239,3 +239,62 @@
         emp_id_input.value = emp_id;
     }
 </script>
+
+<style>
+  .nav-item1 {
+    list-style-type: none;
+  }
+
+  .nav-link1 {
+    display: inline-block;
+    padding: 10px;
+    padding-top:1px;
+    padding-bottom:1px;
+    text-decoration: none;
+    background-color: #e6e6e6;
+    color: #000;
+    border: 1px solid gray;
+    border-bottom: 3px solid gray;
+    border-radius: 15px;
+
+  }
+
+  .nav-link1:hover {
+    background-color: #002244;
+    color: #fff;
+    border: 1px solid #000;
+  }
+
+  .font-bold {
+    font-weight: bold;
+  }
+
+  .hidden-xs-down {
+    display: inline-block;
+  }
+
+  .fs-5 {
+    font-size: 1.2rem;
+  }
+  .pending{
+    color:red
+  }
+  .approved{
+    color:green
+  }
+  .disapproved{
+    color:red
+  }
+  .completed{
+    color:green
+  }
+  .referral{
+    color:orange
+  }
+  .expired{
+    color:#a32cc4
+  }
+  .cancelled{
+    color:red
+  }
+</style>

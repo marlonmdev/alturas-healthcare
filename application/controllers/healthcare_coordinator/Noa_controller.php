@@ -159,16 +159,20 @@ class Noa_controller extends CI_Controller {
 			// $custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Tagging"><i class="mdi mdi-tag-plus fs-4 text-primary"></i></a>';
 
 			if($noa['accredited'] == '0' && $noa['type_request'] == 'Admission'){
-				$custom_actions .= '<a href="JavaScript:void(0)" onclick="ChargeTypenotAffiliated(\'' . $noa_id . '\',\'' . $noa['hospital_receipt'] . '\',\'' . $noa['hospital_bill'] . '\')" data-bs-toggle="tooltip" title="Tagging"><i class="mdi mdi-tag-plus fs-4 text-primary"></i></a>';
+				if ($noa['resubmit'] === 'Done') {
+        	$custom_actions .= '<a href="JavaScript:void(0)" onclick="ChargeTypenotAffiliated(\'' . $noa_id . '\',\'' . $noa['hospital_receipt'] . '\',\'' . $noa['hospital_bill'] . '\',\'' . $noa['percentage'] . '\',\'' . $noa['work_related'] . '\',\'' . $noa['spot_report_file'] . '\',\'' . $noa['police_report_file'] . '\',\'' . $noa['incident_report_file'] . '\')" class="blink-icon" data-bs-toggle="tooltip" title="Tagging"><i class="mdi mdi-tag-plus fs-4 text-primary"></i></a>';
+    		}else{
+        	$custom_actions .= '<a href="JavaScript:void(0)" onclick="ChargeTypenotAffiliated(\'' . $noa_id . '\',\'' . $noa['hospital_receipt'] . '\',\'' . $noa['hospital_bill'] . '\',\'' . $noa['percentage'] . '\',\'' . $noa['work_related'] . '\',\'' . $noa['spot_report_file'] . '\',\'' . $noa['police_report_file'] . '\',\'' . $noa['incident_report_file'] . '\')" data-bs-toggle="tooltip" title="Tagging"><i class="mdi mdi-tag-plus fs-4 text-primary"></i></a>';
+    		}
 			}else{
-				$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Tagging"><i class="mdi mdi-tag-plus fs-4 text-primary"></i></a>';
+				$custom_actions .= '<a href="JavaScript:void(0)" onclick="showTagChargeType(\'' . $noa_id . '\',\'' . $noa['percentage'] . '\',\'' . $noa['work_related'] . '\',\'' . $noa['spot_report_file'] . '\',\'' . $noa['police_report_file'] . '\',\'' . $noa['incident_report_file'] . '\')" data-bs-toggle="tooltip" title="Tagging"><i class="mdi mdi-tag-plus fs-4 text-primary"></i></a>';
 			}
 			
-			if($noa['spot_report_file'] || $noa['incident_report_file'] != '' || $noa['police_report_file'] != ''){
-				$custom_actions .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $noa_id . '\',\'' . $noa['work_related'] . '\',\'' . $noa['percentage'] . '\',\'' . $noa['spot_report_file'] . '\',\'' . $noa['incident_report_file'] . '\',\'' . $noa['police_report_file'] . '\')" data-bs-toggle="tooltip" title="View Reports"><i class="mdi mdi-teamviewer fs-4 text-warning"></i></a>';
-			}else{
-				$custom_actions .= '';
-			}
+			// if($noa['spot_report_file'] || $noa['incident_report_file'] != '' || $noa['police_report_file'] != ''){
+			// 	$custom_actions .= '<a href="JavaScript:void(0)" onclick="viewReports(\'' . $noa_id . '\',\'' . $noa['work_related'] . '\',\'' . $noa['percentage'] . '\',\'' . $noa['spot_report_file'] . '\',\'' . $noa['incident_report_file'] . '\',\'' . $noa['police_report_file'] . '\')" data-bs-toggle="tooltip" title="View Reports"><i class="mdi mdi-teamviewer fs-4 text-warning"></i></a>';
+			// }else{
+			// 	$custom_actions .= '';
+			// }
 			
 			$custom_actions .= '<a href="Javascript:void(0)" onclick="cancelNoaRequest(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="Delete Request"><i class="mdi mdi-delete-circle fs-4 text-danger"></i></a>';
 
@@ -365,6 +369,7 @@ class Noa_controller extends CI_Controller {
 				$data = [
 					'work_related' => $charge_type,
 					'percentage' => $percentage,
+					'hospital_bill' => str_replace(array("₱", ","), "", $this->input->post('hospital_bill', TRUE)),
 					'spot_report_file' => isset($uploaded_files['spot-report']) ? $uploaded_files['spot-report']['file_name'] : '',
 					'incident_report_file' => isset($uploaded_files['incident-report']) ? $uploaded_files['incident-report']['file_name'] : '',
 					'police_report_file' => isset($uploaded_files['police-report']) ? $uploaded_files['police-report']['file_name'] : '',
@@ -392,6 +397,41 @@ class Noa_controller extends CI_Controller {
 
 			}
 		}
+	}
+
+	function submit_hospital_receipt(){
+		$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		// var_dump($loa_id);
+		$this->form_validation->set_rules('resubmit', 'Reason for Resubmit', 'trim|required|max_length[2000]');
+
+		if ($this->form_validation->run() == FALSE){
+			$response = [
+				//'token' => $token,
+				'status' => 'error',
+				'resubmit_error' => form_error('resubmit'),
+			];
+		}else{
+			$post_data = [
+				'resubmit'              => 'Resubmit',
+				'resubmit_reason' => $this->input->post('resubmit', TRUE),
+				'resubmit_on' 				=> date("Y-m-d"),
+				'resubmit_by' 				=> $this->session->userdata('fullname'),
+			];
+
+			$updated = $this->noa_model->db_update_loa_request1($noa_id, $post_data);
+			if (!$updated) {
+				$response = [
+					'status' => 'save-error', 
+					'message' => 'Re-submit Failed!'
+				];
+			}
+			$response = [
+				'status' => 'success', 
+				'message' => 'Re-submit Successfully!'
+			];
+		}
+		echo json_encode($response);
+		// var_dump($response);
 	}
 	//==================================================
 	//END

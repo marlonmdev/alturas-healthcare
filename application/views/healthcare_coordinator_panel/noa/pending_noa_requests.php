@@ -390,6 +390,57 @@
         },
       })
     });
+    $('#resubmitform').submit(function(event) {
+      const nextPage = `${baseUrl}healthcare-coordinator/noa/requests-list`;
+      const noaid = $('#noaid').val(); 
+      console.log('SUBMIT NOA ID:',noaid)
+      event.preventDefault();
+      $.ajax({
+        type: "post",
+        url:`${baseUrl}healthcare-coordinator/noa/requests-list/submit_hospital_receipt/${noaid}`,
+        data: $(this).serialize(),
+        dataType: "json",
+        success: function(response) {
+          const {
+            token,status,message,resubmit_error
+          } = response;
+          switch (status) {
+            case 'error':
+              // is-invalid class is a built in classname for errors in bootstrap
+              if (resubmit_error !== '') {
+                $('#resubmit-error').html(resubmit_error);
+                $('#resubmit').addClass('is-invalid');
+              }else{
+                $('#resubmit-error').html('');
+                $('#resubmit').removeClass('is-invalid');
+              }
+            break;
+            case 'save-error':
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
+            break;
+            case 'success':
+              swal({
+                title: 'Success',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'success'
+              });
+              $('#sendbackmodal').modal('hide');
+              setTimeout(function() {
+                window.location.href = nextPage;
+              }, 3200);
+            break;
+          }
+        }
+      });
+    });
   });
 
   const saveAsImage = () => {
@@ -404,19 +455,91 @@
     });
   }
 
-  const showTagChargeType = (noa_id) => {
+  const showTagChargeType = (noa_id,percentage,work_related,spot_report_file,police_report_file,incident_report_file) => {
+    console.log('Test:',noa_id);
+    console.log('Test:',percentage);
+    console.log('Test:',work_related);
+    console.log('Test:',spot_report_file);
+    console.log('Test:',police_report_file);
+    console.log('Test:',incident_report_file);
+
     $("#viewChargeTypeModal").modal("show");
     $("#viewChargeTypeModal").find("form")[0].reset();
     $('#noa-id').val(noa_id);
-    $('#charge-type').val('');
+
+    const translatedWorkRelated = (work_related === 'Yes') ? 'Work related' : 'Non-work related';
+    // Set the value and mark the appropriate option as selected
+    $('#charge-type').val(translatedWorkRelated);
+    if (work_related == 'Yes') {
+      $('#charge-type option[value="Yes"]').prop("selected", true);
+    }else if(work_related == 'No'){
+      $('#charge-type option[value="No"]').prop("selected", true);
+    }else{
+      $('#charge-type option[value=""]').prop("selected", true);
+    }
+
+    $('#percentage').val(percentage);
+
+    if (spot_report_file !=='') {
+      $('#uploaded-spot-report-link').show();
+      $('#uploaded-spot-report').html(spot_report_file);
+    } else {
+      $('#uploaded-spot-report-link').hide();
+    }
+    if (incident_report_file !=='') {
+      $('#uploaded-incident-report-link').show();
+      $('#uploaded-incident-report').html(incident_report_file);
+    } else {
+      $('#uploaded-incident-report-link').hide();
+    }
+    if (police_report_file !=='') {
+      $('#uploaded-police-report-link').show();
+      $('#uploaded-police-report').html(police_report_file);
+    } else {
+      $('#uploaded-police-report-link').hide();
+    }
   }
 
-  const ChargeTypenotAffiliated = (noa_id, hospital_receipt, hospital_bill) => {
-    console.log('Calling ChargeTypenotAffiliated with NOA ID:', noa_id);
+  const ChargeTypenotAffiliated = (noa_id, hospital_receipt, hospital_bill,percentage,work_related,spot_report_file,police_report_file,incident_report_file) => {
+    console.log('Percentage:', percentage);
+
     $("#charge_type_modal_not_affiliated").modal("show");
     $("#charge_type_modal_not_affiliated").find("form")[0].reset();
     $('#noa_id').val(noa_id);
-    // Format the hospital_bill value with the currency symbol
+
+    const translatedWorkRelated = (work_related === 'Yes') ? 'Work related' : 'Non-work related';
+    // Set the value and mark the appropriate option as selected
+    $('#charge-type').val(translatedWorkRelated);
+    if (work_related == 'Yes') {
+      $('#charge-type option[value="Yes"]').prop("selected", true);
+    }else if(work_related == 'No'){
+      $('#charge-type option[value="No"]').prop("selected", true);
+    }else{
+      $('#charge-type option[value=""]').prop("selected", true);
+    }
+
+    $('#percentage1').val(percentage);
+
+    if (spot_report_file !=='') {
+      $('#uploaded-spot-report-link1').show();
+      $('#uploaded-spot-report1').html(spot_report_file);
+    } else {
+      $('#uploaded-spot-report-link1').hide();
+    }
+    if (incident_report_file !=='') {
+      $('#uploaded-incident-report-link1').show();
+      $('#uploaded-incident-report1').html(incident_report_file);
+    } else {
+      $('#uploaded-incident-report-link1').hide();
+    }
+    if (police_report_file !=='') {
+      $('#uploaded-police-report-link1').show();
+      $('#uploaded-police-report1').html(police_report_file);
+    } else {
+      $('#uploaded-police-report-link1').hide();
+    }
+
+
     const formattedHospitalBill = new Intl.NumberFormat('en-PH', {
       style: 'currency',
       currency: 'PHP',
@@ -424,13 +547,9 @@
       maximumFractionDigits: 2,
     }).format(hospital_bill);
 
-    // Set the formatted hospital_bill value to the input field
     $('#hospital_bill').val(formattedHospitalBill);
 
-    // Set the hospital_receipt attribute to the image element
     $('#uploaded-hospital-receipt').attr("hospital_receipt", hospital_receipt);
-
-    // Set the src attribute of the image element
     $('#uploaded-hospital-receipt').attr("src", baseUrl + 'uploads/hospital_receipt/' + hospital_receipt);
   };
 
@@ -673,8 +792,73 @@
     }
   }
 
+  const viewSpotFile1 = () => {
+    const sport_report = document.querySelector('#uploaded-spot-report1');
+    const anchorText = sport_report.textContent;
+
+    $('#viewFileModal').modal('show');
+    $('#cancel').hide();
+    $('#file-name-r').html('SPOT REPORT');
+
+    let pdfFile = `${baseUrl}uploads/spot_reports/${anchorText}`;
+    let fileExists = checkFileExists(pdfFile);
+
+    if(fileExists){
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', pdfFile, true);
+      xhr.responseType = 'blob';
+
+      xhr.onload = function(e) {
+        if (this.status == 200) {
+          let blob = this.response;
+          let reader = new FileReader();
+
+          reader.onload = function(event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-file-viewer');
+            iframe.src = dataURL;
+          };
+          reader.readAsDataURL(blob);
+        }
+      };
+      xhr.send();
+    }
+  }
+
   const viewIncidentFile = () => {
     const sport_report = document.querySelector('#uploaded-incident-report');
+    const anchorText = sport_report.textContent;
+
+    $('#viewFileModal').modal('show');
+    $('#cancel').hide();
+    $('#file-name-r').html('INCIDENT REPORT');
+
+    let pdfFile = `${baseUrl}uploads/incident_reports/${anchorText}`;
+    let fileExists = checkFileExists(pdfFile);
+
+    if(fileExists){
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', pdfFile, true);
+      xhr.responseType = 'blob';
+
+      xhr.onload = function(e) {
+        if (this.status == 200) {
+          let blob = this.response;
+          let reader = new FileReader();
+          reader.onload = function(event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-file-viewer');
+            iframe.src = dataURL;
+          };
+          reader.readAsDataURL(blob);
+        }
+      };
+      xhr.send();
+    }
+  }
+
+  const viewIncidentFile1 = () => {
+    const sport_report = document.querySelector('#uploaded-incident-report1');
     const anchorText = sport_report.textContent;
 
     $('#viewFileModal').modal('show');
@@ -738,12 +922,62 @@
     }
   }
 
+  const viewPoliceFile1 = () => {
+    const sport_report = document.querySelector('#uploaded-police-report1');
+    const anchorText = sport_report.textContent;
+
+    $('#viewFileModal').modal('show');
+    $('#cancel').hide();
+    $('#file-name-r').html('POLICE REPORT');
+
+    let pdfFile = `${baseUrl}uploads/police_reports/${anchorText}`;
+    let fileExists = checkFileExists(pdfFile);
+
+    if(fileExists){
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', pdfFile, true);
+    xhr.responseType = 'blob';
+
+    xhr.onload = function(e) {
+        if (this.status == 200) {
+        let blob = this.response;
+        let reader = new FileReader();
+
+        reader.onload = function(event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-file-viewer');
+            iframe.src = dataURL;
+        };
+        reader.readAsDataURL(blob);
+        }
+    };
+    xhr.send();
+    }
+  }
+
   const checkFileExists = (fileUrl) => {
     let xhr = new XMLHttpRequest();
     xhr.open('HEAD', fileUrl, false);
     xhr.send();
     return xhr.status == "200" ? true: false;
   }
+
+  document.getElementById("send-back-button").addEventListener("click", function () {
+    const originalLoaId = $('#noa_id').val();
+    const formattedLoaId = originalLoaId;
+
+    console.log('NOA1:', originalLoaId);
+    console.log('NOA2:', formattedLoaId);
+
+    $("#charge_type_modal_not_affiliated").modal("hide");
+    $("#sendbackmodal").modal("show");
+    
+    $('#noaid').val(formattedLoaId);
+    $('#resubmit').val('');
+    $('#resubmit').removeClass('is-invalid');
+    $('#resubmit-error').html('');
+    $("#loaCancellationForm").attr("action", `${baseUrl}healthcare-coordinator/loa/requests-list/submit_hospital_receipt/${originalLoaId}`);
+  });
 </script>
 
 <style type="text/css">
@@ -806,5 +1040,18 @@
   }
   .cancelled{
     color:red
+  }
+
+  .blink-icon {
+    animation: blink-animation 1s infinite;
+  }
+
+  @keyframes blink-animation {
+    0%, 50%, 100% {
+      opacity: 1;
+    }
+    25%, 75% {
+      opacity: 0;
+    }
   }
 </style>

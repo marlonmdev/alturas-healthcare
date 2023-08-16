@@ -33,6 +33,7 @@
 
           <div class="row">
             <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
+            <input type="hidden" name="loa-id" value="<?php echo $loa_id ?>">
 
             <div class="col-lg-4">
               <label>Patient Name : </label>
@@ -69,7 +70,6 @@
             <div class="col-lg-4">
               <label>LOA Number : </label>
               <input class="form-control" name="loa-no" value="<?php echo $loa_no ?>" readonly>
-              <input type="hidden" name="loa-id" value="<?php echo $loa_id ?>">
             </div>
 
              <div class="col-lg-4">

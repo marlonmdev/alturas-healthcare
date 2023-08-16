@@ -531,7 +531,4 @@ class Billing_model extends CI_Model {
     
         return $total_count;
         }
-        public function get_attending_doctors($billing_id,$emp_id){
-            return $this->db->get_where('attending_doctors',['billing_id'=>$billing_id,'emp_id'=>$emp_id])->result_array();
-        }
 }

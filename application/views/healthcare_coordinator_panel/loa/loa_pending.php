@@ -1042,4 +1042,17 @@
   .cancelled{
     color:red
   }
+
+  .blink-icon {
+    animation: blink-animation 1s infinite;
+  }
+
+  @keyframes blink-animation {
+    0%, 50%, 100% {
+      opacity: 1;
+    }
+    25%, 75% {
+      opacity: 0;
+    }
+  }
 </style>

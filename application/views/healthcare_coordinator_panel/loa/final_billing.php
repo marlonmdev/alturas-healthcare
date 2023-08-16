@@ -101,7 +101,6 @@
           <div class="offset-10 pt-2 pb-4">
             <button class="btn btn-info fw-bold fs-12 btn-lg" type="submit" id="proceed-btn" disabled><i class="mdi mdi-send"></i> Proceed</button>
           </div>
-
           
         </form>
       </div>

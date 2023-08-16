@@ -1105,7 +1105,12 @@ $route['super-admin/database-backup'] ='super_admin/backup_controller/database_b
 
 	//end
 
+	//LETTER OF AUTHORIZATION
+		$route['healthcare-coordinator/noa/requests-list/submit_hospital_receipt/(:any)'] = 'healthcare_coordinator/noa_controller/submit_hospital_receipt';
+	//END
+
 	$route['healthcare-coordinator/noa/med_services/(:any)'] = 'healthcare_coordinator/noa_controller/get_hp_services';
+
 //=============================================================================================
 //END
 //=============================================================================================

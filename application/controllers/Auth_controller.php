@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Auth_controller extends CI_Controller {
 
-	function __construct() {
+	public function __construct() {
 		parent::__construct();
 		$this->load->model('auth_model');
 	}
@@ -17,11 +17,11 @@ class Auth_controller extends CI_Controller {
 		return password_verify($plain_text_str, $hashed_string);
 	}
 
-	function index() {
+	public function index() {
 		$this->load->view('pages/index'); 
 	}
 
-	function page_not_found() {
+	public function page_not_found() {
 		$this->load->view('pages/page_not_found');
 	}
 
@@ -29,7 +29,7 @@ class Auth_controller extends CI_Controller {
 	 * It checks if the username and password are valid, and if they are, it returns a JSON response with
 	 * the user's information
 	 */
-	function check_login() {
+	public function check_login() {
 		$token = $this->security->get_csrf_hash();
 		$username = strip_tags(trim($this->input->post('username')));
 		$password = strip_tags(trim($this->input->post('password')));
@@ -38,19 +38,19 @@ class Auth_controller extends CI_Controller {
 		$this->form_validation->set_rules('username', 'Username', 'trim|required');
 		$this->form_validation->set_rules('password', 'Password', 'trim|required');
 		if ($this->form_validation->run() == FALSE) {
-			$response = ['status' => 'error', 'message' => validation_errors(),  'username' => $username, 'password' =>  $password];
+			$response = array('status' => 'error', 'message' => validation_errors(),  'username' => $username, 'password' =>  $password);
 		} else {
 			$result = $this->auth_model->get_user_info($username);
 			if (!$result) {
-				$response = ['status' => 'error', 'message' => 'Incorrect Username or Password',  'username' => $username, 'password' => $password];
+				$response = array('status' => 'error', 'message' => 'Incorrect Username or Password',  'username' => $username, 'password' => $password);
 			} else if ($result['status'] === 'Blocked') {
-				$response = ['status' => 'error', 'message' => 'User Account Deactivated',  'username' => $username, 'password' => $password];
+				$response = array('status' => 'error', 'message' => 'User Account Deactivated',  'username' => $username, 'password' => $password);
 			} else {
 				$verified = $this->_verify_hash($password, $result['password']);
 				if (!$verified) {
-					$response = ['status' => 'error', 'message' => 'Incorrect Username or Password', 'username' => $username, 'password' => $password];
+					$response = array('status' => 'error', 'message' => 'Incorrect Username or Password', 'username' => $username, 'password' => $password);
 				} else {
-					$response = [
+					$response = array(
 						'status' => 'success',
 						'token' => $token,
 						'user_id' => $result['user_id'], 
@@ -63,7 +63,7 @@ class Auth_controller extends CI_Controller {
 						'next_route' => 'redirect-to-dashboard', 
 						'next_page' => $result['user_role'] . '/dashboard',
 						'username' => $result['username']
-					];
+					);
 					$this->session->set_userdata('username', $result['username']);
 				}
 			}
@@ -75,9 +75,9 @@ class Auth_controller extends CI_Controller {
 	/**
 	 * It takes the user's information from the login form and stores it in the session
 	 */
-	function redirect_to_dashboard() {
+	public function redirect_to_dashboard() {
 		$user_id = $this->input->post('user_id');
-		$user_info = [
+		$user_info = array(
 			'user_id' => $user_id,
 			'emp_id' => $this->input->post('emp_id'),
 			'fullname' => $this->input->post('fullname'),
@@ -86,26 +86,26 @@ class Auth_controller extends CI_Controller {
 			'doctor_id' => $this->input->post('doctor_id'),
 			'logged_in' => $this->input->post('logged_in'),
 			'token' => $this->input->post('token'),
-		];
+		);
 		$online = $this->auth_model->set_online($user_id);
 		if (!$online) {
-			$response = ['status' => 'save-error', 'message' => 'Unable to Log You In...Please Try Again!'];
+			$response = array('status' => 'save-error', 'message' => 'Unable to Log You In...Please Try Again!');
 		}
 		$this->session->set_userdata($user_info);
-		$response = ['status' => 'success', 'message' => 'Logging You In...'];
+		$response = array('status' => 'success', 'message' => 'Logging You In...');
 		echo json_encode($response);
 	}
 
-	function logout() {
+	public function logout() {
 		$user_id = $this->session->userdata('user_id');
 		$this->auth_model->set_offline($user_id);
-		$array_items = ['id', 'user_id', 'emp_id', 'fullname', 'user_role', 'dsg_hcare_prov', 'doctor_id', 'logged_in', 'token'];
+		$array_items = array('id', 'user_id', 'emp_id', 'fullname', 'user_role', 'dsg_hcare_prov', 'doctor_id', 'logged_in', 'token');
 		$this->session->unset_userdata($array_items);
 		redirect('/');
 	}
 
 	//for checking if the the user reads the terms and conditions of the health care system
-	function read_member_tnc() {
+	public function read_member_tnc() {
 		$username = $this->session->userdata('username');
 		$csrf_hash = $this->security->get_csrf_hash();
 	
@@ -116,51 +116,51 @@ class Auth_controller extends CI_Controller {
 			$read_tnc = $res['read_tnc'];
 	
 			if ($user_role == "member" && $read_tnc == 0) {
-				$response = [
+				$response = array(
 					'success' => true,
 					'message' => 'Terms and Conditions not yet read',
 					'modal_display' => true,
 					'csrf_hash' => $csrf_hash
-				];
+				);
 			} else {
-				$response = [
+				$response = array(
 					'success' => true,
 					'message' => 'Terms and Conditions already read',
 					'modal_display' => false,
 					'csrf_hash' => $csrf_hash
-				];
+				);
 			}
 		} else { // if failed
-			$response = [
+			$response = array(
 				'success' => false,
 				'message' => 'Failed to read terms and conditions',
 				'modal_display' => false,
 				'csrf_hash' => $csrf_hash
-			];
+			);
 		}
 	
 		header('Content-Type:application/json');
 		echo json_encode($response);
 	}
 
-	function set_member_tnc() {
+	public function set_member_tnc() {
         $username = $this->session->userdata('username');
         // $csrf_hash = $this->security->get_csrf_hash();
 
         $res = $this->auth_model->set_read_tnc($username); // call the model function
 
         if ($res) { // if success
-            $response = [
+            $response = array(
                 'success' => TRUE,
                 'message' => 'Terms and Conditions updated',
 				// 'csrf_hash' => $csrf_hash
-			];
+            );
         } else { // if failed
-            $response = [
+            $response = array(
                 'success' => FALSE,
                 'message' => 'Failed to update terms and conditions',
 				// 'csrf_hash' => $csrf_hash
-			];
+            );
         }
 
         header('Content-Type:application/json');

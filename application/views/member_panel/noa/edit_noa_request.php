@@ -85,7 +85,7 @@
                   </div>
                   <div class="col-lg-4 col-sm-12 mb-2" id="hospital-bill-wrapper" >
                   <label class="colored-label"><i class="bx bx-health icon-red"></i>Total Bill</label>
-                  <input type="text" class="form-control" name="hospital-bill" id="hospital-bill" placeholder="Enter Hospital Bill" style="background-color:#ffff" autocomplete="off" >
+                  <input type="text" class="form-control" name="hospital-bill" id="hospital-bill" value=<?=number_format($row['hospital_bill'],2)?> placeholder="Enter Hospital Bill" style="background-color:#ffff" autocomplete="off" >
                   <em id="hospital-bill-error" class="text-danger"></em>
                 </div>
               </div>
@@ -160,8 +160,10 @@
   const tag_input =document.getElementById('noa-med-services');
   let is_accredited = false;
   let is_hr_has_data = true;
+  const old_file = '<?= $row['hospital_receipt'] ?>';
   $(document).ready(function() {
     // console.log('noa id',row.tbl_1_id);
+    console.log('hospital_receipt',old_file);
     const tagify = new Tagify(tag_input);
     tagify.addTags(old_services);
     number_validator();
@@ -209,7 +211,7 @@
       enableProvider();
       // $('#hospital-name').val(row.hospital_id);
       $('#med-hr-wrapper').prop('hidden',false);
-      $('#hospital-bill').val(row.hospital_bill);
+      //$('#hospital-bill').val(row.hospital_bill);
       // get_services(services,row.med_services);
     }else{
       $('#healthcare-provider-category').val(1);

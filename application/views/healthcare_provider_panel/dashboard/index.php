@@ -236,7 +236,7 @@
                 }else{
                   img_url = `${base_url}uploads/profile_pics/${res.photo}`;
                 }
-
+                // console.log('res.mbr_rmg_bal',res.mbr_rmg_bal);
                 $("#mbr-photo").attr("src", img_url);
                 $("#bus-unit").html(res.business_unit);
                 $("#dept-name").html(res.dept_name);
@@ -246,7 +246,7 @@
                 $("#pos-level").html(res.pos_level);
                 $("#hcard-no").html(res.hcard_no);
                 $("#mbr-mbl").html(res.mbr_mbl);
-                $("#mbr-rmg-bal").html(res.mbr_rmg_bal);
+                $("#mbr-rmg-bal").html(res.mbr_rm_mbl);
                 $("#mbr-fullname").html(res.fullname);
                 $("#home-addr").html(res.home_address);
                 $("#city-addr").html(res.city_address);
@@ -494,7 +494,7 @@
                     $('#loa_details_2').append(`<h6>EXPIRATION DATE: <strong><span class="text-primary">${expiration}</span></strong></h6>`); 
                     if(rx_file.length){$("#p-documents").show();}
                 break;
-                case 'Billed' || 'Payment' || 'Payable':
+                case 'Billed': case 'Payment': case 'Payable':
                     $('#loa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
                     $('#loa_details_2').append(`<h6>APPROVED DATE: <strong><span class="text-primary">${approved_on}</span></strong></h6>`); 
                     $('#loa_details_1').append(`<h6>APPROVED BY: <strong><span class="text-primary">${approved_by}</span></strong></h6>`); 
@@ -610,7 +610,7 @@
                     $('#noa_details_1').append(`<h6>APPROVED BY: <strong><span class="text-primary">${approved_by}</span></strong></h6>`); 
                     $('#noa_details_2').append(`<h6>EXPIRED DATE: <strong><span class="text-primary">${expiration}</span></strong></h6>`); 
                 break;
-                case 'Billed' || 'Payment' || 'Payable':
+                case 'Billed': case 'Payment': case 'Payable':
                     $('#noa_details_1').append(`<h6>REQUEST DATE: <strong><span class="text-primary">${request_date}</span></strong></h6>`); 
                     $('#noa_details_2').append(`<h6>APPROVED DATE: <strong><span class="text-primary">${approved_on}</span></strong></h6>`); 
                     $('#noa_details_1').append(`<h6>APPROVED BY: <strong><span class="text-primary">${approved_by}</span></strong></h6>`); 

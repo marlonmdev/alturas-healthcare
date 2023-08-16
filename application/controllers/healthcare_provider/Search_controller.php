@@ -33,11 +33,12 @@ class Search_controller extends CI_Controller {
             $member_mbl = empty($row['max_benefit_limit']) ? 'None' : '&#8369;' . number_format($row['max_benefit_limit'], 2);
             // Format Remaining Balance
             $member_rmg_bal = empty($row['remaining_balance']) ? 'None' : '&#8369;' . number_format($row['remaining_balance'], 2);
+            // $member_rmg_bal = empty($row['remaining_balance']) ? 'None' : '&#8369;' . number_format($row['remaining_balance'], 2);
 
             /* This is checking if the image file exists in the directory. */
             $file_path = './uploads/profile_pics/' . $row['photo'];
             // $data['member_photo_status'] = file_exists($file_path) ? 'Exist' : 'Not Found';
-            
+            // var_dump('rmbl',$member_rmg_bal);
             $response = [
                 'token' => $token,
                 'status' => 'success',

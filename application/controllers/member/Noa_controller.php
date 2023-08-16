@@ -229,7 +229,7 @@ class Noa_controller extends CI_Controller {
 			 else {
 				$upload_data = $this->upload->data();
 				$pdf_file = $upload_data['file_name'];
-
+				
 				$services = [];
 				if(!$is_accredited){
 					foreach($medical_services as $value){
@@ -261,7 +261,7 @@ class Noa_controller extends CI_Controller {
 							'admission_date' => $inputPost['admission-date'],
 							'chief_complaint' => strip_tags($inputPost['chief-complaint']),
 							'medical_services' => ($services!=="")?implode(';', $services):"", 
-							'hospital_receipt' => $pdf_file,
+							'hospital_receipt' =>	($pdf_file !="")?$pdf_file:$old_hr_file,
 							'hospital_bill' =>   $inputPost['hospital-bill'],
 							'is_manual' => 1,
 							'resubmit' => ($noa_info['resubmit'] == 'Resubmit')?'Done': null
@@ -275,14 +275,14 @@ class Noa_controller extends CI_Controller {
 				}else{
 					$response = ['status' => 'success', 'message' => 'NOA Request Updated Successfully'];
 				
-					if($old_hr_file !== ''){
-					$file_path = './uploads/hospital_receipt/' . $old_hr_file;
-					file_exists($file_path) ? unlink($file_path) : '';
-				}
-					
+					if($pdf_file !=""){
+						$file_path = './uploads/hospital_receipt/' . $old_hr_file;
+						file_exists($file_path) ? unlink($file_path) : '';
+					}
 				}
 				
 				}
+
 			}
 		}
 		echo json_encode($response);

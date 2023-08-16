@@ -1,4 +1,4 @@
-const base_url = $('#base_url').val();
+const base_url_js = $('#base_url').val();
 
 $(document).ready(function () {
 	  
@@ -22,7 +22,7 @@ $(document).ready(function () {
 		
 		  $.ajax({
 		  type: "post",
-			url: base_url+'company-doctor/overide/get-mgr-key-loa',
+			url: base_url_js+'company-doctor/overide/get-mgr-key-loa',
 			data: $(this).serialize(),
 			dataType: "json",
 			success: function(res) {
@@ -57,15 +57,15 @@ $(document).ready(function () {
 	
 			  } else {
 				// console.log('result',res);
-				// const baseUrl = `<?php echo base_url()?>`;
+				// const baseUrl = `<?php echo base_url_js()?>`;
 				$('#LOAMngKeyModal').modal('hide');
 				const type = document.querySelector('#req-type-key').value;
 				if(type == 'loa'){
-				  window.location.href = `${base_url}company-doctor/override/loa-request/${company_doctor}`;
+				  window.location.href = `${base_url_js}company-doctor/override/loa-request/${company_doctor}`;
 				  $('#req-type-key').val('');
 	
 				}else if(type == 'noa'){
-				  window.location.href = `${base_url}company-doctor/override/noa-request/${company_doctor}`;
+				  window.location.href = `${base_url_js}company-doctor/override/noa-request/${company_doctor}`;
 				  $('#req-type-key').val('');
 	
 				}

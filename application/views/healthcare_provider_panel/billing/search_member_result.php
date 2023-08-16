@@ -87,7 +87,7 @@
 
                                                                 <a href="<?php echo base_url(); ?>healthcare-provider/billing/bill-loa/upload-pdf/<?= $loa_id ?>" class="text-danger" data-bs-toggle="tooltip" title="Upload PDF Billing"><i class="mdi mdi-upload fs-2"></i></a>
 
-                                                                <a href="<?php echo base_url(); ?>healthcare-provider/billing/bill-loa/manual/<?= $loa_id ?>" class="text-info" data-bs-toggle="tooltip" title="Manual Billing"><i class="mdi mdi-keyboard-close fs-2"></i></a>
+                                                                <!-- <a href="<?php echo base_url(); ?>healthcare-provider/billing/bill-loa/manual/<?= $loa_id ?>" class="text-info" data-bs-toggle="tooltip" title="Manual Billing"><i class="mdi mdi-keyboard-close fs-2"></i></a> -->
                                                             </td>
                                                         </tr>
                                                     <?php } else if($loa['status'] == 'Billed') { ?>
@@ -165,7 +165,7 @@
 
                                                                 <a href="<?php echo base_url(); ?>healthcare-provider/billing/bill-noa/upload-pdf/<?= $noa_id ?>" class="text-danger" data-bs-toggle="tooltip" title="Upload PDF Billing"><i class="mdi mdi-upload fs-2"></i></a>
 
-                                                                <a href="<?php echo base_url(); ?>healthcare-provider/billing/bill-noa/manual/<?= $noa_id ?>" class="text-info" data-bs-toggle="tooltip" title="Manual Billing"><i class="mdi mdi-keyboard-close fs-2"></i></a>
+                                                                <!-- <a href="<?php echo base_url(); ?>healthcare-provider/billing/bill-noa/manual/<?= $noa_id ?>" class="text-info" data-bs-toggle="tooltip" title="Manual Billing"><i class="mdi mdi-keyboard-close fs-2"></i></a> -->
                                                             </td>
                                                         </tr>
                                                         <?php } else if($noa['status'] == 'Billed') { ?>

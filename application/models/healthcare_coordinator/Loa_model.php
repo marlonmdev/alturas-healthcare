@@ -1382,6 +1382,35 @@ function db_get_cost_types_by_hp_ID($hp_id) {
     return $this->db->update('billing');
   }
 
+  // function set_bill_for_matched1($hp_id, $start_date, $end_date, $bill_no) {
+  //   $loa_id = $this->db->select('loa_id')->get_where('billing',['bill_no'=>$bill_no])->row();
+  //   if($loa_id){
+  //     $is_emerg = $this->db->select('loa_request_type')->get_where('loa_requests',['loa_id'=>$loa_id->loa_id])->row();
+  //     if ($is_emerg == "Emergency"){
+  //       $this->db->set('done_matching', '1')
+  //             ->set('status', 'Payable')
+  //             ->set('bill_no', $bill_no)
+  //             ->where('status', 'Billed')
+  //             ->where('hp_id', $hp_id)
+  //             ->where('request_date >=', $start_date)
+  //             ->where('request_date <=', $end_date)
+  //             ->where('loa_id !=', '');
+  //     }else{
+  //       $this->db->set('done_matching', '1')
+  //             ->set('status', 'Payable')
+  //             ->set('bill_no', $bill_no)
+  //             ->where('status', 'Billed')
+  //             ->where('check_status', 'Processing')
+  //             ->where('hp_id', $hp_id)
+  //             ->where('request_date >=', $start_date)
+  //             ->where('request_date <=', $end_date)
+  //             ->where('loa_id !=', '');
+  //     }
+  //     return $this->db->update('billing');
+  //   }
+   
+  // }
+
   function update_billing_status1_Processing() {
     $this->db->set('status1', 'Processing')
             ->where('status', 'Billed')

@@ -432,113 +432,51 @@ class Noa_controller extends CI_Controller {
 				$previous_mbl =$noa_info['remaining_balance'];
 			}
 
-
 			if($noa_info['work_related'] == 'Yes'){
                
-				if($noa_info['percentage'] == '' && $noa_info['$percentage'] == "100"){
-                    if($previous_mbl <= 0){
+				if($noa_info['percentage'] == '' || $noa_info['percentage'] == '100'){
+
+                    if($previous_mbl == 0){
                         $company_charge = 0;
                         $personal_charge =  $net_bill;
                         $remaining_mbl =  0;
                     }else{
-                        $company_charge = $net_bill;
-                        $personal_charge = 0;
-                        if($net_bill >= $previous_mbl){
+                       
+                        if($net_bill > $previous_mbl){
+							$personal_charge = $net_bill-$previous_mbl;
+							$company_charge= $previous_mbl;
                             $remaining_mbl = 0;
-                        }else if($net_bill < $previous_mbl){
+                        }else if($net_bill <= $previous_mbl){
                             $remaining_mbl = $previous_mbl - $net_bill;
+							$company_charge = $net_bill;
+							$personal_charge = 0;
                         }
                     }
 					
-                    
-				}else if($noa_info['percentage'] != ''  && $noa_info['$percentage'] != "100"){
-					if($previous_mbl <= 0){
+				}else if($noa_info['percentage'] != '' && $noa_info['percentage'] != '100'){
+					if($previous_mbl == 0){
                         $company_charge = 0;
                         $personal_charge =  $net_bill;
                         $remaining_mbl =  0;
                     }else{
-                        if($net_bill <= $previous_mbl){
-                            $company_charge = $net_bill;
-                            $personal_charge = 0;
-                            $remaining_mbl = $previous_mbl - $net_bill;
-                        }else if($net_bill > $previous_mbl){
-                            $converted_percent = $percentage/100;
-                            $initial_company_charge = floatval($converted_percent) * $net_bill;
-                            $initial_personal_charge = $net_bill - floatval($initial_company_charge);
-                            
-                            if(floatval($initial_company_charge) <= $previous_mbl){
-                                $result = $previous_mbl - floatval($initial_company_charge);
-                                $int_personal = floatval($initial_personal_charge) - floatval($result);
-                                $personal_charge = $int_personal;
-                                $company_charge = $previous_mbl;
-                                $remaining_mbl = 0;
-                        
-                            }else if(floatval($initial_company_charge) > $previous_mbl){
-                                $personal_charge = $initial_personal_charge;
-                                $company_charge = $initial_company_charge;
-                                $remaining_mbl = 0;
-                            }
-                        }
-                    }
+                        $converted_percent = $percentage/100;
+                        $initial_company_charge = floatval($converted_percent) * $net_bill;
+                        $initial_personal_charge = $net_bill - floatval($initial_company_charge);
+
+                        if(floatval($initial_company_charge) < $previous_mbl){
+							$result = $previous_mbl - floatval($initial_company_charge);
+							$personal_charge = $initial_personal_charge;
+							$company_charge = $initial_company_charge;
+							$remaining_mbl = $result;
 					
+						}else if(floatval($initial_company_charge) >= $previous_mbl){
+							$personal_charge = $initial_personal_charge;
+							$company_charge = $previous_mbl;
+							$remaining_mbl = 0;
+						}
+                    }
 				}
 			}
-			// else if($noa_info['work_related'] == 'No'){
-			// 	if($noa_info['percentage'] == ''){
-            //         if($previous_mbl <= 0){
-            //             $company_charge = 0;
-            //             $personal_charge =  $net_bill;
-            //             $remaining_mbl =  0;
-            //         }else{
-            //             if($net_bill <= $previous_mbl){
-            //                 $company_charge = $net_bill;
-            //                 $personal_charge = 0;
-            //                 $remaining_mbl = $previous_mbl - $company_charge;
-            //             }else if($net_bill > $previous_mbl){
-            //                 $company_charge = $previous_mbl;
-            //                 $personal_charge = $net_bill - $previous_mbl;
-            //                 $remaining_mbl = 0;
-            //             }
-            //         }
-					
-                   
-			// 	}else if($noa_info['percentage'] != ''){
-            //         if($previous_mbl <= 0){
-            //             $company_charge = 0;
-            //             $personal_charge =  $net_bill;
-            //             $remaining_mbl =  0;
-            //         }else{
-            //             if($net_bill <= $previous_mbl){
-            //                 $company_charge = $net_bill;
-            //                 $personal_charge = 0;
-            //                 $remaining_mbl = $previous_mbl - floatval($net_bill);
-            //             }else if($net_bill > $previous_mbl){
-            //                 $converted_percent = $percentage/100;
-            //                 $initial_personal_charge = $converted_percent * $net_bill;
-            //                 $initial_company_charge = $net_bill - floatval($initial_personal_charge);
-                            
-            //                 if($initial_company_charge <= $previous_mbl){
-            //                     $result = $previous_mbl - $initial_company_charge;
-            //                     $initial_personal = $initial_personal_charge - $result;
-            //                     if($initial_personal < 0 ){
-            //                         $personal_charge = 0;
-            //                         $company_charge = $initial_company_charge + $initial_personal_charge;
-            //                         $remaining_mbl = $previous_mbl - floatval($company_charge);
-            //                     }else if($initial_personal >= 0){
-            //                         $personal_charge = $initial_personal;
-            //                         $company_charge = $previous_mbl;
-            //                         $remaining_mbl = 0;
-            //                     }
-            //                 }else if($initial_company_charge > $previous_mbl){
-            //                     $personal_charge = $initial_personal_charge;
-            //                     $company_charge = $initial_company_charge;
-            //                     $remaining_mbl = 0;
-            //                 }
-                            
-            //             }
-            //         }
-			// 	}
-			// }
 		
             
             $data = [

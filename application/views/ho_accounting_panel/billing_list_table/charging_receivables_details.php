@@ -87,6 +87,7 @@
     </div> 
     <?php include 'view_charge_details.php'; ?>
 </div>
+
 <script>
     const baseUrl = '<?php echo base_url(); ?>';
     $(document).ready(function(){
@@ -196,24 +197,25 @@
             }
         });
     }
-
-
+    
     const goback = () =>{
         window.history.back();
     }
-
-    const printPaidBuCharge = (charging_no) => {
-        var base_url = `${baseUrl}`;
-        window.open(base_url + "printBUCharge/pdfPaidCharges/" + btoa(charging_no), '_blank');
-    }
+    
+    let tabWindow = null;
 
     const printBUCharging = () => {
+        var base_url = `${baseUrl}`;
         const charging_no = document.querySelector('#charging-no').value;
         const b_units = document.querySelector('#business-unit').value;
         const type = document.querySelector('#type-data').value;
 
-        var base_url = `${baseUrl}`;
-        window.open(base_url + "printBUCharge/pdfReceivables-Charging/" + btoa(b_units) + "/" + btoa(charging_no) + "/" + btoa(type), '_blank');
+        if (!tabWindow || tabWindow.closed) {
+            tabWindow = window.open(base_url + "pdf-viewer/" + btoa(b_units) + "/" + btoa(charging_no) + "/" + btoa(type),'_blank', '_blank');
+        } else {
+            tabWindow.location.href = base_url + "pdf-viewer/" + btoa(b_units) + "/" + btoa(charging_no) + "/" + btoa(type),'_blank';
+            tabWindow.focus(); 
+        }
     }
 
     let pdfinput = "";

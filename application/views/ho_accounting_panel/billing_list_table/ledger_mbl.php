@@ -122,18 +122,12 @@
       deferRender: true,  // Enable deferred rendering
       info: false,
       paging: false,
-      filter: false,
       lengthChange: false,
       responsive: true,
       fixedHeader: true,
     });
-<<<<<<< HEAD
-
-      MblLedgerTable = $('#mbltablemodal').DataTable({
-=======
         
     MblLedgerTable = $('#mbltablemodal').DataTable({
->>>>>>> babc8e5cace1eaa5107a4902abac8e2761fd7098
         processing: true, //Feature control the processing indicator.
         serverSide: true, //Feature control DataTables' server-side processing mode.
         order: [], //Initial no order.
@@ -183,11 +177,14 @@
       $('#mbl-fullname').html(fullname);
       MblLedgerTable.draw();
       if(filteredYear != ''){
-        $('#year-div').show();
+        $('#mbl-year').html(filteredYear);
       }else{
-        $('#year-div').hide();
+        let yearElement = $('#mbl-year');
+        let currentDate = new Date();
+        let currentYear = currentDate.getFullYear();
+        yearElement.html(currentYear);
+
       }
-      $('#mbl-year').html(filteredYear);
     }
 
     const printMBLledger = () => {

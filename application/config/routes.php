@@ -397,7 +397,7 @@ $route['head-office-accounting/billing-list/billed/view/(:any)'] = 'ho_accountin
 $route['head-office-accounting/billing-list/noa/view/(:any)'] = 'ho_accounting/main_controller/view_billed_details';
 $route['head-office-accounting/billing-list/billed/hp_name'] = 'ho_accounting/main_controller/get_hp_name';
 $route['head-office-accounting/billing-list/billed/sum'] = 'ho_accounting/main_controller/get_company_charge_total';
-$route['head-office-accounting/billing-list/billed/payment-details'] = 'ho_accounting/main_controller/add_payment_details';
+$route['head-office-accounting/billing-list/billed/payment-details/(:any)'] = 'ho_accounting/main_controller/add_payment_details';
 $route['head-office-accounting/billing-list/billed/fetch-bank-number'] = 'ho_accounting/main_controller/fetch_bank_numbers';
 //Closed
 $route['head-office-accounting/billing-list/closed/fetch'] = 'ho_accounting/main_controller/fetch_closed';
@@ -451,7 +451,9 @@ $route['head-office-accounting/bill/other-hosp/for-payment/fetch'] = 'ho_account
 // $route['head-office-accounting/billing-list/other-hosp/payment-details'] = 'ho_accounting/main_controller/add_payment_details_other_hosp';
 $route['head-office-accounting/bill/other-hosp/paid-bill/fetch'] = 'ho_accounting/main_controller/fetch_paid_other_hosp';
 $route['head-office-accounting/ledger/mbl-details/fetch'] = 'ho_accounting/main_controller/fetch_mbl_details_ledger';
+$route['head-office-accounting/charging/count-printing'] = 'ho_accounting/main_controller/fetch_charging_printing_count';
 
+$route['pdf-viewer/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/view_pdf_viewer/$1/$2/$3';
 $route['print/pdfbilling/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_bills/$1/$2/$3';
 $route['printforpayment/pdfbilling/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_forPayment/$1/$2/$3/$4/$5';
 $route['printpayment/pdfbilling/(:any)/(:any)/(:any)'] = 'ho_accounting/main_controller/print_payment/$1/$2/$3';
@@ -1135,6 +1137,7 @@ $route['head-office-iad/biling/audit/fetch'] = 'ho_iad/transaction_controller/fe
 $route['head-office-iad/biling/submit-audited'] = 'ho_iad/transaction_controller/submit_audited';
 $route['head-office-iad/biling/audited/fetch'] = 'ho_iad/transaction_controller/fetch_audited_bill';
 $route['head-office-iad/biling/paid/fetch'] = 'ho_iad/transaction_controller/fetch_paid_bill';
+$route['head-office-iad/biling/paid/fetches'] = 'ho_iad/transaction_controller/fetch_paid_bills';
 $route['head-office-iad/biling/loa-noa-details/fetch/(:any)'] = 'ho_iad/transaction_controller/fetch_loa_noa_details';
 $route['head-office-iad/charging/business-units/fetch'] = 'ho_iad/transaction_controller/fetch_bu_charges';
 $route['head-office-iad/charging/receivables/fetch'] = 'ho_iad/transaction_controller/fetch_bu_receivables';
@@ -1146,6 +1149,7 @@ $route['head-office-iad/billing-list/payment-history/fetch'] = 'ho_iad/transacti
 $route['head-office-iad/billing-list/view-payment-details/(:any)'] = 'ho_iad/transaction_controller/fetch_details_payment';
 $route['head-office-iad/ledger/fetch'] = 'ho_iad/transaction_controller/fetch_paid_bill_ledger';
 $route['head-office-iad/ledger/mbl/fetch'] = 'ho_iad/transaction_controller/fetch_mbl_ledger';
+$route['head-office-iad/ledger/mbl-details/fetch'] = 'ho_iad/transaction_controller/fetch_mbl_ledger_details';
 
 $route['ho-iad-printledger/ledgerpaid/(:any)/(:any)/(:any)'] = 'ho_iad/transaction_controller/ho_print_paid_ledger/$1/$2/$3';
 $route['ho-iad-printledger/ledgermbl/(:any)/(:any)'] = 'ho_iad/transaction_controller/print_mbl_ledger/$1/$2';

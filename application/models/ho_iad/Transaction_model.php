@@ -558,6 +558,8 @@ class Transaction_model extends CI_Model {
         return $this->db->get()->result_array();
     }
 
+	var $column_paid_bill_search = ['tbl_5.health_card_no','tbl_5.first_name', 'tbl_5.middle_name', 'tbl_5.last_name', 'tbl_5.suffix', 'CONCAT(tbl_5.first_name, " ",tbl_5.last_name)',   'CONCAT(tbl_5.first_name, " ",tbl_5.last_name, " ", tbl_5.suffix)', 'CONCAT(tbl_5.first_name, " ",tbl_5.middle_name, " ",tbl_5.last_name)', 'CONCAT(tbl_5.first_name, " ",tbl_5.middle_name, " ",tbl_5.last_name, " ", tbl_5.suffix)'];
+
 	private function fetchLedgerQuery()
     {
         $this->db->from('billing as tbl_1')
@@ -582,6 +584,22 @@ class Transaction_model extends CI_Model {
             $bu_filter = $this->input->post('bu_filter');
             $this->db->where("tbl_5.business_unit", $bu_filter);
         }
+
+		$i = 0;
+	   
+		foreach ($this->column_paid_bill_search as $item) {
+			if ($_POST['search']['value']) {
+				if ($i === 0) {
+					$this->db->group_start();
+					$this->db->like($item, $_POST['search']['value']);
+				}else {
+					$this->db->or_like($item, $_POST['search']['value']);
+				}
+				if (count($this->column_paid_bill_search) - 1 == $i) //last loop
+					$this->db->group_end(); //close bracket
+			}
+			$i++;
+		}
     }      
     
     function get_debit_credit_yearly()
@@ -613,6 +631,7 @@ class Transaction_model extends CI_Model {
         return $this->db->get()->result_array();
     }
 
+	var $column_mbl_search = ['tbl_1.health_card_no','tbl_1.first_name', 'tbl_1.middle_name', 'tbl_1.last_name', 'tbl_1.suffix', 'CONCAT(tbl_1.first_name, " ",tbl_1.last_name)',   'CONCAT(tbl_1.first_name, " ",tbl_1.last_name, " ", tbl_1.suffix)', 'CONCAT(tbl_1.first_name, " ",tbl_1.middle_name, " ",tbl_1.last_name)', 'CONCAT(tbl_1.first_name, " ",tbl_1.middle_name, " ",tbl_1.last_name, " ", tbl_1.suffix)'];
 	private function fetch_mbl_ledger() {
         $this->db->from('members as tbl_1')
             ->join('max_benefit_limits as tbl_6', 'tbl_1.emp_id = tbl_6.emp_id', 'left')
@@ -629,6 +648,23 @@ class Transaction_model extends CI_Model {
             $bu_filter = $this->input->post('bu_filter');
             $this->db->where("tbl_1.business_unit", $bu_filter);
         }
+
+		$i = 0;
+	   
+		foreach ($this->column_mbl_search as $item) {
+			if ($_POST['search']['value']) {
+				if ($i === 0) {
+					$this->db->group_start();
+					$this->db->like($item, $_POST['search']['value']);
+				}else {
+					$this->db->or_like($item, $_POST['search']['value']);
+				}
+				if (count($this->column_mbl_search) - 1 == $i) //last loop
+					$this->db->group_end(); //close bracket
+			}
+			$i++;
+		}
+	   
     }
 
     function get_ledger_mbl() {
@@ -656,6 +692,23 @@ class Transaction_model extends CI_Model {
             $bu_filter = $this->input->post('bu_filter');
             $this->db->where("tbl_1.business_unit", $bu_filter);
         }
+
+		$i = 0;
+	   
+		foreach ($this->column_mbl_search as $item) {
+			if ($_POST['search']['value']) {
+				if ($i === 0) {
+					$this->db->group_start();
+					$this->db->like($item, $_POST['search']['value']);
+				}else {
+					$this->db->or_like($item, $_POST['search']['value']);
+				}
+				if (count($this->column_mbl_search) - 1 == $i) //last loop
+					$this->db->group_end(); //close bracket
+			}
+			$i++;
+		}
+	   
     }
 
     function get_ledger_history_mbl() {
@@ -701,6 +754,56 @@ class Transaction_model extends CI_Model {
         }
         return $this->db->get()->result_array();
        
+    }
+
+	private function fetch_current_mbl_ledger() {
+        $filteredYear = $this->input->post('filteredYear');
+		$emp_id = $this->input->post('emp_id');
+      
+        $this->db->from('billing as tbl_1')
+            ->join('max_benefit_limits as tbl_6', 'tbl_1.emp_id = tbl_6.emp_id')
+            ->join('members as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id')
+            ->where('tbl_1.company_charge !=', 0)
+            ->where('tbl_1.emp_id', $emp_id)
+            ->where('YEAR(tbl_1.billed_on)', date('Y'))
+            ->order_by('tbl_1.billing_id', 'asc');
+            
+    }
+
+    function get_current_ledger_mbl() {
+        $this->fetch_current_mbl_ledger(); // Call the function to set up the query conditions
+        if (!empty($_POST['length']) && $_POST['length'] != -1) {
+            $this->db->limit($_POST['length'], $_POST['start']);
+        }
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+	private function fetch_history_mbl_details() {
+        $filteredYear = $this->input->post('filteredYear');
+		$emp_id = $this->input->post('emp_id');
+
+        $this->db->from('members as tbl_1')
+            ->join('mbl_history as tbl_6', 'tbl_1.emp_id = tbl_6.emp_id', 'left')
+            ->join('billing as tbl_2', 'tbl_1.emp_id = tbl_2.emp_id','left')
+            ->where('tbl_2.company_charge !=', 0)
+            ->where('tbl_1.emp_id', $emp_id)
+            ->where('YEAR(tbl_2.billed_on) !=', date('Y'))
+            ->order_by('tbl_2.billing_id', 'asc');
+    
+        if ($filteredYear) {
+            $this->db->where("YEAR(tbl_6.start_date)", $filteredYear);
+        }
+    }
+
+    function get_history_mbl_details() {
+        $this->fetch_history_mbl_details(); // Call the function to set up the query conditions
+        if (!empty($_POST['length']) && $_POST['length'] != -1) {
+            $this->db->limit($_POST['length'], $_POST['start']);
+        }
+        $query = $this->db->get();
+        return $query->result_array();
+            
     }
 
     

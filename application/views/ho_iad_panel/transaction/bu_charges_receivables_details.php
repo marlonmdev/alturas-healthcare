@@ -57,6 +57,7 @@
     </div> 
     <?php include 'view_charge_details.php'; ?>
 </div>
+
 <script>
     const baseUrl = '<?php echo base_url(); ?>';
     $(document).ready(function(){

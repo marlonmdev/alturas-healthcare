@@ -2535,7 +2535,8 @@ class Main_controller extends CI_Controller {
 		$charging_no = 'CHG-' . date('Ymdis');
 		$billing = $this->List_model->get_billing_id_by_bu();
 		$billing_ids = array_column($billing, 'billing_id');
-		$tagged = $this->List_model->tag_bu_charges($charging_no, $billing_ids);
+		$user = $this->session->userdata('emp_id');
+		$tagged = $this->List_model->tag_bu_charges($charging_no, $billing_ids, $user);
 		if(!$tagged){
 			echo json_encode([
 				'token' => $token,
@@ -4842,14 +4843,14 @@ class Main_controller extends CI_Controller {
 			$pdfname = 'PaidCharge_'.$business_unit .'_'.date('YmdHi');
 		}
 
+		$count = $this->List_model->get_max_copy_number($charge_no);
+		$last_print = floatval($count['printing_num_copy']) + 1;
+
 		$title = '<img src="'.base_url().'assets/images/HC_logo.png" style="width:110px;height:70px">';
 
-		$title .= '<style>h3 { margin: 0; padding: 0; line-height: .5; }</style>
-					'.$header.'
-					<h3>'.$business_unit.'</h3>
-					<h3>'.$charge_no.'</h3><br>';
+		
 
-		$dateGenerate = '<small>Transaction Date: ' . date('m/d/Y h:i A').'</small> <small>( Reprinted Copy )</small><br>';
+		$dateGenerate = '<small>Transaction Date: ' . date('m/d/Y h:i A').'</small> <small>( Reprinted Copy '.$last_print.')</small><br>';
 		$PDFdata = '<table style="border:.5px solid #000; padding:3px" class="table table-bordered">';
 		$PDFdata .= ' <thead>
 						<tr class="border-secondary">
@@ -4870,6 +4871,13 @@ class Main_controller extends CI_Controller {
 		$healthCardTotals = []; // Store totals for each health_card_no
 		
 		foreach ($charging as $charge) {
+
+			if($charge['bu_start_date'] != '0000-00-00' || $charge['bu_end_date'] != '0000-00-00'){
+				$date = '<h3>From '.date('F d, Y',strtotime($charge['bu_start_date'])).' to '.date('F d, Y',strtotime($charge['bu_end_date'])).'</h3>';
+			}else{
+				$date = '';
+			}
+			
 			if ($charge['company_charge'] && $charge['cash_advance'] != '') {
 
 				$currentHealthCardNo = $charge['health_card_no'];
@@ -4907,6 +4915,13 @@ class Main_controller extends CI_Controller {
 				$totalPayableSum += $total_payable;
 			}
 		}
+
+		$title .= '<style>h3 { margin: 0; padding: 0; line-height: .5; }</style>
+					'.$header.'
+					'.$date.'
+					<h3>'.$business_unit.'</h3>
+					<h3>'.$charge_no.'</h3><br>';
+
 
 		$PDFdata .= '<tfoot>
 					<tr>
@@ -5010,9 +5025,16 @@ class Main_controller extends CI_Controller {
 		$healthCardTotals = []; // Store totals for each health_card_no
 		
 		foreach ($charging as $charge) {
+			if($charge['bu_start_date'] != '0000-00-00' || $charge['bu_end_date'] != '0000-00-00'){
+				$date = '<h3>From '.date('F d, Y',strtotime($charge['bu_start_date'])).' to '.date('F d, Y',strtotime($charge['bu_end_date'])).'</h3>';
+			}else{
+				$date = '';
+			}
+
 			$title = '<img src="'.base_url().'assets/images/HC_logo.png" style="width:110px;height:70px">';
 			$title .= '<style>h3 { margin: 0; padding: 0; line-height: .5; }</style>
 					<h3>Paid Business Unit Charging Summary</h3>
+					'.$date.'
 					<h3>'.$charge['business_unit'].'</h3>
 					<h3>'.$charging_no.'</h3><br>';
 			$business_unit = $charge['business_unit'];
@@ -5156,8 +5178,12 @@ class Main_controller extends CI_Controller {
 		$formattedStart_date = date('F d, Y', strtotime($start_date));
 		$formattedEnd_date = date('F d, Y', strtotime($end_date));
 
-		$date = '<h3>From '.$formattedStart_date.' to '.$formattedEnd_date.'</h3>';
-
+		if($start_dates != 'none' || $end_dates != 'none'){
+			$date = '<h3>From '.$formattedStart_date.' to '.$formattedEnd_date.'</h3>';
+		}else{
+			$date = '';
+		}
+		
 		$charging = $this->List_model->get_bu_charging($charging_no);
 
 		$title = '<img src="'.base_url().'assets/images/HC_logo.png" style="width:110px;height:70px">';
@@ -5348,100 +5374,6 @@ class Main_controller extends CI_Controller {
 	
 		echo json_encode($output);
 	}
-	
-	// function fetch_ledger_mbl() {
-	// 	$filteredYear = $this->input->post('year', TRUE);
-	// 	$currentYear = date('Y');
-	
-	// 	if ($filteredYear == $currentYear) {
-	// 		$mbl = $this->List_model->get_ledger_mbl();
-	// 	} else if ($filteredYear == '') {
-	// 		$mbl = $this->List_model->get_ledger_mbl();
-	// 	} else if ($filteredYear != $currentYear) {
-	// 		$mbl = $this->List_model->get_ledger_history_mbl();
-	// 	}
-	
-	// 	$data = [];
-	// 	$fullnameData = [];
-	
-	// 	foreach ($mbl as $max) {
-	// 		$healcardno = $max['health_card_no'];
-	// 		$fullname = $max['first_name'] . ' ' . $max['middle_name'] . ' ' . $max['last_name'] . ' ' . $max['suffix'];
-	// 		$business_unit = $max['business_unit'];
-	
-	// 		$company_charge = floatval($max['company_charge']);
-	// 		$mbl = floatval($max['max_benefit_limit']);
-	
-	// 		$key = $healcardno . '_' . $fullname . '_' . $business_unit;
-	
-	// 		if (!isset($fullnameData[$key])) {
-	// 			$fullnameData[$key] = [
-	// 				'date_used' => [],
-	// 				'used_mbl' => [],
-	// 				'max_benefit' => $max['max_benefit_limit'],
-	// 				'remaining_mbl' => 0,
-	// 			];
-	// 		}
-	
-	// 		$fullnameData[$key]['date_used'][] = date('F d,Y', strtotime($max['billed_on']));
-	// 		$fullnameData[$key]['used_mbl'][] = $max['company_charge'];
-	// 	}
-	
-	// 	$previous_fullname = '';
-	// 	$number = 1;
-	// 	foreach ($fullnameData as $key => $totals) {
-	// 		list($healcardno, $fullname, $business_unit) = explode('_', $key);
-
-	// 		$max_benefit = number_format($totals['max_benefit'], 2, '.', ',');
-
-	// 		$dates_used = $totals['date_used'];
-	// 		$used_mbls = $totals['used_mbl'];
-	// 		$remaining_mbl = $totals['max_benefit'];
-
-	// 		$num_entries = count($dates_used);
-
-	// 		for ($i = 0; $i < $num_entries; $i++) {
-	// 			$used_mbl = floatval($used_mbls[$i]);
-
-	// 			if ($fullname !== $previous_fullname) {
-	// 				$first_row = [
-	// 					$number++,
-	// 					$healcardno,
-	// 					$fullname,
-	// 					$business_unit,
-	// 					'<span class="text-success">-----</span>',
-	// 					'<span class="text-success">-----</span>',
-	// 					number_format($remaining_mbl, 2, '.', ',')
-	// 				];
-
-	// 				$data[] = $first_row;
-	// 			}
-
-	// 			$row = [
-	// 				'',
-	// 				'',
-	// 				'',
-	// 				'',
-	// 				$dates_used[$i],
-	// 				number_format($used_mbl, 2, '.', ','),
-	// 				number_format(max($remaining_mbl - $used_mbl, 0), 2, '.', ',')
-	// 			];
-
-	// 			$data[] = $row;
-
-	// 			$remaining_mbl = max($remaining_mbl - $used_mbl, 0);
-	// 			$previous_fullname = $fullname;
-	// 		}
-	// 	}
-
-	
-	// 	$output = [
-	// 		"draw" => $_POST['draw'],
-	// 		"data" => $data,
-	// 	];
-	
-	// 	echo json_encode($output);
-	// }
 
 	function fetch_ledger_mbl() {
 		$filteredYear = $this->input->post('year', TRUE);
@@ -5919,6 +5851,54 @@ class Main_controller extends CI_Controller {
 		}
 		$pdfname = 'LedgerPaid_'.date('YmdHi');
 		$pdf->Output($pdfname.'.pdf', 'I');
+	}
+
+	function view_pdf_viewer($b_units, $charging_no, $type) {
+		$data['b_units'] = $b_units;
+		$data['charging_no'] = $charging_no;
+		$data['type'] = $type;
+		$this->load->view('ho_accounting_panel/billing_list_table/pdf_viewer', $data);
+		
+	}
+
+	function fetch_charging_printing_count() {
+		$charging_nos = $this->input->post('charging_no');
+		$charging_no =  base64_decode($charging_nos);
+
+		$exists = $this->List_model->check_if_reference_existed($charging_no);
+
+		if($exists){
+			$count = $this->List_model->get_max_copy_number($charging_no);
+			$last_print = floatval($count['printing_num_copy']) + 1;
+
+			$data = [
+				'printing_reference' => $charging_no,
+				'printing_num_copy' => $last_print,
+				'printed_by' => $this->session->userdata('emp_id'),
+				'printed_on' => date('Y-m-d')
+			];
+		}else{
+			$data = [
+				'printing_reference' => $charging_no,
+				'printing_num_copy' => 1,
+				'printed_by' => $this->session->userdata('emp_id'),
+				'printed_on' => date('Y-m-d')
+			];
+		}
+
+		$inserted = $this->List_model->insert_printing_logs($data);
+		if($inserted){
+			echo json_encode([
+				'status' => 'success',
+				'token' => $this->security->get_csrf_hash(),
+			]);
+		}else{
+			echo json_encode([
+				'status' => 'error',
+				'token' => $this->security->get_csrf_hash(),
+			]);
+		}
+		
 	}
 	
 }

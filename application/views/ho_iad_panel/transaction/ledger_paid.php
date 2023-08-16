@@ -166,7 +166,6 @@
       deferRender: true,  // Enable deferred rendering
       info: false,
       paging: false,
-      filter: false,
       lengthChange: false,
       responsive: true,
       fixedHeader: true,

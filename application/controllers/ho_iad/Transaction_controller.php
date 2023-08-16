@@ -1100,11 +1100,6 @@ class Transaction_controller extends CI_Controller {
 
 		$title = '<img src="'.base_url().'assets/images/HC_logo.png" style="width:110px;height:70px">';
 
-		$title .= '<style>h3 { margin: 0; padding: 0; line-height: .5; }</style>
-					'.$header.'
-					<h3>'.$business_unit.'</h3>
-					<h3>'.$charge_no.'</h3><br>';
-
 		$dateGenerate = '<small>Transaction Date: ' . date('m/d/Y h:i A').'</small> <small>( Reprinted Copy )</small><br>';
 		$PDFdata = '<table style="border:.5px solid #000; padding:3px" class="table table-bordered">';
 		$PDFdata .= ' <thead>
@@ -1126,6 +1121,13 @@ class Transaction_controller extends CI_Controller {
 		$healthCardTotals = []; // Store totals for each health_card_no
 		
 		foreach ($charging as $charge) {
+
+			if($charge['bu_start_date'] != '0000-00-00' || $charge['bu_end_date'] != '0000-00-00'){
+				$date = '<h3>From '.date('F d, Y',strtotime($charge['bu_start_date'])).' to '.date('F d, Y',strtotime($charge['bu_end_date'])).'</h3>';
+			}else{
+				$date = '';
+			}
+			
 			if ($charge['company_charge'] && $charge['cash_advance'] != '') {
 
 				$currentHealthCardNo = $charge['health_card_no'];
@@ -1163,6 +1165,11 @@ class Transaction_controller extends CI_Controller {
 				$totalPayableSum += $total_payable;
 			}
 		}
+		$title .= '<style>h3 { margin: 0; padding: 0; line-height: .5; }</style>
+				'.$header.'
+				'.$date.'
+				<h3>'.$business_unit.'</h3>
+				<h3>'.$charge_no.'</h3><br>';
 
 		$PDFdata .= '<tfoot>
 					<tr>
@@ -1548,7 +1555,44 @@ class Transaction_controller extends CI_Controller {
 		} else if ($filteredYear != $currentYear) {
 			$mbl = $this->transaction_model->get_ledger_history_mbl();
 		}
+		
+		$data = [];
+		$number = 1;
+		foreach ($mbl as $max) {
+			$row = [];
+
+			$fullname = $max['first_name'] . ' ' . $max['middle_name'] . ' ' . $max['last_name'] . ' ' . $max['suffix'];
+			$action = '<a href="JavaScript:void(0)" onclick="viewMBLDetails(\''.$max['emp_id'].'\',\''.$filteredYear.'\',\''.$fullname.'\')" title="View MBL Details" class="btn-success btn-sm"><i class="mdi mdi-magnify"></i> View</a>';
+
+			$row[] = $number++;
+			$row[] = $max['health_card_no'];
+			$row[] = $fullname;
+			$row[] = $max['business_unit'];
+			$row[] = $action;
+			$data[] = $row;
+			
+		}
 	
+		$output = [
+			"draw" => $_POST['draw'],
+			"data" => $data,
+		];
+	
+		echo json_encode($output);
+	}
+
+	function fetch_mbl_ledger_details() {
+		$filteredYear = $this->input->post('filteredYear');
+		$currentYear = date('Y');
+
+		if ($filteredYear == $currentYear) {
+			$mbl = $this->transaction_model->get_current_ledger_mbl();
+		} else if ($filteredYear == '') {
+			$mbl = $this->transaction_model->get_current_ledger_mbl();
+		} else if ($filteredYear != $currentYear) {
+			$mbl = $this->transaction_model->get_history_mbl_details();
+		}
+
 		$data = [];
 		$fullnameData = [];
 	
@@ -1593,10 +1637,7 @@ class Transaction_controller extends CI_Controller {
 
 				if ($fullname !== $previous_fullname) {
 					$first_row = [
-						$number++,
-						$healcardno,
-						$fullname,
-						$business_unit,
+						'<span class="text-success">-----</span>',
 						'<span class="text-success">-----</span>',
 						'<span class="text-success">-----</span>',
 						number_format($remaining_mbl, 2, '.', ',')
@@ -1606,10 +1647,7 @@ class Transaction_controller extends CI_Controller {
 				}
 
 				$row = [
-					'',
-					'',
-					'',
-					'',
+					$number++,
 					$dates_used[$i],
 					number_format($used_mbl, 2, '.', ','),
 					number_format(max($remaining_mbl - $used_mbl, 0), 2, '.', ',')
@@ -1621,9 +1659,7 @@ class Transaction_controller extends CI_Controller {
 				$previous_fullname = $fullname;
 			}
 		}
-
-	
-		$output = [
+			$output = [
 			"draw" => $_POST['draw'],
 			"data" => $data,
 		];
@@ -1758,24 +1794,20 @@ class Transaction_controller extends CI_Controller {
 					<td><strong>Prepared By:</strong></td>
 					<td></td>
 					<td><strong>Noted By:</strong></td>
-					<td></td>
 				</tr>';
 		$user .='<tr>
 					<td></td>
 					<td></td>
 					<td></td>
 					<td></td>
-					<td></td>
 				</tr>
 				<tr>
 					<td></td>
 					<td></td>
 					<td></td>
 					<td></td>
-					<td></td>
 				</tr>
 				<tr>
-					<td></td>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -1786,7 +1818,6 @@ class Transaction_controller extends CI_Controller {
 					<td><strong>'.strtoupper($this->session->userdata('fullname')).'</strong></td>
 					<td></td>
 					<td><strong>_____________________________</strong></td>
-					<td></td>
 				</tr>';
 		$user .= '</table>';
 
@@ -1932,24 +1963,20 @@ class Transaction_controller extends CI_Controller {
 					<td><strong>Prepared By:</strong></td>
 					<td></td>
 					<td><strong>Noted By:</strong></td>
-					<td></td>
 				</tr>';
 		$user .='<tr>
 					<td></td>
 					<td></td>
 					<td></td>
 					<td></td>
-					<td></td>
 				</tr>
 				<tr>
 					<td></td>
 					<td></td>
 					<td></td>
 					<td></td>
-					<td></td>
 				</tr>
 				<tr>
-					<td></td>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -1959,8 +1986,7 @@ class Transaction_controller extends CI_Controller {
 					<td></td>
 					<td><strong>'.strtoupper($this->session->userdata('fullname')).'</strong></td>
 					<td></td>
-					<td><strong>_____________________________</strong></td>
-					<td></td>
+					<td><strong>________________________</strong></td>
 				</tr>';
 		$user .= '</table>';
 

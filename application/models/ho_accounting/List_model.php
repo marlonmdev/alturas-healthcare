@@ -1136,15 +1136,28 @@ class List_model extends CI_Model{
         return $this->db->get()->result_array();
     }
 
-    function tag_bu_charges($charging_no, $billing_ids) {
+    function tag_bu_charges($charging_no, $billing_ids, $user) {
+        if(!empty($this->input->post('start_date'))){
+            $start_date = $this->input->post('start_date');
+        }else{
+            $start_date = '0000-00-00';
+        }
+        if(!empty($this->input->post('end_date'))){
+            $end_date = $this->input->post('end_date');
+        }else{
+            $end_date = '0000-00-00';
+        }
         $this->db->set('bu_charging_status', 'Receivable')
                 ->set('bu_charging_no', $charging_no)
                 ->set('bu_generated_on', date('Y-m-d'))
+                ->set('bu_start_date', $start_date)
+                ->set('bu_end_date', $end_date)
+                ->set('bu_processed_by', $user)
                 ->where_in('billing_id', $billing_ids);
 
-        // if(!empty($this->input->post('filter'))){
+        if(!empty($this->input->post('bu_filter'))){
             return $this->db->update('billing');
-        // }
+        }
     }
     
     function get_billing_id($charging_no) {
@@ -1158,6 +1171,22 @@ class List_model extends CI_Model{
                 ->set('bu_total_paid', $inputted_total)
                 ->where('bu_charging_no', $charging_no);
         return $this->db->update('billing');
+    }
+
+    function check_if_reference_existed($charging_no) {
+        $query =  $this->db->get_where('printing_logs', ['printing_reference' => $charging_no]);
+        return $query->num_rows() > 0 ? true : false;
+    }
+    
+    function get_max_copy_number($charging_no) {
+        $this->db->select_max('printing_num_copy');
+        $this->db->where('printing_reference', $charging_no);
+        $query = $this->db->get('printing_logs');
+        return $query->row_array();
+    }
+
+    function insert_printing_logs($data) {
+        return $this->db->insert('printing_logs',$data);
     }
 //=================================================
 
@@ -1358,6 +1387,7 @@ class List_model extends CI_Model{
         return $this->db->get()->result_array();
     }
 
+    var $column_paid_ledger_search = ['tbl_5.health_card_no','tbl_5.first_name', 'tbl_5.middle_name', 'tbl_5.last_name', 'tbl_5.suffix', 'CONCAT(tbl_5.first_name, " ",tbl_5.last_name)',   'CONCAT(tbl_5.first_name, " ",tbl_5.last_name, " ", tbl_5.suffix)', 'CONCAT(tbl_5.first_name, " ",tbl_5.middle_name, " ",tbl_5.last_name)', 'CONCAT(tbl_5.first_name, " ",tbl_5.middle_name, " ",tbl_5.last_name, " ", tbl_5.suffix)'];
     private function fetchLedgerQuery()
     {
         $this->db->from('billing as tbl_1')
@@ -1382,6 +1412,22 @@ class List_model extends CI_Model{
             $bu_filter = $this->input->post('bu_filter');
             $this->db->where("tbl_5.business_unit", $bu_filter);
         }
+
+        $i = 0;
+	   
+		foreach ($this->column_paid_ledger_search as $item) {
+			if ($_POST['search']['value']) {
+				if ($i === 0) {
+					$this->db->group_start();
+					$this->db->like($item, $_POST['search']['value']);
+				}else {
+					$this->db->or_like($item, $_POST['search']['value']);
+				}
+				if (count($this->column_paid_ledger_search) - 1 == $i) //last loop
+					$this->db->group_end(); //close bracket
+			}
+			$i++;
+		}
     }      
     
     function get_debit_credit_yearly()
@@ -1393,6 +1439,8 @@ class List_model extends CI_Model{
         $query = $this->db->get();
         return $query->result_array();
     }
+
+    var $column_mbl_search = ['tbl_1.health_card_no','tbl_1.first_name', 'tbl_1.middle_name', 'tbl_1.last_name', 'tbl_1.suffix', 'CONCAT(tbl_1.first_name, " ",tbl_1.last_name)',   'CONCAT(tbl_1.first_name, " ",tbl_1.last_name, " ", tbl_1.suffix)', 'CONCAT(tbl_1.first_name, " ",tbl_1.middle_name, " ",tbl_1.last_name)', 'CONCAT(tbl_1.first_name, " ",tbl_1.middle_name, " ",tbl_1.last_name, " ", tbl_1.suffix)'];
 
     private function fetch_mbl_ledger() {
         $this->db->from('members as tbl_1')
@@ -1410,6 +1458,22 @@ class List_model extends CI_Model{
             $bu_filter = $this->input->post('bu_filter');
             $this->db->where("tbl_1.business_unit", $bu_filter);
         }
+
+        $i = 0;
+	   
+		foreach ($this->column_mbl_search as $item) {
+			if ($_POST['search']['value']) {
+				if ($i === 0) {
+					$this->db->group_start();
+					$this->db->like($item, $_POST['search']['value']);
+				}else {
+					$this->db->or_like($item, $_POST['search']['value']);
+				}
+				if (count($this->column_mbl_search) - 1 == $i) //last loop
+					$this->db->group_end(); //close bracket
+			}
+			$i++;
+		}
     }
 
     function get_ledger_mbl() {

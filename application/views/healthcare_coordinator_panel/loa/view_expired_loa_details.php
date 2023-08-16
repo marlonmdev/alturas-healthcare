@@ -1,9 +1,9 @@
-        <div class="modal fade" id="viewLoaModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal fade" id="viewExpiredLoaModal" tabindex="-1" data-bs-backdrop="static">
           <div class="modal-dialog modal-lg">
             <div class="modal-content">
               <section id="printableDiv">
                 <div class="modal-header">
-                  <h4 class="modal-title ls-2">LOA #: <span id="loa-no" class="text-primary"></span> <span id="loa-status"></span></h4>
+                  <h4 class="modal-title ls-2">LOA #: <span id="loa-no" class="text-warning"></span> <span id="loa-status"></span></h4>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                   </button>
                 </div>
@@ -28,7 +28,7 @@
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Expiry Date :</td>
-                          <td class="fw-bold ls-1" id="expiry-date"></td>
+                          <td class="fw-bold ls-1" id="expiry-dates"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Member's Maximum Benefit Limit :</td>
@@ -38,9 +38,8 @@
                           <td class="fw-bold ls-1">Member's Remaining MBL :</td>
                           <td class="fw-bold ls-1">&#8369;<span id="remaining-mbl"></span></td>
                         </tr>
-                        <tr class="d-none" id="work-related-info">
-                          <td class="fw-bold ls-1">Work Related :</td>
-                          <td class="fw-bold ls-1" id="work-related-val"></td>
+                          <td class="fw-bold ls-1">Percentage :</td>
+                          <td class="fw-bold ls-1" id="percentage"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Healthcard Number :</td>

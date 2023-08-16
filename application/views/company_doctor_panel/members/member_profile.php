@@ -5,7 +5,7 @@
     <div class="page-breadcrumb">
       <div class="row">
         <div class="col-12 d-flex no-block align-items-center">
-          <h4 class="page-title ls-2">PATIENT INFORMATION</h4>
+          <h4 class="page-title ls-2"><i class="mdi mdi-account-card-details"></i> PATIENT INFORMATION</h4>
           <div class="ms-auto text-end">
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
@@ -25,7 +25,7 @@
       <div class="row">
 
         <div class="col-lg-12 mb-3 mt-0">
-          <a class="btn btn-dark btn-md text-white" href="javascript:void(0)" onclick="window.history.back()" data-bs-toggle="tooltip" title="Click to Go Back"><strong class="ls-2" style="vertical-align:middle"><i class="mdi mdi-arrow-left-bold"></i> Go Back</strong></a>
+          <a class="btn btn-info btn-md text-white" href="javascript:void(0)" onclick="window.history.back()" data-bs-toggle="tooltip" title="Click to Go Back"><strong class="ls-2" style="vertical-align:middle"><i class="mdi mdi-arrow-left-bold"></i> Go Back</strong></a>
         </div>
 
         <div class="col-lg-12">
@@ -162,6 +162,15 @@
                     </div>
                     <div class="col-sm-9 colored-label" style="font-weight:600;">
                       <?= $member['contact_no']; ?>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0 text-secondary" style="font-weight:600;">Email Address:</h6>
+                    </div>
+                    <div class="col-sm-9 colored-label" style="font-weight:600;">
+                      <?= $member['email']; ?>
                     </div>
                   </div>
                   <hr>

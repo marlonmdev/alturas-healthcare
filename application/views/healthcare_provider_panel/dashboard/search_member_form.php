@@ -12,7 +12,6 @@
               </span>
             </div>
             <select class="form-select" name="search_select" id="search-select">
-              <option value="">Select Search Method</option>
               <option value="healthcard">Healthcard Number</option>
               <option value="name">Patient Name</option>
             </select>
@@ -30,7 +29,7 @@
         </div>
                                       
 
-        <div class="col-sm-12 col-md-10 offset-md-1 text-center mb-5 d-none" id="search-by-name">
+        <div class="col-sm-12 col-md-10 offset-md-1 text-center mb-5 d-none" id="search-by-name"> 
           <form method="POST" action="<?php echo base_url(); ?>healthcare-provider/search-member/name" id="search-form-2" class="needs-validation" novalidate>
             <div class="input-group">
                 <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash(); ?>">

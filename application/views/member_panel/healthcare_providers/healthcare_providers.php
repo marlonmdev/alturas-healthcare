@@ -3,9 +3,9 @@
         <!-- Bread crumb and right sidebar toggle -->
         <div class="page-breadcrumb">
           <div class="row">
-            <div class="col-12 d-flex no-block align-items-center">
+            <div class="col-12 d-flex no-block flex-column flex-sm-row align-items-left">
               <h4 class="page-title ls-2">Healthcare Providers</h4>
-              <div class="ms-auto text-end">
+              <div class="ms-auto text-end order-first order-sm-last">
                 <nav aria-label="breadcrumb">
                   <ol class="breadcrumb">
                     <li class="breadcrumb-item">Member</li>
@@ -27,7 +27,7 @@
             if (!empty($hospitals)) :
           ?>
             <div class="mb-3">
-              <h2>Hospitals<i class="mdi mdi-arrow-right-bold"></i><strong class="text-danger"><?= $hospitals_count ?></strong></h2>
+              <h2>Affiliated Hospitals<i class="mdi mdi-arrow-right-bold"></i><strong class="text-danger"><?= $hospitals_count ?></strong></h2>
               <div class="border border-2 border-dark"></div>
             </div>
             <?php

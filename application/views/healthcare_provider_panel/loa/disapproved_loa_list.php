@@ -123,7 +123,7 @@
 
     function viewLoaInfo(req_id) {
         $.ajax({
-            url: `${baseUrl}healthcare-provider/loa-requests/disapproved/view/${req_id}`,
+            url: `${baseUrl}healthcare-provider/loa-requests/view/${req_id}`,
             type: "GET",
             success: function(response) {
                 const res = JSON.parse(response);
@@ -134,7 +134,7 @@
                     city_address, email, contact_person, contact_person_addr, contact_person_no, healthcare_provider,
                     loa_request_type, med_services, health_card_no, requesting_company, request_date, chief_complaint,
                     requesting_physician, attending_physician, rx_file, req_status, work_related, disapproved_by, disapprove_reason,
-                    disapproved_on
+                    disapproved_on,percentage
                 } = res;
 
                 $("#viewLoaModal").modal("show");
@@ -146,7 +146,7 @@
                 $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
                 $('#disapproved-by').html(disapproved_by);
                 $('#disapproved-on').html(disapproved_on);
-                $('#disapprove-reason').html(disapprove_reason);
+                $('#disapprove-reason').html(`<strong class="text-danger">${disapprove_reason}</strong>`);
                 $('#member-mbl').html(member_mbl);
                 $('#remaining-mbl').html(remaining_mbl);
                 $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
@@ -171,13 +171,7 @@
                 $('#chief-complaint').html(chief_complaint);
                 $('#requesting-physician').html(requesting_physician);
                 $('#attending-physician').html(at_physician);
-                if(work_related != ''){
-                    $('#work-related-info').removeClass('d-none');
-                    $('#work-related').html(work_related);
-                }else{
-                    $('#work-related-info').addClass('d-none');
-                    $('#work-related').html('');
-                }
+                $('#percentage').html(percentage);
             }
         });
     }

@@ -7,9 +7,7 @@
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Healthcare Coordinator</li>
-              <li class="breadcrumb-item active" aria-current="page">
-                Pending
-              </li>
+              <li class="breadcrumb-item active" aria-current="page">Pending</li>
             </ol>
           </nav>
         </div>
@@ -111,7 +109,7 @@
           </div>
         </div>
 
-        <?php include 'view_loa_details.php'; ?>
+        <?php include 'view_pending_details.php'; ?>
       </div>
     </div>
   </div>
@@ -205,7 +203,7 @@
       })
     });
 
-
+    number_validator();
   });
 
   function viewImage(path) {
@@ -231,6 +229,7 @@
           status,
           token,
           loa_no,
+          request_date,
           member_mbl,
           remaining_mbl,
           first_name,
@@ -254,23 +253,36 @@
           med_services,
           health_card_no,
           requesting_company,
-          request_date,
           chief_complaint,
           requesting_physician,
           attending_physician,
           rx_file,
           req_status,
-          work_related
+          work_related,
+          percentage
         } = res;
 
         $("#viewLoaModal").modal("show");
 
+
+        const dob = date_of_birth !== '' ? date_of_birth : 'None';
+        const ag = age !== '' ? age : 'None';
+        const gndr = gender !== '' ? gender : 'None';
+        const bt = blood_type !== '' ? blood_type : 'None';
+        const pn = philhealth_no !== '' ? philhealth_no : 'None';
+        const ha = home_address !== '' ? home_address : 'None';
+        const ca = city_address !== '' ? city_address : 'None';
+        const cn = contact_no !== '' ? contact_no : 'None';
+        const em = email !== '' ? email : 'None';
+        const cp = contact_person !== '' ? contact_person : 'None';
+        const cpa = contact_person_addr !== '' ? contact_person_addr : 'None';
+        const cpn = contact_person_no !== '' ? contact_person_no : 'None';
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
         
         let rstat = '';
         if(req_status == 'Pending'){
-          req_stat = `<strong class="text-warning">[${req_status}]</strong>`;
+          req_stat = `<strong style="color:maroon">[${req_status}]</strong>`;
         }else{
           req_stat = `<strong class="text-cyan">[${req_status}]</strong>`;
         }
@@ -280,18 +292,18 @@
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
-        $('#date-of-birth').html(date_of_birth);
-        $('#age').html(age);
-        $('#gender').html(gender);
-        $('#philhealth-no').html(philhealth_no);
-        $('#blood-type').html(blood_type);
-        $('#contact-no').html(contact_no);
-        $('#home-address').html(home_address);
-        $('#city-address').html(city_address);
-        $('#email').html(email);
-        $('#contact-person').html(contact_person);
-        $('#contact-person-addr').html(contact_person_addr);
-        $('#contact-person-no').html(contact_person_no);
+        $('#date-of-birth').html(dob);
+        $('#age').html(ag);
+        $('#gender').html(gndr);
+        $('#philhealth-no').html(pn);
+        $('#blood-type').html(bt);
+        $('#contact-no').html(cn);
+        $('#home-address').html(ha);
+        $('#city-address').html(ca);
+        $('#email').html(em);
+        $('#contact-person').html(cp);
+        $('#contact-person-addr').html(cpa);
+        $('#contact-person-no').html(cpn);
         $('#healthcare-provider').html(healthcare_provider);
         $('#loa-request-type').html(loa_request_type);
         $('#loa-med-services').html(med_serv);
@@ -301,13 +313,36 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
-        if(work_related != ''){
-          $('#work-related-info').removeClass('d-none');
-          $('#work-related-val').html(work_related);
-        }else{
-          $('#work-related-info').addClass('d-none');
-          $('#work-related-val').html('');
-        }
+        if(work_related == 'Yes'){ 
+					if(percentage == ''){
+					  wpercent = '100% W-R';
+					  nwpercent = '';
+					}else{
+					   wpercent = percentage+'%  W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   nwpercent = '';
+					   }else{
+						   nwpercent = result+'% Non W-R';
+					   }
+					  
+					}	
+			   }else if(work_related == 'No'){
+				   if(percentage == ''){
+					   wpercent = '';
+					   nwpercent = '100% Non W-R';
+					}else{
+					   nwpercent = percentage+'% Non W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   wpercent = '';
+					   }else{
+						   wpercent = result+'%  W-R';
+					   }
+					 
+					}
+			   }
+        $('#percentage').html(wpercent+', '+nwpercent);
       }
     });
   }
@@ -390,6 +425,40 @@
           }
         },
       }
+    });
+  }
+
+  const number_validator = () => {
+	$('#hospital_bill').on('keydown',function(event){
+		let value = $('#hospital-bill').val();
+		let length  = $('#hospital-bill').val().length;
+		const key = event.key;
+		console.log('key',key);
+		console.log('length',length);
+		if(length+1 <=1 && (key === '0'|| key === '.' || key ==='')){
+		  event.preventDefault();
+		}
+		if(/^[a-zA-Z]$/.test(key)) {
+		  event.preventDefault(); 
+		}
+		if(/^[!@#$%^&*()\-_=+[\]{};':"\\|,<>/?`~]$/.test(key)) {
+		  event.preventDefault(); 
+		}
+		if(value.match(/\./) && /\./.test(key)) {
+		  event.preventDefault(); 
+		}
+		if(/\s/.test(key)){
+		  event.preventDefault();
+		}
+		  
+	  });
+
+    $('#hospital-bill').on('keyup',function(event){
+      let val = event.key;
+      if(val!=='.' && $(this).val() !==''){
+        $(this).val(Number($(this).val().replace(/,/g,'')).toLocaleString(2));
+      }
+      
     });
   }
 </script>

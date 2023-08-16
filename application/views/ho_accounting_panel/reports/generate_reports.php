@@ -1,0 +1,152 @@
+<!-- Start of Page Wrapper -->
+<div class="page-wrapper">
+        <!-- Bread crumb and right sidebar toggle -->
+        <div class="page-breadcrumb">
+            <div class="row">
+            <div class="col-12 d-flex no-block align-items-center">
+                <div class="dropdown">
+                    <button class="btn btn-light dropdown-toggle fw-bold" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        Select Reports
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" href="<?php echo base_url();?>head-office-accounting/reports">Paid Bill</a></li>
+                        <li><a class="dropdown-item" href="<?php echo base_url();?>head-office-accounting/reports/charging">BU Charging</a></li>
+                        <li><a class="dropdown-item" href="#">Letter of Authorization</a></li>
+                        <li><a class="dropdown-item" href="#">Notice of Admission</a></li>
+                    </ul>
+                </div>
+                <div class="ms-auto text-end">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                        <li class="breadcrumb-item">Head Office Accounting</li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                       Paid Bill
+                        </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            </div> 
+        </div><hr>
+           <!-- End Bread crumb and right sidebar toggle -->
+        <!-- Start of Container fluid  -->
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-4 ps-5 pb-3 pt-1 pb-4">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text text-white fw-bold bg-info">
+                            <i class="mdi mdi-filter"></i>
+                            </span>
+                        </div>
+                        <select class="form-select fw-bold" name="hospital-filter" id="hospital-filter">
+                            <option value="">Select Hospital...</option>
+                            <?php foreach($hc_provider as $hospital) : ?>
+                            <option value="<?php echo $hospital['hp_id']; ?>"><?php echo $hospital['hp_name']; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-4 pt-1 offset-2">
+                    <div class="input-group">
+                        <div class="input-group-append">
+                            <span class="input-group-text text-white bg-info ls-1 ms-2">
+                                <i class="mdi mdi-calendar-range"></i>
+                            </span>
+                        </div>
+                        <input type="date" class="form-control" name="start_date" id="start-date" oninput="validateDateRange()" placeholder="Billed From" onchange="displayValue()">
+
+                        <div class="input-group-append">
+                            <span class="input-group-text text-white bg-info ls-1 ms-2">
+                                <i class="mdi mdi-calendar-range"></i>
+                            </span>
+                        </div>
+                        <input type="date" class="form-control" name="end-date" id="end-date" oninput="validateDateRange()" placeholder="Billed To" onchange="displayValue()">
+                    </div>
+                </div>
+                <!-- <div class="col-lg-3 ps-5 pb-3 pt-1 pb-4">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text text-white fw-bold bg-info">
+                            <i class="mdi mdi-filter"></i>
+                            </span>
+                        </div>
+                        <select class="form-select fw-bold" name="b-units-filter" id="b-units-filter">
+                            <option value="">Select Business Units...</option>
+                            <?php
+                                // Sort the business units alphabetically
+                                $sorted_bu = array_column($bu, 'business_unit');
+                                asort($sorted_bu);
+                                
+                                foreach($sorted_bu as $bu) :
+                            ?>
+                            <option value="<?php echo $bu; ?>"><?php echo $bu; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div> -->
+            </div>
+            <div class="card shadow">  
+                <div class="pt-4 ps-4 pe-4">
+                    <table class="table table-sm" id="paidReport">
+                        <thead class="border-secondary border-1 border-0 border-top border-bottom">
+                            <tr>
+                                <th class="fw-bold">Payment No.</th>
+                                <th class="fw-bold">LOA/NOA No.</th>
+                                <th class="fw-bold">Patient Name</th>
+                                <th class="fw-bold">Business Unit</th>
+                                <th class="fw-bold">Remaining MBL</th>
+                                <th class="fw-bold">Company Charge</th>
+                                <th class="fw-bold">Cash Advance</th>
+                                <th class="fw-bold">Total Paid</th>
+                            </tr>
+                        </thead>
+                    </table>    
+                </div>
+            
+            </div>
+        </div>
+</div>
+<script>
+ $(document).ready(function(){
+    let paidReport = $('#paidReport').DataTable({
+      processing: true, //Feature control the processing indicator.
+      serverSide: true, //Feature control DataTables' server-side processing mode.
+      order: [], //Initial no order.
+
+      // Load data for the table's content from an Ajax source
+      ajax: {
+        url: `${baseUrl}head-office-accounting/reports/paid`,
+        type: "POST",
+        // passing the token as data so that requests will be allowed
+        data: function(data) {
+           data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
+            data.hp_id = $('#hospital-filter').val();
+            data.endDate = $('#end-date').val();
+            data.startDate = $('#start-date').val();
+          
+        }
+      },
+      //Set column definition initialisation properties.
+      columnDefs: [{
+        "orderable": false, //set not orderable
+      }, ],
+      data: [],  // Empty data array
+      deferRender: true,  // Enable deferred rendering
+      info: false,
+      paging: false,
+      filter: false,
+      lengthChange: false,
+      responsive: true,
+      fixedHeader: true,
+    });
+
+    $("#start-date").flatpickr({
+        dateFormat: 'Y-m-d',
+    });
+    
+    $("#end-date").flatpickr({
+        dateFormat: 'Y-m-d',
+    });
+ });
+</script>

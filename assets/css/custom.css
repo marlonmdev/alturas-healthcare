@@ -35,13 +35,21 @@
 	padding: 0;
 	box-sizing: border-box;
 }
-
+/* .topbar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: 999;
+  } */
+ 
 body {
 	font-family: "Raleway", "Roboto", sans-serif, monospace;
 	background-color: #ffff;
 	background-size: cover;
 	background-repeat: no-repeat;
 	opacity: 1;
+	overflow: hidden;
 }
 
 h1,

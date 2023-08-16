@@ -18,50 +18,70 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
+        <nav class="navbar navbar-expand-md navbar-light">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
 
-        <ul class="nav nav-tabs mb-4" role="tablist">
-          <li class="nav-item">
-            <a class="nav-link active" href="<?php echo base_url(); ?>member/requested-loa/pending" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">PENDING</span>
-            </a>
-          </li>
+          <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" href="<?php echo base_url(); ?>member/requested-loa/pending" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 font-bold">| PENDING</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/approved" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| APPROVED</span>
+                </a>
+              </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/approved" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">APPROVED</span>
-            </a>
-          </li>
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/disapproved" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| DISAPPROVED</span>
+                </a>
+              </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/disapproved" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">DISAPPROVED</span>
-            </a>
-          </li>
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/completed" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| COMPLETED</span>
+                </a>
+              </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/completed" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">COMPLETED</span>
-            </a>
-          </li>
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/expired" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| EXPIRED</span>
+                </a>
+              </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/expired" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">EXPIRED</span>
-            </a>
-          </li>
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/cancelled" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| CANCELLED</span>
+                </a>
+              </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/cancelled" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">CANCELLED</span>
-            </a>
-          </li>
-        </ul>
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/billed" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| BILLED</span>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/paid" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| PAID</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
 
         <div class="card shadow">
           <div class="card-body">
@@ -74,6 +94,7 @@
                     <th class="fw-bold" style="color: white">TYPE OF REQUEST</th>
                     <th class="fw-bold" style="color: white">DATE OF REQUEST</th>
                     <th class="fw-bold" style="color: white">RX FILE</th>
+                    <th class="fw-bold" style="color: white">HOSPITAL RECEIPT</th>
                     <th class="fw-bold" style="color: white">STATUS</th>
                     <th class="fw-bold" style="color: white">ACTION</th>
                   </tr>
@@ -87,10 +108,36 @@
 
         <?php include 'view_loa_details.php'; ?>
       </div>
+
     </div>
   </div>
+     <!-- Viewing Upload Reports Modal -->
+     <div class="modal fade" id="viewUploadedReportsModal" tabindex="-1" data-bs-backdrop="static" style="height:100%">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4>Attached Reports</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                  </button>
+              </div>
+              <div class="modal-body">
+                  <input id="report-percentage" class="form-control" readonly>
+                  <div class="pt-3">
+                    
+                    <label class="fs-5">Uploaded Reports : <i><small class="text-danger">Click to view the file</small></i></label><br>
+                    <li>Spot Report : <a href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewSpotFile()" id="uploaded-spot-report"></a></li>
+                    <li>Incident Report : <a href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewIncidentFile()" id="uploaded-incident-report"></a></li>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+              </div>
+          </div>
+      </div>
+    </div>
 </div>
 
+<?php include 'view_pdf_file_modal.php';?>
 
 <script>
   const baseUrl = `<?php echo base_url(); ?>`;
@@ -117,8 +164,17 @@
         // "targets": [5, 6, 7], // 6th and 7th column / numbering column
         "targets": [4, 5, 6 ], // 6th and 7th column / numbering column
         "orderable": false, //set not orderable
+        // "createdCell": function(td, cellData, rowData, row, col) {
+        //   var pattern = /\bResubmit\b/i;
+        //     if (col === 6) { // Assuming status is in the 5th column
+        //         if (pattern.test(cellData)) {
+        //             $(row).addClass('bg-warning');
+        //         }
+        //     }
+        // }
       }, ],
     });
+
   });
 
   const viewImage = (path) => {
@@ -126,13 +182,17 @@
       src: path, // path to image
       title: 'Attached RX File' // If you skip it, there will display the original image name
     }];
-    // define options (if needed)
+    
+    // Define options (if needed)
     let options = {
-      index: 0 // this option means you will start at first image
+      index: 0, // this option means you will start at the first image
+      fullscreen: true // set fullscreen mode to true
     };
+    
     // Initialize the plugin
     let photoviewer = new PhotoViewer(item, options);
-  }
+  };
+
 
   const cancelPendingLoa = (loa_id) => {
     $.confirm({
@@ -247,7 +307,10 @@
           attending_physician,
           rx_file,
           req_status,
-          work_related
+          work_related,
+          percentage,
+          member_mbl,
+          remaining_mbl
         } = res;
 
         $("#viewLoaModal").modal("show");
@@ -264,6 +327,8 @@
 
         $('#loa-no').html(loa_no);
         $('#loa-status').html(req_stat);
+        $('#member-mbl').html(member_mbl);
+        $('#remaining-mbl').html(remaining_mbl);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
         $('#date-of-birth').html(date_of_birth);
         $('#age').html(age);
@@ -286,14 +351,117 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
-        if(work_related != ''){
-          $('#work-related-info').removeClass('d-none');
-          $('#work-related-val').html(work_related);
-        }else{
-          $('#work-related-info').addClass('d-none');
-          $('#work-related-val').html('');
-        }
       }
     });
   }
+
+  const viewReports = (loa_id, work_related, percentage, spot_report, incident_report) => {
+   $('#viewUploadedReportsModal').modal('show');
+      if(work_related == 'Yes'){ 
+        if(percentage == ''){
+          wpercent = '100% Work Related';
+          nwpercent = '';
+        }else{
+            wpercent = percentage+'%  Work Related';
+            result = 100 - parseFloat(percentage);
+            if(percentage == '100'){
+              nwpercent = '';
+            }else{
+              nwpercent = result+'% Non Work Related';
+            }
+          
+        }	
+      }else if(work_related == 'No'){
+        if(percentage == ''){
+          wpercent = '';
+          nwpercent = '100% Non Work Related';
+        }else{
+            nwpercent = percentage+'% Non Work Related';
+            result = 100 - parseFloat(percentage);
+            if(percentage == '100'){
+              wpercent = '';
+            }else{
+              wpercent = result+'%  Work Related';
+            }
+          
+        }
+      }
+      $('#report-percentage').val(wpercent+', '+nwpercent);
+      $('#uploaded-spot-report') .html(spot_report);
+      $('#uploaded-incident-report').html(incident_report);
+  }
+
+  const viewSpotFile = () => {
+    const sport_report = document.querySelector('#uploaded-spot-report');
+    const anchorText = sport_report.textContent;
+
+      $('#viewFileModal').modal('show');
+      $('#cancel').hide();
+      $('#file-name-r').html('Uploaded Spot Report');
+
+      let pdfFile = `${baseUrl}uploads/spot_reports/${anchorText}`;
+      let fileExists = checkFileExists(pdfFile);
+
+      if(fileExists){
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', pdfFile, true);
+      xhr.responseType = 'blob';
+
+      xhr.onload = function(e) {
+          if (this.status == 200) {
+          let blob = this.response;
+          let reader = new FileReader();
+
+          reader.onload = function(event) {
+              let dataURL = event.target.result;
+              let iframe = document.querySelector('#pdf-file-viewer');
+              iframe.src = dataURL;
+          };
+          reader.readAsDataURL(blob);
+          }
+      };
+      xhr.send();
+      }
+    }
+
+    const viewIncidentFile = () => {
+    const sport_report = document.querySelector('#uploaded-incident-report');
+    const anchorText = sport_report.textContent;
+
+      $('#viewFileModal').modal('show');
+      $('#cancel').hide();
+      $('#file-name-r').html('Uploaded Incident Report');
+
+      let pdfFile = `${baseUrl}uploads/incident_reports/${anchorText}`;
+      let fileExists = checkFileExists(pdfFile);
+
+      if(fileExists){
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', pdfFile, true);
+      xhr.responseType = 'blob';
+
+      xhr.onload = function(e) {
+          if (this.status == 200) {
+          let blob = this.response;
+          let reader = new FileReader();
+
+          reader.onload = function(event) {
+              let dataURL = event.target.result;
+              let iframe = document.querySelector('#pdf-file-viewer');
+              iframe.src = dataURL;
+          };
+          reader.readAsDataURL(blob);
+          }
+      };
+      xhr.send();
+      }
+    }
+
+    const checkFileExists = (fileUrl) => {
+        let xhr = new XMLHttpRequest();
+        xhr.open('HEAD', fileUrl, false);
+        xhr.send();
+
+        return xhr.status == "200" ? true: false;
+    }
 </script>

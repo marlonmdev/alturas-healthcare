@@ -2,7 +2,7 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">APPROVED REQUEST</h4>
+        <h4 class="page-title ls-2"><i class="mdi mdi-file-multiple"></i> APPROVED REQUEST</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -68,6 +68,20 @@
               <span class="hidden-xs-down fs-5 font-bold">CANCELLED</span>
             </a>
           </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>company-doctor/loa/requests-list/billed" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">BILLED</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>company-doctor/loa/requests-list/paid" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">PAID</span>
+            </a>
+          </li>
         </ul>
 
         <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
@@ -97,6 +111,7 @@
                     <th class="fw-bold" style="color: white">TYPE OF REQUEST</th>
                     <th class="fw-bold" style="color: white">HEALTHCARE PROVIDER</th>
                     <th class="fw-bold" style="color: white">RX FILE</th>
+                    <!-- <th class="fw-bold" style="color: white">SOA</th> -->
                     <th class="fw-bold" style="color: white">DATE OF EXPIRATION</th>
                     <th class="fw-bold" style="color: white">STATUS</th>
                     <th class="fw-bold" style="color: white">ACTION</th>
@@ -112,7 +127,35 @@
         <?php include 'view_approved_loa_details.php'; ?>
       </div>
     </div>
+      <!-- Viewing Upload Reports Modal -->
+      <div class="modal fade" id="viewUploadedReportsModal" tabindex="-1" data-bs-backdrop="static" style="height:100%">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Attached Reports</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input id="report-percentage" class="form-control" readonly>
+                    <div class="pt-3">
+                      
+                      <label class="fs-5">Uploaded Reports : <i><small class="text-danger">Click to view the file</small></i></label><br>
+                      <li>Spot Report : <a href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewSpotFile()" id="uploaded-spot-report"></a></li>
+                      <li>Incident Report : <a href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewIncidentFile()" id="uploaded-incident-report"></a></li>
+                      <li>Police Report : <a href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewPoliceFile()" id="uploaded-police-report"></a></li>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+      </div>
+
   </div>
+  <?php include 'view_pdf_file_modal.php';?>
+
 </div>
 
 <script>
@@ -138,7 +181,7 @@
 
       //Set column definition initialisation properties.
       columnDefs: [{
-        "targets": [4, 6, 7], // numbering column
+        "targets": [], // numbering column
         "orderable": false, //set not orderable
       }, ],
       responsive: true,
@@ -203,7 +246,7 @@
                 type: 'success'
               });
               $("#backDateModal").modal("hide");
-              $("#expiredLoaTable").DataTable().ajax.reload();
+              $("#approvedLoaTable").DataTable().ajax.reload();
             break;
           }
         },
@@ -294,21 +337,27 @@
           rx_file,
           req_status,
           work_related,
+          percentage,
           approved_by,
           approved_on,
-          expiry_date
+          expiry_date,
+          hospitalized_date
         } = res;
 
         $("#viewLoaModal").modal("show");
 
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
-        
-        $('#loa-no').html(loa_no);
+        if(loa_request_type == 'Emergency'){
+          $('#hospitalized').show();
+        }else{
+          $('#hospitalized').hide();
+        }
+        $('#a-loa-no').html(loa_no);
         $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
         $('#approved-by').html(approved_by);
         $('#approved-on').html(approved_on);
-        $('#expiry-date').html(expiry_date);
+        $('#a-expiry-date').html(expiry_date);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
@@ -333,33 +382,42 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
-        $('#work-related-val').html(work_related);
+        $('#hospitalized-date').html(hospitalized_date);
+
+        
+        if(work_related == 'Yes'){ 
+					if(percentage == ''){
+					  wpercent = '100% W-R';
+					  nwpercent = '';
+					}else{
+					   wpercent = percentage+'%  W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   nwpercent = '';
+					   }else{
+						   nwpercent = result+'% Non W-R';
+					   }
+					  
+					}	
+			   }else if(work_related == 'No'){
+				   if(percentage == ''){
+					   wpercent = '';
+					   nwpercent = '100% Non W-R';
+					}else{
+					   nwpercent = percentage+'% Non W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   wpercent = '';
+					   }else{
+						   wpercent = result+'%  W-R';
+					   }
+					 
+					}
+			   }
+        $('#percentage').html(wpercent+', '+nwpercent);
       }
     });
   }
-
-  // const dateValidity = () => {
-  //   const expire_on = document.querySelectorAll('.expired-on'); 
-  //   const date_performed = document.querySelectorAll('.input-date');
-
-  //   for (let i = 0; i < date_performed.length; i++){
-  //     const date_performance = new Date(date_performed[i].value);
-  //     const expired_date = new Date(expire_on[i].value);
-  //     const max_valid_date = new Date(expired_date.getTime() + 14 * 24 * 60 * 60 * 1000); // 14 days after expired_date
-
-  //     if(date_performance < expired_date || date_performance > max_valid_date){
-  //       swal({
-  //         title: 'Invalid Date',
-  //         text: 'It must be within 14 days after Expiration Date ['+ expire_on[i].value +']',
-  //         showConfirmButton: true,
-  //         type: 'error'
-  //       });
-  //       date_performed[i].value = '';
-  //       flatpickr(date_performed[i]).close();
-  //       return;
-  //     }
-  //   }
-  // }
 
   //Trappings for Date Picker
   const dateValidity = () => {
@@ -388,4 +446,149 @@
     }
   }
   //end
+
+  const viewReports = (loa_id, work_related, percentage, spot_report, incident_report, police_report) => {
+   $('#viewUploadedReportsModal').modal('show');
+      if(work_related == 'Yes'){ 
+        if(percentage == ''){
+          wpercent = '100% Work Related';
+          nwpercent = '';
+        }else{
+            wpercent = percentage+'%  Work Related';
+            result = 100 - parseFloat(percentage);
+            if(percentage == '100'){
+              nwpercent = '';
+            }else{
+              nwpercent = result+'% Non Work Related';
+            }
+          
+        }	
+      }else if(work_related == 'No'){
+        if(percentage == ''){
+          wpercent = '';
+          nwpercent = '100% Non Work Related';
+        }else{
+            nwpercent = percentage+'% Non Work Related';
+            result = 100 - parseFloat(percentage);
+            if(percentage == '100'){
+              wpercent = '';
+            }else{
+              wpercent = result+'%  Work Related';
+            }
+          
+        }
+      }
+      $('#report-percentage').val(wpercent+', '+nwpercent);
+      $('#uploaded-spot-report') .html(spot_report);
+      $('#uploaded-incident-report').html(incident_report);
+      $('#uploaded-police-report').html(police_report);
+  }
+
+  const viewSpotFile = () => {
+    const sport_report = document.querySelector('#uploaded-spot-report');
+    const anchorText = sport_report.textContent;
+
+      $('#viewFileModal').modal('show');
+      $('#cancel').hide();
+      $('#file-name-r').html('Uploaded Spot Report');
+
+      let pdfFile = `${baseUrl}uploads/spot_reports/${anchorText}`;
+      let fileExists = checkFileExists(pdfFile);
+
+      if(fileExists){
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', pdfFile, true);
+      xhr.responseType = 'blob';
+
+      xhr.onload = function(e) {
+          if (this.status == 200) {
+          let blob = this.response;
+          let reader = new FileReader();
+
+          reader.onload = function(event) {
+              let dataURL = event.target.result;
+              let iframe = document.querySelector('#pdf-file-viewer');
+              iframe.src = dataURL;
+          };
+          reader.readAsDataURL(blob);
+          }
+      };
+      xhr.send();
+      }
+    }
+
+    const viewIncidentFile = () => {
+    const sport_report = document.querySelector('#uploaded-incident-report');
+    const anchorText = sport_report.textContent;
+
+      $('#viewFileModal').modal('show');
+      $('#cancel').hide();
+      $('#file-name-r').html('Uploaded Incident Report');
+
+      let pdfFile = `${baseUrl}uploads/incident_reports/${anchorText}`;
+      let fileExists = checkFileExists(pdfFile);
+
+      if(fileExists){
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', pdfFile, true);
+      xhr.responseType = 'blob';
+
+      xhr.onload = function(e) {
+          if (this.status == 200) {
+          let blob = this.response;
+          let reader = new FileReader();
+
+          reader.onload = function(event) {
+              let dataURL = event.target.result;
+              let iframe = document.querySelector('#pdf-file-viewer');
+              iframe.src = dataURL;
+          };
+          reader.readAsDataURL(blob);
+          }
+      };
+      xhr.send();
+      }
+    }
+
+    const viewPoliceFile = () => {
+    const sport_report = document.querySelector('#uploaded-police-report');
+    const anchorText = sport_report.textContent;
+
+    $('#viewFileModal').modal('show');
+    $('#cancel').hide();
+    $('#file-name-r').html('POLICE REPORT');
+
+    let pdfFile = `${baseUrl}uploads/police_reports/${anchorText}`;
+    let fileExists = checkFileExists(pdfFile);
+
+    if(fileExists){
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', pdfFile, true);
+    xhr.responseType = 'blob';
+
+    xhr.onload = function(e) {
+        if (this.status == 200) {
+        let blob = this.response;
+        let reader = new FileReader();
+
+        reader.onload = function(event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-file-viewer');
+            iframe.src = dataURL;
+        };
+        reader.readAsDataURL(blob);
+        }
+    };
+    xhr.send();
+    }
+  }
+
+
+    const checkFileExists = (fileUrl) => {
+        let xhr = new XMLHttpRequest();
+        xhr.open('HEAD', fileUrl, false);
+        xhr.send();
+
+        return xhr.status == "200" ? true: false;
+    }
 </script>

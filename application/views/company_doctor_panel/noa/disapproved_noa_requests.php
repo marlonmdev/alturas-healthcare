@@ -5,7 +5,7 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">DISAPPROVED REQUEST</h4>
+        <h4 class="page-title ls-2"><i class="mdi mdi-file-multiple"></i> DISAPPROVED REQUEST</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -50,15 +50,24 @@
               <span class="hidden-xs-down fs-5 font-bold">DISAPPROVED</span></a
             >
           </li>
-            <!-- <li class="nav-item">
+          <li class="nav-item">
             <a
               class="nav-link"
-              href="<?php echo base_url(); ?>company-doctor/noa/requests-list/completed"
+              href="<?php echo base_url(); ?>company-doctor/noa/requests-list/billed"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
+              <span class="hidden-xs-down fs-5 font-bold">BILLED</span></a
             >
-          </li> -->
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="<?php echo base_url(); ?>company-doctor/noa/requests-list/paid"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">PAID</span></a
+            >
+          </li>
         </ul>
 
         <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
@@ -88,6 +97,7 @@
                     <th class="fw-bold" style="color: white">DATE OF ADMISSION</th>
                     <th class="fw-bold" style="color: white">NAME OF HOSPITAL</th>
                     <th class="fw-bold" style="color: white">DATE OF REQUEST</th>
+                    <th class="fw-bold" style="color: white">SOA</th>
                     <th class="fw-bold" style="color: white">STATUS</th>
                     <th class="fw-bold" style="color: white">ACTION</th>
                   </tr>
@@ -193,7 +203,9 @@
           work_related,
           disapproved_by,
           disapprove_reason,
-          disapproved_on
+          disapproved_on,
+          percentage,
+          med_services
         } = res;
 
         $("#viewNoaModal").modal("show");
@@ -213,7 +225,7 @@
         $('#noa-no').html(noa_no);
         $('#disapproved-by').html(disapproved_by);
         $('#disapproved-on').html(disapproved_on);
-        $('#disapprove-reason').html(disapprove_reason);
+        $('#disapprove-reason').html('<strong class="text-danger">' + disapprove_reason + '</strong>');
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
@@ -223,14 +235,50 @@
         $('#admission-date').html(admission_date);
         $('#chief-complaint').html(chief_complaint);
         $('#request-date').html(request_date);
-        if(work_related != ''){
-          $('#work-related-info').removeClass('d-none');
-          $('#work-related-val').html(work_related);
-        }else{
-          $('#work-related-info').addClass('d-none');
-          $('#work-related-val').html('');
-        }
+        $('#med-services-list').html(med_services);
+        if(work_related == 'Yes'){ 
+					if(percentage == ''){
+					  wpercent = '100% W-R';
+					  nwpercent = '';
+					}else{
+					   wpercent = percentage+'%  W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   nwpercent = '';
+					   }else{
+						   nwpercent = result+'% Non W-R';
+					   }
+					  
+					}	
+			   }else if(work_related == 'No'){
+				   if(percentage == ''){
+					   wpercent = '';
+					   nwpercent = '100% Non W-R';
+					}else{
+					   nwpercent = percentage+'% Non W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   wpercent = '';
+					   }else{
+						   wpercent = result+'%  W-R';
+					   }
+					 
+					}
+			   }
+        $('#percentage').html(wpercent+', '+nwpercent);
       }
     });
+  }
+  const viewImage = (path) => {
+    let item = [{
+      src: path, // path to image
+      title: 'Attached RX File' // If you skip it, there will display the original image name
+    }];
+    // define options (if needed)
+    let options = {
+      index: 0 // this option means you will start at first image
+    };
+    // Initialize the plugin
+    let photoviewer = new PhotoViewer(item, options);
   }
 </script>

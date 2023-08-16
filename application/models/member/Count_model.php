@@ -12,19 +12,27 @@ class Count_model extends CI_Model {
     $query = $this->db->get_where('noa_requests', ['status' => 'Pending', 'emp_id' => $emp_id]);
     return $query->num_rows();
   }
-
-  function count_all_hospitals() {
-    $query = $this->db->get_where('healthcare_providers', ['hp_type' => 'Hospital']);
+  function count_all_resubmit_loa($emp_id) {
+    $query = $this->db->get_where('loa_requests', ['status' => 'Pending', 'emp_id' => $emp_id, 'resubmit' => 'Resubmit']);
+    return $query->num_rows();
+  }
+  function count_all_resubmit_Noa($emp_id) {
+    $query = $this->db->get_where('noa_requests', ['status' => 'Pending', 'emp_id' => $emp_id, 'resubmit' => 'Resubmit']);
     return $query->num_rows();
   }
 
+  function count_all_hospitals() {
+    $query = $this->db->get_where('healthcare_providers', ['hp_type' => 'Hospital', 'accredited' => 1]);
+    return $query->num_rows();
+  } 
+
   function count_all_laboratories() {
-    $query = $this->db->get_where('healthcare_providers', ['hp_type' => 'Laboratory']);
+    $query = $this->db->get_where('healthcare_providers', ['hp_type' => 'Laboratory', 'accredited' => 1]);
     return $query->num_rows();
   }
 
   function count_all_clinics() {
-    $query = $this->db->get_where('healthcare_providers', ['hp_type' => 'Clinic']);
+    $query = $this->db->get_where('healthcare_providers', ['hp_type' => 'Clinic', 'accredited' => 1]);
     return $query->num_rows();
   }
 }

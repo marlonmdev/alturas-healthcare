@@ -74,6 +74,24 @@
               <span class="hidden-xs-down fs-5 font-bold">Expired</span></a
             >
           </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="<?php echo base_url(); ?>super-admin/loa/requests-list/billed"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Billed</span></a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="<?php echo base_url(); ?>super-admin/loa/requests-list/paid"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Paid</span></a
+            >
+          </li>
         </ul>
 
         <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
@@ -101,6 +119,7 @@
                     <th class="fw-bold">LOA Type</th>
                     <th class="fw-bold">Healthcare Provider</th>
                     <th class="fw-bold">RX File</th>
+                    <th class="fw-bold">Hospital Receipt</th>
                     <th class="fw-bold">Request Date</th>
                     <th class="fw-bold">Status</th>
                     <th class="fw-bold">Actions</th>
@@ -229,7 +248,7 @@
         $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
         $('#cancelled-by').html(cancelled_by);
         $('#cancelled-on').html(cancelled_on);
-        $('#reason').html(reason);
+        $('#reason').html(`<strong class="text-danger">${reason}</strong>`);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);

@@ -14,7 +14,7 @@
       </div>
     </div>
   </div>
-
+ 
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
@@ -121,7 +121,7 @@
 
      function viewLoaInfo(req_id) {
     $.ajax({
-      url: `${baseUrl}healthcare-provider/loa-requests/billed/view/${req_id}`,
+      url: `${baseUrl}healthcare-provider/loa-requests/view/${req_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);
@@ -132,7 +132,7 @@
           suffix, date_of_birth, age, gender, philhealth_no, blood_type, contact_no, home_address,
           city_address, email, contact_person, contact_person_addr, contact_person_no, healthcare_provider,
           loa_request_type, med_services, health_card_no, requesting_company, request_date, chief_complaint,
-          requesting_physician, attending_physician, rx_file, req_status, work_related, approved_by, approved_on
+          requesting_physician, attending_physician, rx_file, req_status, work_related, approved_by, approved_on,percentage
         } = res;
 
         $("#viewLoaModal").modal("show");
@@ -168,58 +168,87 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
-        $('#work-related').html(work_related);
+        if(work_related == 'Yes'){ 
+					if(percentage == ''){
+					  wpercent = '100% W-R';
+					  nwpercent = '';
+					}else{
+					   wpercent = percentage+'%  W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   nwpercent = '';
+					   }else{
+						   nwpercent = result+'% Non W-R';
+					   }
+					  
+					}	
+			   }else if(work_related == 'No'){
+				   if(percentage == ''){
+					   wpercent = '';
+					   nwpercent = '100% Non W-R';
+					}else{
+					   nwpercent = percentage+'% Non W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   wpercent = '';
+					   }else{
+						   wpercent = result+'%  W-R';
+					   }
+					 
+					}
+			   }
+        $('#percentage').html(wpercent+', '+nwpercent);
       }
     });
   }
 
-    function viewImage(path) {
-        let item = [{
-            src: path, // path to image
-            title: 'Attached RX File' // If you skip it, there will display the original image name
-        }];
-        // define options (if needed)
-        let options = {
-            index: 0 // this option means you will start at first image
-        };
-        // Initialize the plugin
-        let photoviewer = new PhotoViewer(item, options);
-    }
+      function viewImage(path) {
+          let item = [{
+              src: path, // path to image
+              title: 'Attached RX File' // If you skip it, there will display the original image name
+          }];
+          // define options (if needed)
+          let options = {
+              index: 0 // this option means you will start at first image
+          };
+          // Initialize the plugin
+          let photoviewer = new PhotoViewer(item, options);
+      }
 
-    const viewPDFBill = (pdf_bill,loa_no) => {
-      $('#viewPDFBillModal').modal('show');
-      $('#pdf-loa-no').html(loa_no);
+      const viewPDFBill = (pdf_bill,loa_no) => {
+        $('#viewPDFBillModal').modal('show');
+        $('#pdf-loa-no').html(loa_no);
 
-        let pdfFile = `${baseUrl}uploads/pdf_bills/${pdf_bill}`;
-        let fileExists = checkFileExists(pdfFile);
-        
-        if(fileExists){
-        let xhr = new XMLHttpRequest();
-        xhr.open('GET', pdfFile, true);
-        xhr.responseType = 'blob';
+          let pdfFile = `${baseUrl}uploads/pdf_bills/${pdf_bill}`;
+          let fileExists = checkFileExists(pdfFile);
+          
+          if(fileExists){
+          let xhr = new XMLHttpRequest();
+          xhr.open('GET', pdfFile, true);
+          xhr.responseType = 'blob';
 
-        xhr.onload = function(e) {
-            if (this.status == 200) {
-            let blob = this.response;
-            let reader = new FileReader();
+          xhr.onload = function(e) {
+              if (this.status == 200) {
+              let blob = this.response;
+              let reader = new FileReader();
 
-            reader.onload = function(event) {
-                let dataURL = event.target.result;
-                let iframe = document.querySelector('#pdf-viewer');
-                iframe.src = dataURL;
-            };
-            reader.readAsDataURL(blob);
-            }
-        };
-        xhr.send();
-        }
-    }
+              reader.onload = function(event) {
+                  let dataURL = event.target.result;
+                  let iframe = document.querySelector('#pdf-viewer');
+                  iframe.src = dataURL;
+              };
+              reader.readAsDataURL(blob);
+              }
+          };
+          xhr.send();
+          }
+      }
 
-    const checkFileExists = (fileUrl) => {
-        let xhr = new XMLHttpRequest();
-        xhr.open('HEAD', fileUrl, false);
-        xhr.send();
+      const checkFileExists = (fileUrl) => {
+          let xhr = new XMLHttpRequest();
+          xhr.open('HEAD', fileUrl, false);
+          xhr.send();
 
-        return xhr.status == "200" ? true: false;
-    }
+          return xhr.status == "200" ? true: false;
+      }
 </script>

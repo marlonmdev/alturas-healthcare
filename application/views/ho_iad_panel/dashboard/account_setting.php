@@ -2,7 +2,7 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">Account Settings</h4>
+        <h4 class="page-title ls-2"><i class="mdi mdi-account-settings-variant"></i> Account Settings</h4>
 				<div class="ms-auto text-end">
 					<nav aria-label="breadcrumb">
 						<ol class="breadcrumb">
@@ -271,7 +271,7 @@
    * It resets the form, removes the invalid and valid classes from the inputs, and removes the error
    * messages.
    */
-  function clearPasswordValidationErrors() {
+  const clearPasswordValidationErrors = () => {
     $('#passwordUpdateForm')[0].reset();
     $('#passwordUpdateForm').find('input').removeClass('is-invalid');
     $('#passwordUpdateForm').find('input').removeClass('is-valid');
@@ -281,7 +281,7 @@
 /**
  * It clears the form, removes the validation classes, and removes the validation error messages.
  */
-  function clearUsernameValidationErrors(){
+  const clearUsernameValidationErrors = () => {
     $('#usernameUpdateForm')[0].reset();
     $('#usernameUpdateForm').find('input').removeClass('is-invalid');
     $('#usernameUpdateForm').find('input').removeClass('is-valid');
@@ -294,7 +294,7 @@
    * "text". Otherwise, change the type of the confirm password, new password, and current password to
    * "password".
    */
-  function showPasswords() {
+  const showPasswords = () => {
     const current_password = document.querySelector("#current-password");
     const new_password = document.querySelector("#new-password");
     const confirm_password = document.querySelector("#confirm-password");

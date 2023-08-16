@@ -17,14 +17,18 @@
                   <td class="fw-bold ls-1">Requested On :</td>
                   <td class="fw-bold ls-1" id="request-date"></td>
                 </tr>
-                <tr class="d-none" id="work-related-info">
-                  <td class="fw-bold ls-1">Work Related :</td>
-                  <td class="fw-bold ls-1" id="work-related-val"></td>
+                <tr>
+                  <td class="fw-bold ls-1">Maximum Benefit Limit :</td>
+                  <td class="fw-bold ls-1">&#8369;<span id="member-mbl"></span></td>
+                </tr>
+                <tr>
+                  <td class="fw-bold ls-1">Remaining MBL :</td>
+                  <td class="fw-bold ls-1">&#8369;<span id="remaining-mbl"></span></td>
                 </tr>
                 <tr>
                   <td class="fw-bold ls-1">Healthcard Number :</td>
                   <td class="fw-bold ls-1" id="health-card-no"></td>
-                </tr>
+                </tr> 
                 <tr>
                   <td class="fw-bold ls-1">Full Name :</td>
                   <td class="fw-bold ls-1" id="full-name"></td>

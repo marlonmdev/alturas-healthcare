@@ -25,7 +25,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 */
 // $config['base_url'] = 'http://localhost/hmo-portal/';
 
-$config['base_url'] = 'http://' . $_SERVER['HTTP_HOST']. '/alturas_healthcare/';
+$config['base_url'] = 'http://' . $_SERVER['HTTP_HOST']. '/alturas-healthcare/'; 
+
 
 // default super-admin user account
 $config['def_admin_userrole'] = 'super-admin';
@@ -96,7 +97,7 @@ $config['url_suffix'] = '';
 |
 */
 $config['language']  = 'english';
-
+// $config['enable_hooks'] = TRUE;
 /*
 |--------------------------------------------------------------------------
 | Default Character Set
@@ -119,7 +120,7 @@ $config['charset'] = 'UTF-8';
 | setting this variable to TRUE (boolean).  See the user guide for details.
 |
 */
-$config['enable_hooks'] = FALSE;
+$config['enable_hooks'] = false;
 
 /*
 |--------------------------------------------------------------------------
@@ -482,10 +483,10 @@ $config['global_xss_filtering'] = FALSE;
 $config['csrf_protection'] = TRUE;
 $config['csrf_token_name'] = 'token';
 $config['csrf_cookie_name'] = 'csrf_cookie_name';
-$config['csrf_expire'] = 7200;
+$config['csrf_expire'] = 28800;
 $config['csrf_regenerate'] = FALSE;
 $config['csrf_exclude_uris'] = array();
-
+$config['csrf_exclude_uris'] = array('get-hmo/details/cash_advance','get-hmo/details/update_apprv');
 /*
 |--------------------------------------------------------------------------
 | Output Compression

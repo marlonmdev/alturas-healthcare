@@ -25,20 +25,21 @@ defined('BASEPATH') or exit('No direct script access allowed');
 */
 // $config['base_url'] = 'http://localhost/hmo-portal/';
 
-$config['base_url'] = 'http://' . $_SERVER['HTTP_HOST'] . '/alturas_healthcare/';
+$config['base_url'] = 'http://' . $_SERVER['HTTP_HOST']. '/alturas-healthcare/';
+
 
 // default super-admin user account
 $config['def_admin_userrole'] = 'super-admin';
 $config['def_admin_username'] = 'itsysdev';
-$config['def_admin_password'] = 'itsysdev2022';
+$config['def_admin_password'] = 'Acare2022';
 
 // default health-care coordinator user account
 $config['def_hcc_userrole'] = 'healthcare-coordinator';
 $config['def_hcc_username'] = 'ahchrd';
-$config['def_hcc_password'] = 'ahchrd2022';
+$config['def_hcc_password'] = 'Acare2022';
 
 // default password for user accounts
-$config['def_user_password'] = 'Ahcr-2022';
+$config['def_user_password'] = 'Acare2022';
 
 // custom salt for Hashids Encryption
 $config['hashid_salt'] = '$Ahc2022';

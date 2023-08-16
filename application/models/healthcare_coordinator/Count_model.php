@@ -26,17 +26,17 @@ class Count_model extends CI_Model {
   }
 
   function count_all_hospitals() {
-    $query = $this->db->get_where('healthcare_providers', ['hp_type' => 'Hospital']);
+    $query = $this->db->get_where('healthcare_providers', ['hp_type' => 'Hospital', 'accredited' => 1]);
     return $query->num_rows();
   }
 
   function count_all_laboratories() {
-    $query = $this->db->get_where('healthcare_providers', ['hp_type' => 'Laboratory']);
+    $query = $this->db->get_where('healthcare_providers', ['hp_type' => 'Laboratory', 'accredited' => 1]);
     return $query->num_rows();
   }
 
   function count_all_clinics() {
-    $query = $this->db->get_where('healthcare_providers', ['hp_type' => 'Clinic']);
+    $query = $this->db->get_where('healthcare_providers', ['hp_type' => 'Clinic', 'accredited' => 1]);
     return $query->num_rows();
   }
 
@@ -46,4 +46,48 @@ class Count_model extends CI_Model {
              ->join('user_accounts as t2', 't1.doctor_id = t2.doctor_id');
     return $this->db->get()->result_array();
   }
+
+  //Bar =================================================
+  public function bar_pending(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Pending' ");
+    return $query->num_rows(); 
+  }
+
+  public function bar_approved(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Approved' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_completed(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Completed' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_referral(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Referral' ");
+    return $query->num_rows(); 
+  }
+  public function bar_expired(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Expired' ");
+    return $query->num_rows(); 
+  }
+  public function bar_billed(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Billed' ");
+    return $query->num_rows(); 
+  }  
+  public function bar_pending_noa(){
+    $query = $this->db->query("SELECT status FROM noa_requests WHERE status='Pending' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_approved_noa(){
+    $query = $this->db->query("SELECT status FROM noa_requests WHERE status='Approved' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_initial_noa(){
+    $query = $this->db->query("SELECT status FROM initial_billing WHERE status='Initial' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_billed_noa(){
+    $query = $this->db->query("SELECT status FROM noa_requests WHERE status='Billed' ");
+    return $query->num_rows(); 
+  } 
+  //End =================================================
 }

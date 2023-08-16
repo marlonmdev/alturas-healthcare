@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Pages_controller extends CI_Controller {
     
-    public function __construct() {
+    function __construct() {
         parent::__construct();
         $this->load->model('ho_accounting/List_model');
         $user_role = $this->session->userdata('user_role');
@@ -16,9 +16,8 @@ class Pages_controller extends CI_Controller {
     function index() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['billed_count'] = $this->List_model->hp_billed_count();
+		$data['bu_charge_count'] = $this->List_model->hp_paid_count();
 		$data['payment_count'] = $this->List_model->hp_payment_history_count();
-		$data['loa_count'] = $this->List_model->hp_approved_loa_count();
-		$data['noa_count'] = $this->List_model->hp_approved_noa_count();
 
 		$bill = $this->List_model->hp_paid_bill();
 
@@ -26,13 +25,9 @@ class Pages_controller extends CI_Controller {
 			$hp_id = $paid['hp_id'];
 			$data['paid_count'] = $this->List_model->hp_count_paid($hp_id);
 			$data['hp_name'] = $paid['hp_name'];
+		
 		}
 		
-		// $data_paid = [
-		// 	'hp_name' => $paid['hp_name'],
-		// 	'paid_count' => $paid,
-		// ];
-
 		$this->load->view('templates/header', $data);
 		$this->load->view('ho_accounting_panel/dashboard/index');
 		$this->load->view('templates/footer');
@@ -54,6 +49,22 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
     }
 
+	function view_billed_loa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/loa_billing_list/billed_loa_list.php', $hc_provider);
+		$this->load->view('templates/footer');
+	}
+
+	function view_paid_loa() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/loa_billing_list/paid_loa_list.php', $hc_provider);
+		$this->load->view('templates/footer');
+	}
+
     function approved_noa_requests() {
         $data['user_role'] = $this->session->userdata('user_role');
 		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
@@ -62,16 +73,24 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
     }
 
-    function completed_noa_requests() {
+    function view_billed_noa() {
         $data['user_role'] = $this->session->userdata('user_role');
 		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
 		$this->load->view('templates/header', $data);
-		$this->load->view('ho_accounting_panel/noa_billing_list/completed_noa_list.php', $hc_provider);
+		$this->load->view('ho_accounting_panel/noa_billing_list/billed_noa_list.php', $hc_provider);
 		$this->load->view('templates/footer');
     }
 
-	function show_payment_history_form() {
+	function view_paid_noa() {
 		$data['user_role'] = $this->session->userdata('user_role');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/noa_billing_list/paid_noa_list.php', $hc_provider);
+		$this->load->view('templates/footer');
+	}
+
+	function show_payment_history_form() {
+		$data['user_role'] = $this->session->userdata('user_role'); 
 		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
 		$this->load->view('templates/header', $data);
 		$this->load->view('ho_accounting_panel/billing_list_table/payment_history.php', $hc_provider);
@@ -98,11 +117,39 @@ class Pages_controller extends CI_Controller {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['user'] = $this->session->userdata('fullname');
 		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
-		$data['billing'] = $this->List_model->get_for_payment_loa_noa();
-		$data['sum'] = $this->List_model->get_sum_billed();
 		$data['business_unit'] = $this->List_model->get_business_units();
 		$this->load->view('templates/header', $data);
 		$this->load->view('ho_accounting_panel/billing_list_table/print_billed_reports.php', $hc_provider);
+		$this->load->view('templates/footer');
+	} 
+
+	function view_other_hosp_billing() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['user'] = $this->session->userdata('fullname');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
+		$data['business_unit'] = $this->List_model->get_business_units();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/other_hosp_bills.php', $hc_provider);
+		$this->load->view('templates/footer');
+	}
+
+	function view_other_hosp_for_payment() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['user'] = $this->session->userdata('fullname');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
+		$data['business_unit'] = $this->List_model->get_business_units();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/other_hosp_for_payment.php', $hc_provider);
+		$this->load->view('templates/footer');
+	}
+
+	function view_other_hosp_paid_bill() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['user'] = $this->session->userdata('fullname');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
+		$data['business_unit'] = $this->List_model->get_business_units();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/other_hosp_paid_bill.php', $hc_provider);
 		$this->load->view('templates/footer');
 	}
 
@@ -125,9 +172,11 @@ class Pages_controller extends CI_Controller {
 	function view_payments() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
-		$data['payment_no'] = $this->uri->segment(4);
-		$data['hp_name'] =$this->List_model->get_billed_hp_name($this->uri->segment(4));
-		$data['date'] =$this->List_model->get_billed_date($this->uri->segment(4));
+		$bill_id = $this->myhash->hasher($this->uri->segment(4),'decrypt');
+		$payment = $this->List_model->get_payment_nos($bill_id);
+		$data['payment_no'] = $payment['payment_no'];
+		$data['hp_name'] =$this->List_model->get_billed_hp_name($payment['payment_no']);
+		$data['pay'] =$this->List_model->get_billed_date($payment['payment_no']);
 		$this->load->view('templates/header', $data);
 		$this->load->view('ho_accounting_panel/billing_list_table/view_monthly_bill.php', $hc_provider);
 		$this->load->view('templates/footer');
@@ -146,11 +195,82 @@ class Pages_controller extends CI_Controller {
 	function view_monthly_paid_bill() {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
-		$data['payment_no'] = $this->uri->segment(4);
-		$data['hp_name'] =$this->List_model->get_billed_hp_name($this->uri->segment(4));
+		$bill_id = $this->myhash->hasher($this->uri->segment(4),'decrypt');
+		$payment = $this->List_model->get_payment_nos($bill_id);
+		$data['payment_no'] = $payment['payment_no'];
+		$data['hp_name'] =$this->List_model->get_billed_hp_name($payment['payment_no']);
+		$data['pay'] =$this->List_model->get_billed_date($payment['payment_no']);
+
 		$this->load->view('templates/header', $data);
 		$this->load->view('ho_accounting_panel/billing_list_table/view_monthly_paid_bill.php', $hc_provider);
 		$this->load->view('templates/footer');
 	}
 
+	function view_cash_advances() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
+		$data['bu'] = $this->List_model->get_business_units();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/reports/cash_advances_report.php', $hc_provider);
+		$this->load->view('templates/footer');
+	}
+
+	function view_charging() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$hc_provider['hc_provider'] = $this->List_model->get_hc_provider();
+		$data['bu'] = $this->List_model->get_business_units();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/reports/charging_report.php', $hc_provider);
+		$this->load->view('templates/footer');
+	}
+
+	function view_bu_charging() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bu'] = $this->List_model->get_business_units();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/business_unit_charging.php');
+		$this->load->view('templates/footer');
+	}
+
+	function view_bu_for_payment() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bu'] = $this->List_model->get_business_units();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/bu_for_payment_charges.php');
+		$this->load->view('templates/footer');
+	}
+
+	function view_paid_bu_charging() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bu'] = $this->List_model->get_business_units();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/business_unit_paid_charging.php');
+		$this->load->view('templates/footer');
+	}
+
+	function fetch_acc_ledger() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bu'] = $this->List_model->get_business_units();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/ledger_paid.php');
+		$this->load->view('templates/footer');
+	}
+
+	function fetch_mbl_ledger() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['bu'] = $this->List_model->get_business_units();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/ledger_mbl.php');
+		$this->load->view('templates/footer');
+	}
+
+	function setup_bank_accounts() {
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['hc_provider'] = $this->List_model->get_hc_provider();
+		$this->load->view('templates/header', $data);
+		$this->load->view('ho_accounting_panel/billing_list_table/setup_bank_accounts.php');
+		$this->load->view('templates/footer');
+	}
+
+	
 }

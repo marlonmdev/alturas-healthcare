@@ -12,12 +12,11 @@ class Noa_controller extends CI_Controller {
 		if ($logged_in !== true && $user_role !== 'healthcare-provider') {
 			redirect(base_url());
 		}
-	}
-
+	}  
   function fetch_pending_noa_requests() {
 		$this->security->get_csrf_hash();
 		$status = 'Pending';
-    $hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
+    	$hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
 		$list = $this->noa_model->get_datatables($status, $hcare_provider_id);
 		$data = [];
 		foreach ($list as $noa) {
@@ -54,16 +53,45 @@ class Noa_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->noa_model->count_all($status, $hcare_provider_id),
 			"recordsFiltered" => $this->noa_model->count_filtered($status, $hcare_provider_id),
 			"data" => $data,
-		);
+		];
 
 		echo json_encode($output);
 	}
 
+	function generate_printable_noa() {
+		$noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['row'] = $exist = $this->noa_model->db_get_noa_info($noa_id);
+		$data['mbl'] = $this->noa_model->db_get_member_mbl($exist['emp_id']);
+		$data['doc'] = $this->noa_model->db_get_doctor_by_id($exist['approved_by']);
+		$data['bar'] = $this->noa_model->bar_pending();
+		$data['bar1'] = $this->noa_model->bar_approved();
+		$data['bar2'] = $this->noa_model->bar_completed();
+		$data['bar3'] = $this->noa_model->bar_referral();
+		$data['bar4'] = $this->noa_model->bar_expired();
+
+		if($exist['position_level'] <= 6){
+			$data['room_type'] = 'Payward';
+		}else if($exist['position_level'] > 6 && $exist['position_level'] < 10){
+			$data['room_type'] = 'Semi-private';
+		}else if($exist['position_level'] > 9){
+			$data['room_type'] = 'Regular Private';
+		}
+
+		
+		if (!$exist) {
+			$this->load->view('pages/page_not_found');
+		} else {
+			$this->load->view('templates/header', $data);
+			$this->load->view('healthcare_provider_panel/noa/generate_printable_noa.php');
+			$this->load->view('templates/footer');
+		}
+	}
 	function fetch_approved_noa_requests() {
 		$this->security->get_csrf_hash();
 		$status = 'Approved';
@@ -83,7 +111,8 @@ class Noa_controller extends CI_Controller {
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-success">' . $noa['status'] . '</span></div>';
 
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>';
-
+			$custom_actions .= '<a href="' . base_url() . 'healthcare-provider/noa/requested-noa/generate-printable-noa/' . $noa_id . '" data-bs-toggle="tooltip" title="View Notice of Admission
+			"><i class="mdi mdi-file-document fs-2 text-primary pe-2"></i></a>';
 			// shorten name of values from db if its too long for viewing and add ...
 			$short_hosp_name = strlen($noa['hp_name']) > 24 ? substr($noa['hp_name'], 0, 24) . "..." : $noa['hp_name'];
 
@@ -98,12 +127,12 @@ class Noa_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->noa_model->count_all($status, $hcare_provider_id),
 			"recordsFiltered" => $this->noa_model->count_filtered($status, $hcare_provider_id),
 			"data" => $data,
-		);
+		];
 
 		echo json_encode($output);
 	}
@@ -142,12 +171,12 @@ class Noa_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->noa_model->count_all($status, $hcare_provider_id),
 			"recordsFiltered" => $this->noa_model->count_filtered($status, $hcare_provider_id),
 			"data" => $data,
-		);
+		];
 
 		echo json_encode($output);
 	}
@@ -186,12 +215,12 @@ class Noa_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->noa_model->count_all($status, $hcare_provider_id),
 			"recordsFiltered" => $this->noa_model->count_filtered($status, $hcare_provider_id),
 			"data" => $data,
-		);
+		];
 
 		echo json_encode($output);
 	}
@@ -199,7 +228,7 @@ class Noa_controller extends CI_Controller {
 	function fetch_billed_noa_requests() {
 		$this->security->get_csrf_hash();
 		$status = 'Billed';
-    $hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
+    	$hcare_provider_id =  $this->session->userdata('dsg_hcare_prov');
 		$list = $this->noa_model->get_datatables($status, $hcare_provider_id);
 		$data = [];
 		foreach ($list as $noa) {
@@ -216,7 +245,7 @@ class Noa_controller extends CI_Controller {
 			$custom_status = '<div class="text-center"><span class="badge rounded-pill bg-cyan">' . $noa['status'] . '</span></div>';
 
 			$custom_actions = '<a href="JavaScript:void(0)" onclick="viewNoaInfo(\'' . $noa_id . '\')" data-bs-toggle="tooltip" title="View NOA"><i class="mdi mdi-information fs-2 text-info"></i></a>
-			<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $billed_pdf->pdf_bill . '\' , \''. $noa_id .'\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i>
+			<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $billed_pdf['pdf_bill'] . '\' , \''. $noa['noa_no'] .'\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i>
 			</a>';
 
 			// shorten name of values from db if its too long for viewing and add ...
@@ -233,12 +262,12 @@ class Noa_controller extends CI_Controller {
 			$data[] = $row;
 		}
 
-		$output = array(
+		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->noa_model->count_all($status, $hcare_provider_id),
 			"recordsFiltered" => $this->noa_model->count_filtered($status, $hcare_provider_id),
 			"data" => $data,
-		);
+		];
 
 		echo json_encode($output);
 	}
@@ -270,7 +299,7 @@ class Noa_controller extends CI_Controller {
 			$req_stat = $row['status'];
 		}
 
-		$response = array(
+		$response = [
 			'status' => 'success',
 			'token' => $this->security->get_csrf_hash(),
 			'noa_id' => $row['noa_id'],
@@ -289,6 +318,7 @@ class Noa_controller extends CI_Controller {
 			// Full Month Date Year Format (F d Y)
 			'request_date' => date("F d, Y", strtotime($row['request_date'])),
 			'work_related' => $row['work_related'],
+			'percentage' => $row['percentage'],
 			'req_status' => $req_stat,
 			'approved_by' => $doctor_name,
 			'approved_on' => date("F d, Y", strtotime($row['approved_on'])),
@@ -297,9 +327,52 @@ class Noa_controller extends CI_Controller {
 			'disapproved_on' => date("F d, Y", strtotime($row['disapproved_on'])),
 			'member_mbl' => number_format($row['max_benefit_limit'], 2),
 			'remaining_mbl' => number_format($row['remaining_balance'], 2),
-		);
+		];
 
 		echo json_encode($response);
 	}
 
+	// function get_takehome_meds(){
+	// 	$token = $this->security->get_csrf_hash();
+	// 	$medicine = $this->noa_model->get_generic_meds();
+	// 	$response = '';
+	
+	// 	if(empty($medicine)){
+	// 		$response .= '<select class="chosen-select" id="med-services" name="med-services[]" multiple="multiple">';
+	// 		$response .= '<option value="" disabled>No Available Services</option>';
+	// 		$response .= '</select>';
+	// 	}else{
+	// 		$response .= '<select class="chosen-select" id="med-services" name="med-services[]" data-placeholder="Choose medicines..." multiple="multiple">';
+	// 		foreach ($medicine as $meds) {
+	// 			$response .= '<option value="'.$meds['medno'].'" data-price="'.$meds['ceiling_price'].'">'.$meds['generic_name'].''.' ₱'.''.$meds['ceiling_price'].'</option>';
+	// 		}
+	// 		$response .= '</select>';
+	// 	}
+	// 	echo json_encode($response);
+	// }
+
+	function get_takehome_meds(){
+		$token = $this->security->get_csrf_hash();
+		// $hp_id = $this->uri->segment(3);
+		$cost_types = $this->noa_model->get_generic_meds();
+		$response = [];
+
+		if(empty($cost_types)){
+			
+		}else{
+			foreach ($cost_types as $cost_type) {
+				$data = [
+					'med_no' => $cost_type['medno'],
+					'ctyp_description' => $cost_type['generic_name'],
+					'meds_price' => $cost_type['ceiling_price'],
+				];
+				array_push($response,$data);
+			}
+			
+		}
+		// var_dump('response',$response);
+		echo json_encode($response);
+	}
+
 }
+ 

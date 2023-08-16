@@ -18,11 +18,11 @@
 <body>
     <div class="image-background"></div>
     <section class="vh-100" id="main-content">
-        <div class="container py-5 h-100" id="form-div">
+        <div class="container py-5 h-100 scrollable" id="form-div">
             <div class="row d-flex align-items-center justify-content-center h-100" id="login-div">
                 <div class="col-sm-8 col-md-6 col-lg-4 col-xl-4">
                     <div class="text-center">
-                        <img src="<?= base_url() ?>assets/images/AhcLogo.png" class="img-fluid mx-auto" alt="Logo" width="400" height="auto">
+                        <img src="<?= base_url() ?>assets/images/HC_logo.png" class="img-fluid mx-auto" alt="Logo" width="330" height="auto">
                     </div>
                     <div class="mb-3">
                         <h5 class="text-center"><strong><span class="text-dark opacity-75">Login to your Account</span></strong></h5>
@@ -54,6 +54,12 @@
                 </div>
             </div>
         </div>
+        <style>
+             .scrollable {
+                max-height: 80vh; /* Set the maximum height for scrolling */
+                overflow-y: auto; /* Enable vertical scrolling */
+            }
+        </style>
     </section>
     <script src="<?= base_url() ?>assets/vendors/jquery/jquery.min.js"></script>
     <script src="<?= base_url() ?>assets/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -111,7 +117,7 @@
                           login_validated(res.token, res.user_id, res.emp_id, res.fullname, res.user_role, res.dsg_hcare_prov, res.doctor_id, res.logged_in, res.next_route, res.next_page);
                     }
                 },
-            });
+            }); 
         }
 
         const login_validated = (token, user_id, emp_id, fullname, user_role, dsg_hcare_prov, doctor_id, logged_in,
@@ -159,6 +165,11 @@
                     });
                     break;
                 case 'healthcare-provider':
+                    setTimeout(function () {
+                        window.location.href = next_page;
+                    }, 500);   
+                    break;
+                case 'hc-provider-front-desk':
                     setTimeout(function () {
                         window.location.href = next_page;
                     }, 500);   

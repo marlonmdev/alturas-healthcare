@@ -2,17 +2,20 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Billing_controller extends CI_Controller {
-
+    
     function __construct() {
         parent::__construct();
         $this->load->model('healthcare_provider/billing_model');
         $this->load->model('healthcare_provider/loa_model');
+        $this->load->model('healthcare_provider/noa_model');
+        $this->load->model('healthcare_provider/initial_billing_model');
+        $this->load->model('ho_accounting/list_model');
         $user_role = $this->session->userdata('user_role');
         $logged_in = $this->session->userdata('logged_in');
         if ($logged_in !== true && $user_role !== 'healthcare-provider') {
             redirect(base_url());
         }
-    }
+    } 
 
     function redirectBack() {
         if (isset($_SERVER['HTTP_REFERER'])) {
@@ -23,6 +26,343 @@ class Billing_controller extends CI_Controller {
         exit();
     }
 
+    function get_personal_and_company_charge($label,$loa_noa,$net_b,$status,$prevmbl,$old_billing) {
+        
+        $loa_info = $this->loa_model->db_get_loa_info($loa_noa);
+        $noa_info = $this->noa_model->db_get_noa_info($loa_noa);
+       
+			$company_charge = 0;
+			$personal_charge = 0;
+			$remaining_mbl = 0;
+			
+			$wpercent = '';
+			$nwpercent = '';
+			$net_bill = floatval($net_b);
+            $last_bill = ($old_billing != null)? floatval($old_billing): 0;
+            // var_dump("status",$status);
+            // var_dump("net_bill",$net_bill);
+
+			if($label === "loa"){
+                
+                if( date('Y', strtotime($loa_info['request_date'])) < date('Y') && $last_bill != floatval($loa_info['remaining_balance']) && $old_billing != null){     
+                    $previous_mbl = ($status) ? floatval($prevmbl) : $last_bill;
+
+                }else if( date('Y', strtotime($loa_info['request_date'])) == date('Y') && $last_bill != floatval($loa_info['remaining_balance']) && $old_billing != null){
+                    $previous_mbl = ($status) ? floatval($prevmbl) : floatval($loa_info['remaining_balance']);
+                   
+                }
+                else if( date('Y', strtotime($loa_info['request_date'])) == date('Y') && $last_bill != floatval($loa_info['remaining_balance']) && $old_billing == null){
+                    $previous_mbl = ($status) ? floatval($prevmbl) : floatval($loa_info['remaining_balance']);
+                   
+                }
+                else{
+                    $previous_mbl = ($status) ? floatval($prevmbl) : $last_bill;
+                   
+                }
+                // var_dump('prev_mbl',$previous_mbl);
+                $used_mbl = floatval($loa_info['used_mbl']);
+                $max_mbl = floatval($loa_info['max_benefit_limit']);
+                // var_dump($previous_mbl);
+				if($loa_info['work_related'] == 'Yes'){ 
+					if($loa_info['percentage'] == ''){
+					   $wpercent = '100% W-R';
+					   $nwpercent = '';
+					}else{
+					   $wpercent = $loa_info['percentage'].'%  W-R';
+					   $result = 100 - floatval($loa_info['percentage']);
+					   if($loa_info['percentage'] == '100'){
+						   $nwpercent = '';
+					   }else{
+						   $nwpercent = $result.'% Non W-R';
+					   }
+					  
+					}	
+			   }else if($loa_info['work_related'] == 'No'){
+				   if($loa_info['percentage'] == ''){
+					   $wpercent = '';
+					   $nwpercent = '100% Non W-R';
+					}else{
+					   $nwpercent = $loa_info['percentage'].'% Non W-R';
+					   $result = 100 - floatval($loa_info['percentage']);
+					   if($loa_info['percentage'] == '100'){
+						   $wpercent = '';
+					   }else{
+						   $wpercent = $result.'%  W-R';
+					   }
+					 
+					}
+			   }
+
+			   $percentage = floatval($loa_info['percentage']);
+
+			if($loa_info['work_related'] == 'Yes'){
+				if($loa_info['percentage'] == ''){
+                    if($previous_mbl <= 0){
+                        $company_charge = 0;
+                        $personal_charge =  $net_bill;
+                        $remaining_mbl =  0;
+                    }else{
+                        $company_charge = $net_bill;
+                        $personal_charge = 0;
+                        if($net_bill >= $previous_mbl){
+                            $remaining_mbl = 0;
+                        }else if($net_bill < $previous_mbl){
+                            $remaining_mbl = $previous_mbl - $net_bill;
+                        }
+                    }
+					
+                    
+				}else if($loa_info['percentage'] != ''){
+                    if($previous_mbl <= 0){
+                        $company_charge = 0;
+                        $personal_charge =  $net_bill;
+                        $remaining_mbl =  0;
+                    }else{
+                        if($net_bill <= $previous_mbl){
+                            $company_charge = $net_bill;
+                            $personal_charge = 0;
+                            $remaining_mbl = $previous_mbl - $net_bill;
+                        }else if($net_bill > $previous_mbl){
+                            $converted_percent = $percentage/100;
+                            $initial_company_charge = floatval($converted_percent) * $net_bill;
+                            $initial_personal_charge = $net_bill - floatval($initial_company_charge);                     
+                            if(floatval($initial_company_charge) <= $previous_mbl){
+                                $result = $previous_mbl - floatval($initial_company_charge);
+                                $int_personal = floatval($initial_personal_charge) - floatval($result);
+                                $personal_charge = $int_personal;
+                                $company_charge = $previous_mbl;
+                                $remaining_mbl = 0;
+                        
+                            }else if(floatval($initial_company_charge) > $previous_mbl){
+                                $personal_charge = $initial_personal_charge;
+                                $company_charge = $initial_company_charge;
+                                $remaining_mbl = 0;
+                            }
+                            
+                        }
+                    }
+				}
+			}else if($loa_info['work_related'] == 'No'){
+				if($loa_info['percentage'] == ''){
+                    if($previous_mbl <= 0){
+                        $company_charge = 0;
+                        $personal_charge =  $net_bill;
+                        $remaining_mbl =  0;
+                    }else{
+                        if($net_bill <= $previous_mbl){
+                            $company_charge = $net_bill;
+                            $personal_charge = 0;
+                            $remaining_mbl = $previous_mbl - $company_charge;
+                        }else if($net_bill > $previous_mbl){
+                            $company_charge = $previous_mbl;
+                            $personal_charge = $net_bill - $previous_mbl;
+                            $remaining_mbl = 0;
+                        }
+                    }
+					
+                    
+				}else if($loa_info['percentage'] != ''){
+                    if($previous_mbl <= 0){
+                        $company_charge = 0;
+                        $personal_charge =  $net_bill;
+                        $remaining_mbl =  0;
+                    }else{
+                        if($net_bill <= $previous_mbl){
+                            $company_charge = $net_bill;
+                            $personal_charge = 0;
+                            $remaining_mbl = $previous_mbl - $net_bill;
+                        }else if($net_bill > $previous_mbl){
+                            $converted_percent = $percentage/100;
+                            $initial_personal_charge = $converted_percent * $net_bill;
+                            $initial_company_charge = $net_bill - floatval($initial_personal_charge);
+                        
+                            if($initial_company_charge <= $previous_mbl){
+                                $result = $previous_mbl - $initial_company_charge;
+                                $initial_personal = $initial_personal_charge - $result;
+                                if($initial_personal < 0 ){
+                                    $personal_charge = 0;
+                                    $company_charge = $initial_company_charge + $initial_personal_charge;
+                                    $remaining_mbl = $previous_mbl - floatval($company_charge);
+                                }else if($initial_personal >= 0){
+                                    $personal_charge = $initial_personal;
+                                    $company_charge = $previous_mbl;
+                                    $remaining_mbl = 0;
+                                }
+                            }else if($initial_company_charge > $previous_mbl){
+                                $personal_charge = $initial_personal_charge;
+                                $company_charge = $initial_company_charge;
+                                $remaining_mbl = 0;
+                            }
+                        }
+                    }
+				}
+			}
+
+			}else if($label === "noa"){
+
+                if( date('Y', strtotime($noa_info['request_date'])) < date('Y') && $last_bill != floatval($noa_info['remaining_balance']) && $old_billing != null){     
+                    $previous_mbl = ($status) ? floatval($prevmbl) : floatval($noa_info['remaining_balance']);
+                }else if( date('Y', strtotime($noa_info['request_date'])) == date('Y') && $last_bill != floatval($noa_info['remaining_balance']) && $old_billing != null){
+                    $previous_mbl = ($status) ? floatval($prevmbl) : floatval($noa_info['remaining_balance']);
+                }
+                else if( date('Y', strtotime($noa_info['request_date'])) == date('Y') && $last_bill != floatval($noa_info['remaining_balance']) && $old_billing == null){
+                    $previous_mbl = ($status) ? floatval($prevmbl) : floatval($noa_info['remaining_balance']);
+                }
+                else{
+                    $previous_mbl = ($status) ? floatval($prevmbl) : $last_bill;
+                }
+                // var_dump('prev_mbl',$previous_mbl);
+                $used_mbl = floatval($noa_info['used_mbl']);
+                $max_mbl = floatval($noa_info['max_benefit_limit']);
+                // var_dump($previous_mbl);
+				if($noa_info['work_related'] == 'Yes'){ 
+					if($noa_info['percentage'] == ''){
+					   $wpercent = '100% W-R';
+					   $nwpercent = '';
+					}else{
+					   $wpercent = $noa_info['percentage'].'%  W-R';
+					   $result = 100 - floatval($noa_info['percentage']);
+					   if($noa_info['percentage'] == '100'){
+						   $nwpercent = '';
+					   }else{
+						   $nwpercent = $result.'% Non W-R';
+					   }
+					  
+					}	
+			   }else if($noa_info['work_related'] == 'No'){
+				   if($noa_info['percentage'] == ''){
+					   $wpercent = '';
+					   $nwpercent = '100% Non W-R';
+					}else{
+					   $nwpercent = $noa_info['percentage'].'% Non W-R';
+					   $result = 100 - floatval($noa_info['percentage']);
+					   if($noa_info['percentage'] == '100'){
+						   $wpercent = '';
+					   }else{
+						   $wpercent = $result.'%  W-R';
+					   }
+					 
+					}
+			   }
+
+			   $percentage = floatval($noa_info['percentage']);
+
+			if($noa_info['work_related'] == 'Yes'){
+               
+				if($noa_info['percentage'] == ''){
+                    if($previous_mbl <= 0){
+                        $company_charge = 0;
+                        $personal_charge =  $net_bill;
+                        $remaining_mbl =  0;
+                    }else{
+                        $company_charge = $net_bill;
+                        $personal_charge = 0;
+                        if($net_bill >= $previous_mbl){
+                            $remaining_mbl = 0;
+                        }else if($net_bill < $previous_mbl){
+                            $remaining_mbl = $previous_mbl - $net_bill;
+                        }
+                    }
+					
+                    
+				}else if($noa_info['percentage'] != ''){
+					if($previous_mbl <= 0){
+                        $company_charge = 0;
+                        $personal_charge =  $net_bill;
+                        $remaining_mbl =  0;
+                    }else{
+                        if($net_bill <= $previous_mbl){
+                            $company_charge = $net_bill;
+                            $personal_charge = 0;
+                            $remaining_mbl = $previous_mbl - $net_bill;
+                        }else if($net_bill > $previous_mbl){
+                            $converted_percent = $percentage/100;
+                            $initial_company_charge = floatval($converted_percent) * $net_bill;
+                            $initial_personal_charge = $net_bill - floatval($initial_company_charge);
+                            
+                            if(floatval($initial_company_charge) <= $previous_mbl){
+                                $result = $previous_mbl - floatval($initial_company_charge);
+                                $int_personal = floatval($initial_personal_charge) - floatval($result);
+                                $personal_charge = $int_personal;
+                                $company_charge = $previous_mbl;
+                                $remaining_mbl = 0;
+                        
+                            }else if(floatval($initial_company_charge) > $previous_mbl){
+                                $personal_charge = $initial_personal_charge;
+                                $company_charge = $initial_company_charge;
+                                $remaining_mbl = 0;
+                            }
+                        }
+                    }
+					
+				}
+			}else if($noa_info['work_related'] == 'No'){
+				if($noa_info['percentage'] == ''){
+                    if($previous_mbl <= 0){
+                        $company_charge = 0;
+                        $personal_charge =  $net_bill;
+                        $remaining_mbl =  0;
+                    }else{
+                        if($net_bill <= $previous_mbl){
+                            $company_charge = $net_bill;
+                            $personal_charge = 0;
+                            $remaining_mbl = $previous_mbl - $company_charge;
+                        }else if($net_bill > $previous_mbl){
+                            $company_charge = $previous_mbl;
+                            $personal_charge = $net_bill - $previous_mbl;
+                            $remaining_mbl = 0;
+                        }
+                    }
+					
+                   
+				}else if($noa_info['percentage'] != ''){
+                    if($previous_mbl <= 0){
+                        $company_charge = 0;
+                        $personal_charge =  $net_bill;
+                        $remaining_mbl =  0;
+                    }else{
+                        if($net_bill <= $previous_mbl){
+                            $company_charge = $net_bill;
+                            $personal_charge = 0;
+                            $remaining_mbl = $previous_mbl - floatval($net_bill);
+                        }else if($net_bill > $previous_mbl){
+                            $converted_percent = $percentage/100;
+                            $initial_personal_charge = $converted_percent * $net_bill;
+                            $initial_company_charge = $net_bill - floatval($initial_personal_charge);
+                            
+                            if($initial_company_charge <= $previous_mbl){
+                                $result = $previous_mbl - $initial_company_charge;
+                                $initial_personal = $initial_personal_charge - $result;
+                                if($initial_personal < 0 ){
+                                    $personal_charge = 0;
+                                    $company_charge = $initial_company_charge + $initial_personal_charge;
+                                    $remaining_mbl = $previous_mbl - floatval($company_charge);
+                                }else if($initial_personal >= 0){
+                                    $personal_charge = $initial_personal;
+                                    $company_charge = $previous_mbl;
+                                    $remaining_mbl = 0;
+                                }
+                            }else if($initial_company_charge > $previous_mbl){
+                                $personal_charge = $initial_personal_charge;
+                                $company_charge = $initial_company_charge;
+                                $remaining_mbl = 0;
+                            }
+                            
+                        }
+                    }
+				}
+			}
+			}
+            
+            $data = [
+                'company_charge' => $company_charge,
+                'personal_charge' => $personal_charge,
+                'remaining_balance' =>$rmbl = $remaining_mbl,
+                'used_mbl' =>  (($max_mbl-$rmbl)>0)? $max_mbl-$rmbl : $max_mbl,
+                'previous_mbl' => $previous_mbl,
+            ];
+			return  $data;
+	}
     function billing_search_member() {
         $data['user_role'] = $this->session->userdata('user_role');
         $this->load->view('templates/header', $data);
@@ -49,7 +389,7 @@ class Billing_controller extends CI_Controller {
             $data['hp_name'] = $hp_name = $this->billing_model->get_healthcare_provider($hcare_provider_id);
             $data['loa_requests'] = $this->billing_model->get_member_loa($member['emp_id'], $hcare_provider_id);
             $data['noa_requests'] = $this->billing_model->get_member_noa($member['emp_id'], $hcare_provider_id);
-
+            $data['re_upload_requests'] = $this->billing_model->get_re_upload_requests($hcare_provider_id,$member['emp_id']);
             /* This is checking if the image file exists in the directory. */
             $file_path = './uploads/profile_pics/' . $member['photo'];
             $data['member_photo_status'] = file_exists($file_path) ? 'Exist' : 'Not Found';
@@ -85,7 +425,8 @@ class Billing_controller extends CI_Controller {
             $data['hp_name'] = $hp_name = $this->billing_model->get_healthcare_provider($hcare_provider_id);
             $data['loa_requests'] = $this->billing_model->get_member_loa($member['emp_id'], $hcare_provider_id);
             $data['noa_requests'] = $this->billing_model->get_member_noa($member['emp_id'], $hcare_provider_id);
-
+            $data['re_upload_requests'] = $this->billing_model->get_re_upload_requests($hcare_provider_id,$member['emp_id']);
+            //var_dump($data['re_upload_requests']);
             /* This is checking if the image file exists in the directory. */
             $file_path = './uploads/profile_pics/' . $member['photo'];
             $data['member_photo_status'] = file_exists($file_path) ? 'Exist' : 'Not Found';
@@ -93,7 +434,7 @@ class Billing_controller extends CI_Controller {
             $this->session->set_userdata([
                 'b_member_info'    => $member,
                 'b_member_mbl'     => $member_mbl['max_benefit_limit'],
-                'b_member_bal'     => $member_mbl['remaining_balance'],
+                'b_member_bal'     => $member_mbl['remaining_balance'], 
                 'b_hcare_provider' => $hp_name,
                 'b_healthcard_no'  => $member['health_card_no'],
             ]);
@@ -325,6 +666,34 @@ class Billing_controller extends CI_Controller {
     }
 
     function bill_patient_noa() {
+        $this->security->get_csrf_hash();
+        $url_id = $this->uri->segment(5); // encrypted id
+        $noa_id = $this->myhash->hasher($url_id, 'decrypt');
+        // $emp_id = $this->input->post('emp_id', TRUE);
+
+        $hcare_provider = $this->billing_model->get_healthcare_provider_by_id($this->session->userdata('dsg_hcare_prov'));
+        $noa = $this->billing_model->get_noa_to_bill($noa_id);
+
+        $data['user_role'] = $this->session->userdata('user_role');
+        $data['cost_types'] = $this->billing_model->get_hospital_cost_types($noa['hospital_id']);
+        $data['noa'] = $noa;
+        $data['member'] = $this->session->userdata('b_member_info');
+        $data['member_mbl'] = $this->session->userdata('b_member_mbl');
+        $data['remaining_balance'] = $this->session->userdata('b_member_bal');
+        $data['work_related'] = $noa["work_related"];
+        $data['healthcard_no'] = $this->session->userdata('b_healthcard_no');
+        $data['billing_no'] = "BLN-" . strtotime(date('Y-m-d h:i:s'));
+        $data['noa_id'] = $url_id;
+        $data['noa_no'] = $noa['noa_no'];
+        $data['billed_by'] = $this->session->userdata('fullname');
+        $data['hcare_provider'] = $hcare_provider['hp_name'];
+        $data['rooms'] = $this->billing_model->get_hospital_room_types($noa['hospital_id']);
+
+        $this->load->view('templates/header', $data);
+        $this->load->view('healthcare_provider_panel/billing/bill_patient_noa');
+        $this->load->view('templates/footer');
+    }
+    function re_upload_bill_patient() {
         $this->security->get_csrf_hash();
         $url_id = $this->uri->segment(5); // encrypted id
         $noa_id = $this->myhash->hasher($url_id, 'decrypt');
@@ -676,8 +1045,33 @@ class Billing_controller extends CI_Controller {
         $data['healthcard_no'] = $loa['health_card_no'];
         $data['remaining_balance'] = $mbl['remaining_balance'];
         $data['patient_name'] = $loa['first_name'].' '. $loa['middle_name'].' '. $loa['last_name'].' '.$loa['suffix'];
-        $data['billing_no'] = 'BLN-' . strtotime(date('Y-m-d h:i:s'));
+        // $data['billing_no'] = 'BLN-' . strtotime(date('Y-m-d h:i:s'));
 		$data['user_role'] = $this->session->userdata('user_role');
+        $result = $this->billing_model->db_get_max_billing_id();
+		$max_billing_id = !$result ? 0 : $result['billing_id'];
+		$add_billing = $max_billing_id + 1;
+		$current_year = date('Y').date('m');
+
+        if($loa['loa_request_type'] === 'Diagnostic Test'){
+            $med_services = [];
+            $exploded_med_services = explode(";", $loa['med_services']);
+
+            foreach ($exploded_med_services as $ctype_id) :
+                $cost_type = $this->billing_model->get_cost_type_by_id($ctype_id);
+                array_push($med_services, $cost_type['item_description']);
+            endforeach;
+            $data['services'] = $med_services;
+        }
+
+        if($loa['loa_request_type'] === 'Consultation'){
+            $data['services'] = 'Consultation';
+        }
+
+        if($loa['loa_request_type'] === 'Emergency'){
+            $data['services'] = 'Emergency';
+        }
+		// call function loa_number
+		$data['billing_no'] = $this->billing_number($add_billing, 5, 'BLN-'.$current_year);
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_provider_panel/billing/upload_loa_bill_pdf');
 		$this->load->view('templates/footer');
@@ -692,7 +1086,7 @@ class Billing_controller extends CI_Controller {
                     
             include realpath('assets/pdf_extract/vendor/autoload.php'); 
             
-            $allowTypes = array('pdf'); 
+            $allowTypes = ['pdf']; 
             if(in_array($PDFfileType,$allowTypes)){
                 
                 $parser   = new \Smalot\PdfParser\Parser(); 
@@ -715,61 +1109,309 @@ class Billing_controller extends CI_Controller {
         $this->security->get_csrf_hash();
         $loa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
         $billing_no = $this->input->post('billing-no', TRUE);
-        $net_bill = $this->input->post('net-bill', TRUE);
-
+        $net_b = $this->input->post('net-bill', TRUE);
+        $net_bill = floatval(str_replace(',','',$net_b));
+        $hospitalBillData = $_POST['hospital_bill_data'];
+        $att_doc_list = $_POST['att_doc_list'];
+        $jsonData_attending_doctor= $_POST['attending_doctors'];
+        $jsonData_item = $_POST['json_final_charges'];
+        $jsonData_benefits = $_POST['benefits_deductions'];
+        $itemize_bill = json_decode($jsonData_item);
+        $benefits_deductions = json_decode($jsonData_benefits);
+        $attending_doctor = json_decode($jsonData_attending_doctor);
+        // var_dump("attending_doctor",$attending_doctor);
         // PDF File Upload
-        $config['upload_path'] = './uploads/pdf_bills/';
+        //$config['upload_path'] = './uploads/pdf_bills/';
         $config['allowed_types'] = 'pdf';
         $config['encrypt_name'] = TRUE;
         $this->load->library('upload', $config);
 
-        if (!$this->upload->do_upload('pdf-file')) {
+        // if (!$this->upload->do_upload('pdf-file') && !$this->upload->do_upload('itemize-pdf-file')) {
+        //     $response = [
+        //         'status'  => 'save-error',
+        //         'message' => 'PDF Bill Upload Failed'
+        //     ];
+
+        // } 
+
+        $uploaded_files = [];
+        $error_occurred = FALSE;
+        // Define the upload paths for each file
+            $file_paths = [
+                'pdf-file' => './uploads/pdf_bills/',
+                'itemize-pdf-file' => './uploads/itemize_bills/',
+            ];
+    
+        // Iterate over each file input and perform the upload
+            $file_inputs = ['pdf-file','itemize-pdf-file'];
+
+            foreach ($file_inputs as $input_name) {
+
+                if ($input_name === 'itemize-pdf-file' && empty($_FILES[$input_name]['name'])) {
+                    // Skip the 'Medical-Abstract' field if it is empty
+                    continue;
+                }
+
+                $config['upload_path'] = $file_paths[$input_name];
+                $this->upload->initialize($config);
+
+                if (!$this->upload->do_upload($input_name)) {
+                    $error_occurred = TRUE;
+                } else {
+                    $uploaded_files[$input_name] = $this->upload->data();
+                }
+            }
+
+            
+        if ($error_occurred) {
             $response = [
                 'status'  => 'save-error',
                 'message' => 'PDF Bill Upload Failed'
             ];
+        }
+        else {
 
-        } else {
             $upload_data = $this->upload->data();
             $pdf_file = $upload_data['file_name'];
             $loa = $this->billing_model->get_loa_to_bill($loa_id);
-
+            $old_billing = $this->billing_model->get_billing_by_emp_id($loa['emp_id']);
+            $check_bill = $this->billing_model->check_re_upload_billing($billing_no);
+            $get_prev_mbl_by_bill_no = $this->billing_model->get_billing($billing_no);
+            $get_prev_mbl = $this->billing_model->get_prev_mbl($billing_no,$loa['emp_id']);
+            $get_prev_balance = ($get_prev_mbl_by_bill_no != null) ? $get_prev_mbl_by_bill_no['before_remaining_bal'] : null;
+            $result_charge = $this->get_personal_and_company_charge("loa",$loa_id,$net_bill,($check_bill !=0)? true : false,
+             ($get_prev_mbl !=null)?$get_prev_mbl['after_remaining_bal'] :  $get_prev_balance,
+             ($old_billing !=null)? $old_billing['after_remaining_bal'] : null);
+            //  var_dump("re upload",$check_bill);
+            //  var_dump("done reupload",$check_bill)
+            $existed = $this->billing_model->check_billing_loa($loa_id);
+            $bill_no = $this->billing_model->get_billing_no($loa_id,'loa');
             $data = [
-                'billing_no'            => $billing_no,
+                'billing_no'            => ($existed)? $bill_no['billing_no'] : $billing_no,
                 'billing_type'          => 'PDF Billing',
                 'emp_id'                => $loa['emp_id'],
                 'loa_id'                => $loa_id,
                 'hp_id'                 => $this->session->userdata('dsg_hcare_prov'),
                 'work_related'          => $loa['work_related'],
                 'net_bill'              => $net_bill,
-                'pdf_bill'              => $pdf_file,
+                'company_charge'        => $result_charge['company_charge'],
+                'personal_charge'       => $result_charge['personal_charge'],
+                'before_remaining_bal'  => $result_charge['previous_mbl'],
+                'after_remaining_bal'   => $result_charge['remaining_balance'],
+                'pdf_bill'              => (isset($uploaded_files['pdf-file']))? $uploaded_files['pdf-file']['file_name'] : null,
+                'itemized_bill'         => (isset($uploaded_files['itemize-pdf-file']))? $uploaded_files['itemize-pdf-file']['file_name'] : null,
                 'billed_by'             => $this->session->userdata('fullname'),
                 'billed_on'             => date('Y-m-d'),
-                'status'                => 'Billed'
-            ];    
+                'status'                => 'Billed',
+                'extracted_txt'         => $hospitalBillData,
+                'attending_doctors'     => $att_doc_list,
+                'request_date'          => $loa['request_date']
+            ];   
 
-            $inserted = $this->billing_model->insert_billing($data);
-            $existing = $this->billing_model->check_if_loa_already_added($loa_id);
-            $resched = $this->billing_model->check_if_done_created_new_loa($loa_id);
-            $rescheduled = $this->billing_model->check_if_status_cancelled($loa_id);
-            if($rescheduled){
-                if($existing && $resched['reffered'] == 1){
-                    $this->billing_model->set_completed_value($loa_id);
+            $mbl = [
+                        'used_mbl'            => $result_charge['used_mbl'],
+                        'remaining_balance'      => $result_charge['remaining_balance']
+                    ];
+
+            $personal_charge = $result_charge['personal_charge'];
+            
+                    // var_dump("personal",$check_bill);
+                    // var_dump("billing no",$billing_no);
+            if($check_bill){
+                // var_dump('billing no',$billing_no);
+                $this->billing_model->insert_old_billing($bill_no['billing_no']);
+                // $this->billing_model->insert_old_itemized_bill($billing_id);
+                $data += ['done_re_upload' => 'Done',
+                        're_upload' => 0,
+                        ];
+                       
+                $inserted = $this->billing_model->update_billing($data,$billing_no);
+
+                if($inserted){
+                    $row =  $this->billing_model->get_affected_billing($billing_no, $loa['emp_id']);
+                    foreach($row as $n){
+                        $get_prev_mbl1 = $this->billing_model->get_prev_mbl($n['billing_no'],$n['emp_id']);
+
+                        $get_prev_mbl_by_bill_no1 = $this->billing_model->get_billing($n['billing_no']);
+
+                        $result_charge1 = $this->get_personal_and_company_charge(($n['loa_id'])?"loa":"noa", ($n['loa_id'])?$n['loa_id']:$n['noa_id'], $n['net_bill'],($check_bill !=0)? true : false, ($get_prev_mbl1 !=null)?$get_prev_mbl1['after_remaining_bal']:$get_prev_mbl_by_bill_no1['before_remaining_bal'],($old_billing !=null)? $old_billing['after_remaining_bal'] : null);
+                        $data1 =[
+                            'company_charge'        => $result_charge1['company_charge'],
+                            'personal_charge'       => $result_charge1['personal_charge'],
+                            'before_remaining_bal'  => $result_charge1['previous_mbl'],
+                            'after_remaining_bal'   => $result_charge1['remaining_balance'],
+                        ];
+
+                        $mbl1 = [
+                            'used_mbl'            => $result_charge1['used_mbl'],
+                            'remaining_balance'      => $result_charge1['remaining_balance']
+                        ];
+
+                        if($result_charge1['personal_charge']>0){
+                            $advances = ['emp_id'                => $loa['emp_id'],
+                                        'billing_id'            => $n['billing_id'],
+                                        'hp_id'                =>$this->session->userdata('dsg_hcare_prov'),
+                                        'excess_amount'       => $result_charge1['personal_charge'],
+                                        'date_added'             => date('Y-m-d'),
+                                        'status'                => 'Pending'];
+                            $this->billing_model->insert_cash_advance($advances);
+                        }
+                        //  var_dump("affected",$data1);
+                        $this->billing_model->update_affected_billing($data1,$n['billing_no']);
+                        $this->billing_model->update_member_remaining_balance($n['emp_id'], $mbl1);
+                    }
+                        $this->billing_model->update_member_remaining_balance($loa['emp_id'], $mbl);
+                        $this->billing_model->insert_old_itemized_bill($get_prev_mbl_by_bill_no['billing_id']);
+                        $this->billing_model->insert_old_benefits_deductions($get_prev_mbl_by_bill_no['billing_id']);
+                        $this->billing_model->insert_old_attending_doctors($get_prev_mbl_by_bill_no['billing_id']);
+                    // if(count($itemize_bill)){
+                        // $bill_id = $this->billing_model->get_billing_id($data['billing_no'],$data['emp_id'],$data['hp_id']);
+                        foreach($itemize_bill as $items){
+                                $item = [
+                                    'emp_id'        => $data['emp_id'], 
+                                    'billing_id'    => $get_prev_mbl_by_bill_no['billing_id'], 
+                                    'hp_id'         => $data['hp_id'], 
+                                    'labels'        => $items[0], 
+                                    'discription'   => $items[2], 
+                                    'qty'           => $items[3], 
+                                    'unit_price'    => $items[4], 
+                                    'amount'        => $items[5], 
+                                    'date'          => $items[1],
+                                ];
+                              
+                                $this->billing_model->update_itemized_bill($get_prev_mbl_by_bill_no['billing_id'],$item);
+                            }
+                        // }
+                        // var_dump('itemized_bill',$itemize_bill);
+                        // var_dump('billing_id',$get_prev_mbl_by_bill_no['billing_id']);
+                        // var_dump('benfits',$benefits_deductions);
+                        // var_dump('benfits count',count($benefits_deductions));
+                    // if(count($benefits_deductions)){
+                        foreach($benefits_deductions as $items){
+                            $item = [
+                                'emp_id'        => $data['emp_id'], 
+                                'billing_id'    => $get_prev_mbl_by_bill_no['billing_id'], 
+                                'loa_id'         => $loa_id, 
+                                'hp_id'         => $data['hp_id'], 
+                                'benefits_name'        => $items[0], 
+                                'benefits_amount'   => floatval(str_replace(array(',', '(', ')'), '', $items[1])),
+                            ];
+                            // var_dump($get_prev_mbl_by_bill_no['billing_id']);
+                            $this->billing_model->update_benefits_deductions($get_prev_mbl_by_bill_no['billing_id'],$item);
+                        }
+                    // }
+                    if($attending_doctor!==null){
+                        foreach($attending_doctor as $items){
+                            $item = [
+                                'billing_id'    =>  $get_prev_mbl_by_bill_no['billing_id'], 
+                                'emp_id'        => $data['emp_id'], 
+                                'hp_id'         => $data['hp_id'], 
+                                'doc_name'        => $items[0], 
+                                'fee'   => floatval(str_replace(array(','), '', $items[1])),
+                            ];
+                            // var_dump($get_prev_mbl_by_bill_no['billing_id']);
+                            $this->billing_model->update_attending_doctors($get_prev_mbl_by_bill_no['billing_id'],$item);
+                            
+                        }
+                    }
+                   
+                       
                 }
             }else{
-                if($existing){
-                    $this->billing_model->set_completed_value($loa_id);
-                }
-            }
+                
+                    // var_dump("existed",$existed);
+                    if($existed){
+                        $this->billing_model->update_billing($data,$bill_no['billing_no']);
+                    }else{
+                        $inserted = $this->billing_model->insert_billing($data);
+
+                        $this->billing_model->_set_loa_status_completed($loa_id);
+                        if(count($itemize_bill)){
+                        $bill_id = $this->billing_model->get_billing_id($data['billing_no'],$data['emp_id'],$data['hp_id']);
+                        foreach($itemize_bill as $items){
+                                $item = [
+                                    'emp_id'        => $data['emp_id'], 
+                                    'billing_id'    => $bill_id['billing_id'], 
+                                    'hp_id'         => $data['hp_id'], 
+                                    'labels'        => $items[0], 
+                                    'discription'   => $items[2], 
+                                    'qty'           => $items[3], 
+                                    'unit_price'    => $items[4], 
+                                    'amount'        => $items[5], 
+                                    'date'          => $items[1],
+                                ];
+                
+                                $this->billing_model->itemized_bill($item);
+                            }
+                        }
+
+                        foreach($benefits_deductions as $items){
+                            $item = [
+                                'emp_id'        => $data['emp_id'], 
+                                'billing_id'    => $bill_id['billing_id'], 
+                                'loa_id'         => $loa_id, 
+                                'hp_id'         => $data['hp_id'], 
+                                'benefits_name'        => $items[0], 
+                                'benefits_amount'   => floatval(str_replace(array(',', '(', ')'), '', $items[1])),
+                            ];
+                            
+                            $this->billing_model->benefits_deduction($item);
             
-            if(!$inserted){
-                $response = [
-                   'status'  => 'save-error',
-                   'message' => 'PDF Bill Upload Failed'
-                ];
+                        }
+                        
+                        foreach($attending_doctor as $items){
+                            $item = [
+                                'billing_id'    => $bill_id['billing_id'], 
+                                'emp_id'        => $data['emp_id'], 
+                                'hp_id'         => $data['hp_id'], 
+                                'doc_name'        => $items[0], 
+                                'fee'   => floatval(str_replace(array(','), '', $items[1])),
+                            ];
+                            
+                            $this->billing_model->attending_doctors($item);
+            
+                        }
+
+                        if(!$inserted){
+                            $response = [
+                               'status'  => 'save-error',
+                               'message' => 'PDF Bill Upload Failed'
+                            ];
+                        }else{
+                            $billing_id = $this->billing_model->get_billing($billing_no);
+        
+                            if($personal_charge>0){
+                                $advances = ['emp_id'                => $loa['emp_id'],
+                                            'billing_id'            => $billing_id['billing_id'],
+                                            'hp_id'                =>$this->session->userdata('dsg_hcare_prov'),
+                                            'excess_amount'       => $result_charge['personal_charge'],
+                                            'date_added'             => date('Y-m-d'),
+                                            'status'                => 'Pending'];
+                                $this->billing_model->insert_cash_advance($advances);
+                            }
+                            $this->billing_model->update_member_remaining_balance($loa['emp_id'], $mbl);
+                            $existing = $this->billing_model->check_if_loa_already_added($loa_id);
+                            $resched = $this->billing_model->check_if_done_created_new_loa($loa_id);
+                            $rescheduled = $this->billing_model->check_if_status_cancelled($loa_id);
+                        }
+                            
+        
+                        if($rescheduled){   
+                            if($existing && $resched['reffered'] == 1){
+                                $this->billing_model->set_completed_value($loa_id);
+                            }
+                        }else{
+                            if($existing){
+                                $this->billing_model->set_completed_value($loa_id);
+                            }
+                        }
+                       
+                    }
+                    $type = 'LOA';
+                    $this->update_request_status($type, $loa_id);
             }
-            $type = 'LOA';
-            $this->update_request_status($type, $loa_id);
+
+                
             $bill = $this->billing_model->get_billing($billing_no);
             $encrypted_id = $this->myhash->hasher($bill['billing_id'], 'encrypt');
             $response = [
@@ -791,33 +1433,465 @@ class Billing_controller extends CI_Controller {
 		$this->load->view('templates/footer');
     }
 
+    function billing_number($input, $pad_len = 7, $prefix = null) {
+		if ($pad_len <= strlen($input))
+			trigger_error('<strong>$pad_len</strong> cannot be less than or equal to the length of <strong>$input</strong> to generate invoice number', E_USER_ERROR);
+		if (is_string($prefix))
+			return sprintf("%s%s", $prefix, str_pad($input, $pad_len, "0", STR_PAD_LEFT));
+
+		return str_pad($input, $pad_len, "0", STR_PAD_LEFT);
+	}
+
 	function upload_noa_pdf_bill_form() {
         $noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+        $bill_type = $this->uri->segment(3);
         $noa = $this->billing_model->get_noa_to_bill($noa_id);
+        $mbl = $this->billing_model->get_member_mbl($noa['emp_id']);
+        $hcare_provider_id = $this->session->userdata('dsg_hcare_prov');
+        $result = $this->billing_model->db_get_max_billing_id();
+		$max_billing_id = !$result ? 0 : $result['billing_id'];
+		$add_billing = $max_billing_id + 1;
+		$current_year = date('Y').date('m');
+		// call function loa_number
+		$billing_no = $this->billing_number($add_billing, 5, 'BLN-'.$current_year);
+
+        $initial = $this->initial_billing_model->get_initial_billing_no($noa_id, $hcare_provider_id, "Initial");
         $data['noa_id'] = $this->uri->segment(5);
         $data['noa_no'] = $noa['noa_no'];
         $data['healthcard_no'] = $noa['health_card_no'];
+        $data['remaining_balance'] = $mbl['remaining_balance'];
         $data['patient_name'] = $noa['first_name'].' '. $noa['middle_name'].' '. $noa['last_name'].' '.$noa['suffix'];
-        $data['billing_no'] = 'BLN-' . strtotime(date('Y-m-d h:i:s'));
+        if($initial){
+            $data['billing_no'] = $initial->billing_no;
+            $data['admission_date'] = intval(str_replace('-', '', $initial->date_uploaded));
+        }else{
+            // $data['billing_no'] = 'BLN-' . strtotime(date('Y-m-d h:i:s'));
+            $data['billing_no'] = $billing_no;
+            $data['admission_date'] = intval(str_replace('-', '', $noa['admission_date']));
+        }
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_provider_panel/billing/upload_noa_bill_pdf');
+		$this->load->view('healthcare_provider_panel/billing/' . (($bill_type === 'bill-noa') ? "upload_noa_bill_pdf" : "upload_noa_initial_bill_pdf"));
+		// $this->load->view('healthcare_provider_panel/billing/upload_noa_bill_pdf');
 		$this->load->view('templates/footer');
+	}  
+
+	function re_upload_pdf_bill_form() {    
+        $loa_noa = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+        $type = $this->uri->segment(6);
+        $hcare_provider_id = $this->session->userdata('dsg_hcare_prov');
+        $bill_number = $this->billing_model->get_billing_no($loa_noa, $type);
+        if($type == 'loa'){
+            $loa = $this->billing_model->get_loa_to_bill($loa_noa);
+            $prv_mbl = $this->billing_model->get_prev_mbl( $bill_number['billing_no'],$loa['emp_id']);
+            $mbl_by_bill_no = $this->billing_model->get_billing( $bill_number['billing_no']);
+            $data['loa_id'] = $this->uri->segment(5);
+            $data['loa_no'] = $loa['loa_no'];
+            $data['healthcard_no'] = $loa['health_card_no'];
+            // $data['remaining_balance'] =$prv_mbl;
+            $data['remaining_balance'] =($prv_mbl != null)?$prv_mbl['after_remaining_bal']:$mbl_by_bill_no['before_remaining_bal'];
+            $data['patient_name'] = $loa['first_name'].' '. $loa['middle_name'].' '. $loa['last_name'].' '.$loa['suffix'];
+            $data['billing_no'] = $bill_number['billing_no'];
+            $data['user_role'] = $this->session->userdata('user_role');
+            $data['re_upload'] = true;
+            $data['prev_billing'] = $mbl_by_bill_no['pdf_bill'];
+            $data['net_bill'] = $mbl_by_bill_no['net_bill'];
+            // var_dump('loa no',$loa_noa);
+            // var_dump('type',$type);
+            // var_dump('bill number',$bill_number);
+            if($loa['loa_request_type'] === 'Diagnostic Test'){
+                $med_services = [];
+                $exploded_med_services = explode(";", $loa['med_services']);
+    
+                foreach ($exploded_med_services as $ctype_id) :
+                    $cost_type = $this->billing_model->get_cost_type_by_id($ctype_id);
+                    array_push($med_services, $cost_type['item_description']);
+                endforeach;
+                $data['services'] = $med_services;
+            }
+    
+            if($loa['loa_request_type'] === 'Consultation'){
+                $data['services'] = 'Consultation';
+            }
+    
+            if($loa['loa_request_type'] === 'Emergency'){
+                $data['services'] = 'Emergency';
+            }
+
+            $this->load->view('templates/header', $data);
+            $this->load->view('healthcare_provider_panel/billing/upload_loa_bill_pdf');
+            $this->load->view('templates/footer');
+        }
+
+        if($type == 'noa'){
+            $noa = $this->billing_model->get_noa_to_bill($loa_noa);
+            $prv_mbl = $this->billing_model->get_prev_mbl( $bill_number['billing_no'],$noa['emp_id']);
+            $mbl_by_bill_no = $this->billing_model->get_billing($bill_number['billing_no']);
+            //$mbl = $this->billing_model->get_member_mbl($noa['emp_id']);
+            $initial = $this->initial_billing_model->get_initial_billing_no($loa_noa, $hcare_provider_id, "Initial");
+            $data['noa_id'] = $this->uri->segment(5);
+            $data['noa_no'] = $noa['noa_no'];
+            $data['healthcard_no'] = $noa['health_card_no'];
+            $data['remaining_balance'] =($prv_mbl != null)?$prv_mbl['after_remaining_bal']:$mbl_by_bill_no['before_remaining_bal'];
+            $data['patient_name'] = $noa['first_name'].' '. $noa['middle_name'].' '. $noa['last_name'].' '.$noa['suffix'];
+            $data['re_upload'] = true;
+            $data['admission_date'] = intval(str_replace('-', '', $noa['admission_date']));
+            $data['prev_billing'] = $mbl_by_bill_no['pdf_bill'];
+            $data['net_bill'] = $mbl_by_bill_no['net_bill'];
+            if($initial){
+                $data['billing_no'] = $initial->billing_no;
+            }else{
+                $data['billing_no'] =  $bill_number['billing_no'];
+            }
+            $data['user_role'] = $this->session->userdata('user_role');
+            $this->load->view('templates/header', $data);
+            $this->load->view('healthcare_provider_panel/billing/upload_noa_bill_pdf');
+            $this->load->view('templates/footer');
+        }
+     
 	}
 
-    function submit_noa_pdf_bill() {
+    function submit_noa_pdf_bill() { 
         $this->security->get_csrf_hash();
         $noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
         $billing_no = $this->input->post('billing-no', TRUE);
-        $net_bill = $this->input->post('net-bill', TRUE);
+        $net_b = $_POST['net_bill'];
+        // var_dump('net bill', $net_b);
+        $net_bill = floatval(str_replace(',','',$net_b));
+        $med_services = $this->input->post('med-services',true);
+        $tagvalue = json_decode($med_services);
+		$take_home_meds = [];
+		// var_dump('rx_file',$rx_file);
+		if($tagvalue!==null){
+			foreach($tagvalue as $value){
+				$take_home_meds[] = (count(get_object_vars($value))>1)?$value->tagid:$value->value; 
+			}
+		}
+        
+        $hospitalBillData = $_POST['hospital_bill_data'];
+        $att_doc_list = $_POST['att_doc_list'];
+        $jsonData_attending_doctor= $_POST['attending_doctors'];
+        $jsonData_item = $_POST['json_final_charges'];
+        $jsonData_benefits = $_POST['benefits_deductions'];
+        $itemize_bill = json_decode($jsonData_item);
+        $benefits_deductions = json_decode($jsonData_benefits);
+        $attending_doctor = json_decode($jsonData_attending_doctor);
 
+        //  var_dump("items",$itemize_bill);
+        // $hospitalBillArray = json_decode($hospitalBillData, true);
+        //var_dump($hospitalBillArray);
+        // PDF File Upload
+        // $config['upload_path'] = './uploads/pdf_bills/';
+        $config['allowed_types'] = 'pdf|jpeg|jpg|png|gif|svg';
+        $config['encrypt_name'] = TRUE;
+        $this->load->library('upload', $config);
+        
+        $uploaded_files = [];
+        $error_occurred = FALSE;
+
+        $check_bill = $this->billing_model->check_re_upload_billing($billing_no);
+        // Define the upload paths for each file
+            $file_paths = [
+                'pdf-file' => './uploads/pdf_bills/',
+                'itemize-pdf-file' => './uploads/itemize_bills/',
+                'Final-Diagnosis' => './uploads/final_diagnosis/',
+                'Medical-Abstract' => './uploads/medical_abstract/',
+                'Prescription' => './uploads/prescription/'
+            ];
+    
+            // var_dump('billing_no',$billing_no);
+            // var_dump('check bill',$check_bill);
+        // Iterate over each file input and perform the upload
+            $file_inputs = ['pdf-file','itemize-pdf-file', 'Final-Diagnosis', 'Medical-Abstract', 'Prescription'];
+            foreach ($file_inputs as $input_name) {
+                if ($input_name === 'Medical-Abstract' && empty($_FILES[$input_name]['name'])) {
+                    // Skip the 'Medical-Abstract' field if it is empty
+                    continue;
+                }
+
+                if ($input_name === 'Prescription' && empty($_FILES[$input_name]['name'])) {
+                    // Skip the 'Medical-Abstract' field if it is empty
+                    continue;
+                }
+
+                if($check_bill !== 0){
+                    if ($input_name === 'Final-Diagnosis' && empty($_FILES[$input_name]['name'])) {
+                        // Skip the 'Medical-Abstract' field if it is empty
+                        continue;
+                    }
+                }
+                // var_dump('file',$_FILES[$input_name]['name']);
+                // var_dump('input name',$input_name);
+                // var_dump('files',$_FILES[$input_name]['name']);
+                $config['upload_path'] = $file_paths[$input_name];
+                $this->upload->initialize($config);
+               
+                if (!$this->upload->do_upload($input_name)) {
+                    $error = $this->upload->display_errors();
+                    // var_dump('error',$error);
+                    if ($input_name !== 'Prescription' || !empty($error)) {
+                        // If error occurred for required files or any other file, set error flag
+                        $error_occurred = TRUE;
+                    }
+                } else {
+                    $uploaded_files[$input_name] = $this->upload->data();
+                }
+            }
+
+            
+        if ($error_occurred) {
+            $response = [
+                'status'  => 'save-error',
+                'message' => 'PDF Bill Upload Failed'
+            ];
+        } else {
+           
+            $noa = $this->billing_model->get_noa_to_bill($noa_id);
+            $old_billing = $this->billing_model->get_billing_by_emp_id($noa['emp_id']);
+            $get_prev_mbl_by_bill_no = $this->billing_model->get_billing($billing_no);
+            $get_prev_mbl = $this->billing_model->get_prev_mbl($billing_no,$noa['emp_id']);
+            $get_prev_balance = ($get_prev_mbl_by_bill_no != null) ? $get_prev_mbl_by_bill_no['before_remaining_bal'] : null;
+            $get_prev_meds = ($get_prev_mbl_by_bill_no != null) ? $get_prev_mbl_by_bill_no['take_home_meds'] : null;
+            $get_prev_maf = ($get_prev_mbl_by_bill_no != null) ? $get_prev_mbl_by_bill_no['medical_abstract_file'] : null;
+            $get_prev_pf = ($get_prev_mbl_by_bill_no != null) ? $get_prev_mbl_by_bill_no['prescription_file'] : null;
+            $result_charge = $this->get_personal_and_company_charge("noa",$noa_id,$net_bill,($check_bill !=0)? true : false, ($get_prev_mbl !=null)?$get_prev_mbl['after_remaining_bal']:$get_prev_balance,($old_billing !=null)? $old_billing['after_remaining_bal'] : null);
+            $existed = $this->billing_model->check_billing_noa($noa_id);
+            $bill_no = $this->billing_model->get_billing_no($noa_id,'noa');
+            $data = [
+                'billing_no'            => ($existed) ?  $bill_no['billing_no'] : $billing_no,
+                'billing_type'          => 'PDF Billing',
+                'emp_id'                => $noa['emp_id'],
+                'noa_id'                => $noa_id,
+                'hp_id'                 => $this->session->userdata('dsg_hcare_prov'),
+                'work_related'          => $noa['work_related'],
+                'take_home_meds'        => isset($take_home_meds)?implode(',',$take_home_meds):$get_prev_meds,
+                'net_bill'              => $net_bill,
+                'company_charge'        =>  $result_charge['company_charge'],
+                'personal_charge'       =>  $result_charge['personal_charge'],
+                'before_remaining_bal'  =>  $result_charge['previous_mbl'],
+                'after_remaining_bal'   =>  $result_charge['remaining_balance'],
+                'pdf_bill'              => isset($uploaded_files['pdf-file']) ? $uploaded_files['pdf-file']['file_name'] : $get_prev_mbl_by_bill_no['pdf_bill'],
+                'itemized_bill'         => isset($uploaded_files['itemize-pdf-file']) ? $uploaded_files['itemize-pdf-file']['file_name'] : $get_prev_mbl_by_bill_no['itemize-pdf-file'],
+                'final_diagnosis_file'  => isset($uploaded_files['Final-Diagnosis']) ? $uploaded_files['Final-Diagnosis']['file_name'] : $get_prev_mbl_by_bill_no['final_diagnosis_file'],
+                'medical_abstract_file' => isset($uploaded_files['Medical-Abstract']) ? $uploaded_files['Medical-Abstract']['file_name'] : $get_prev_maf,
+                'prescription_file'     => isset($uploaded_files['Prescription']) ? $uploaded_files['Prescription']['file_name'] : $get_prev_pf,
+                'billed_by'             => $this->session->userdata('fullname'),
+                'billed_on'             => date('Y-m-d'),
+                'status'                => 'Billed',
+                'extracted_txt'         => $hospitalBillData,
+                'attending_doctors'      => $att_doc_list,
+                'request_date'          => $noa['request_date']
+            ];    
+            $mbl = [
+                'used_mbl'            => $result_charge['used_mbl'],
+                'remaining_balance'      => $result_charge['remaining_balance']
+            ];
+           
+            // var_dump("check bill",$check_bill);
+            // var_dump("billing no",$billing_no);
+            if($check_bill){
+                // var_dump('get_prev_mbl_by_bill_no',$get_prev_mbl_by_bill_no);
+                $this->billing_model->insert_old_billing($billing_no);
+                $data += ['done_re_upload' => 'Done',
+                're_upload' => 0,
+                ];
+                $inserted = $this->billing_model->update_billing($data,$billing_no);
+
+                if($inserted){
+                    $row =  $this->billing_model->get_affected_billing($billing_no, $noa['emp_id']);
+                    foreach($row as $n){
+                        $get_prev_mbl1 = $this->billing_model->get_prev_mbl($n['billing_no'],$n['emp_id']);
+
+                        $get_prev_mbl_by_bill_no1 = $this->billing_model->get_billing($n['billing_no']);
+
+                        $result_charge1 = $this->get_personal_and_company_charge(($n['noa_id'])?"noa":"loa", ($n['noa_id'])?$n['noa_id']:$n['loa_id'], $n['net_bill'],($check_bill !=0)? true : false, ($get_prev_mbl1 !=null)?$get_prev_mbl1['after_remaining_bal']:$get_prev_mbl_by_bill_no1['before_remaining_bal'],($old_billing !=null)? $old_billing['after_remaining_bal'] : null);
+                        $data1 =[
+                            'company_charge'        =>  $result_charge1['company_charge'],
+                            'personal_charge'       =>  $result_charge1['personal_charge'],
+                            'before_remaining_bal'  =>  $result_charge1['previous_mbl'],
+                            'after_remaining_bal'   =>  $result_charge1['remaining_balance'],
+                        ];
+
+                        $mbl1 = [
+                            'used_mbl'            => $result_charge1['used_mbl'],
+                            'remaining_balance'      => $result_charge1['remaining_balance']
+                        ];
+
+                        if($result_charge1['personal_charge']>0){
+                            $advances = ['emp_id'                => $noa['emp_id'],
+                                        'billing_id'            => $n['billing_id'],
+                                        'hp_id'                =>$this->session->userdata('dsg_hcare_prov'),
+                                        'excess_amount'       => $result_charge1['personal_charge'],
+                                        'date_added'             => date('Y-m-d'),
+                                        'status'                => 'Pending'];
+                            $this->billing_model->insert_cash_advance($advances);
+                        }
+                        //  var_dump("mbl1",$mbl1);
+                        $this->billing_model->update_affected_billing($data1,$n['billing_no']);
+                        $this->billing_model->update_member_remaining_balance($n['emp_id'], $mbl1);
+                    //    var_dump("affected",$data);
+                    }
+                    $this->billing_model->update_member_remaining_balance($noa['emp_id'], $mbl);
+                    $this->billing_model->insert_old_itemized_bill($get_prev_mbl_by_bill_no['billing_id']);
+                    $this->billing_model->insert_old_benefits_deductions($get_prev_mbl_by_bill_no['billing_id']);
+                    $this->billing_model->insert_old_attending_doctors($get_prev_mbl_by_bill_no['billing_id']);
+                    // if(count($itemize_bill)){
+                        // $bill_id = $this->billing_model->get_billing_id($data['billing_no'],$data['emp_id'],$data['hp_id']);
+                        foreach($itemize_bill as $items){
+                                $item = [
+                                    'emp_id'        => $data['emp_id'], 
+                                    'billing_id'    => $get_prev_mbl_by_bill_no['billing_id'], 
+                                    'hp_id'         => $data['hp_id'], 
+                                    'labels'        => $items[0], 
+                                    'discription'   => $items[2], 
+                                    'qty'           => $items[3], 
+                                    'unit_price'    => $items[4], 
+                                    'amount'        => $items[5], 
+                                    'date'          => $items[1],
+                                ];
+                
+                                $this->billing_model->update_itemized_bill($get_prev_mbl_by_bill_no['billing_id'],$item);
+                            }
+                        // }
+                       
+                        // if(count($benefits_deductions)){
+                            foreach($benefits_deductions as $items){
+                                $item = [
+                                    'emp_id'        => $data['emp_id'], 
+                                    'billing_id'    => $get_prev_mbl_by_bill_no['billing_id'], 
+                                    'noa_id'         => $noa_id, 
+                                    'hp_id'         => $data['hp_id'], 
+                                    'benefits_name'        => $items[0], 
+                                    'benefits_amount'   => floatval(str_replace(array(',', '(', ')'), '', $items[1])),
+                                ];
+                                // var_dump($get_prev_mbl_by_bill_no['billing_id']);
+                                $this->billing_model->update_benefits_deductions($get_prev_mbl_by_bill_no['billing_id'],$item);
+                                
+                            }
+
+                            foreach($attending_doctor as $items){
+                                $item = [
+                                    'billing_id'    =>  $get_prev_mbl_by_bill_no['billing_id'], 
+                                    'emp_id'        => $data['emp_id'], 
+                                    'hp_id'         => $data['hp_id'], 
+                                    'doc_name'        => $items[0], 
+                                    'fee'   => floatval(str_replace(array(','), '', $items[1])),
+                                ];
+                                // var_dump($get_prev_mbl_by_bill_no['billing_id']);
+                                $this->billing_model->update_attending_doctors($get_prev_mbl_by_bill_no['billing_id'],$item);
+                                
+                            }
+                        // }
+                }
+
+            }else{
+                    // var_dump("existed",$existed);   
+                    if($existed){
+                        $this->billing_model->update_billing($data,$bill_no['billing_no']);
+                    }else{
+                        $inserted = $this->billing_model->insert_billing($data);
+                        $personal_charge = $result_charge['personal_charge'];
+
+                        $bill_id = $this->billing_model->get_billing_id($data['billing_no'],$data['emp_id'],$data['hp_id']);
+                        foreach($itemize_bill as $items){
+                            $item = [
+                                'emp_id'        => $data['emp_id'], 
+                                'billing_id'    => $bill_id['billing_id'], 
+                                'hp_id'         => $data['hp_id'], 
+                                'labels'        => $items[0], 
+                                'discription'   => $items[2], 
+                                'qty'           => $items[3], 
+                                'unit_price'    => $items[4], 
+                                'amount'        => $items[5], 
+                                'date'          => $items[1],
+                            ];
+            
+                            $this->billing_model->itemized_bill($item);
+            
+                        }
+
+                        foreach($benefits_deductions as $items){
+                            $item = [
+                                'emp_id'        => $data['emp_id'], 
+                                'billing_id'    => $bill_id['billing_id'], 
+                                'noa_id'         => $noa_id, 
+                                'hp_id'         => $data['hp_id'], 
+                                'benefits_name'        => $items[0], 
+                                'benefits_amount'   => floatval(str_replace(array(',', '(', ')'), '', $items[1])),
+                            ];
+            
+                            $this->billing_model->benefits_deduction($item);
+            
+                        }
+
+                        foreach($attending_doctor as $items){
+                            $item = [
+                                'billing_id'    => $bill_id['billing_id'], 
+                                'emp_id'        => $data['emp_id'], 
+                                'hp_id'         => $data['hp_id'], 
+                                'doc_name'        => $items[0], 
+                                'fee'   => floatval(str_replace(array(','), '', $items[1])),
+                            ];
+                            
+                            $this->billing_model->attending_doctors($item);
+            
+                        }
+
+                    if(!$inserted){
+                        $response = [
+                        'status'  => 'save-error',
+                        'message' => 'PDF Bill Upload Failed'
+                        ];
+                    } else{
+                        $billing_id = $this->billing_model->get_billing($billing_no);
+
+                        if($personal_charge>0){
+                            $advances = ['emp_id'                => $noa['emp_id'],
+                                        'billing_id'            => $billing_id['billing_id'],
+                                        'hp_id'                =>$this->session->userdata('dsg_hcare_prov'),
+                                        'excess_amount'       => $result_charge['personal_charge'],
+                                        'date_added'             => date('Y-m-d'),
+                                        'status'                => 'Pending'];
+                            $this->billing_model->insert_cash_advance($advances);
+                        }
+                        $this->billing_model->update_member_remaining_balance($noa['emp_id'], $mbl);
+                    }  
+                    
+                   
+                    }
+
+                    $type = 'NOA';
+                    $this->update_request_status($type, $noa_id);
+            }
+
+            
+            $bill = $this->billing_model->get_billing($billing_no);
+            $encrypted_id = $this->myhash->hasher($bill['billing_id'], 'encrypt');
+            $response = [
+                'status'     => 'success',
+                'message'    => 'PDF Bill Uploaded Successfully',
+                'billing_id' => $encrypted_id,
+            ];   
+        }
+
+     echo json_encode($response);
+	}
+
+    function submit_initial_noa_pdf_bill() { 
+        $this->security->get_csrf_hash();
+        $noa_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+        $billing_no = $this->input->post('billing-no', TRUE);
+        $net_b = $this->input->post('initial-net-bill', TRUE);
+        // $initial_date = $this->input->post('initial-date',TRUE);
+        $net_bill = floatval(str_replace(',', '', $net_b));
+        
         // PDF File Upload
         $config['upload_path'] = './uploads/pdf_bills/';
         $config['allowed_types'] = 'pdf';
         $config['encrypt_name'] = TRUE;
         $this->load->library('upload', $config);
-
-        if (!$this->upload->do_upload('pdf-file')) {
+      
+        if (!$this->upload->do_upload('pdf-file-initial')) {
             $response = [
                 'status'  => 'save-error',
                 'message' => 'PDF Bill Upload Failed'
@@ -826,38 +1900,43 @@ class Billing_controller extends CI_Controller {
         } else {
             $upload_data = $this->upload->data();
             $pdf_file = $upload_data['file_name'];
-            $noa = $this->billing_model->get_noa_to_bill($noa_id);
-
+            $noa_info = $this->noa_model->db_get_noa_info($noa_id);
+    
+            $get_prev_mbl_by_bill_no = $this->billing_model->get_billing($billing_no);
+            $get_prev_mbl = $this->billing_model->get_prev_mbl($billing_no,$noa_info['emp_id']);
+            $old_billing = $this->billing_model->get_billing_by_emp_id($noa_info['emp_id']);
+            $check_bill = $this->billing_model->check_re_upload_billing($billing_no);
+            $result_charge = $this->get_personal_and_company_charge("noa",$noa_id,$net_bill,($check_bill !=0)? true : false, ($get_prev_mbl !=null)?$get_prev_mbl['after_remaining_bal']:$get_prev_mbl_by_bill_no['before_remaining_bal'],($old_billing !=null)? $old_billing['after_remaining_bal'] : null);
+            // var_dump($result_charge);
             $data = [
                 'billing_no'            => $billing_no,
-                'billing_type'          => 'PDF Billing',
-                'emp_id'                => $noa['emp_id'],
+                'emp_id'                => $noa_info['emp_id'],
                 'noa_id'                => $noa_id,
                 'hp_id'                 => $this->session->userdata('dsg_hcare_prov'),
-                'work_related'          => $noa['work_related'],
-                'net_bill'              => $net_bill,
+                'initial_bill'          => $net_bill,
+                'company_charge'        => floatval(str_replace(',', '', $result_charge['company_charge'])),
+                'personal_charge'       => floatval(str_replace(',', '', $result_charge['personal_charge'])),
                 'pdf_bill'              => $pdf_file,
-                'billed_by'             => $this->session->userdata('fullname'),
-                'billed_on'             => date('Y-m-d'),
-                'status'                => 'Billed'
+                'uploaded_by'           => $this->session->userdata('fullname'),
+                'date_uploaded'         => date('Y-m-d'),
+                'status'                => 'Initial',
             ];    
-
-            $inserted = $this->billing_model->insert_billing($data);
+            
+            $inserted = $this->initial_billing_model->insert_initial_bill($data);
+            
             if(!$inserted){
                 $response = [
                    'status'  => 'save-error',
                    'message' => 'PDF Bill Upload Failed'
                 ];
+            }else{
+                $response = [
+                        'status'     => 'success',
+                        'initial'    => true,
+                        'message'    => 'Initial Bill Uploaded Successfully'
+                    ];   
             }
-            $type = 'NOA';
-            $this->update_request_status($type, $noa_id);
-            $bill = $this->billing_model->get_billing($billing_no);
-            $encrypted_id = $this->myhash->hasher($bill['billing_id'], 'encrypt');
-            $response = [
-                'status'     => 'success',
-                'message'    => 'PDF Bill Uploaded Successfully',
-                'billing_id' => $encrypted_id,
-            ];   
+            
         }
 
         echo json_encode($response);
@@ -998,6 +2077,172 @@ class Billing_controller extends CI_Controller {
         }       
     }  
 
+    // function check_image($str){
+	// 	if(isset($_FILES['supporting-docu']['name']) && !empty($_FILES['supporting-docu']['name'])){
+	// 		return true;
+	// 	}else{
+	// 		$this->form_validation->set_message('check_image', 'Supporting Document is Required!');
+	// 		return false;
+	// 	}
+    // }
+    function view_payment_details() {
+		$details_id = $this->myhash->hasher($this->uri->segment(5), 'decrypt');
+		$payment = $this->list_model->get_payment_details($details_id);
+		$loa_no = $this->list_model->get_loa($payment['details_no']);
+		$noa_no = $this->list_model->get_noa($payment['details_no']);
+      
+		$noa_loa_array = [];
+		foreach($loa_no as $covered_loa){
+			if($covered_loa['loa_id'] != '' ){
+				array_push($noa_loa_array, $covered_loa['loa_no']);
+			}
+		}
 
+		foreach($noa_no as $covered_noa){
+			if($covered_noa['noa_id'] != ''){
+				array_push($noa_loa_array, $covered_noa['noa_no']);
+			}
+		}
 
+		$loa_noa_no = implode(',    ', $noa_loa_array);
+		
+			$response = [
+				'status' => 'success',
+				'token' => $this->security->get_csrf_hash(),
+				'payment_no' => $payment['payment_no'],
+				'hp_name' => $payment['hp_name'],
+				'added_on' => date("F d, Y", strtotime($payment['date_add'])),
+				'acc_number' => $payment['acc_number'],
+				'acc_name' => $payment['acc_name'],
+				'check_num' => $payment['check_num'],
+				'check_date' => $payment['check_date'],
+				'bank' => $payment['bank'],
+				'amount_paid' => number_format($payment['amount_paid'],2,'.',','),
+				'billed_date' => 'From '. date("F d, Y", strtotime($payment['startDate'])).' to '. date("F d, Y", strtotime($payment['endDate'])),
+				'covered_loa_no' => $loa_noa_no
+			]; 
+
+		echo json_encode($response);
+	}
+
+    function fetch_initial_billing()
+    {
+        $csrf_token=$this->security->get_csrf_hash();
+
+        $status = 'Initial';
+        $hcare_provider_id = $this->session->userdata('dsg_hcare_prov');
+        $noa_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+        
+        $list = $this->initial_billing_model->get_datatables($noa_id, $hcare_provider_id, $status);
+
+        // var_dump("initial",$list);
+        // var_dump("noa_id",$noa_id);
+        $data = [];
+        foreach ($list as $noa) {
+            $date_uploaded = date("Y-m-d", strtotime($noa['date_uploaded']));
+            $custom_billing_no = '<mark class="bg-primary text-white">' . $noa['billing_no'] . '</mark>';
+            $file_name = $noa['pdf_bill'];
+            $initial_bill = number_format($noa['initial_bill'],2,'.',',');
+            $custom_actions = '<a href="JavaScript:void(0)" onclick="viewPDFBill(\'' . $noa['pdf_bill'] . '\' , \''. $noa['billing_no'] .'\')" data-bs-toggle="tooltip" title="View LOA"><i class="mdi mdi-file-pdf fs-2 text-danger"></i></a>';
+    
+            // This data will be rendered to the datatable
+            $row = [
+                $custom_billing_no,
+                $file_name,
+                $date_uploaded,
+                $initial_bill,
+                $custom_actions
+            ];
+            $data[] = $row;
+        }
+    
+        $draw = $draw = isset($_POST['draw']) ? $_POST['draw'] : 0;
+        $totalRecords = $this->initial_billing_model->count_all($noa_id, $hcare_provider_id, $status);
+        $filteredRecords = $this->initial_billing_model->count_filtered($noa_id, $hcare_provider_id, $status);
+    
+        $output = [
+            "draw" => intval($draw),
+            "recordsTotal" => intval($totalRecords),
+            "recordsFiltered" => intval($filteredRecords),
+            "data" => $data,
+        ];
+    
+        echo json_encode($output);
+    }
+    
+    function payment_history_fetch() {
+		$this->security->get_csrf_hash();
+		$list = $this->list_model->get_payment_datatables();
+		$data = [];
+		$previous_payment_no = '';
+		foreach($list as $payment){
+			// Check if payment_no is the same as the previous iteration
+			if ($payment['payment_no'] !== $previous_payment_no) {
+				$row = [];
+				$details_id = $this->myhash->hasher($payment['details_id'], 'encrypt');
+	
+				$custom_details_no = '<span class="text-dark fw-bold">'.$payment['payment_no'].'</span>';
+	
+				$custom_actions = '<a class="text-info fw-bold ls-1 fs-4" href="JavaScript:void(0)" onclick="viewPaymentInfo(\'' . $details_id . '\',\'' . base_url() . 'uploads/paymentDetails/' . $payment['supporting_file'] . '\')"  data-bs-toggle="tooltip"><u><i class="mdi mdi-view-list fs-3" title="View Payment Details"></i></u></a>';
+	
+				// $custom_actions .= '<a class="text-success fw-bold ls-1 ps-2 fs-4" href="javascript:void(0)" onclick="viewImage(\'' . base_url() . 'uploads/paymentDetails/' . $payment['supporting_file'] . '\')" data-bs-toggle="tooltip"><u><i class="mdi mdi-file-image fs-3" title="View Proof"></i></u></a>';
+	
+				$row[] = $custom_details_no;
+				$row[] = $payment['acc_number'];
+				$row[] = $payment['acc_name'];
+				$row[] = $payment['check_num'];
+				$row[] = $payment['check_date'];
+				$row[] = $payment['bank'];
+				$row[] = $custom_actions;
+				$data[] = $row;
+				
+				// Update the previous_payment_no variable
+				$previous_payment_no = $payment['payment_no'];
+			}
+		}
+		$output = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->list_model->count_payment_all(),
+			"recordsFiltered" => $this->list_model->count_payment_filtered(),
+			"data" => $data
+		];
+		echo json_encode($output);
+	}
+
+    function upload_final_soa(){
+
+        $this->security->get_csrf_hash();
+        $billing_no = $this->input->post('billing-no', TRUE);
+
+        $config['upload_path'] = './uploads/final_soa/';
+        $config['allowed_types'] = 'pdf';
+        $config['encrypt_name'] = TRUE;
+        $this->load->library('upload', $config);
+    
+        if (!$this->upload->do_upload('finalsoa')) {
+            $response = [
+                'status'  => 'save-error',
+                'message' => 'PDF Bill Upload Failed'
+            ];
+        } else {
+            $upload_data = $this->upload->data();
+            $pdf_file = $upload_data['file_name'];
+            $inserted = $this->billing_model->update_billing(['final_soa' => $pdf_file],$billing_no);
+    
+            if(!$inserted){
+                $response = [
+                   'status'  => 'save-error',
+                   'message' => 'Final SOA Upload Failed'
+                ];
+            }else{
+                $response = [
+                        'status'     => 'success',
+                        'message'    => 'Final SOA Uploaded Successfully'
+                    ];   
+            }
+        }
+        echo json_encode($response);
+    }
+    
 }
+ 

@@ -33,6 +33,26 @@
                 </a>
               </li>
 
+              <li class="sidebar-item <?php echo $this->uri->segment(2) == 'override' ? 'selected' : ''; ?>">
+                <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false" title="Request for Zero MBL Employee">
+                  <i class=" mdi mdi-file-multiple"></i>
+                  <span class="hide-menu ls-1">Request for LOA/NOA</span>
+                </a>
+                <ul aria-expanded="false" class="collapse first-level">
+                  <li class="sidebar-item">
+                    <a href="JavaScript:void(0)" onclick="LOAManagersKey()" data-bs-toggle="tooltip"  class="sidebar-link"
+                      ><i class="mdi mdi-note-plus"></i
+                      ><span class="hide-menu ls-1">LOA Requisition</span>
+                    </a>
+                  </li>
+                  <li class="sidebar-item">
+                    <a href="JavaScript:void(0)" onclick="NOAManagersKey()" data-bs-toggle="tooltip"  class="sidebar-link">
+                      <i class="mdi mdi-shape-rectangle-plus"></i><span class="hide-menu ls-1">NOA Requisition</span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
               <li class="sidebar-item 
               <?php echo $this->uri->segment(2) == 'loa' ? 'selected' : ''; ?>
               ">
@@ -41,8 +61,11 @@
                   href="<?php echo base_url(); ?>company-doctor/loa/requests-list"
                   aria-expanded="false"
                   >
-                  <i class="mdi mdi-file-document"></i>
-                  <span class="hide-menu ls-1">LOA Requests</span>
+                  <span class="position-relative">
+                    <span id ="pending-loa-count" class="position-absolute translate-middle badge bg-danger rounded-circle"></span>
+                    <i class="mdi mdi-file-document"></i>
+                      <span class="hide-menu ls-1">LOA Requests</span>
+                    </span>
                 </a>
               </li>
 
@@ -54,16 +77,18 @@
                   href="<?php echo base_url(); ?>company-doctor/noa/requests-list"
                   aria-expanded="false"
                   >
-                  <i class="mdi mdi-file-chart"></i>
-                  <span class="hide-menu ls-1">NOA Requests</span>
+                  <span class="position-relative">
+                    <span id ="pending-noa-count" class="position-absolute translate-middle badge bg-danger rounded-circle"></span>
+                    <i class="mdi mdi-file-chart"></i>
+                    <span class="hide-menu ls-1">NOA Requests</span>
+                    </span>
                 </a>
               </li>
-
              
               <li class="sidebar-item">
                  <!-- $account_settings_url is defined in the header.php file -->
                 <a
-                  class="sidebar-link"
+                  class="sidebar-link"  
                   href="<?php echo $account_settings_url; ?>"
                   aria-expanded="false"
                   >
@@ -83,3 +108,24 @@
                   <span class="hide-menu ls-1">Logout</span>
                 </a>
               </li> 
+              <script>
+                const baseurl = '<?php echo base_url(); ?>';
+                  $(document).ready(function(){
+                    
+                    $.ajax({
+                        url: `${baseurl}company-doctor/update/notification/fetch`,
+                        type: "GET",
+                        data: {token:'<?php echo $this->security->get_csrf_hash(); ?>'},
+                        dataType: "json",
+                        success:function(response){
+                          if(response.pending_loa > 0){
+                            $('#pending-loa-count').text(response.pending_loa);
+                          }
+                          if(response.pending_noa > 0){
+                            $('#pending-noa-count').text(response.pending_noa);
+                          }
+                           
+                        }
+                    });
+                  });
+              </script>

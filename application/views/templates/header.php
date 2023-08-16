@@ -6,12 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex,nofollow" />
     <title>Alturas Healthcare</title>
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="<?php echo base_url(); ?>assets/images/hmo-logo.png"
-    />
+    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo base_url(); ?>assets/images/hmo-logo.png"/>
     <!-- Start Custom CSS -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/matrixDashboard/dist/css/style.min.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/matrixDashboard/dist/css/cards.css" />
@@ -27,10 +22,12 @@
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/photoviewer/dist/photoviewer.min.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/flatpickr/flatpickr.min.css" />
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/flatpickr/themes/confetti.css" />
+    <!-- <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/multi-select-tag-main/src/css/multi-select-tag.css" /> -->
     <!-- <link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendors/pdfjs/web/viewer.css" /> -->
     <!-- End of Vendors CSS -->
 
     <!-- Script Tags -->
+    <!-- <script src="<?php echo base_url(); ?>assets/vendors/multi-select-tag-main/src/js/multi-select-tag.js" ></script> -->
     <script src="<?php echo base_url(); ?>assets/vendors/jquery/jquery.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/vendors/chosen/chosen.jquery.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/vendors/qrcodejs/qrcode.min.js" defer></script>
@@ -40,8 +37,9 @@
     <script src="<?php echo base_url(); ?>assets/vendors/photoviewer/dist/photoviewer.min.js" defer></script>
     <script src="<?php echo base_url(); ?>assets/vendors/Toastr/build/toastr.min.js" defer></script>
   </head>
-
+  
   <body>
+ 
     <!-- Start of Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModal" aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -61,113 +59,72 @@
     </div>
     <!-- End of Logout Modal-->
 
-    <div
-      id="main-wrapper"
-      data-layout="vertical"
-      data-navbarbg="skin5"
-      data-sidebartype="full"
-      data-sidebar-position="absolute"
-      data-header-position="absolute"
-      data-boxed-layout="full"
-    >
+    <div id="main-wrapper" data-layout="vertical" data-navbarbg="skin5" data-sidebartype="full" data-sidebar-position="absolute" data-header-position="absolute" data-boxed-layout="full"> 
 
-    <!-- Start of DB Backup Modal-->
-    <div class="modal fade" id="dbBackupModal" tabindex="-1" role="dialog" aria-labelledby="dbBackupModal" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title ls-2" id="dbBackupModal"><strong>Database Backup</strong></h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-            </button>
-          </div>
-          <div class="modal-body text-center fs-4">
-            <form method="POST" action="<?php echo base_url(); ?>super-admin/database-backup" id="dbBackupForm">
-              <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
-              <div class="form-group mb-3">
-                <input type="text" class="form-control" name="backup-name" id="backup-name" placeholder="Enter File Name" required>
-              </div>
+      <!-- Start of DB Backup Modal-->
+      <div class="modal fade" id="dbBackupModal" tabindex="-1" role="dialog" aria-labelledby="dbBackupModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title ls-2" id="dbBackupModal"><strong>Database Backup</strong></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+              </button>
+            </div>
+            <div class="modal-body text-center fs-4">
+              <form method="POST" action="<?php echo base_url(); ?>super-admin/database-backup" id="dbBackupForm">
+                <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
+                <div class="form-group mb-3">
+                  <input type="text" class="form-control" name="backup-name" id="backup-name" placeholder="Enter File Name" required>
+                </div>
 
-              <button type="submit" class="btn btn-primary me-1"><i class="mdi mdi-content-save"></i> Submit</button>
-              <button type="button" class="btn btn-dark" data-bs-dismiss="modal"><i class="mdi mdi-close-box"></i> Close</button>
-            </form>
+                <button type="submit" class="btn btn-primary me-1"><i class="mdi mdi-content-save"></i> Submit</button>
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal"><i class="mdi mdi-close-box"></i> Close</button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <!-- End of DB Backup Modal-->
+      <!-- End of DB Backup Modal-->
 
       <!-- Topbar header -->
       <header class="topbar" data-navbarbg="skin5">
         <nav class="navbar top-navbar navbar-expand-md navbar-dark">
           <div class="navbar-header">
             <!-- Logo -->
-            <?php $homepage = base_url().$user_role.'/dashboard'; ?>
+            <?php $homepage = base_url().$user_role.'/dashboard'; ?> 
             <a class="navbar-brand" href="<?= $homepage ?>">
               <!-- Logo icon -->
-              <b class="align-middle ps-md-2 ps-lg-2 ps-sm-0 ps-xs-0">
+              <b class="">
                 <img
-                  src="<?php echo base_url(); ?>assets/images/AhcLogo2.png"
+                  src="<?php echo base_url(); ?>assets/images/HC_logo.png"
                   alt="Logo"
                   class="light-logo"
-                  width="180"
+                  width="90"
                   height="auto"
                 />
               </b>
-              <!--End Logo icon -->
             </a>
             <!-- End Logo -->
             
-
             <!-- Toggle which is visible on mobile only -->
-            <a
-              class="nav-toggler waves-effect waves-light d-block d-md-none"
-              href="javascript:void(0)"
-              ><i class="ti-menu ti-close"></i
-            ></a>
+            <a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)"><i class="ti-menu ti-close"></i></a>
           </div>
           <!-- End Logo -->
-          <div
-            class="navbar-collapse collapse"
-            id="navbarSupportedContent"
-            data-navbarbg="skin5"
-          >
+
+          <div class="navbar-collapse collapse" id="navbarSupportedContent" data-navbarbg="skin5">
             <!-- toggle and nav items -->
             <ul class="navbar-nav float-start me-auto">
               <li class="nav-item d-none d-md-block">
-                <a
-                  class="nav-link sidebartoggler waves-effect waves-light"
-                  href="javascript:void(0)"
-                  data-sidebartype="mini-sidebar"
-                  ><i class="mdi mdi-menu font-24"></i
-                ></a>
+                <a class="nav-link sidebartoggler waves-effect waves-light" href="javascript:void(0)" data-sidebartype="mini-sidebar">
+                  <i class="mdi mdi-menu font-24"></i>
+                </a>
               </li>
 
-              <!-- Start of Search Form -->
-              <!-- <li class="nav-item search-box">
-                <a
-                  class="nav-link waves-effect waves-dark"
-                  href="javascript:void(0)"
-                  ><i class="mdi mdi-magnify fs-4"></i
-                ></a>
-                <form class="app-search position-absolute">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Search &amp; enter"
-                  />
-                  <a class="srh-btn"><i class="mdi mdi-window-close"></i></a>
-                </form>
-              </li> -->
-              <!-- End of Search Form -->
+             
             </ul>
             <!-- Right side toggle and nav items -->
             <ul class="navbar-nav float-end">
-              <!-- Notifications -->
-              <!-- <li class="nav-item dropdown">
-                <a class="nav-link" href="#">
-                  <i class="mdi mdi-bell font-24"></i>
-                </a>
-              </li> -->
+           
 
               <li class="nav-item dropdown">
                 <strong class="nav-link ls-1">
@@ -180,35 +137,14 @@
 
               <!-- User profile -->
               <li class="nav-item dropdown">
-                <a
-                  class="
-                    nav-link
-                    dropdown-toggle
-                    text-muted
-                    waves-effect waves-dark
-                    pro-pic
-                  "
-                  href="#"
-                  id="navbarDropdown"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  <img
-                    src="<?php echo base_url(); ?>assets/images/default.png"
-                    alt="user"
-                    class="rounded-circle"
-                    width="31"
-                  />
+                <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <img src="<?php echo base_url(); ?>assets/images/default.png" alt="user" class="rounded-circle" width="31"/>
                 </a>
-                <ul
-                  class="dropdown-menu dropdown-menu-end user-dd animated"
-                  aria-labelledby="navbarDropdown"
-                >
+
+                <ul class="dropdown-menu dropdown-menu-end user-dd animated" aria-labelledby="navbarDropdown">
                   <!-- My Profile Link -->
                   <?php if ($this->uri->segment(1) == 'member') : ?>
-                    <a class="dropdown-item" href="<?php echo base_url() . 'member/profile' ?>"
-                      >
+                    <a class="dropdown-item" href="<?php echo base_url() . 'member/profile' ?>">
                       <i class="mdi mdi-account me-1 ms-1"></i> My Profile
                     </a>
                     <div class="dropdown-divider"></div>
@@ -262,6 +198,12 @@
                     case "healthcare-provider":
                       include "healthcare_provider_links.php";
                       break;
+                    case "hc-provider-front-desk":
+                      include "hc_provider_front_desk_links.php";
+                      break;
+                    case "hc-provider-accounting":
+                      include "hc_provider_accounting_links.php";
+                      break;
                     case "head-office-accounting":
                       include "ho_accounting_links.php";
                       break;
@@ -277,3 +219,4 @@
         <!-- End Sidebar scroll-->
       </aside>
       <!-- End Left Sidebar  -->
+      <?php include 'managers_key_modal.php' ?>

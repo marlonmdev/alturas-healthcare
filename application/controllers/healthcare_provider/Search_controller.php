@@ -33,11 +33,12 @@ class Search_controller extends CI_Controller {
             $member_mbl = empty($row['max_benefit_limit']) ? 'None' : '&#8369;' . number_format($row['max_benefit_limit'], 2);
             // Format Remaining Balance
             $member_rmg_bal = empty($row['remaining_balance']) ? 'None' : '&#8369;' . number_format($row['remaining_balance'], 2);
+            // $member_rmg_bal = empty($row['remaining_balance']) ? 'None' : '&#8369;' . number_format($row['remaining_balance'], 2);
 
             /* This is checking if the image file exists in the directory. */
             $file_path = './uploads/profile_pics/' . $row['photo'];
             // $data['member_photo_status'] = file_exists($file_path) ? 'Exist' : 'Not Found';
-            
+            // var_dump('rmbl',$member_rmg_bal);
             $response = [
                 'token' => $token,
                 'status' => 'success',
@@ -70,7 +71,7 @@ class Search_controller extends CI_Controller {
                 'contact_person_no' => $row['contact_person_no'],
                 'mbr_mbl' => $member_mbl,
                 'mbr_rmg_bal' => $member_rmg_bal,
-                'photo_status' => file_exists($file_path) ? 'Exist' : 'Not Found'
+                'photo_status' => file_exists($file_path) ? 'Exist' : 'Not Found',
             ];
         }
         echo json_encode($response);
@@ -140,5 +141,41 @@ class Search_controller extends CI_Controller {
         echo json_encode($response);
     }
 
+    function get_loa_noa() {
+        $token = $this->security->get_csrf_hash();
+        $emp_id = $this->input->get('emp_id');
+        $hp_id = $this->input->get('hp_id');
+        $data = $this->search_model->db_get_loa_noa_history($emp_id,$hp_id);
+
+        echo json_encode($data);
+    }
+
+    function search_by_name(){
+        $member_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$hp_id = $this->session->userdata('dsg_hcare_prov');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['member'] = $member = $this->patient_model->db_get_member_details($member_id);
+		$data['mbl'] = $this->patient_model->db_get_member_mbl($member['emp_id']);
+		$data['loa'] = $this->loa_model->get_loa_history($hp_id,$member['emp_id']);
+		$data['noa'] = $this->noa_model->get_noa_history($hp_id,$member['emp_id']);
+		$data['hp_id'] = $hp_id;
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_provider_panel/patient/patient_profile');
+		$this->load->view('templates/footer');
+    }
+    function search_by_healthcard(){
+        $member_id = $this->myhash->hasher($this->uri->segment(4), 'decrypt');
+		$hp_id = $this->session->userdata('dsg_hcare_prov');
+		$data['user_role'] = $this->session->userdata('user_role');
+		$data['member'] = $member = $this->patient_model->db_get_member_details($member_id);
+		$data['mbl'] = $this->patient_model->db_get_member_mbl($member['emp_id']);
+		$data['loa'] = $this->loa_model->get_loa_history($hp_id,$member['emp_id']);
+		$data['noa'] = $this->noa_model->get_noa_history($hp_id,$member['emp_id']);
+		$data['hp_id'] = $hp_id;
+		$this->load->view('templates/header', $data);
+		$this->load->view('healthcare_provider_panel/patient/patient_profile');
+		$this->load->view('templates/footer');
+
+    }
 
 }

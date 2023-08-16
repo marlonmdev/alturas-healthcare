@@ -2,7 +2,7 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">DISAPPROVED REQUEST</h4>
+        <h4 class="page-title ls-2" style="font-size:14px">DISAPPROVED REQUEST</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -19,43 +19,36 @@
     <div class="row">
       <div class="col-lg-12">
         <ul class="nav nav-tabs mb-4" role="tablist">
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">PENDING</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="pending mdi mdi-dots-horizontal"></i> PENDING</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/approved" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/approved" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">APPROVED</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="approved mdi mdi-thumb-up"></i> APPROVED</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link active" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/disapproved" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1 active" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/disapproved" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">DISAPPROVED</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="disapproved mdi mdi-thumb-down"></i> DISAPPROVED</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/expired" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/expired" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">EXPIRED</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="expired mdi mdi-calendar-clock"></i> EXPIRED</span>
             </a>
           </li>
-
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/completed" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">COMPLETED</span>
-            </a>
-          </li> -->
         </ul>
 
-        <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
+        <!-- <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
           <div class="input-group">
             <div class="input-group-prepend">
               <span class="input-group-text bg-dark text-white"><i class="mdi mdi-filter"></i></span>
@@ -67,7 +60,7 @@
               <?php endforeach; ?>
             </select>
           </div>
-        </div>
+        </div> -->
 
         <div class="card shadow">
           <div class="card-body">
@@ -75,29 +68,29 @@
               <table class="table table-hover" id="disapprovedNoaTable">
                 <thead style="background-color:#00538C">
                   <tr>
-                    <th class="fw-bold" style="color: white">NOA NO.</th>
-                    <th class="fw-bold" style="color: white">NAME OF PATIENT</th>
-                    <th class="fw-bold" style="color: white">DATE OF ADMISSION</th>
-                    <th class="fw-bold" style="color: white">NAME OF HOSPITAL</th>
-                    <th class="fw-bold" style="color: white">DATE OF REQUEST</th>
-                    <th class="fw-bold" style="color: white">STATUS</th>
-                    <th class="fw-bold" style="color: white">ACTION</th>
-                  </tr>
+                    <th class="fw-bold" style="color: white;font-size:12px">NOA NO.</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">NAME OF PATIENT</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">DATE OF ADMISSION</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">NAME OF HOSPITAL</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">DATE OF REQUEST</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">STATUS</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">ACTION</th>
                 </thead>
-                <tbody>
+                  </tr>
+                <tbody style="color:black;font-size:12px">
                 </tbody>
               </table>
             </div>
           </div>
         </div>
 
-        <!-- View NOA Details Modal -->
+        <!-- Disapproved Modal-->
         <div class="modal fade" id="viewNoaModal" tabindex="-1" data-bs-backdrop="static">
           <div class="modal-dialog modal-lg">
             <div class="modal-content">
               <section id="printableDiv">
-                <div class="modal-header">
-                  <h4 class="modal-title ls-2">NOA #: <span id="noa-no" class="text-primary"></span> <span id="noa-status"></span></h4>
+                <div class="modal-header" style="background-color:#00538c">
+                  <h4 class="modal-title ls-2" style="color:#fff">NOA #: <span id="noa_no" class="text-warning"></span> <span id="noa_status"></span></h4>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                   </button>
                 </div>
@@ -110,55 +103,104 @@
                       <table class="table table-bordered table-striped table-hover table-responsive table-sm">
                         <tr>
                           <td class="fw-bold ls-1">Requested On :</td>
-                          <td class="fw-bold ls-1" id="request-date"></td>
+                          <td class="fw-bold ls-1" id="request_date"></td>
                         </tr>
                         <tr>
-                          <td class="fw-bold ls-1">Disapproved By :</td>
-                          <td class="fw-bold ls-1" id="disapproved-by"></td>
+                          <td class="fw-bold ls-1">Admission Date :</td>
+                          <td class="fw-bold ls-1" id="admission_date"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Disapproved On :</td>
-                          <td class="fw-bold ls-1" id="disapproved-on"></td>
+                          <td class="fw-bold ls-1" id="disapproved_on"></td>
                         </tr>
                         <tr>
-                          <td class="fw-bold ls-1">Reason for Disapproval :</td>
-                          <td class="fw-bold ls-1" id="disapprove-reason"></td>
+                          <td class="fw-bold ls-1">Disapproved By :</td>
+                          <td class="fw-bold ls-1" id="disapproved_by"></td>
+                        </tr>
+                        
+                        <tr>
+                          <td class="fw-bold ls-1">Percentage :</td>
+                          <td class="fw-bold ls-1" id="percentage"></td>
                         </tr>
                         <tr>
-                          <td class="fw-bold ls-1">Member's Maximum Benefit Limit :</td>
-                          <td class="fw-bold ls-1">&#8369;<span id="member-mbl"></span></td>
+                          <td class="fw-bold ls-1">Maximum Benefit Limit :</td>
+                          <td class="fw-bold ls-1">&#8369;<span id="mbl"></span></td>
                         </tr>
                         <tr>
-                          <td class="fw-bold ls-1">Member's Remaining MBL :</td>
-                          <td class="fw-bold ls-1">&#8369;<span id="remaining-mbl"></span></td>
+                          <td class="fw-bold ls-1">Remaining MBL :</td>
+                          <td class="fw-bold ls-1">&#8369;<span id="remaining_mbl"></span></td>
                         </tr>
-                        <tr class="d-none" id="work-related-info">
-                          <td class="fw-bold ls-1">Work Related :</td>
-                          <td class="fw-bold ls-1" id="work-related-val"></td>
+                        <tr>
+                          <td class="fw-bold ls-1">Healthcard No. :</td>
+                          <td class="fw-bold ls-1" id="healthcard_no"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Full Name :</td>
-                          <td class="fw-bold ls-1" id="full-name"></td>
+                          <td class="fw-bold ls-1" id="full_name"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Date of Birth :</td>
-                          <td class="fw-bold ls-1" id="date-of-birth"></td>
+                          <td class="fw-bold ls-1" id="date_of_birth"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Age :</td>
                           <td class="fw-bold ls-1" id="age"></td>
                         </tr>
                         <tr>
-                          <td class="fw-bold ls-1">Hospital :</td>
-                          <td class="fw-bold ls-1" id="hospital-name"></td>
+                          <td class="fw-bold ls-1">Gender :</td>
+                          <td class="fw-bold ls-1" id="gender"></td>
                         </tr>
                         <tr>
-                          <td class="fw-bold ls-1">Admission Date :</td>
-                          <td class="fw-bold ls-1" id="admission-date"></td>
+                          <td class="fw-bold ls-1">Blood Type :</td>
+                          <td class="fw-bold ls-1" id="blood_type"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Philhealth No. :</td>
+                          <td class="fw-bold ls-1" id="philhealth_no"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Home Address :</td>
+                          <td class="fw-bold ls-1" id="home_address"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">City Address :</td>
+                          <td class="fw-bold ls-1" id="city_address"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Contact Number :</td>
+                          <td class="fw-bold ls-1" id="contact_no"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Email Address :</td>
+                          <td class="fw-bold ls-1" id="email_address"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Contact Person Name :</td>
+                          <td class="fw-bold ls-1" id="contact_person_name"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Contact Person Address :</td>
+                          <td class="fw-bold ls-1" id="contact_person_address"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Contact Person Number :</td>
+                          <td class="fw-bold ls-1" id="contact_person_number"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Healthcare Provider :</td>
+                          <td class="fw-bold ls-1" id="healthcare_provider"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Chief Complaint :</td>
-                          <td class="fw-bold ls-1" id="chief-complaint"></td>
+                          <td class="fw-bold ls-1" id="chief_complaint"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Reason for Disapproval :</td>
+                          <td class="fw-bold ls-1" id="disapprove_reason"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Services :</td>
+                          <td class="fw-bold ls-1" id="services"></td>
                         </tr>
                       </table>
                     </div>
@@ -247,64 +289,176 @@
         const res = JSON.parse(response);
         const base_url = window.location.origin;
         const {
-          status,
-          token,
-          noa_no,
-          disapproved_by,
-          disapproved_on,
-          disapprove_reason,
-          member_mbl,
-          remaining_mbl,
-          work_related,
-          first_name,
-          middle_name,
-          last_name,
-          suffix,
-          date_of_birth,
-          age,
-          hospital_name,
-          health_card_no,
-          requesting_company,
-          admission_date,
-          chief_complaint,
-          request_date,
-          req_status,
+          noa_no,req_status,request_date,admission_date,disapproved_on,disapproved_by,disapprove_reason,work_related,percentage,mbl,remaining_mbl,health_card_no,first_name,middle_name,last_name,suffix,date_of_birth,age,gender,blood_type,philhealth_no,home_address,city_address,contact_no,email,contact_person,contact_person_addr,contact_person_no,hospital_name,chief_complaint,medical_services
         } = res;
 
         $("#viewNoaModal").modal("show");
 
+        const dob = date_of_birth !== '' ? date_of_birth : 'None';
+        const ag = age !== '' ? age : 'None';
+        const gndr = gender !== '' ? gender : 'None';
+        const bt = blood_type !== '' ? blood_type : 'None';
+        const pn = philhealth_no !== '' ? philhealth_no : 'None';
+        const ha = home_address !== '' ? home_address : 'None';
+        const ca = city_address !== '' ? city_address : 'None';
+        const cn = contact_no !== '' ? contact_no : 'None';
+        const em = email !== '' ? email : 'None';
+        const cp = contact_person !== '' ? contact_person : 'None';
+        const cpa = contact_person_addr !== '' ? contact_person_addr : 'None';
+        const cpn = contact_person_no !== '' ? contact_person_no : 'None';
+        const serv = medical_services !== '' ? medical_services : 'None';
+
         switch (req_status) {
           case 'Pending':
-            $('#noa-status').html('<strong class="text-warning">[' + req_status + ']</strong>');
+            $('#noa_status').html('<strong class="text-warning">[' + req_status + ']</strong>');
             break;
           case 'Approved':
-            $('#noa-status').html('<strong class="text-success">[' + req_status + ']</strong>');
+            $('#noa_status').html('<strong class="text-success">[' + req_status + ']</strong>');
             break;
           case 'Disapproved':
-            $('#noa-status').html('<strong class="text-danger">[' + req_status + ']</strong>');
+            $('#noa_status').html('<strong class="text-danger">[' + req_status + ']</strong>');
             break;
         }
-        $('#noa-no').html(noa_no);
-        $('#disapproved-by').html(disapproved_by);
-        $('#disapproved-on').html(disapproved_on);
-        $('#disapprove-reason').html(disapprove_reason);
-        $('#member-mbl').html(member_mbl);
-        $('#remaining-mbl').html(remaining_mbl);
-        $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
-        $('#date-of-birth').html(date_of_birth);
-        $('#age').html(age);
-        $('#hospital-name').html(hospital_name);
-        $('#admission-date').html(admission_date);
-        $('#chief-complaint').html(chief_complaint);
-        $('#request-date').html(request_date);
-        if(work_related != ''){
-          $('#work-related-info').removeClass('d-none');
-          $('#work-related-val').html(work_related);
-        }else{
-          $('#work-related-info').addClass('d-none');
-          $('#work-related-val').html('');
+        $('#noa_no').html(noa_no);
+        $('#request_date').html(request_date);
+        $('#admission_date').html(admission_date);
+        $('#disapproved_on').html(disapproved_on);
+        $('#disapproved_by').html(disapproved_by);
+        $('#disapprove_reason').html('<strong class="text-danger">' + disapprove_reason + '</strong>');
+        if(work_related == 'Yes'){ 
+          if(percentage == ''){
+            wpercent = '100% W-R';
+            nwpercent = '';
+          }else{
+            wpercent = percentage+'%  W-R';
+            result = 100 - parseFloat(percentage);
+            if(percentage == '100'){
+              nwpercent = '';
+            }else{
+              nwpercent = result+'% Non W-R';
+            } 
+          } 
+        }else if(work_related == 'No'){
+          if(percentage == ''){
+            wpercent = '';
+            nwpercent = '100% Non W-R';
+          }else{
+            nwpercent = percentage+'% Non W-R';
+            result = 100 - parseFloat(percentage);
+            if(percentage == '100'){
+              wpercent = '';
+            }else{
+              wpercent = result+'%  W-R';
+            }
+          }
         }
+        $('#percentage').html(wpercent+', '+nwpercent); if(work_related == 'Yes'){ 
+          if(percentage == ''){
+            wpercent = '100% W-R';
+            nwpercent = '';
+          }else{
+            wpercent = percentage+'%  W-R';
+            result = 100 - parseFloat(percentage);
+            if(percentage == '100'){
+              nwpercent = '';
+            }else{
+              nwpercent = result+'% Non W-R';
+            }
+          } 
+        }else if(work_related == 'No'){
+          if(percentage == ''){
+            wpercent = '';
+            nwpercent = '100% Non W-R';
+          }else{
+            nwpercent = percentage+'% Non W-R';
+            result = 100 - parseFloat(percentage);
+            if(percentage == '100'){
+              wpercent = '';
+            }else{
+              wpercent = result+'%  W-R';
+            } 
+          }
+        }
+        $('#percentage').html(wpercent+', '+nwpercent);
+
+        $('#mbl').html(mbl);
+        $('#remaining_mbl').html(remaining_mbl);
+        $('#healthcard_no').html(health_card_no);
+        $('#full_name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
+        $('#date_of_birth').html(dob);
+        $('#age').html(ag);
+        $('#gender').html(gndr);
+        $('#blood_type').html(bt);
+        $('#philhealth_no').html(pn);
+        $('#home_address').html(ha);
+        $('#city_address').html(ca);
+        $('#contact_no').html(cn);
+        $('#email_address').html(em);
+        $('#contact_person_name').html(cp);
+        $('#contact_person_address').html(cpa);
+        $('#contact_person_number').html(cpn);
+        $('#healthcare_provider').html(hospital_name);
+        $('#chief_complaint').html(chief_complaint);
+        $('#services').html(serv);
       }
     });
   }
 </script>
+
+<style>
+  .nav-item1 {
+    list-style-type: none;
+  }
+
+  .nav-link1 {
+    display: inline-block;
+    padding: 10px;
+    padding-top:1px;
+    padding-bottom:1px;
+    text-decoration: none;
+    background-color: #e6e6e6;
+    color: #000;
+    border: 1px solid gray;
+    border-bottom: 3px solid gray;
+    border-radius: 15px;
+  }
+
+  .nav-link1:hover {
+    background-color: #002244;
+    color: #fff;
+    border: 1px solid #000;
+  }
+
+  .font-bold {
+    font-weight: bold;
+  }
+
+  .hidden-xs-down {
+    display: inline-block;
+  }
+
+  .fs-5 {
+    font-size: 1.2rem;
+  }
+  .pending{
+    color:red
+  }
+  .approved{
+    color:green
+  }
+  .disapproved{
+    color:red
+  }
+  .completed{
+    color:green
+  }
+  .referral{
+    color:orange
+  }
+  .expired{
+    color:#a32cc4
+  }
+  .cancelled{
+    color:red
+  }
+</style>

@@ -18,7 +18,7 @@ class Applicants_controller extends CI_Controller {
 		$list = $this->applicants_model->get_datatables();
 		$data = [];
 		foreach ($list as $member) {
-			$row = array();
+			$row = [];
 			$employee_id = $member['emp_id'];
 			$member_id = $this->myhash->hasher($member['app_id'], 'encrypt');
 			// split employee id number through the dash(-) separator
@@ -189,8 +189,8 @@ class Applicants_controller extends CI_Controller {
 						'max_benefit_limit' => $current_mbl,
 						'used_mbl'          => 0,
 						'remaining_balance' => $current_mbl,
+						'start_date' => date('Y-m-d'),
 					];
-
 					$has_MBL = $this->applicants_model->db_insert_max_benefit_limit($post_data);
 					if (!$has_MBL) {
 						$response = [
@@ -245,6 +245,16 @@ class Applicants_controller extends CI_Controller {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['member'] = $member = $this->applicants_model->db_get_applicant_details($app_id);
 		$data['mbl'] = $this->applicants_model->db_get_member_mbl($member['emp_id']);
+		$data['bar'] = $this->applicants_model->bar_pending();
+		$data['bar1'] = $this->applicants_model->bar_approved();
+		$data['bar2'] = $this->applicants_model->bar_completed();
+		$data['bar3'] = $this->applicants_model->bar_referral();
+		$data['bar4'] = $this->applicants_model->bar_expired();
+		$data['bar_Billed'] = $this->applicants_model->bar_billed();
+		$data['bar5'] = $this->applicants_model->bar_pending_noa();
+		$data['bar6'] = $this->applicants_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->applicants_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->applicants_model->bar_billed_noa();
 
 		/* This is checking if the image file exists in the directory. */
 		$file_path = './uploads/profile_pics/' . $member['photo'];

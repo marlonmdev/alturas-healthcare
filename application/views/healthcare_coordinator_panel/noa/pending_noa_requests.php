@@ -2,7 +2,7 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">PENDING REQUEST</h4>
+        <h4 class="page-title ls-2" style="font-size:14px">PENDING REQUEST</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -19,45 +19,38 @@
     <div class="row">
       <div class="col-lg-12">
          <ul class="nav nav-tabs mb-4" role="tablist">
-          <li class="nav-item">
-            <a class="nav-link active" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1 active" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">PENDING</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="pending mdi mdi-dots-horizontal"></i> PENDING</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/approved" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/approved" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">APPROVED</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="approved mdi mdi-thumb-up"></i> APPROVED</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/disapproved" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/disapproved" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">DISAPPROVED</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="disapproved mdi mdi-thumb-down"></i> DISAPPROVED</span>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/expired" role="tab">
+          <li class="nav-item1">
+            <a class="nav-link1" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/expired" role="tab">
               <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">EXPIRED</span>
+              <span class="hidden-xs-down fs-12 font-bold"><i class="expired mdi mdi-calendar-clock"></i> EXPIRED</span>
             </a>
           </li>
-
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>healthcare-coordinator/noa/requests-list/completed" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">COMPLETED</span>
-            </a>
-          </li> -->
         </ul>
 
         <?php include 'charge_type.php'; ?>
 
-        <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
+        <!-- <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
           <div class="input-group">
             <div class="input-group-prepend">
               <span class="input-group-text bg-dark text-white"><i class="mdi mdi-filter"></i></span>
@@ -69,24 +62,23 @@
               <?php endforeach; ?>
             </select>
           </div>
-        </div>
-
+        </div> -->
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-hover" id="pendingNoaTable">
                 <thead style="background-color:#00538C">
                   <tr>
-                    <th class="fw-bold" style="color: white">NOA NO.</th>
-                    <th class="fw-bold" style="color: white">NAME OF PATIENT</th>
-                    <th class="fw-bold" style="color: white">DATE OF ADMISSION</th>
-                    <th class="fw-bold" style="color: white">NAME OF HOSPITAL</th>
-                    <th class="fw-bold" style="color: white">DATE OF REQUEST</th>
-                    <th class="fw-bold" style="color: white">STATUS</th>
-                    <th class="fw-bold" style="color: white">ACTION</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">NOA NO.</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">NAME OF PATIENT</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">DATE OF ADMISSION</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">NAME OF HOSPITAL</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">DATE OF REQUEST</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">STATUS</th>
+                    <th class="fw-bold" style="color: white;font-size:12px">ACTION</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody style="color:black;font-size:12px">
                 </tbody>
               </table>
             </div>
@@ -99,7 +91,7 @@
             <div class="modal-content">
               <section id="printableDiv">
                 <div class="modal-header">
-                  <h4 class="modal-title ls-2">NOA #: <span id="noa-no" class="text-primary"></span> <span id="noa-status"></span></h4>
+                  <h4 class="modal-title ls-2">NOA #: <span id="noa_no"></span> <span id="noa_status"></span></h4>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                   </button>
                 </div>
@@ -112,48 +104,96 @@
                       <table class="table table-bordered table-striped table-hover table-responsive table-sm">
                         <tr>
                           <td class="fw-bold ls-1">Requested On :</td>
-                          <td class="fw-bold ls-1" id="request-date"></td>
+                          <td class="fw-bold ls-1" id="request_date"></td>
                         </tr>
                         <tr>
-                          <td class="fw-bold ls-1">Member's Maximum Benefit Limit :</td>
-                          <td class="fw-bold ls-1">&#8369;<span id="member-mbl"></span></td>
+                          <td class="fw-bold ls-1">Admission Date :</td>
+                          <td class="fw-bold ls-1" id="admission_date"></td>
                         </tr>
                         <tr>
-                          <td class="fw-bold ls-1">Member's Remaining MBL :</td>
-                          <td class="fw-bold ls-1">&#8369;<span id="remaining-mbl"></span></td>
+                          <td class="fw-bold ls-1">Maximum Benefit Limit :</td>
+                          <td class="fw-bold ls-1">&#8369;<span id="mbl"></span></td>
                         </tr>
-                        <tr class="d-none" id="work-related-info">
-                          <td class="fw-bold ls-1">Work Related :</td>
-                          <td class="fw-bold ls-1" id="work-related-val"></td>
+                        <tr>
+                          <td class="fw-bold ls-1">Remaining MBL :</td>
+                          <td class="fw-bold ls-1">&#8369;<span id="remaining_mbl"></span></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Healthcard No. :</td>
+                          <td class="fw-bold ls-1" id="healthcard_no"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Full Name :</td>
-                          <td class="fw-bold ls-1" id="full-name"></td>
+                          <td class="fw-bold ls-1" id="full_name"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Date of Birth :</td>
-                          <td class="fw-bold ls-1" id="date-of-birth"></td>
+                          <td class="fw-bold ls-1" id="date_of_birth"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Age :</td>
                           <td class="fw-bold ls-1" id="age"></td>
                         </tr>
                         <tr>
-                          <td class="fw-bold ls-1">Hospital :</td>
-                          <td class="fw-bold ls-1" id="hospital-name"></td>
+                          <td class="fw-bold ls-1">Gender :</td>
+                          <td class="fw-bold ls-1" id="gender"></td>
                         </tr>
                         <tr>
-                          <td class="fw-bold ls-1">Admission Date :</td>
-                          <td class="fw-bold ls-1" id="admission-date"></td>
+                          <td class="fw-bold ls-1">Blood Type :</td>
+                          <td class="fw-bold ls-1" id="blood_type"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Philhealth No. :</td>
+                          <td class="fw-bold ls-1" id="philhealth_no"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Home Address :</td>
+                          <td class="fw-bold ls-1" id="home_address"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">City Address :</td>
+                          <td class="fw-bold ls-1" id="city_address"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Contact Number :</td>
+                          <td class="fw-bold ls-1" id="contact_no"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Email Address :</td>
+                          <td class="fw-bold ls-1" id="email_address"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Contact Person Name :</td>
+                          <td class="fw-bold ls-1" id="contact_person_name"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Contact Person Address :</td>
+                          <td class="fw-bold ls-1" id="contact_person_address"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Contact Person Number :</td>
+                          <td class="fw-bold ls-1" id="contact_person_number"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Healthcare Provider :</td>
+                          <td class="fw-bold ls-1" id="healthcare_provider"></td>
                         </tr>
                         <tr>
                           <td class="fw-bold ls-1">Chief Complaint :</td>
-                          <td class="fw-bold ls-1" id="chief-complaint"></td>
+                          <td class="fw-bold ls-1" id="chief_complaint"></td>
+                        </tr>
+                        <tr>
+                          <td class="fw-bold ls-1">Services :</td>
+                          <td class="fw-bold ls-1" id="services"></td>
                         </tr>
                       </table>
                     </div>
                   </div>
                 </div>
+                <tr>
+                  <td class="fw-bold ls-1"></td>
+                  <td class="fw-bold ls-1" id=""></td>
+                </tr>
               </section>
               <div class="modal-footer">
                 <button class="btn btn-dark ls-1 me-2" onclick="saveAsImage()"><i class="mdi mdi-file-image"></i> Save as Image</button>
@@ -164,17 +204,47 @@
         </div>
         <!-- End of View NOA -->
 
+        <!-- Viewing Upload Reports Modal -->
+        <div class="modal fade" id="viewUploadedReportsModal" tabindex="-1" data-bs-backdrop="static" style="height:100%">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4>Attached Reports</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <input id="report-percentage" class="form-control" readonly>
+                <div class="pt-3">
+                  <label class="fs-5">Uploaded Reports : <i><small class="text-danger">Click to view the file</small></i></label><br>
+                  <li>Spot Report : <a href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewSpotFile()" id="uploaded-spot-report"></a></li>
+                  <li>Incident Report : <a href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewIncidentFile()" id="uploaded-incident-report"></a></li>
+                  <li>Police Report : <a href="JavaScript:void(0)" data-bs-toggle="tooltip" onclick="viewPoliceFile()" id="uploaded-police-report"></a></li>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <?php include 'view_pdf_file_modal.php';?>
+        <!-- End Row  -->  
       </div>
-      <!-- End Row  -->  
-      </div>
-    <!-- End Container fluid  -->
+      <!-- <?php include 'view_pdf_file_modal.php';?> -->
     </div>
-  <!-- End Page wrapper  -->
   </div>
-<!-- End Wrapper -->
+</div>
 
 
-
+<style type="text/css">
+  .modal-header{
+    background-color:#00538c;
+    color:#fff
+  }
+  #noa-no{
+    color:orange
+  }
+</style>
 
 
 
@@ -185,25 +255,22 @@
   $(document).ready(function() {
 
     let pendingTable = $('#pendingNoaTable').DataTable({
-      processing: true, //Feature control the processing indicator.
-      serverSide: true, //Feature control DataTables' server-side processing mode.
-      order: [], //Initial no order.
+      processing: true,
+      serverSide: true,
+      order: [],
 
-      // Load data for the table's content from an Ajax source
       ajax: {
         url: `${baseUrl}healthcare-coordinator/noa/requests-list/fetch`,
         type: "POST",
-        // passing the token as data so that requests will be allowed
         data: function(data) {
           data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
           data.filter = $('#pending-hospital-filter').val();
         }
       },
 
-      //Set column definition initialisation properties.
       columnDefs: [{
-        "targets": [5, 6], // numbering column
-        "orderable": false, //set not orderable
+        "targets": [5, 6],
+        "orderable": false,
       }, ],
       responsive: true,
       fixedHeader: true,
@@ -213,31 +280,18 @@
       pendingTable.draw();
     });
 
-
-    // $("#pendingNoaTable").DataTable({
-    //   ajax: {
-    //     url: `${baseUrl}healthcare-coordinator/noa/requests-list/fetch`,
-    //     dataSrc: function(data) {
-    //       if (data == "") {
-    //         return [];
-    //       } else {
-    //         return data.data;
-    //       }
-    //     }
-    //   },
-    //   order: [],
-    //   responsive: true,
-    //   fixedHeader: true,
-    // });
-    
-
     $('#formUpdateChargeType').submit(function(event) {
       event.preventDefault();
+
+      const ChargeForm = $('#formUpdateChargeType')[0];
+      const formdata = new FormData(ChargeForm);
       $.ajax({
         type: "post",
         url: $(this).attr('action'),
-        data: $(this).serialize(),
+        data: formdata,
         dataType: "json",
+        processData: false,
+        contentType: false,
         success: function(response) {
           const {
             token,
@@ -247,7 +301,6 @@
           } = response;
           switch (status) {
             case 'error':
-              // is-invalid class is a built in classname for errors in bootstrap
               if (charge_type_error !== '') {
                 $('#charge-type-error').html(charge_type_error);
                 $('#charge-type').addClass('is-invalid');
@@ -255,7 +308,7 @@
                 $('#charge-type-error').html('');
                 $('#charge-type').removeClass('is-invalid');
               }
-              break;
+            break;
             case 'save-error':
               swal({
                 title: 'Failed',
@@ -265,7 +318,7 @@
                 type: 'error'
               });
               $("#pendingNoaTable").DataTable().ajax.reload();
-              break;
+            break;
             case 'success':
               swal({
                 title: 'Success',
@@ -277,39 +330,228 @@
               
               $('#viewChargeTypeModal').modal('hide');
               $("#pendingNoaTable").DataTable().ajax.reload();
-              break;
+            break;
           }
         },
       })
     });
+    $('#UpdateChargeTypeNotAffiliated').submit(function(event) {
+      event.preventDefault();
 
+      const ChargeForm = $('#UpdateChargeTypeNotAffiliated')[0];
+      const formdata = new FormData(ChargeForm);
+      $.ajax({
+        type: "post",
+        url: $(this).attr('action'),
+        data: formdata,
+        dataType: "json",
+        processData: false,
+        contentType: false,
+        success: function(response) {
+          const {
+            token,
+            status,
+            message,
+            charge_type_error,
+          } = response;
+          switch (status) {
+            case 'error':
+              if (charge_type_error !== '') {
+                $('#charge-type-error').html(charge_type_error);
+                $('#charge-type').addClass('is-invalid');
+              } else {
+                $('#charge-type-error').html('');
+                $('#charge-type').removeClass('is-invalid');
+              }
+            break;
+            case 'save-error':
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
+              $("#pendingNoaTable").DataTable().ajax.reload();
+            break;
+            case 'success':
+              swal({
+                title: 'Success',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'success'
+              });
+              
+              $('#viewChargeTypeModal').modal('hide');
+              $("#pendingNoaTable").DataTable().ajax.reload();
+            break;
+          }
+        },
+      })
+    });
+    $('#resubmitform').submit(function(event) {
+      const nextPage = `${baseUrl}healthcare-coordinator/noa/requests-list`;
+      const noaid = $('#noaid').val(); 
+      console.log('SUBMIT NOA ID:',noaid)
+      event.preventDefault();
+      $.ajax({
+        type: "post",
+        url:`${baseUrl}healthcare-coordinator/noa/requests-list/submit_hospital_receipt/${noaid}`,
+        data: $(this).serialize(),
+        dataType: "json",
+        success: function(response) {
+          const {
+            token,status,message,resubmit_error
+          } = response;
+          switch (status) {
+            case 'error':
+              // is-invalid class is a built in classname for errors in bootstrap
+              if (resubmit_error !== '') {
+                $('#resubmit-error').html(resubmit_error);
+                $('#resubmit').addClass('is-invalid');
+              }else{
+                $('#resubmit-error').html('');
+                $('#resubmit').removeClass('is-invalid');
+              }
+            break;
+            case 'save-error':
+              swal({
+                title: 'Failed',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'error'
+              });
+            break;
+            case 'success':
+              swal({
+                title: 'Success',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                type: 'success'
+              });
+              $('#sendbackmodal').modal('hide');
+              setTimeout(function() {
+                window.location.href = nextPage;
+              }, 3200);
+            break;
+          }
+        }
+      });
+    });
   });
 
   const saveAsImage = () => {
-    // Get the div element you want to save as an image
     const element = document.querySelector("#printableDiv");
-    // Use html2canvas to take a screenshot of the element
     html2canvas(element)
-      .then(function(canvas) {
-        // Convert the canvas to an image data URL
-        const imgData = canvas.toDataURL("image/png");
-        // Create a temporary link element to download the image
-        const link = document.createElement("a");
-        link.download = `noa_${fileName}.png`;
-        link.href = imgData;
-
-        // Click the link to download the image
-        link.click();
-      });
+    .then(function(canvas) {
+      const imgData = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.download = `noa_${fileName}.png`;
+      link.href = imgData;
+      link.click();
+    });
   }
 
-  const showTagChargeType = (noa_id) => {
+  const showTagChargeType = (noa_id,percentage,work_related,spot_report_file,police_report_file,incident_report_file) => {
+    console.log('Test:',noa_id);
+    console.log('Test:',percentage);
+    console.log('Test:',work_related);
+    console.log('Test:',spot_report_file);
+    console.log('Test:',police_report_file);
+    console.log('Test:',incident_report_file);
+
     $("#viewChargeTypeModal").modal("show");
+    $("#viewChargeTypeModal").find("form")[0].reset();
     $('#noa-id').val(noa_id);
-    $('#charge-type').val('');
-    // $( ".wr" ).hide();
-    // $( ".nwr" ).hide();
+
+    const translatedWorkRelated = (work_related === 'Yes') ? 'Work related' : 'Non-work related';
+    // Set the value and mark the appropriate option as selected
+    $('#charge-type').val(translatedWorkRelated);
+    if (work_related == 'Yes') {
+      $('#charge-type option[value="Yes"]').prop("selected", true);
+    }else if(work_related == 'No'){
+      $('#charge-type option[value="No"]').prop("selected", true);
+    }else{
+      $('#charge-type option[value=""]').prop("selected", true);
+    }
+
+    $('#percentage').val(percentage);
+
+    if (spot_report_file !=='') {
+      $('#uploaded-spot-report-link').show();
+      $('#uploaded-spot-report').html(spot_report_file);
+    } else {
+      $('#uploaded-spot-report-link').hide();
+    }
+    if (incident_report_file !=='') {
+      $('#uploaded-incident-report-link').show();
+      $('#uploaded-incident-report').html(incident_report_file);
+    } else {
+      $('#uploaded-incident-report-link').hide();
+    }
+    if (police_report_file !=='') {
+      $('#uploaded-police-report-link').show();
+      $('#uploaded-police-report').html(police_report_file);
+    } else {
+      $('#uploaded-police-report-link').hide();
+    }
   }
+
+  const ChargeTypenotAffiliated = (noa_id, hospital_receipt, hospital_bill,percentage,work_related,spot_report_file,police_report_file,incident_report_file) => {
+    console.log('Percentage:', percentage);
+
+    $("#charge_type_modal_not_affiliated").modal("show");
+    $("#charge_type_modal_not_affiliated").find("form")[0].reset();
+    $('#noa_id').val(noa_id);
+
+    const translatedWorkRelated = (work_related === 'Yes') ? 'Work related' : 'Non-work related';
+    // Set the value and mark the appropriate option as selected
+    $('#charge-type').val(translatedWorkRelated);
+    if (work_related == 'Yes') {
+      $('#charge-type option[value="Yes"]').prop("selected", true);
+    }else if(work_related == 'No'){
+      $('#charge-type option[value="No"]').prop("selected", true);
+    }else{
+      $('#charge-type option[value=""]').prop("selected", true);
+    }
+
+    $('#percentage1').val(percentage);
+
+    if (spot_report_file !=='') {
+      $('#uploaded-spot-report-link1').show();
+      $('#uploaded-spot-report1').html(spot_report_file);
+    } else {
+      $('#uploaded-spot-report-link1').hide();
+    }
+    if (incident_report_file !=='') {
+      $('#uploaded-incident-report-link1').show();
+      $('#uploaded-incident-report1').html(incident_report_file);
+    } else {
+      $('#uploaded-incident-report-link1').hide();
+    }
+    if (police_report_file !=='') {
+      $('#uploaded-police-report-link1').show();
+      $('#uploaded-police-report1').html(police_report_file);
+    } else {
+      $('#uploaded-police-report-link1').hide();
+    }
+
+
+    const formattedHospitalBill = new Intl.NumberFormat('en-PH', {
+      style: 'currency',
+      currency: 'PHP',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(hospital_bill);
+
+    $('#hospital_bill').val(formattedHospitalBill);
+
+    $('#uploaded-hospital-receipt').attr("hospital_receipt", hospital_receipt);
+    $('#uploaded-hospital-receipt').attr("src", baseUrl + 'uploads/hospital_receipt/' + hospital_receipt);
+  };
 
   function viewNoaInfo(noa_id) {
     $.ajax({
@@ -318,53 +560,56 @@
       success: function(response) {
         const res = JSON.parse(response);
         const {
-          status,
-          token,
-          noa_no,
-          member_mbl,
-          remaining_mbl,
-          work_related,
-          first_name,
-          middle_name,
-          last_name,
-          suffix,
-          date_of_birth,
-          age,
-          hospital_name,
-          health_card_no,
-          requesting_company,
-          admission_date,
-          chief_complaint,
-          request_date,
-          req_status
+          status,token,noa_no,request_date,admission_date,mbl,remaining_mbl,health_card_no,requesting_company,first_name,middle_name,last_name,suffix,date_of_birth,age,gender,blood_type,philhealth_no,home_address,city_address,contact_no,email,contact_person,contact_person_addr,contact_person_no,hospital_name,chief_complaint,req_status,medical_services,
         } = res;
 
         $("#viewNoaModal").modal("show");
+
+        const dob = date_of_birth !== '' ? date_of_birth : 'None';
+        const ag = age !== '' ? age : 'None';
+        const gndr = gender !== '' ? gender : 'None';
+        const bt = blood_type !== '' ? blood_type : 'None';
+        const pn = philhealth_no !== '' ? philhealth_no : 'None';
+        const ha = home_address !== '' ? home_address : 'None';
+        const ca = city_address !== '' ? city_address : 'None';
+        const cn = contact_no !== '' ? contact_no : 'None';
+        const em = email !== '' ? email : 'None';
+        const cp = contact_person !== '' ? contact_person : 'None';
+        const cpa = contact_person_addr !== '' ? contact_person_addr : 'None';
+        const cpn = contact_person_no !== '' ? contact_person_no : 'None';
+        const serv = medical_services !== '' ? medical_services : 'None';
+
+
         let rstat = '';
         if(req_status == 'Pending'){
-          req_stat = `<strong class="text-warning">[${req_status}]</strong>`;
+          req_stat = `<strong style="color:maroon">[${req_status}]</strong>`;
         }else{
           req_stat = `<strong class="text-cyan">[${req_status}]</strong>`;
         }
 
-        $('#noa-no').html(noa_no);
-        $('#noa-status').html(req_stat);
-        $('#member-mbl').html(member_mbl);
-        $('#remaining-mbl').html(remaining_mbl);
-        $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
-        $('#date-of-birth').html(date_of_birth);
-        $('#age').html(age);
-        $('#hospital-name').html(hospital_name);
-        $('#admission-date').html(admission_date);
-        $('#chief-complaint').html(chief_complaint);
-        $('#request-date').html(request_date);
-        if(work_related != ''){
-          $('#work-related-info').removeClass('d-none');
-          $('#work-related-val').html(work_related);
-        }else{
-          $('#work-related-info').addClass('d-none');
-          $('#work-related-val').html('');
-        }
+        $('#noa_no').html(noa_no);
+        $('#noa_status').html(req_stat);
+        $('#request_date').html(request_date);
+        $('#admission_date').html(admission_date);
+        $('#mbl').html(mbl);
+        $('#remaining_mbl').html(remaining_mbl);
+        $('#healthcard_no').html(health_card_no);
+        $('#full_name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
+        $('#date_of_birth').html(dob);
+        $('#age').html(ag);
+        $('#gender').html(gndr);
+        $('#blood_type').html(bt);
+        $('#philhealth_no').html(pn);
+        $('#home_address').html(ha);
+        $('#city_address').html(ca);
+        $('#contact_no').html(cn);
+        $('#email_address').html(em);
+        $('#contact_person_name').html(cp);
+        $('#contact_person_address').html(cpa);
+        $('#contact_person_number').html(cpn);
+        $('#healthcare_provider').html(hospital_name);
+        $('#chief_complaint').html(chief_complaint);
+        $('#services').html(serv);
       }
     });
   }
@@ -372,7 +617,7 @@
   function cancelNoaRequest(noa_id) {
     $.confirm({
       title: '<strong>Confirm!</strong>',
-      content: 'Are you sure to delete NOA Request?',
+      content: 'Are you sure you want to delete the request?',
       type: 'red',
       buttons: {
         confirm: {
@@ -424,4 +669,389 @@
       }
     });
   }
+
+  let pdfinput = "";
+  const  previewFile = (pdf_input) => {
+    pdfinput = pdf_input;
+    let pdfFileInput = document.getElementById(pdf_input);
+    let pdfFile = pdfFileInput.files[0];
+    let reader = new FileReader();
+    if(pdfFile){
+      $('#viewFileModal').modal('show');
+      $('#file-name-r').html('Attached File');
+      $('#cancel').show();
+
+      reader.onload = function(event) {
+        let dataURL = event.target.result;
+        let iframe = document.querySelector('#pdf-file-viewer');
+        iframe.src = dataURL;
+      };
+      reader.readAsDataURL(pdfFile);
+    }
+  }
+
+  const viewHospitalReceiptFile = () => {
+    // Retrieve the hospital_receipt attribute from the image element
+    const hospital_receipt = $('#uploaded-hospital-receipt').attr("hospital_receipt");
+
+    // Rest of your code remains unchanged
+    $('#viewFileModal').modal('show');
+    $('#cancel').hide();
+    $('#file-name-r').html('HOSPITAL RECEIPT');
+
+    let pdfFile = `${baseUrl}uploads/hospital_receipt/${hospital_receipt}`;
+    let fileExists = checkFileExists(pdfFile);
+
+    if (fileExists) {
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', pdfFile, true);
+      xhr.responseType = 'blob';
+
+      xhr.onload = function (e) {
+        if (this.status == 200) {
+          let blob = this.response;
+          let reader = new FileReader();
+
+          reader.onload = function (event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-file-viewer');
+            iframe.src = dataURL;
+          };
+          reader.readAsDataURL(blob);
+        }
+      };
+      xhr.send();
+    }
+  };
+
+  const viewReports = (loa_id, work_related, percentage, spot_report, incident_report, police_report) => {
+    $('#viewUploadedReportsModal').modal('show');
+    if(work_related == 'Yes'){ 
+      if(percentage == ''){
+        wpercent = '100% Work Related';
+        nwpercent = '';
+      }else{
+        wpercent = percentage+'%  Work Related';
+        result = 100 - parseFloat(percentage);
+        if(percentage == '100'){
+          nwpercent = '';
+        }else{
+          nwpercent = result+'% Non Work Related';
+        }
+      }	
+    }else if(work_related == 'No'){
+      if(percentage == ''){
+        wpercent = '';
+        nwpercent = '100% Non Work Related';
+      }else{
+        nwpercent = percentage+'% Non Work Related';
+        result = 100 - parseFloat(percentage);
+        if(percentage == '100'){
+          wpercent = '';
+        }else{
+          wpercent = result+'%  Work Related';
+        } 
+      }
+    }
+    $('#report-percentage').val(wpercent+', '+nwpercent);
+    $('#uploaded-spot-report') .html(spot_report);
+    $('#uploaded-incident-report').html(incident_report);
+    $('#uploaded-police-report').html(police_report);
+  }
+
+  const viewSpotFile = () => {
+    const sport_report = document.querySelector('#uploaded-spot-report');
+    const anchorText = sport_report.textContent;
+
+    $('#viewFileModal').modal('show');
+    $('#cancel').hide();
+    $('#file-name-r').html('SPOT REPORT');
+
+    let pdfFile = `${baseUrl}uploads/spot_reports/${anchorText}`;
+    let fileExists = checkFileExists(pdfFile);
+
+    if(fileExists){
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', pdfFile, true);
+      xhr.responseType = 'blob';
+
+      xhr.onload = function(e) {
+        if (this.status == 200) {
+          let blob = this.response;
+          let reader = new FileReader();
+
+          reader.onload = function(event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-file-viewer');
+            iframe.src = dataURL;
+          };
+          reader.readAsDataURL(blob);
+        }
+      };
+      xhr.send();
+    }
+  }
+
+  const viewSpotFile1 = () => {
+    const sport_report = document.querySelector('#uploaded-spot-report1');
+    const anchorText = sport_report.textContent;
+
+    $('#viewFileModal').modal('show');
+    $('#cancel').hide();
+    $('#file-name-r').html('SPOT REPORT');
+
+    let pdfFile = `${baseUrl}uploads/spot_reports/${anchorText}`;
+    let fileExists = checkFileExists(pdfFile);
+
+    if(fileExists){
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', pdfFile, true);
+      xhr.responseType = 'blob';
+
+      xhr.onload = function(e) {
+        if (this.status == 200) {
+          let blob = this.response;
+          let reader = new FileReader();
+
+          reader.onload = function(event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-file-viewer');
+            iframe.src = dataURL;
+          };
+          reader.readAsDataURL(blob);
+        }
+      };
+      xhr.send();
+    }
+  }
+
+  const viewIncidentFile = () => {
+    const sport_report = document.querySelector('#uploaded-incident-report');
+    const anchorText = sport_report.textContent;
+
+    $('#viewFileModal').modal('show');
+    $('#cancel').hide();
+    $('#file-name-r').html('INCIDENT REPORT');
+
+    let pdfFile = `${baseUrl}uploads/incident_reports/${anchorText}`;
+    let fileExists = checkFileExists(pdfFile);
+
+    if(fileExists){
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', pdfFile, true);
+      xhr.responseType = 'blob';
+
+      xhr.onload = function(e) {
+        if (this.status == 200) {
+          let blob = this.response;
+          let reader = new FileReader();
+          reader.onload = function(event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-file-viewer');
+            iframe.src = dataURL;
+          };
+          reader.readAsDataURL(blob);
+        }
+      };
+      xhr.send();
+    }
+  }
+
+  const viewIncidentFile1 = () => {
+    const sport_report = document.querySelector('#uploaded-incident-report1');
+    const anchorText = sport_report.textContent;
+
+    $('#viewFileModal').modal('show');
+    $('#cancel').hide();
+    $('#file-name-r').html('INCIDENT REPORT');
+
+    let pdfFile = `${baseUrl}uploads/incident_reports/${anchorText}`;
+    let fileExists = checkFileExists(pdfFile);
+
+    if(fileExists){
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', pdfFile, true);
+      xhr.responseType = 'blob';
+
+      xhr.onload = function(e) {
+        if (this.status == 200) {
+          let blob = this.response;
+          let reader = new FileReader();
+          reader.onload = function(event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-file-viewer');
+            iframe.src = dataURL;
+          };
+          reader.readAsDataURL(blob);
+        }
+      };
+      xhr.send();
+    }
+  }
+
+  const viewPoliceFile = () => {
+    const sport_report = document.querySelector('#uploaded-police-report');
+    const anchorText = sport_report.textContent;
+
+    $('#viewFileModal').modal('show');
+    $('#cancel').hide();
+    $('#file-name-r').html('POLICE REPORT');
+
+    let pdfFile = `${baseUrl}uploads/police_reports/${anchorText}`;
+    let fileExists = checkFileExists(pdfFile);
+
+    if(fileExists){
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', pdfFile, true);
+    xhr.responseType = 'blob';
+
+    xhr.onload = function(e) {
+        if (this.status == 200) {
+        let blob = this.response;
+        let reader = new FileReader();
+
+        reader.onload = function(event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-file-viewer');
+            iframe.src = dataURL;
+        };
+        reader.readAsDataURL(blob);
+        }
+    };
+    xhr.send();
+    }
+  }
+
+  const viewPoliceFile1 = () => {
+    const sport_report = document.querySelector('#uploaded-police-report1');
+    const anchorText = sport_report.textContent;
+
+    $('#viewFileModal').modal('show');
+    $('#cancel').hide();
+    $('#file-name-r').html('POLICE REPORT');
+
+    let pdfFile = `${baseUrl}uploads/police_reports/${anchorText}`;
+    let fileExists = checkFileExists(pdfFile);
+
+    if(fileExists){
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', pdfFile, true);
+    xhr.responseType = 'blob';
+
+    xhr.onload = function(e) {
+        if (this.status == 200) {
+        let blob = this.response;
+        let reader = new FileReader();
+
+        reader.onload = function(event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-file-viewer');
+            iframe.src = dataURL;
+        };
+        reader.readAsDataURL(blob);
+        }
+    };
+    xhr.send();
+    }
+  }
+
+  const checkFileExists = (fileUrl) => {
+    let xhr = new XMLHttpRequest();
+    xhr.open('HEAD', fileUrl, false);
+    xhr.send();
+    return xhr.status == "200" ? true: false;
+  }
+
+  document.getElementById("send-back-button").addEventListener("click", function () {
+    const originalLoaId = $('#noa_id').val();
+    const formattedLoaId = originalLoaId;
+
+    console.log('NOA1:', originalLoaId);
+    console.log('NOA2:', formattedLoaId);
+
+    $("#charge_type_modal_not_affiliated").modal("hide");
+    $("#sendbackmodal").modal("show");
+    
+    $('#noaid').val(formattedLoaId);
+    $('#resubmit').val('');
+    $('#resubmit').removeClass('is-invalid');
+    $('#resubmit-error').html('');
+    $("#loaCancellationForm").attr("action", `${baseUrl}healthcare-coordinator/loa/requests-list/submit_hospital_receipt/${originalLoaId}`);
+  });
 </script>
+
+<style type="text/css">
+  #noa_no{
+    color:orange
+  }
+</style>
+<style>
+  .nav-item1 {
+    list-style-type: none;
+  }
+
+  .nav-link1 {
+    display: inline-block;
+    padding: 10px;
+    padding-top:1px;
+    padding-bottom:1px;
+    text-decoration: none;
+    background-color: #e6e6e6;
+    color: #000;
+    border: 1px solid gray;
+    border-bottom: 3px solid gray;
+    border-radius: 15px;
+  }
+
+  .nav-link1:hover {
+    background-color: #002244;
+    color: #fff;
+    border: 1px solid #000;
+  }
+
+  .font-bold {
+    font-weight: bold;
+  }
+
+  .hidden-xs-down {
+    display: inline-block;
+  }
+
+  .fs-5 {
+    font-size: 1.2rem;
+  }
+  .pending{
+    color:red
+  }
+  .approved{
+    color:green
+  }
+  .disapproved{
+    color:red
+  }
+  .completed{
+    color:green
+  }
+  .referral{
+    color:orange
+  }
+  .expired{
+    color:#a32cc4
+  }
+  .cancelled{
+    color:red
+  }
+
+  .blink-icon {
+    animation: blink-animation 1s infinite;
+  }
+
+  @keyframes blink-animation {
+    0%, 50%, 100% {
+      opacity: 1;
+    }
+    25%, 75% {
+      opacity: 0;
+    }
+  }
+</style>

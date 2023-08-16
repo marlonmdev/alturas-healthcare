@@ -2,7 +2,10 @@
   <div class="col-lg-12 d-none" id="mbr-profile-div">
     <div class="row gutters-sm">
 
-      <div class="col-md-4 mb-3">
+      <div class="col-md-7 mb-3">
+      <div class="card d-flex justify-content-evenly">
+            <div class="row align-items-end">
+              <div class="col-md-6">
         <div class="card shadow">
           <div class="card-body pt-4">
             <div class="d-flex flex-column align-items-center text-center">
@@ -17,8 +20,10 @@
             </div>
           </div>
         </div>
+        </div>
 
-        <div class="card shadow mt-3">
+        <div class="col-md-6">
+                <div class="card shadow">
           <ul class="list-group list-group-flush">
             <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
               <h6 class="mb-0 text-secondary" style="font-weight:600;">Position Level: </h6>
@@ -38,9 +43,47 @@
             </li>
           </ul>
         </div>
+        </div>
+        </div>
+        </div>
+
+        <h4 class="page-title ls-2 ">Patient History</h4>
+            <!-- patient history Loa-->
+            <div class="card shadow mt-2 p-2" >
+              <table class="table table-hover table-responsive" id="loa_table">
+                  <thead >
+                    <tr>
+                      <th > <span style="font-weight:600;" class="colored-label">LOA #</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">NET BILL</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">STATUS</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">REQUEST DATE</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">VIEW</span></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+            </div>
+
+            <!-- patient history noa-->
+            <div class="card shadow mt-3 p-2">
+            <table class="table table-hover table-responsive" id="noa_table">
+                <thead>
+                  <tr>
+                      <th > <span style="font-weight:600;" class="colored-label">NOA #</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">NET BILL</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">STATUS</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">REQUEST DATE</span></th>
+                      <th > <span style="font-weight:600;" class="colored-label">VIEW</span></th>
+                  </tr>
+                </thead>
+              	<tbody>
+                </tbody>
+              </table>
+            </div>
 
       </div>
-      <div class="col-md-8">
+      <div class="col-md-5">
         <div class="card shadow mb-0">
           <div class="card-body pt-4">
             <div class="row">
@@ -105,6 +148,15 @@
               </div>
               <div class="col-sm-9 colored-label" style="font-weight:600;" id="contact-no">
               </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0 text-secondary" style="font-weight:600;">Email Address:</h6>
+              </div>
+              <div class="col-sm-9 colored-label" style="font-weight:600;" id="email-ad">
+              </div>
+              <input type="hidden" id="s-emp-id">
             </div>
             <hr>
             <div class="row" id="spouse-div">

@@ -3,74 +3,85 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Pcharges_model extends CI_Model {
 
-	// Start of server-side processing datatables
-	var $table_1 = 'personal_charges';
-	var $table_2 = 'billing';
-	var $column_order = ['tbl_1.pcharge_id', 'tbl_1.billing_no', 'tbl_1.added_on', 'tbl_1.amount', null, null]; //set column field database for datatable orderable
-	var $column_search = ['tbl_1.pcharge_id', 'tbl_1.billing_no', 'tbl_1.amount', 'tbl_1.added_on']; //set column field database for datatable searchable 
-	var $order = ['tbl_1.pcharge_id' => 'desc']; // default order 
+	function submit_ha_request($billing_id) {
+		$personal_charge = floatval(str_replace(',','',$this->input->post('personal_charge')));
+		$requested_amount = floatval(str_replace(',','',$this->input->post('requested_amount')));
 
-	private function _get_datatables_query($status, $emp_id) {
-		$this->db->from($this->table_1 . ' as tbl_1');
-		$this->db->join($this->table_2 . ' as tbl_2', 'tbl_1.billing_no = tbl_2.billing_no');
-		$this->db->where('tbl_1.status', $status);
-		$this->db->where('tbl_1.emp_id', $emp_id);
-		$i = 0;
-		// loop column 
-		foreach ($this->column_search as $item) {
-			// if datatable send POST for search
-			if ($_POST['search']['value']) {
-				// first loop
-				if ($i === 0) {
-					$this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
-					$this->db->like($item, $_POST['search']['value']);
-				} else {
-					$this->db->or_like($item, $_POST['search']['value']);
-				}
+		$this->db->set('personal_charge', $personal_charge);
+		$this->db->set('excess_amount', $requested_amount);
+		$this->db->set('status','For Advance');
+		$this->db->set('requested_on',date('Y-m-d'));
+		$this->db->where('billing_id',$billing_id);
+		return $this->db->update('cash_advance');
+	}
 
-				if (count($this->column_search) - 1 == $i) //last loop
-					$this->db->group_end(); //close bracket
-			}
-			$i++;
-		}
+	function get_charge_details($billing_id) {
+		$this->db->select('*')
+				->from('billing as tbl_1')
+				->join('loa_requests as tbl_2', 'tbl_1.loa_id = tbl_2.loa_id','left')
+				->join('noa_requests as tbl_3', 'tbl_1.noa_id = tbl_3.noa_id', 'left')
+				->where('tbl_1.billing_id',$billing_id);
+		return $this->db->get()->result_array();
+	}
 
-		// here order processing
-		if (isset($_POST['order'])) {
-			$this->db->order_by($this->column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
-		} else if (isset($this->order)) {
-			$order = $this->order;
-			$this->db->order_by(key($order), $order[key($order)]);
+	function _get_requested_datatables_query($status,$emp_id) {
+		$this->db->from('cash_advance as tbl_1');
+		$this->db->join('billing as tbl_2','tbl_1.billing_id = tbl_2.billing_id');
+		$this->db->where('tbl_1.emp_id',$emp_id);
+		$this->db->where('tbl_1.status',$status); 
+		if ($status == 'For Advance') {
+			$this->db->group_start();
+			$this->db->or_where('tbl_1.ebm_status', ''); 
+			$this->db->group_end();
 		}
 	}
 
-	function get_datatables($status, $emp_id) {
-		$this->_get_datatables_query($status, $emp_id);
+	function get_requested_advance($status, $emp_id) {
+		$this->_get_requested_datatables_query($status,$emp_id);
 		if ($_POST['length'] != -1)
 			$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
 		return $query->result_array();
 	}
 
-	function count_filtered($status, $emp_id) {
-		$this->_get_datatables_query($status, $emp_id);
+	function count_requested_filtered($status,$emp_id) {
+		$this->_get_requested_datatables_query($status,$emp_id);
 		$query = $this->db->get();
 		return $query->num_rows();
 	}
 
-	public function count_all($status, $emp_id) {
-		$this->db->from($this->table_1);
-		$this->db->where('status', $status);
+	function count_all_requested($status,$emp_id) {
+		$this->db->from('cash_advance');
 		$this->db->where('emp_id', $emp_id);
+		$this->db->where('status', $status);
 		return $this->db->count_all_results();
 	}
-	// End of server-side processing datatabless
 
+	function _get_appr_requested_datatables_query($status,$emp_id) {
+		$this->db->from('cash_advance as tbl_1');
+		$this->db->join('billing as tbl_2','tbl_1.billing_id = tbl_2.billing_id');
+		$this->db->where('tbl_1.emp_id',$emp_id);
+		$this->db->where('tbl_1.ebm_status',$status); 
+	}
 
-	public function db_get_personal_charges_info($emp_id) {
-		$this->db->select('*');
-		$this->db->from('personal_charges as tbl_1');
-		$this->db->join('bliing as tbl_2', 'tbl_1.blling_no = tbl_2.billing_no');
+	function get_appr_requested_advance($status, $emp_id) {
+		$this->_get_appr_requested_datatables_query($status,$emp_id);
+		if ($_POST['length'] != -1)
+			$this->db->limit($_POST['length'], $_POST['start']);
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
+	function count_appr_requested_filtered($status,$emp_id) {
+		$this->_get_appr_requested_datatables_query($status,$emp_id);
+		$query = $this->db->get();
+		return $query->num_rows();
+	}
+
+	function count_appr_all_requested($status,$emp_id) {
+		$this->db->from('cash_advance');
 		$this->db->where('emp_id', $emp_id);
-		return $this->db->get()->result_array();
+		$this->db->where('status', $status);
+		return $this->db->count_all_results();
 	}
 }

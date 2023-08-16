@@ -107,7 +107,7 @@
           </div>
         </div>
 
-        <?php include 'view_resched_loa_details.php'; ?>
+        <?php include 'view_referral_details.php'; ?>
       </div>
     </div>
     <?php include 'performed_loa_info_modal.php'; ?>
@@ -228,48 +228,45 @@
           rx_file,
           req_status,
           requested_by,
-          approved_by
+          approved_by,
+          percentage,
+          approved_on
         } = res;
 
         $("#viewLoaModal").modal("show");
 
-        switch (req_status) {
-          case 'Pending':
-            $('#loa-status').html(`<strong class="text-warning">[${req_status}]</strong>`);
-            break;
-          case 'Approved':
-            $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
-            break;
-          case 'Disapproved':
-            $('#loa-status').html(`<strong class="text-danger">[${req_status}]</strong>`);
-            break;
-          case 'Closed':
-            $('#loa-status').html(`<strong class="text-info">[${req_status}]</strong>`);
-            break;
-          case 'Reffered':
-          $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
-          break;
-        }
+        $('#loa-statuss').html(`<strong style="color:#80ff00">[${req_status}]</strong>`);
+        const dob = date_of_birth !== '' ? date_of_birth : 'None';
+        const ag = age !== '' ? age : 'None';
+        const gndr = gender !== '' ? gender : 'None';
+        const bt = blood_type !== '' ? blood_type : 'None';
+        const pn = philhealth_no !== '' ? philhealth_no : 'None';
+        const ha = home_address !== '' ? home_address : 'None';
+        const ca = city_address !== '' ? city_address : 'None';
+        const cn = contact_no !== '' ? contact_no : 'None';
+        const em = email !== '' ? email : 'None';
+        const cp = contact_person !== '' ? contact_person : 'None';
+        const cpa = contact_person_addr !== '' ? contact_person_addr : 'None';
+        const cpn = contact_person_no !== '' ? contact_person_no : 'None';
         const med_serv = med_services !== '' ? med_services : 'None';
 
         $('#loa-no').html(loa_no);
         $('#requested-by').html(requested_by);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
-        $('#work-related').html(work_related);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
-        $('#date-of-birth').html(date_of_birth);
-        $('#age').html(age);
-        $('#gender').html(gender);
-        $('#philhealth-no').html(philhealth_no);
-        $('#blood-type').html(blood_type);
+        $('#date-of-birth').html(dob);
+        $('#age').html(ag);
+        $('#gender').html(gndr);
+        $('#philhealth-no').html(pn);
+        $('#blood-type').html(bt);
         $('#contact-no').html(contact_no);
-        $('#home-address').html(home_address);
-        $('#city-address').html(city_address);
-        $('#email').html(email);
-        $('#contact-person').html(contact_person);
-        $('#contact-person-addr').html(contact_person_addr);
-        $('#contact-person-no').html(contact_person_no);
+        $('#home-address').html(ha);
+        $('#city-address').html(ca);
+        $('#email').html(em);
+        $('#contact-person').html(cp);
+        $('#contact-person-addr').html(cpa);
+        $('#contact-person-no').html(cpn);
         $('#healthcare-provider').html(healthcare_provider);
         $('#loa-request-type').html(loa_request_type);
         $('#loa-med-services').html(med_serv);
@@ -279,6 +276,38 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#approved-by').html(approved_by);
+        $('#work_related').html(work_related);
+        $('#approved_on').html(approved_on);
+        if(work_related == 'Yes'){ 
+					if(percentage == ''){
+					  wpercent = '100% W-R';
+					  nwpercent = '';
+					}else{
+					   wpercent = percentage+'%  W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   nwpercent = '';
+					   }else{
+						   nwpercent = result+'% Non W-R';
+					   }
+					  
+					}	
+			   }else if(work_related == 'No'){
+				   if(percentage == ''){
+					   wpercent = '';
+					   nwpercent = '100% Non W-R';
+					}else{
+					   nwpercent = percentage+'% Non W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   wpercent = '';
+					   }else{
+						   wpercent = result+'%  W-R';
+					   }
+					 
+					}
+			   }
+        $('#percentage').html(wpercent+', '+nwpercent);
       }
     });
   }

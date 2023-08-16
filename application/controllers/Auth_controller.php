@@ -60,7 +60,7 @@ class Auth_controller extends CI_Controller {
 						'dsg_hcare_prov' => $result['dsg_hcare_prov'],
 						'doctor_id' => $result['doctor_id'],
 						'logged_in' => true,
-						'next_route' => 'redirect-to-dashboard',
+						'next_route' => 'redirect-to-dashboard', 
 						'next_page' => $result['user_role'] . '/dashboard',
 						'username' => $result['username']
 					);

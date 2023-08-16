@@ -39,8 +39,8 @@
                             <td class="fw-bold ls-1">&#8369;<span id="remaining-mbl"></span></td>
                           </tr>
                           <tr>
-                            <td class="fw-bold ls-1">Work-Related :</td>
-                            <td class="fw-bold ls-1" id="work-related"></td>
+                            <td class="fw-bold ls-1">Percentage :</td>
+                            <td class="fw-bold ls-1" id="percentage"></td>
                           </tr>
                           <tr>
                             <td class="fw-bold ls-1">Full Name :</td>
@@ -65,6 +65,10 @@
                           <tr>
                             <td class="fw-bold ls-1">Chief Complaint :</td>
                             <td class="fw-bold ls-1" id="chief-complaint"></td>
+                          </tr>
+                          <tr>
+                            <td class="fw-bold ls-1">Services :</td>
+                            <td class="fw-bold ls-1" id="med-services-list"></td>
                           </tr>
                         </table>
                       </div>

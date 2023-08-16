@@ -207,6 +207,16 @@ class Members_controller extends CI_Controller {
 		$data['user_role'] = $this->session->userdata('user_role');
 		$data['member'] = $member = $this->members_model->db_get_member_details($member_id);
 		$data['mbl'] = $this->members_model->db_get_member_mbl($member['emp_id']);
+		$data['bar'] = $this->members_model->bar_pending();
+		$data['bar1'] = $this->members_model->bar_approved();
+		$data['bar2'] = $this->members_model->bar_completed();
+		$data['bar3'] = $this->members_model->bar_referral();
+		$data['bar4'] = $this->members_model->bar_expired();
+		$data['bar_Billed'] = $this->members_model->bar_billed();
+		$data['bar5'] = $this->members_model->bar_pending_noa();
+		$data['bar6'] = $this->members_model->bar_approved_noa();
+		$data['bar_Initial'] = $this->members_model->bar_initial_noa();
+		$data['bar_Billed2'] = $this->members_model->bar_billed_noa();
 
 		/* This is checking if the image file exists in the directory. */
 		$file_path = './uploads/profile_pics/' . $member['photo'];
@@ -315,8 +325,10 @@ class Members_controller extends CI_Controller {
 
 			$custom_actions = '<a href="' . $view_url . '" data-bs-toggle="tooltip" title="View Member Profile"><i class="mdi mdi-account-card-details fs-2 text-info"></i></a>';
 
+			$custom_actions .= '<a href="' . base_url() . 'healthcare-coordinator/members/view/files/' . $member_id . '"  data-bs-toggle="tooltip" title="View Files"><i class="mdi mdi-file-multiple fs-2 text-danger ps-2"></i></a>';
+
 			$emp_id = $this->myhash->hasher($member['emp_id'], 'encrypt');
-			$custom_view = '<a class="fw-bold" href="JavaScript:void(0)" onclick="viewImage(\''.$emp_id.'\')">View ID</a>';
+			$custom_view = '<a class="fw-bold ps-4" href="JavaScript:void(0)" onclick="viewImage(\''.$emp_id.'\')">View ID</a>';
 
 			// this data will be rendered to the datatable
 			$row[] = $member['member_id'];

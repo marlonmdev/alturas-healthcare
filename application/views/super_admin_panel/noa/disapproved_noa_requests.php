@@ -54,17 +54,38 @@
               <span class="hidden-xs-down fs-5 font-bold">Disapproved</span></a
             >
           </li>
-            <li class="nav-item">
+          <li class="nav-item">
             <a
               class="nav-link"
-              href="<?php echo base_url(); ?>super-admin/noa/requests-list/completed"
+              href="<?php echo base_url(); ?>super-admin/noa/requests-list/billed"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
+              <span class="hidden-xs-down fs-5 font-bold">Billed</span></a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="<?php echo base_url(); ?>super-admin/noa/requests-list/paid"
+              role="tab"
+              ><span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">Paid</span></a
             >
           </li>
         </ul>
-
+        <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text bg-dark text-white"><i class="mdi mdi-filter"></i></span>
+            </div>
+            <select class="form-select fw-bold" name="hospital-filter" id="hospital-filter">
+              <option value="">Select Hospital</option>
+              <?php foreach($hcproviders as $option) : ?>
+                <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+        </div>
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
@@ -178,7 +199,7 @@
 
   $(document).ready(function() {
 
-    $('#disapprovedNoaTable').DataTable({
+    const distable = $('#disapprovedNoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
@@ -188,8 +209,9 @@
         url: `${baseUrl}super-admin/noa/requests-list/disapproved/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
-        data: {
-          'token': '<?php echo $this->security->get_csrf_hash(); ?>'
+        data: function(data){
+          data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
+          data.filter = $('#hospital-filter').val();
         }
       },
 
@@ -202,6 +224,9 @@
       fixedHeader: true,
     });
 
+    $('#hospital-filter').on('change',function(){
+      distable.draw();
+    });
   });
 
   const saveAsImage = () => {
@@ -260,7 +285,7 @@
         $('#noa-status').html('<strong class="text-danger">[' + req_status + ']</strong>');
         $('#disapproved-by').html(disapproved_by);
         $('#disapproved-on').html(disapproved_on);
-        $('#disapprove-reason').html(disapprove_reason);
+        $('#disapprove-reason').html('<strong class="text-danger">' + disapprove_reason + '</strong>');
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);

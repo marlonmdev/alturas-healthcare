@@ -30,117 +30,88 @@
 				    $month = 'December';
 			    }
         ?>
+        <a href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/for-charging" type="submit" class="btn btn-danger" data-bs-toggle="tooltip" title="Click to Go Back">
+          <strong class="ls-2" style="vertical-align:middle"><i class="mdi mdi-arrow-left-bold"></i> Back</strong>
+        </a>
 
-        <h4 class="page-title ls-2">Consolidated Billing for the Month of <?php echo $month . ', ' . $payable['year']; ?>.</h4>
         <input type="hidden" id="payment-no" value="<?php echo $payable['payment_no']; ?>">
-        <h4 class="page-title ls-2">Consolidated Billing for the Month of <?php echo $month . ', ' . $payable['year']; ?> [Outpatient]</h4>
-      <input type="hidden" id="bill-no" value="<?php echo $payable['bill_no']; ?>">
-          <div class="ms-auto text-end">
-            <nav aria-label="breadcrumb">
-              <ol class="breadcrumb">
-                <li class="breadcrumb-item">Healthcare Coordinator</li>
-                <li class="breadcrumb-item active" aria-current="page">History</li>
-                <li class="breadcrumb-item"><?php echo $payable['hp_name']; ?></li>
-              </ol>
-            </nav>
-          </div>
+        <input type="hidden" id="bill-no" value="<?php echo $payable['bill_no']; ?>">
+        <div class="ms-auto text-end">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">Month of</li>
+              <li class="breadcrumb-item active" aria-current="page"><?php echo $month . ', ' . $payable['year']; ?></li>
+              <li class="breadcrumb-item"><?php echo $payable['hp_name']; ?></li>
+            </ol>
+          </nav>
         </div>
       </div>
     </div>
+  </div><hr>
 
-    <div class="container-fluid">
-      <div class="row pt-2">
-        <div class="col-12 offset-11 mb-4 mt-2">
-          <div class="input-group">
-            <a href="<?php echo base_url(); ?>healthcare-coordinator/bill/requests-list/for-charging" type="submit" class="btn btn-info" data-bs-toggle="tooltip" title="Click to Go Back">
-              <strong class="ls-2" style="vertical-align:middle"><i class="mdi mdi-arrow-left-bold"></i> Back</strong>
-            </a>
-          </div>
-        </div>
-        <div class="col-lg-12">
-          <div class="row pt-2 pb-2">
-            <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
-                
-            <div class="card shadow" style="background-color:">
-              <div class="card-body">
-                <div class="table-responsive">
-                  <table class="table table-hover table-responsive" id="billedLoaTable">
-                    <thead style="background-color:#00538C">
-                      <tr>
-<<<<<<< HEAD
-                        <th class="fw-bold" style="color: white;">Billing NO.</th>
-                        <th class="fw-bold" style="color: white;">PATIENT NAME</th>
-                        <th class="fw-bold" style="color: white;">TYPE OF REQUEST</th>
-                        <th class="fw-bold" style="color: white;">COORDINATOR BILL</th>
-                        <th class="fw-bold" style="color: white;">VIEW</th>
-                        <th class="fw-bold" style="color: white;">HEALTHCARE BILL</th>
-                        <th class="fw-bold" style="color: white;">VIEW</th>
-=======
-                        <th class="fw-bold">Billing No.</th>
-                        <th class="fw-bold">Name</th>
-                        <th class="fw-bold">Business Unit</th>
-                        <th class="fw-bold">LOA Type</th>
-                        <th class="fw-bold">Coordinator Bill</th>
-                        <th class="fw-bold">View Bill</th>
-                        <th class="fw-bold">Healthcare Bill</th>
-                        <th class="fw-bold">View SOA</th>
->>>>>>> 9db59a518b04c989b30b58c89e4bbd46fcac24c9
-                      </tr>
-                    </thead>
-                    <tbody id="billed-tbody">
-                    </tbody>
-                  </table>
-                </div>
-                <div class="row pt-4 pb-2">
-                  <div class="col-lg-2 offset-7">
-                    <label>Total Coordinator Bill : </label>
-                    <input name="total-coordinator-bill" id="total-coordinator-bill" class="form-control text-center fw-bold" value="0" readonly>
-                  </div>
-                  <div class="col-lg-2 ">
-                    <label>Total Hospital Bill : </label>
-                    <input name="total-hospital-bill" id="total-hospital-bill" class="form-control text-center fw-bold" value="0" readonly>
-                  </div>
-                </div>
-              </div>
-              
-            </div>
-            <?php include 'view_completed_loa_details.php'; ?>
-          </div>
-          <?php include 'view_pdf_bill_modal.php'; ?>
-        </div>
-        <?php include 'view_coordinator_bill_modal.php'; ?>
+  <input type="hidden" name="token" value="<?php echo $this->security->get_csrf_hash() ?>">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+        <table class="table table-hover table-responsive" id="billedLoaTable">
+          <thead style="background-color:#ADD8E6">
+            <tr>
+              <th class="fw-bold" style="color: black;font-size:9px">BILLING #</th>
+              <th class="fw-bold" style="color: black;font-size:9px">LOA #</th>
+              <th class="fw-bold" style="color: black;font-size:9px">PATIENT NAME</th>
+              <th class="fw-bold" style="color: black;font-size:9px">BUSINESS UNIT</th>
+              <th class="fw-bold" style="color: black;font-size:9px">PERCENTAGE</th>
+              <th class="fw-bold" style="color: black;font-size:9px">TYPE OF REQUEST</th>
+              <th class="fw-bold" style="color: black;font-size:9px">COMPANY CHARGE</th>
+              <th class="fw-bold" style="color: black;font-size:9px">PERSONAL CHARGE</th>
+              <th class="fw-bold" style="color: black;font-size:9px">HEALTHCARE ADVANCE</th>
+              <th class="fw-bold" style="color: black;font-size:9px">HOSPITAL BILL</th>
+              <th class="fw-bold" style="color: black;font-size:9px">SUMMARY SOA</th>
+              <th class="fw-bold" style="color: black;font-size:9px">DETAILED SOA</th>
+            </tr>
+          </thead>
+          <tbody id="billed-tbody" style="font-size: 10px"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row pt-2 pb-2 offset-8">
+      <div class="col-lg-5">
+        <label>Total Hospital Bill :</label>
+      </div>
+      <div class="col-lg-4">
+        <input name="total-hospital-bill" id="total-hospital-bill" class="form-control text-center fw-bold" value="0" readonly>
       </div>
     </div>
   </div>
+  <?php include 'view_completed_loa_details.php'; ?>
+  <?php include 'view_pdf_bill_modal.php'; ?>
+  <?php include 'view_coordinator_bill_modal.php'; ?>
 </div>
 
 
 <script>
-     const baseUrl = "<?php echo base_url(); ?>";
-     const bill_no = document.querySelector('#bill-no').value;
+  const baseUrl = "<?php echo base_url(); ?>";
+  const bill_no = document.querySelector('#bill-no').value;
     
- $(document).ready(function(){
+  $(document).ready(function(){
     
     let billedTable = $('#billedLoaTable').DataTable({
-      processing: true, //Feature control the processing indicator.
-      serverSide: true, //Feature control DataTables' server-side processing mode.
-      order: [], //Initial no order.
+      processing: true,
+      serverSide: true,
+      order: [],
 
-      // Load data for the table's content from an Ajax source
       ajax: {
         url: `${baseUrl}healthcare-coordinator/loa/monthly-bill/fetch/${bill_no}`,
         type: "POST",
-        // passing the token as data so that requests will be allowed
         data: function(data) {
-            data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
+          data.token = '<?php echo $this->security->get_csrf_hash(); ?>';
         }
       },
-      //Set column definition initialisation properties.
       columnDefs: [{
-        "orderable": false, //set not orderable
+        "orderable": false,
       }, ],
-      data: [],  // Empty data array
-      deferRender: true,  // Enable deferred rendering
+      data: [],
+      deferRender: true,
       info: false,
       paging: false,
       filter: false,
@@ -148,146 +119,202 @@
       responsive: true,
       fixedHeader: true,
     });
- });
 
- window.onload = function() {
-    getTotalBill();
- }
+    billedTable.on('draw.dt', function() {
+      let columnId = 6;
+      let sum = 0;
+      let rowss = billedTable.rows().nodes();
 
- const getTotalBill = () => {
-      const coordinator_bill = document.querySelector('#total-coordinator-bill');
-      const hospital_bill = document.querySelector('#total-hospital-bill');
-      const bill_no = document.querySelector('#bill-no').value;
+      if ($('#billedLoaTable').DataTable().data().length > 0) {
+        // The table is not empty
+        rowss.each(function(index, row) {
+          let rowData = billedTable.row(row).data();
+          let columnValue = rowData[columnId];
+          let pattern = /-?[\d,]+(\.\d+)?/g;
+          let matches = columnValue.match(pattern);
 
-      $.ajax({
-          type: 'post',
-          url: `${baseUrl}healthcare-coordinator/loa/matched/total-bill/fetch`,
-          dataType: "json",
-          data: {
-              'token' : '<?php echo $this->security->get_csrf_hash(); ?>',
-              'bill_no' : bill_no,
-          },
-          success: function(response){
-            hospital_bill.value = response.total_hospital_bill;
-            coordinator_bill.value = response.total_coordinator_bill;
-          },
+          if (matches && matches.length > 0) {
+            let numberString = matches[0].replace(/,/g, ''); // Replace all commas
+            let floatValue = parseFloat(numberString);
+            sum += floatValue;
+          }
+        });
+      }
+      $('#total-hospital-bill').val(sum.toLocaleString('PHP', { minimumFractionDigits: 2 }));
+    });
+  });
 
-      });
-    }
+  function viewImage(path) {
+    let item = [{
+      src: path, // path to image
+      title: 'Hospital Receipt' // If you skip it, there will display the original image name
+    }];
+    // define options (if needed)
+    let options = {
+      index: 0 // this option means you will start at first image
+    };
+    // Initialize the plugin
+    let photoviewer = new PhotoViewer(item, options);
+  }
 
- const viewPDFBill = (pdf_bill,loa_no) => {
-      $('#viewPDFBillModal').modal('show');
-      $('#pdf-loa-no').html(loa_no);
 
-        let pdfFile = `${baseUrl}uploads/pdf_bills/${pdf_bill}`;
-        let fileExists = checkFileExists(pdfFile);
+  const viewPDFBill = (pdf_bill,loa_no) => {
+    $('#viewPDFBillModal').modal('show');
+    $('#pdf-loa-no').html(loa_no);
+    console.log('pdf',pdf_bill);
+     console.log('loa_no',loa_no);
+    let pdfFile = `${baseUrl}uploads/pdf_bills/${pdf_bill}`;
+    let fileExists = checkFileExists(pdfFile);
 
-        if(fileExists){
-        let xhr = new XMLHttpRequest();
-        xhr.open('GET', pdfFile, true);
-        xhr.responseType = 'blob';
+    if(fileExists){
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', pdfFile, true);
+      xhr.responseType = 'blob';
 
-        xhr.onload = function(e) {
-            if (this.status == 200) {
-            let blob = this.response;
-            let reader = new FileReader();
+      xhr.onload = function(e) {
+        if (this.status == 200) {
+          let blob = this.response;
+          let reader = new FileReader();
 
-            reader.onload = function(event) {
-                let dataURL = event.target.result;
-                let iframe = document.querySelector('#pdf-viewer');
-                iframe.src = dataURL;
-            };
-            reader.readAsDataURL(blob);
-            }
-        };
-        xhr.send();
+          reader.onload = function(event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-viewer');
+            iframe.src = dataURL;
+          };
+          reader.readAsDataURL(blob);
         }
+      };
+      xhr.send();
     }
+  }
 
-    const checkFileExists = (fileUrl) => {
-        let xhr = new XMLHttpRequest();
-        xhr.open('HEAD', fileUrl, false);
-        xhr.send();
+  const viewDetailedPDFBill = (pdf_bill,loa_no) => {
+    $('#viewPDFBillModal').modal('show');
+    $('#pdf-loa-no').html(loa_no);
 
-        return xhr.status == "200" ? true: false;
+    let pdfFile = `${baseUrl}uploads/itemize_bills/${pdf_bill}`;
+    let fileExists = checkFileExists(pdfFile);
+
+    if(fileExists){
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', pdfFile, true);
+      xhr.responseType = 'blob';
+
+      xhr.onload = function(e) {
+        if (this.status == 200) {
+          let blob = this.response;
+          let reader = new FileReader();
+
+          reader.onload = function(event) {
+            let dataURL = event.target.result;
+            let iframe = document.querySelector('#pdf-viewer');
+            iframe.src = dataURL;
+          };
+          reader.readAsDataURL(blob);
+        }
+      };
+      xhr.send();
     }
+  }
 
-    const viewCoordinatorBill = (loa_id) => {
-      $('#viewCoordinatorBillModal').modal('show');
-      $.ajax({
-        url: `${baseUrl}healthcare-coordinator/loa/billing/fetch/${loa_id}`,
-        type: 'GET',
-        dataType: 'json',
-        success: function(data){
-          let bill = data.bill;
-          let service = data.service;
-          let deduction = data.deduction;
+  const checkFileExists = (fileUrl) => {
+    let xhr = new XMLHttpRequest();
+    xhr.open('HEAD', fileUrl, false);
+    xhr.send();
+    return xhr.status == "200" ? true: false;
+  }
 
-          let deduction_table = '';
-          let service_table = '';
-          let fullname = '';
-          let hp_name = '';
+  const viewCoordinatorBill = (loa_id) => {
+    $('#viewCoordinatorBillModal').modal('show');
+    $.ajax({
+      url: `${baseUrl}healthcare-coordinator/loa/billing/fetch/${loa_id}`,
+      type: 'GET',
+      dataType: 'json',
+      success: function(data){
+        let bill = data.bill;
+        let service = data.service;
+        let deduction = data.deduction;
 
-          fullname += bill.first_name+' '+bill.middle_name+' '+bill.last_name+' '+bill.suffix;
-          hp_name += bill.hp_name;
+        let deduction_table = '';
+        let service_table = '';
+        let fullname = '';
+        let hp_name = '';
+
+        fullname += bill.first_name+' '+bill.middle_name+' '+bill.last_name+' '+bill.suffix;
+        hp_name += bill.hp_name;
     
-           $.each(service, function(index, item){
-            let op_price = parseFloat(item.op_price);
+        $.each(service, function(index, item){
+          let op_price = parseFloat(item.op_price);
             
-            service_table += ' <tr> ' +
+          service_table += ' <tr> ' +
                                 '<td class="text-center ls-1">'+item.item_description+'</td>' +
                                 '<td class="text-center ls-1">'+op_price.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
-                              '</tr>' ;
-           });
+                            '</tr>' ;
+        });
 
-           let total_services = parseFloat(bill.total_services);
-           if(parseFloat(bill.medicines) != ''){
-            service_table +=  '<tr>' +
+        let total_services = parseFloat(bill.total_services);
+        if(parseFloat(bill.medicines) != ''){
+          service_table +=  '<tr>' +
                                 '<tr><td></td><td></td></tr>' +
                                 '<td class="text-center ls-1">Medicines</td>' +
                                 '<td class="text-center ls-1">'+parseFloat(bill.medicines).toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
-                              '</tr>';
-           }
-
-           service_table +=  '<tr>' +
+                            '</tr>';
+        }
+        service_table +=  '<tr>' +
                                 '<td></td>' +
                                 '<td class="text-center">' +
                                     '<span class="text-dark fs-6 fw-bold ls-1 me-2">Total: '+total_services.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</span>' +
                                 '</td>' +
-                              '</tr>';
+                          '</tr>';
 
-          $.each(deduction, function(index, item){
-            let deduction_amount = parseFloat(item.deduction_amount);
+        $.each(deduction, function(index, item){
+          let deduction_amount = parseFloat(item.deduction_amount);
 
-            deduction_table += '<tr>'+
+          deduction_table += '<tr>'+
                                 '<td class="text-center ls-1">'+item.deduction_name+'</td>' +
                                 '<td class="text-center ls-1">'+deduction_amount.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</td>' +
-                               '</tr>';
-          });
+                              '</tr>';
+        });
 
-          let total_deductions = parseFloat(bill.total_deductions);
-          let total_net_bill = parseFloat(bill.total_net_bill);
-          deduction_table += ' <tr>'+
+        let total_deductions = parseFloat(bill.total_deductions);
+        let total_net_bill = parseFloat(bill.total_net_bill);
+        deduction_table += ' <tr>'+
                                   '<td></td>' +
                                   '<td class="text-center">' +
                                       '<span class="text-dark fs-6 fw-bold ls-1 me-2">Total: '+total_deductions.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</span>' +
                                   '</td>' +
-                                '</tr>'+
-                              '<tr>' +
+                            '</tr>'+
+                            '<tr>' +
                                   '<td></td>' +
                                   '<td>' +
                                       '<span class="text-danger fs-6 fw-bold ls-1 me-2">Total Net Bill: '+total_net_bill.toLocaleString('PHP', { minimumFractionDigits: 2 })+'</span>' +
                                   '</td>' +
-                              '</tr>';
+                            '</tr>';
 
-           $('#deduction-table').html(deduction_table);
-           $('#service-table').html(service_table);
-           $('#bill-fullname').html(fullname);
-           $('#bill-hp-name').html(hp_name);
-           $('#bill-loa-no').html(bill.loa_no);
+        $('#deduction-table').html(deduction_table);
+        $('#service-table').html(service_table);
+        $('#bill-fullname').html(fullname);
+        $('#bill-hp-name').html(hp_name);
+        $('#bill-loa-no').html(bill.loa_no);
            
-        }
-      });
-    }
+      }
+    });
+  }
 
 </script>
+
+<style>
+  .table-responsive {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 3px;
+  }
+
+  tr:nth-child(even){background-color: #f2f2f2}
+</style>

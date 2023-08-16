@@ -1,8 +1,8 @@
 <div class="modal fade" id="loaCancellationModal" tabindex="-1" data-bs-backdrop="static">
   <div class="modal-dialog modal-md">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title text-secondary ls-1">CANCEL REQUEST</h5>
+      <div class="modal-header" style="background-color:#00538c">
+        <h5 class="title" style="color:#fff">CANCEL REQUEST</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
@@ -31,3 +31,5 @@
     </div>
   </div>
 </div>
+
+

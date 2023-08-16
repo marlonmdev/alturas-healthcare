@@ -146,7 +146,8 @@
           work_related,
           req_status,
           approved_by,
-          approved_on
+          approved_on,
+          percentage
         } = res;
 
         $("#viewNoaModal").modal("show");
@@ -164,7 +165,36 @@
         $('#admission-date').html(admission_date);
         $('#chief-complaint').html(chief_complaint);
         $('#request-date').html(request_date);
-        $('#work-related').html(work_related);
+        if(work_related == 'Yes'){ 
+              if(percentage == ''){
+                wpercent = '100% W-R';
+                nwpercent = '';
+              }else{
+                wpercent = percentage+'%  W-R';
+                result = 100 - parseFloat(percentage);
+                if(percentage == '100'){
+                  nwpercent = '';
+                }else{
+                  nwpercent = result+'% Non W-R';
+                }
+                
+              }	
+            }else if(work_related == 'No'){
+              if(percentage == ''){
+                wpercent = '';
+                nwpercent = '100% Non W-R';
+              }else{
+                nwpercent = percentage+'% Non W-R';
+                result = 100 - parseFloat(percentage);
+                if(percentage == '100'){
+                  wpercent = '';
+                }else{
+                  wpercent = result+'%  W-R';
+                }
+              
+              }
+            }
+            $('#percentage').html(wpercent+', '+nwpercent);
       }
     });
   }

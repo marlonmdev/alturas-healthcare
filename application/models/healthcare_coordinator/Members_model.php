@@ -67,6 +67,37 @@ class Members_model extends CI_Model {
     return $query->row_array();
   }
 
+  function get_employee_files($emp_id) {
+    return $this->db->get_where('billing',['emp_id' => $emp_id])->result_array();
+  }
+
+  function get_employee_files_loa($emp_id){
+    return $this->db->get_where('loa_requests',['emp_id' => $emp_id])->result_array();
+
+  }
+
+  function get_employee_files_noa($emp_id){
+    return $this->db->get_where('noa_requests',['emp_id' => $emp_id])->result_array();
+
+  }
+
+  function db_get_hc_member_details() {
+    return $this->db->get('members')->result_array();
+  }
+
+  function db_get_mbl_history() {
+    return $this->db->get('max_benefit_limits')->result_array();
+  }
+
+  function insert_mbl_history($post_data) {
+    return $this->db->insert('mbl_history', $post_data);
+  }
+
+  function reset_member_mbl($post_data, $emp_id){
+    $this->db->where('emp_id',$emp_id);
+    return $this->db->update('max_benefit_limits', $post_data);
+  }
+  
   function db_get_member_mbl($emp_id) {
     $this->db->select('*');
     $query = $this->db->get_where('max_benefit_limits', ['emp_id' => $emp_id]);
@@ -174,4 +205,48 @@ class Members_model extends CI_Model {
      return $this->db->count_all_results();
    }
    // End of server-side processing datatables
+  //Bar =================================================
+  public function bar_pending(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Pending' ");
+    return $query->num_rows(); 
+  }
+
+  public function bar_approved(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Approved' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_completed(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Completed' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_referral(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Referral' ");
+    return $query->num_rows(); 
+  }
+  public function bar_expired(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Expired' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_billed(){
+    $query = $this->db->query("SELECT status FROM loa_requests WHERE status='Billed' ");
+    return $query->num_rows(); 
+  }
+  public function bar_pending_noa(){
+    $query = $this->db->query("SELECT status FROM noa_requests WHERE status='Pending' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_approved_noa(){
+    $query = $this->db->query("SELECT status FROM noa_requests WHERE status='Approved' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_initial_noa(){
+    $query = $this->db->query("SELECT status FROM initial_billing WHERE status='Initial' ");
+    return $query->num_rows(); 
+  } 
+  public function bar_billed_noa(){
+    $query = $this->db->query("SELECT status FROM noa_requests WHERE status='Billed' ");
+    return $query->num_rows(); 
+  }  
+  //End =================================================
+  
 }

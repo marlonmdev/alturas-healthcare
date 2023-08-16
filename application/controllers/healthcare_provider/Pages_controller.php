@@ -7,6 +7,7 @@ class Pages_controller extends CI_Controller {
 		parent::__construct();
 		$this->load->model('healthcare_provider/count_model');
 		$this->load->model('healthcare_provider/hospital_model');
+		$this->load->model('ho_accounting/List_model');
 		$user_role = $this->session->userdata('user_role');
 		$logged_in = $this->session->userdata('logged_in');
 		if ($logged_in !== true && $user_role !== 'healthcare-provider') {
@@ -23,6 +24,7 @@ class Pages_controller extends CI_Controller {
 		$data['noa_count'] = $this->count_model->hp_approved_noa_count($hp_id);
 		$data['bllled_count'] = $this->count_model->hp_done_billing_count($hp_id);
 		$data['total_patient'] = $this->count_model->total_patient($hp_id);
+		$data['hp_id'] = $hp_id;
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_provider_panel/dashboard/index');
 		$this->load->view('templates/footer');
@@ -42,7 +44,7 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
-	function disapproved_loa_requests() {
+	function disapproved_loa_requests() { 
 		$data['user_role'] = $this->session->userdata('user_role');
 		$this->load->view('templates/header', $data);
 		$this->load->view('healthcare_provider_panel/loa/disapproved_loa_list');
@@ -101,11 +103,17 @@ class Pages_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 
-	function upload_textfile_form() {
+	// function upload_textfile_form() {
+	// 	$data['user_role'] = $this->session->userdata('user_role');
+	// 	$this->load->view('templates/header', $data);
+	// 	$this->load->view('healthcare_provider_panel/billing/upload_textfile');
+	// 	$this->load->view('templates/footer');
+	// }
+	function payment_list() {
 		$data['user_role'] = $this->session->userdata('user_role');
+		$hcare_provider['hc_id'] = $this->session->userdata('dsg_hcare_prov');
 		$this->load->view('templates/header', $data);
-		$this->load->view('healthcare_provider_panel/billing/upload_textfile');
+		$this->load->view('healthcare_provider_panel/billing/payment_list.php',$hcare_provider);
 		$this->load->view('templates/footer');
 	}
-
 }

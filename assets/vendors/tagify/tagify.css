@@ -328,8 +328,8 @@
 	flex-grow: 1;
 	display: inline-block;
 	min-width: 110px;
-	/* margin: 5px; */
-	/* padding: var(--tag-pad); */
+	margin: 5px;
+	padding: var(--tag-pad);
 	padding: 0.1em 0.5em;
 	line-height: normal;
 	position: relative;

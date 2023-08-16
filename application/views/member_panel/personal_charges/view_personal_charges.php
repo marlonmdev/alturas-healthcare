@@ -2,7 +2,7 @@
             <div class="modal-dialog modal-lg">
               <div class="modal-content">
                 <div class="modal-header">
-                  <!-- <h5 class="modal-title">BILLING #: <span id="noa-no" class="text-primary"></span> <span id="noa-status"></span></h5> -->
+                  <h5 class="modal-title">BILLING #: <span id="billing-no" class="text-primary"></span> <span id="noa-status"></span></h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                   </button>
                 </div>
@@ -11,30 +11,30 @@
                     <div class="row text-center">
                       <h4><strong>PERSONAL CHARGE DETAILS</strong></h4>
                     </div>
-                    <div class="row">
+                    <div class="row pt-2">
                       <table class="table table-responsive table-striped border-secondary table-sm">
                         <tr>
-                          <td>Request No.</td>
-                          <td id="total-cost"></td>
+                          <td>LOA/NOA No.</td>
+                          <td id="loa-noa-no"></td>
                         </tr>
                         <tr>
-                          <td>Billing No.</td>
-                          <td id="total-cost"></td>
+                          <td>Percentage</td>
+                          <td id="percentage"></td>
                         </tr>
                         <tr>
-                          <td>Total Cost</td>
-                          <td id="total-cost"></td>
+                          <td>Current MBL</td>
+                          <td id="current-mbl"></td>
                         </tr>
                         <tr>
-                          <td>Total Deduction</td>
-                          <td id="total-deduction"></td>
+                          <td>Total Hospital Bill</td>
+                          <td id="hospital-bill"></td>
                         </tr>
                         <tr>
-                          <td>Net Bill</td>
-                          <td id="net-bill"></td>
+                          <td>Company Charge</td>
+                          <td id="company-charge"></td>
                         </tr>
                         <tr>
-                          <td>Personal Charge :</td>
+                          <td>Personal Charge</td>
                           <td id="personal-charge"></td>
                         </tr>
                         <tr>
@@ -44,10 +44,6 @@
                         <tr>
                           <td>Billed On :</td>
                           <td id="billed-on"></td>
-                        </tr>
-                        <tr>
-                          <td>Billed By :</td>
-                          <td id="billed-by"></td>
                         </tr>
                       </table>
                     </div>

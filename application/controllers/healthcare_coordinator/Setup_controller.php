@@ -27,6 +27,7 @@ class Setup_controller extends CI_Controller {
         $value['hp_id'],
         $value['hp_name'],
         $value['hp_type'],
+        ($value['accredited'] === "1")?"Affiliated":"Non-Affiliated",
         $value['hp_address'],
         $actions
       ];
@@ -38,6 +39,7 @@ class Setup_controller extends CI_Controller {
     $this->security->get_csrf_hash();
     $input_post = $this->input->post();
     $this->form_validation->set_rules('hp-type', 'Type', 'required');
+    $this->form_validation->set_rules('hp-category', 'Category', 'required');
     $this->form_validation->set_rules('hp-name', 'Name', 'trim|required|callback_check_healthcare_provider_exist');
     $this->form_validation->set_rules('hp-address', 'Address', 'trim|required');
     $this->form_validation->set_rules('hp-contact', 'Contact Number', 'trim|required');
@@ -46,6 +48,7 @@ class Setup_controller extends CI_Controller {
       $response = [
         'status' => 'error',
         'type_error' => form_error('hp-type'),
+        'category_error' => form_error('hp-category'),
         'name_error' => form_error('hp-name'),
         'address_error' =>  form_error('hp-address'),
         'contact_error' => form_error('hp-contact')
@@ -53,6 +56,7 @@ class Setup_controller extends CI_Controller {
     } else {
       $post_data = [
         'hp_type' => strip_tags($input_post['hp-type']),
+        'accredited' => strip_tags($input_post['hp-category']),
         'hp_name' => ucwords(strip_tags($input_post['hp-name'])),
         'hp_address' => strip_tags($input_post['hp-address']),
         'hp_contact' => strip_tags($input_post['hp-contact']),
@@ -408,9 +412,14 @@ class Setup_controller extends CI_Controller {
     $data = [];
     foreach ($resultList as $value) {
       $row = [];
-      // $actions = '<a class="me-2" href="Javascript:void(0)" onclick="editCostType(' . $value['ctype_id'] . ')" data-toggle="tooltip" data-placement="top" title="Edit"><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a> ';
+      $ctype_id = $this->myhash->hasher($value['ctype_id'], 'encrypt');
+      ;
+      $actions = '<a href="Javascript:void(0)" onclick="editCostType(' . $value['ctype_id'] . ')" data-toggle="tooltip" data-placement="top" title="Edit"><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a> ';
 
-      // $actions = '<a href="Javascript:void(0)" onclick="deleteCostType(' . $value['ctype_id'] . ')" data-toggle="tooltip" data-placement="top" title="Delete"><i class="mdi mdi-delete-circle fs-2 text-danger"></i></a>';
+      // $actions = '<a class="me-2" href="Javascript:void(0)" onclick="editCostType(\'' . $ctype_id . '\')" data-toggle="tooltip" data-placement="top" title="Edit"><i class="mdi mdi-pencil-circle fs-2 text-success"></i></a> ';
+
+
+      $actions .= '<a href="Javascript:void(0)" onclick="deleteCostType(' . $value['ctype_id'] . ')" data-toggle="tooltip" data-placement="top" title="Delete"><i class="mdi mdi-delete-circle fs-2 text-danger"></i></a>';
 
       $added_on = $value['date_added'] == '' ? '03/08/2023' :  date("m/d/Y", strtotime($value['date_added']));
   
@@ -419,6 +428,7 @@ class Setup_controller extends CI_Controller {
       $row[] = number_format($value['op_price']);
       $row[] = number_format($value['ip_price']);
       $row[] =  $value['date_added'] ? date("m/d/Y", strtotime($value['date_added'])) : 'No Data Available';
+      $row[] = $actions;
       $data[] = $row;
     }
     $output = [
@@ -428,7 +438,26 @@ class Setup_controller extends CI_Controller {
       "data" => $data,
     ];
     echo json_encode($output);
+    // var_dump($ctype_id);
   }
+
+  // function get_cost_type_info() {
+  //   $room_id = $this->myhash->hasher( $this->uri->segment(5), 'decrypt');
+
+  //   $row = $this->setup_model->db_get_room_type_info($room_id);
+
+  //   $response = [
+  //     'status'      => 'success',
+  //     'token'       => $this->security->get_csrf_hash(),
+  //     'hp_id'       => $row['hp_id'],
+  //     'room_type'   => $row['room_type'],
+  //     'rt_hmo_req'  => $row['room_typ_hmo_req'],
+  //     'room_number' => $row['room_number'],
+  //     'room_rate'   => $row['room_rate'],
+  //   ];
+
+  //   echo json_encode($response);
+  // }
 
   function register_cost_type() {
     $this->security->get_csrf_hash();
@@ -515,34 +544,43 @@ class Setup_controller extends CI_Controller {
   function update_cost_type() {
     $token = $this->security->get_csrf_hash();
     $ctype_id = $this->input->post('ctype-id');
-    $item_id = $this->input->post('item-id');
-    $cost_type = $this->input->post('cost-type');
-    $price_cost = $this->input->post('price-cost');
-    $this->form_validation->set_rules('cost-type', 'Cost Type', 'trim|required');
+    $item_id = $this->input->post('item_id');
+    $item_description = $this->input->post('item_description');
+    $old_outpatient_price = $this->input->post('old_outpatient_price');
+    $old_inpatient_price = $this->input->post('old_inpatient_price');
+    $new_outpatient_price = $this->input->post('new_outpatient_price');
+    $new_inpatient_price = $this->input->post('new_inpatient_price');
+
+    $this->form_validation->set_rules('new_outpatient_price', 'Out Patient Price', 'trim|required');
+    $this->form_validation->set_rules('new_inpatient_price', 'In Patient Price', 'trim|required');
     if ($this->form_validation->run() == FALSE) {
       $response = [
         'status' => 'error',
-        'cost_type_error' => form_error('cost-type'),
+        'new_outpatient_price_error' => form_error('new_outpatient_price'),
+        'new_inpatient_price_error' => form_error('new_inpatient_price'),
       ];
     } else {
-      $post_data = array(
+      $post_data = [
         'item_id' => $item_id,
-        'cost_type' => $cost_type,
-        'price_cost' => $price_cost,
+        'item_description' => $item_description,
+        'op_price' => $new_outpatient_price,
+        'ip_price' => $new_inpatient_price,
+        'old_op_price' => $old_outpatient_price,
+        'old_ip_price' => $old_inpatient_price,
         'date_updated' => date("Y-m-d"),
-      );
+      ];
       $updated = $this->setup_model->db_update_cost_type($ctype_id, $post_data);
       if (!$updated) {
         $response = [
           'token' => $token, 
           'status' => 'error', 
-          'message' => 'Cost Type Update Failed'
+          'message' => 'Update Failed'
         ];
       }
       $response = [
         'token' => $token, 
         'status' => 'success', 
-        'message' => 'Cost Type Updated Successfully'
+        'message' => 'Updated Successfully'
       ];
     }
     echo json_encode($response);

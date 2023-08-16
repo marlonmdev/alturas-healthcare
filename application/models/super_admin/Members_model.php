@@ -61,12 +61,6 @@ class Members_model extends CI_Model {
   }
   // End of server-side processing datatables
 
-  function db_get_member_details($member_id) {
-    $this->db->select('*');
-    $query = $this->db->get_where('members', ['member_id' => $member_id]);
-    return $query->row_array();
-  }
-
   function db_get_member($emp_id) {
     $this->db->select('*');
     $query = $this->db->get_where('members', ['emp_id' => $emp_id]);
@@ -106,4 +100,35 @@ class Members_model extends CI_Model {
     $this->db->where('member_id', $member_id);
     return $this->db->update('members', $data);
   }
+
+  function db_get_member_details($member_id) {
+    $this->db->select('*');
+    $query = $this->db->get_where('members', ['member_id' => $member_id]);
+    return $query->row_array();
+  }
+
+  function get_employee_files($emp_id) {
+    return $this->db->get_where('billing',['emp_id' => $emp_id])->result_array();
+  }
+
+  function get_employee_files_loa($emp_id){
+    return $this->db->get_where('loa_requests',['emp_id' => $emp_id])->result_array();
+
+  }
+
+  function get_employee_files_noa($emp_id){
+    return $this->db->get_where('noa_requests',['emp_id' => $emp_id])->result_array();
+
+  }
+
+  function db_get_healthcare_providers() {
+    return $this->db->get('healthcare_providers')->result_array();
+  }
+
+  function get_healthcard($emp_id) {
+    $this->db->select('*')
+             ->from('healthcards')
+             ->where('emp_id', $emp_id);
+     return $this->db->get()->row_array();
+   }
 }

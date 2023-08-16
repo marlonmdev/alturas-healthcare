@@ -19,12 +19,12 @@
                 <option value="2 weeks">2 weeks</option>
                 <option value="3 weeks">3 weeks</option>
                 <option value="4 weeks">4 weeks</option>
-                <option value="custom">Custom</option>
+                <option value="custom" >Custom</option>
               </select>
             </div> 
 
             <div class="col-12 mb-2 d-none" id="exp-date-div">
-              <input class="form-control" type="text" name="expiration-date" id="expiration-date" placeholder="Select Date" style="background-color:#ffff" required>
+              <input class="form-control" type="text" name="expiration-date" id="expiration-date" placeholder="Select Date" style="background-color:#ffff">
               <em id="expiration-date-error" class="text-danger"></em>
             </div>
           </div>

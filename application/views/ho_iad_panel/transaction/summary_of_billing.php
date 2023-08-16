@@ -2,7 +2,7 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">Summary of Billing</h4>
+        <h4 class="page-title ls-2"><i class="mdi mdi-file-document-box"></i> Summary of Billing</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
 						<ol class="breadcrumb">
@@ -13,12 +13,8 @@
         </div>
     	</div>
     </div>
-    <div class="container-fluid">
+    <div class="container-fluid"><br>
       <div class="row">
-        <div class="col-lg-12 mb-3 mt-0">
-          <a class="btn btn-dark btn-md text-white" href="javascript:void(0)" onclick="window.history.back()" data-bs-toggle="tooltip" title="Click to Go Back"><strong class="ls-2" style="vertical-align:middle"><i class="mdi mdi-arrow-left-bold"></i> Go Back</strong></a>
-        </div>
-
         <div class="col-12 mb-3">
           <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
@@ -45,9 +41,9 @@
                       <thead>
                         <tr>
 													<th class="fw-bold">Billing #</th>
-                          <th class="fw-bold">Total Billing</th>
 													<th class="fw-bold">Transaction Date</th>
 													<th class="fw-bold">Request Type</th>
+                          <th class="fw-bold">Total Billing  <br><small class="text-danger">(to company)</small></th>
 													<th class="fw-bold">Action</th>
                         </tr>
                       </thead>
@@ -55,13 +51,13 @@
                         <?php
                           if (!empty($billing)) :
                             foreach ($billing as $bill) :
-                              if($bill['status'] == 'Paid'){
+                              if($bill['status'] == 'Billed' || $bill['status'] == 'Payable' || $bill['status'] == 'Payment'){
                         ?>
                           <tr>
                             <td class="fw-bold"><mark class="bg-primary text-white ls-1"><?= $bill['billing_no'] ?></mark></td>
-                            <td class="fw-bold"><?= $bill['total_bill'] ?></td>
                             <td class="fw-bold"><?= date("m/d/Y", strtotime($bill['billed_on'])) ?></td>
                             <td class="fw-bold"><?= !empty($bill['loa_id']) ? 'LOA' : 'NOA '?></td>
+                            <td class="fw-bold"> <?= '&#8369;'.number_format(floatval($bill['company_charge'] + $bill['cash_advance']), 2) ?></td>
 
                             <?php
                               $req_type = !empty($bill['loa_id']) ? 'loa' : 'noa';
@@ -105,6 +101,7 @@
 													<th class="fw-bold">Payment #</th>
 													<th class="fw-bold">Transaction Date</th>
 													<th class="fw-bold">Request Type</th>
+                          <th class="fw-bold">Total Paid <br><small class="text-danger">(by company)</small></th>
 													<th class="fw-bold">Action</th>
 												</tr>
 											</thead>
@@ -113,21 +110,28 @@
                           if (!empty($billing)){
                             foreach ($billing as $bill){
                               if($bill['status'] == 'Paid'){
+                            
                         ?>
                           <tr>
-                            <td class="fw-bold"><mark class="bg-primary text-white ls-1"><?= $bill['payment_no'] ?></mark></td>
+                            <td class="fw-bold"><mark class="bg-primary text-white ls-1"><?= $bill['billing_no'] ?></mark></td>
                             <td class="fw-bold"><?= date("m/d/Y", strtotime($bill['billed_on'])) ?></td>
                             <td class="fw-bold"><?= !empty($bill['loa_id']) ? 'LOA' : 'NOA '?></td>
-
-
+                            <td class="fw-bold"> <?= '&#8369;'.number_format(floatval($bill['company_charge'] + $bill['cash_advance']), 2) ?></td>
+                            <?php
+                              $req_type = !empty($bill['loa_id']) ? 'loa' : 'noa';
+                            ?>
                             <td class="fw-bold">
                               <form method="POST" action="<?= base_url() ?>head-office-iad/transaction/<?= $req_type ?>/view_payment_details/<?= $this->myhash->hasher($bill['payment_no'], 'encrypt') ?>">
                                 <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash() ?>">
 
                                 <input type="hidden" name="emp_id" value="<?= $bill['emp_id'] ?>">
 
-                                <a href="JavaScript:void(0)" onclick="viewPaymentInfo(<?= '\''. $bill['payment_no'] .'\'' ?>)" class="fw-bold ls-1 text-danger border-0" data-bs-toggle="tooltip" title="Click to view Payment Details" style="background-color: transparent;"> View Details</a>
-
+                                <?php if(floatval($bill['company_charge'] + $bill['cash_advance']) != 0) { ?>
+                                
+                                <a href="JavaScript:void(0)" onclick="viewPaymentInfo(<?= '\''. $bill['billing_id'] .'\'' ?>)" class="fw-bold ls-1 text-danger border-0" data-bs-toggle="tooltip" title="Click to view Payment Details" style="background-color: transparent;"> View Details</a>
+                                  <?php }else{?>
+                                    <span> Patient's Charge</span>
+                                  <?php }?>
                               </form>
                             </td>
                           </tr>
@@ -166,10 +170,10 @@
     });
   });
 
-  const viewPaymentInfo = (payment_no) => {
+  const viewPaymentInfo = (billing_id) => {
     $.ajax({
       type: 'GET',
-      url: `${baseUrl}head-office-iad/transaction/payment-details/${payment_no}`,
+      url: `${baseUrl}head-office-iad/transaction/payment-details/${billing_id}`,
       success: function(response){
         const res = JSON.parse(response);
         const {

@@ -18,49 +18,71 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
-        <ul class="nav nav-tabs mb-4" role="tablist">
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/pending" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">PENDING</span>
-            </a>
-          </li>
+      <nav class="navbar navbar-expand-md navbar-light">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/approved" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">APPROVED</span>
-            </a>
-          </li>
+          <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/pending" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| PENDING</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/approved" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| APPROVED</span>
+                </a>
+              </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/disapproved" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">DISAPPROVED</span>
-            </a>
-          </li>
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/disapproved" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| DISAPPROVED</span>
+                </a>
+              </li>
 
-          <li class="nav-item">
-            <a class="nav-link active" href="<?php echo base_url(); ?>member/requested-loa/completed" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">COMPLETED</span>
-            </a>
-          </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="<?php echo base_url(); ?>member/requested-loa/completed" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 font-bold">| COMPLETED</span>
+                </a>
+              </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/expired" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">EXPIRED</span>
-            </a>
-          </li>
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/expired" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| EXPIRED</span>
+                </a>
+              </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/cancelled" role="tab">
-              <span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">CANCELLED</span>
-            </a>
-          </li>
-        </ul>
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/cancelled" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| CANCELLED</span>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/billed" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| BILLED</span>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(); ?>member/requested-loa/paid" role="tab">
+                  <span class="hidden-sm-up"></span>
+                  <span class="hidden-xs-down fs-5 text-info font-bold">| PAID</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+
 
         <div class="card shadow">
           <div class="card-body">
@@ -71,8 +93,9 @@
                     <th class="fw-bold" style="color: white">LOA NO.</th>
                     <th class="fw-bold" style="color: white">HEALTHCARE PROVIDER</th>
                     <th class="fw-bold" style="color: white">TYPE OF REQUEST</th>
-                    <th class="fw-bold" style="color: white">DATE OF EXPIRATION</th>
+                    <th class="fw-bold" style="color: white">DATE OF REQUEST</th>
                     <th class="fw-bold" style="color: white">RX FILE</th>
+                    <th class="fw-bold" style="color: white">HOSPITAL RECEIPT</th>
                     <th class="fw-bold" style="color: white">STATUS</th>
                     <th class="fw-bold" style="color: white">ACTION</th>
                   </tr>
@@ -178,7 +201,8 @@
           attending_physician,
           rx_file,
           req_status,
-          work_related
+          work_related,
+          percentage
         } = res;
 
         $("#viewLoaModal").modal("show");
@@ -212,7 +236,36 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
-        $('#work-related-val').html(work_related);
+        if(work_related == 'Yes'){ 
+					if(percentage == ''){
+					  wpercent = '100% W-R';
+					  nwpercent = '';
+					}else{
+					   wpercent = percentage+'%  W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   nwpercent = '';
+					   }else{
+						   nwpercent = result+'% Non W-R';
+					   }
+					  
+					}	
+			   }else if(work_related == 'No'){
+				   if(percentage == ''){
+					   wpercent = '';
+					   nwpercent = '100% Non W-R';
+					}else{
+					   nwpercent = percentage+'% Non W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   wpercent = '';
+					   }else{
+						   wpercent = result+'%  W-R';
+					   }
+					 
+					}
+			   }
+        $('#percentage').html(wpercent+', '+nwpercent);
       }
     });
   }

@@ -2,7 +2,7 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">REFERRAL REQUEST</h4>
+        <h4 class="page-title ls-2"><i class="mdi mdi-file-multiple"></i> REFERRAL REQUEST</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -66,6 +66,20 @@
             <a class="nav-link" href="<?php echo base_url(); ?>company-doctor/loa/requests-list/cancelled" role="tab">
               <span class="hidden-sm-up"></span>
               <span class="hidden-xs-down fs-5 font-bold">CANCELLED</span>
+            </a>
+          </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>company-doctor/loa/requests-list/billed" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">BILLED</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>company-doctor/loa/requests-list/paid" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">PAID</span>
             </a>
           </li>
         </ul>
@@ -189,7 +203,7 @@
                 type: 'success'
               });
               $("#backDateModal").modal("hide");
-              $("#expiredLoaTable").DataTable().ajax.reload();
+              $("#ReferralLoaTable").DataTable().ajax.reload();
             break;
           }
         },
@@ -242,7 +256,7 @@
         const res = JSON.parse(response);
         const base_url = window.location.origin;
         const {
-          status,token,loa_no,req_status,request_date,requested_by,approved_on,approved_by,member_mbl,remaining_mbl,work_related,health_card_no,first_name,middle_name,last_name,suffix,date_of_birth,age,gender,blood_type,philhealth_no,home_address,city_address,contact_no,email,contact_person,contact_person_addr,contact_person_no,healthcare_provider,loa_request_type,med_services,requesting_company,chief_complaint,requesting_physician
+          status,token,loa_no,req_status,request_date,requested_by,approved_on,approved_by,member_mbl,remaining_mbl,work_related,health_card_no,first_name,middle_name,last_name,suffix,date_of_birth,age,gender,blood_type,philhealth_no,home_address,city_address,contact_no,email,contact_person,contact_person_addr,contact_person_no,healthcare_provider,loa_request_type,med_services,requesting_company,chief_complaint,requesting_physician,percentage,hospitalized_date
         } = res;
 
         $("#viewLoaModal").modal("show");
@@ -250,7 +264,7 @@
         
         const med_serv = med_services !== '' ? med_services : 'None';
 
-        $('#loa-no').html(loa_no);
+        $('#loa-nos').html(loa_no);
         switch (req_status) {
           case 'Pending':
             $('#loa-status').html(`<strong class="text-warning">[${req_status}]</strong>`);
@@ -268,13 +282,18 @@
             $('#loa-status').html(`<strong class="text-success">[${req_status}]</strong>`);
           break;
         }
+        if(loa_request_type == 'Emergency'){
+          $('#hospitalized').show();
+        }else{
+          $('#hospitalized').hide();
+        }
+        $('#hospitalized-date').html(hospitalized_date);
         $('#request-date').html(request_date);
         $('#requested-by').html(requested_by);
         $('#approved-date').html(approved_on);
         $('#approved-by').html(approved_by);
         $('#member-mbl').html(member_mbl);
         $('#remaining-mbl').html(remaining_mbl);
-        $('#work-related').html(work_related);
         $('#health-card-no').html(health_card_no);
         $('#full-name').html(`${first_name} ${middle_name} ${last_name} ${suffix}`);
         $('#date-of-birth').html(date_of_birth);
@@ -295,6 +314,36 @@
         $('#requesting-company').html(requesting_company);
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
+        if(work_related == 'Yes'){ 
+					if(percentage == ''){
+					  wpercent = '100% W-R';
+					  nwpercent = '';
+					}else{
+					   wpercent = percentage+'%  W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   nwpercent = '';
+					   }else{
+						   nwpercent = result+'% Non W-R';
+					   }
+					  
+					}	
+			   }else if(work_related == 'No'){
+				   if(percentage == ''){
+					   wpercent = '';
+					   nwpercent = '100% Non W-R';
+					}else{
+					   nwpercent = percentage+'% Non W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   wpercent = '';
+					   }else{
+						   wpercent = result+'%  W-R';
+					   }
+					 
+					}
+			   }
+        $('#percentage').html(wpercent+', '+nwpercent);
       }
     });
   }

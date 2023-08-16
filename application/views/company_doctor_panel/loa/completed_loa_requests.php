@@ -2,7 +2,7 @@
   <div class="page-breadcrumb">
     <div class="row">
       <div class="col-12 d-flex no-block align-items-center">
-        <h4 class="page-title ls-2">COMPLETED REQUEST</h4>
+        <h4 class="page-title ls-2"><i class="mdi mdi-file-multiple"></i> COMPLETED REQUEST</h4>
         <div class="ms-auto text-end">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -68,6 +68,20 @@
               <span class="hidden-xs-down fs-5 font-bold">CANCELLED</span>
             </a>
           </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>company-doctor/loa/requests-list/billed" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">BILLED</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url(); ?>company-doctor/loa/requests-list/paid" role="tab">
+              <span class="hidden-sm-up"></span>
+              <span class="hidden-xs-down fs-5 font-bold">PAID</span>
+            </a>
+          </li>
         </ul>
 
         <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
@@ -97,6 +111,7 @@
                     <th class="fw-bold" style="color: white">TYPE OF REQUEST</th>
                     <th class="fw-bold" style="color: white">HEALTHCARE PROVIDER</th>
                     <th class="fw-bold" style="color: white">RX FILE</th>
+                    <th class="fw-bold" style="color: white">SOA</th>
                     <th class="fw-bold" style="color: white">DATE OF REQUEST</th>
                     <th class="fw-bold" style="color: white">STATUS</th>
                     <th class="fw-bold" style="color: white">ACTION</th>
@@ -225,14 +240,21 @@
           req_status,
           work_related,
           approved_by,
-          approved_on
+          approved_on,
+          percentage,
+          hospitalized_date
         } = res;
 
         $("#viewLoaModal").modal("show");
 
         const med_serv = med_services !== '' ? med_services : 'None';
         const at_physician = attending_physician !== '' ? attending_physician : 'None';
-        
+        if(loa_request_type == 'Emergency'){
+          $('#hospitalized').show();
+        }else{
+          $('#hospitalized').hide();
+        }
+        $('#hospitalized-date').html(hospitalized_date);
         $('#loa-no').html(loa_no);
         $('#loa-status').html(`<strong class="text-info">[${req_status}]</strong>`);
         $('#approved-by').html(approved_by);
@@ -261,7 +283,36 @@
         $('#chief-complaint').html(chief_complaint);
         $('#requesting-physician').html(requesting_physician);
         $('#attending-physician').html(at_physician);
-        $('#work-related-val').html(work_related);
+        if(work_related == 'Yes'){ 
+					if(percentage == ''){
+					  wpercent = '100% W-R';
+					  nwpercent = '';
+					}else{
+					   wpercent = percentage+'%  W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   nwpercent = '';
+					   }else{
+						   nwpercent = result+'% Non W-R';
+					   }
+					  
+					}	
+			   }else if(work_related == 'No'){
+				   if(percentage == ''){
+					   wpercent = '';
+					   nwpercent = '100% Non W-R';
+					}else{
+					   nwpercent = percentage+'% Non W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   wpercent = '';
+					   }else{
+						   wpercent = result+'%  W-R';
+					   }
+					 
+					}
+			   }
+        $('#percentage').html(wpercent+', '+nwpercent);
       }
     });
   }

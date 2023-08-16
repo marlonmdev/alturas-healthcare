@@ -3,7 +3,7 @@
     <div class="modal-content">
       <section id="printableDiv">
         <div class="modal-header">
-          <h4 class="modal-title ls-2">LOA #: <span id="loa-no" class="text-primary"></span> <span id="loa-status"></span></h4>
+          <h4 class="modal-title ls-2">LOA #: <span id="a-loa-no" class="text-primary"></span> <span id="loa-status"></span></h4>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -17,6 +17,10 @@
                   <td class="fw-bold ls-1">Requested On :</td>
                   <td class="fw-bold ls-1" id="request-date"></td>
                 </tr>
+                <tr id="hospitalized">
+                  <td class="fw-bold ls-1">Date Hospitalized :</td>
+                  <td class="fw-bold ls-1" id="hospitalized-date"></td>
+                </tr>
                 <tr>
                   <td class="fw-bold ls-1">Approved By :</td>
                   <td class="fw-bold ls-1" id="approved-by"></td>
@@ -27,7 +31,7 @@
                 </tr>
                 <tr>
                   <td class="fw-bold ls-1">Expiry Date :</td>
-                  <td class="fw-bold ls-1" id="expiry-date"></td>
+                  <td class="fw-bold ls-1" id="a-expiry-date"></td>
                 </tr>
                 <tr>
                   <td class="fw-bold ls-1">Member's Maximum Benefit Limit :</td>
@@ -38,8 +42,8 @@
                   <td class="fw-bold ls-1">&#8369;<span id="remaining-mbl"></span></td>
                 </tr>
                 <tr>
-                  <td class="fw-bold ls-1">Work Related :</td>
-                  <td class="fw-bold ls-1" id="work-related-val"></td>
+                  <td class="fw-bold ls-1">Percentage :</td>
+                  <td class="fw-bold ls-1" id="percentage"></td>
                 </tr>
                 <tr>
                   <td class="fw-bold ls-1">Healthcard Number :</td>

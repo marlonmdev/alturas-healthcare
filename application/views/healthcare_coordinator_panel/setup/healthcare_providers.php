@@ -39,6 +39,7 @@
                     <th class="fw-bold">#</th>
                     <th class="fw-bold">Name</th>
                     <th class="fw-bold">Type</th>
+                    <th class="fw-bold">Category</th>
                     <th class="fw-bold">Address</th>
                     <th class="fw-bold">Actions</th>
                   </tr>
@@ -97,6 +98,7 @@
             status,
             message,
             type_error,
+            category_error,
             name_error,
             address_error,
             contact_error,
@@ -109,6 +111,14 @@
               } else {
                 $("#hp-type-error").html("");
                 $("#hp-type").removeClass("is-invalid");
+              }
+
+              if (category_error !== "") {
+                $("#hp-category-error").html(category_error);
+                $("#hp-category").addClass("is-invalid");
+              } else {
+                $("#hp-category-error").html("");
+                $("#hp-category").removeClass("is-invalid");
               }
 
               if (name_error !== "") {

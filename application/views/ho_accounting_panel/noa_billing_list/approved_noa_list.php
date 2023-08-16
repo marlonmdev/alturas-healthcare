@@ -3,9 +3,9 @@
     <!-- Bread crumb and right sidebar toggle -->
     <div class="page-breadcrumb">
         <div class="row">
-            <div class="col-12 d-flex no-block align-items-center">
-            <h4 class="page-title ls-2">NOA Requests</h4>
-            <div class="ms-auto text-end">
+            <div class="col-12 d-flex no-block flex-column flex-sm-row align-items-left">
+            <h4 class="page-title ls-2"><i class="mdi mdi-format-list-bulleted"></i> NOA Requests</h4>
+            <div class="ms-auto text-end order-first order-sm-last">
                 <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">Head Office Accounting</li>
@@ -35,15 +35,25 @@
                     </a>
                 </li>
                 
-                <!-- <li class="nav-item">
+                <li class="nav-item">
                     <a
                     class="nav-link"
-                    href="<?php echo base_url(); ?>head-office-accounting/noa-request-list/noa-completed"
+                    href="<?php echo base_url(); ?>head-office-accounting/noa-request-list/noa-billed"
                     role="tab">
                         <span class="hidden-sm-up"></span>
-                        <span class="hidden-xs-down fs-5 font-bold">Completed</span>
+                        <span class="hidden-xs-down fs-5 font-bold">Billed</span>
                     </a>
-                </li> -->
+                </li>
+
+                <li class="nav-item">
+                    <a
+                    class="nav-link"
+                    href="<?php echo base_url(); ?>head-office-accounting/noa-request-list/noa-paid"
+                    role="tab">
+                        <span class="hidden-sm-up"></span>
+                        <span class="hidden-xs-down fs-5 font-bold">Paid</span>
+                    </a>
+                </li>
             </ul>
             <div class="col-lg-5 ps-5 pb-3">
                 <div class="input-group">
@@ -66,15 +76,15 @@
                     <div class="table-responsive">  
                         <?php include 'view_approved_noa_details.php'; ?>
                         <table id="approvedNoaTable" class="table table-striped" style="width:100%">
-                            <thead>
+                            <thead style="background-color:#00538C">
                                 <tr>
-                                    <th class="fw-bold">NOA No.</th>
-                                    <th class="fw-bold">Name</th>
-                                    <th class="fw-bold">Hosptial Name</th>
-                                    <th class="fw-bold">Admission Date</th>
-                                    <th class="fw-bold">Request Date</th>
-                                    <th class="fw-bold">Status</th>
-                                    <th class="fw-bold">Actions</th>
+                                    <th class="text-white">NOA No.</th>
+                                    <th class="text-white">Name</th>
+                                    <th class="text-white">Hosptial Name</th>
+                                    <th class="text-white">Admission Date</th>
+                                    <th class="text-white">Request Date</th>
+                                    <th class="text-white">Status</th>
+                                    <th class="text-white">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -123,7 +133,7 @@
 
     });
 
-    function viewApprovedNoaInfo(noa_id) {
+    const viewApprovedNoaInfo = (noa_id) => {
     $.ajax({
       url: `${baseUrl}head-office-accounting/noa-request-list/noa-approved/view/${noa_id}`,
       type: "GET",
@@ -178,9 +188,37 @@
         $('#hospital-name').html(hospital_name);
         $('#admission-date').html(admission_date);
         $('#chief-complaint').html(chief_complaint);
-        $('#work-related').html(work_related);
-        $('#percentage').html(percentage);
         $('#request-date').html(request_date);
+        if(work_related == 'Yes'){ 
+					if(percentage == ''){
+					  wpercent = '100% W-R';
+					  nwpercent = '';
+					}else{
+					   wpercent = percentage+'%  W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   nwpercent = '';
+					   }else{
+						   nwpercent = result+'% Non W-R';
+					   }
+					  
+					}	
+			   }else if(work_related == 'No'){
+				   if(percentage == ''){
+					   wpercent = '';
+					   nwpercent = '100% Non W-R';
+					}else{
+					   nwpercent = percentage+'% Non W-R';
+					   result = 100 - parseFloat(percentage);
+					   if(percentage == '100'){
+						   wpercent = '';
+					   }else{
+						   wpercent = result+'%  W-R';
+					   }
+					 
+					}
+			   }
+        $('#percentage').html(wpercent+', '+nwpercent);
       }
     });
   }

@@ -11,7 +11,7 @@
             <ol class="breadcrumb">
               <li class="breadcrumb-item">Super Admin</li>
               <li class="breadcrumb-item active" aria-current="page">
-                Completed NOA
+                Billed NOA
               </li>
             </ol>
           </nav>
@@ -57,18 +57,32 @@
             <li class="nav-item">
             <a
               class="nav-link active"
-              href="<?php echo base_url(); ?>super-admin/noa/requests-list/completed"
+              href="<?php echo base_url(); ?>super-admin/noa/requests-list/billed"
               role="tab"
               ><span class="hidden-sm-up"></span>
-              <span class="hidden-xs-down fs-5 font-bold">Completed</span></a
+              <span class="hidden-xs-down fs-5 font-bold">Billed</span></a
             >
           </li>
         </ul>
 
+        <div class="col-lg-5 ps-5 pb-3 offset-7 pt-1 pb-4">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text bg-dark text-white"><i class="mdi mdi-filter"></i></span>
+            </div>
+            <select class="form-select fw-bold" name="hospital-filter" id="hospital-filter">
+              <option value="">Select Hospital</option>
+              <?php foreach($hcproviders as $option) : ?>
+                <option value="<?php echo $option['hp_id']; ?>"><?php echo $option['hp_name']; ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+        </div>
+
         <div class="card shadow">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover" id="completedNoaTable">
+              <table class="table table-hover" id="billedNoaTable">
                 <thead>
                   <tr>
                     <th class="fw-bold">NOA No.</th>
@@ -175,21 +189,21 @@
 
   $(document).ready(function() {
 
-    $('#completedNoaTable').DataTable({
+    const completedtable = $('#billedNoaTable').DataTable({
       processing: true, //Feature control the processing indicator.
       serverSide: true, //Feature control DataTables' server-side processing mode.
       order: [], //Initial no order.
 
       // Load data for the table's content from an Ajax source
       ajax: {
-        url: `${baseUrl}super-admin/noa/requests-list/completed/fetch`,
+        url: `${baseUrl}super-admin/noa/requests-list/billed/fetch`,
         type: "POST",
         // passing the token as data so that requests will be allowed
-        data: {
-          'token': '<?php echo $this->security->get_csrf_hash(); ?>'
-        }
+        data: function(data){
+          data.token= '<?php echo $this->security->get_csrf_hash(); ?>';
+          data.filte= $('#hospital-filter').val();
+                }
       },
-
       //Set column definition initialisation properties.
       columnDefs: [{
         "targets": [5, 6], // numbering column
@@ -199,6 +213,10 @@
       fixedHeader: true,
     });
 
+    $('#hospital-filter').on('change',function(){
+      completedtable.draw();
+    });
+    
   });
 
   const saveAsImage = () => {
@@ -222,7 +240,7 @@
 
   const viewCompletedNoaInfo = (req_id) => {
     $.ajax({
-      url: `${baseUrl}super-admin/noa/completed/view/${req_id}`,
+      url: `${baseUrl}super-admin/noa/billed/view/${req_id}`,
       type: "GET",
       success: function(response) {
         const res = JSON.parse(response);

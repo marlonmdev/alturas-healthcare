@@ -168,7 +168,7 @@
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
 
-    $("#expiry-date").flatpickr({
+    $("#doc-expiry-date").flatpickr({
       enableTime: false,
       dateFormat: 'Y-m-d',
       minDate: tomorrow
@@ -188,11 +188,11 @@
             case 'error':
               // is-invalid class is a built in classname for errors in bootstrap
               if (expiry_date_error !== '') {
-                $('#expiry-date-error').html(expiry_date_error);
-                $('#expiry-date').addClass('is-invalid');
+                $('#doc-expiry-date-error').html(expiry_date_error);
+                $('#doc-expiry-date').addClass('is-invalid');
               } else {
-                $('#expiry-date-error').html('');
-                $('#expiry-date').removeClass('is-invalid');
+                $('#doc-expiry-date-error').html('');
+                $('#doc-expiry-date').removeClass('is-invalid');
               }
               break;
             case 'save-error':
@@ -236,7 +236,6 @@
     let photoviewer = new PhotoViewer(item, options);
   }
 
-  
   const saveAsImage = () => {
     // Get the div element you want to save as an image
     const element = document.querySelector("#printableDiv");

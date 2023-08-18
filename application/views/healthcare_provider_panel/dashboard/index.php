@@ -96,6 +96,10 @@
       const frondesk = `<?=$this->uri->segment(1)?>`;
       $(document).ready(function(){
 
+        $("#date_of_birth").flatpickr({
+            dateFormat: 'Y-m-d',
+        });
+       
         $('#viewLoaModal').on('hidden.bs.modal', function() {
           $('#services').empty(); // Remove all list items from the list
           $('#documents').empty(); 

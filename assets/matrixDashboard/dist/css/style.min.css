@@ -12574,6 +12574,27 @@ label {
 	background-color: #66D8FE;
 }
 
+	
+/* .acn-input-container {
+	position: relative;
+  }
+  
+  #healthcard-no {
+	padding-left: 30px;
+	padding: 5px;
+	border: 1px solid #ccc;
+  } */
+  /* #healthcard-no::placeholder {
+	padding: 30px;
+  }
+  .acn {
+	position: absolute;
+	top: 8px; 
+	left: 5px; 
+	font-size: 12px;
+	color: #888;
+  } */
+  
 /* #scrollButton {
 	display: none;
 	position: fixed;

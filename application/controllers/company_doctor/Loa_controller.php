@@ -341,14 +341,14 @@ class Loa_controller extends CI_Controller {
 
 	function backdate_expired(){
 		$loa_id = $this->myhash->hasher($this->input->post('loa-id', TRUE), 'decrypt');
-		$expiry_date = $this->input->post('expiry-date', TRUE);
+		$expiry_date = $this->input->post('doc-expiry-date', TRUE);
 
 		$this->load->library('form_validation');
-		$this->form_validation->set_rules('expiry-date', 'Expiry Date', 'required');
+		$this->form_validation->set_rules('doc-expiry-date', 'Expiry Date', 'required');
 		if ($this->form_validation->run() == FALSE) {
 			$response = [
 				'status' 				    => 'error',
-				'expiry_date_error' => form_error('expiry-date'),
+				'expiry_date_error' => form_error('doc-expiry-date'),
 			];
 		} else {
 			$loa_info = $this->loa_model->get_loa_info_by_id($loa_id);

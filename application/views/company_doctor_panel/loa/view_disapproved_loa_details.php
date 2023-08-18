@@ -22,17 +22,14 @@
                   <td class="fw-bold ls-1" id="hospitalized-date"></td>
                 </tr>
                 <tr>
-                  <td class="fw-bold ls-1">Disapproved By :</td>
-                  <td class="fw-bold ls-1" id="disapproved-by"></td>
-                </tr>
-                <tr>
                   <td class="fw-bold ls-1">Disapproved On :</td>
                   <td class="fw-bold ls-1" id="disapproved-on"></td>
                 </tr>
                 <tr>
-                  <td class="fw-bold ls-1">Reason for Disapproval :</td>
-                  <td class="fw-bold ls-1" id="disapprove-reason"></td>
+                  <td class="fw-bold ls-1">Disapproved By :</td>
+                  <td class="fw-bold ls-1" id="disapproved-by"></td>
                 </tr>
+                
                 <tr>
                   <td class="fw-bold ls-1">Member's Maximum Benefit Limit :</td>
                   <td class="fw-bold ls-1">&#8369;<span id="member-mbl"></span></td>
@@ -40,10 +37,10 @@
                 <tr>
                   <td class="fw-bold ls-1">Member's Remaining MBL :</td>
                   <td class="fw-bold ls-1">&#8369;<span id="remaining-mbl"></span></td>
-                </tr>
+                <!-- </tr>
                   <td class="fw-bold ls-1">Percentage :</td>
                   <td class="fw-bold ls-1" id="percentage"></td>
-                </tr>
+                </tr> -->
                 <tr>
                   <td class="fw-bold ls-1">Healthcard Number :</td>
                   <td class="fw-bold ls-1" id="health-card-no"></td>
@@ -127,6 +124,10 @@
                 <tr>
                   <td class="fw-bold ls-1">Attending Physician :</td>
                   <td class="fw-bold ls-1" id="attending-physician"></td>
+                </tr>
+                <tr>
+                  <td class="fw-bold ls-1">Reason for Disapproval :</td>
+                  <td class="fw-bold ls-1" id="disapprove-reason"></td>
                 </tr>
               </table>
             </div>

@@ -74,6 +74,36 @@ $(document).ready(function () {
 		  });
 		});
 
+		var inputElement = $("#healthcard-no");
+		if(inputElement.val()){
+			inputElement[0].selectionStart = inputElement.val().length;
+            inputElement[0].selectionEnd = inputElement.val().length;
+		}
+             inputElement.click(function() {
+              // console.log('start',this.selectionStart);
+              // console.log('end',this.selectionEnd);
+              // console.log('value',this.value.length);
+              if(this.selectionStart<4){
+                this.selectionStart = this.selectionEnd = this.value.length;
+              }
+                
+            });
+
+            inputElement.on("keydown", function(e) {
+                if (e.key === "Backspace" && inputElement[0].selectionStart <= 4) {
+                    e.preventDefault();
+                }
+                if(/^[a-zA-Z]$/.test(e.key)) {
+                  e.preventDefault(); 
+                }
+                if(/^[!@#$%^&*()\-_=+[\]{};':"\\|,.<>/?`~]$/.test(e.key)) {
+                  e.preventDefault(); 
+                }
+                if(/\s/.test(e.key)){
+                  e.preventDefault(); 
+                }
+            });
+
 		// setInterval(toggleClass, 500);
 });
 

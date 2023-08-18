@@ -17,8 +17,8 @@
 
           <div class="mb-3">
             <label class="ls-1">Set Expiration Date</label>
-            <input type="date" class="form-control input-date fw-bold" name="expiry-date" id="expiry-date"  onchange="dateValidity();" style="background:#ffff" placeholder="Select Date">
-            <em id="expiry-date-error" class="text-danger"></em>
+            <input type="date" class="form-control" name="doc-expiry-date" id="doc-expiry-date"  style="background:#ffff" placeholder="Select Date">
+            <em id="doc-expiry-date-error" class="text-danger"></em>
           </div>               
 
           <div class="row mt-2">

@@ -27,10 +27,6 @@
                             <td class="fw-bold ls-1" id="disapproved-on"></td>
                           </tr>
                           <tr>
-                            <td class="fw-bold ls-1">Reason for Disapproval :</td>
-                            <td class="fw-bold ls-1" id="disapprove-reason"></td>
-                          </tr>
-                          <tr>
                             <td class="fw-bold ls-1">Member's Maximum Benefit Limit :</td>
                             <td class="fw-bold ls-1">&#8369; <span id="member-mbl"></span></td>
                           </tr>
@@ -68,6 +64,10 @@
                           <tr>
                             <td class="fw-bold ls-1">Services :</td>
                             <td class="fw-bold ls-1" id="med-services-list"></td>
+                          </tr>
+                          <tr>
+                            <td class="fw-bold ls-1">Reason for Disapproval :</td>
+                            <td class="fw-bold ls-1" id="disapprove-reason"></td>
                           </tr>
                         </table>
                       </div>

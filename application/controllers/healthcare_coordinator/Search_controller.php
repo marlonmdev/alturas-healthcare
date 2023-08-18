@@ -30,6 +30,23 @@ class Search_controller extends CI_Controller {
       echo "<p class='text-center mt-1'><em>No data found...</em></p>";
     }
   }
+  function search_autocomplete_setup() {
+    $this->security->get_csrf_hash();
+    $search_data = $this->input->post('search');
+    $result = $this->search_model->get_autocomplete_setup($search_data);
+    if (!empty($result)) {
+      foreach ($result as $row) :
+        $member_id = $this->myhash->hasher($row['member_id'], 'encrypt');
+        echo '<strong class="d-block mx-2 p-1 my-1"><a href="#" onclick="getMemberValues(\'' . $member_id . '\')" class="text-secondary" data-toggle="tooltip" data-placement="top" title="Click to fill form with Data">'
+                . $row['first_name'] . ' '
+                . $row['middle_name'] . ' '
+                . $row['last_name'] . ' '
+                . $row['suffix'] . '</a></strong>';
+      endforeach;
+    }else{
+      echo "<p class='text-center mt-1'><em>No data found...</em></p>";
+    }
+  }
   function search_autocomplete_affiliated() {
     $this->security->get_csrf_hash();
     $search_data = $this->input->post('search');

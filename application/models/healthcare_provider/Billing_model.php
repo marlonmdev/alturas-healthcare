@@ -499,6 +499,7 @@ class Billing_model extends CI_Model {
         $this->db->select('COUNT(*) as count');
         $this->db->from('billing');
         $this->db->where('re_upload', 1);
+        $this->db->where('done_re_upload', null);
         $query = $this->db->get();
         $result2 = $query->row();
         $count2 = $result2->count;

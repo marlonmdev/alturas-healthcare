@@ -43,4 +43,5 @@ class Api_model extends CI_Model {
     return $this->db->update('billing'); 
   }
 
+  
 }

@@ -22,9 +22,10 @@
           <form method="POST" action="<?php echo base_url(); ?>healthcare-provider/search-member/healthcard" id="search-form-1" class="needs-validation" novalidate>
             <div class="input-group">
               <input type="hidden" name="token" value="<?= $this->security->get_csrf_hash(); ?>">
-              <input type="text" class="form-control" id="healthcard-no" name="healthcard_no" placeholder="Search Healthcard Number"  aria-describedby="btn-search" required>
+                <input type="text" class="form-control" id="healthcard-no" name="healthcard_no" value="ACN-" placeholder="Search Healthcard Number"  aria-describedby="btn-search" required>
               <button type="submit" class="btn btn-info" id="btn-search"><i class="mdi mdi-magnify me-1"></i>Search</button>
             </div>
+            
           </form>
         </div>
                                       
@@ -37,7 +38,7 @@
                 <input type="text" name="first_name" class="form-control" placeholder="Enter Firstname" required>
                 <input type="text" name="last_name" class="form-control" placeholder="Enter Lastname" required>
                 <span class="input-group-text bg-dark text-white">Birthday :</span>
-                <input type="date" name="date_of_birth" class="form-control" required>
+                <input type="date" name="date_of_birth" id="date_of_birth" placeholder="Date of Birth" class="form-control" required>
                 <button type="submit" class="btn btn-info" id="btn-search"><i class="mdi mdi-magnify me-1"></i>Search</button>
             </div>
           </form>

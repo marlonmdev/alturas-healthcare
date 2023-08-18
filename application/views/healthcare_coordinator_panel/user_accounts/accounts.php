@@ -448,7 +448,7 @@
   function load_data(token, search) {
     /* The below code is sending a POST request to the server with the token and search data. */
     $.ajax({
-      url: `${baseUrl}healthcare-coordinator/member/search`,
+      url: `${baseUrl}healthcare-coordinator/member_setup/search`,
       method: "POST",
       data: {
         token: token,
